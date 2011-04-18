@@ -1496,43 +1496,4 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
       return null;
    }
-
-   public static final class ArtifactStructuredSelection implements IStructuredSelection {
-
-      private final List<Artifact> selectedItems;
-
-      public ArtifactStructuredSelection(List<Artifact> selectedItems) {
-         this.selectedItems = selectedItems;
-      }
-
-      @Override
-      public boolean isEmpty() {
-         return selectedItems.isEmpty();
-      }
-
-      @Override
-      public Artifact getFirstElement() {
-         return isEmpty() ? null : selectedItems.get(0);
-      }
-
-      @Override
-      public Iterator<Artifact> iterator() {
-         return selectedItems.iterator();
-      }
-
-      @Override
-      public int size() {
-         return selectedItems.size();
-      }
-
-      @Override
-      public Object[] toArray() {
-         return selectedItems.toArray();
-      }
-
-      @Override
-      public List<Artifact> toList() {
-         return selectedItems;
-      }
-   }
 }

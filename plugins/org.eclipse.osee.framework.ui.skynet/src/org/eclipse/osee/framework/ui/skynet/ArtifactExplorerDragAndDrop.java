@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IViewPart;
 
 /**
@@ -103,10 +102,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    }
 
    private Artifact getSelectedArtifact(DropTargetEvent event) {
-      TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
-
-      if (selected != null && selected.getData() instanceof Artifact) {
-         return (Artifact) selected.getData();
+      if (event.item != null && event.item.getData() instanceof Artifact) {
+         return (Artifact) event.item.getData();
       }
       return null;
    }

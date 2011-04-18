@@ -23,11 +23,16 @@ import org.eclipse.ui.IWorkbenchWizard;
  * @author Robert A. Fisher
  */
 public final class Wizards {
+
    public static final void initAndOpen(IWorkbenchWizard wizard, IViewPart viewPart) {
-      initAndOpen(wizard, viewPart.getViewSite().getWorkbenchWindow());
+      initAndOpen(wizard, viewPart, viewPart.getViewSite().getWorkbenchWindow());
    }
 
-   public static final void initAndOpen(IWorkbenchWizard wizard, IWorkbenchWindow workbenchWindow) {
+   public static final void initAndOpen(IWorkbenchWizard wizard, IViewPart viewPart, IStructuredSelection selection) {
+      initAndOpen(wizard, viewPart.getViewSite().getWorkbenchWindow(), selection);
+   }
+
+   public static final void initAndOpen(IWorkbenchWizard wizard, IViewPart viewPart, IWorkbenchWindow workbenchWindow) {
 
       IStructuredSelection selectionToPass;
       // get the current workbench selection
@@ -38,11 +43,18 @@ public final class Wizards {
          selectionToPass = StructuredSelection.EMPTY;
       }
 
-      wizard.init(workbenchWindow.getWorkbench(), selectionToPass);
+      initAndOpen(wizard, viewPart.getViewSite().getWorkbenchWindow(), selectionToPass);
+
+   }
+
+   public static final void initAndOpen(IWorkbenchWizard wizard, IWorkbenchWindow workbenchWindow, IStructuredSelection selection) {
+
+      wizard.init(workbenchWindow.getWorkbench(), selection);
 
       Shell parent = workbenchWindow.getShell();
       WizardDialog dialog = new WizardDialog(parent, wizard);
       dialog.create();
       dialog.open();
+
    }
 }
