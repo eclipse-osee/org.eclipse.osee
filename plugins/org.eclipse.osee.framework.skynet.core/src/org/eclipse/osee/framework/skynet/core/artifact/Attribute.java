@@ -193,8 +193,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       try {
          Artifact artifact = getArtifact();
          ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranch().getId());
-      } catch (OseeStateException ex) {
-         OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Attribute.class, Level.SEVERE, ex);
       }
    }
 
