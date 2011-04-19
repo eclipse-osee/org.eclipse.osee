@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDragDropSupport;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -47,9 +46,9 @@ public class OpenArtifactAction implements IObjectActionDelegate {
       IStructuredSelection sel = (IStructuredSelection) targetPart.getSite().getSelectionProvider().getSelection();
       for (Object object : sel.toList()) {
          if (object instanceof IResource) {
-            String path = WorkspaceURL.getURL((IResource) object);
+            IResource resource = (IResource) object;
             try {
-               Artifact artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(path, shell);
+               Artifact artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(resource, shell);
                if (artifact != null) {
                   RendererManager.open(artifact, PresentationType.DEFAULT_OPEN);
                }

@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
@@ -121,7 +121,7 @@ public class ArtifactDragDropSupport {
                continue;
             }
          } else {
-            location = WorkspaceURL.getURL(iFile);
+            location = getURL(iFile);
          }
 
          try {
@@ -173,6 +173,16 @@ public class ArtifactDragDropSupport {
       } catch (OseeCoreException ex) {
          window.addInvalid(artifact.getName(), ex.getMessage());
       }
+   }
+
+   public static Artifact getArtifactFromWorkspaceFile(IResource resource, Shell shell) throws OseeCoreException {
+      String path = getURL(resource);
+      return getArtifactFromWorkspaceFile(path, shell);
+   }
+
+   private static String getURL(IResource resource) {
+      // Add only 1 "/" due to the path for the file having a preceding "/"
+      return "ws:/" + resource.getFullPath().toString();
    }
 
    public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws OseeCoreException {
