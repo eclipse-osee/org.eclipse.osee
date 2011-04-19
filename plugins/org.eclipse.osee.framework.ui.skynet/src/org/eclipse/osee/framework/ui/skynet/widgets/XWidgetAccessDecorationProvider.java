@@ -53,7 +53,7 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
          try {
             Artifact artifact = attributeWidget.getArtifact();
             permissionStatus =
-               policyHandlerService.hasAttributeTypePermission(Collections.singleton(artifact), attributeType,
+               policyHandlerService.hasAttributeTypePermission(Collections.singletonList(artifact), attributeType,
                   PermissionEnum.WRITE, Level.FINE);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

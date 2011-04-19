@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -63,7 +63,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Collections.asCollection("Admin");
+      return Collections.singletonList("Admin");
    }
 
    @Override

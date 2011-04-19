@@ -95,14 +95,30 @@ public class Collections {
    }
 
    /**
-    * The resultant set is those elements in superSet which are not in the subSet
+    * <p>
+    * Meaning:
+    * <li>elements outside of B
+    * <li>all elements unique to A
+    * </p>
     * 
-    * @return Return complement list reference
+    * @return relative set complement of B in A.
+    * <p>
+    * <br/>
+    * Noted:<br/>
+    * A - B
+    * </p>
+    * <p>
+    * <br/>
+    * Examples:<br/>
+    * { 1, 2, 3 } - { 1, 4, 3 } = { 2 } <br/>
+    * <br/>
+    * { 1, 4, 3 } - { 1, 2, 3 } = { 4 }
+    * </p>
     */
-   public static <T> List<T> setComplement(Collection<T> superSet, Collection<T> subList) {
-      ArrayList<T> complement = new ArrayList<T>(superSet.size());
-      for (T obj : superSet) {
-         if (!subList.contains(obj)) {
+   public static <T> List<T> setComplement(Collection<T> set_A, Collection<T> set_B) {
+      ArrayList<T> complement = new ArrayList<T>(set_A.size());
+      for (T obj : set_A) {
+         if (!set_B.contains(obj)) {
             complement.add(obj);
          }
       }
@@ -124,7 +140,7 @@ public class Collections {
    }
 
    /**
-    * Returns the unique union of the given lists
+    * @return union of unique elements from the given lists
     */
    public static <T> Set<T> setUnion(Collection<T>... lists) {
       Set<T> union = new HashSet<T>(lists[0].size() * 2);
@@ -259,12 +275,6 @@ public class Collections {
     */
    public static <A extends Object> List<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.MATCHING);
-   }
-
-   public static <T extends Object> Collection<T> asCollection(T arg) {
-      Collection<T> ret = new ArrayList<T>();
-      ret.add(arg);
-      return ret;
    }
 
    public static <A extends Object> boolean moveItem(List<A> currentOrder, A itemToAdd, A targetItem, boolean insertAfter) {

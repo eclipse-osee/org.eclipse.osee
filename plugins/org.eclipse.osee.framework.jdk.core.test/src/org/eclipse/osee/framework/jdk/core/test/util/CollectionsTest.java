@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jdk.core.test.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -21,6 +22,7 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class CollectionsTest {
+
    @Test
    public void moveItem() {
 
@@ -84,6 +86,23 @@ public class CollectionsTest {
       // no change
       Assert.assertEquals(Arrays.asList("A", "B", "C", "D", "E"), items);
 
+   }
+
+   @Test
+   public void test_setComplement() throws Exception {
+      Collection<Integer> A = Arrays.asList(1, 2, 3, 8);
+      Collection<Integer> B = Arrays.asList(1, 3, 5, 15, 20);
+
+      Collection<Integer> complementSet = Collections.setComplement(A, B);
+      Assert.assertTrue(complementSet.size() == 2);
+      Assert.assertTrue(complementSet.contains(2));
+      Assert.assertTrue(complementSet.contains(8));
+
+      complementSet = Collections.setComplement(B, A);
+      Assert.assertTrue(complementSet.size() == 3);
+      Assert.assertTrue(complementSet.contains(5));
+      Assert.assertTrue(complementSet.contains(15));
+      Assert.assertTrue(complementSet.contains(20));
    }
 
    private List<String> getTestList() {
