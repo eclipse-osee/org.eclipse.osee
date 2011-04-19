@@ -189,7 +189,7 @@ public final class RenderingUtil {
       name.append("_");
       name.append(dateFormat.format(new Date()));
       name.append("-");
-      name.append(generator.nextInt(99) + 1);
+      name.append(generator.nextInt(99999) + 1);
       name.append(extension);
       return name.toString();
    }
