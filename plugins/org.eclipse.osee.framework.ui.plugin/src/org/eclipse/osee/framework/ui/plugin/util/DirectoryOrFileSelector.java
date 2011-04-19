@@ -110,15 +110,12 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       btnSingleFile.setEnabled(!directorySelected);
    }
 
+   /**
+    * @return new File if path is valid, null otherwise.
+    */
    public File getFile() {
-      File file;
-      if (isDirectorySelected()) {
-         file = new File(txtDirectory.getText());
-      } else {
-         file = new File(txtSingleFile.getText());
-      }
-
-      return file;
+      String path = isDirectorySelected() ? txtDirectory.getText() : txtSingleFile.getText();
+      return Strings.isValid(path) ? new File(path) : null;
    }
 
    public String getText() {
