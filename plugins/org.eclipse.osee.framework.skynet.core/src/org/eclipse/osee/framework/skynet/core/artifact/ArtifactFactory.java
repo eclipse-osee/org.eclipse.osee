@@ -40,14 +40,14 @@ public abstract class ArtifactFactory {
       }
    }
 
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
-      return makeNewArtifact(branch, artifactTypeToken, null, guid, humandReadableId, earlyArtifactInitialization);
+   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid, String humandReadableId) throws OseeCoreException {
+      return makeNewArtifact(branch, artifactTypeToken, null, guid, humandReadableId);
    }
 
    /**
     * Used to create a new artifact (one that has never been saved into the datastore)
     */
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid, String humanReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
+   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid, String humanReadableId) throws OseeCoreException {
       ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeToken);
 
       Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(),
@@ -72,9 +72,6 @@ public abstract class ArtifactFactory {
       Artifact artifact = getArtifactInstance(guid, humanReadableId, BranchManager.getBranch(branch), artifactType);
 
       artifact.setArtId(ConnectionHandler.getSequence().getNextArtifactId());
-      if (earlyArtifactInitialization != null) {
-         earlyArtifactInitialization.run(artifact);
-      }
       artifact.meetMinimumAttributeCounts(true);
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded(true);

@@ -200,7 +200,7 @@ public class ArtifactDragDropSupport {
                   MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, artifactTypes);
 
             if (dialog.open() == Window.OK) {
-               artifact = ArtifactTypeManager.makeNewArtifact(dialog.getArtifactType(), branch);
+               artifact = ArtifactTypeManager.addArtifact(dialog.getArtifactType(), branch);
                artifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl, location);
                artifact.setName(new File(location).getName());
             }

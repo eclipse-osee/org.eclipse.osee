@@ -42,7 +42,7 @@ public final class ArtifactTest {
    @Test
    public void attributeCopyAcrossRelatedBranches() throws Exception {
       Artifact artifactWithSpecialAttr =
-         ArtifactTypeManager.makeNewArtifact(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoSawBuilds.SAW_Bld_1);
+         ArtifactTypeManager.addArtifact(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoSawBuilds.SAW_Bld_1);
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
       artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
 
@@ -54,7 +54,7 @@ public final class ArtifactTest {
    @Test
    public void attributeCopyAcrossUnrelatedBranches() throws Exception {
       Artifact artifactWithSpecialAttr =
-         ArtifactTypeManager.makeNewArtifact(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoSawBuilds.SAW_Bld_1);
+         ArtifactTypeManager.addArtifact(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoSawBuilds.SAW_Bld_1);
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
       artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
 
@@ -66,7 +66,7 @@ public final class ArtifactTest {
    @Test(expected = OseeArgumentException.class)
    public void setSoleAttributeValueTest() throws Exception {
       Artifact artifactWithSpecialAttr =
-         ArtifactTypeManager.makeNewArtifact(DemoArtifactTypes.DemoCodeTeamWorkflow, CoreBranches.COMMON);
+         ArtifactTypeManager.addArtifact(DemoArtifactTypes.DemoCodeTeamWorkflow, CoreBranches.COMMON);
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
    }
 

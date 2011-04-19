@@ -268,7 +268,7 @@ public class TestRunXViewer extends XViewer {
                         artifact.getBranch());
                } catch (ArtifactDoesNotExist ex) {
                   dispoArtifact =
-                     ArtifactTypeManager.makeNewArtifact(CoreArtifactTypes.TestRunDisposition, artifact.getBranch());
+                     ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestRunDisposition, artifact.getBranch());
                   dispoArtifact.setName(name);
                }
                if (dispoArtifact != null) {

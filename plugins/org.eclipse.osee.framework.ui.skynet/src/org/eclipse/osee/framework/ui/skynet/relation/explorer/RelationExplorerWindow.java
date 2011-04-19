@@ -289,7 +289,7 @@ public class RelationExplorerWindow {
             if (artifact == null) {
                if (descriptor != null) {
                   try {
-                     artifact = ArtifactTypeManager.makeNewArtifact(descriptor, branch);
+                     artifact = ArtifactTypeManager.addArtifact(descriptor, branch);
                      artifact.setName(model.getName());
                      artifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl,
                         urls.get(names.indexOf(model.getName())));

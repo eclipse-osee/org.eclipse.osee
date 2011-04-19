@@ -12,11 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -220,6 +218,6 @@ public class RelationOrderingTest {
    }
 
    private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.makeNewArtifact(artifactType, branch);
+      return ArtifactTypeManager.addArtifact(artifactType, branch);
    }
 }

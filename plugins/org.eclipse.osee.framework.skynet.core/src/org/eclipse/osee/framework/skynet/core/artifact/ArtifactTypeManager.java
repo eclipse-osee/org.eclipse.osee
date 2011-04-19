@@ -50,11 +50,11 @@ public class ArtifactTypeManager {
 
    private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
 
-   public static ArtifactTypeCache getCache() {
+   private static ArtifactTypeCache getCache() {
       return getCacheService().getArtifactTypeCache();
    }
 
-   public static IOseeCachingService getCacheService() {
+   private static IOseeCachingService getCacheService() {
       return Activator.getInstance().getOseeCacheService();
    }
 
@@ -151,14 +151,14 @@ public class ArtifactTypeManager {
     * Get a new instance of type artifactTypeName
     */
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
-      return makeNewArtifact(artifactType, branch);
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null, null);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
     */
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name) throws OseeCoreException {
-      Artifact artifact = makeNewArtifact(artifactType, branch);
+      Artifact artifact = addArtifact(artifactType, branch);
       artifact.setName(name);
       return artifact;
    }
@@ -167,12 +167,14 @@ public class ArtifactTypeManager {
     * Get a new instance of the type of artifact. This is just a convenience method that calls makeNewArtifact on the
     * known factory with this descriptor for the descriptor parameter, and the supplied branch.
     * 
-    * @param branch branch on which artifact will be created
-    * @return Return artifact reference
     * @see ArtifactFactory#makeNewArtifact(Branch, IArtifactType, String, String, ArtifactProcessor)
     */
-   public static Artifact addArtifact(IArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return makeNewArtifact(artifactType, branch, guid, humandReadableId);
+   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String guid, String humandReadableId) throws OseeCoreException {
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, guid, humandReadableId);
+   }
+
+   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name, String guid, String humandReadableId) throws OseeCoreException {
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, humandReadableId);
    }
 
    public static Artifact addArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
@@ -263,33 +265,6 @@ public class ArtifactTypeManager {
 
    public static void persist() throws OseeCoreException {
       getCache().storeAllModified();
-   }
-
-   /**
-    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
-    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
-    * branch.
-    * 
-    * @return Return artifact reference
-    * @see ArtifactFactory#makeNewArtifact(IArtifactType, IOseeBranch)
-    * @use {@link ArtifactTypeManager}.addArtifact
-    */
-   public static Artifact makeNewArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
-      return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null, null);
-   }
-
-   /**
-    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
-    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
-    * branch.
-    * 
-    * @param branch branch on which artifact will be created
-    * @return Return artifact reference
-    * @see ArtifactFactory#makeNewArtifact(Branch, IArtifactType, String, String, ArtifactProcessor)
-    * @use {@link ArtifactTypeManager}.addArtifact
-    */
-   public static Artifact makeNewArtifact(IArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return getFactory(artifactType).makeNewArtifact(branch, artifactType, guid, humandReadableId, null);
    }
 
    /**

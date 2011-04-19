@@ -425,7 +425,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    }
 
    public final Artifact addNewChild(IRelationSorterId sorterId, IArtifactType artifactType, String name) throws OseeCoreException {
-      Artifact child = ArtifactTypeManager.makeNewArtifact(artifactType, branch);
+      Artifact child = ArtifactTypeManager.addArtifact(artifactType, branch);
       child.setName(name);
       addChild(sorterId, child);
       return child;
@@ -1332,7 +1332,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    }
 
    public final Artifact duplicate(IOseeBranch branch, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
-      Artifact newArtifact = ArtifactTypeManager.makeNewArtifact(artifactType, branch);
+      Artifact newArtifact = ArtifactTypeManager.addArtifact(artifactType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
       newArtifact.attributes.clear();

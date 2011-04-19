@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.List;
-
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -74,6 +72,6 @@ public class RelationDeletionTest {
    }
 
    private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.makeNewArtifact(artifactType, branch);
+      return ArtifactTypeManager.addArtifact(artifactType, branch);
    }
 }

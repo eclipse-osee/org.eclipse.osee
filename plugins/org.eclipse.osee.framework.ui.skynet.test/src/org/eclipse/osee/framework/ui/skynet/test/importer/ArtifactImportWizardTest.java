@@ -169,24 +169,24 @@ public final class ArtifactImportWizardTest {
       SkynetTransaction transaction = new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, "ArtifactImportWizardTest");
 
       myRootArtifact =
-         ArtifactTypeManager.getFactory(CoreArtifactTypes.Folder).makeNewArtifact(DemoSawBuilds.SAW_Bld_1,
-            CoreArtifactTypes.Folder, "ArtifactImportWizardTest_Root", "ArtifatImpWizaTestGUID", "12345", null);
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1,
+            "ArtifactImportWizardTest_Root", "ArtifatImpWizaTestGUID", "12345");
 
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(DemoSawBuilds.SAW_Bld_1).addChild(myRootArtifact);
 
       Artifact artifactA =
-         ArtifactTypeManager.getFactory(CoreArtifactTypes.SoftwareRequirement).makeNewArtifact(DemoSawBuilds.SAW_Bld_1,
-            CoreArtifactTypes.SoftwareRequirement, "A", "AAAAAAAAAAAAAAAAAAAAAA", "A2345", null);
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, DemoSawBuilds.SAW_Bld_1, "A",
+            "AAAAAAAAAAAAAAAAAAAAAA", "A2345");
       myRootArtifact.addChild(artifactA);
 
-      artifactA.addChild(ArtifactTypeManager.getFactory(CoreArtifactTypes.SoftwareRequirement).makeNewArtifact(
-         DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "C", "CCCCCCCCCCCCCCCCCCCCCC", "C2345", null));
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
+         DemoSawBuilds.SAW_Bld_1, "C", "CCCCCCCCCCCCCCCCCCCCCC", "C2345"));
 
-      artifactA.addChild(ArtifactTypeManager.getFactory(CoreArtifactTypes.Requirement).makeNewArtifact(
-         DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.Requirement, "D", "DDDDDDDDDDDDDDDDDDDDDD", "D2345", null));
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, DemoSawBuilds.SAW_Bld_1, "D",
+         "DDDDDDDDDDDDDDDDDDDDDD", "D2345"));
 
-      myRootArtifact.addChild(ArtifactTypeManager.getFactory(CoreArtifactTypes.SoftwareRequirement).makeNewArtifact(
-         DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "B", "BBBBBBBBBBBBBBBBBBBBBB", "B2345", null));
+      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
+         DemoSawBuilds.SAW_Bld_1, "B", "BBBBBBBBBBBBBBBBBBBBBB", "B2345"));
 
       myRootArtifact.persist(transaction);
       transaction.execute();
