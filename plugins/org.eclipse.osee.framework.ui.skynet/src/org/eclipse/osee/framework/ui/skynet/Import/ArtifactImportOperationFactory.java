@@ -94,6 +94,7 @@ public final class ArtifactImportOperationFactory {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver,
          deleteUnmatchedArtifacts));
+
       final List<Artifact> children = new ArrayList<Artifact>();
       AbstractOperation operation = new AbstractOperation("Fetch Descendants", SkynetGuiPlugin.PLUGIN_ID) {
          @Override
@@ -110,9 +111,11 @@ public final class ArtifactImportOperationFactory {
             throw new Exception(String.format(message, arg1, arg2), ex);
          }
       };
+
       ops.add(operation);
       ops.add(new ArtifactValidationCheckOperation(children, stopOnError));
       ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
+
       return new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, ops);
    }
 }

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,7 +72,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
 
    private DirectoryOrFileSelector directoryFileSelector;
-   private File defaultSourceFile;
+   private final File defaultSourceFile;
    private Button updateExistingArtifacts;
    private Button updateByGuid;
    private Button deleteUnmatchedArtifacts;
@@ -87,7 +88,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    private static StringBuilder operationReportMessages;
 
-   protected ArtifactImportPage() {
+   protected ArtifactImportPage(ArtifactImporter importer) {
       super(PAGE_NAME);
       selectedArtifactTypes = new ArrayList<IArtifactType>();
       selectionLatch = new SelectionLatch();
@@ -95,6 +96,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       artifactSelectPanel = new ArtifactSelectPanel();
       artifactSelectPanel.setDialogTitle("Select Destination Artifact");
       artifactSelectPanel.setDialogMessage("Select a destination artifact. Imported items will be added as children of the selected artifact.");
+
+      artifactSelectPanel.setDefaultItem(importer.getDestinationArtifact());
 
       artifactTypeSelectPanel = new ArtifactTypeSelectPanel();
       artifactTypeSelectPanel.setDialogTitle("Import as Artifact Type");
@@ -113,14 +116,11 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       operationReportMessages = new StringBuilder();
 
+      this.defaultSourceFile = importer.getFile();
    }
 
    public RoughArtifactCollector getCollectedArtifacts() {
       return collector;
-   }
-
-   public void setDefaultSourceFile(File resource) {
-      defaultSourceFile = resource;
    }
 
    public void setDefaultDestinationArtifact(Artifact destinationArtifact) {
@@ -369,7 +369,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             String guid = settings.get("destination.artifact.guid");
             String branch = settings.get("destination.branch.guid");
 
-            if (Strings.isValid(guid) && Strings.isValid(branch)) {
+            if (Strings.isValid(guid, branch)) {
                try {
                   Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
                   artifactSelectPanel.setDefaultItem(artifact);
@@ -502,6 +502,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
       return true;
    }
+
    private static final class SelectionLatch {
       protected final SelectionData lastSelected;
       protected final SelectionData currentSelected;
@@ -546,7 +547,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
 
       public boolean isValid() {
-         return destinationArtifact != null && sourceFile != null && extractor != null && (extractor.isDelegateRequired() ? extractor.hasDelegate() : true);
+         return Conditions.notNull(destinationArtifact, sourceFile, extractor) && (extractor.isDelegateRequired() ? extractor.hasDelegate() : true);
       }
    }
 }

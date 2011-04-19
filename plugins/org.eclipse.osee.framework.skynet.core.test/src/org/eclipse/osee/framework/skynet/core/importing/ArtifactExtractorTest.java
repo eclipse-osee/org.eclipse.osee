@@ -204,7 +204,6 @@ public class ArtifactExtractorTest {
       private final String expectedData;
 
       public ParseTestData(String message, String sourceData, String expectedData) {
-         super();
          this.message = message;
          this.sourceData = sourceData;
          this.expectedData = expectedData;
@@ -234,7 +233,6 @@ public class ArtifactExtractorTest {
       private final boolean expected;
 
       public TestData(String message, String file, boolean expected) {
-         super();
          this.message = message;
          this.file = file;
          this.expected = expected;

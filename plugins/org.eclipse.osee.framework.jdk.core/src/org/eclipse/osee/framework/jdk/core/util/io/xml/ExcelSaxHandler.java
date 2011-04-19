@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.util.Arrays;
+
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
@@ -28,7 +28,6 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
    private boolean rowEmpty;
 
    public ExcelSaxHandler(RowProcessor rowProcessor, boolean firstRowIsHeader, boolean enableMultiTableSupport) {
-      super();
       this.rowProcessor = rowProcessor;
       this.firstRowIsHeader = firstRowIsHeader;
       this.multiTable = enableMultiTableSupport;
@@ -40,7 +39,7 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
       if (localName.equalsIgnoreCase("Row")) {
          cellIndex = -1; // so that upon finding the first cell start element the index becomes 0
          rowEmpty = true;

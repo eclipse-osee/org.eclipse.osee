@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -133,9 +134,8 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
       @Override
-      public void foundStartOfWorksheet(String sheetName) {
+      public void foundStartOfWorksheet(String sheetName) throws OseeCoreException {
          rowCount = 0;
-         try {
          if (sheetName.equals("relations")) {
             importingRelations = true;
             return;
@@ -143,9 +143,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
          primaryDescriptor = ArtifactTypeManager.getType(sheetName);
          if (primaryDescriptor == null) {
             throw new OseeArgumentException("The sheet [%s] is not a valid artifact type name.", sheetName);
-         }
-         } catch (OseeCoreException ex) {
-            throw new IllegalArgumentException("The sheet [%s] is not a valid artifact type name: ", ex);
          }
       }
 

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -94,7 +93,7 @@ public class RoughArtifact {
    }
 
    public void addAttribute(String typeName, String value) {
-      if (Strings.isValid(typeName) && Strings.isValid(value)) {
+      if (Strings.isValid(typeName, value)) {
          if (isEnumeration(typeName)) {
             if (isMultipleEnum(typeName, value)) {
                attributes.addMultiple(typeName, getEnumValues(value));

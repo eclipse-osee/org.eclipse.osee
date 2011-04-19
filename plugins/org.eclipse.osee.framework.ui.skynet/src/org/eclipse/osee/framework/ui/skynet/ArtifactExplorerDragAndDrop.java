@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImporter;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -147,14 +148,16 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                }
             }
          } else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+
             Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
+
             if (object instanceof String[]) {
                String filename = ((String[]) object)[0];
 
-               ArtifactImportWizard wizard = new ArtifactImportWizard();
-               wizard.setImportResourceAndArtifactDestination(new File(filename), parentArtifact);
+               ArtifactImportWizard wizard =
+                  new ArtifactImportWizard(new ArtifactImporter(new File(filename), parentArtifact));
 
-               Wizards.initAndOpen(wizard, viewPart);
+               Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
             }
          }
       }

@@ -55,12 +55,10 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
          requiredTypes.add(AttributeTypeManager.getType(name));
       }
       Branch resolvedBranch = BranchManager.getBranch(branch);
-      for (ArtifactType artifactType : ArtifactTypeManager.getValidArtifactTypes(resolvedBranch)) {
-         if (!artifactType.isAbstract()) {
-            Collection<IAttributeType> attributeTypes = artifactType.getAttributeTypes(resolvedBranch);
-            if (Collections.setComplement(requiredTypes, attributeTypes).isEmpty()) {
-               selectedArtifactTypes.add(artifactType);
-            }
+      for (ArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(resolvedBranch)) {
+         Collection<IAttributeType> attributeTypes = artifactType.getAttributeTypes(resolvedBranch);
+         if (Collections.setComplement(requiredTypes, attributeTypes).isEmpty()) {
+            selectedArtifactTypes.add(artifactType);
          }
       }
    }

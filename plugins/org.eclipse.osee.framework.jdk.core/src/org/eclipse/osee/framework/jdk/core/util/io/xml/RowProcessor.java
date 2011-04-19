@@ -24,7 +24,7 @@ public interface RowProcessor {
 
    public abstract void reachedEndOfWorksheet();
 
-   public abstract void foundStartOfWorksheet(String sheetName);
+   public abstract void foundStartOfWorksheet(String sheetName) throws Exception;
 
    public abstract void detectedRowAndColumnCounts(int rowCount, int columnCount);
 }
