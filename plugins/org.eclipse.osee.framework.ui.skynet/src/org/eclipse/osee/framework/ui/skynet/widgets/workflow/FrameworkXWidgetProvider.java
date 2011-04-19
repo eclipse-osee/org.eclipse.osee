@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeMultiChoiceSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeComboViewer;
@@ -328,6 +329,9 @@ public final class FrameworkXWidgetProvider {
       } else if (xWidgetName.equals(XArtifactTypeMultiChoiceSelect.WIDGET_ID)) {
          XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
          xWidget = widget;
+      } else if (xWidgetName.equals(XArtifactMultiChoiceSelect.WIDGET_ID)) {
+         xWidget = new XArtifactMultiChoiceSelect();
+
       } else if (xWidgetName.equals(XTextFlatDam.WIDGET_ID)) {
          XTextFlatDam widget = new XTextFlatDam();
          xWidget = widget;

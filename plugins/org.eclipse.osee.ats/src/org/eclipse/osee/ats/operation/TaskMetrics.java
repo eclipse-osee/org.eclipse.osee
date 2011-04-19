@@ -13,50 +13,62 @@ package org.eclipse.osee.ats.operation;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskStates;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.internal.workflow.SMAState;
 import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.internal.workflow.XStateDam;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Ryan D. Brooks
  */
 public class TaskMetrics extends AbstractBlam {
    private final CountingMap<User> metrics;
-   private final CharBackedInputStream charBak;
-   private final ISheetWriter excelWriter;
+   private CharBackedInputStream charBak;
+   private ISheetWriter excelWriter;
 
-   public TaskMetrics() throws IOException {
+   private XHyperlabelTeamDefinitionSelection teamCombo;
+   private XArtifactMultiChoiceSelect versionsWidget;
+
+   public TaskMetrics() {
       metrics = new CountingMap<User>();
-      charBak = new CharBackedInputStream();
-      excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
    @Override
@@ -65,25 +77,51 @@ public class TaskMetrics extends AbstractBlam {
    }
 
    @Override
+   public String getDescriptionUsage() {
+      return "Generates task metrics specific to LBA artifacts.";
+   }
+
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       try {
-         monitor.beginTask("TaskMetrics", 5);
+         monitor.beginTask("TaskMetrics", 100);
          metrics.clear();
+         charBak = new CharBackedInputStream();
+         excelWriter = new ExcelXmlWriter(charBak.getWriter());
 
-         IArtifactType artifctType = variableMap.getArtifactType("Artifact Type");
+         //IArtifactType artifctType = variableMap.getArtifactType("Artifact Type");
 
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(artifctType, AtsUtil.getAtsBranch());
-         Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelationTypes.SmaToTask_Task);
-         for (Artifact artifact : tasks) {
-            if (artifact.isOfType(AtsArtifactTypes.Task)) {
-               tallyState((TaskArtifact) artifact);
+         List<Artifact> versionArtifacts = versionsWidget.getSelected();
+
+         if (!versionArtifacts.isEmpty()) {
+            Set<Artifact> teamWorkflows =
+               RelationManager.getRelatedArtifacts(versionArtifacts, 1,
+                  AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
+
+            int counter = 0;
+            for (Artifact art : teamWorkflows) {
+               monitor.worked(1 / teamWorkflows.size());
+               counter++;
+               if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+
+                  TeamWorkFlowArtifact workflow = (TeamWorkFlowArtifact) art;
+
+                  if (teamCombo.getSelectedTeamDefintions().contains(workflow.getTeamDefinition())) {
+                     for (Artifact task : workflow.getTaskArtifacts()) {
+                        tallyState((TaskArtifact) task);
+                     }
+                  }
+
+               }
             }
          }
 
          writeSummary();
 
          excelWriter.endWorkbook();
-         IFile iFile = OseeData.getIFile("Task_Metrics.xml");
+
+         IFile iFile = OseeData.getIFile("Task_Metrics_" + Lib.getDateTimeString() + ".xml");
+
          AIFile.writeToFile(iFile, charBak);
          Program.launch(iFile.getLocation().toOSString());
       } catch (Exception ex) {
@@ -104,6 +142,7 @@ public class TaskMetrics extends AbstractBlam {
          int percentComplete = state.getPercentComplete();
 
          if (percentComplete == 100) {
+            task.getCompletedDate();
             String resolution = task.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
 
             if (resolution.equals("Complete")) {
@@ -129,12 +168,58 @@ public class TaskMetrics extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Artifact Type\" keyedBranch=\"Common\"/></xWidgets>";
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      String widgetLabel = xWidget.getLabel();
+
+      if (widgetLabel.equals("Version(s)")) {
+         versionsWidget = (XArtifactMultiChoiceSelect) xWidget;
+      }
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      if (xWidget instanceof XHyperlabelTeamDefinitionSelection) {
+         teamCombo = (XHyperlabelTeamDefinitionSelection) xWidget;
+         teamCombo.addXModifiedListener(new TeamSelectedListener());
+      }
+   }
+
+   @Override
+   public String getXWidgetsXml() throws OseeCoreException {
+      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), AtsPlugin.PLUGIN_ID);
    }
 
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS.Report");
+   }
+
+   private class TeamSelectedListener implements XModifiedListener {
+      @Override
+      public void widgetModified(XWidget widget) {
+
+         Collection<Artifact> versions = new HashSet<Artifact>();
+
+         versionsWidget.setSelectableItems(Collections.<Artifact> emptyList());
+
+         for (TeamDefinitionArtifact teamDef : teamCombo.getSelectedTeamDefintions()) {
+            TeamDefinitionArtifact teamDefinitionHoldingVersions;
+            try {
+
+               teamDefinitionHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
+
+               if (teamDefinitionHoldingVersions != null) {
+                  versions.addAll(teamDefinitionHoldingVersions.getVersionsArtifacts());
+               }
+
+            } catch (OseeCoreException ex) {
+               OseeLog.log(TaskMetrics.class, Level.SEVERE, ex.toString());
+            }
+         }
+
+         if (!versions.isEmpty()) {
+            versionsWidget.setSelectableItems(versions);
+         }
+      }
    }
 }

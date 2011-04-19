@@ -87,11 +87,14 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       Bundle bundle = Platform.getBundle(nameOfBundle);
 
       String contents = null;
+      InputStream inStream = null;
       try {
-         InputStream inStream = bundle.getEntry(file).openStream();
+         inStream = bundle.getEntry(file).openStream();
          contents = Lib.inputStreamToString(inStream);
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         Lib.close(inStream);
       }
 
       return contents;
