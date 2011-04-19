@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -59,7 +57,7 @@ public class ArtifactPurgeTest extends AbstractPurgeTest {
       }
 
       // Count rows and check that increased
-      DbUtil.getTableRowCounts(postCreateArtifactsCount, getTables());
+      DbTestUtil.getTableRowCounts(postCreateArtifactsCount, getTables());
       TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
 
       new PurgeArtifacts(softArts).execute();

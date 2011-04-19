@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeAttribute;
+import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -60,7 +60,7 @@ public class AttributePurgeTest extends AbstractPurgeTest {
       }
 
       // Count rows and check that increased
-      DbUtil.getTableRowCounts(postCreateArtifactsCount, tables);
+      DbTestUtil.getTableRowCounts(postCreateArtifactsCount, tables);
       TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
 
       Set<Attribute<?>> attributesToPurge = new HashSet<Attribute<?>>();

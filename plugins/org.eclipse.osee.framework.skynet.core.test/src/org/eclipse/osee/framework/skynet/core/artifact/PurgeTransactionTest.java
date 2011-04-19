@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertEquals;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -27,9 +25,9 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -76,7 +74,7 @@ public class PurgeTransactionTest {
    }
 
    private void createArtifacts() throws Exception {
-      DbUtil.getTableRowCounts(preCreateCount, tables);
+      DbTestUtil.getTableRowCounts(preCreateCount, tables);
       createTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       softArts =
          FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
@@ -89,7 +87,7 @@ public class PurgeTransactionTest {
    }
 
    private void modifyArtifacts() throws Exception {
-      DbUtil.getTableRowCounts(preModifyCount, tables);
+      DbTestUtil.getTableRowCounts(preModifyCount, tables);
       modifyTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
@@ -103,7 +101,7 @@ public class PurgeTransactionTest {
       IOperation operation =
          new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), true, transactionId);
       Asserts.testOperation(operation, IStatus.OK);
-      DbUtil.getTableRowCounts(dbCount, tables);
+      DbTestUtil.getTableRowCounts(dbCount, tables);
    }
 
    private int getCurrentRows() throws OseeCoreException {

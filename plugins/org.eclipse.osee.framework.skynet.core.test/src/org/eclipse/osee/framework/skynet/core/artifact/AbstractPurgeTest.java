@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -83,12 +83,12 @@ public abstract class AbstractPurgeTest {
 
    protected void getPreTableCount() throws OseeCoreException {
       // Count rows in tables prior to purge
-      DbUtil.getTableRowCounts(preCreateArtifactsCount, getTables());
+      DbTestUtil.getTableRowCounts(preCreateArtifactsCount, getTables());
    }
 
    protected void getPostTableCount() throws OseeCoreException {
       // Count rows and check that same as when began
-      DbUtil.getTableRowCounts(postPurgeCount, getTables());
+      DbTestUtil.getTableRowCounts(postPurgeCount, getTables());
    }
 
    public abstract void runPurgeOperation() throws OseeCoreException;

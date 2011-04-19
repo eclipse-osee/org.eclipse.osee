@@ -11,21 +11,19 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -56,7 +54,7 @@ public class BranchPurgeTest {
    @org.junit.Test
    public void testPurgeBranch() throws Exception {
       // Count rows in tables prior to purge
-      DbUtil.getTableRowCounts(preCreateCount, tables);
+      DbTestUtil.getTableRowCounts(preCreateCount, tables);
 
       // create a new working branch
       Branch branch =
@@ -82,7 +80,7 @@ public class BranchPurgeTest {
       }
 
       // Count rows and check that increased
-      DbUtil.getTableRowCounts(postCreateBranchCount, tables);
+      DbTestUtil.getTableRowCounts(postCreateBranchCount, tables);
       TestUtil.checkThatIncreased(preCreateCount, postCreateBranchCount);
 
       // Purge branch
@@ -91,7 +89,7 @@ public class BranchPurgeTest {
       TestUtil.sleep(4000);
 
       // Count rows and check that same as when began
-      DbUtil.getTableRowCounts(postPurgeCount, tables);
+      DbTestUtil.getTableRowCounts(postPurgeCount, tables);
       // TODO looks like artifacts are not being removed when purge a branch
       TestUtil.checkThatEqual(preCreateCount, postPurgeCount);
 

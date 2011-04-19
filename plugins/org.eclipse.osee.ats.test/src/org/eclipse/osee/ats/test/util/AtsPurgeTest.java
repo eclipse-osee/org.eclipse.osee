@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Before;
@@ -57,7 +57,7 @@ public class AtsPurgeTest {
    @org.junit.Test
    public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
-      DbUtil.getTableRowCounts(preCreateActionCount, tables);
+      DbTestUtil.getTableRowCounts(preCreateActionCount, tables);
 
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
@@ -91,14 +91,14 @@ public class AtsPurgeTest {
       }
 
       // Count rows and check that increased
-      DbUtil.getTableRowCounts(postCreateActionCount, tables);
+      DbTestUtil.getTableRowCounts(postCreateActionCount, tables);
       TestUtil.checkThatIncreased(preCreateActionCount, postCreateActionCount);
 
       // Purge Action, Workflow and Tasks
       new PurgeArtifacts(artsToPurge).execute();
 
       // Count rows and check that same as when began
-      DbUtil.getTableRowCounts(postPurgeCount, tables);
+      DbTestUtil.getTableRowCounts(postPurgeCount, tables);
       TestUtil.checkThatEqual(preCreateActionCount, postPurgeCount);
    }
 
