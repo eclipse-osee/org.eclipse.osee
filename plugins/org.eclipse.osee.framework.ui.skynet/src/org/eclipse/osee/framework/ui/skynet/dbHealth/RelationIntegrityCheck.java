@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
 
 /**
  * {@link RelationIntegrityCheckTest }
- *
+ * 
  * @author Theron Virgin
  */
 public class RelationIntegrityCheck extends DatabaseHealthOperation {
@@ -49,7 +49,6 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
       @Override
       public String toString() {
-         //System.out.println("gamma_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
          return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", gammaId, relTransId, relLinkId, branchId, aArtId,
             bArtId, transIdForArtifactDeletion, commitTrans, modType);
       }
