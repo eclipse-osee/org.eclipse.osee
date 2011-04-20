@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.test.blam;
+package org.eclipse.osee.define.test.blam.operation;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

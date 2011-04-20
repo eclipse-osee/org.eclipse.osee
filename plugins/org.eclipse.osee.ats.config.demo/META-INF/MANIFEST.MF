@@ -17,7 +17,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.ui.forms
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.core.client,
+Import-Package: org.eclipse.core.filesystem,
+ org.eclipse.osee.define.traceability,
+ org.eclipse.osee.define.traceability.data,
+ org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,

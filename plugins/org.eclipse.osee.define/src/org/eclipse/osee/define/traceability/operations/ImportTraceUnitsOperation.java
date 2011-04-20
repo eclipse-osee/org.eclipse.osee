@@ -8,24 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.traceability.jobs;
+package org.eclipse.osee.define.traceability.operations;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.define.traceability.operations.TraceUnitFromResourceOperation;
+import org.eclipse.nebula.widgets.xviewer.Activator;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ImportTraceUnitsJob extends Job {
+public class ImportTraceUnitsOperation extends AbstractOperation {
    private final Branch importToBranch;
    private final boolean isRecursive;
    private final boolean isPersistChanges;
@@ -33,8 +31,8 @@ public class ImportTraceUnitsJob extends Job {
    private final URI source;
    private final String[] traceTypeIds;
 
-   public ImportTraceUnitsJob(String jobName, Branch importToBranch, URI source, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, String... traceHandlerIds) {
-      super(jobName);
+   public ImportTraceUnitsOperation(String jobName, Branch importToBranch, URI source, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, String... traceHandlerIds) {
+      super("ImportTraceUnitsOperation", Activator.PLUGIN_ID);
       this.importToBranch = importToBranch;
       this.source = source;
       this.isRecursive = isRecursive;
@@ -49,26 +47,14 @@ public class ImportTraceUnitsJob extends Job {
    }
 
    @Override
-   protected IStatus run(IProgressMonitor monitor) {
-      IStatus status = Status.CANCEL_STATUS;
-      try {
-         monitor.beginTask(getName(), Integer.MAX_VALUE);
-         if (isPersistChanges) {
-            TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
-               importToBranch, traceTypeIds);
-         } else {
-            TraceUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
-               traceTypeIds);
-         }
-         if (!monitor.isCanceled()) {
-            status = Status.OK_STATUS;
-         }
-      } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, "", ex);
-      } finally {
-         monitor.done();
+   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+      if (isPersistChanges) {
+         TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
+            importToBranch, traceTypeIds);
+      } else {
+         TraceUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
+            traceTypeIds);
       }
-      return status;
    }
 
 }

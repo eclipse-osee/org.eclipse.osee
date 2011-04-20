@@ -60,5 +60,14 @@
             class="org.eclipse.osee.ats.config.demo.artifact.DemoArtifactImageProvider">
       </ArtifactImageProvider>
    </extension>
+   <extension
+         id="DemoTraceUnitHandler"
+         name="DemoTraceUnitHandler"
+         point="org.eclipse.osee.define.TraceUnitHandler">
+      <TraceUnitHandler
+            TraceUnitParser="org.eclipse.osee.ats.config.demo.traceability.DemoTraceParser"
+            TraceUnitResourceLocator="org.eclipse.osee.ats.config.demo.traceability.DemoTraceUnitResourceLocator">
+      </TraceUnitHandler>
+   </extension>
 
 </plugin>

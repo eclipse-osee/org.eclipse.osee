@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.test.blam;
+package org.eclipse.osee.define.test.blam.operation;
 
 import java.io.StringWriter;
 import java.util.ArrayList;

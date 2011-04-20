@@ -11,15 +11,15 @@
 package org.eclipse.osee.define.traceability.importer;
 
 import java.net.URI;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.define.traceability.jobs.ImportTraceUnitsJob;
+import org.eclipse.osee.define.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -46,10 +46,10 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
          String[] traceUnitHandlerIds = page.getTraceUnitHandlerIds();
          boolean fileWithMultiPaths = page.isFileContainingMultiplePaths();
 
-         Job job =
-            new ImportTraceUnitsJob("Import Trace Units", importToBranch, source, isRecursive, isPersistChanges,
+         IOperation op =
+            new ImportTraceUnitsOperation("Import Trace Units", importToBranch, source, isRecursive, isPersistChanges,
                fileWithMultiPaths, traceUnitHandlerIds);
-         Jobs.startJob(job, true);
+         Operations.executeAsJob(op, true);
          page.saveWidgetValues();
       } catch (Exception ex) {
          OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Import Trace Unit Error", ex);
