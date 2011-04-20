@@ -32,13 +32,8 @@ import org.eclipse.swt.program.Program;
  */
 public class XResultPage {
 
-   private String title;
-   private String html;
-   private final String id; // Used to add and remove to menu item
-   private String manipulatedHtml;
-   private Set<Manipulations> manipulations = new HashSet<Manipulations>();
-   private int numWarnings = Integer.MAX_VALUE;
-   private int numErrors = Integer.MAX_VALUE;
+   private final int EQUAL = 0;
+
    public static enum Manipulations {
       NONE, // 
       HRID_CMD_HYPER,
@@ -58,6 +53,17 @@ public class XResultPage {
       BOTH
    };
 
+   private String title;
+   private String html;
+   private final String id; // Used to add and remove to menu item
+   private String manipulatedHtml;
+   private Set<Manipulations> manipulations = new HashSet<Manipulations>();
+   private int numWarnings = Integer.MAX_VALUE;
+   private int numErrors = Integer.MAX_VALUE;
+
+   private final Pattern ATS_WPN_PAGE_HSRID_REGEX = Pattern.compile("([A-Z]{3,4})=(.*?):([A-Z0-9]{5})");
+   private final Pattern ATS_HSRID_REGEX = Pattern.compile("([A-Z]{3,4})=([A-Z0-9]{5})");
+
    /**
     * Create and display result page with all Manipulations available
     */
@@ -74,50 +80,49 @@ public class XResultPage {
     * @param manipulations manipulations desired for the input HTML
     */
    public XResultPage(String title, String html, Manipulations... manipulations) {
-      super();
       this.title = title;
       this.html = html;
       id = GUID.create();
       for (Manipulations man : manipulations) {
-         if (man == Manipulations.ALL) {
-            this.manipulations.add(Manipulations.HRID_CMD_HYPER);
-            this.manipulations.add(Manipulations.ERROR_RED);
-            this.manipulations.add(Manipulations.CONVERT_NEWLINES);
-            this.manipulations.add(Manipulations.WARNING_YELLOW);
-         } else if (man == Manipulations.HTML_MANIPULATIONS) {
-            this.manipulations.add(Manipulations.HRID_CMD_HYPER);
-            this.manipulations.add(Manipulations.ERROR_RED);
-            this.manipulations.add(Manipulations.WARNING_YELLOW);
-         } else {
-            this.manipulations.add(man);
+         switch (man) {
+            case ALL:
+               this.manipulations.add(Manipulations.HRID_CMD_HYPER);
+               this.manipulations.add(Manipulations.ERROR_RED);
+               this.manipulations.add(Manipulations.CONVERT_NEWLINES);
+               this.manipulations.add(Manipulations.WARNING_YELLOW);
+               break;
+            case HTML_MANIPULATIONS:
+               this.manipulations.add(Manipulations.HRID_CMD_HYPER);
+               this.manipulations.add(Manipulations.ERROR_RED);
+               this.manipulations.add(Manipulations.WARNING_YELLOW);
+               break;
+            default:
+               this.manipulations.add(man);
+               break;
          }
       }
    }
 
    public int getNumWarnings() {
-      if (numWarnings != Integer.MAX_VALUE) {
+      if (numWarnings == Integer.MAX_VALUE) {
+         if (manipulations.contains(Manipulations.WARNING_YELLOW)) {
+            numWarnings = Lib.numOccurances(html, "Warning:");
+         }
+         return 0;
+      } else {
          return numWarnings;
       }
-      if (manipulations.contains(Manipulations.WARNING_YELLOW)) {
-         numWarnings = Lib.numOccurances(html, "Warning:");
-      }
-      if (numWarnings == Integer.MAX_VALUE) {
-         return 0;
-      }
-      return numWarnings;
    }
 
    public int getNumErrors() {
-      if (numErrors != Integer.MAX_VALUE) {
+      if (numErrors == Integer.MAX_VALUE) {
+         if (manipulations.contains(Manipulations.WARNING_YELLOW)) {
+            numErrors = Lib.numOccurances(html, "Error:");
+         }
+         return 0;
+      } else {
          return numErrors;
       }
-      if (manipulations.contains(Manipulations.ERROR_RED)) {
-         numErrors = Lib.numOccurances(html, "Error:");
-      }
-      if (numErrors == Integer.MAX_VALUE) {
-         return 0;
-      }
-      return numErrors;
    }
 
    public static String getCmdValue(HyperType type, String hrid) {
@@ -159,7 +164,7 @@ public class XResultPage {
                // System.err.println("match " + line);
                // Match getText so it doesn't mess up replace
                // Retireve all ATS=WPN_PAGE:HSRID matches
-               Matcher m = Pattern.compile("([A-Z]{3,4})=(.*?):([A-Z0-9]{5})").matcher(str);
+               Matcher m = ATS_WPN_PAGE_HSRID_REGEX.matcher(str);
                Set<String> cmdNameHrids = new HashSet<String>();
                while (m.find()) {
                   cmdNameHrids.add(m.group());
@@ -184,7 +189,7 @@ public class XResultPage {
                   }
                }
                // Retrieve all ATS=HRSID matches and replace with hyperlinking
-               m = Pattern.compile("([A-Z]{3,4})=([A-Z0-9]{5})").matcher(str);
+               m = ATS_HSRID_REGEX.matcher(str);
                Set<String> cmdHrids = new HashSet<String>();
                while (m.find()) {
                   cmdHrids.add(m.group());
