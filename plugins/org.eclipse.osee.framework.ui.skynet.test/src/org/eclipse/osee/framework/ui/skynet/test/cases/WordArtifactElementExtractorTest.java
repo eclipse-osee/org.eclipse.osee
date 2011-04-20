@@ -174,7 +174,10 @@ public class WordArtifactElementExtractorTest {
       multiArtifactTest(artElements, testText);
    }
 
-   @org.junit.Test
+   /**
+    * Test should fail if running time exceeds 10 seconds
+    */
+   @org.junit.Test(timeout = 10000)
    public void testPerformance() throws Exception {
       WordImageArtifactElementExtractor artifactElementExtractor =
          new WordImageArtifactElementExtractor(getDocument(getExpectedContent(PERFORMANCE_TEST)));
