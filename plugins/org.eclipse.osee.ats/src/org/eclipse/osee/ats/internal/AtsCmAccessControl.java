@@ -13,12 +13,14 @@ package org.eclipse.osee.ats.internal;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * ATS currently only provides access control for artifacts on a Team Workflow's working branch.
@@ -39,8 +41,13 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
    @Override
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
       boolean result = false;
-      if (object != null && object instanceof Branch) {
-         result = atsBranchAccessManager.isApplicable((Branch) object);
+      if (object != null) {
+         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtil.getAtsBranchToken())) {
+            result = atsBranchAccessManager.isApplicable(((Artifact) object).getBranch());
+         }
+         if (object instanceof Branch) {
+            result = atsBranchAccessManager.isApplicable((Branch) object);
+         }
       }
       return result;
    }
@@ -52,7 +59,10 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
 
    @Override
    public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
-      if (object != null && object instanceof Branch) {
+      if (object != null) {
+         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtil.getAtsBranchToken())) {
+            return atsBranchAccessManager.getContextId(((Artifact) object).getBranch());
+         }
          if (object instanceof Branch) {
             return atsBranchAccessManager.getContextId((Branch) object);
          }
