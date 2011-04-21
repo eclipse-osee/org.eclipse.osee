@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
@@ -99,10 +100,10 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
       boolean notMatched = !permissionStatus.matched();
 
       if (notMatched) {
-         OseeLog.log(
-            SkynetGuiPlugin.class,
-            level,
-            "No Permission Error: \n" + Collections.toString(",", objects) + " does not have permissions because: " + permissionStatus.getReason());
+         OseeLog.log(SkynetGuiPlugin.class, level, String.format(
+            "Access Denied - [%s] does not have valid permission to edit item(s) : [%s]%s", user,
+            Collections.toString("; ", objects),
+            (Strings.isValid(permissionStatus.getReason()) ? "\n reason:[%s]" : "")));
       }
       return notMatched;
    }
