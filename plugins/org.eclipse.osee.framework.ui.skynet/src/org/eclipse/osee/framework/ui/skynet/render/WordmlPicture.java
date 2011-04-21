@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
@@ -34,8 +34,16 @@ public class WordmlPicture {
       findBinaryData(document);
    }
 
+   private String getArtifactGuid() throws OseeStateException {
+      String id = "";
+
+      if (attribute != null) {
+         id = attribute.getArtifact().getGuid();
+      }
+      return id;
+   }
+
    private void findBinaryData(String document) throws OseeCoreException {
-      Artifact artifact = attribute.getArtifact();
       if (pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains("<v:rect ") || pictureDefinition.contains("<v:line ")) {
          //ignore this case
       } else if (pictureDefinition.contains("<w:binData")) {
@@ -50,8 +58,8 @@ public class WordmlPicture {
                System.out.println(pictureDefinition);
             }
             throw new OseeCoreException(
-               "This document is missing Image Data.  The Image can not be checked for modifications. Artifact [%s] with id [%s]",
-               artifact, artifact.getGuid());
+               "This document is missing Image Data.  The Image can not be checked for modifications. Artifact with id [%s]",
+               getArtifactGuid());
          }
          binaryData =
             document.substring(document.indexOf(">", dataIndex) + 1,
@@ -62,8 +70,8 @@ public class WordmlPicture {
                System.out.println(pictureDefinition);
             }
             throw new OseeCoreException(
-               "This document contains undefined picture data.  Please report details to OSEE development team. Artifact [%s] with id [%s]",
-               artifact, artifact.getGuid());
+               "This document contains undefined picture data.  Please report details to OSEE development team. Artifact with id [%s]",
+               getArtifactGuid());
          }
       }
    }

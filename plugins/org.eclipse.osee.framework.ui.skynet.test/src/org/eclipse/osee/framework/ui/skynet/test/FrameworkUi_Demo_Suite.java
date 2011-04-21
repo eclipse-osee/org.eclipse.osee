@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
 import org.eclipse.osee.framework.ui.skynet.test.importer.ImportTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.renderer.RendererTestSuite;
+import org.eclipse.osee.framework.ui.skynet.test.renderer.imageDetection.WordImageCompareTest;
 import org.eclipse.osee.framework.ui.skynet.test.util.enumeration.AbstractEnumerationTest;
 import org.eclipse.osee.framework.ui.skynet.test.widgets.workflow.WorkPageAdapterTest;
 import org.eclipse.osee.framework.ui.skynet.test.render.word.WordTestSuite;
@@ -37,6 +38,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   WordImageCompareTest.class,
 BlamXWidgetTest.class,
    EmailGroupsBlamTest.class,
    ResultsEditorConverterTest.class,
