@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +42,11 @@ public final class Operations {
     */
    public static void checkForErrorStatus(IStatus status) throws OseeCoreException {
       if (status.getSeverity() == IStatus.ERROR) {
-         OseeExceptions.wrapAndThrow(status.getException());
+         if (status.getException() != null) {
+            OseeExceptions.wrapAndThrow(status.getException());
+         } else {
+            throw new OseeStateException(status.getMessage());
+         }
       }
    }
 
