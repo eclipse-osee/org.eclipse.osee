@@ -26,29 +26,42 @@ public class BranchFilter {
    private IBasicArtifact<?> associatedArtifact;
 
    private BranchState[] branchStates;
-
    private BranchState[] negatedBranchStates;
+   private BranchType[] negatedBranchTypes;
 
+   /**
+    * @param archivedState filter will only match branches that are of one of the specified states
+    * @param branchTypes filter will only match branches that are of one of the specified types
+    */
    public BranchFilter(BranchArchivedState archivedState, BranchType... branchTypes) {
-      super();
       this.archivedState = archivedState;
       this.branchTypes = branchTypes;
+   }
+
+   /**
+    * @param branchTypes filter will only match branches that are of one of the specified types
+    */
+   public BranchFilter(BranchType... branchTypes) {
+      this(BranchArchivedState.ALL, branchTypes);
    }
 
    public boolean matches(Branch branch) throws OseeCoreException {
       if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact.getArtId())) {
          return false;
       }
-      if (archivedState != null && !branch.getArchiveState().matches(archivedState)) {
+      if (!branch.getArchiveState().matches(archivedState)) {
          return false;
       }
-      if (branchTypes != null && !branch.getBranchType().isOfType(branchTypes)) {
+      if (branchTypes.length > 0 && !branch.getBranchType().isOfType(branchTypes)) {
          return false;
       }
       if (branchStates != null && !branch.getBranchState().matches(branchStates)) {
          return false;
       }
       if (negatedBranchStates != null && branch.getBranchState().matches(negatedBranchStates)) {
+         return false;
+      }
+      if (negatedBranchTypes != null && branch.getBranchType().isOfType(negatedBranchTypes)) {
          return false;
       }
       return true;
@@ -64,5 +77,9 @@ public class BranchFilter {
 
    public void setNegatedBranchStates(BranchState... negatedBranchStates) {
       this.negatedBranchStates = negatedBranchStates;
+   }
+
+   public void setNegatedBranchTypes(BranchType... negatedBranchTypes) {
+      this.negatedBranchTypes = negatedBranchTypes;
    }
 }

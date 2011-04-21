@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
@@ -483,7 +482,7 @@ public class AtsBranchManager {
     * branches also).
     */
    public Branch getWorkingBranchExcludeStates(BranchState... negatedBranchStates) throws OseeCoreException {
-      BranchFilter branchFilter = new BranchFilter(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
+      BranchFilter branchFilter = new BranchFilter(BranchType.WORKING, BranchType.BASELINE);
       branchFilter.setNegatedBranchStates(negatedBranchStates);
       branchFilter.setAssociatedArtifact(teamArt);
 
