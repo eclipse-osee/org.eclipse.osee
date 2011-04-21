@@ -45,8 +45,8 @@ public class SkynetTransactionAccessHandler extends SkynetTransactionHandler {
                      IStatus.ERROR,
                      Activator.PLUGIN_ID,
                      String.format(
-                        "Access Denied - does not have valid permission to edit this artifact\n itemsToPersist:[%s]\n accessContext:[%s]",
-                        getItemsToPersist(), accessContext));
+                        "Access Denied - [%s] does not have valid permission to edit this artifact\n itemsToPersist:[%s]\n accessContext:[%s]",
+                        getUserArtifact(), getItemsToPersist(), accessContext));
             }
          } catch (OseeCoreException ex) {
             status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access check", ex);
