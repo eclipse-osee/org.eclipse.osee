@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.test.jobs;
+package org.eclipse.osee.define.jobs;
 
 import java.io.File;
 import java.net.URI;

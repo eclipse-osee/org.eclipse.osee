@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
 import org.eclipse.osee.coverage.test.Coverage_Db_Suite;
-import org.eclipse.osee.define.test.AllDefineTestSuite;
+import org.eclipse.osee.define.AllDefineTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.messaging.event.res.test.AllEventResTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Demo_Suite;

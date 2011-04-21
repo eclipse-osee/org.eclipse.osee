@@ -7,8 +7,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.define
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4
-Export-Package: org.eclipse.osee.define.test,
- org.eclipse.osee.define.test.blam.operation
+Export-Package: org.eclipse.osee.define,
+ org.eclipse.osee.define.blam.operation
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.skynet.core.artifact,
