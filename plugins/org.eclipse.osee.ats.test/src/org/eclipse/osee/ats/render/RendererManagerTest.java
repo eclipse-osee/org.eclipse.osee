@@ -1,0 +1,180 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.render;
+
+import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.Both;
+import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.Off;
+import static org.eclipse.osee.ats.render.RendererManagerTest.DefaultOption.On;
+import static org.eclipse.osee.ats.util.AtsArtifactTypes.Action;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheet;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedureWML;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DIFF;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.MERGE;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+import java.util.ArrayList;
+import java.util.Collection;
+import org.eclipse.osee.ats.editor.AtsWorkflowRenderer;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.TisRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+/**
+ * Test Case for {@link RendererManager}
+ * 
+ * @author Ryan D. Brooks
+ */
+@RunWith(Parameterized.class)
+public class RendererManagerTest {
+   enum DefaultOption {
+      On,
+      Off,
+      Both
+   };
+
+   private final IArtifactType artifactType;
+   private final PresentationType presentationType;
+   private final Class<? extends IRenderer> clazz;
+   private final DefaultOption defaultOption;
+
+   public RendererManagerTest(IArtifactType artifactType, PresentationType presentationType, Class<? extends IRenderer> clazz, DefaultOption defaultOption) {
+      this.artifactType = artifactType;
+      this.presentationType = presentationType;
+      this.clazz = clazz;
+      this.defaultOption = defaultOption;
+   }
+
+   @Test
+   public void testGetBestRenderer() throws OseeCoreException {
+      Artifact artifact = new Artifact(null, null, null, BranchManager.getCommonBranch(), artifactType);
+
+      if (defaultOption == Both) {
+         testGetBestRendererWithOption(artifact, On);
+         testGetBestRendererWithOption(artifact, Off);
+      } else {
+         testGetBestRendererWithOption(artifact, defaultOption);
+      }
+   }
+
+   private void testGetBestRendererWithOption(Artifact artifact, DefaultOption option) throws OseeCoreException {
+      UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY, String.valueOf(option == On));
+
+      if (clazz == null) {
+         try {
+            IRenderer renderer = computeRenderer(artifact);
+            String message =
+               String.format(
+                  "Expected an OseeStateException to be thrown since no render should be applicable in this case.\nRenderer: [%s]",
+                  renderer);
+            Assert.fail(message);
+         } catch (OseeStateException ex) {
+            Assert.assertEquals(String.format("No renderer configured for %s of %s", presentationType, artifact),
+               ex.getMessage());
+         }
+      } else {
+         IRenderer renderer = computeRenderer(artifact);
+         Assert.assertEquals(clazz, renderer.getClass());
+      }
+   }
+
+   private IRenderer computeRenderer(Artifact artifact) throws OseeCoreException {
+      IRenderer renderer = RendererManager.getBestRenderer(presentationType, artifact);
+      Assert.assertNotNull(renderer);
+      return renderer;
+   }
+
+   @Parameters
+   public static Collection<Object[]> getData() {
+      Collection<Object[]> data = new ArrayList<Object[]>();
+
+      addTest(data, Folder, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, Folder, SPECIALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, Folder, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, Folder, PREVIEW, WordTemplateRenderer.class, Both);
+      addTest(data, Folder, MERGE, null, Both);
+      addTest(data, Folder, DEFAULT_OPEN, DefaultArtifactRenderer.class, Off);
+      addTest(data, Folder, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, Folder, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
+
+      addTest(data, SoftwareRequirement, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, SoftwareRequirement, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, PREVIEW, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, MERGE, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, DEFAULT_OPEN, WordTemplateRenderer.class, Off);
+      addTest(data, SoftwareRequirement, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, SoftwareRequirement, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
+
+      addTest(data, Action, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, Action, SPECIALIZED_EDIT, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, DIFF, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, PREVIEW, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, MERGE, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, Off);
+      addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, On);
+      addTest(data, Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
+
+      addTest(data, TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, TestProcedureWML, SPECIALIZED_EDIT, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, DIFF, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, PREVIEW, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, MERGE, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, DEFAULT_OPEN, WholeWordRenderer.class, Off);
+      addTest(data, TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, TestProcedureWML, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
+
+      addTest(data, GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, GeneralDocument, SPECIALIZED_EDIT, NativeRenderer.class, Both);
+      addTest(data, GeneralDocument, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, GeneralDocument, PREVIEW, NativeRenderer.class, Both);
+      addTest(data, GeneralDocument, MERGE, null, Both);
+      addTest(data, GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off);
+      addTest(data, GeneralDocument, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, GeneralDocument, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
+
+      addTest(data, TestInformationSheet, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, TestInformationSheet, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both);
+      addTest(data, TestInformationSheet, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, TestInformationSheet, PREVIEW, TisRenderer.class, Both);
+      addTest(data, TestInformationSheet, MERGE, WordTemplateRenderer.class, Both);
+      addTest(data, TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off);
+      addTest(data, TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, TestInformationSheet, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
+
+      return data;
+   }
+
+   private static void addTest(Collection<Object[]> data, Object... params) {
+      data.add(params);
+   }
+}
