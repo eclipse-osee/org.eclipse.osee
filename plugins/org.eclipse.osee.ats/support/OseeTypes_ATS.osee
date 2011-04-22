@@ -23,7 +23,7 @@ artifactType "ats.Review" extends "ats.State Machine" {
    attribute "ats.Review Blocks"
 }
 
-artifactType "PeerToPeer Review" extends "ats.Review" {
+artifactType "ats.Review Review" extends "ats.Review" {
    guid "AAMFDhh_300dpgmNtRAA"
    attribute "ats.Location"
    attribute "ats.Review Defect"
