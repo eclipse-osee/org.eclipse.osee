@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -132,7 +133,8 @@ public class SMADetailsSection extends SectionPart {
          Collection<? extends IAccessContextId> ids = null;
          if (workingBranch == null) {
             try {
-               ids = accessControl.getContextId(UserManager.getUser(), workflow);
+               // get what would be if branch created
+               ids = new AtsBranchAccessManager().internalGetFromWorkflow(workflow);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
