@@ -54,6 +54,7 @@ public final class BranchOperation extends AbstractOperation {
          log(subOp.getName());
          doSubWork(subOp, monitor, 0);
       }
+      log("Branch Operation Completed.");
    }
 
    private List<Branch> order(Collection<Branch> branches) throws OseeCoreException {

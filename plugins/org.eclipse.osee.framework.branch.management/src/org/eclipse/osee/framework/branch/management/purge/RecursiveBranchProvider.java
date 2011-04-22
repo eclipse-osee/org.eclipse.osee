@@ -34,8 +34,11 @@ public final class RecursiveBranchProvider implements IBranchesProvider {
    public Collection<Branch> getBranches() throws OseeCoreException {
       Conditions.checkNotNull(parentBranch, "seed");
       Set<Branch> children = new HashSet<Branch>();
+
       parentBranch.getChildBranches(children, true, filter);
-      children.add(parentBranch);
+      if (filter.matches(parentBranch)) {
+         children.add(parentBranch);
+      }
       return children;
    }
 }
