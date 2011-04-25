@@ -119,7 +119,7 @@ public final class AtsWorkDefinitionSheetProviders {
          Artifact artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.WorkFlowDefinition, sheet.getLegacyOverrideId(),
                AtsUtil.getAtsBranch());
-         if (artifact != null) {
+         if (artifact == null) {
             throw new OseeStateException(
                "WorkDefinitionSheet [%s] has legacy id that does not match an existing WorkFlowDefinition name", sheet);
          }
