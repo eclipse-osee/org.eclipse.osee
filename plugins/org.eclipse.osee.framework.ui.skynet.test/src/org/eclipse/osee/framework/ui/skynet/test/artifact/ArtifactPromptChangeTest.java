@@ -85,6 +85,12 @@ public class ArtifactPromptChangeTest {
       public IAccessControlService getAccessService() {
          return null;
       }
+
+      @Override
+      public PermissionStatus hasArtifactRelatablePermission(Collection<? extends IBasicArtifact<?>> artifacts, Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
+         return new PermissionStatus();
+      }
+
    }
 
    private static class MockPromptFactory implements IPromptFactory {

@@ -11,12 +11,16 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,6 +30,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImporter;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
@@ -77,29 +82,42 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       }
    }
 
+   private boolean checkArtifactPermissions(Artifact toCheck) {
+      boolean toReturn = false;
+      try {
+         IAccessPolicyHandlerService policy = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
+         PermissionStatus status =
+            policy.hasArtifactRelatablePermission(Collections.singleton(toCheck),
+               Collections.singleton(CoreRelationTypes.Default_Hierarchical__Child), PermissionEnum.WRITE, Level.FINE);
+         toReturn = status.matched();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return toReturn;
+   }
+
    private boolean isValidForArtifactDrop(DropTargetEvent event) {
+      boolean valid = false;
       if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
+
+         Artifact parentArtifact = getSelectedArtifact(event);
          ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+         if (parentArtifact != null && artData.getSource().equals(viewId)) {
+            valid = checkArtifactPermissions(parentArtifact);
 
-         if (artData != null) {
-
-            Artifact parentArtifact = getSelectedArtifact(event);
-            if (parentArtifact != null && artData.getSource().equals(viewId)) {
-               Artifact[] artifactsToBeRelated = artData.getArtifacts();
-
-               for (Artifact artifact : artifactsToBeRelated) {
-                  if (parentArtifact.equals(artifact)) {
-                     return false;
+            // if valid, check artifacts that are moving
+            if (valid) {
+               Artifact[] toCheck = artData.getArtifacts();
+               for (Artifact art : toCheck) {
+                  valid = (art.equals(parentArtifact) ? false : checkArtifactPermissions(art));
+                  if (!valid) {
+                     break;
                   }
                }
-               return true;
             }
-         } else {
-            // only occurs during the drag on some platforms
-            return true;
          }
       }
-      return false;
+      return valid;
    }
 
    private Artifact getSelectedArtifact(DropTargetEvent event) {
@@ -162,4 +180,5 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          }
       }
    }
+
 }

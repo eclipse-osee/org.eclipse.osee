@@ -31,5 +31,7 @@ public interface IAccessPolicyHandlerService {
 
    PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException;
 
+   PermissionStatus hasArtifactRelatablePermission(Collection<? extends IBasicArtifact<?>> artifacts, Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException;
+
    IAccessControlService getAccessService();
 }

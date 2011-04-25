@@ -87,7 +87,6 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
       if (relationTypeSides != null) {
          for (IRelationTypeSide relationTypeSide : relationTypeSides) {
             query.relationTypeMatches(permission, relationTypeSide, permissionStatus);
-
             if (printErrorMessage(relationTypeSides, permissionStatus, level)) {
                break;
             }
@@ -128,5 +127,14 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
    @Override
    public IAccessControlService getAccessService() {
       return accessControlService;
+   }
+
+   @Override
+   public PermissionStatus hasArtifactRelatablePermission(Collection<? extends IBasicArtifact<?>> artifacts, Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
+      PermissionStatus status = hasRelationSidePermission(relationTypeSides, permission, level);
+      if (status.matched()) {
+         status = hasArtifactPermission(artifacts, permission, level);
+      }
+      return status;
    }
 }

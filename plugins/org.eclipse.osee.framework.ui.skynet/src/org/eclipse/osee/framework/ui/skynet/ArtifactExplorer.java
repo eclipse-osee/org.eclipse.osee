@@ -614,17 +614,16 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               ArtifactTypeFilteredTreeEntryDialog dialog = getDialog();
                Artifact parent = getParent();
 
                IAccessPolicyHandlerService policy = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
 
                PermissionStatus status =
-                  policy.hasRelationSidePermission(
+                  policy.hasArtifactRelatablePermission(Collections.singleton(parent),
                      java.util.Collections.singleton(CoreRelationTypes.Default_Hierarchical__Child),
                      PermissionEnum.WRITE, Level.FINE);
-
                if (status.matched()) {
+                  ArtifactTypeFilteredTreeEntryDialog dialog = getDialog();
                   if (dialog.open() == Window.OK) {
                      IArtifactType type = dialog.getSelection();
                      String name = dialog.getEntryValue();
@@ -639,6 +638,11 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      treeViewer.refresh();
                      treeViewer.refresh(false);
                   }
+               } else {
+                  MessageDialog.openError(
+                     AWorkbench.getActiveShell(),
+                     "New Child Error",
+                     "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -1496,4 +1500,5 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
       return null;
    }
+
 }
