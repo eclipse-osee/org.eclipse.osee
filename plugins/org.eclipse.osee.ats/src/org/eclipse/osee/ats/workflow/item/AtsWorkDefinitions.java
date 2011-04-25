@@ -114,8 +114,8 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentAWA());
          if (Strings.isValid(workFlowDefId)) {
             match.setWorkFlowDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId));
-            match.getTrace().add(
-               (String.format("from provider [%s] for id [%s] ", provider.getClass().getSimpleName(), workFlowDefId)));
+            match.addTrace((String.format("from provider [%s] for id [%s] ", provider.getClass().getSimpleName(),
+               workFlowDefId)));
             break;
          }
       }
@@ -127,7 +127,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          // Else If parent SMA has a related task definition workflow id specified, use it
          WorkFlowDefinitionMatch match2 = getWorkFlowDefinitionFromArtifact(taskArt.getParentAWA());
          if (match2.isMatched()) {
-            match2.getTrace().add(String.format("from task parent SMA [%s]", taskArt.getParentAWA()));
+            match2.addTrace(String.format("from task parent SMA [%s]", taskArt.getParentAWA()));
             match = match2;
          }
       }

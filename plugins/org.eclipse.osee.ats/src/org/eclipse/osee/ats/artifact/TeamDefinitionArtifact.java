@@ -228,8 +228,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       }
       WorkDefinitionMatch match = WorkDefinitionFactory.getWorkDefinition(workFlowArt.getName());
       if (match.isMatched()) {
-         match.getTrace().add(
-            String.format("from teamDef [%s] related work child [%s]", teamDef, workFlowArt.getName()));
+         match.addTrace(String.format("from teamDef [%s] related work child [%s]", teamDef, workFlowArt.getName()));
       }
       return match;
    }

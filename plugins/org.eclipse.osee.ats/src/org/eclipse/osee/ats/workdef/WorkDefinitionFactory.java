@@ -136,8 +136,8 @@ public class WorkDefinitionFactory {
             WorkDefinition workDef = AtsWorkDefinitionProvider.get().getWorkFlowDefinition(translatedId);
             if (workDef != null) {
                match.setWorkDefinition(workDef);
-               match.getTrace().add(
-                  (String.format("from DSL provider loaded id [%s] and override translated Id [%s]", id, translatedId)));
+               match.addTrace((String.format("from DSL provider loaded id [%s] and override translated Id [%s]", id,
+                  translatedId)));
             }
          }
          // Otherwise, just translate legacy WorkFlowDefinition from artifact
@@ -147,8 +147,7 @@ public class WorkDefinitionFactory {
                WorkDefinition workDef = translateToWorkDefinition(workFlowDef);
                if (workDef != null) {
                   match.setWorkDefinition(workDef);
-                  match.getTrace().add(
-                     String.format("from legacy WorkFlowDefinition [%s] translated for id [%s]", id, id));
+                  match.addTrace(String.format("from legacy WorkFlowDefinition [%s] translated for id [%s]", id, id));
                }
             }
          }
@@ -163,10 +162,9 @@ public class WorkDefinitionFactory {
                   WorkDefinition workDef = translateToWorkDefinition(workFlowDef);
                   if (workDef != null) {
                      match.setWorkDefinition(workDef);
-                     match.getTrace().add(
-                        String.format(
-                           "from legacy WorkFlowDefinition [%s] translated for id [%s] falling back to reverse id [%s]",
-                           id, id, reverseId));
+                     match.addTrace(String.format(
+                        "from legacy WorkFlowDefinition [%s] translated for id [%s] falling back to reverse id [%s]",
+                        id, id, reverseId));
                   }
                }
             }
@@ -408,9 +406,8 @@ public class WorkDefinitionFactory {
          String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId);
          WorkDefinitionMatch match = getWorkDefinition(translatedId);
          if (match.isMatched()) {
-            match.getTrace().add(
-               String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact, workFlowDefId,
-                  translatedId));
+            match.addTrace(String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact,
+               workFlowDefId, translatedId));
             return match;
          }
       }
@@ -424,9 +421,8 @@ public class WorkDefinitionFactory {
          String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId);
          WorkDefinitionMatch match = getWorkDefinition(translatedId);
          if (match.isMatched()) {
-            match.getTrace().add(
-               String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact, workFlowDefId,
-                  translatedId));
+            match.addTrace(String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact,
+               workFlowDefId, translatedId));
             return match;
          }
       }
@@ -455,9 +451,8 @@ public class WorkDefinitionFactory {
          if (Strings.isValid(workFlowDefId)) {
             String translatedId = getOverrideWorkDefId(workFlowDefId);
             match = WorkDefinitionFactory.getWorkDefinition(translatedId);
-            match.getTrace().add(
-               (String.format("from provider [%s] for id [%s] and override translated Id [%s]",
-                  provider.getClass().getSimpleName(), workFlowDefId, translatedId)));
+            match.addTrace((String.format("from provider [%s] for id [%s] and override translated Id [%s]",
+               provider.getClass().getSimpleName(), workFlowDefId, translatedId)));
             break;
          }
       }
@@ -469,7 +464,7 @@ public class WorkDefinitionFactory {
          // Else If parent SMA has a related task definition workflow id specified, use it
          WorkDefinitionMatch match2 = getTaskWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentAWA());
          if (match2.isMatched()) {
-            match2.getTrace().add(String.format("from task parent SMA [%s]", taskArt.getParentAWA()));
+            match2.addTrace(String.format("from task parent SMA [%s]", taskArt.getParentAWA()));
             match = match2;
          }
       }
@@ -482,9 +477,8 @@ public class WorkDefinitionFactory {
          String translatedId = getOverrideWorkDefId(AtsWorkDefinitions.TaskWorkflowDefinitionId);
          match = getWorkDefinition(translatedId);
          if (match.isMatched()) {
-            match.getTrace().add(
-               String.format("default TaskWorkflowDefinition ID [%s] and override translated Id [%s]",
-                  AtsWorkDefinitions.TaskWorkflowDefinitionId, translatedId));
+            match.addTrace(String.format("default TaskWorkflowDefinition ID [%s] and override translated Id [%s]",
+               AtsWorkDefinitions.TaskWorkflowDefinitionId, translatedId));
          }
       }
       return match;
@@ -519,17 +513,16 @@ public class WorkDefinitionFactory {
                   }
                } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                   match = getWorkDefinition(getOverrideWorkDefId(AtsWorkDefinitions.GoalWorkflowDefinitionId));
-                  match.getTrace().add(
-                     String.format("Override translated from id [%s]", AtsWorkDefinitions.GoalWorkflowDefinitionId));
+                  match.addTrace(String.format("Override translated from id [%s]",
+                     AtsWorkDefinitions.GoalWorkflowDefinitionId));
                } else if (artifact instanceof PeerToPeerReviewArtifact) {
                   match = getWorkDefinition(getOverrideWorkDefId(AtsWorkDefinitions.PeerToPeerWorkflowDefinitionId));
-                  match.getTrace().add(
-                     String.format("Override translated from id [%s]",
-                        AtsWorkDefinitions.PeerToPeerWorkflowDefinitionId));
+                  match.addTrace(String.format("Override translated from id [%s]",
+                     AtsWorkDefinitions.PeerToPeerWorkflowDefinitionId));
                } else if (artifact instanceof DecisionReviewArtifact) {
                   match = getWorkDefinition(getOverrideWorkDefId(AtsWorkDefinitions.DecisionWorkflowDefinitionId));
-                  match.getTrace().add(
-                     String.format("Override translated from id [%s]", AtsWorkDefinitions.DecisionWorkflowDefinitionId));
+                  match.addTrace(String.format("Override translated from id [%s]",
+                     AtsWorkDefinitions.DecisionWorkflowDefinitionId));
                }
             }
          }
@@ -537,12 +530,18 @@ public class WorkDefinitionFactory {
       return match;
    }
 
+   public static Set<String> errorDisplayed = new HashSet<String>();
+
    public static String getOverrideWorkDefId(String id) {
       // Don't override if no providers available (dsl plugins not released)
       String overrideId = AtsWorkDefinitionSheetProviders.getOverrideId(id);
       if (Strings.isValid(overrideId)) {
-         OseeLog.log(AtsPlugin.class, Level.INFO,
-            String.format("Override WorkDefinition [%s] with [%s]", id, overrideId));
+         // Only display this override once in log
+         if (!errorDisplayed.contains(overrideId)) {
+            OseeLog.log(AtsPlugin.class, Level.INFO,
+               String.format("Override WorkDefinition [%s] with [%s]", id, overrideId));
+            errorDisplayed.add(overrideId);
+         }
          return overrideId;
       }
       return id;

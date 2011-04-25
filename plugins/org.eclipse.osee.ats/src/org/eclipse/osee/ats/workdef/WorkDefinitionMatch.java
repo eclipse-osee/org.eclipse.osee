@@ -33,6 +33,12 @@ public class WorkDefinitionMatch {
       this.workDefinition = WorkDefinition;
    }
 
+   public void addTrace(String traceStr) {
+      if (trace.size() == 0 || (trace.size() >= 1 && !trace.get(trace.size() - 1).equals(traceStr))) {
+         trace.add(traceStr);
+      }
+   }
+
    public List<String> getTrace() {
       return trace;
    }
