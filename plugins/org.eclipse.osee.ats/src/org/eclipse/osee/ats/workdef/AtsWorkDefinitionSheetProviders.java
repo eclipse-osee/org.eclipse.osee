@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.workdef;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,7 +78,12 @@ public final class AtsWorkDefinitionSheetProviders {
       if (folder.isDirty()) {
          folder.persist(transaction);
       }
-      for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
+      importWorkDefinitionSheets(resultData, onlyWorkDefinitions, transaction, folder, getWorkDefinitionSheets());
+      transaction.execute();
+   }
+
+   public static void importWorkDefinitionSheets(XResultData resultData, boolean onlyWorkDefinitions, SkynetTransaction transaction, Artifact folder, Collection<WorkDefinitionSheet> sheets) throws OseeCoreException {
+      for (WorkDefinitionSheet sheet : sheets) {
          if (isValidSheet(sheet)) {
             String logStr = String.format("Importing ATS sheet [%s]", sheet.getName());
             System.out.println(logStr);
@@ -90,7 +96,6 @@ public final class AtsWorkDefinitionSheetProviders {
             }
          }
       }
-      transaction.execute();
    }
 
    public static void importAIsAndTeamsToDatabase() throws OseeCoreException {
@@ -124,7 +129,7 @@ public final class AtsWorkDefinitionSheetProviders {
       return true;
    }
 
-   private static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
+   public static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<WorkDefinitionSheet>();
       sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, "osee.ats.teamWorkflow", getSupportFile(
          AtsPlugin.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
