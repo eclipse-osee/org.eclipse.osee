@@ -1105,7 +1105,9 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
             copyMenuItem.setEnabled(permiss.isReadPermission());
-            pasteMenuItem.setEnabled(permiss.isWritePermission());
+            boolean clipboardEmpty = artifactClipboard.isEmpty();
+            pasteMenuItem.setEnabled(permiss.isWritePermission() && !clipboardEmpty);
+            pasteSpecialMenuItem.setEnabled(permiss.isWritePermission() && !clipboardEmpty);
             renameArtifactMenuItem.setEnabled(permiss.isWritePermission());
 
          } catch (Exception ex) {
