@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -113,6 +114,10 @@ public final class StatementUtil {
             } else if (dataValue instanceof ByteArrayInputStream) {
                preparedStatement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
                   ((ByteArrayInputStream) dataValue).available());
+            } else if (dataValue instanceof Date) {
+               java.util.Date javaDate = (java.util.Date) dataValue;
+               java.sql.Timestamp date = new java.sql.Timestamp(javaDate.getTime());
+               preparedStatement.setTimestamp(preparedIndex, date);
             } else {
                preparedStatement.setObject(preparedIndex, dataValue);
             }
