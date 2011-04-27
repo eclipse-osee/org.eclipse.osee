@@ -49,11 +49,12 @@ public class JavaJdtTipsAndTricks {
          // How: Remove IllegalStateException > type "ISE" > Ctrl-Space
       } catch (IllegalStateException ex) {
          // JavaTip 05) Customize content assist categories - Ctrl-Space, Space, Space
-         // How: type "sy" - Ctrl-Space - Space - Space cycles through assist categories
+         // How: uncomment lines below - Ctrl-Space - Space - Space after both - cycles through assist categories
          // Configure through Preferences - Editor - Content Assist - Advanced preference page.  
+         // sy
+         //                  Button
       }
    }
-
    // JavaTip 05a) Create Get/Set from field 
    // How: select "fName" > Right-click > Source > Generate Getter and Setter
    // JavaTip 05b) Create Get/Set using Ctrl-1
@@ -64,7 +65,7 @@ public class JavaJdtTipsAndTricks {
    // How: Right-click > Source > Generate hashCode() and equals(). 
 
    // JavaTip 07) Use templates to create methods
-   // How: type private > Ctrl-Space > private_method > type "String" > tab > Type name > 
+   // How: type "private" > Ctrl-Space > private_method > type "String" > tab > Type name > 
    // tab > type parameters > tab > start coding
 
    // JavaTip 08) Create your own templates
@@ -87,7 +88,8 @@ public class JavaJdtTipsAndTricks {
    }
 
    // JavaTip 12) Content Assist - Override a method
-   // How: type "toSt" > Ctrl-Space > select "toString() override"
+   // How: uncomment below > Ctrl-Space after toSt > select "toString() override"
+   //   toSt
 
    public String renameInFile(String thisStr) {
       if (thisStr.contains("that")) {
@@ -110,7 +112,7 @@ public class JavaJdtTipsAndTricks {
 
    public void quickFixAssignments() {
       // JavaTip 16) Quick-Fix - assignments
-      // How: place cursor on getBackground > Ctrl+1 > assign to new local/field
+      // How: place cursor on getIt > Ctrl+1 > assign to new local/field
       getIt("now");
    }
 
@@ -155,7 +157,8 @@ public class JavaJdtTipsAndTricks {
       // How: select "a ? 1: 2" below > Ctrl+1 > Replace conditional with if/else
       // JavaTip 25) Quick-Fix - if/else to conditional
       // How: perform previous java tip > select conditional below > Ctrl+1 > Replace with conditional
-      int value = a ? 1 : 2;
+      int value;
+      value = a ? 1 : 2;
 
       // JavaTip 26) Quick-Fix - Convert string to StringBuffer
       // How: select '"Hello " + name' below > Ctrl+1 > Use StringBuffer for concatenation
@@ -163,7 +166,7 @@ public class JavaJdtTipsAndTricks {
       String str = "Hello " + name;
 
       // JavaTip 27) Quick-Fix - extract local
-      // How: select "getBackgroundImage()" below > Ctrl+1 > Extract to local
+      // How: select "getIt()" below > Ctrl+1 > Extract to local
       foo(getIt("hellow"));
 
       // JavaTip 28) Quick-Fix - extract to method
@@ -197,7 +200,7 @@ public class JavaJdtTipsAndTricks {
       }
 
       // JavaTip 32) Structured Selections - selecting contents of block
-      // How: hold shift > double-click next to open or closing bracket
+      // How: double-click next to open or closing bracket
       // Usage: visualize whole block or cut/paste
       if (fooStr.length() > 4 && myValue == 2) {
          fooStr.replace("3", "23");
@@ -230,7 +233,7 @@ public class JavaJdtTipsAndTricks {
 
    // JavaTip 38) Debugging by writing breakpoint conditions to the console
    // How: add breakpoint on if line > right-click on breakpoint > properties > conditional
-   // check suspend when true > add "system.out.println ("value is "+x); return false"
+   // check suspend when true > add "System.out.println ("value is "+x); return false"
    // Usage: Allows compiled print statements that will disappear when breakpoint goes away
    //    and can add/remove without file re-compiling during debug session
    public void loopIt() {
@@ -239,6 +242,7 @@ public class JavaJdtTipsAndTricks {
             getIt(String.valueOf(x));
          }
       }
+      System.out.println("loopIt Complete");
    }
 
    // JavaTip 39) Debugging - Stepping into selections
