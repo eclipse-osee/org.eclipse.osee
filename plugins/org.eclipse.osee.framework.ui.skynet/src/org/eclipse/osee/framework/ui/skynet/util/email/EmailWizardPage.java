@@ -127,6 +127,7 @@ public class EmailWizardPage extends WizardPage {
                   return;
                }
                toList.add(sel.getFirstElement());
+               getContainer().updateButtons();
             }
          }
       });
@@ -171,6 +172,7 @@ public class EmailWizardPage extends WizardPage {
                   toList.add(obj);
                }
             }
+            getContainer().updateButtons();
          }
       });
 
@@ -203,6 +205,7 @@ public class EmailWizardPage extends WizardPage {
                   ccList.add(obj);
                }
             }
+            getContainer().updateButtons();
          }
       });
 
@@ -232,6 +235,7 @@ public class EmailWizardPage extends WizardPage {
                   bccList.add(obj);
                }
             }
+            getContainer().updateButtons();
          }
       });
 
@@ -297,6 +301,7 @@ public class EmailWizardPage extends WizardPage {
             for (Object obj : sel.toList()) {
                fListView.remove(obj);
             }
+            getContainer().updateButtons();
          }
       });
 
@@ -378,4 +383,15 @@ public class EmailWizardPage extends WizardPage {
          // do nothing
       }
    }
+
+   @Override
+   public boolean isPageComplete() {
+      try {
+         return getToAddresses().length > 0 || getCcAddresses().length > 0;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
 }
