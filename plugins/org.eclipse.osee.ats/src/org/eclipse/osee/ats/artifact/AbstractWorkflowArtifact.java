@@ -696,6 +696,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getLog().getStateEvent(LogType.StateComplete, state.getPageName());
    }
 
+   public LogItem getStateCancelledData(IWorkPage state) throws OseeCoreException {
+      return getLog().getStateEvent(LogType.StateCancelled, state.getPageName());
+   }
+
    public LogItem getStateStartedData(IWorkPage state) throws OseeCoreException {
       return getLog().getStateEvent(LogType.StateEntered, state.getPageName());
    }

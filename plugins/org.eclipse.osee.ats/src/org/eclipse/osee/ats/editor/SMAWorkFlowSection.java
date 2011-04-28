@@ -355,9 +355,15 @@ public class SMAWorkFlowSection extends SectionPart {
             sb.append(sma.getStateMgr().getAssigneesStr(80));
          }
       } else {
-         LogItem item = sma.getStateCompletedData(statePage);
-         if (item != null) {
+         LogItem item = null;
+         if (sma.isCancelled() && sma.getCancelledFromState().equals(statePage.getPageName())) {
+            item = sma.getStateCancelledData(statePage);
+            sb.append(" - State Cancelled ");
+         } else {
+            item = sma.getStateCompletedData(statePage);
             sb.append(" - State Completed ");
+         }
+         if (item != null) {
             sb.append(item.getDate(DateUtil.MMDDYYHHMM));
             sb.append(" by ");
             sb.append(item.getUser().getName());
