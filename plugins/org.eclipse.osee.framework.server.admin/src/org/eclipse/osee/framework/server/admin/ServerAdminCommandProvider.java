@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.MutexSchedulingRule;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
@@ -109,6 +110,11 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(new TxCurrentsAndModTypesCommand(logger, archived), false);
    }
 
+   public Job _tx_prune(CommandInterpreter ci) {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      return Operations.executeAsJob(new PurgeUnusedBackingDataAndTransactions(logger), false);
+   }
+
    public Job _duplicate_attr(CommandInterpreter ci) throws OseeDataStoreException {
       OperationLogger logger = new CommandInterpreterLogger(ci);
       return Operations.executeAsJob(new DuplicateAttributesOperation(logger, Activator.getOseeDatabaseService()),
@@ -132,6 +138,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        finish_partial_archives - move txs addressing to osee_txs_archived for archived branches\n");
       sb.append("        consolidate_artifact_versions - migrate to 0.9.2 database schema\n");
       sb.append("        tx_currents [true | false] - detect and fix tx current and mod types inconsistencies on archive txs or txs\n");
+      sb.append("        tx_prune - Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions\n");
       sb.append("        duplicate_attr - detect and fix duplicate attributes\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
