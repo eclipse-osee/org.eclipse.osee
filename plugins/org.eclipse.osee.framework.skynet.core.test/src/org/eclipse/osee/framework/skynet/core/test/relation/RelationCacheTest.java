@@ -13,7 +13,10 @@ package org.eclipse.osee.framework.skynet.core.test.relation;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
@@ -23,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.RelationCache;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.test.mocks.DataFactory;
+import org.eclipse.osee.framework.skynet.core.test.mocks.MockLinker;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -328,6 +332,35 @@ public class RelationCacheTest {
 
       actual = relCache.getLoadedRelation(relType2, artfact2.getArtId(), 551, artfact2.getBranch());
       Assert.assertEquals(link23, actual);
+   }
+
+   @Test
+   public void testDeCache() throws OseeCoreException {
+      RelationCache relCache = new RelationCache();
+      Branch testBranch = MockDataFactory.createBranch(777);
+      testBranch.setId(777);
+
+      IArtifact artifactA = createArtifact(54, testBranch);
+      IArtifact artifactB = createArtifact(55, testBranch);
+
+      RelationType type =
+         new RelationType(GUID.create(), "type name", artifactA.getName(), artifactB.getName(),
+            CoreArtifactTypes.Artifact, CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
+      RelationLink link =
+         new RelationLink(new MockLinker("linker"), artifactA.getArtId(), artifactB.getArtId(), testBranch, type, 77,
+            88, "", ModificationType.MODIFIED);
+      relCache.cache(artifactA, link);
+      relCache.cache(artifactB, link);
+
+      List<RelationLink> artARels = relCache.getAll(artifactA);
+      Assert.assertEquals(1, artARels.size());
+
+      relCache.deCache(artifactA);
+      artARels = relCache.getAll(artifactA);
+      Assert.assertEquals(0, artARels.size());
+
+      List<RelationLink> artBRels = relCache.getAll(artifactB);
+      Assert.assertEquals(0, artBRels.size());
    }
 
    private static void checkAssumptions() {

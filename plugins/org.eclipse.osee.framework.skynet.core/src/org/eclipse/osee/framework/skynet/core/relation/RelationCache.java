@@ -57,7 +57,31 @@ public class RelationCache {
    }
 
    public void deCache(IArtifact artifact) {
-      relationsByType.removeValues(getKey(artifact));
+      ArtifactKey key = getKey(artifact);
+      Collection<List<RelationLink>> removeValues = relationsByType.removeValues(key);
+
+      if (removeValues != null) {
+         for (List<RelationLink> relations : removeValues) {
+            for (RelationLink relation : relations) {
+               removeSingleRelation(artifact, relation);
+            }
+         }
+      }
+   }
+
+   private void removeSingleRelation(IArtifact otherArtifact, RelationLink relation) {
+      int artifactId;
+      if (otherArtifact.getArtId() == relation.getBArtifactId()) {
+         artifactId = relation.getAArtifactId();
+      } else {
+         artifactId = relation.getBArtifactId();
+      }
+
+      ArtifactKey key = getKey(artifactId, relation.getBranch().getId());
+      List<RelationLink> relations = relationsByType.get(key, relation.getRelationType());
+      if (relations != null) {
+         relations.remove(relation);
+      }
    }
 
    public void cache(IArtifact artifact, RelationLink newRelation) {
