@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.purge;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -33,8 +34,15 @@ public final class DeletedBranchProvider implements IBranchesProvider {
    @Override
    public Collection<Branch> getBranches() throws OseeCoreException {
       Conditions.checkNotNull(branchCache, "branchCache");
-      BranchFilter branchFilter = new BranchFilter(BranchArchivedState.ARCHIVED, BranchType.WORKING);
+      BranchFilter branchFilter = new BranchFilter(BranchArchivedState.ARCHIVED);
       branchFilter.setBranchStates(BranchState.DELETED);
-      return branchCache.getBranches(branchFilter);
+      branchFilter.setNegatedBranchTypes(BranchType.BASELINE);
+
+      List<Branch> branches = branchCache.getBranches(branchFilter);
+      for (Branch branch : branches) {
+         branch.getChildBranches(branches, true, branchFilter);
+      }
+
+      return branches;
    }
 }
