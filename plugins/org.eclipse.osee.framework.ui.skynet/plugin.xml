@@ -1505,18 +1505,6 @@
   <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAddressingData">
-     </DatabaseHealthOperation>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAddressingData">
-     </DatabaseHealthOperation>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck">
      </DatabaseHealthOperation>
   </extension>
