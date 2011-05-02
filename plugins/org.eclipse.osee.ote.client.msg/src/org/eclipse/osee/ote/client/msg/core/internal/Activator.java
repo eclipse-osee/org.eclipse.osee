@@ -46,7 +46,7 @@ public class Activator extends Plugin {
       plugin = this;
 
       ExtensionDefinedObjects<IMessageDbFactory> definedObjects =
-         new ExtensionDefinedObjects<IMessageDbFactory>("org.wclipse.see.ote.client.msg.dBFactory", "DatabaseFactory",
+         new ExtensionDefinedObjects<IMessageDbFactory>("org.eclipse.osee.ote.client.msg.dBFactory", "DatabaseFactory",
             "className");
       try {
          List<IMessageDbFactory> providers = definedObjects.getObjects();
@@ -55,7 +55,7 @@ public class Activator extends Plugin {
             tracker.open(true);
          } else {
             OseeLog.log(Activator.class, Level.WARNING,
-               "no message db factory found. Message Subscription Service not started");
+               "No message database factory (IMessageDbFactory) found. Message Subscription Service not started");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "failed to process message database factory extensions", ex);
@@ -73,7 +73,7 @@ public class Activator extends Plugin {
 
    /**
     * Returns the shared instance
-    * 
+    *
     * @return the shared instance
     */
    public static Activator getDefault() {
