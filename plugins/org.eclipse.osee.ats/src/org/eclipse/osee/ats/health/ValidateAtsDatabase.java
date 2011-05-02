@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -330,7 +331,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             try {
                Collection<Branch> branchesCommittedTo = mgr.getBranchesCommittedTo();
                Branch workingBranch = mgr.getWorkingBranch();
-               if (workingBranch != null && branchesCommittedTo.size() > 0 && workingBranch.getBranchState() != BranchState.COMMITTED) {
+               if (workingBranch != null && branchesCommittedTo.size() > 0 && workingBranch.getBranchState() != BranchState.COMMITTED && workingBranch.getBranchType() != BranchType.BASELINE) {
                   testNameToResultsMap.put(
                      "testAtsBranchManagerA",
                      "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
