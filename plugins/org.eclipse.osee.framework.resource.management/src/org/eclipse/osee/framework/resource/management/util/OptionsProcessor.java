@@ -102,7 +102,7 @@ public class OptionsProcessor {
    public IResource getResourceToServer() throws OseeCoreException {
       IResource toReturn = null;
       File testFile = new File(this.fileuri);
-      if (testFile != null && testFile.exists() != false) {
+      if (testFile.exists()) {
          boolean isCompressed = Lib.isCompressed(testFile);
          toReturn = new Resource(this.fileuri, isCompressed);
 

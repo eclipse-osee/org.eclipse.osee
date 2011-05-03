@@ -64,7 +64,7 @@ public class ExchangeIntegrity {
             processor.parse(importFile,
                new CheckSaxHandler(services, exportDataProvider, checkList, importFile.getFileName()));
          }
-         checkExchange = exportDataProvider.getExportedDataRoot() + ".verify.xml";
+         checkExchange = exportDataProvider.getExportedDataRoot().getName() + ".verify.xml";
          writeResults(exportDataProvider.getExportedDataRoot().getParentFile(), checkExchange, checkList);
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

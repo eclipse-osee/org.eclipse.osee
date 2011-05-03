@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.branch.management.exchange;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,7 +49,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    private final List<Integer> branchIds;
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
-   private final List<String> errorList;
+   private final List<String> errorList = new CopyOnWriteArrayList<String>();
    private final OseeServices oseeServices;
 
    ExportController(OseeServices oseeServices, String exportName, Options options, List<Integer> branchIds) throws OseeCoreException {
@@ -61,11 +61,14 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       this.options = options;
       this.branchIds = branchIds;
       this.joinQuery = JoinUtility.createExportImportJoinQuery();
-      this.errorList = Collections.synchronizedList(new ArrayList<String>());
    }
 
    public String getExchangeFileName() {
       return this.exportName;
+   }
+
+   public void setExchangeFileName(String value) {
+      this.exportName = value;
    }
 
    public int getExportQueryId() {
@@ -90,8 +93,8 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
 
    private File createTempFolder() {
       File rootDirectory = ExchangeUtil.createTempFolder();
-      if (!Strings.isValid(exportName)) {
-         this.exportName = rootDirectory.getName();
+      if (!Strings.isValid(getExchangeFileName())) {
+         setExchangeFileName(rootDirectory.getName());
       }
       return rootDirectory;
    }
@@ -136,7 +139,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
 
          sendTasksToExecutor(taskList, tempFolder);
 
-         String zipTargetName = exportName + ZIP_EXTENSION;
+         String zipTargetName = getExchangeFileName() + ZIP_EXTENSION;
          if (this.options.getBoolean(ExportOptions.COMPRESS.name())) {
             OseeLog.log(this.getClass(), Level.INFO,
                String.format("Compressing Branch Export Data - [%s]", zipTargetName));
@@ -146,9 +149,12 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
                String.format("Deleting Branch Export Temp Folder - [%s]", tempFolder));
             Lib.deleteDir(tempFolder);
          } else {
-            File target = new File(tempFolder.getParent(), exportName);
+            File target = new File(tempFolder.getParent(), getExchangeFileName());
             if (!target.equals(tempFolder)) {
-               tempFolder.renameTo(target);
+               if (!tempFolder.renameTo(target)) {
+                  OseeLog.format(this.getClass(), Level.INFO, "Unable to move [%s] to [%s]",
+                     tempFolder.getAbsolutePath(), target.getAbsolutePath());
+               }
             }
          }
       } catch (Exception ex) {
@@ -183,14 +189,14 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
 
       for (Future<?> future : futures) {
          future.get();
-         if (this.errorList.size() > 0) {
+         if (!this.errorList.isEmpty()) {
             throw new OseeCoreException(errorList.toString());
          }
       }
    }
 
    @Override
-   synchronized public void onException(String name, Throwable ex) {
+   public void onException(String name, Throwable ex) {
       errorList.add(Lib.exceptionToString(ex));
    }
 

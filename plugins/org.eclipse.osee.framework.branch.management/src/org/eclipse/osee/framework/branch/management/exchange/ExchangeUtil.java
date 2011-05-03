@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -55,6 +56,8 @@ public class ExchangeUtil {
    public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator, IResourceManager resourceManager) throws OseeCoreException {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
+      Conditions.checkExpressionFailOnTrue(!resourceManager.exists(locator), "Error locating [%s]",
+         locator.getLocation());
       IResource resource = resourceManager.acquire(locator, new Options());
       File source = new File(resource.getLocation());
       if (source.isFile()) {

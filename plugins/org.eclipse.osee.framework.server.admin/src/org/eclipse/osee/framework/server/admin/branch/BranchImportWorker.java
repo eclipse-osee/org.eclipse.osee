@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.branch;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,6 @@ import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
@@ -45,7 +43,7 @@ public class BranchImportWorker extends BaseServerCommand {
       int count = 0;
 
       List<Integer> branchIds = new ArrayList<Integer>();
-      List<File> importFiles = new ArrayList<File>();
+      List<String> importFiles = new ArrayList<String>();
       do {
          arg = getCommandInterpreter().nextArgument();
          if (isValidArg(arg)) {
@@ -68,7 +66,7 @@ public class BranchImportWorker extends BaseServerCommand {
                }
                count++;
             } else if (count == 0 && !arg.startsWith("-")) {
-               importFiles.add(new File(arg));
+               importFiles.add(arg);
             } else {
                branchIds.add(new Integer(arg));
             }
@@ -80,16 +78,16 @@ public class BranchImportWorker extends BaseServerCommand {
          throw new OseeArgumentException("Files to import were not specified");
       }
 
-      for (File file : importFiles) {
-         if (file == null || !file.exists() || !file.canRead()) {
-            throw new OseeArgumentException("File was not accessible: [%s]", file);
-         } else if (file.isFile() && !Lib.isCompressed(file)) {
-            throw new OseeArgumentException("Invalid File: [%s]", file);
-         }
-      }
+      //      for (File file : importFiles) {
+      //         if (file == null || !file.exists() || !file.canRead()) {
+      //            throw new OseeArgumentException("File was not accessible: [%s]", file);
+      //         } else if (file.isFile() && !Lib.isCompressed(file)) {
+      //            throw new OseeArgumentException("Invalid File: [%s]", file);
+      //         }
+      //      }
 
-      for (File fileToImport : importFiles) {
-         URI uri = new URI("exchange://" + fileToImport.toURI().toASCIIString());
+      for (String fileToImport : importFiles) {
+         URI uri = new URI("exchange://" + fileToImport);
          OperationReporter reporter = new CommandInterpreterReporter(getCommandInterpreter());
          Activator.getBranchExchange().importBranch(new ResourceLocator(uri), options, branchIds, reporter);
       }

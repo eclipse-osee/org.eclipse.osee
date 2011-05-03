@@ -54,7 +54,8 @@ public class ExchangeProvider implements IResourceProvider {
       if (!rawPath.startsWith("file:/")) {
          builder.append(RESOLVED_PATH);
          builder.append(rawPath);
-         toReturn = new File(builder.toString()).toURI();
+         File file = new File(builder.toString());
+         toReturn = file.toURI();
       } else {
          rawPath = rawPath.replaceAll(" ", "%20");
          try {

@@ -60,8 +60,8 @@ public class BranchManagementCommandProvider implements CommandProvider {
       sb.append("\n---OSEE Branch Commands---\n");
       sb.append("        export_branch <exchangeFileName> [-compress] [-minTx <value>] [-maxTx <value>] [-exclude_baseline_txs] [-includeArchivedBranches][<branchId>]+ - export a specific set of branches into an exchange zip file.\n");
       sb.append("        export_branch_stop - stop branch export\n");
-      sb.append("        import_branch <exchangeFilePath> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
-      sb.append("        check_exchange <exchangeFilePath> - checks an exchange file to ensure data integrity\n");
+      sb.append("        import_branch <exchangeFileName> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
+      sb.append("        check_exchange <exchangeFileName> - checks an exchange file to ensure data integrity\n");
       sb.append("        check_exchange_stop - stop exchange integrity check\n");
       sb.append("        purge_deleted_branches - permenatly remove all branches that are both archived and deleted \n");
 

@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.branch;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
@@ -38,12 +35,12 @@ public class ExchangeIntegrityWorker extends BaseServerCommand {
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String arg = null;
       int count = 0;
-      List<File> importFiles = new ArrayList<File>();
+      List<String> importFiles = new ArrayList<String>();
       do {
          arg = getCommandInterpreter().nextArgument();
          if (isValidArg(arg)) {
             if (count == 0 && !arg.startsWith("-")) {
-               importFiles.add(new File(arg));
+               importFiles.add(arg);
             }
             count++;
          }
@@ -53,16 +50,16 @@ public class ExchangeIntegrityWorker extends BaseServerCommand {
          throw new IllegalArgumentException("File to check was not specified");
       }
 
-      for (File file : importFiles) {
-         if (file == null || !file.exists() || !file.canRead()) {
-            throw new OseeArgumentException("File was not accessible: [%s]", file);
-         } else if (file.isFile() && !Lib.isCompressed(file)) {
-            throw new OseeArgumentException("Invalid File: [%s]", file);
-         }
-      }
+      //      for (File file : importFiles) {
+      //         if (file == null || !file.exists() || !file.canRead()) {
+      //            throw new OseeArgumentException("File was not accessible: [%s]", file);
+      //         } else if (file.isFile() && !Lib.isCompressed(file)) {
+      //            throw new OseeArgumentException("Invalid File: [%s]", file);
+      //         }
+      //      }
 
-      for (File fileToImport : importFiles) {
-         URI uri = new URI("exchange://" + fileToImport.toURI().toASCIIString());
+      for (String fileToImport : importFiles) {
+         URI uri = new URI("exchange://" + fileToImport);
          Activator.getBranchExchange().checkIntegrity(new ResourceLocator(uri));
       }
    }
