@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
 import org.eclipse.osee.ats.dsl.atsDsl.Composite;
@@ -352,7 +353,15 @@ public class ConvertAtsDslToWorkDefinition {
    private WidgetDefinition convertDslWidgetDef(WidgetDef dslWidgetDef, String SHEET_NAME) {
       WidgetDefinition widgetDef = new WidgetDefinition(Strings.unquote(dslWidgetDef.getName()));
       widgetDef.setAttributeName(dslWidgetDef.getAttributeName());
-      widgetDef.setDescription(dslWidgetDef.getDescription());
+      // Set description if model defines it
+      if (Strings.isValid(dslWidgetDef.getDescription())) {
+         widgetDef.setDescription(dslWidgetDef.getDescription());
+      }
+      // Else, set if AtsAttributeTypes defines it
+      else if (Strings.isValid(dslWidgetDef.getAttributeName()) && AtsAttributeTypes.getTypeByName(dslWidgetDef.getAttributeName()) != null && Strings.isValid(AtsAttributeTypes.getTypeByName(
+         dslWidgetDef.getAttributeName()).getDescription())) {
+         widgetDef.setDescription(AtsAttributeTypes.getTypeByName(dslWidgetDef.getAttributeName()).getDescription());
+      }
       if (Strings.isValid(dslWidgetDef.getXWidgetName())) {
          widgetDef.setXWidgetName(dslWidgetDef.getXWidgetName());
       } else {

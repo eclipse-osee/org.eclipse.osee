@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -20,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public final class AtsAttributeTypes {
 
+   public static final Map<String, IAttributeType> nameToTypeMap = new HashMap<String, IAttributeType>();
    // @formatter:off
    public static final IAttributeType Actionable = createType("AAMFEcvDtBiaJ3TMatAA", "Actionable", "True if item can have Action written against or assigned to.");
    public static final IAttributeType ActionableItem = createType("AAMFEdbcR2zpGzFOLOQA", "Actionable Item", "Actionable Items that are impacted by this change.");
@@ -117,10 +120,18 @@ public final class AtsAttributeTypes {
    // @formatter:on
 
    private static IAttributeType createType(String guid, String name) {
-      return TokenFactory.createAttributeType(guid, "ats." + name);
+      IAttributeType type = TokenFactory.createAttributeType(guid, "ats." + name);
+      nameToTypeMap.put(type.getName(), type);
+      return type;
    }
 
    private static IAttributeType createType(String guid, String name, String description) {
-      return TokenFactory.createAttributeType(guid, "ats." + name, description);
+      IAttributeType type = TokenFactory.createAttributeType(guid, "ats." + name, description);
+      nameToTypeMap.put(type.getName(), type);
+      return type;
+   }
+
+   public static IAttributeType getTypeByName(String name) {
+      return nameToTypeMap.get(name);
    }
 }

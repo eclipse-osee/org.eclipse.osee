@@ -21,11 +21,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -349,10 +351,18 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
+         String description = "";
          ATSAttributes atsAttribute = ATSAttributes.getAtsAttributeByStoreName(layoutData.getId());
          if (atsAttribute != null && Strings.isValid(atsAttribute.getDescription())) {
-            xWidget.setToolTip(atsAttribute.getDescription());
-            layoutData.setToolTip(atsAttribute.getDescription());
+            description = atsAttribute.getDescription();
+         }
+         IAttributeType type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
+         if (type != null && Strings.isValid(type.getDescription())) {
+            description = type.getDescription();
+         }
+         if (Strings.isValid(description)) {
+            xWidget.setToolTip(description);
+            layoutData.setToolTip(description);
          }
       }
       // Store workAttr in control for use by help
