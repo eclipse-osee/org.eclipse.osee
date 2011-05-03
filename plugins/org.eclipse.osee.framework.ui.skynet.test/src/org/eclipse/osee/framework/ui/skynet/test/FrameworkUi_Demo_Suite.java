@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordArtifactElementExtractorTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
+import org.eclipse.osee.framework.ui.skynet.test.dbHealth.RelationIntegrityCheckTest;
 import org.eclipse.osee.framework.ui.skynet.test.importer.ImportTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.renderer.RendererTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.renderer.imageDetection.WordImageCompareTest;
@@ -57,7 +58,8 @@ BlamXWidgetTest.class,
    WorkPageAdapterTest.class,
    AbstractEnumerationTest.class,
    ImportTestSuite.class,
-   WordTestSuite.class})
+   WordTestSuite.class,
+   RelationIntegrityCheckTest.class})
 /**
  * @author Donald G. Dunne
  */

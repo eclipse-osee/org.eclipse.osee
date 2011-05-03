@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.ui.skynet.dbHealth.LocalRelationLink;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck;
-import org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck.LocalRelationLink;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,13 +40,12 @@ import org.junit.Test;
  * {@link RelationIntegrityCheck}
  * <p>
  * Tests data integrity case where a new relation is persisted on a deleted artifact. Checks that if the situation
- * exists, applyFix can resolve the issue.
+ * exists and runs <code>applyFix()</code> to resolve the issue.
  * </p>
  *
  * @author Karol M. Wilk
  */
 public class RelationIntegrityCheckTest {
-
    private final DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map =
       new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
    private Branch parentBranch;
@@ -94,6 +93,7 @@ public class RelationIntegrityCheckTest {
             int b_sideArtifactId =     chStmt.getInt("b_art_id");
             int deletedTransaction =   chStmt.getInt("deleted_tran");
 
+            //note: aliased column only present in RelationIntegrityCheck.DELETED_ARTIFACTS_QUERY
             int commitTransId =        chStmt.getInt("commit_trans_art_id");
             int modType =              chStmt.getInt("creating_trans_mod_type");
             //@formatter:on
