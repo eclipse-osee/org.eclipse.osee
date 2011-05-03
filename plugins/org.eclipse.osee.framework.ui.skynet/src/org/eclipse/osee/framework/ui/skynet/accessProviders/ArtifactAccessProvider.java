@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.framework.ui.skynet.accessProviders;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,15 +25,16 @@ public class ArtifactAccessProvider {
    }
 
    public List<Artifact> getArtifactsWithPermission(IAccessPolicyHandlerService accessService, PermissionEnum permission, List<Artifact> artifacts) throws OseeCoreException {
-      Iterator<Artifact> artIterator = artifacts.iterator();
+      ArrayList<Artifact> toReturn = new ArrayList<Artifact>(artifacts);
+      Iterator<Artifact> artIterator = toReturn.iterator();
 
       // Remove Artifact that do not have write permission.
       while (artIterator.hasNext()) {
-         artIterator.next();
-         if (!accessService.hasArtifactPermission(artifacts, permission, Level.WARNING).matched()) {
+         Artifact cur = artIterator.next();
+         if (!accessService.hasArtifactPermission(Collections.singleton(cur), permission, Level.WARNING).matched()) {
             artIterator.remove();
          }
       }
-      return artifacts;
+      return toReturn;
    }
 }

@@ -77,7 +77,7 @@ public class CopyHandler extends AbstractHandler {
             } else if (!names.isEmpty() && !artifacts.isEmpty()) {
                try {
                   clipboard.setArtifactsToClipboard(new ArtifactAccessProvider(),
-                     SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifacts, names);
+                     SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifacts);
                } catch (OseeCoreException ex) {
                   throw new ExecutionException(ex.getLocalizedMessage());
                }

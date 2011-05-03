@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -22,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
 import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -40,7 +43,7 @@ public class ArtifactClipboard {
       this.viewId = viewId;
    }
 
-   public void setArtifactsToClipboard(ArtifactAccessProvider artifactAccessProvider, IAccessPolicyHandlerService policyHandlerService, List<Artifact> artifactTransferData, List<String> textTransferData) throws OseeCoreException {
+   public void setArtifactsToClipboard(ArtifactAccessProvider artifactAccessProvider, IAccessPolicyHandlerService policyHandlerService, List<Artifact> artifactTransferData) throws OseeCoreException {
       if (artifactTransferData == null) {
          throw new IllegalArgumentException("Artifacts can not be null for artifact copy.");
       }
@@ -48,20 +51,34 @@ public class ArtifactClipboard {
          throw new IllegalArgumentException("Artifacts can not be empty.");
       }
 
+      List<Artifact> authFailedList = new ArrayList<Artifact>(artifactTransferData);
       List<Artifact> authorizedArtifacts =
-         artifactAccessProvider.getArtifactsWithPermission(policyHandlerService, PermissionEnum.WRITE,
+         artifactAccessProvider.getArtifactsWithPermission(policyHandlerService, PermissionEnum.READ,
             artifactTransferData);
 
-      Artifact[] artifacts = authorizedArtifacts.toArray(new Artifact[authorizedArtifacts.size()]);
+      authFailedList.removeAll(authorizedArtifacts);
 
-      clipboard.setContents(
-         new Object[] {
-            new ArtifactData(artifacts, STATUS, viewId),
-            HTMLTransferFormatter.getHtml(artifacts),
-            Collections.toString(textTransferData, null, ", ", null)}, new Transfer[] {
-            ArtifactTransfer.getInstance(),
-            HTMLTransfer.getInstance(),
-            TextTransfer.getInstance()});
+      if (authorizedArtifacts.size() > 0) {
+         ArrayList<String> textTransferData = new ArrayList<String>();
+         for (Artifact cur : authorizedArtifacts) {
+            textTransferData.add(cur.getName());
+         }
+         Artifact[] artifacts = authorizedArtifacts.toArray(new Artifact[authorizedArtifacts.size()]);
+         clipboard.setContents(
+            new Object[] {
+               new ArtifactData(artifacts, STATUS, viewId),
+               HTMLTransferFormatter.getHtml(artifacts),
+               Collections.toString(textTransferData, null, ", ", null)},
+            new Transfer[] {ArtifactTransfer.getInstance(), HTMLTransfer.getInstance(), TextTransfer.getInstance()});
+      }
+      if (authFailedList.size() > 0) {
+         String failed = Collections.toString(", ", authFailedList) + ".";
+         MessageDialog.openError(
+            Displays.getActiveShell(),
+            "Copy Error",
+            "Access control has restricted this action. The following artifacts were not copied to the clipboard: " + failed);
+      }
+
    }
 
    public void setTextToClipboard(Collection<String> textTransferData) {

@@ -997,7 +997,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private void performCopy() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       List<Artifact> artifactTransferData = new ArrayList<Artifact>();
-      List<String> textTransferData = new ArrayList<String>();
       Artifact artifact;
 
       if (selection != null && !selection.isEmpty()) {
@@ -1006,11 +1005,10 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                artifact = (Artifact) object;
 
                artifactTransferData.add(artifact);
-               textTransferData.add(artifact.getName());
             }
          }
          artifactClipboard.setArtifactsToClipboard(new ArtifactAccessProvider(),
-            SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifactTransferData, textTransferData);
+            SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifactTransferData);
       }
    }
 
