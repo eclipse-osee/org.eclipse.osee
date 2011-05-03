@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.internal.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -21,20 +20,23 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class PurgeBranchRequestTranslator implements ITranslator<PurgeBranchRequest> {
    private static enum Entry {
-      BRANCH_ID
+      BRANCH_ID,
+      RECURSIVE
    }
 
    @Override
-   public PurgeBranchRequest convert(PropertyStore propertyStore) throws OseeCoreException {
+   public PurgeBranchRequest convert(PropertyStore propertyStore) {
       int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
-      PurgeBranchRequest request = new PurgeBranchRequest(branchId);
+      boolean recursive = propertyStore.getBoolean(Entry.RECURSIVE.name());
+      PurgeBranchRequest request = new PurgeBranchRequest(branchId, recursive);
       return request;
    }
 
    @Override
-   public PropertyStore convert(PurgeBranchRequest data) throws OseeCoreException {
+   public PropertyStore convert(PurgeBranchRequest data) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.BRANCH_ID.name(), data.getBranchId());
+      store.put(Entry.RECURSIVE.name(), data.isRecursive());
       return store;
    }
 }

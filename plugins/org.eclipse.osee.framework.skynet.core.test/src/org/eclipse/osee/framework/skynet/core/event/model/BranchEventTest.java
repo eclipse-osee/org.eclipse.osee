@@ -12,12 +12,8 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import junit.framework.Assert;
-
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -40,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -51,7 +48,7 @@ public class BranchEventTest {
    private Sender resultSender = null;
    public static List<String> ignoreLogging = Arrays.asList("");
    private static String BRANCH_NAME_PREFIX = "BranchEventManagerTest";
-   private static Set<Branch> branches = new HashSet<Branch>();
+   private static Branch topLevel;
 
    @org.junit.Test
    public void testRegistration() throws Exception {
@@ -79,14 +76,14 @@ public class BranchEventTest {
       try {
          OseeEventManager.getPreferences().setPendRunning(true);
 
-         Branch topLevel = testEvents__topLevelAdded();
-         Branch workingBranch = testEvents__workingAdded(topLevel);
+         testEvents__topLevelAdded();
+         Branch workingBranch = testEvents__workingAdded();
          testEvents__workingRenamed(workingBranch);
          testEvents__typeChange(workingBranch);
          testEvents__stateChange(workingBranch);
          testEvents__deleted(workingBranch);
-         testEvents__purged(topLevel);
-         Branch committedBranch = testEvents__committed(topLevel);
+         testEvents__purged();
+         Branch committedBranch = testEvents__committed();
          testEvents__changeArchiveState(committedBranch);
 
          TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
@@ -118,11 +115,10 @@ public class BranchEventTest {
       return committedBranch;
    }
 
-   private Branch testEvents__committed(Branch topLevel) throws Exception {
+   private Branch testEvents__committed() throws Exception {
       clearEventCollections();
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
-      branches.add(workingBranch);
 
       Assert.assertNotNull(workingBranch);
 
@@ -146,18 +142,17 @@ public class BranchEventTest {
       return workingBranch;
    }
 
-   private Branch testEvents__purged(Branch topLevel) throws Exception {
+   private Branch testEvents__purged() throws Exception {
       clearEventCollections();
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge", UserManager.getUser());
-      branches.add(workingBranch);
 
       Assert.assertNotNull(workingBranch);
 
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
 
-      BranchManager.purgeBranchPending(workingBranch);
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(workingBranch, false));
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Purged, resultBranchEvent.getEventType());
@@ -258,11 +253,10 @@ public class BranchEventTest {
       return workingBranch;
    }
 
-   private Branch testEvents__workingAdded(Branch topLevel) throws Exception {
+   private Branch testEvents__workingAdded() throws Exception {
       clearEventCollections();
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working", UserManager.getUser());
-      branches.add(workingBranch);
       Assert.assertNotNull(workingBranch);
 
       Thread.sleep(4000);
@@ -282,9 +276,8 @@ public class BranchEventTest {
       final String guid = GUID.create();
       final String branchName = String.format("%s - top level branch", BRANCH_NAME_PREFIX);
       IOseeBranch branchToken = TokenFactory.createBranch(guid, branchName);
-      Branch branch = BranchManager.createTopLevelBranch(branchToken);
-      branches.add(branch);
-      Assert.assertNotNull(branch);
+      topLevel = BranchManager.createTopLevelBranch(branchToken);
+      Assert.assertNotNull(topLevel);
 
       Thread.sleep(2000);
 
@@ -296,7 +289,7 @@ public class BranchEventTest {
          Assert.assertTrue(resultSender.isLocal());
       }
       Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
-      return branch;
+      return topLevel;
    }
 
    protected boolean isRemoteTest() {
@@ -317,34 +310,15 @@ public class BranchEventTest {
       }
    }
 
-   @org.junit.BeforeClass
-   public static void cleanUpBefore() {
-      branches.clear();
-   }
-
    @org.junit.AfterClass
    public static void cleanUpAfter() throws OseeCoreException {
-      for (Branch branch : branches) {
-         purgeBranch(branch);
-      }
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(topLevel, true));
    }
 
-   private static void purgeBranch(Branch branch) throws OseeCoreException {
-      if (!branch.getChildBranches().isEmpty()) {
-         for (Branch childBranch : branch.getChildren()) {
-            purgeBranch(childBranch);
-         }
-      } else {
-         if (branch.getStorageState() != StorageState.PURGED) {
-            BranchManager.purgeBranchPending(branch);
-         }
-      }
-   }
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
    private final BranchEventListener branchEventListener = new BranchEventListener();
 
    public void clearEventCollections() {
       resultBranchEvent = null;
    }
-
 }

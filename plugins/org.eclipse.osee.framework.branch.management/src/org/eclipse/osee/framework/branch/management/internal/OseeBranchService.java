@@ -21,7 +21,10 @@ import org.eclipse.osee.framework.branch.management.commit.CommitDbOperation;
 import org.eclipse.osee.framework.branch.management.creation.CreateBranchOperation;
 import org.eclipse.osee.framework.branch.management.purge.BranchOperation;
 import org.eclipse.osee.framework.branch.management.purge.IBranchOperationFactory;
+import org.eclipse.osee.framework.branch.management.purge.IBranchesProvider;
 import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperationFactory;
+import org.eclipse.osee.framework.branch.management.purge.RecursiveBranchProvider;
+import org.eclipse.osee.framework.branch.management.purge.SingleBranchProvider;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -43,6 +46,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
@@ -152,7 +156,14 @@ public class OseeBranchService implements IOseeBranchService {
       IBranchOperationFactory factory =
          new PurgeBranchOperationFactory(logger, branchCache, oseeDatabaseProvider.getOseeDatabaseService());
 
-      return new BranchOperation(logger, factory, branch);
+      IBranchesProvider provider;
+      if (request.isRecursive()) {
+         provider = new RecursiveBranchProvider(branch, new BranchFilter());
+      } else {
+         provider = new SingleBranchProvider(branch);
+      }
+
+      return new BranchOperation(logger, factory, provider);
    }
 
    @Override

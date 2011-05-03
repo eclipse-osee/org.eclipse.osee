@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.core.message.test.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -33,7 +33,7 @@ public class PurgeBranchRequestTest {
 
    public PurgeBranchRequestTest(int expectedBranchId) {
       super();
-      this.request = new PurgeBranchRequest(expectedBranchId);
+      this.request = new PurgeBranchRequest(expectedBranchId, false);
       this.branchId = expectedBranchId;
    }
 

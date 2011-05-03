@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.dbHealth;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import junit.framework.Assert;
@@ -20,6 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.LocalRelationLink;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +43,7 @@ import org.junit.Test;
  * Tests data integrity case where a new relation is persisted on a deleted artifact. Checks that if the situation
  * exists and runs <code>applyFix()</code> to resolve the issue.
  * </p>
- *
+ * 
  * @author Karol M. Wilk
  */
 public class RelationIntegrityCheckTest {
@@ -143,6 +144,6 @@ public class RelationIntegrityCheckTest {
 
    @After
    public void tearDown() throws Exception {
-      BranchManager.purgeBranch(Arrays.asList(workingBranch, parentBranch));
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(parentBranch, true));
    }
 }

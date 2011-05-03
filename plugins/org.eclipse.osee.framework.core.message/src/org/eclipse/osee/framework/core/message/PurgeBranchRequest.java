@@ -16,13 +16,19 @@ package org.eclipse.osee.framework.core.message;
  */
 public class PurgeBranchRequest {
    private final int branchId;
+   private final boolean recursive;
 
-   public PurgeBranchRequest(int branchId) {
+   public PurgeBranchRequest(int branchId, boolean recursive) {
       super();
       this.branchId = branchId;
+      this.recursive = recursive;
    }
 
    public int getBranchId() {
       return branchId;
+   }
+
+   public boolean isRecursive() {
+      return recursive;
    }
 }

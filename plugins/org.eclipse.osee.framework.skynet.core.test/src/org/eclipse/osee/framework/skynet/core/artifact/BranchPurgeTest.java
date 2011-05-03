@@ -20,7 +20,9 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
@@ -83,9 +85,7 @@ public class BranchPurgeTest {
       DbTestUtil.getTableRowCounts(postCreateBranchCount, tables);
       TestUtil.checkThatIncreased(preCreateCount, postCreateBranchCount);
 
-      // Purge branch
-      BranchManager.purgeBranchPending(branch);
-
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
       TestUtil.sleep(4000);
 
       // Count rows and check that same as when began

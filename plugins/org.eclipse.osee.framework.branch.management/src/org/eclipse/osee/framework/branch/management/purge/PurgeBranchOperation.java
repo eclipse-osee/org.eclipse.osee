@@ -73,6 +73,10 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       this.connection = connection;
       this.monitor = monitor;
 
+      if (branch.getStorageState() == StorageState.PURGED) {
+         return;
+      }
+
       if (!branch.getAllChildBranches(false).isEmpty()) {
          throw new OseeArgumentException("Unable to purge a branch containing children: branchGuid[%s] branchType[%s]",
             branch.getGuid(), branch.getBranchType());

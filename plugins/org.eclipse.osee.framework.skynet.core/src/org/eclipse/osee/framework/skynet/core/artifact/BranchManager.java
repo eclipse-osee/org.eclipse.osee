@@ -225,24 +225,8 @@ public class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   public static void purgeBranchPending(Branch branch) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch));
-   }
-
-   public static void purgeBranch(final Branch branch) {
-      purgeBranch(Arrays.asList(branch));
-   }
-
-   /**
-    * Purges branches from the system. (sets branch state to purged. operation is undo-able)
-    */
-   public static Job purgeBranch(final List<Branch> branches) {
-      List<IOperation> ops = new ArrayList<IOperation>();
-      for (Branch branch : branches) {
-         ops.add(new PurgeBranchHttpRequestOperation(branch)); //can this be done in one http request?
-      }
-      return Operations.executeAsJob(new CompositeOperation("Purging multiple branches...", Activator.PLUGIN_ID, ops),
-         true);
+   public static void purgeBranch(final Branch branch) throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
    }
 
    public static void updateBranchType(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchType type) throws OseeCoreException {

@@ -45,7 +45,7 @@ public class PurgeBranchRequestTranslatorTest extends BaseTranslatorTest<PurgeBr
       ITranslator<PurgeBranchRequest> translator = new PurgeBranchRequestTranslator();
 
       for (int index = 1; index <= 2; index++) {
-         data.add(new Object[] {new PurgeBranchRequest(index * 3), translator});
+         data.add(new Object[] {new PurgeBranchRequest(index * 3, false), translator});
       }
       return data;
    }
