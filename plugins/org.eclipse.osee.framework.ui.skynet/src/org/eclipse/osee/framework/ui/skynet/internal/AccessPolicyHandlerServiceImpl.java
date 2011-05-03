@@ -51,7 +51,7 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
 
       if (artifacts != null) {
          for (IBasicArtifact<?> artifact : artifacts) {
-            query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
+            query.attributeTypeMatches(permission, artifact, attributeType, permissionStatus);
 
             if (printErrorMessage(artifacts, permissionStatus, level)) {
                break;
@@ -68,7 +68,7 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
 
       if (relationTypeSides != null) {
          for (RelationTypeSide relationTypeSide : relationTypeSides) {
-            query.relationTypeMatches(PermissionEnum.WRITE, relationTypeSide, permissionStatus);
+            query.relationTypeMatches(permission, relationTypeSide, permissionStatus);
 
             if (printErrorMessage(relationTypeSides, permissionStatus, level)) {
                break;
