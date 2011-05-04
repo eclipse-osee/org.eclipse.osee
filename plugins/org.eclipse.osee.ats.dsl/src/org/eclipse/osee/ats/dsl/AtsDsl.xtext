@@ -33,6 +33,7 @@ TeamDef:
 		('member' member+=UserRef)*
 		('priviledged' priviledged+=UserRef)*
 		('workDefinition' workDefinition=STRING)?
+		('relatedTaskWorkDefinition' relatedTaskWorkDefinition=STRING)?
 		('accessContextId' accessContextId+=STRING)*
 		('version' version+=VersionDef)*
 		('children' '{'

@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getMember <em>Member</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getPriviledged <em>Priviledged</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getWorkDefinition <em>Work Definition</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getRelatedTaskWorkDefinition <em>Related Task Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getChildren <em>Children</em>}</li>
@@ -184,6 +185,26 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * @ordered
    */
   protected String workDefinition = WORK_DEFINITION_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getRelatedTaskWorkDefinition() <em>Related Task Work Definition</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRelatedTaskWorkDefinition()
+   * @generated
+   * @ordered
+   */
+  protected static final String RELATED_TASK_WORK_DEFINITION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getRelatedTaskWorkDefinition() <em>Related Task Work Definition</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRelatedTaskWorkDefinition()
+   * @generated
+   * @ordered
+   */
+  protected String relatedTaskWorkDefinition = RELATED_TASK_WORK_DEFINITION_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getAccessContextId() <em>Access Context Id</em>}' attribute list.
@@ -403,6 +424,29 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getRelatedTaskWorkDefinition()
+  {
+    return relatedTaskWorkDefinition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRelatedTaskWorkDefinition(String newRelatedTaskWorkDefinition)
+  {
+    String oldRelatedTaskWorkDefinition = relatedTaskWorkDefinition;
+    relatedTaskWorkDefinition = newRelatedTaskWorkDefinition;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION, oldRelatedTaskWorkDefinition, relatedTaskWorkDefinition));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<String> getAccessContextId()
   {
     if (accessContextId == null)
@@ -492,6 +536,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return getPriviledged();
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         return getWorkDefinition();
+      case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
+        return getRelatedTaskWorkDefinition();
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         return getAccessContextId();
       case AtsDslPackage.TEAM_DEF__VERSION:
@@ -544,6 +590,9 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return;
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         setWorkDefinition((String)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
+        setRelatedTaskWorkDefinition((String)newValue);
         return;
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         getAccessContextId().clear();
@@ -598,6 +647,9 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         setWorkDefinition(WORK_DEFINITION_EDEFAULT);
         return;
+      case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
+        setRelatedTaskWorkDefinition(RELATED_TASK_WORK_DEFINITION_EDEFAULT);
+        return;
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         getAccessContextId().clear();
         return;
@@ -639,6 +691,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return priviledged != null && !priviledged.isEmpty();
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         return WORK_DEFINITION_EDEFAULT == null ? workDefinition != null : !WORK_DEFINITION_EDEFAULT.equals(workDefinition);
+      case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
+        return RELATED_TASK_WORK_DEFINITION_EDEFAULT == null ? relatedTaskWorkDefinition != null : !RELATED_TASK_WORK_DEFINITION_EDEFAULT.equals(relatedTaskWorkDefinition);
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         return accessContextId != null && !accessContextId.isEmpty();
       case AtsDslPackage.TEAM_DEF__VERSION:
@@ -672,6 +726,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
     result.append(staticId);
     result.append(", workDefinition: ");
     result.append(workDefinition);
+    result.append(", relatedTaskWorkDefinition: ");
+    result.append(relatedTaskWorkDefinition);
     result.append(", accessContextId: ");
     result.append(accessContextId);
     result.append(')');

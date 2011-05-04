@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -338,12 +339,18 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       if (isCurrentState) {
          if (sma.isCompleted()) {
+            if (!sma.getCurrentStateName().equals(WorkPageType.Completed.toString())) {
+               sb.append(" (Completed)");
+            }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.getCompletedDate()));
             LogItem item = sma.getStateStartedData(statePage);
             sb.append(" by ");
             sb.append(item.getUser().getName());
          } else if (sma.isCancelled()) {
+            if (!sma.getCurrentStateName().equals(WorkPageType.Cancelled.toString())) {
+               sb.append(" (Cancelled)");
+            }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()));
             LogItem item = sma.getStateStartedData(statePage);

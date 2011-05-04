@@ -113,7 +113,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType WorkflowDefinitionOld = createType("ADG50fkFrQIxmfZgk3gA", "Workflow Definition Old", "Used in 0.9.8 - Unused in 0.9.9 - Specific work flow definition id used by this Workflow artifact");
    public static final IAttributeType WorkflowDefinition = createType("AbksV06OrBP_ceKCeSQA", "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
    public static final IAttributeType RelatedTaskWorkflowDefinitionOld = createType("AdR02A0xcUq4arK58BAA", "Used in 0.9.8 - Unused in 0.9.9 - Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
-   public static final IAttributeType RelatedTaskWorkflowDefinition = createType("AblApNMuhjVuyDRq6VgA", "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
+   public static final IAttributeType RelatedTaskWorkDefinition = createType("AblApNMuhjVuyDRq6VgA", "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final IAttributeType WorkPackage = createType("AAMFEdpJqRp2wvA2qvAA", "Work Package", "Designated accounting work package for completing workflow.");
    
    

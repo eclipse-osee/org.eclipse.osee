@@ -988,17 +988,17 @@ protected class UserDef_RightCurlyBracketKeyword_2_5 extends KeywordToken  {
  * TeamDef:
  * 	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
  * 	usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
- * 	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("accessContextId"
- * 	accessContextId+=STRING)* ("version" version+=VersionDef)* ("children" "{" ("teamDefinition" children+=TeamDef)+ "}")?
- * 	"}";
+ * 	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
+ * 	relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
+ * 	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
  *
  **/
 
 // name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
 // usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
-// ("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("accessContextId"
-// accessContextId+=STRING)* ("version" version+=VersionDef)* ("children" "{" ("teamDefinition" children+=TeamDef)+ "}")?
-// "}"
+// ("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
+// relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
+// ("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}"
 protected class TeamDef_Group extends GroupToken {
 	
 	public TeamDef_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1013,7 +1013,7 @@ protected class TeamDef_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_RightCurlyBracketKeyword_13(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_RightCurlyBracketKeyword_14(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -1732,7 +1732,7 @@ protected class TeamDef_WorkDefinitionAssignment_9_1 extends AssignmentToken  {
 }
 
 
-// ("accessContextId" accessContextId+=STRING)*
+// ("relatedTaskWorkDefinition" relatedTaskWorkDefinition=STRING)?
 protected class TeamDef_Group_10 extends GroupToken {
 	
 	public TeamDef_Group_10(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1747,70 +1747,69 @@ protected class TeamDef_Group_10 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_AccessContextIdAssignment_10_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_RelatedTaskWorkDefinitionAssignment_10_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "accessContextId"
-protected class TeamDef_AccessContextIdKeyword_10_0 extends KeywordToken  {
+// "relatedTaskWorkDefinition"
+protected class TeamDef_RelatedTaskWorkDefinitionKeyword_10_0 extends KeywordToken  {
 	
-	public TeamDef_AccessContextIdKeyword_10_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_RelatedTaskWorkDefinitionKeyword_10_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getAccessContextIdKeyword_10_0();
+		return grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionKeyword_10_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_Group_10(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new TeamDef_Group_9(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new TeamDef_Group_8(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new TeamDef_Group_7(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new TeamDef_Group_6(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new TeamDef_Group_5(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new TeamDef_Group_4(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new TeamDef_Group_3(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new TeamDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 8, inst);
+			case 0: return new TeamDef_Group_9(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new TeamDef_Group_8(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new TeamDef_Group_7(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new TeamDef_Group_6(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new TeamDef_Group_5(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new TeamDef_Group_4(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new TeamDef_Group_3(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new TeamDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 7, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// accessContextId+=STRING
-protected class TeamDef_AccessContextIdAssignment_10_1 extends AssignmentToken  {
+// relatedTaskWorkDefinition=STRING
+protected class TeamDef_RelatedTaskWorkDefinitionAssignment_10_1 extends AssignmentToken  {
 	
-	public TeamDef_AccessContextIdAssignment_10_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_RelatedTaskWorkDefinitionAssignment_10_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getAccessContextIdAssignment_10_1();
+		return grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionAssignment_10_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_AccessContextIdKeyword_10_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_RelatedTaskWorkDefinitionKeyword_10_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("accessContextId",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("accessContextId");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_10_1_0(), value, null)) {
+		if((value = eObjectConsumer.getConsumable("relatedTaskWorkDefinition",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("relatedTaskWorkDefinition");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionSTRINGTerminalRuleCall_10_1_0(), value, null)) {
 			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_10_1_0();
+			element = grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionSTRINGTerminalRuleCall_10_1_0();
 			return obj;
 		}
 		return null;
@@ -1819,7 +1818,7 @@ protected class TeamDef_AccessContextIdAssignment_10_1 extends AssignmentToken  
 }
 
 
-// ("version" version+=VersionDef)*
+// ("accessContextId" accessContextId+=STRING)*
 protected class TeamDef_Group_11 extends GroupToken {
 	
 	public TeamDef_Group_11(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1834,23 +1833,23 @@ protected class TeamDef_Group_11 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_VersionAssignment_11_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_AccessContextIdAssignment_11_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "version"
-protected class TeamDef_VersionKeyword_11_0 extends KeywordToken  {
+// "accessContextId"
+protected class TeamDef_AccessContextIdKeyword_11_0 extends KeywordToken  {
 	
-	public TeamDef_VersionKeyword_11_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_AccessContextIdKeyword_11_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getVersionKeyword_11_0();
+		return grammarAccess.getTeamDefAccess().getAccessContextIdKeyword_11_0();
 	}
 
     @Override
@@ -1872,16 +1871,105 @@ protected class TeamDef_VersionKeyword_11_0 extends KeywordToken  {
 
 }
 
-// version+=VersionDef
-protected class TeamDef_VersionAssignment_11_1 extends AssignmentToken  {
+// accessContextId+=STRING
+protected class TeamDef_AccessContextIdAssignment_11_1 extends AssignmentToken  {
 	
-	public TeamDef_VersionAssignment_11_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_AccessContextIdAssignment_11_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getVersionAssignment_11_1();
+		return grammarAccess.getTeamDefAccess().getAccessContextIdAssignment_11_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new TeamDef_AccessContextIdKeyword_11_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("accessContextId",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("accessContextId");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_11_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_11_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("version" version+=VersionDef)*
+protected class TeamDef_Group_12 extends GroupToken {
+	
+	public TeamDef_Group_12(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getTeamDefAccess().getGroup_12();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new TeamDef_VersionAssignment_12_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "version"
+protected class TeamDef_VersionKeyword_12_0 extends KeywordToken  {
+	
+	public TeamDef_VersionKeyword_12_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getTeamDefAccess().getVersionKeyword_12_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new TeamDef_Group_12(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new TeamDef_Group_11(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new TeamDef_Group_10(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new TeamDef_Group_9(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new TeamDef_Group_8(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new TeamDef_Group_7(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new TeamDef_Group_6(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new TeamDef_Group_5(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new TeamDef_Group_4(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new TeamDef_Group_3(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new TeamDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 10, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// version+=VersionDef
+protected class TeamDef_VersionAssignment_12_1 extends AssignmentToken  {
+	
+	public TeamDef_VersionAssignment_12_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getTeamDefAccess().getVersionAssignment_12_1();
 	}
 
     @Override
@@ -1900,7 +1988,7 @@ protected class TeamDef_VersionAssignment_11_1 extends AssignmentToken  {
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getVersionDefRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getTeamDefAccess().getVersionVersionDefParserRuleCall_11_1_0(); 
+				element = grammarAccess.getTeamDefAccess().getVersionVersionDefParserRuleCall_12_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -1912,7 +2000,7 @@ protected class TeamDef_VersionAssignment_11_1 extends AssignmentToken  {
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new TeamDef_VersionKeyword_11_0(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new TeamDef_VersionKeyword_12_0(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
@@ -1920,21 +2008,21 @@ protected class TeamDef_VersionAssignment_11_1 extends AssignmentToken  {
 
 
 // ("children" "{" ("teamDefinition" children+=TeamDef)+ "}")?
-protected class TeamDef_Group_12 extends GroupToken {
+protected class TeamDef_Group_13 extends GroupToken {
 	
-	public TeamDef_Group_12(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_Group_13(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Group getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getGroup_12();
+		return grammarAccess.getTeamDefAccess().getGroup_13();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_RightCurlyBracketKeyword_12_3(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_RightCurlyBracketKeyword_13_3(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -1942,30 +2030,31 @@ protected class TeamDef_Group_12 extends GroupToken {
 }
 
 // "children"
-protected class TeamDef_ChildrenKeyword_12_0 extends KeywordToken  {
+protected class TeamDef_ChildrenKeyword_13_0 extends KeywordToken  {
 	
-	public TeamDef_ChildrenKeyword_12_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_ChildrenKeyword_13_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getChildrenKeyword_12_0();
+		return grammarAccess.getTeamDefAccess().getChildrenKeyword_13_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_Group_11(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new TeamDef_Group_10(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new TeamDef_Group_9(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new TeamDef_Group_8(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new TeamDef_Group_7(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new TeamDef_Group_6(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new TeamDef_Group_5(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new TeamDef_Group_4(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new TeamDef_Group_3(lastRuleCallOrigin, this, 8, inst);
-			case 9: return new TeamDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 9, inst);
+			case 0: return new TeamDef_Group_12(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new TeamDef_Group_11(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new TeamDef_Group_10(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new TeamDef_Group_9(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new TeamDef_Group_8(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new TeamDef_Group_7(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new TeamDef_Group_6(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new TeamDef_Group_5(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new TeamDef_Group_4(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new TeamDef_Group_3(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new TeamDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 10, inst);
 			default: return null;
 		}	
 	}
@@ -1973,21 +2062,21 @@ protected class TeamDef_ChildrenKeyword_12_0 extends KeywordToken  {
 }
 
 // "{"
-protected class TeamDef_LeftCurlyBracketKeyword_12_1 extends KeywordToken  {
+protected class TeamDef_LeftCurlyBracketKeyword_13_1 extends KeywordToken  {
 	
-	public TeamDef_LeftCurlyBracketKeyword_12_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_LeftCurlyBracketKeyword_13_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getLeftCurlyBracketKeyword_12_1();
+		return grammarAccess.getTeamDefAccess().getLeftCurlyBracketKeyword_13_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_ChildrenKeyword_12_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_ChildrenKeyword_13_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -1995,21 +2084,21 @@ protected class TeamDef_LeftCurlyBracketKeyword_12_1 extends KeywordToken  {
 }
 
 // ("teamDefinition" children+=TeamDef)+
-protected class TeamDef_Group_12_2 extends GroupToken {
+protected class TeamDef_Group_13_2 extends GroupToken {
 	
-	public TeamDef_Group_12_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_Group_13_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Group getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getGroup_12_2();
+		return grammarAccess.getTeamDefAccess().getGroup_13_2();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_ChildrenAssignment_12_2_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_ChildrenAssignment_13_2_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -2017,22 +2106,22 @@ protected class TeamDef_Group_12_2 extends GroupToken {
 }
 
 // "teamDefinition"
-protected class TeamDef_TeamDefinitionKeyword_12_2_0 extends KeywordToken  {
+protected class TeamDef_TeamDefinitionKeyword_13_2_0 extends KeywordToken  {
 	
-	public TeamDef_TeamDefinitionKeyword_12_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_TeamDefinitionKeyword_13_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_12_2_0();
+		return grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_13_2_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_Group_12_2(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new TeamDef_LeftCurlyBracketKeyword_12_1(lastRuleCallOrigin, this, 1, inst);
+			case 0: return new TeamDef_Group_13_2(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new TeamDef_LeftCurlyBracketKeyword_13_1(lastRuleCallOrigin, this, 1, inst);
 			default: return null;
 		}	
 	}
@@ -2040,15 +2129,15 @@ protected class TeamDef_TeamDefinitionKeyword_12_2_0 extends KeywordToken  {
 }
 
 // children+=TeamDef
-protected class TeamDef_ChildrenAssignment_12_2_1 extends AssignmentToken  {
+protected class TeamDef_ChildrenAssignment_13_2_1 extends AssignmentToken  {
 	
-	public TeamDef_ChildrenAssignment_12_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_ChildrenAssignment_13_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getChildrenAssignment_12_2_1();
+		return grammarAccess.getTeamDefAccess().getChildrenAssignment_13_2_1();
 	}
 
     @Override
@@ -2067,7 +2156,7 @@ protected class TeamDef_ChildrenAssignment_12_2_1 extends AssignmentToken  {
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getTeamDefRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getTeamDefAccess().getChildrenTeamDefParserRuleCall_12_2_1_0(); 
+				element = grammarAccess.getTeamDefAccess().getChildrenTeamDefParserRuleCall_13_2_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -2079,7 +2168,7 @@ protected class TeamDef_ChildrenAssignment_12_2_1 extends AssignmentToken  {
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new TeamDef_TeamDefinitionKeyword_12_2_0(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new TeamDef_TeamDefinitionKeyword_13_2_0(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
@@ -2087,21 +2176,21 @@ protected class TeamDef_ChildrenAssignment_12_2_1 extends AssignmentToken  {
 
 
 // "}"
-protected class TeamDef_RightCurlyBracketKeyword_12_3 extends KeywordToken  {
+protected class TeamDef_RightCurlyBracketKeyword_13_3 extends KeywordToken  {
 	
-	public TeamDef_RightCurlyBracketKeyword_12_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_RightCurlyBracketKeyword_13_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_12_3();
+		return grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_13_3();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_Group_12_2(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new TeamDef_Group_13_2(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -2110,31 +2199,32 @@ protected class TeamDef_RightCurlyBracketKeyword_12_3 extends KeywordToken  {
 
 
 // "}"
-protected class TeamDef_RightCurlyBracketKeyword_13 extends KeywordToken  {
+protected class TeamDef_RightCurlyBracketKeyword_14 extends KeywordToken  {
 	
-	public TeamDef_RightCurlyBracketKeyword_13(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public TeamDef_RightCurlyBracketKeyword_14(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_13();
+		return grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_14();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new TeamDef_Group_12(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new TeamDef_Group_11(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new TeamDef_Group_10(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new TeamDef_Group_9(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new TeamDef_Group_8(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new TeamDef_Group_7(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new TeamDef_Group_6(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new TeamDef_Group_5(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new TeamDef_Group_4(lastRuleCallOrigin, this, 8, inst);
-			case 9: return new TeamDef_Group_3(lastRuleCallOrigin, this, 9, inst);
-			case 10: return new TeamDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 10, inst);
+			case 0: return new TeamDef_Group_13(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new TeamDef_Group_12(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new TeamDef_Group_11(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new TeamDef_Group_10(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new TeamDef_Group_9(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new TeamDef_Group_8(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new TeamDef_Group_7(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new TeamDef_Group_6(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new TeamDef_Group_5(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new TeamDef_Group_4(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new TeamDef_Group_3(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new TeamDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 11, inst);
 			default: return null;
 		}	
 	}

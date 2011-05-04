@@ -416,7 +416,7 @@ public class WorkDefinitionFactory {
 
    private static WorkDefinitionMatch getTaskWorkDefinitionFromArtifactsAttributeValue(Artifact artifact) throws OseeCoreException {
       // If this artifact specifies it's own workflow definition, use it
-      String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkflowDefinition, null);
+      String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition, null);
       if (Strings.isValid(workFlowDefId)) {
          String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId);
          WorkDefinitionMatch match = getWorkDefinition(translatedId);

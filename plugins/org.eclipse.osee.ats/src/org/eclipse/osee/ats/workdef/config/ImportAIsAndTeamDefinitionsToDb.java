@@ -138,6 +138,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
             newTeam.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, dslTeamDef.getWorkDefinition());
          }
+         if (Strings.isValid(dslTeamDef.getRelatedTaskWorkDefinition())) {
+            newTeam.setSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition,
+               dslTeamDef.getRelatedTaskWorkDefinition());
+         }
          importAccessContextIds(newTeam, dslTeamDef.getAccessContextId());
          importVersionDefinitions(dslTeamDef.getVersion(), (TeamDefinitionArtifact) newTeam);
          // process children

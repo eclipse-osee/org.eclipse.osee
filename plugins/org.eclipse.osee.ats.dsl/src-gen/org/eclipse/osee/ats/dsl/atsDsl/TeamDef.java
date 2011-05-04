@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getMember <em>Member</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPriviledged <em>Priviledged</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getWorkDefinition <em>Work Definition</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getRelatedTaskWorkDefinition <em>Related Task Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getChildren <em>Children</em>}</li>
@@ -228,6 +229,32 @@ public interface TeamDef extends EObject
    * @generated
    */
   void setWorkDefinition(String value);
+
+  /**
+   * Returns the value of the '<em><b>Related Task Work Definition</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Related Task Work Definition</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Related Task Work Definition</em>' attribute.
+   * @see #setRelatedTaskWorkDefinition(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getTeamDef_RelatedTaskWorkDefinition()
+   * @model
+   * @generated
+   */
+  String getRelatedTaskWorkDefinition();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getRelatedTaskWorkDefinition <em>Related Task Work Definition</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Related Task Work Definition</em>' attribute.
+   * @see #getRelatedTaskWorkDefinition()
+   * @generated
+   */
+  void setRelatedTaskWorkDefinition(String value);
 
   /**
    * Returns the value of the '<em><b>Access Context Id</b></em>' attribute list.
