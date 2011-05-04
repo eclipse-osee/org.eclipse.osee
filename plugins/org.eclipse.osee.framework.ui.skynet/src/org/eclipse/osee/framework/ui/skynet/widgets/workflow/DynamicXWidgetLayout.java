@@ -118,7 +118,10 @@ public class DynamicXWidgetLayout {
          }
          if (xWidgetLayoutData.getBeginComposite() > 0) {
             childComp = createComposite((inGroupComposite ? groupComp : attrComp), toolkit);
-            childComp.setLayout(ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginComposite(), false));
+            GridLayout zeroMarginLayout = ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginComposite(), false);
+            zeroMarginLayout.marginWidth = 4;
+            zeroMarginLayout.horizontalSpacing = 8;
+            childComp.setLayout(zeroMarginLayout);
             childComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             if (toolkit != null) {
                toolkit.adapt(childComp);
