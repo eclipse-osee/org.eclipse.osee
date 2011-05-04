@@ -88,4 +88,9 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       }
    }
 
+   @Override
+   public boolean isEmpty() {
+      return selectedTeamDefs.isEmpty();
+   }
+
 }

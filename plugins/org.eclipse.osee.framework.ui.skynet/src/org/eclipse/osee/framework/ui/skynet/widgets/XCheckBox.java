@@ -130,4 +130,5 @@ public class XCheckBox extends XButtonCommon {
    public Button getCheckButton() {
       return checkButton;
    }
+
 }

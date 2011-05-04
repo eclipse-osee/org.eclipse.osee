@@ -262,10 +262,15 @@ public class XCombo extends XButtonCommon {
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && data.equals("")) {
+      if (isRequiredEntry() && isEmpty()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
       }
       return Status.OK_STATUS;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return data.equals("");
    }
 
    @Override

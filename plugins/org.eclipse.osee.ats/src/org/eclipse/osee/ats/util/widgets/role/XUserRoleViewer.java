@@ -382,6 +382,11 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    }
 
    @Override
+   public boolean isEmpty() {
+      return xViewer.getTree().getItemCount() == 0;
+   }
+
+   @Override
    public String toHTML(String labelFont) {
       StringBuffer html = new StringBuffer();
       try {

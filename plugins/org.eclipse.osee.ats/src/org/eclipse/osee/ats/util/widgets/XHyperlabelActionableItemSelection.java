@@ -88,4 +88,9 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
       }
    }
 
+   @Override
+   public boolean isEmpty() {
+      return selectedAis.isEmpty();
+   }
+
 }

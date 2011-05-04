@@ -247,10 +247,15 @@ public class XMembersCombo extends GenericXWidget {
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && !isAssigned()) {
+      if (isRequiredEntry() && isEmpty()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());
       }
       return Status.OK_STATUS;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return !isAssigned();
    }
 
    @Override

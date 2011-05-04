@@ -126,4 +126,5 @@ public class XLabelDam extends GenericXWidget implements IAttributeWidget {
    public void revert() {
       // Do nothing cause labelDam is read-only
    }
+
 }

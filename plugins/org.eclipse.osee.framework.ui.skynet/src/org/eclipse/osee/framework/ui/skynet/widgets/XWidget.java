@@ -57,8 +57,10 @@ public abstract class XWidget {
 
    private boolean displayLabel = true;
    private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<XModifiedListener>();
+   private final Set<IXWidgetValidityProvider> validityProviders = new LinkedHashSet<IXWidgetValidityProvider>();
    private MouseListener mouseLabelListener;
    protected FormToolkit toolkit;
+   private Object object;
 
    public XWidget(String label) {
       this.label = label;
@@ -77,6 +79,10 @@ public abstract class XWidget {
 
    public void addXModifiedListener(XModifiedListener listener) {
       modifiedListeners.add(listener);
+   }
+
+   public void addXWidgetValidityProvider(IXWidgetValidityProvider provider) {
+      validityProviders.add(provider);
    }
 
    public void notifyXModifiedListeners() {
@@ -258,7 +264,11 @@ public abstract class XWidget {
    }
 
    public IStatus isValid() {
-      return Status.OK_STATUS;
+      IStatus status = Status.OK_STATUS;
+      for (IXWidgetValidityProvider provider : validityProviders) {
+         status = provider.isValid(this);
+      }
+      return status;
    }
 
    public String toHTML(String labelFont) {
@@ -352,4 +362,18 @@ public abstract class XWidget {
    public Collection<? extends XWidget> getChildrenXWidgets() {
       return Collections.emptyList();
    }
+
+   public abstract boolean isEmpty();
+
+   /**
+    * Generic object set by provider of XWidget
+    */
+   public void setObject(Object object) {
+      this.object = object;
+   }
+
+   public Object getObject() {
+      return object;
+   }
+
 }

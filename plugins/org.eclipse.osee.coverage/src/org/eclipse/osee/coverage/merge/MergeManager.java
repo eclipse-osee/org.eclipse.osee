@@ -51,8 +51,12 @@ public class MergeManager {
    public List<IMergeItem> getMergeItems(XResultData resultData) throws OseeCoreException {
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
       processedImportCoverages.clear();
-      for (ICoverage importCoverage : coverageImport.getChildren()) {
+      Collection<? extends ICoverage> children = coverageImport.getChildren();
+      int count = 0;
+      for (ICoverage importCoverage : children) {
+         System.out.println(String.format("Get merge items from %d/%d - [%s]", count, children.size(), importCoverage));
          processImportCoverage(importCoverage, mergeItems, resultData);
+         count++;
       }
       if (mergeItems.isEmpty()) {
          mergeItems.add(new MessageMergeItem("Nothing to Import"));
@@ -124,17 +128,25 @@ public class MergeManager {
             }
          }
 
+         int count = 0;
          // Determine match for all import item children
          for (ICoverage childCoverage : importItemChildren) {
+            // only display top item
+            if (importCoverage.getName().equals("cnd")) {
+               System.out.println(String.format("Get merge items from %d/%d - [%s]", count, importItemChildren.size(),
+                  childCoverage));
+               count++;
+            }
+
             MatchItem childMatchItem = getPackageCoverageItemRecurse(packageICoverage, childCoverage);
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
          if (resultData != null) {
             resultData.log(AHTML.bold("Match Items:"));
-            for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
-               resultData.addRaw(AHTML.blockQuote(String.valueOf(entry.getValue()).replaceAll(" ", "&nbsp")));
-            }
+            //            for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
+            //               resultData.addRaw(AHTML.blockQuote(String.valueOf(entry.getValue()).replaceAll(" ", "&nbsp")));
+            //            }
          }
          if (debug) {
             for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {

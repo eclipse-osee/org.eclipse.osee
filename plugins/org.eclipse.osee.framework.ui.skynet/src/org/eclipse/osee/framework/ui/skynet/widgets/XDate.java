@@ -178,6 +178,11 @@ public class XDate extends XWidget {
    }
 
    @Override
+   public boolean isEmpty() {
+      return getDate() != null;
+   }
+
+   @Override
    public String getReportData() {
       return get();
    }

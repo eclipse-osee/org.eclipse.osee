@@ -392,4 +392,9 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       return null;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return xCommitManager.getXCommitViewer().getXViewer().getTree().getItemCount() == 0;
+   }
+
 }

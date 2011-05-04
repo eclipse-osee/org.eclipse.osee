@@ -225,4 +225,9 @@ public class XCoverageViewer extends GenericXWidget {
       return workProductTaskProvider;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return xViewer.getTree().getItemCount() == 0;
+   }
+
 }

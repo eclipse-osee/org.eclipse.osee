@@ -91,4 +91,9 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
       this.coverageOptionManager = coverageOptionManager;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return selectedCoverageMethods.isEmpty();
+   }
+
 }

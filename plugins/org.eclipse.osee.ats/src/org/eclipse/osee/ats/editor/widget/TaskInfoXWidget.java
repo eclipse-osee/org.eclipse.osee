@@ -151,4 +151,5 @@ public class TaskInfoXWidget extends XLabelValueBase {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
+
 }

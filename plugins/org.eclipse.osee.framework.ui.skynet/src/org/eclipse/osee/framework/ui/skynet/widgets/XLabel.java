@@ -58,4 +58,10 @@ public class XLabel extends GenericXWidget {
    public Control getControl() {
       return labelWidget;
    }
+
+   @Override
+   public boolean isEmpty() {
+      return false;
+   }
+
 }

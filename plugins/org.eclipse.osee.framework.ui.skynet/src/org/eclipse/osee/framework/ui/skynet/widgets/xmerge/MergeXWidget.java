@@ -333,6 +333,11 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
       return Status.OK_STATUS;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return mergeXViewer.getTree().getItemCount() == 0;
+   }
+
    /**
     * @return Returns the xViewer.
     */

@@ -109,10 +109,15 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
 
    @Override
    public IStatus isValid() {
-      if (selectComposite.getSelectedBranch() == null) {
+      if (isEmpty()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select a Branch");
       }
       return Status.OK_STATUS;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return selectComposite.getSelectedBranch() == null;
    }
 
    @Override

@@ -19,6 +19,8 @@ package org.eclipse.osee.ats.workdef;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -29,6 +31,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -37,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetValidityProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -58,8 +62,9 @@ import org.w3c.dom.Element;
  * 
  * @author Donald G. Dunne
  */
-public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage {
+public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage, IXWidgetValidityProvider {
 
+   private static final Pair<IStatus, XWidget> OK_PAIR = new Pair<IStatus, XWidget>(Status.OK_STATUS, null);
    protected DynamicXWidgetLayout dynamicXWidgetLayout;
    protected final StateDefinition stateDefinition;
    protected final WorkDefinition workDefinition;
@@ -148,20 +153,20 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       return dynamicXWidgetLayout;
    }
 
-   public Result isPageComplete() {
+   public Pair<IStatus, XWidget> isPageComplete() {
       try {
          for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
             if (!layoutData.getXWidget().isValid().isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
                if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStoreName())) {
-                  return new Result(layoutData.getXWidget().isValid().getMessage());
+                  return new Pair<IStatus, XWidget>(layoutData.getXWidget().isValid(), layoutData.getXWidget());
                }
             }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return Result.TrueResult;
+      return OK_PAIR;
    }
 
    public String getHtml(String backgroundColor) throws OseeCoreException {
@@ -229,6 +234,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 
+   @SuppressWarnings("unused")
    protected void processLayoutDatas(Element element) throws OseeCoreException {
       dynamicXWidgetLayout.processLayoutDatas(element);
    }
@@ -432,8 +438,13 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       data.setXWidgetName(widgetDef.getXWidgetName());
       data.setArtifact(sma);
       data.setName(widgetDef.getName());
+      data.setObject(widgetDef);
+      data.addXWidgetValidityProvider(this);
       if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
          data.getXOptionHandler().add(XOption.REQUIRED);
+      }
+      if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
+         data.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
       }
       for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
          XOption option = null;
@@ -476,6 +487,18 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    public boolean isAllowCommitBranch() {
       return AtsWorkDefinitions.isAllowCommitBranch(stateDefinition);
+   }
+
+   @Override
+   public IStatus isValid(XWidget widget) {
+      if (widget.getObject() instanceof WidgetDefinition) {
+         WidgetDefinition widgetDefinition = (WidgetDefinition) widget.getObject();
+         if (widgetDefinition.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION) && widget.isEmpty()) {
+            return new Status(IStatus.WARNING, SkynetGuiPlugin.PLUGIN_ID, String.format(
+               "Must enter \"%s\" before Completion", widget.getLabel()));
+         }
+      }
+      return Status.OK_STATUS;
    }
 
 }

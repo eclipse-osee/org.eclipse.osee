@@ -38,4 +38,10 @@ public abstract class GenericXWidget extends XWidget implements IActionable {
    public String getActionDescription() {
       return "";
    }
+
+   @Override
+   public boolean isEmpty() {
+      return false;
+   }
+
 }

@@ -589,4 +589,10 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
          }
       });
    }
+
+   @Override
+   public boolean isEmpty() {
+      return xViewer.getTree().getItemCount() == 0;
+   }
+
 }

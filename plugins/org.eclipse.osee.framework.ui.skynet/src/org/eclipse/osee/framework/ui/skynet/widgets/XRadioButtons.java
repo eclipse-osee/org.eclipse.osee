@@ -265,10 +265,15 @@ public class XRadioButtons extends GenericXWidget {
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && getSelectedNames().isEmpty()) {
+      if (isRequiredEntry() && isEmpty()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must have at least one selection.");
       }
       return Status.OK_STATUS;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return getSelectedNames().isEmpty();
    }
 
    @Override

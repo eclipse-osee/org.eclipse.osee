@@ -115,4 +115,10 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
       }
       return status;
    }
+
+   @Override
+   public boolean isEmpty() {
+      return getSelected().isEmpty();
+   }
+
 }

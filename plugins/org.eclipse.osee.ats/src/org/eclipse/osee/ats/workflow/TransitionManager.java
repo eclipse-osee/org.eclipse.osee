@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -33,9 +34,12 @@ import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.workdef.WidgetOption;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,8 +49,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.ui.PlatformUI;
 
 public class TransitionManager {
@@ -94,8 +100,9 @@ public class TransitionManager {
          }
 
          // If overrideAttributeValidation state, don't require page/tasks to be complete
-         if (!awa.getStateDefinition().getOverrideAttributeValidationStates().contains(toStateDefinition) && !isStateTransitionable(
-            toStateDefinition, toAssignees)) {
+         boolean isOverrideAttributeValidationState =
+            awa.getStateDefinition().getOverrideAttributeValidationStates().contains(toStateDefinition);
+         if (!isOverrideAttributeValidationState && !isStateTransitionable(toStateDefinition, toAssignees)) {
             return;
          }
 
@@ -121,10 +128,32 @@ public class TransitionManager {
 
    private boolean isStateTransitionable(StateDefinition toStateDefinition, Collection<User> toAssignees) throws OseeCoreException {
       // Validate XWidgets for transition
-      Result result = editor.getWorkFlowTab().getSectionForCurrentState().getPage().isPageComplete();
-      if (result.isFalse()) {
-         result.popup();
-         return false;
+      Pair<IStatus, XWidget> statusWidgetPair =
+         editor.getWorkFlowTab().getSectionForCurrentState().getPage().isPageComplete();
+      if (!statusWidgetPair.getFirst().isOK()) {
+         // Stop transition if any errors exist
+         if (statusWidgetPair.getFirst().getSeverity() == IStatus.ERROR) {
+            AWorkbench.popup(statusWidgetPair.getFirst().getMessage());
+            return false;
+         }
+         // Only stop transition on warning if transitioning to completed state and REQUIRED_FOR_COMPLETION
+         else if (statusWidgetPair.getFirst().getSeverity() == IStatus.WARNING) {
+            if (statusWidgetPair.getSecond() == null) {
+               AWorkbench.popup(statusWidgetPair.getFirst().getMessage());
+               return false;
+            } else {
+               XWidget widget = statusWidgetPair.getSecond();
+               if (widget.getObject() instanceof WidgetDefinition) {
+                  WidgetDefinition widgetDefinition = (WidgetDefinition) widget.getObject();
+                  boolean reqForCompletion =
+                     widgetDefinition.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
+                  if (reqForCompletion && toStateDefinition.getWorkPageType() == WorkPageType.Completed) {
+                     AWorkbench.popup(statusWidgetPair.getFirst().getMessage());
+                     return false;
+                  }
+               }
+            }
+         }
       }
 
       // Loop through this state's tasks to confirm complete
@@ -165,7 +194,8 @@ public class TransitionManager {
       // Check extension points for valid transition
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          try {
-            result = item.transitioning(awa, awa.getStateMgr().getCurrentState(), toStateDefinition, toAssignees);
+            Result result =
+               item.transitioning(awa, awa.getStateMgr().getCurrentState(), toStateDefinition, toAssignees);
             if (result.isFalse()) {
                result.popup();
                return false;

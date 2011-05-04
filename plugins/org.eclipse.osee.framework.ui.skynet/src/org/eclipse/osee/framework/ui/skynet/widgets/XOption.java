@@ -21,6 +21,8 @@ public enum XOption {
 
    REQUIRED("required", "true"),
    NOT_REQUIRED("required", "false"),
+   REQUIRED_FOR_COMPLETION("requiredForCompletion", "true"),
+   NOT_REQUIRED_FOR_COMPLETION("requiredForCompletion", "false"),
    ENABLED("enabled", "true"),
    NOT_ENABLED("enabled", "false"),
    EDITABLE("editable", "true"),

@@ -300,4 +300,10 @@ public class XBranchWidget extends GenericXWidget {
       };
       Jobs.startJob(job);
    }
+
+   @Override
+   public boolean isEmpty() {
+      return branchXViewer.getTree().getItemCount() == 0;
+   }
+
 }

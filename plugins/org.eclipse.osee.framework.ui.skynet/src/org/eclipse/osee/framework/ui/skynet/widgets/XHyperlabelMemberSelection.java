@@ -65,4 +65,9 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
       return false;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return selectedUsers.isEmpty();
+   }
+
 }

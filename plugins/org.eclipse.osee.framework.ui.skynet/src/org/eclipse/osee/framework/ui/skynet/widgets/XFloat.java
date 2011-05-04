@@ -72,4 +72,5 @@ public class XFloat extends XText {
       }
       return Status.OK_STATUS;
    }
+
 }

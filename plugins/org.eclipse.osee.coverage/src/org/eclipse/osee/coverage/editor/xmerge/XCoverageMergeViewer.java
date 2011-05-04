@@ -79,4 +79,9 @@ public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshAct
       refresh();
    }
 
+   @Override
+   public boolean isEmpty() {
+      return xViewer.getTree().getItemCount() == 0;
+   }
+
 }

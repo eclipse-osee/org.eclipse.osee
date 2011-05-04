@@ -72,4 +72,8 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
       return false;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return selectedGroups.isEmpty();
+   }
 }

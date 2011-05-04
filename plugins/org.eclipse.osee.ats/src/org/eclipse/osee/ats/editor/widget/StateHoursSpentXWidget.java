@@ -105,4 +105,5 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          return ex.getLocalizedMessage();
       }
    }
+
 }

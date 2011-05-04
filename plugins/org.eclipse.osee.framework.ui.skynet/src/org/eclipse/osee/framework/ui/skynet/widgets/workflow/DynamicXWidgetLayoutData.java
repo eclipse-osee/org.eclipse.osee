@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetValidityProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -24,6 +27,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    private static final FrameworkXWidgetProvider xWidgetFactory = FrameworkXWidgetProvider.getInstance();
    private static final String UNKNOWN = "Unknown";
    private static final int DEFAULT_HEIGHT = 9999;
+   private final Set<IXWidgetValidityProvider> validityProviders = new LinkedHashSet<IXWidgetValidityProvider>();
 
    private String name = "Unknown";
    private String id = "";
@@ -41,6 +45,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    private String keyedBranchName;
    private final XOptionHandler xOptionHandler = new XOptionHandler();
    private Artifact artifact;
+   private Object object;
 
    public DynamicXWidgetLayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -82,6 +87,13 @@ public class DynamicXWidgetLayoutData implements Cloneable {
       if (dynamicXWidgetLayout != null) {
          return dynamicXWidgetLayout.isOrRequired(getStoreName()) || //
          dynamicXWidgetLayout.isXOrRequired(getStoreName());
+      }
+      return false;
+   }
+
+   public boolean isRequiredForCompletion() {
+      if (xOptionHandler.contains(XOption.REQUIRED_FOR_COMPLETION)) {
+         return true;
       }
       return false;
    }
@@ -220,6 +232,25 @@ public class DynamicXWidgetLayoutData implements Cloneable {
 
    public void setArtifact(Artifact artifact) {
       this.artifact = artifact;
+   }
+
+   public void addXWidgetValidityProvider(IXWidgetValidityProvider provider) {
+      getValidityProviders().add(provider);
+   }
+
+   public Set<IXWidgetValidityProvider> getValidityProviders() {
+      return validityProviders;
+   }
+
+   /**
+    * Generic object passed along to the created XWidget
+    */
+   public void setObject(Object object) {
+      this.object = object;
+   }
+
+   public Object getObject() {
+      return object;
    }
 
 }

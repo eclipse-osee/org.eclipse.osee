@@ -110,7 +110,7 @@ public class XComboViewer extends GenericXWidget {
     * Create List Widgets. <br>
     * <br>
     * Widgets Created: <li>List: horizonatalSpan takes up 2 columns; <br>
-    *
+    * 
     * @param horizontalSpan horizontalSpan must be >=2
     * @param comboWidgetSWTStyle style of the widget providing the combo, usually {@code SWT.READ_ONLY} or
     * {@code SWT.NONE}
@@ -249,6 +249,11 @@ public class XComboViewer extends GenericXWidget {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());
       }
       return Status.OK_STATUS;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return getSelected() != null;
    }
 
    @Override

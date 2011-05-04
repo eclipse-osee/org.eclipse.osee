@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetValidityProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
@@ -100,103 +101,168 @@ public final class FrameworkXWidgetProvider {
       for (IXWidgetProvider widgetProvider : getXWidgetProviders()) {
          xWidget = widgetProvider.createXWidget(xWidgetName, name, xWidgetLayoutData);
          if (xWidget != null) {
-            return xWidget;
+            break;
          }
       }
 
-      // Otherwise, use default widget creation
-      if (xWidgetName.equals("XText")) {
-         xWidget = new XText(name);
-         if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
-            ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
-         }
-      } else if (xWidgetName.equals("XSelectFromMultiChoiceBranch")) {
-         XSelectFromMultiChoiceBranch multiBranchSelect = new XSelectFromMultiChoiceBranch(name);
-         int maxSelectionRequired = 1;
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT)) {
-            maxSelectionRequired = Integer.MAX_VALUE;
-         }
-         try {
-            List<Branch> branches =
-               BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
-            Collections.sort(branches);
+      if (xWidget == null) {
+         // Otherwise, use default widget creation
+         if (xWidgetName.equals("XText")) {
+            xWidget = new XText(name);
+            if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
+               ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
+            }
+         } else if (xWidgetName.equals("XSelectFromMultiChoiceBranch")) {
+            XSelectFromMultiChoiceBranch multiBranchSelect = new XSelectFromMultiChoiceBranch(name);
+            int maxSelectionRequired = 1;
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT)) {
+               maxSelectionRequired = Integer.MAX_VALUE;
+            }
+            try {
+               List<Branch> branches =
+                  BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
+               Collections.sort(branches);
 
-            multiBranchSelect.setSelectableItems(branches);
-            multiBranchSelect.setRequiredSelection(1, maxSelectionRequired);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-         multiBranchSelect.setRequiredEntry(true);
-         xWidget = multiBranchSelect;
-      } else if (xWidgetName.equals("XInteger")) {
-         xWidget = new XInteger(name);
-      } else if (xWidgetName.equals("XTextDam")) {
-         xWidget = new XTextDam(name);
-      } else if (xWidgetName.equals("XButton")) {
-         xWidget = new XButton(name);
-      } else if (xWidgetName.equals("XButtonPush")) {
-         xWidget = new XButtonPush(name);
-      } else if (xWidgetName.equals("XLabelDam")) {
-         xWidget = new XLabelDam(name);
-      } else if (xWidgetName.equals("XMembersList")) {
-         try {
-            xWidget = new XMembersList(name);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      } else if (xWidgetName.equals("XMembersCombo")) {
-         xWidget = new XMembersCombo(name);
-      } else if (xWidgetName.equals("XMembersComboAll")) {
-         xWidget = new XMembersCombo(name, true);
-      } else if (xWidgetName.equals("XDate")) {
-         xWidget = new XDate(name);
-      } else if (xWidgetName.equals("XFileSelectionDialog")) {
-         xWidget = new XFileTextWithSelectionDialog(name);
-      } else if (xWidgetName.equals("XDirectorySelectionDialog")) {
-         String defaultValue = xWidgetLayoutData.getDefaultValue();
-         if (Strings.isValid(defaultValue)) {
-            xWidget = new XFileTextWithSelectionDialog(name, Type.Directory, defaultValue);
-         } else {
-            xWidget = new XFileTextWithSelectionDialog(name, Type.Directory);
-         }
-      } else if (xWidgetName.equals("XDateDam")) {
-         xWidget = new XDateDam(name);
-      } else if (xWidgetName.equals("XTextResourceDropDam")) {
-         xWidget = new XTextResourceDropDam(name);
-      } else if (xWidgetName.equals("XFloat")) {
-         xWidget = new XFloat(name);
-      } else if (xWidgetName.equals("XFloatDam")) {
-         xWidget = new XFloatDam(name);
-      } else if (xWidgetName.equals("XIntegerDam")) {
-         xWidget = new XIntegerDam(name);
-      } else if (xWidgetName.equals("XFileTextWithSelectionDialog")) {
-         xWidget = new XFileTextWithSelectionDialog(name);
-      } else if (xWidgetName.equals("XLabel")) {
-         String defaultValue = xWidgetLayoutData.getDefaultValue();
-         if (Strings.isValid(defaultValue)) {
-            xWidget = new XLabel(name, xWidgetLayoutData.getDefaultValue());
-         } else {
-            xWidget = new XLabel(name);
-         }
-      } else if (xWidgetName.equals("XCheckBox")) {
-         XCheckBox checkBox = new XCheckBox(name);
-         checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
-         if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
-            checkBox.set(Boolean.valueOf(xWidgetLayoutData.getDefaultValue()));
-         }
-         xWidget = checkBox;
-      } else if (xWidgetName.equals("XCheckBoxDam")) {
-         XCheckBoxDam checkBox = new XCheckBoxDam(name);
-         checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
-         xWidget = checkBox;
-      } else if (xWidgetName.startsWith("XComboDam")) {
-         if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+               multiBranchSelect.setSelectableItems(branches);
+               multiBranchSelect.setRequiredSelection(1, maxSelectionRequired);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            multiBranchSelect.setRequiredEntry(true);
+            xWidget = multiBranchSelect;
+         } else if (xWidgetName.equals("XInteger")) {
+            xWidget = new XInteger(name);
+         } else if (xWidgetName.equals("XTextDam")) {
+            xWidget = new XTextDam(name);
+         } else if (xWidgetName.equals("XButton")) {
+            xWidget = new XButton(name);
+         } else if (xWidgetName.equals("XButtonPush")) {
+            xWidget = new XButtonPush(name);
+         } else if (xWidgetName.equals("XLabelDam")) {
+            xWidget = new XLabelDam(name);
+         } else if (xWidgetName.equals("XMembersList")) {
+            try {
+               xWidget = new XMembersList(name);
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         } else if (xWidgetName.equals("XMembersCombo")) {
+            xWidget = new XMembersCombo(name);
+         } else if (xWidgetName.equals("XMembersComboAll")) {
+            xWidget = new XMembersCombo(name, true);
+         } else if (xWidgetName.equals("XDate")) {
+            xWidget = new XDate(name);
+         } else if (xWidgetName.equals("XFileSelectionDialog")) {
+            xWidget = new XFileTextWithSelectionDialog(name);
+         } else if (xWidgetName.equals("XDirectorySelectionDialog")) {
+            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            if (Strings.isValid(defaultValue)) {
+               xWidget = new XFileTextWithSelectionDialog(name, Type.Directory, defaultValue);
+            } else {
+               xWidget = new XFileTextWithSelectionDialog(name, Type.Directory);
+            }
+         } else if (xWidgetName.equals("XDateDam")) {
+            xWidget = new XDateDam(name);
+         } else if (xWidgetName.equals("XTextResourceDropDam")) {
+            xWidget = new XTextResourceDropDam(name);
+         } else if (xWidgetName.equals("XFloat")) {
+            xWidget = new XFloat(name);
+         } else if (xWidgetName.equals("XFloatDam")) {
+            xWidget = new XFloatDam(name);
+         } else if (xWidgetName.equals("XIntegerDam")) {
+            xWidget = new XIntegerDam(name);
+         } else if (xWidgetName.equals("XFileTextWithSelectionDialog")) {
+            xWidget = new XFileTextWithSelectionDialog(name);
+         } else if (xWidgetName.equals("XLabel")) {
+            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            if (Strings.isValid(defaultValue)) {
+               xWidget = new XLabel(name, xWidgetLayoutData.getDefaultValue());
+            } else {
+               xWidget = new XLabel(name);
+            }
+         } else if (xWidgetName.equals("XCheckBox")) {
+            XCheckBox checkBox = new XCheckBox(name);
+            checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
+            if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
+               checkBox.set(Boolean.valueOf(xWidgetLayoutData.getDefaultValue()));
+            }
+            xWidget = checkBox;
+         } else if (xWidgetName.equals("XCheckBoxDam")) {
+            XCheckBoxDam checkBox = new XCheckBoxDam(name);
+            checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
+            xWidget = checkBox;
+         } else if (xWidgetName.startsWith("XComboDam")) {
+            if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+               String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+               if (values.length > 0) {
+                  xWidget = new XComboDam(name);
+                  XComboDam combo = new XComboDam(name);
+                  combo.setDataStrings(values);
+                  if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
+                     combo.setDefaultSelectionAllowed(false);
+                  }
+                  if (xWidgetLayoutData.getXOptionHandler().contains(XOption.ADD_DEFAULT_VALUE)) {
+                     combo.setDefaultSelectionAllowed(true);
+                  }
+                  xWidget = combo;
+               } else {
+                  throw new OseeArgumentException("Invalid XComboDam.  Must be \"XComboDam(option1,option2,option3)\"");
+               }
+            }
+         } else if (xWidgetName.startsWith("XSelectFromMultiChoiceDam")) {
+            if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+               String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+               if (values.length > 0) {
+                  XSelectFromMultiChoiceDam widget = new XSelectFromMultiChoiceDam(name);
+                  widget.setSelectableItems(Arrays.asList(values));
+                  xWidget = widget;
+               } else {
+                  throw new OseeArgumentException(
+                     "Invalid XSelectFromMultiChoiceDam.  Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
+               }
+            }
+         } else if (xWidgetName.startsWith("XStackedDam")) {
+            xWidget = new XStackedDam(name);
+         } else if (xWidgetName.startsWith("XFlatDam")) {
+            xWidget = new XTextFlatDam(name);
+         } else if (xWidgetName.startsWith("XComboBooleanDam")) {
+            xWidget = new XComboBooleanDam(name);
+            XComboBooleanDam combo = new XComboBooleanDam(name);
+            combo.setDataStrings(BooleanAttribute.booleanChoices);
+            xWidget = combo;
+            if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
+               String value = xWidgetLayoutData.getDefaultValue();
+               if (value == null) {
+                  combo.set("");
+               } else if (value.equals("true") || value.equals("yes")) {
+                  combo.set("yes");
+               } else if (value.equals("false") || value.equals("no")) {
+                  combo.set("no");
+               } else {
+                  combo.set("");
+               }
+            }
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
+               combo.setDefaultSelectionAllowed(false);
+            }
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.ADD_DEFAULT_VALUE)) {
+               combo.setDefaultSelectionAllowed(true);
+            }
+         } else if (xWidgetName.startsWith("XComboViewer")) {
+            xWidget = new XComboViewer(name, SWT.NONE);
+         } else if (xWidgetName.startsWith("XCombo")) {
             String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
-               xWidget = new XComboDam(name);
-               XComboDam combo = new XComboDam(name);
+               XCombo combo = new XCombo(name);
+
+               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.SORTED)) {
+                  Arrays.sort(values);
+               }
                combo.setDataStrings(values);
+
                if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
                   combo.setDefaultSelectionAllowed(false);
                }
@@ -205,138 +271,75 @@ public final class FrameworkXWidgetProvider {
                }
                xWidget = combo;
             } else {
-               throw new OseeArgumentException("Invalid XComboDam.  Must be \"XComboDam(option1,option2,option3)\"");
+               throw new OseeArgumentException("Invalid XCombo.  Must be \"XCombo(option1,option2,option3)\"");
             }
-         }
-      } else if (xWidgetName.startsWith("XSelectFromMultiChoiceDam")) {
-         if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+         } else if (xWidgetName.startsWith("XListDam")) {
+            if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+               String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+               if (values.length > 0) {
+                  XListDam list = new XListDam(name);
+                  list.add(values);
+                  xWidget = list;
+               } else {
+                  throw new OseeArgumentException("Invalid XList.  Must be \"XList(option1,option2,option3)\"");
+               }
+            }
+         } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
+            xWidget = new XHyperlabelMemberSelDam(name);
+         } else if (xWidgetName.startsWith("XListDropViewer")) {
+            xWidget = new XListDropViewer(name);
+         } else if (xWidgetName.startsWith("XList")) {
             String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
-               XSelectFromMultiChoiceDam widget = new XSelectFromMultiChoiceDam(name);
-               widget.setSelectableItems(Arrays.asList(values));
-               xWidget = widget;
-            } else {
-               throw new OseeArgumentException(
-                  "Invalid XSelectFromMultiChoiceDam.  Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
-            }
-         }
-      } else if (xWidgetName.startsWith("XStackedDam")) {
-         xWidget = new XStackedDam(name);
-      } else if (xWidgetName.startsWith("XFlatDam")) {
-         xWidget = new XTextFlatDam(name);
-      } else if (xWidgetName.startsWith("XComboBooleanDam")) {
-         xWidget = new XComboBooleanDam(name);
-         XComboBooleanDam combo = new XComboBooleanDam(name);
-         combo.setDataStrings(BooleanAttribute.booleanChoices);
-         xWidget = combo;
-         if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
-            String value = xWidgetLayoutData.getDefaultValue();
-            if (value == null) {
-               combo.set("");
-            } else if (value.equals("true") || value.equals("yes")) {
-               combo.set("yes");
-            } else if (value.equals("false") || value.equals("no")) {
-               combo.set("no");
-            } else {
-               combo.set("");
-            }
-         }
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
-            combo.setDefaultSelectionAllowed(false);
-         }
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.ADD_DEFAULT_VALUE)) {
-            combo.setDefaultSelectionAllowed(true);
-         }
-      } else if (xWidgetName.startsWith("XComboViewer")) {
-         xWidget = new XComboViewer(name, SWT.NONE);
-      } else if (xWidgetName.startsWith("XCombo")) {
-         String values[] =
-            xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
-         if (values.length > 0) {
-            XCombo combo = new XCombo(name);
-
-            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.SORTED)) {
-               Arrays.sort(values);
-            }
-            combo.setDataStrings(values);
-
-            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
-               combo.setDefaultSelectionAllowed(false);
-            }
-            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.ADD_DEFAULT_VALUE)) {
-               combo.setDefaultSelectionAllowed(true);
-            }
-            xWidget = combo;
-         } else {
-            throw new OseeArgumentException("Invalid XCombo.  Must be \"XCombo(option1,option2,option3)\"");
-         }
-      } else if (xWidgetName.startsWith("XListDam")) {
-         if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
-            String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
-            if (values.length > 0) {
-               XListDam list = new XListDam(name);
+               XList list = new XList(name);
                list.add(values);
                xWidget = list;
+               String defaultValue = xWidgetLayoutData.getDefaultValue();
+               if (Strings.isValid(defaultValue)) {
+                  list.setSelected(Arrays.asList(defaultValue.split(",")));
+               }
             } else {
                throw new OseeArgumentException("Invalid XList.  Must be \"XList(option1,option2,option3)\"");
             }
-         }
-      } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
-         xWidget = new XHyperlabelMemberSelDam(name);
-      } else if (xWidgetName.startsWith("XListDropViewer")) {
-         xWidget = new XListDropViewer(name);
-      } else if (xWidgetName.startsWith("XList")) {
-         String values[] =
-            xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
-         if (values.length > 0) {
-            XList list = new XList(name);
-            list.add(values);
-            xWidget = list;
-            String defaultValue = xWidgetLayoutData.getDefaultValue();
-            if (Strings.isValid(defaultValue)) {
-               list.setSelected(Arrays.asList(defaultValue.split(",")));
+         } else if (xWidgetName.startsWith("XArtifactList")) {
+            XArtifactList artifactList = new XArtifactList(name);
+            artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));
+            xWidget = artifactList;
+         } else if (xWidgetName.equals(XBranchSelectWidget.WIDGET_ID)) {
+            XBranchSelectWidget widget = new XBranchSelectWidget(name);
+            widget.setToolTip(xWidgetLayoutData.getToolTip());
+            try {
+               String branchGuid = xWidgetLayoutData.getDefaultValue();
+               if (branchGuid != null) {
+                  widget.setSelection(BranchManager.getBranchByGuid(branchGuid));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-         } else {
-            throw new OseeArgumentException("Invalid XList.  Must be \"XList(option1,option2,option3)\"");
-         }
-      } else if (xWidgetName.startsWith("XArtifactList")) {
-         XArtifactList artifactList = new XArtifactList(name);
-         artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));
-         xWidget = artifactList;
-      } else if (xWidgetName.equals(XBranchSelectWidget.WIDGET_ID)) {
-         XBranchSelectWidget widget = new XBranchSelectWidget(name);
-         widget.setToolTip(xWidgetLayoutData.getToolTip());
-         try {
-            String branchGuid = xWidgetLayoutData.getDefaultValue();
-            if (branchGuid != null) {
-               widget.setSelection(BranchManager.getBranchByGuid(branchGuid));
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-         xWidget = widget;
-      } else if (xWidgetName.equals(XArtifactTypeComboViewer.WIDGET_ID)) {
-         XArtifactTypeComboViewer widget = new XArtifactTypeComboViewer();
-         xWidget = widget;
-      } else if (xWidgetName.equals(XAttributeTypeComboViewer.WIDGET_ID)) {
-         XAttributeTypeComboViewer widget = new XAttributeTypeComboViewer();
-         xWidget = widget;
-      } else if (xWidgetName.equals(XAttributeTypeMultiChoiceSelect.WIDGET_ID)) {
-         XAttributeTypeMultiChoiceSelect widget = new XAttributeTypeMultiChoiceSelect();
-         xWidget = widget;
-      } else if (xWidgetName.equals(XArtifactTypeMultiChoiceSelect.WIDGET_ID)) {
-         XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
-         xWidget = widget;
-      } else if (xWidgetName.equals(XArtifactMultiChoiceSelect.WIDGET_ID)) {
-         xWidget = new XArtifactMultiChoiceSelect();
+            xWidget = widget;
+         } else if (xWidgetName.equals(XArtifactTypeComboViewer.WIDGET_ID)) {
+            XArtifactTypeComboViewer widget = new XArtifactTypeComboViewer();
+            xWidget = widget;
+         } else if (xWidgetName.equals(XAttributeTypeComboViewer.WIDGET_ID)) {
+            XAttributeTypeComboViewer widget = new XAttributeTypeComboViewer();
+            xWidget = widget;
+         } else if (xWidgetName.equals(XAttributeTypeMultiChoiceSelect.WIDGET_ID)) {
+            XAttributeTypeMultiChoiceSelect widget = new XAttributeTypeMultiChoiceSelect();
+            xWidget = widget;
+         } else if (xWidgetName.equals(XArtifactTypeMultiChoiceSelect.WIDGET_ID)) {
+            XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
+            xWidget = widget;
+         } else if (xWidgetName.equals(XArtifactMultiChoiceSelect.WIDGET_ID)) {
+            xWidget = new XArtifactMultiChoiceSelect();
 
-      } else if (xWidgetName.equals(XTextFlatDam.WIDGET_ID)) {
-         XTextFlatDam widget = new XTextFlatDam();
-         xWidget = widget;
-      } else {
-         xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
+         } else if (xWidgetName.equals(XTextFlatDam.WIDGET_ID)) {
+            XTextFlatDam widget = new XTextFlatDam();
+            xWidget = widget;
+         } else {
+            xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
+         }
       }
 
       if (xWidget instanceof XText) {
@@ -354,6 +357,12 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidget instanceof IArtifactWidget) {
             ((IArtifactWidget) xWidget).setArtifact(artifact);
          }
+      }
+      if (xWidget != null) {
+         for (IXWidgetValidityProvider provider : xWidgetLayoutData.getValidityProviders()) {
+            xWidget.addXWidgetValidityProvider(provider);
+         }
+         xWidget.setObject(xWidgetLayoutData.getObject());
       }
       return xWidget;
    }

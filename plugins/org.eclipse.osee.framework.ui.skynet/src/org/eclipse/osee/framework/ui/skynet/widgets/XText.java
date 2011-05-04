@@ -505,10 +505,19 @@ public class XText extends XWidget {
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && !Strings.isValid(get())) {
+      IStatus status = super.isValid();
+      if (!status.isOK()) {
+         return status;
+      }
+      if (isRequiredEntry() && isEmpty()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, String.format("Must enter \"%s\"", getLabel()));
       }
       return Status.OK_STATUS;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return !Strings.isValid(get());
    }
 
    @Override

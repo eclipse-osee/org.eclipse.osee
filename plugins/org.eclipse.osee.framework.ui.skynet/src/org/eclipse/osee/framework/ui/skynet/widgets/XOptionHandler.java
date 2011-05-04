@@ -49,6 +49,12 @@ public class XOptionHandler {
          case REQUIRED:
             xOptions.remove(XOption.NOT_REQUIRED);
             break;
+         case NOT_REQUIRED_FOR_COMPLETION:
+            xOptions.remove(XOption.REQUIRED_FOR_COMPLETION);
+            break;
+         case REQUIRED_FOR_COMPLETION:
+            xOptions.remove(XOption.NOT_REQUIRED_FOR_COMPLETION);
+            break;
          case NOT_ENABLED:
             xOptions.remove(XOption.ENABLED);
             break;
@@ -92,7 +98,7 @@ public class XOptionHandler {
 
    /**
     * Must go through the add method to ensure values set properly
-    *
+    * 
     * @param options the xOptions to set
     */
    public void set(Set<XOption> options) {
@@ -102,7 +108,7 @@ public class XOptionHandler {
 
    /**
     * Must go through the add method to ensure values set properly
-    *
+    * 
     * @param options the xOptions to set
     */
    public void set(XOption[] options) {

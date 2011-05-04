@@ -322,6 +322,11 @@ public class XListViewer extends GenericXWidget {
 
    }
 
+   @Override
+   public boolean isEmpty() {
+      return getSelected().isEmpty();
+   }
+
    /**
     * Minimum number of selected items that makes this widget valid
     */

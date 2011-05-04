@@ -150,6 +150,11 @@ public class XRadioButton extends XWidget {
    }
 
    @Override
+   public boolean isEmpty() {
+      return false;
+   }
+
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, getLabel() + ": ");
    }

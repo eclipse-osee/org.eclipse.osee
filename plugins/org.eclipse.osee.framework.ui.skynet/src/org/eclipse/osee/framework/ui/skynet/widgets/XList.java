@@ -371,6 +371,11 @@ public class XList extends GenericXWidget {
       return Status.OK_STATUS;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return getSelected().isEmpty();
+   }
+
    /**
     * Minimum number of selected items that makes this widget valid
     */
