@@ -67,6 +67,7 @@ import org.eclipse.osee.ats.column.PercentCompleteSMAStateColumn;
 import org.eclipse.osee.ats.column.PercentCompleteStateReviewColumn;
 import org.eclipse.osee.ats.column.PercentCompleteStateTasksColumn;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteWorkflowColumn;
 import org.eclipse.osee.ats.column.PercentReworkColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
@@ -150,6 +151,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       PercentCompleteStateTasksColumn.getInstance(),
       PercentCompleteStateReviewColumn.getInstance(),
       PercentCompleteTotalColumn.getInstance(),
+      PercentCompleteWorkflowColumn.getInstance(),
       HoursSpentSMAStateColumn.getInstance(),
       HoursSpentStateTasksColumn.getInstance(),
       HoursSpentStateReviewColumn.getInstance(),
