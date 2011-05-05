@@ -56,6 +56,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
+import org.eclipse.osee.ats.workflow.TransitionToMenu;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -335,6 +336,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       // EDIT MENU BLOCK
       MenuManager editMenuManager = updateEditMenu(mm);
       mm.insertBefore(MENU_GROUP_PRE, editMenuManager);
+
+      final Collection<TreeItem> selectedTreeItems = Arrays.asList(thisXViewer.getTree().getSelection());
+      mm.insertBefore(MENU_GROUP_PRE,
+         TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", selectedTreeItems));
 
       mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
       editStatusAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
