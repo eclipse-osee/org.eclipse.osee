@@ -109,6 +109,8 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/decisionReviews"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/peerReviews"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/percentWeight"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/recommendedPercentComplete"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/color"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//StateDef/layout"/>
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//DecisionReviewRef">

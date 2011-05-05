@@ -865,13 +865,31 @@ public interface AtsDslPackage extends EPackage
   int STATE_DEF__PERCENT_WEIGHT = 8;
 
   /**
+   * The feature id for the '<em><b>Recommended Percent Complete</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int STATE_DEF__RECOMMENDED_PERCENT_COMPLETE = 9;
+
+  /**
+   * The feature id for the '<em><b>Color</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int STATE_DEF__COLOR = 10;
+
+  /**
    * The feature id for the '<em><b>Layout</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int STATE_DEF__LAYOUT = 9;
+  int STATE_DEF__LAYOUT = 11;
 
   /**
    * The number of structural features of the '<em>State Def</em>' class.
@@ -880,7 +898,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int STATE_DEF_FEATURE_COUNT = 10;
+  int STATE_DEF_FEATURE_COUNT = 12;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewRefImpl <em>Decision Review Ref</em>}' class.
@@ -2296,6 +2314,28 @@ public interface AtsDslPackage extends EPackage
   EAttribute getStateDef_PercentWeight();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getRecommendedPercentComplete <em>Recommended Percent Complete</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Recommended Percent Complete</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.StateDef#getRecommendedPercentComplete()
+   * @see #getStateDef()
+   * @generated
+   */
+  EAttribute getStateDef_RecommendedPercentComplete();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getColor <em>Color</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Color</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.StateDef#getColor()
+   * @see #getStateDef()
+   * @generated
+   */
+  EAttribute getStateDef_Color();
+
+  /**
    * Returns the meta object for the containment reference '{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getLayout <em>Layout</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3485,6 +3525,22 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute STATE_DEF__PERCENT_WEIGHT = eINSTANCE.getStateDef_PercentWeight();
+
+    /**
+     * The meta object literal for the '<em><b>Recommended Percent Complete</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute STATE_DEF__RECOMMENDED_PERCENT_COMPLETE = eINSTANCE.getStateDef_RecommendedPercentComplete();
+
+    /**
+     * The meta object literal for the '<em><b>Color</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute STATE_DEF__COLOR = eINSTANCE.getStateDef_Color();
 
     /**
      * The meta object literal for the '<em><b>Layout</b></em>' containment reference feature.

@@ -115,6 +115,8 @@ StateDef:
 	(decisionReviews+=DecisionReviewRef)*
 	(peerReviews+=PeerReviewRef)*
 	('percentWeight' percentWeight=INT)?
+	('recommendedPercentComplete' recommendedPercentComplete=INT)?
+	('color' color=StateColor)?
 	(layout=LayoutType)?
 	'}';
 
@@ -299,5 +301,16 @@ PAGE_TYPE_NAME:
 // WARNING: Any new PageType need to be added to AtsDslProposalProvider for content assist
 PageType:
 	'Working' | 'Completed' | 'Cancelled' | PAGE_TYPE_NAME;
+
+COLOR_NAME:
+	STRING;
+
+// STRING is for future expansion
+// WARNING: Any new color needs to be added to StateColor; Must be an SWT.COLOR color
+StateColor:
+	'BLACK' | 'WHITE' | 'RED' | 'DARK_RED' | 'GREEN' | 'DARK_GREEN' | 'YELLOW' | 'DARK_YELLOW' | 'BLUE' | 'DARK_BLUE' | 'MAGENTA'
+	 | 'DARK_MAGENTA' | 'CYAN' | 'DARK_CYAN' | 'GRAY' | 'DARK_GRAY' | COLOR_NAME ;
+	 
 	
-	
+	 
+	 

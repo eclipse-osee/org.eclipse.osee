@@ -361,8 +361,17 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromStateDefinition(Object element, List<Object> items) {
          StateDefinition stateDef = (StateDefinition) element;
+         if (Strings.isValid(stateDef.getDescription())) {
+            items.add("Description: " + stateDef.getDescription());
+         }
          items.add(new WrappedLayout(stateDef.getStateItems()));
          items.add(new WrappedRules(stateDef, awa));
+         if (stateDef.getRecommendedPercentComplete() == 0) {
+            items.add("Recommended Percent Complete: not set");
+         } else {
+            items.add("Recommended Percent Complete: " + stateDef.getRecommendedPercentComplete());
+         }
+         items.add("Color: " + stateDef.getColor().toString());
          if (editor.getAwa().isOfType(AtsArtifactTypes.TeamWorkflow)) {
             items.add(new WrappedDecisionReviews(stateDef.getDecisionReviews()));
             items.add(new WrappedPeerReviews(stateDef.getPeerReviews()));

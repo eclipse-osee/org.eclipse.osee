@@ -53,6 +53,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
@@ -158,8 +159,20 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    protected Composite createWorkArea(Composite comp, StateXWidgetPage statePage, XFormToolkit toolkit) throws OseeCoreException {
-
       statePage.generateLayoutDatas(sma);
+
+      if (statePage.getStateDefinition().getDescription() != null) {
+         Composite labelComp = toolkit.createContainer(comp, 1);
+         labelComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+         labelComp.setLayout(ALayout.getZeroMarginLayout());
+
+         Label descLabel =
+            editor.getToolkit().createLabel(labelComp,
+               " State Description: " + statePage.getStateDefinition().getDescription());
+         GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
+         descLabel.setBackground(AtsUtil.ACTIVE_COLOR);
+         descLabel.setLayoutData(gd);
+      }
 
       // Create Page
       Composite workComp = toolkit.createContainer(comp, 1);

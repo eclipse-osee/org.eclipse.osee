@@ -5306,13 +5306,15 @@ protected class AttrWidget_OptionAssignment_2_1 extends AssignmentToken  {
  * StateDef:
  * 	"state" name=STATE_NAME_REFERENCE "{" ("description" description=STRING)? "type" pageType=PageType "ordinal"
  * 	ordinal=INT transitionStates+=ToState* ("rule" rules+=Rule)* decisionReviews+=DecisionReviewRef*
- * 	peerReviews+=PeerReviewRef* ("percentWeight" percentWeight=INT)? layout=LayoutType? "}";
+ * 	peerReviews+=PeerReviewRef* ("percentWeight" percentWeight=INT)? ("recommendedPercentComplete"
+ * 	recommendedPercentComplete=INT)? ("color" color=StateColor)? layout=LayoutType? "}";
  *
  **/
 
 // "state" name=STATE_NAME_REFERENCE "{" ("description" description=STRING)? "type" pageType=PageType "ordinal" ordinal=INT
 // transitionStates+=ToState* ("rule" rules+=Rule)* decisionReviews+=DecisionReviewRef* peerReviews+=PeerReviewRef*
-// ("percentWeight" percentWeight=INT)? layout=LayoutType? "}"
+// ("percentWeight" percentWeight=INT)? ("recommendedPercentComplete" recommendedPercentComplete=INT)? ("color"
+// color=StateColor)? layout=LayoutType? "}"
 protected class StateDef_Group extends GroupToken {
 	
 	public StateDef_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -5327,7 +5329,7 @@ protected class StateDef_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new StateDef_RightCurlyBracketKeyword_14(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new StateDef_RightCurlyBracketKeyword_16(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -5920,16 +5922,185 @@ protected class StateDef_PercentWeightAssignment_12_1 extends AssignmentToken  {
 }
 
 
-// layout=LayoutType?
-protected class StateDef_LayoutAssignment_13 extends AssignmentToken  {
+// ("recommendedPercentComplete" recommendedPercentComplete=INT)?
+protected class StateDef_Group_13 extends GroupToken {
 	
-	public StateDef_LayoutAssignment_13(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public StateDef_Group_13(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getStateDefAccess().getGroup_13();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new StateDef_RecommendedPercentCompleteAssignment_13_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "recommendedPercentComplete"
+protected class StateDef_RecommendedPercentCompleteKeyword_13_0 extends KeywordToken  {
+	
+	public StateDef_RecommendedPercentCompleteKeyword_13_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getStateDefAccess().getRecommendedPercentCompleteKeyword_13_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new StateDef_Group_12(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new StateDef_PeerReviewsAssignment_11(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new StateDef_DecisionReviewsAssignment_10(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new StateDef_Group_9(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new StateDef_TransitionStatesAssignment_8(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new StateDef_OrdinalAssignment_7(lastRuleCallOrigin, this, 5, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// recommendedPercentComplete=INT
+protected class StateDef_RecommendedPercentCompleteAssignment_13_1 extends AssignmentToken  {
+	
+	public StateDef_RecommendedPercentCompleteAssignment_13_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getStateDefAccess().getLayoutAssignment_13();
+		return grammarAccess.getStateDefAccess().getRecommendedPercentCompleteAssignment_13_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new StateDef_RecommendedPercentCompleteKeyword_13_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("recommendedPercentComplete",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("recommendedPercentComplete");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getStateDefAccess().getRecommendedPercentCompleteINTTerminalRuleCall_13_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getStateDefAccess().getRecommendedPercentCompleteINTTerminalRuleCall_13_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("color" color=StateColor)?
+protected class StateDef_Group_14 extends GroupToken {
+	
+	public StateDef_Group_14(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getStateDefAccess().getGroup_14();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new StateDef_ColorAssignment_14_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "color"
+protected class StateDef_ColorKeyword_14_0 extends KeywordToken  {
+	
+	public StateDef_ColorKeyword_14_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getStateDefAccess().getColorKeyword_14_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new StateDef_Group_13(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new StateDef_Group_12(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new StateDef_PeerReviewsAssignment_11(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new StateDef_DecisionReviewsAssignment_10(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new StateDef_Group_9(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new StateDef_TransitionStatesAssignment_8(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new StateDef_OrdinalAssignment_7(lastRuleCallOrigin, this, 6, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// color=StateColor
+protected class StateDef_ColorAssignment_14_1 extends AssignmentToken  {
+	
+	public StateDef_ColorAssignment_14_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getStateDefAccess().getColorAssignment_14_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new StateDef_ColorKeyword_14_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("color",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("color");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getStateDefAccess().getColorStateColorParserRuleCall_14_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getStateDefAccess().getColorStateColorParserRuleCall_14_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// layout=LayoutType?
+protected class StateDef_LayoutAssignment_15 extends AssignmentToken  {
+	
+	public StateDef_LayoutAssignment_15(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getStateDefAccess().getLayoutAssignment_15();
 	}
 
     @Override
@@ -5948,7 +6119,7 @@ protected class StateDef_LayoutAssignment_13 extends AssignmentToken  {
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getLayoutTypeRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getStateDefAccess().getLayoutLayoutTypeParserRuleCall_13_0(); 
+				element = grammarAccess.getStateDefAccess().getLayoutLayoutTypeParserRuleCall_15_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -5960,39 +6131,43 @@ protected class StateDef_LayoutAssignment_13 extends AssignmentToken  {
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new StateDef_Group_12(lastRuleCallOrigin, next, actIndex, consumed);
-			case 1: return new StateDef_PeerReviewsAssignment_11(lastRuleCallOrigin, next, actIndex, consumed);
-			case 2: return new StateDef_DecisionReviewsAssignment_10(lastRuleCallOrigin, next, actIndex, consumed);
-			case 3: return new StateDef_Group_9(lastRuleCallOrigin, next, actIndex, consumed);
-			case 4: return new StateDef_TransitionStatesAssignment_8(lastRuleCallOrigin, next, actIndex, consumed);
-			case 5: return new StateDef_OrdinalAssignment_7(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new StateDef_Group_14(lastRuleCallOrigin, next, actIndex, consumed);
+			case 1: return new StateDef_Group_13(lastRuleCallOrigin, next, actIndex, consumed);
+			case 2: return new StateDef_Group_12(lastRuleCallOrigin, next, actIndex, consumed);
+			case 3: return new StateDef_PeerReviewsAssignment_11(lastRuleCallOrigin, next, actIndex, consumed);
+			case 4: return new StateDef_DecisionReviewsAssignment_10(lastRuleCallOrigin, next, actIndex, consumed);
+			case 5: return new StateDef_Group_9(lastRuleCallOrigin, next, actIndex, consumed);
+			case 6: return new StateDef_TransitionStatesAssignment_8(lastRuleCallOrigin, next, actIndex, consumed);
+			case 7: return new StateDef_OrdinalAssignment_7(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
 }
 
 // "}"
-protected class StateDef_RightCurlyBracketKeyword_14 extends KeywordToken  {
+protected class StateDef_RightCurlyBracketKeyword_16 extends KeywordToken  {
 	
-	public StateDef_RightCurlyBracketKeyword_14(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public StateDef_RightCurlyBracketKeyword_16(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getStateDefAccess().getRightCurlyBracketKeyword_14();
+		return grammarAccess.getStateDefAccess().getRightCurlyBracketKeyword_16();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new StateDef_LayoutAssignment_13(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new StateDef_Group_12(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new StateDef_PeerReviewsAssignment_11(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new StateDef_DecisionReviewsAssignment_10(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new StateDef_Group_9(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new StateDef_TransitionStatesAssignment_8(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new StateDef_OrdinalAssignment_7(lastRuleCallOrigin, this, 6, inst);
+			case 0: return new StateDef_LayoutAssignment_15(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new StateDef_Group_14(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new StateDef_Group_13(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new StateDef_Group_12(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new StateDef_PeerReviewsAssignment_11(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new StateDef_DecisionReviewsAssignment_10(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new StateDef_Group_9(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new StateDef_TransitionStatesAssignment_8(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new StateDef_OrdinalAssignment_7(lastRuleCallOrigin, this, 8, inst);
 			default: return null;
 		}	
 	}
@@ -9062,6 +9237,8 @@ protected class Composite_RightCurlyBracketKeyword_6 extends KeywordToken  {
 
 
 /************ end Rule Composite ****************/
+
+
 
 
 

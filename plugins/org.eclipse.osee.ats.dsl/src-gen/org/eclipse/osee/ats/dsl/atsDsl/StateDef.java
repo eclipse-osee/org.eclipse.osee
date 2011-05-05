@@ -27,6 +27,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getDecisionReviews <em>Decision Reviews</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getPeerReviews <em>Peer Reviews</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getPercentWeight <em>Percent Weight</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getRecommendedPercentComplete <em>Recommended Percent Complete</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getColor <em>Color</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getLayout <em>Layout</em>}</li>
  * </ul>
  * </p>
@@ -230,6 +232,58 @@ public interface StateDef extends EObject
    * @generated
    */
   void setPercentWeight(int value);
+
+  /**
+   * Returns the value of the '<em><b>Recommended Percent Complete</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Recommended Percent Complete</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Recommended Percent Complete</em>' attribute.
+   * @see #setRecommendedPercentComplete(int)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getStateDef_RecommendedPercentComplete()
+   * @model
+   * @generated
+   */
+  int getRecommendedPercentComplete();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getRecommendedPercentComplete <em>Recommended Percent Complete</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Recommended Percent Complete</em>' attribute.
+   * @see #getRecommendedPercentComplete()
+   * @generated
+   */
+  void setRecommendedPercentComplete(int value);
+
+  /**
+   * Returns the value of the '<em><b>Color</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Color</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Color</em>' attribute.
+   * @see #setColor(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getStateDef_Color()
+   * @model
+   * @generated
+   */
+  String getColor();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.StateDef#getColor <em>Color</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Color</em>' attribute.
+   * @see #getColor()
+   * @generated
+   */
+  void setColor(String value);
 
   /**
    * Returns the value of the '<em><b>Layout</b></em>' containment reference.

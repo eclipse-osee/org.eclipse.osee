@@ -46,6 +46,8 @@ import org.eclipse.osee.ats.dsl.atsDsl.ToState;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getDecisionReviews <em>Decision Reviews</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getPeerReviews <em>Peer Reviews</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getPercentWeight <em>Percent Weight</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getRecommendedPercentComplete <em>Recommended Percent Complete</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getColor <em>Color</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getLayout <em>Layout</em>}</li>
  * </ul>
  * </p>
@@ -193,6 +195,46 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
    * @ordered
    */
   protected int percentWeight = PERCENT_WEIGHT_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getRecommendedPercentComplete() <em>Recommended Percent Complete</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRecommendedPercentComplete()
+   * @generated
+   * @ordered
+   */
+  protected static final int RECOMMENDED_PERCENT_COMPLETE_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getRecommendedPercentComplete() <em>Recommended Percent Complete</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRecommendedPercentComplete()
+   * @generated
+   * @ordered
+   */
+  protected int recommendedPercentComplete = RECOMMENDED_PERCENT_COMPLETE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getColor() <em>Color</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getColor()
+   * @generated
+   * @ordered
+   */
+  protected static final String COLOR_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getColor() <em>Color</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getColor()
+   * @generated
+   * @ordered
+   */
+  protected String color = COLOR_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getLayout() <em>Layout</em>}' containment reference.
@@ -401,6 +443,52 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
    * <!-- end-user-doc -->
    * @generated
    */
+  public int getRecommendedPercentComplete()
+  {
+    return recommendedPercentComplete;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRecommendedPercentComplete(int newRecommendedPercentComplete)
+  {
+    int oldRecommendedPercentComplete = recommendedPercentComplete;
+    recommendedPercentComplete = newRecommendedPercentComplete;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.STATE_DEF__RECOMMENDED_PERCENT_COMPLETE, oldRecommendedPercentComplete, recommendedPercentComplete));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getColor()
+  {
+    return color;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setColor(String newColor)
+  {
+    String oldColor = color;
+    color = newColor;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.STATE_DEF__COLOR, oldColor, color));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public LayoutType getLayout()
   {
     return layout;
@@ -494,6 +582,10 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
         return getPeerReviews();
       case AtsDslPackage.STATE_DEF__PERCENT_WEIGHT:
         return getPercentWeight();
+      case AtsDslPackage.STATE_DEF__RECOMMENDED_PERCENT_COMPLETE:
+        return getRecommendedPercentComplete();
+      case AtsDslPackage.STATE_DEF__COLOR:
+        return getColor();
       case AtsDslPackage.STATE_DEF__LAYOUT:
         return getLayout();
     }
@@ -542,6 +634,12 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
       case AtsDslPackage.STATE_DEF__PERCENT_WEIGHT:
         setPercentWeight((Integer)newValue);
         return;
+      case AtsDslPackage.STATE_DEF__RECOMMENDED_PERCENT_COMPLETE:
+        setRecommendedPercentComplete((Integer)newValue);
+        return;
+      case AtsDslPackage.STATE_DEF__COLOR:
+        setColor((String)newValue);
+        return;
       case AtsDslPackage.STATE_DEF__LAYOUT:
         setLayout((LayoutType)newValue);
         return;
@@ -586,6 +684,12 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
       case AtsDslPackage.STATE_DEF__PERCENT_WEIGHT:
         setPercentWeight(PERCENT_WEIGHT_EDEFAULT);
         return;
+      case AtsDslPackage.STATE_DEF__RECOMMENDED_PERCENT_COMPLETE:
+        setRecommendedPercentComplete(RECOMMENDED_PERCENT_COMPLETE_EDEFAULT);
+        return;
+      case AtsDslPackage.STATE_DEF__COLOR:
+        setColor(COLOR_EDEFAULT);
+        return;
       case AtsDslPackage.STATE_DEF__LAYOUT:
         setLayout((LayoutType)null);
         return;
@@ -621,6 +725,10 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
         return peerReviews != null && !peerReviews.isEmpty();
       case AtsDslPackage.STATE_DEF__PERCENT_WEIGHT:
         return percentWeight != PERCENT_WEIGHT_EDEFAULT;
+      case AtsDslPackage.STATE_DEF__RECOMMENDED_PERCENT_COMPLETE:
+        return recommendedPercentComplete != RECOMMENDED_PERCENT_COMPLETE_EDEFAULT;
+      case AtsDslPackage.STATE_DEF__COLOR:
+        return COLOR_EDEFAULT == null ? color != null : !COLOR_EDEFAULT.equals(color);
       case AtsDslPackage.STATE_DEF__LAYOUT:
         return layout != null;
     }
@@ -650,6 +758,10 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
     result.append(rules);
     result.append(", percentWeight: ");
     result.append(percentWeight);
+    result.append(", recommendedPercentComplete: ");
+    result.append(recommendedPercentComplete);
+    result.append(", color: ");
+    result.append(color);
     result.append(')');
     return result.toString();
   }

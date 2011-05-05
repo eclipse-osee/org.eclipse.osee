@@ -19,7 +19,9 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 
 public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
@@ -61,6 +63,14 @@ public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn
          return XViewerCells.getCellExceptionString(ex);
       }
       return "";
+   }
+
+   @Override
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
+      if (element instanceof AbstractWorkflowArtifact) {
+         return Displays.getSystemColor(((AbstractWorkflowArtifact) element).getCurrentAtsWorkPage().getStateDefinition().getColor().getSwtColorId());
+      }
+      return null;
    }
 
 }

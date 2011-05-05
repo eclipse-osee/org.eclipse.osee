@@ -28,6 +28,8 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    private WorkDefinition workDefinition;
    protected TaskResolutionOptionRule taskResolutionOptions;
    private int percentWeight = 0;
+   private int recommendedPercentComplete = 0;
+   private StateColor color = null;
 
    public StateDefinition(String name) {
       super(name);
@@ -209,6 +211,22 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
     */
    public void setPercentWeight(int percentWeight) {
       this.percentWeight = percentWeight;
+   }
+
+   public void setRecommendedPercentComplete(int recommendedPercentComplete) {
+      this.recommendedPercentComplete = recommendedPercentComplete;
+   }
+
+   public int getRecommendedPercentComplete() {
+      return recommendedPercentComplete;
+   }
+
+   public void setColor(StateColor stateColor) {
+      this.color = stateColor;
+   }
+
+   public StateColor getColor() {
+      return color;
    }
 
 }

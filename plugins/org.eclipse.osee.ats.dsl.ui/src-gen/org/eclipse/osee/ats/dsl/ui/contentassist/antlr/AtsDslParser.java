@@ -48,6 +48,7 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getRuleAccess().getAlternatives(), "rule__Rule__Alternatives");
 					put(grammarAccess.getWidgetOptionAccess().getAlternatives(), "rule__WidgetOption__Alternatives");
 					put(grammarAccess.getPageTypeAccess().getAlternatives(), "rule__PageType__Alternatives");
+					put(grammarAccess.getStateColorAccess().getAlternatives(), "rule__StateColor__Alternatives");
 					put(grammarAccess.getBooleanDefAccess().getAlternatives(), "rule__BooleanDef__Alternatives");
 					put(grammarAccess.getWorkflowEventTypeAccess().getAlternatives(), "rule__WorkflowEventType__Alternatives");
 					put(grammarAccess.getReviewBlockingTypeAccess().getAlternatives(), "rule__ReviewBlockingType__Alternatives");
@@ -111,6 +112,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getStateDefAccess().getGroup_3(), "rule__StateDef__Group_3__0");
 					put(grammarAccess.getStateDefAccess().getGroup_9(), "rule__StateDef__Group_9__0");
 					put(grammarAccess.getStateDefAccess().getGroup_12(), "rule__StateDef__Group_12__0");
+					put(grammarAccess.getStateDefAccess().getGroup_13(), "rule__StateDef__Group_13__0");
+					put(grammarAccess.getStateDefAccess().getGroup_14(), "rule__StateDef__Group_14__0");
 					put(grammarAccess.getDecisionReviewRefAccess().getGroup(), "rule__DecisionReviewRef__Group__0");
 					put(grammarAccess.getDecisionReviewDefAccess().getGroup(), "rule__DecisionReviewDef__Group__0");
 					put(grammarAccess.getDecisionReviewDefAccess().getGroup_7(), "rule__DecisionReviewDef__Group_7__0");
@@ -199,7 +202,9 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getStateDefAccess().getDecisionReviewsAssignment_10(), "rule__StateDef__DecisionReviewsAssignment_10");
 					put(grammarAccess.getStateDefAccess().getPeerReviewsAssignment_11(), "rule__StateDef__PeerReviewsAssignment_11");
 					put(grammarAccess.getStateDefAccess().getPercentWeightAssignment_12_1(), "rule__StateDef__PercentWeightAssignment_12_1");
-					put(grammarAccess.getStateDefAccess().getLayoutAssignment_13(), "rule__StateDef__LayoutAssignment_13");
+					put(grammarAccess.getStateDefAccess().getRecommendedPercentCompleteAssignment_13_1(), "rule__StateDef__RecommendedPercentCompleteAssignment_13_1");
+					put(grammarAccess.getStateDefAccess().getColorAssignment_14_1(), "rule__StateDef__ColorAssignment_14_1");
+					put(grammarAccess.getStateDefAccess().getLayoutAssignment_15(), "rule__StateDef__LayoutAssignment_15");
 					put(grammarAccess.getDecisionReviewRefAccess().getDecisionReviewAssignment_1(), "rule__DecisionReviewRef__DecisionReviewAssignment_1");
 					put(grammarAccess.getDecisionReviewDefAccess().getNameAssignment_1(), "rule__DecisionReviewDef__NameAssignment_1");
 					put(grammarAccess.getDecisionReviewDefAccess().getTitleAssignment_4(), "rule__DecisionReviewDef__TitleAssignment_4");

@@ -1863,27 +1863,71 @@ ruleStateDef returns [EObject current=null]
 	    }
 
 )
+))?(	otherlv_16='recommendedPercentComplete' 
+    {
+    	newLeafNode(otherlv_16, grammarAccess.getStateDefAccess().getRecommendedPercentCompleteKeyword_13_0());
+    }
+(
+(
+		lv_recommendedPercentComplete_17_0=RULE_INT
+		{
+			newLeafNode(lv_recommendedPercentComplete_17_0, grammarAccess.getStateDefAccess().getRecommendedPercentCompleteINTTerminalRuleCall_13_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getStateDefRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"recommendedPercentComplete",
+        		lv_recommendedPercentComplete_17_0, 
+        		"INT");
+	    }
+
+)
+))?(	otherlv_18='color' 
+    {
+    	newLeafNode(otherlv_18, grammarAccess.getStateDefAccess().getColorKeyword_14_0());
+    }
+(
+(
+		{ 
+	        newCompositeNode(grammarAccess.getStateDefAccess().getColorStateColorParserRuleCall_14_1_0()); 
+	    }
+		lv_color_19_0=ruleStateColor		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getStateDefRule());
+	        }
+       		set(
+       			$current, 
+       			"color",
+        		lv_color_19_0, 
+        		"StateColor");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
 ))?(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getStateDefAccess().getLayoutLayoutTypeParserRuleCall_13_0()); 
+	        newCompositeNode(grammarAccess.getStateDefAccess().getLayoutLayoutTypeParserRuleCall_15_0()); 
 	    }
-		lv_layout_16_0=ruleLayoutType		{
+		lv_layout_20_0=ruleLayoutType		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getStateDefRule());
 	        }
        		set(
        			$current, 
        			"layout",
-        		lv_layout_16_0, 
+        		lv_layout_20_0, 
         		"LayoutType");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-)?	otherlv_17='}' 
+)?	otherlv_21='}' 
     {
-    	newLeafNode(otherlv_17, grammarAccess.getStateDefAccess().getRightCurlyBracketKeyword_14());
+    	newLeafNode(otherlv_21, grammarAccess.getStateDefAccess().getRightCurlyBracketKeyword_16());
     }
 )
 ;
@@ -3934,6 +3978,178 @@ rulePageType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken(
     }
     this_PAGE_TYPE_NAME_3=rulePAGE_TYPE_NAME    {
 		$current.merge(this_PAGE_TYPE_NAME_3);
+    }
+
+    { 
+        afterParserOrEnumRuleCall();
+    }
+)
+    ;
+
+
+
+
+
+// Entry rule entryRuleCOLOR_NAME
+entryRuleCOLOR_NAME returns [String current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getCOLOR_NAMERule()); } 
+	 iv_ruleCOLOR_NAME=ruleCOLOR_NAME 
+	 { $current=$iv_ruleCOLOR_NAME.current.getText(); }  
+	 EOF 
+;
+
+// Rule COLOR_NAME
+ruleCOLOR_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+    this_STRING_0=RULE_STRING    {
+		$current.merge(this_STRING_0);
+    }
+
+    { 
+    newLeafNode(this_STRING_0, grammarAccess.getCOLOR_NAMEAccess().getSTRINGTerminalRuleCall()); 
+    }
+
+    ;
+
+
+
+
+
+// Entry rule entryRuleStateColor
+entryRuleStateColor returns [String current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getStateColorRule()); } 
+	 iv_ruleStateColor=ruleStateColor 
+	 { $current=$iv_ruleStateColor.current.getText(); }  
+	 EOF 
+;
+
+// Rule StateColor
+ruleStateColor returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(
+	kw='BLACK' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getBLACKKeyword_0()); 
+    }
+
+    |
+	kw='WHITE' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getWHITEKeyword_1()); 
+    }
+
+    |
+	kw='RED' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getREDKeyword_2()); 
+    }
+
+    |
+	kw='DARK_RED' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_REDKeyword_3()); 
+    }
+
+    |
+	kw='GREEN' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getGREENKeyword_4()); 
+    }
+
+    |
+	kw='DARK_GREEN' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_GREENKeyword_5()); 
+    }
+
+    |
+	kw='YELLOW' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getYELLOWKeyword_6()); 
+    }
+
+    |
+	kw='DARK_YELLOW' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_YELLOWKeyword_7()); 
+    }
+
+    |
+	kw='BLUE' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getBLUEKeyword_8()); 
+    }
+
+    |
+	kw='DARK_BLUE' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_BLUEKeyword_9()); 
+    }
+
+    |
+	kw='MAGENTA' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getMAGENTAKeyword_10()); 
+    }
+
+    |
+	kw='DARK_MAGENTA' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_MAGENTAKeyword_11()); 
+    }
+
+    |
+	kw='CYAN' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getCYANKeyword_12()); 
+    }
+
+    |
+	kw='DARK_CYAN' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_CYANKeyword_13()); 
+    }
+
+    |
+	kw='GRAY' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getGRAYKeyword_14()); 
+    }
+
+    |
+	kw='DARK_GRAY' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_GRAYKeyword_15()); 
+    }
+
+    |
+    { 
+        newCompositeNode(grammarAccess.getStateColorAccess().getCOLOR_NAMEParserRuleCall_16()); 
+    }
+    this_COLOR_NAME_16=ruleCOLOR_NAME    {
+		$current.merge(this_COLOR_NAME_16);
     }
 
     { 

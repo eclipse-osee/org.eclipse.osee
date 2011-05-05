@@ -478,6 +478,18 @@
             <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.1"/>
           </elements>
         </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="recommendedPercentComplete"/>
+          <elements xsi:type="xtext:Assignment" feature="recommendedPercentComplete" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.1"/>
+          </elements>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="color"/>
+          <elements xsi:type="xtext:Assignment" feature="color" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.55"/>
+          </elements>
+        </elements>
         <elements xsi:type="xtext:Assignment" cardinality="?" feature="layout" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.33"/>
         </elements>
@@ -1021,6 +1033,36 @@
         <elements xsi:type="xtext:Keyword" value="Completed"/>
         <elements xsi:type="xtext:Keyword" value="Cancelled"/>
         <elements xsi:type="xtext:RuleCall" rule="/0/@rules.52"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="COLOR_NAME">
+      <type metamodel="/1/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </type>
+      <alternatives xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="StateColor">
+      <type metamodel="/1/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <elements xsi:type="xtext:Keyword" value="BLACK"/>
+        <elements xsi:type="xtext:Keyword" value="WHITE"/>
+        <elements xsi:type="xtext:Keyword" value="RED"/>
+        <elements xsi:type="xtext:Keyword" value="DARK_RED"/>
+        <elements xsi:type="xtext:Keyword" value="GREEN"/>
+        <elements xsi:type="xtext:Keyword" value="DARK_GREEN"/>
+        <elements xsi:type="xtext:Keyword" value="YELLOW"/>
+        <elements xsi:type="xtext:Keyword" value="DARK_YELLOW"/>
+        <elements xsi:type="xtext:Keyword" value="BLUE"/>
+        <elements xsi:type="xtext:Keyword" value="DARK_BLUE"/>
+        <elements xsi:type="xtext:Keyword" value="MAGENTA"/>
+        <elements xsi:type="xtext:Keyword" value="DARK_MAGENTA"/>
+        <elements xsi:type="xtext:Keyword" value="CYAN"/>
+        <elements xsi:type="xtext:Keyword" value="DARK_CYAN"/>
+        <elements xsi:type="xtext:Keyword" value="GRAY"/>
+        <elements xsi:type="xtext:Keyword" value="DARK_GRAY"/>
+        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.54"/>
       </alternatives>
     </rules>
   </xtext:Grammar>

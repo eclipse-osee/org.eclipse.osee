@@ -1087,9 +1087,29 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getStateDef_RecommendedPercentComplete()
+  {
+    return (EAttribute)stateDefEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getStateDef_Color()
+  {
+    return (EAttribute)stateDefEClass.getEStructuralFeatures().get(10);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getStateDef_Layout()
   {
-    return (EReference)stateDefEClass.getEStructuralFeatures().get(9);
+    return (EReference)stateDefEClass.getEStructuralFeatures().get(11);
   }
 
   /**
@@ -1698,6 +1718,8 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEReference(stateDefEClass, STATE_DEF__DECISION_REVIEWS);
     createEReference(stateDefEClass, STATE_DEF__PEER_REVIEWS);
     createEAttribute(stateDefEClass, STATE_DEF__PERCENT_WEIGHT);
+    createEAttribute(stateDefEClass, STATE_DEF__RECOMMENDED_PERCENT_COMPLETE);
+    createEAttribute(stateDefEClass, STATE_DEF__COLOR);
     createEReference(stateDefEClass, STATE_DEF__LAYOUT);
 
     decisionReviewRefEClass = createEClass(DECISION_REVIEW_REF);
@@ -1891,6 +1913,8 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEReference(getStateDef_DecisionReviews(), this.getDecisionReviewRef(), null, "decisionReviews", null, 0, -1, StateDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getStateDef_PeerReviews(), this.getPeerReviewRef(), null, "peerReviews", null, 0, -1, StateDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getStateDef_PercentWeight(), ecorePackage.getEInt(), "percentWeight", null, 0, 1, StateDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getStateDef_RecommendedPercentComplete(), ecorePackage.getEInt(), "recommendedPercentComplete", null, 0, 1, StateDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getStateDef_Color(), ecorePackage.getEString(), "color", null, 0, 1, StateDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getStateDef_Layout(), this.getLayoutType(), null, "layout", null, 0, 1, StateDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(decisionReviewRefEClass, DecisionReviewRef.class, "DecisionReviewRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

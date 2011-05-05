@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.StateColor;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateEventType;
 import org.eclipse.osee.ats.workdef.StateItem;
@@ -88,6 +89,7 @@ public class ConvertAtsDslToWorkDefinition {
          String stateName = Strings.unquote(dslState.getName());
          StateDefinition stateDef = workDef.getOrCreateState(stateName);
          stateDef.setWorkDefinition(workDef);
+         stateDef.setDescription(dslState.getDescription());
 
          // Process state settings
          stateDef.setOrdinal(dslState.getOrdinal());
@@ -99,6 +101,16 @@ public class ConvertAtsDslToWorkDefinition {
          }
          stateDef.setWorkPageType(workPageType);
          stateDef.setPercentWeight(dslState.getPercentWeight());
+         stateDef.setRecommendedPercentComplete(dslState.getRecommendedPercentComplete());
+         StateColor color = StateColor.BLACK;
+         try {
+            if (Strings.isValid(dslState.getColor())) {
+               color = StateColor.valueOf(dslState.getColor());
+            }
+         } catch (IllegalArgumentException ex) {
+            // do nothing
+         }
+         stateDef.setColor(color);
 
          // Process widgets
          LayoutType layout = dslState.getLayout();

@@ -1152,19 +1152,29 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cPercentWeightKeyword_12_0 = (Keyword)cGroup_12.eContents().get(0);
 		private final Assignment cPercentWeightAssignment_12_1 = (Assignment)cGroup_12.eContents().get(1);
 		private final RuleCall cPercentWeightINTTerminalRuleCall_12_1_0 = (RuleCall)cPercentWeightAssignment_12_1.eContents().get(0);
-		private final Assignment cLayoutAssignment_13 = (Assignment)cGroup.eContents().get(13);
-		private final RuleCall cLayoutLayoutTypeParserRuleCall_13_0 = (RuleCall)cLayoutAssignment_13.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Group cGroup_13 = (Group)cGroup.eContents().get(13);
+		private final Keyword cRecommendedPercentCompleteKeyword_13_0 = (Keyword)cGroup_13.eContents().get(0);
+		private final Assignment cRecommendedPercentCompleteAssignment_13_1 = (Assignment)cGroup_13.eContents().get(1);
+		private final RuleCall cRecommendedPercentCompleteINTTerminalRuleCall_13_1_0 = (RuleCall)cRecommendedPercentCompleteAssignment_13_1.eContents().get(0);
+		private final Group cGroup_14 = (Group)cGroup.eContents().get(14);
+		private final Keyword cColorKeyword_14_0 = (Keyword)cGroup_14.eContents().get(0);
+		private final Assignment cColorAssignment_14_1 = (Assignment)cGroup_14.eContents().get(1);
+		private final RuleCall cColorStateColorParserRuleCall_14_1_0 = (RuleCall)cColorAssignment_14_1.eContents().get(0);
+		private final Assignment cLayoutAssignment_15 = (Assignment)cGroup.eContents().get(15);
+		private final RuleCall cLayoutLayoutTypeParserRuleCall_15_0 = (RuleCall)cLayoutAssignment_15.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_16 = (Keyword)cGroup.eContents().get(16);
 		
 		//StateDef:
 		//	"state" name=STATE_NAME_REFERENCE "{" ("description" description=STRING)? "type" pageType=PageType "ordinal"
 		//	ordinal=INT transitionStates+=ToState* ("rule" rules+=Rule)* decisionReviews+=DecisionReviewRef*
-		//	peerReviews+=PeerReviewRef* ("percentWeight" percentWeight=INT)? layout=LayoutType? "}";
+		//	peerReviews+=PeerReviewRef* ("percentWeight" percentWeight=INT)? ("recommendedPercentComplete"
+		//	recommendedPercentComplete=INT)? ("color" color=StateColor)? layout=LayoutType? "}";
 		public ParserRule getRule() { return rule; }
 
 		//"state" name=STATE_NAME_REFERENCE "{" ("description" description=STRING)? "type" pageType=PageType "ordinal" ordinal=INT
 		//transitionStates+=ToState* ("rule" rules+=Rule)* decisionReviews+=DecisionReviewRef* peerReviews+=PeerReviewRef*
-		//("percentWeight" percentWeight=INT)? layout=LayoutType? "}"
+		//("percentWeight" percentWeight=INT)? ("recommendedPercentComplete" recommendedPercentComplete=INT)? ("color"
+		//color=StateColor)? layout=LayoutType? "}"
 		public Group getGroup() { return cGroup; }
 
 		//"state"
@@ -1251,14 +1261,38 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//INT
 		public RuleCall getPercentWeightINTTerminalRuleCall_12_1_0() { return cPercentWeightINTTerminalRuleCall_12_1_0; }
 
+		//("recommendedPercentComplete" recommendedPercentComplete=INT)?
+		public Group getGroup_13() { return cGroup_13; }
+
+		//"recommendedPercentComplete"
+		public Keyword getRecommendedPercentCompleteKeyword_13_0() { return cRecommendedPercentCompleteKeyword_13_0; }
+
+		//recommendedPercentComplete=INT
+		public Assignment getRecommendedPercentCompleteAssignment_13_1() { return cRecommendedPercentCompleteAssignment_13_1; }
+
+		//INT
+		public RuleCall getRecommendedPercentCompleteINTTerminalRuleCall_13_1_0() { return cRecommendedPercentCompleteINTTerminalRuleCall_13_1_0; }
+
+		//("color" color=StateColor)?
+		public Group getGroup_14() { return cGroup_14; }
+
+		//"color"
+		public Keyword getColorKeyword_14_0() { return cColorKeyword_14_0; }
+
+		//color=StateColor
+		public Assignment getColorAssignment_14_1() { return cColorAssignment_14_1; }
+
+		//StateColor
+		public RuleCall getColorStateColorParserRuleCall_14_1_0() { return cColorStateColorParserRuleCall_14_1_0; }
+
 		//layout=LayoutType?
-		public Assignment getLayoutAssignment_13() { return cLayoutAssignment_13; }
+		public Assignment getLayoutAssignment_15() { return cLayoutAssignment_15; }
 
 		//LayoutType
-		public RuleCall getLayoutLayoutTypeParserRuleCall_13_0() { return cLayoutLayoutTypeParserRuleCall_13_0; }
+		public RuleCall getLayoutLayoutTypeParserRuleCall_15_0() { return cLayoutLayoutTypeParserRuleCall_15_0; }
 
 		//"}"
-		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
+		public Keyword getRightCurlyBracketKeyword_16() { return cRightCurlyBracketKeyword_16; }
 	}
 
 	public class DecisionReviewRefElements extends AbstractParserRuleElementFinder {
@@ -2451,6 +2485,102 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//PAGE_TYPE_NAME
 		public RuleCall getPAGE_TYPE_NAMEParserRuleCall_3() { return cPAGE_TYPE_NAMEParserRuleCall_3; }
 	}
+
+	public class COLOR_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "COLOR_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//COLOR_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
+	public class StateColorElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "StateColor");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Keyword cBLACKKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
+		private final Keyword cWHITEKeyword_1 = (Keyword)cAlternatives.eContents().get(1);
+		private final Keyword cREDKeyword_2 = (Keyword)cAlternatives.eContents().get(2);
+		private final Keyword cDARK_REDKeyword_3 = (Keyword)cAlternatives.eContents().get(3);
+		private final Keyword cGREENKeyword_4 = (Keyword)cAlternatives.eContents().get(4);
+		private final Keyword cDARK_GREENKeyword_5 = (Keyword)cAlternatives.eContents().get(5);
+		private final Keyword cYELLOWKeyword_6 = (Keyword)cAlternatives.eContents().get(6);
+		private final Keyword cDARK_YELLOWKeyword_7 = (Keyword)cAlternatives.eContents().get(7);
+		private final Keyword cBLUEKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
+		private final Keyword cDARK_BLUEKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
+		private final Keyword cMAGENTAKeyword_10 = (Keyword)cAlternatives.eContents().get(10);
+		private final Keyword cDARK_MAGENTAKeyword_11 = (Keyword)cAlternatives.eContents().get(11);
+		private final Keyword cCYANKeyword_12 = (Keyword)cAlternatives.eContents().get(12);
+		private final Keyword cDARK_CYANKeyword_13 = (Keyword)cAlternatives.eContents().get(13);
+		private final Keyword cGRAYKeyword_14 = (Keyword)cAlternatives.eContents().get(14);
+		private final Keyword cDARK_GRAYKeyword_15 = (Keyword)cAlternatives.eContents().get(15);
+		private final RuleCall cCOLOR_NAMEParserRuleCall_16 = (RuleCall)cAlternatives.eContents().get(16);
+		
+		//// STRING is for future expansion
+		//// WARNING: Any new color needs to be added to StateColor; Must be an SWT.COLOR color
+		//StateColor:
+		//	"BLACK" | "WHITE" | "RED" | "DARK_RED" | "GREEN" | "DARK_GREEN" | "YELLOW" | "DARK_YELLOW" | "BLUE" | "DARK_BLUE" |
+		//	"MAGENTA" | "DARK_MAGENTA" | "CYAN" | "DARK_CYAN" | "GRAY" | "DARK_GRAY" | COLOR_NAME;
+		public ParserRule getRule() { return rule; }
+
+		//"BLACK" | "WHITE" | "RED" | "DARK_RED" | "GREEN" | "DARK_GREEN" | "YELLOW" | "DARK_YELLOW" | "BLUE" | "DARK_BLUE" |
+		//"MAGENTA" | "DARK_MAGENTA" | "CYAN" | "DARK_CYAN" | "GRAY" | "DARK_GRAY" | COLOR_NAME
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//"BLACK"
+		public Keyword getBLACKKeyword_0() { return cBLACKKeyword_0; }
+
+		//"WHITE"
+		public Keyword getWHITEKeyword_1() { return cWHITEKeyword_1; }
+
+		//"RED"
+		public Keyword getREDKeyword_2() { return cREDKeyword_2; }
+
+		//"DARK_RED"
+		public Keyword getDARK_REDKeyword_3() { return cDARK_REDKeyword_3; }
+
+		//"GREEN"
+		public Keyword getGREENKeyword_4() { return cGREENKeyword_4; }
+
+		//"DARK_GREEN"
+		public Keyword getDARK_GREENKeyword_5() { return cDARK_GREENKeyword_5; }
+
+		//"YELLOW"
+		public Keyword getYELLOWKeyword_6() { return cYELLOWKeyword_6; }
+
+		//"DARK_YELLOW"
+		public Keyword getDARK_YELLOWKeyword_7() { return cDARK_YELLOWKeyword_7; }
+
+		//"BLUE"
+		public Keyword getBLUEKeyword_8() { return cBLUEKeyword_8; }
+
+		//"DARK_BLUE"
+		public Keyword getDARK_BLUEKeyword_9() { return cDARK_BLUEKeyword_9; }
+
+		//"MAGENTA"
+		public Keyword getMAGENTAKeyword_10() { return cMAGENTAKeyword_10; }
+
+		//"DARK_MAGENTA"
+		public Keyword getDARK_MAGENTAKeyword_11() { return cDARK_MAGENTAKeyword_11; }
+
+		//"CYAN"
+		public Keyword getCYANKeyword_12() { return cCYANKeyword_12; }
+
+		//"DARK_CYAN"
+		public Keyword getDARK_CYANKeyword_13() { return cDARK_CYANKeyword_13; }
+
+		//"GRAY"
+		public Keyword getGRAYKeyword_14() { return cGRAYKeyword_14; }
+
+		//"DARK_GRAY"
+		public Keyword getDARK_GRAYKeyword_15() { return cDARK_GRAYKeyword_15; }
+
+		//COLOR_NAME
+		public RuleCall getCOLOR_NAMEParserRuleCall_16() { return cCOLOR_NAMEParserRuleCall_16; }
+	}
 	
 	
 	public class BooleanDefElements extends AbstractEnumRuleElementFinder {
@@ -2607,6 +2737,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	private WidgetOptionElements pWidgetOption;
 	private PAGE_TYPE_NAMEElements pPAGE_TYPE_NAME;
 	private PageTypeElements pPageType;
+	private COLOR_NAMEElements pCOLOR_NAME;
+	private StateColorElements pStateColor;
 	
 	private final GrammarProvider grammarProvider;
 
@@ -2777,7 +2909,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//StateDef:
 	//	"state" name=STATE_NAME_REFERENCE "{" ("description" description=STRING)? "type" pageType=PageType "ordinal"
 	//	ordinal=INT transitionStates+=ToState* ("rule" rules+=Rule)* decisionReviews+=DecisionReviewRef*
-	//	peerReviews+=PeerReviewRef* ("percentWeight" percentWeight=INT)? layout=LayoutType? "}";
+	//	peerReviews+=PeerReviewRef* ("percentWeight" percentWeight=INT)? ("recommendedPercentComplete"
+	//	recommendedPercentComplete=INT)? ("color" color=StateColor)? layout=LayoutType? "}";
 	public StateDefElements getStateDefAccess() {
 		return (pStateDef != null) ? pStateDef : (pStateDef = new StateDefElements());
 	}
@@ -3211,6 +3344,29 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getPageTypeRule() {
 		return getPageTypeAccess().getRule();
+	}
+
+	//COLOR_NAME:
+	//	STRING;
+	public COLOR_NAMEElements getCOLOR_NAMEAccess() {
+		return (pCOLOR_NAME != null) ? pCOLOR_NAME : (pCOLOR_NAME = new COLOR_NAMEElements());
+	}
+	
+	public ParserRule getCOLOR_NAMERule() {
+		return getCOLOR_NAMEAccess().getRule();
+	}
+
+	//// STRING is for future expansion
+	//// WARNING: Any new color needs to be added to StateColor; Must be an SWT.COLOR color
+	//StateColor:
+	//	"BLACK" | "WHITE" | "RED" | "DARK_RED" | "GREEN" | "DARK_GREEN" | "YELLOW" | "DARK_YELLOW" | "BLUE" | "DARK_BLUE" |
+	//	"MAGENTA" | "DARK_MAGENTA" | "CYAN" | "DARK_CYAN" | "GRAY" | "DARK_GRAY" | COLOR_NAME;
+	public StateColorElements getStateColorAccess() {
+		return (pStateColor != null) ? pStateColor : (pStateColor = new StateColorElements());
+	}
+	
+	public ParserRule getStateColorRule() {
+		return getStateColorAccess().getRule();
 	}
 
 	//terminal ID:
