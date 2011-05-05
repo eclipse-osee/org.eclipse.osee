@@ -86,7 +86,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       Document document;
       InputStream inputStream = new BufferedInputStream(new FileInputStream(workingFile));
       try {
-         document = Jaxp.readXmlDocument(inputStream, "UTF-8");
+         document = Jaxp.nonDeferredReadXmlDocument(inputStream, "UTF-8");
       } finally {
          Lib.close(inputStream);
       }
@@ -137,7 +137,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
                      WordUtil.textOnly(content));
 
                if (singleArtifact || multiSave) {
-                  // TODO
+                  // TODO Do we need this?
                   if (artElement.getNodeName().endsWith("body")) {
                      // This code pulls out all of the stuff after the inserted listnum reordering
                      // stuff. This needs to be

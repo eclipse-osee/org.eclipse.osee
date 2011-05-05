@@ -56,6 +56,7 @@ import org.xml.sax.SAXException;
 
 public class Jaxp {
    private static final DocumentBuilderFactory namespceUnawareFactory = DocumentBuilderFactory.newInstance();
+   private static final DocumentBuilderFactory NonDeferredNamespceUnawareFactory = DocumentBuilderFactory.newInstance();
    private static final DocumentBuilderFactory namespceAwareFactory = DocumentBuilderFactory.newInstance();
    static {
       namespceAwareFactory.setNamespaceAware(true);
@@ -401,6 +402,23 @@ public class Jaxp {
       inputSource.setEncoding(encoding);
       DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
       return builder.parse(inputSource);
+   }
+
+   public static Document nonDeferredReadXmlDocument(InputStream is, String encoding) throws ParserConfigurationException, SAXException, IOException {
+      InputSource inputSource = new InputSource(is);
+      inputSource.setEncoding(encoding);
+      NonDeferredNamespceUnawareFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+      DocumentBuilder builder = NonDeferredNamespceUnawareFactory.newDocumentBuilder();
+      return builder.parse(inputSource);
+   }
+
+   public static Document nonDeferredreadXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+      NonDeferredNamespceUnawareFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+      DocumentBuilder builder = NonDeferredNamespceUnawareFactory.newDocumentBuilder();
+      CharBackedInputStream charBak = new CharBackedInputStream();
+      charBak.addBackingSource(xmlString);
+      Document document = builder.parse(charBak);
+      return document;
    }
 
    public static Document readXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {

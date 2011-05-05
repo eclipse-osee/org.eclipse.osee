@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,12 +31,14 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    private static final String SECTION_TAG = "wx:sect";
    private static final String SUB_SECTION_TAG = "wx:sub-section";
    private static final String BODY_TAG = "w:body";
-   private static final String PICT = "pict";
-   private static final String IMAGE = "v:imagedata";
+   private static final String PICT = "w:pict";
    private static final String SRC = "src";
    private static final String BIN_DATA = "w:binData";
+   private static final String IMAGE = "v:imagedata";
    private static String START_IMG_ID;
    private static String END_IMG_ID;
+   private static int START_IMAGE_CHECKSUM;
+   private static int END_IMAGE_CHECKSUM;
    private static final String TITLE = "o:title";
 
    private final Map<String, Element> pictureMap;
@@ -63,6 +64,9 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       this.numberOfEndTags = 0;
       this.numberOfStartTags = 0;
       this.pictureMap = new HashMap<String, Element>();
+
+      WordImageArtifactElementExtractor.START_IMAGE_CHECKSUM = -1;
+      WordImageArtifactElementExtractor.END_IMAGE_CHECKSUM = -1;
    }
 
    @Override
@@ -93,18 +97,20 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       Element newArtifactElement = null;
       ParseState parseState = ParseState.LOOKING_FOR_START;
 
-      for (int i = 0; i < nodeList.getLength(); i++) {
+      handleImages(rootElement);
+
+      oleDataElement = (Element) getElement(rootElement, "w:docOleData");
+
+      int nodeSize = nodeList.getLength();
+      for (int i = 0; i < nodeSize; i++) {
          Element element = (Element) nodeList.item(i);
-         if (oleDataElement == null && element.getNodeName().endsWith("docOleData")) {
-            oleDataElement = element;
-         }
+
          if (parseState == ParseState.LOOKING_FOR_START && isArtifactEditTag(element, true)) {
             parseState = ParseState.LOOKING_FOR_END;
             newArtifactElement = handleStartElement(linkBuilder, artifactElements, element);
          } else if (parseState == ParseState.LOOKING_FOR_END && isArtifactEditTag(element, false)) {
             parseState = handleEndElement(linkBuilder, newArtifactElement, element);
          } else if (parseState == ParseState.LOOKING_FOR_END && properLevelChild(element)) {
-            handleImages(element);
             newArtifactElement.appendChild(element.cloneNode(true));
          }
       }
@@ -144,6 +150,8 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    private void clearImageIds() {
       START_IMG_ID = null;
       END_IMG_ID = null;
+      START_IMAGE_CHECKSUM = -1;
+      END_IMAGE_CHECKSUM = -1;
    }
 
    private boolean elementHasGrandChildren(Node element) {
@@ -157,8 +165,9 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       boolean beforeEditTag = true;
       boolean afterEditTag = false;
       NodeList descendants = clonedElement.getElementsByTagName("*");
+      int nodeSize = descendants.getLength();
 
-      for (int i = 0; i < descendants.getLength(); i++) {
+      for (int i = 0; i < nodeSize; i++) {
          Node descendant = descendants.item(i);
          if (isEditStartImage(descendant)) {
             removals.add(descendant);
@@ -190,10 +199,9 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
    private boolean isEditImage(Node element, boolean lookingForStartImage) {
       boolean hasEditImage = false;
-      String pictName = WordUtil.elementNameFor(PICT);
       String name = element.getNodeName();
 
-      if (name.contains(pictName)) {
+      if (name.equals(PICT)) {
          hasEditImage = isImageBinData((Element) element, lookingForStartImage);
       }
       return hasEditImage;
@@ -227,18 +235,12 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
    private boolean compareBinData(Element pictElement, boolean lookingForStart) {
       boolean foundBindata = false;
-      String binData;
-
-      if (lookingForStart) {
-         binData = OseeLinkBuilder.START_BIN_DATA;
-      } else {
-         binData = OseeLinkBuilder.END_BIN_DATA;
-      }
-
+      int imageCheckSum = (getImageChecksum(lookingForStart));
       Node currentBinData = getElement(pictElement, BIN_DATA);
+
       if (currentBinData != null) {
          Node bindDataValue = currentBinData.getFirstChild();
-         foundBindata = getCheckSum(bindDataValue.getNodeValue()) == (getCheckSum(binData));
+         foundBindata = getCheckSum(bindDataValue.getNodeValue()) == (imageCheckSum);
          if (foundBindata) {
             if (lookingForStart) {
                START_IMG_ID = getImageId(pictElement);
@@ -248,6 +250,28 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
          }
       }
       return foundBindata;
+   }
+
+   private int getImageChecksum(boolean lookingForStart) {
+      String binData;
+      int imageCheckSum;
+
+      if (lookingForStart) {
+         binData = OseeLinkBuilder.START_BIN_DATA;
+
+         if (START_IMAGE_CHECKSUM == -1) {
+            START_IMAGE_CHECKSUM = getCheckSum(binData);
+         }
+         imageCheckSum = START_IMAGE_CHECKSUM;
+      } else {
+         binData = OseeLinkBuilder.END_BIN_DATA;
+
+         if (END_IMAGE_CHECKSUM == -1) {
+            END_IMAGE_CHECKSUM = getCheckSum(binData);
+         }
+         imageCheckSum = END_IMAGE_CHECKSUM;
+      }
+      return imageCheckSum;
    }
 
    private String getImageId(Element pictElement) {
@@ -272,16 +296,12 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
    private Node getElement(Element element, String name) {
       Node discoveredNode = null;
-      NodeList descendants = element.getElementsByTagName("*");
+      NodeList descendants = element.getElementsByTagName(name);
 
-      for (int i = 0; i < descendants.getLength(); i++) {
-         Node descendant = descendants.item(i);
-         String descendantName = descendant.getNodeName();
-         if (descendantName.contains(name)) {
-            discoveredNode = descendant;
-            break;
-         }
+      if (descendants.getLength() > 0) {
+         discoveredNode = descendants.item(0);
       }
+
       return discoveredNode;
    }
 
@@ -312,8 +332,9 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
          return false;
       }
       boolean isArtifactEditTag = false;
-      NodeList descendants = element.getElementsByTagName("*");
-      for (int i = 0; i < descendants.getLength(); i++) {
+      NodeList descendants = element.getElementsByTagName(PICT);
+      int nodeSize = descendants.getLength();
+      for (int i = 0; i < nodeSize; i++) {
          Node descendant = descendants.item(i);
          isArtifactEditTag = isEditImage(descendant, lookingForStart);
 
@@ -329,23 +350,22 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    }
 
    private void handleImages(Element element) {
-      NodeList descendants = element.getElementsByTagName("*");
-      for (int i = 0; i < descendants.getLength(); i++) {
+      NodeList descendants = element.getElementsByTagName(PICT);
+      int nodeSize = descendants.getLength();
+      for (int i = 0; i < nodeSize; i++) {
          Node descendant = descendants.item(i);
-         if (descendant.getNodeName().contains(PICT)) {
-            NodeList imageDataElement = ((Element) descendant).getElementsByTagName(IMAGE);
-            if (imageDataElement.getLength() > 0) {
-               String imgKey = ((Element) imageDataElement.item(0)).getAttribute(SRC);
-               Element storedPictureElement = pictureMap.get(imgKey);
-               NodeList binDataElement = ((Element) descendant).getElementsByTagName(BIN_DATA);
+         NodeList imageDataElement = ((Element) descendant).getElementsByTagName(IMAGE);
+         if (imageDataElement.getLength() > 0) {
+            String imgKey = ((Element) imageDataElement.item(0)).getAttribute(SRC);
+            Element storedPictureElement = pictureMap.get(imgKey);
+            NodeList binDataElement = ((Element) descendant).getElementsByTagName(BIN_DATA);
 
-               if (storedPictureElement != null) {
-                  if (binDataElement.getLength() == 0) {
-                     descendant.appendChild(storedPictureElement);
-                  }
-               } else {
-                  pictureMap.put(imgKey, (Element) binDataElement.item(0));
+            if (storedPictureElement != null) {
+               if (binDataElement.getLength() == 0) {
+                  descendant.appendChild(storedPictureElement.cloneNode(true));
                }
+            } else {
+               pictureMap.put(imgKey, (Element) binDataElement.item(0));
             }
          }
       }
