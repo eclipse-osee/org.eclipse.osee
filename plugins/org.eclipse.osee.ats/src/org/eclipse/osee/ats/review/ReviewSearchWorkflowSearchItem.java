@@ -48,11 +48,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
    protected XHyperlabelActionableItemSelection aiCombo = null;
-   protected XCombo versionCombo = null;
-   protected XCombo reviewFormalCombo = null;
+   protected XCombo versionCombo = null, reviewFormalCombo = null, reviewTypeCombo = null;
    protected XMembersCombo assigneeCombo;
-   protected XCheckBox includeCompletedCheckbox;
-   protected XCheckBox includeCancelledCheckbox;
+   protected XCheckBox includeCompletedCheckbox, includeCancelledCheckbox;
    private XReviewStateSearchCombo stateCombo = null;
 
    public ReviewSearchWorkflowSearchItem(String name) {
@@ -84,11 +82,13 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       //
       "<XWidget displayName=\"Actionable Item(s)\" xwidgetType=\"XHyperlabelActionableItemSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"8\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"6\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Review Formal Type\" xwidgetType=\"XCombo(InFormal|Formal)\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Review Type\" xwidgetType=\"XCombo(PeerToPeer,Decision)\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Review Formal Type\" xwidgetType=\"XCombo(InFormal,Formal)\" horizontalLabel=\"true\"/>" +
+      //
+      "<XWidget displayName=\"Assignee\" beginComposite=\"4\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"State\" xwidgetType=\"XReviewStateSearchCombo\" horizontalLabel=\"true\"/>" +
       //
@@ -103,7 +103,8 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       Collection<Artifact> artifacts =
          new ReviewWorldSearchItem("", getSelectedAIs(), isIncludeCompletedCheckbox(), isIncludeCancelledCheckbox(),
-            false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReviewFormalType(), getSelectedState()).performSearchGetResults(false);
+            false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReviewFormalType(),
+            getSelectedReviewType(), getSelectedState()).performSearchGetResults(false);
       return artifacts;
    }
 
@@ -119,7 +120,12 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
          sb.append(" - Version: ");
          sb.append(getSelectedVersionArtifact());
       }
-      ReviewFormalType reviewType = getSelectedReviewFormalType();
+      ReviewFormalType reviewFormalType = getSelectedReviewFormalType();
+      if (reviewFormalType != null) {
+         sb.append(" - Review Formal Type: ");
+         sb.append(reviewFormalType);
+      }
+      ReviewType reviewType = getSelectedReviewType();
       if (reviewType != null) {
          sb.append(" - Review Type: ");
          sb.append(reviewType);
@@ -170,6 +176,10 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
          reviewFormalCombo = (XCombo) widget;
          reviewFormalCombo.getComboBox().setVisibleItemCount(25);
       }
+      if (widget.getLabel().equals("Review Type")) {
+         reviewTypeCombo = (XCombo) widget;
+         reviewTypeCombo.getComboBox().setVisibleItemCount(25);
+      }
       if (widget.getLabel().equals("Actionable Item(s)")) {
          aiCombo = (XHyperlabelActionableItemSelection) widget;
          aiCombo.addXModifiedListener(new XModifiedListener() {
@@ -199,6 +209,17 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
                }
             }
          });
+      }
+   }
+
+   protected ReviewType getSelectedReviewType() {
+      if (reviewTypeCombo == null) {
+         return null;
+      }
+      try {
+         return ReviewType.valueOf(reviewTypeCombo.get());
+      } catch (IllegalArgumentException ex) {
+         return null;
       }
    }
 

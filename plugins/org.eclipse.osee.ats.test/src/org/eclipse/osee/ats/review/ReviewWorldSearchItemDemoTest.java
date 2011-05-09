@@ -13,7 +13,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.navigate.VisitedItems;
-import org.eclipse.osee.ats.review.ReviewWorldSearchItem;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.NavigateTestUtil;
@@ -39,7 +38,8 @@ public class ReviewWorldSearchItemDemoTest {
    public void testAiSearch() throws Exception {
       User joe = DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith);
       Set<ActionableItemArtifact> aias = ActionableItemManager.getActionableItems(Arrays.asList("SAW Code"));
-      ReviewWorldSearchItem search = new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null);
+      ReviewWorldSearchItem search =
+         new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.DecisionReview, 0);
@@ -50,7 +50,7 @@ public class ReviewWorldSearchItemDemoTest {
       User joe = DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith);
       Set<ActionableItemArtifact> aias = ActionableItemManager.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
-         new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, "Prepare");
+         new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, "Prepare");
       Collection<Artifact> arts = search.performSearchGetResults();
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.PeerToPeerReview, 1);
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.DecisionReview, 0);
@@ -59,7 +59,8 @@ public class ReviewWorldSearchItemDemoTest {
    @org.junit.Test
    public void testIncludeCompleted() throws Exception {
       Set<ActionableItemArtifact> aias = ActionableItemManager.getActionableItems(Arrays.asList("SAW Code"));
-      ReviewWorldSearchItem search = new ReviewWorldSearchItem("", aias, true, false, false, null, null, null, null);
+      ReviewWorldSearchItem search =
+         new ReviewWorldSearchItem("", aias, true, false, false, null, null, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.PeerToPeerReview, 3);
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.DecisionReview, 0);
@@ -70,7 +71,7 @@ public class ReviewWorldSearchItemDemoTest {
       User Kay_Jones = DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones);
       Set<ActionableItemArtifact> aias = ActionableItemManager.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
-         new ReviewWorldSearchItem("", aias, false, false, false, null, Kay_Jones, null, null);
+         new ReviewWorldSearchItem("", aias, false, false, false, null, Kay_Jones, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.PeerToPeerReview, 1);
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.DecisionReview, 0);
@@ -80,7 +81,7 @@ public class ReviewWorldSearchItemDemoTest {
    public void testAssignee_Joe() throws Exception {
       User Joe_Smith = DemoTestUtil.getDemoUser(DemoUsers.Joe_Smith);
       ReviewWorldSearchItem search =
-         new ReviewWorldSearchItem("", (List<String>) null, false, false, false, null, Joe_Smith, null, null);
+         new ReviewWorldSearchItem("", (List<String>) null, false, false, false, null, Joe_Smith, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual("AI Search", arts, AtsArtifactTypes.DecisionReview, 1);

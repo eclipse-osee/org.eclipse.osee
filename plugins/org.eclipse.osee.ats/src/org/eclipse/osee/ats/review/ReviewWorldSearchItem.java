@@ -58,8 +58,9 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
    private final boolean includeCancelled;
    private final String stateName;
    private final ReviewFormalType reviewFormalType;
+   private final ReviewType reviewType;
 
-   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, String stateName) {
+   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
       super(displayName, AtsImage.REVIEW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -68,10 +69,11 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       this.includeCompleted = includeCompleted;
       this.recurseChildren = recurseChildren;
       this.reviewFormalType = reviewFormalType;
+      this.reviewType = reviewType;
       this.stateName = stateName;
    }
 
-   public ReviewWorldSearchItem(String displayName, Collection<ActionableItemArtifact> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, String stateName) {
+   public ReviewWorldSearchItem(String displayName, Collection<ActionableItemArtifact> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, ReviewType reviewType, String stateName) {
       super(displayName, AtsImage.REVIEW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -82,6 +84,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       this.aias = aias;
       this.includeCompleted = includeCompleted;
       this.reviewFormalType = reviewFormalType;
+      this.reviewType = reviewType;
    }
 
    public ReviewWorldSearchItem(ReviewWorldSearchItem reviewWorldUISearchItem) {
@@ -95,6 +98,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       this.includeCancelled = reviewWorldUISearchItem.includeCancelled;
       this.stateName = reviewWorldUISearchItem.stateName;
       this.reviewFormalType = reviewWorldUISearchItem.reviewFormalType;
+      this.reviewType = reviewWorldUISearchItem.reviewType;
    }
 
    public Collection<String> getProductSearchName() {
@@ -187,6 +191,11 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
 
    public boolean includeReview(Artifact reviewArt) throws OseeCoreException {
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) reviewArt;
+
+      // don't include if artifact type doesn't match selected review type
+      if (reviewType != null && ((reviewType == ReviewType.Decision && !reviewArt.isOfType(AtsArtifactTypes.DecisionReview)) || (reviewType == ReviewType.PeerToPeer && !reviewArt.isOfType(AtsArtifactTypes.PeerToPeerReview)))) {
+         return false;
+      }
       // don't include if userArt specified and userArt not assignee
       if (userArt != null && !awa.getStateMgr().getAssignees().contains(userArt)) {
          return false;
