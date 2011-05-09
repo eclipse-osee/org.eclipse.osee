@@ -142,8 +142,9 @@ public class MergeManager {
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
+         // debug only, this could run out of memory depending on size of coverage package/import
          if (resultData != null) {
-            resultData.log(AHTML.bold("Match Items:"));
+            //            resultData.log(AHTML.bold("Match Items:"));
             //            for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
             //               resultData.addRaw(AHTML.blockQuote(String.valueOf(entry.getValue()).replaceAll(" ", "&nbsp")));
             //            }
