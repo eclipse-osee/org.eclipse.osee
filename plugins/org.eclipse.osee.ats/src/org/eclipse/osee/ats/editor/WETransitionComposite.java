@@ -13,23 +13,19 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.ats.workflow.TransitionManager;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
@@ -171,60 +167,12 @@ public class WETransitionComposite extends Composite {
    }
 
    private void handleTransitionButtonSelection(final SMAEditor editor, final boolean isEditable) {
-      TransitionManager transMgr = new TransitionManager(awa);
+      editor.doSave(null);
 
-      try {
-         if (!isEditable && !awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
-            AWorkbench.popup(
-               "ERROR",
-               "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
-            return;
-         }
+      StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
+      TransitionManager transMgr = new TransitionManager(awa, editor.isPriviledgedEditModeEnabled());
+      transMgr.handleTransition(toStateDef);
 
-         // As a convenience, if assignee is UnAssigned and user selects to transition, make user current assignee
-         if (awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
-            awa.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
-            awa.getStateMgr().addAssignee(UserManager.getUser());
-         }
-
-         if (!isWorkingBranchTransitionable()) {
-            return;
-         }
-
-         awa.setInTransition(true);
-         editor.doSave(null);
-
-         StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
-         transMgr.handleTransition(toStateDef, editor);
-
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      } finally {
-         awa.setInTransition(false);
-      }
-   }
-
-   private boolean isWorkingBranchTransitionable() throws OseeCoreException {
-      if (awa.isTeamWorkflow() && ((TeamWorkFlowArtifact) awa).getBranchMgr().isWorkingBranchInWork()) {
-
-         if (((StateDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
-            TeamState.Cancelled.getPageName())) {
-            AWorkbench.popup("Transition Blocked",
-               "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
-            return false;
-         }
-         if (((TeamWorkFlowArtifact) awa).getBranchMgr().isBranchInCommit()) {
-            AWorkbench.popup("Transition Blocked",
-               "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
-            return false;
-         }
-         if (!workflowSection.getPage().isAllowTransitionWithWorkingBranch()) {
-            AWorkbench.popup("Transition Blocked",
-               "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
-            return false;
-         }
-      }
-      return true;
    }
 
    public void updateTransitionToAssignees() throws OseeCoreException {

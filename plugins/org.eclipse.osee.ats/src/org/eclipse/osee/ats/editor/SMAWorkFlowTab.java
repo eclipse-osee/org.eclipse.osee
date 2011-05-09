@@ -41,12 +41,12 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -411,15 +411,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         boolean editable = !awa.isCompletedOrCancelled() && !awa.isReadOnly() &&
-         // and access control writeable
-         awa.isAccessControlWrite() && //
-
-         (SMAWorkFlowSection.isEditable(awa, page, editor) || //
-         // page is define to allow anyone to edit
-         awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
-         // team definition has allowed anyone to edit
-         awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
+         boolean editable = WorkflowManager.isAssigneeEditable(awa, editor.isPriviledgedEditModeEnabled());
 
          new SMAAssigneesHeader(comp, SWT.NONE, awa, editable, editor);
       }

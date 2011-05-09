@@ -473,14 +473,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       return AtsWorkDefinitions.isForceAssigneesToTeamLeads(stateDefinition);
    }
 
-   public boolean isRequireStateHoursSpentPrompt() {
-      return AtsWorkDefinitions.isRequireStateHoursSpentPrompt(stateDefinition);
-   }
-
-   public boolean isAllowTransitionWithWorkingBranch() {
-      return AtsWorkDefinitions.isAllowTransitionWithWorkingBranch(stateDefinition);
-   }
-
    public boolean isAllowCreateBranch() {
       return AtsWorkDefinitions.isAllowCreateBranch(stateDefinition);
    }

@@ -183,6 +183,25 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       return true;
    }
 
+   /**
+    * Recursively decend StateItems and grab all widgetDefs
+    */
+   public List<WidgetDefinition> getWidgets() {
+      List<WidgetDefinition> widgets = new ArrayList<WidgetDefinition>();
+      getWidgets(widgets, getStateItems());
+      return widgets;
+   }
+
+   private void getWidgets(List<WidgetDefinition> widgets, List<StateItem> stateItems) {
+      for (StateItem stateItem : getStateItems()) {
+         if (stateItem instanceof CompositeStateItem) {
+            getWidgets(widgets, ((CompositeStateItem) stateItem).getStateItems());
+         } else if (stateItem instanceof WidgetDefinition) {
+            widgets.add((WidgetDefinition) stateItem);
+         }
+      }
+   }
+
    public StateDefinition getDefaultToState() {
       return defaultToState;
    }

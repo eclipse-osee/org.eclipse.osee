@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
@@ -27,7 +28,6 @@ import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
-import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -81,7 +81,7 @@ public class SMAWorkFlowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
 
-      isEditable = isEditable(sma, page, editor);
+      isEditable = WorkflowManager.isEditable(sma, page.getStateDefinition(), editor.isPriviledgedEditModeEnabled());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPriviledgedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
@@ -480,27 +480,6 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
       return widgets;
-   }
-
-   public static boolean isEditable(AbstractWorkflowArtifact sma, StateXWidgetPage page, SMAEditor editor) throws OseeCoreException {
-      // must be writeable
-      return !sma.isReadOnly() &&
-      // and access control writeable
-      sma.isAccessControlWrite() &&
-      // and current state
-      (page == null || sma.isInState(page)) &&
-      // and one of these
-      //
-      // page is define to allow anyone to edit
-      (sma.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll) ||
-      // team definition has allowed anyone to edit
-      sma.teamDefHasRule(RuleDefinitionOption.AllowEditToAll) ||
-      // priviledged edit mode is on
-      editor.isPriviledgedEditModeEnabled() ||
-      // current user is assigned
-      sma.isAssigneeMe() ||
-      // current user is ats admin
-      AtsUtil.isAtsAdmin());
    }
 
    public boolean isEditable() {

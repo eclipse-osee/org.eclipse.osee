@@ -20,8 +20,9 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.ReviewManager;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
+import org.eclipse.osee.ats.artifact.WorkflowManager.ValidResult;
 import org.eclipse.osee.ats.artifact.log.LogType;
-import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -39,7 +40,6 @@ import org.eclipse.osee.ats.workdef.WidgetOption;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,34 +58,53 @@ import org.eclipse.ui.PlatformUI;
 public class TransitionManager {
 
    private final AbstractWorkflowArtifact awa;
-   private SMAEditor editor;
+   private StateDefinition toStateDefinition;
+   private final boolean priviledgedEditEnabled;
 
    public TransitionManager(AbstractWorkflowArtifact awa) {
-      this.awa = awa;
+      this(awa, false);
    }
 
-   public void handleTransition(StateDefinition toStateDefinition, SMAEditor editor) {
-      this.editor = editor;
+   public TransitionManager(AbstractWorkflowArtifact awa, boolean priviledgedEditEnabled) {
+      this.awa = awa;
+      this.priviledgedEditEnabled = priviledgedEditEnabled;
+   }
+
+   public Result handleTransition(StateDefinition toStateDefinition) {
+      this.toStateDefinition = toStateDefinition;
       try {
 
-         awa.setInTransition(true);
+         if (!WorkflowManager.isEditable(awa, awa.getStateDefinition(), priviledgedEditEnabled) && !awa.getStateMgr().getAssignees().contains(
+            UserManager.getUser(SystemUser.UnAssigned))) {
+            return new Result(
+               "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
+         }
+
+         Result result = isWorkingBranchTransitionable();
+         if (result.isFalse()) {
+            return result;
+         }
 
          if (toStateDefinition == null) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
-            return;
+            return new Result("No Transition State Selected");
          }
          if (toStateDefinition.isCancelledPage()) {
-            handleTransitionToCancelled(awa);
-            return;
+            return handleTransitionToCancelled(awa);
          }
 
          // Validate assignees
          if (awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || awa.getStateMgr().getAssignees().contains(
             UserManager.getUser(SystemUser.Guest)) || awa.getStateMgr().getAssignees().contains(
             UserManager.getUser(SystemUser.UnAssigned))) {
-            AWorkbench.popup("Transition Blocked",
-               "Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
-            return;
+            return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
+         }
+
+         awa.setInTransition(true);
+
+         // As a convenience, if assignee is UnAssigned and user selects to transition, make user current assignee
+         if (awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
+            awa.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+            awa.getStateMgr().addAssignee(UserManager.getUser());
          }
 
          // Get transition to assignees
@@ -111,9 +130,7 @@ public class TransitionManager {
 
          // Perform transition separate from persist of previous changes to state machine artifact
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition");
-         TransitionManager transitionMgr = new TransitionManager(awa);
-         Result result =
-            transitionMgr.transition(toStateDefinition, toAssignees, transaction, TransitionOption.Persist);
+         Result result = transition(toStateDefinition, toAssignees, transaction, TransitionOption.Persist);
          transaction.execute();
          if (result.isFalse()) {
             result.popup();
@@ -126,10 +143,29 @@ public class TransitionManager {
       }
    }
 
+   private Result isWorkingBranchTransitionable() throws OseeCoreException {
+      if (awa.isTeamWorkflow() && ((TeamWorkFlowArtifact) awa).getBranchMgr().isWorkingBranchInWork()) {
+
+         if (toStateDefinition.getPageName().equals(TeamState.Cancelled.getPageName())) {
+            new Result("Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
+         }
+         if (((TeamWorkFlowArtifact) awa).getBranchMgr().isBranchInCommit()) {
+            new Result("Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
+         }
+         if (!isAllowTransitionWithWorkingBranch(toStateDefinition)) {
+            new Result("Working Branch exists.\n\nPlease commit or delete working branch before transition.");
+         }
+      }
+      return Result.TrueResult;
+   }
+
+   private boolean isAllowTransitionWithWorkingBranch(StateDefinition toStateDefinition) {
+      return AtsWorkDefinitions.isAllowTransitionWithWorkingBranch(toStateDefinition);
+   }
+
    private boolean isStateTransitionable(StateDefinition toStateDefinition, Collection<User> toAssignees) throws OseeCoreException {
       // Validate XWidgets for transition
-      Pair<IStatus, XWidget> statusWidgetPair =
-         editor.getWorkFlowTab().getSectionForCurrentState().getPage().isPageComplete();
+      Collection<ValidResult> stateValid = WorkflowManager.isStateValid(awa, toStateDefinition);
       if (!statusWidgetPair.getFirst().isOK()) {
          // Stop transition if any errors exist
          if (statusWidgetPair.getFirst().getSeverity() == IStatus.ERROR) {
@@ -214,8 +250,7 @@ public class TransitionManager {
    }
 
    public int getCreationToNowDateDeltaMinutes() throws OseeCoreException {
-      Date createDate =
-         awa.getStateStartedData(editor.getWorkFlowTab().getSectionForCurrentState().getPage()).getDate();
+      Date createDate = awa.getStateStartedData(awa.getStateDefinition()).getDate();
       long createDateLong = createDate.getTime();
       Date date = new Date();
       float diff = date.getTime() - createDateLong;
@@ -227,12 +262,12 @@ public class TransitionManager {
 
    private boolean handlePopulateStateMetrics() throws OseeCoreException {
       // Don't log metrics for completed / cancelled states
-      if (editor.getWorkFlowTab().getSectionForCurrentState().getPage().isCompletedOrCancelledPage()) {
+      if (toStateDefinition.isCompletedOrCancelledPage()) {
          return true;
       }
 
       // Page has the ability to override the autofill of the metrics
-      if (!editor.getWorkFlowTab().getSectionForCurrentState().getPage().isRequireStateHoursSpentPrompt() && awa.getStateMgr().getHoursSpent() == 0) {
+      if (!isRequireStateHoursSpentPrompt(toStateDefinition) && awa.getStateMgr().getHoursSpent() == 0) {
          // First, try to autofill if it's only been < 5 min since creation
          double minSinceCreation = getCreationToNowDateDeltaMinutes();
          // System.out.println("minSinceCreation *" + minSinceCreation + "*");
@@ -247,7 +282,7 @@ public class TransitionManager {
          }
       }
 
-      if (editor.getWorkFlowTab().getSectionForCurrentState().getPage().isRequireStateHoursSpentPrompt()) {
+      if (isRequireStateHoursSpentPrompt(toStateDefinition)) {
          // Otherwise, open dialog to ask for hours complete
          String msg =
             awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(awa.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
@@ -266,22 +301,25 @@ public class TransitionManager {
       }
    }
 
-   public void handleTransitionToCancelled(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private boolean isRequireStateHoursSpentPrompt(StateDefinition stateDefinition) {
+      return AtsWorkDefinitions.isRequireStateHoursSpentPrompt(stateDefinition);
+   }
+
+   public Result handleTransitionToCancelled(AbstractWorkflowArtifact awa) throws OseeCoreException {
       EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
       if (cancelDialog.open() != 0) {
-         return;
+         return Result.TrueResult;
       }
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition to Cancelled");
       TransitionManager transitionMgr = new TransitionManager(awa);
       Result result =
          transitionMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
-      transaction.execute();
       if (result.isFalse()) {
-         result.popup();
-         return;
+         return result;
       }
       awa.setInTransition(false);
-      editor.refreshPages();
+      transaction.execute();
+      return Result.TrueResult;
    }
 
    public Result isTransitionValid(final IWorkPage toState, final Collection<User> toAssignees, TransitionOption... transitionOption) throws OseeCoreException {
