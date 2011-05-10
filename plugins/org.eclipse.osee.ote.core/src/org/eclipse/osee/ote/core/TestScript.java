@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
@@ -320,7 +321,7 @@ public abstract class TestScript implements ITimeout {
                   infoPrompt.open(getUserSession(), promptInitWorker);
                   infoPrompt.close();
                   returnValue = "";
-                  testRecord = null;
+                  testRecord = new AttentionRecord(getTestEnvironment(), String.format("PROMPT [%s]\n{\n%s\n}\n", PromptResponseType.NONE.name(), prompt.toString()), true);
                   break;
                case PASS_FAIL:
                   PassFailPromptImpl passFailPrompt = new PassFailPromptImpl(connector, this, "", prompt.toString());
@@ -340,7 +341,7 @@ public abstract class TestScript implements ITimeout {
                      returnValue = "NO";
                   }
                   logOutput =
-                     String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.YES_NO.name(),
+                     String.format("PROMPT [%s]\n{\n%s\n}\n\tRETURN VALUE : %s", PromptResponseType.YES_NO.name(),
                         prompt.toString(), returnValue);
                   yesNoPrompt.close();
                   testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
@@ -352,11 +353,11 @@ public abstract class TestScript implements ITimeout {
                   scriptPausePrompt.close();
                   if (returnValue != null && returnValue.length() > 0) {
                      logOutput =
-                        String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.SCRIPT_PAUSE.name(),
+                        String.format("PROMPT [%s]\n{\n%s\n}\n\tRETURN VALUE : %s", PromptResponseType.SCRIPT_PAUSE.name(),
                            prompt.toString(), returnValue);
                   } else {
                      logOutput =
-                        String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString());
+                        String.format("PROMPT [%s]\n{\n%s\n}\n", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString());
                   }
 
                   testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
@@ -368,11 +369,11 @@ public abstract class TestScript implements ITimeout {
                   userInputPrompt.close();
                   if (returnValue != null && returnValue.length() > 0) {
                      logOutput =
-                        String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.USER_INPUT.name(),
+                        String.format("PROMPT [%s]\n{\n%s\n}\n\tRETURN VALUE : %s", PromptResponseType.USER_INPUT.name(),
                            prompt.toString(), returnValue);
                   } else {
                      logOutput =
-                        String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.USER_INPUT.name(), prompt.toString());
+                        String.format("PROMPT [%s]\n{\n%s\n}\n", PromptResponseType.USER_INPUT.name(), prompt.toString());
                   }
                   testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
                   break;
