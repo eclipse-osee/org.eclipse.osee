@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.test;
 
-import org.eclipse.osee.framework.jdk.core.test.type.PropertyStoreTest;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStoreTest;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.junit.Assert;
 import org.junit.Test;

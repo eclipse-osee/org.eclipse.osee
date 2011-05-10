@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.message.test.AllCoreMessageTestSuite;
 import org.eclipse.osee.framework.core.model.test.AllCoreModelTestSuite;
 import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
 import org.eclipse.osee.framework.database.test.DatabaseTestSuite;
-import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
+import org.eclipse.osee.framework.jdk.core.JdkCoreTestSuite;
 import org.eclipse.osee.framework.lifecycle.test.AllLifecycleTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
