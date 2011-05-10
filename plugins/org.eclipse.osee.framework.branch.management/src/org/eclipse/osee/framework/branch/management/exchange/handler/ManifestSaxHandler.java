@@ -145,5 +145,10 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       public int hashCode() {
          return 37 * priority;
       }
+
+      @Override
+      public String toString() {
+         return String.format("ImportFile [fileName=%s, source=%s, priority=%d]", fileName, source, priority);
+      }
    }
 }
