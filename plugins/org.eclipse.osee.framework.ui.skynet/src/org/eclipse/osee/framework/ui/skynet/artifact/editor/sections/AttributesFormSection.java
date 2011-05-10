@@ -126,4 +126,10 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
    public AttributeFormPart getAttributeFormPart() {
       return formPart;
    }
+
+   @Override
+   public void refresh() {
+      super.refresh();
+      formPart.refresh();
+   }
 }
