@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeD
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -34,7 +34,7 @@ public class BranchExchange implements IBranchExchange {
    }
 
    @Override
-   public IResourceLocator exportBranch(String exportName, Options options, List<Integer> branchIds) throws OseeCoreException {
+   public IResourceLocator exportBranch(String exportName, PropertyStore options, List<Integer> branchIds) throws OseeCoreException {
       ExportController controller = new ExportController(oseeServices, exportName, options, branchIds);
       controller.handleTxWork();
       return oseeServices.getResourceLocatorManager().generateResourceLocator(ExchangeLocatorProvider.PROTOCOL, "",
@@ -42,7 +42,7 @@ public class BranchExchange implements IBranchExchange {
    }
 
    @Override
-   public void importBranch(IResourceLocator exportDataLocator, Options options, List<Integer> branchIds, OperationLogger logger) throws OseeCoreException {
+   public void importBranch(IResourceLocator exportDataLocator, PropertyStore options, List<Integer> branchIds, OperationLogger logger) throws OseeCoreException {
       IOseeExchangeDataProvider exportDataProvider = createExportDataProvider(exportDataLocator);
       ImportController importController =
          new ImportController(oseeServices, exportDataProvider, options, branchIds, logger);

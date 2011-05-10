@@ -10,6 +10,7 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.util,

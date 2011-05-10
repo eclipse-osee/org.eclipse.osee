@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
@@ -27,14 +27,14 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
 public final class BranchExportOperation extends AbstractOperation {
    private static final String SELECT_BRANCHES = "SELECT branch_id FROM osee_branch %s ORDER BY branch_id";
 
-   private final Options options;
+   private final PropertyStore propertyStore;
    private final String exportFileName;
    private final boolean includeArchivedBranches;
    private final List<Integer> branchIds;
 
-   public BranchExportOperation(OperationLogger logger, Options options, String exportFileName, boolean includeArchivedBranches, List<Integer> branchIds) {
+   public BranchExportOperation(OperationLogger logger, PropertyStore propertyStore, String exportFileName, boolean includeArchivedBranches, List<Integer> branchIds) {
       super("Branch Export", Activator.PLUGIN_ID, logger);
-      this.options = options;
+      this.propertyStore = propertyStore;
       this.exportFileName = exportFileName;
       this.includeArchivedBranches = includeArchivedBranches;
       this.branchIds = branchIds;
@@ -59,6 +59,6 @@ public final class BranchExportOperation extends AbstractOperation {
       }
       logf("Exporting: [%s] branches\n", branchIds.size());
 
-      Activator.getBranchExchange().exportBranch(exportFileName, options, branchIds);
+      Activator.getBranchExchange().exportBranch(exportFileName, propertyStore, branchIds);
    }
 }

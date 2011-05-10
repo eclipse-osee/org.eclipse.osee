@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
@@ -73,7 +73,7 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
    private InputStream getExtendedDataAsStream(AttributeData attributeData) throws OseeCoreException {
       InputStream toReturn = null;
       if (attributeData.isUriValid()) {
-         Options options = new Options();
+         PropertyStore options = new PropertyStore();
          options.put(StandardOptions.DecompressOnAquire.name(), true);
          IResourceLocator locator = locatorManager.getResourceLocator(attributeData.getUri());
          IResource resource = resourceManager.acquire(locator, options);

@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -57,7 +57,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
       }
 
       IResourceLocator locator = services.getResourceLocatorManager().getResourceLocator(uriTarget);
-      IResource resource = services.getResourceManager().acquire(locator, new Options());
+      IResource resource = services.getResourceManager().acquire(locator, new PropertyStore());
 
       File target = new File(tempFolder, locator.getRawPath());
       if (target.getParentFile() != null) {

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -85,7 +85,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
                services.getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
             IResourceLocator locator =
-               services.getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint), new Options());
+               services.getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint), new PropertyStore());
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {

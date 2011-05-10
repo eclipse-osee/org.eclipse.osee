@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
@@ -33,11 +33,11 @@ public class HttpBranchExchangeInfo {
    private final List<Integer> selectedBranchIds;
    private boolean sendExportFile;
    private boolean deleteExportFile;
-   private final Options options;
+   private final PropertyStore options;
 
    @SuppressWarnings("unchecked")
    public HttpBranchExchangeInfo(HttpServletRequest request) throws Exception {
-      this.options = new Options();
+      this.options = new PropertyStore();
       this.function = null;
       this.selectedBranchIds = new ArrayList<Integer>();
       this.sendExportFile = false;
@@ -93,7 +93,7 @@ public class HttpBranchExchangeInfo {
       return this.selectedBranchIds;
    }
 
-   public Options getOptions() {
+   public PropertyStore getOptions() {
       return this.options;
    }
 

@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -174,7 +174,7 @@ public final class ExchangeDb {
       return translators;
    }
 
-   public static Pair<String, Object[]> getQueryWithOptions(String originalQuery, int queryId, Options options) throws Exception {
+   public static Pair<String, Object[]> getQueryWithOptions(String originalQuery, int queryId, PropertyStore options) throws Exception {
       if (originalQuery.contains("%s")) {
          if (originalQuery.contains("osee_tx_details") || originalQuery.contains("osee_merge")) {
             List<Object> dataArray = new ArrayList<Object>();
@@ -217,15 +217,15 @@ public final class ExchangeDb {
       return new Pair<String, Object[]>(originalQuery, new Object[] {queryId});
    }
 
-   static Long getMaxTransaction(Options options) {
+   static Long getMaxTransaction(PropertyStore options) {
       return getTransactionNumber(options, ExportOptions.MAX_TXS.name());
    }
 
-   static Long getMinTransaction(Options options) {
+   static Long getMinTransaction(PropertyStore options) {
       return getTransactionNumber(options, ExportOptions.MIN_TXS.name());
    }
 
-   private static Long getTransactionNumber(Options options, String exportOption) {
+   private static Long getTransactionNumber(PropertyStore options, String exportOption) {
       String transactionNumber = options.get(exportOption);
       long toReturn = Long.MIN_VALUE;
       if (Strings.isValid(transactionNumber)) {

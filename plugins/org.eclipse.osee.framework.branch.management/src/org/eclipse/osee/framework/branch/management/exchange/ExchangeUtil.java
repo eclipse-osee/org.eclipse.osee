@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -57,9 +57,9 @@ public class ExchangeUtil {
    public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator, IResourceManager resourceManager) throws OseeCoreException {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
+      IResource resource = resourceManager.acquire(locator, new PropertyStore());
       Conditions.checkExpressionFailOnTrue(!resourceManager.exists(locator), "Error locating [%s]",
          locator.getLocation());
-      IResource resource = resourceManager.acquire(locator, new Options());
       File source = new File(resource.getLocation());
       if (source.isFile()) {
          wasZipExtractionRequired = true;

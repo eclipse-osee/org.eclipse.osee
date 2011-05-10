@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 public class TranslationManager {
    private static final String INSERT_INTO_IMPORT_MAP =
@@ -42,7 +42,7 @@ public class TranslationManager {
       }
    }
 
-   public void configure(Options options) {
+   public void configure(PropertyStore options) {
       if (options != null) {
          useOriginalIds = options.getBoolean(ImportOptions.USE_IDS_FROM_IMPORT_FILE.name());
       }

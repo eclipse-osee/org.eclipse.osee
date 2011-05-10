@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.test;
 
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreTest;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test Cases for {@link Options}
+ * Test Cases for {@link PropertyStore}
  * 
  * @author Roberto E. Escobar
  */
@@ -24,7 +24,7 @@ public class OptionsTest extends PropertyStoreTest {
 
    @Test
    public void testClear() {
-      Options options = new Options();
+      PropertyStore options = new PropertyStore();
       options.put("a", true);
       options.put("b", 0.1);
       options.put("c", new String[] {"a", "b", "c"});

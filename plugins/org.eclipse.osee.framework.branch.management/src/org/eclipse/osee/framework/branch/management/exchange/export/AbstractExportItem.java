@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
@@ -31,7 +31,7 @@ public abstract class AbstractExportItem implements Runnable {
    private final Set<IExchangeTaskListener> exportListeners;
 
    private File writeLocation;
-   private Options options;
+   private PropertyStore options;
    private boolean cancel;
 
    public AbstractExportItem(ExportItem id) {
@@ -70,11 +70,11 @@ public abstract class AbstractExportItem implements Runnable {
       return writeLocation;
    }
 
-   public void setOptions(Options options) {
+   public void setOptions(PropertyStore options) {
       this.options = options;
    }
 
-   public Options getOptions() {
+   public PropertyStore getOptions() {
       return this.options;
    }
 

@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.ServerThreads;
 import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -43,14 +43,14 @@ final class ExportController implements IExchangeTaskListener {
    private static final String ZIP_EXTENSION = ".zip";
 
    private String exportName;
-   private final Options options;
+   private final PropertyStore options;
    private final List<Integer> branchIds;
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
    private final List<String> errorList = new CopyOnWriteArrayList<String>();
    private final OseeServices oseeServices;
 
-   ExportController(OseeServices oseeServices, String exportName, Options options, List<Integer> branchIds) throws OseeCoreException {
+   ExportController(OseeServices oseeServices, String exportName, PropertyStore options, List<Integer> branchIds) throws OseeCoreException {
       if (branchIds.isEmpty()) {
          throw new OseeArgumentException("No branch selected for export.");
       }

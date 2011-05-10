@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 
 /**
@@ -67,8 +67,8 @@ public class HttpRequestDecoder {
          Boolean.valueOf(request.getParameter(CHECK_AVAILABLE)));
    }
 
-   public static Options getOptions(HttpServletRequest request) {
-      Options options = new Options();
+   public static PropertyStore getOptions(HttpServletRequest request) {
+      PropertyStore options = new PropertyStore();
       options.put(StandardOptions.CompressOnSave.name(), request.getParameter(COMPRESS_ON_SAVE));
       options.put(StandardOptions.CompressOnAcquire.name(), request.getParameter(COMPRESS_ON_ACQUIRE));
       options.put(StandardOptions.DecompressOnAquire.name(), request.getParameter(DECOMPRESS_ON_ACQUIRE));

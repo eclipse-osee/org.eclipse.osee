@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 
@@ -27,13 +27,13 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
  */
 public final class BranchImportOperation extends AbstractOperation {
    private final List<String> importFiles;
-   private final Options options;
+   private final PropertyStore propertyStore;
    private final List<Integer> branchIds;
 
-   public BranchImportOperation(OperationLogger logger, Options options, List<String> importFiles, List<Integer> branchIds) {
+   public BranchImportOperation(OperationLogger logger, PropertyStore propertyStore, List<String> importFiles, List<Integer> branchIds) {
       super("Branch Import", Activator.PLUGIN_ID, logger);
       this.importFiles = importFiles;
-      this.options = options;
+      this.propertyStore = propertyStore;
       this.branchIds = branchIds;
    }
 
@@ -46,7 +46,7 @@ public final class BranchImportOperation extends AbstractOperation {
 
       for (String fileToImport : importFiles) {
          URI uri = new URI("exchange://" + fileToImport);
-         Activator.getBranchExchange().importBranch(new ResourceLocator(uri), options, branchIds, getLogger());
+         Activator.getBranchExchange().importBranch(new ResourceLocator(uri), propertyStore, branchIds, getLogger());
       }
    }
 }

@@ -15,11 +15,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
@@ -38,7 +38,7 @@ public class OptionsProcessor {
    private final boolean compressOnAcquire;
    private final boolean overwrite;
 
-   public OptionsProcessor(URI uri, IResourceLocator locator, IResource resource, Options options) throws MalformedLocatorException {
+   public OptionsProcessor(URI uri, IResourceLocator locator, IResource resource, PropertyStore options) throws MalformedLocatorException {
       this.resource = resource;
       decompressOnAcquire = options.getBoolean(StandardOptions.DecompressOnAquire.name());
       compressOnAcquire = options.getBoolean(StandardOptions.CompressOnAcquire.name());

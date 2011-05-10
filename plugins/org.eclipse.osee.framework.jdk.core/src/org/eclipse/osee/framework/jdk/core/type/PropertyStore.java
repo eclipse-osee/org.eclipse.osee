@@ -186,22 +186,22 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return storeId;
    }
 
-   protected void setId(String name) {
+   void setId(String name) {
       if (name == null) {
          name = EMPTY_STRING;
       }
       this.storeId = name;
    }
 
-   protected Map<String, Object> getItems() {
+   Map<String, Object> getItems() {
       return storageData;
    }
 
-   protected Map<String, Object> getArrays() {
+   Map<String, Object> getArrays() {
       return storageArrays;
    }
 
-   protected Map<String, Object> getPropertyStores() {
+   Map<String, Object> getPropertyStores() {
       return storageProperties;
    }
 
@@ -343,6 +343,11 @@ public class PropertyStore implements IPropertyStore, Serializable {
    @Override
    public boolean isEmpty() {
       return keySet().isEmpty() && innerStoresKeySet().isEmpty() && arrayKeySet().isEmpty();
+   }
+
+   public void clear() {
+      storageData.clear();
+      storageArrays.clear();
    }
 
 }

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
@@ -36,7 +36,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private OseeConnection connection;
    private MetaData metadata;
    private TranslationManager translator;
-   private Options options;
+   private PropertyStore options;
    private final IOseeDatabaseService service;
 
    protected BaseDbSaxHandler(IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
@@ -46,7 +46,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
             cacheLimit));
       }
       this.service = service;
-      this.options = new Options();
+      this.options = new PropertyStore();
       this.translator = null;
       this.metadata = null;
       this.connection = null;
@@ -55,13 +55,13 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.data = new ArrayList<Object[]>();
    }
 
-   public void setOptions(Options options) {
+   public void setOptions(PropertyStore options) {
       if (options != null) {
          this.options = options;
       }
    }
 
-   protected Options getOptions() {
+   protected PropertyStore getOptions() {
       return this.options;
    }
 

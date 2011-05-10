@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.core.operation.ConsoleLogger;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpBranchExchangeInfo;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -101,7 +101,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       if (exchangeInfo.isSendExportFile()) {
          InputStream exportFileStream = null;
          try {
-            IResource resource = resourceManager.acquire(exchangeLocator, new Options());
+            IResource resource = resourceManager.acquire(exchangeLocator, new PropertyStore());
             exportFileStream = resource.getContent();
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentLength(exportFileStream.available());

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpRequestDecoder;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
@@ -68,7 +68,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
          Pair<String, Boolean> parameters = HttpRequestDecoder.fromGetRequest(request);
          String path = parameters.getFirst();
          boolean isCheckExistance = parameters.getSecond();
-         Options options = HttpRequestDecoder.getOptions(request);
+         PropertyStore options = HttpRequestDecoder.getOptions(request);
 
          IResourceLocator locator = locatorManager.getResourceLocator(path);
 
@@ -124,7 +124,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
       int result = HttpServletResponse.SC_BAD_REQUEST;
       try {
          String[] args = HttpRequestDecoder.fromPutRequest(request);
-         Options options = HttpRequestDecoder.getOptions(request);
+         PropertyStore options = HttpRequestDecoder.getOptions(request);
 
          IResourceLocator locator = locatorManager.generateResourceLocator(args[0], args[1], args[2]);
          IResource tempResource = new ServletResourceBridge(request, locator);
@@ -183,7 +183,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
       Set<IResourceLocator> locators = new HashSet<IResourceLocator>();
       for (IResourceLocator locator : locators) {
          try {
-            Options options = new Options();
+            PropertyStore options = new PropertyStore();
             resourceManager.acquire(locator, options);
          } catch (OseeCoreException ex) {
          }

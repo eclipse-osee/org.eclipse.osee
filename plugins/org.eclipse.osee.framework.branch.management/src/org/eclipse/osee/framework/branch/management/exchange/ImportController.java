@@ -42,9 +42,9 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -63,7 +63,7 @@ public final class ImportController {
 
    private final OseeServices oseeServices;
    private final IOseeExchangeDataProvider exportDataProvider;
-   private final Options options;
+   private final PropertyStore options;
    private final int[] branchesToImport = null;
    private final Map<String, SavePoint> savePoints;
    private final ExchangeDataProcessor exchangeDataProcessor;
@@ -75,7 +75,7 @@ public final class ImportController {
    private MetaDataSaxHandler metadataHandler;
    private String currentSavePoint;
 
-   ImportController(OseeServices oseeServices, IOseeExchangeDataProvider exportDataProvider, Options options, List<Integer> branchIds, OperationLogger logger) throws OseeArgumentException {
+   ImportController(OseeServices oseeServices, IOseeExchangeDataProvider exportDataProvider, PropertyStore options, List<Integer> branchIds, OperationLogger logger) throws OseeArgumentException {
       this.oseeServices = oseeServices;
       this.exportDataProvider = exportDataProvider;
       this.options = options;

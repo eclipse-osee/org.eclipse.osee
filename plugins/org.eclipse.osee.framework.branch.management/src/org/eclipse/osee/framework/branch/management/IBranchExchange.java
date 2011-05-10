@@ -13,17 +13,17 @@ package org.eclipse.osee.framework.branch.management;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IBranchExchange {
 
-   public IResourceLocator exportBranch(String exportName, Options options, List<Integer> branchIds) throws Exception;
+   public IResourceLocator exportBranch(String exportName, PropertyStore options, List<Integer> branchIds) throws Exception;
 
-   public void importBranch(IResourceLocator fileToImport, Options options, List<Integer> branchIds, OperationLogger logger) throws OseeCoreException;
+   public void importBranch(IResourceLocator fileToImport, PropertyStore options, List<Integer> branchIds, OperationLogger logger) throws OseeCoreException;
 
    public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception;
 }

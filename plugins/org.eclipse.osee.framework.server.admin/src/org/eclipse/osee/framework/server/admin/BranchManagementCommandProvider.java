@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.core.operation.MutexSchedulingRule;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.server.admin.branch.BranchExportOperation;
 import org.eclipse.osee.framework.server.admin.branch.BranchImportOperation;
 import org.eclipse.osee.framework.server.admin.branch.ExchangeIntegrityOperation;
@@ -50,7 +50,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
    private final ISchedulingRule branchMutex = new MutexSchedulingRule();
 
    public Job _export_branch(CommandInterpreter ci) {
-      Options options = new Options();
+      PropertyStore propertyStore = new PropertyStore();
       String arg = null;
       int count = 0;
       String exportFileName = null;
@@ -60,21 +60,21 @@ public class BranchManagementCommandProvider implements CommandProvider {
          arg = ci.nextArgument();
          if (Strings.isValid(arg)) {
             if (arg.equals("-excludeBaselineTxs")) {
-               options.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), true);
+               propertyStore.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), true);
             } else if (arg.equals("-includeArchivedBranches")) {
                includeArchivedBranches = true;
             } else if (arg.equals("-compress")) {
-               options.put(ExportOptions.COMPRESS.name(), true);
+               propertyStore.put(ExportOptions.COMPRESS.name(), true);
             } else if (arg.equals("-minTx")) {
                arg = ci.nextArgument();
                if (Strings.isValid(arg)) {
-                  options.put(ExportOptions.MIN_TXS.name(), arg);
+                  propertyStore.put(ExportOptions.MIN_TXS.name(), arg);
                }
                count++;
             } else if (arg.equals("-maxTx")) {
                arg = ci.nextArgument();
                if (Strings.isValid(arg)) {
-                  options.put(ExportOptions.MAX_TXS.name(), arg);
+                  propertyStore.put(ExportOptions.MAX_TXS.name(), arg);
                }
                count++;
             } else {
@@ -89,12 +89,13 @@ public class BranchManagementCommandProvider implements CommandProvider {
       } while (Strings.isValid(arg));
 
       OperationLogger logger = new CommandInterpreterLogger(ci);
-      IOperation op = new BranchExportOperation(logger, options, exportFileName, includeArchivedBranches, branchIds);
+      IOperation op =
+         new BranchExportOperation(logger, propertyStore, exportFileName, includeArchivedBranches, branchIds);
       return Operations.executeAsJob(op, false, branchMutex);
    }
 
    public Job _import_branch(CommandInterpreter ci) {
-      Options options = new Options();
+      PropertyStore propertyStore = new PropertyStore();
       String arg = null;
       int count = 0;
 
@@ -104,21 +105,21 @@ public class BranchManagementCommandProvider implements CommandProvider {
          arg = ci.nextArgument();
          if (Strings.isValid(arg)) {
             if (arg.equals("-excludeBaselineTxs")) {
-               options.put(ImportOptions.EXCLUDE_BASELINE_TXS.name(), true);
+               propertyStore.put(ImportOptions.EXCLUDE_BASELINE_TXS.name(), true);
             } else if (arg.equals("-clean")) {
-               options.put(ImportOptions.CLEAN_BEFORE_IMPORT.name(), true);
+               propertyStore.put(ImportOptions.CLEAN_BEFORE_IMPORT.name(), true);
             } else if (arg.equals("-allAsRootBranches")) {
-               options.put(ImportOptions.ALL_AS_ROOT_BRANCHES.name(), true);
+               propertyStore.put(ImportOptions.ALL_AS_ROOT_BRANCHES.name(), true);
             } else if (arg.equals("-minTx")) {
                arg = ci.nextArgument();
                if (Strings.isValid(arg)) {
-                  options.put(ImportOptions.MIN_TXS.name(), arg);
+                  propertyStore.put(ImportOptions.MIN_TXS.name(), arg);
                }
                count++;
             } else if (arg.equals("-maxTx")) {
                arg = ci.nextArgument();
                if (Strings.isValid(arg)) {
-                  options.put(ImportOptions.MAX_TXS.name(), arg);
+                  propertyStore.put(ImportOptions.MAX_TXS.name(), arg);
                }
                count++;
             } else if (count == 0 && !arg.startsWith("-")) {
@@ -131,7 +132,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
       } while (Strings.isValid(arg));
 
       OperationLogger logger = new CommandInterpreterLogger(ci);
-      IOperation op = new BranchImportOperation(logger, options, importFiles, branchIds);
+      IOperation op = new BranchImportOperation(logger, propertyStore, importFiles, branchIds);
       return Operations.executeAsJob(op, false, branchMutex);
    }
 

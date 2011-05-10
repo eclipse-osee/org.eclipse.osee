@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
-import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
 
@@ -68,7 +68,7 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException {
+   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
       IResource toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
       toReturn = optionsProcessor.getResourceToServer();
@@ -96,7 +96,7 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException {
       IResourceLocator toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
       OutputStream outputStream = null;

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.resource.management;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
@@ -32,7 +33,7 @@ public interface IResourceProvider {
     * @param options operation options
     * @return the resource
     */
-   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException;
+   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException;
 
    /**
     * Determines if a resource exists for the given locator.
@@ -48,7 +49,7 @@ public interface IResourceProvider {
     * @param options operation options
     * @param resource the resource to save
     */
-   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException;
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException;
 
    /**
     * Delete resource specified by resource locator

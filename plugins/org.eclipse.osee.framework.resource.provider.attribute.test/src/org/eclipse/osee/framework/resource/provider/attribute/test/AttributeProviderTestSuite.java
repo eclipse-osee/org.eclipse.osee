@@ -19,5 +19,5 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 public class AttributeProviderTestSuite {
-
+   // do nothing
 }

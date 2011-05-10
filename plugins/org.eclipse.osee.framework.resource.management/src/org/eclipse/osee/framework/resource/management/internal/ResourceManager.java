@@ -14,12 +14,12 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -56,13 +56,13 @@ public class ResourceManager implements IResourceManager {
       }
    }
 
-   private void notifyPreOnSave(final IResourceLocator locator, IResource resource, Options options) {
+   private void notifyPreOnSave(final IResourceLocator locator, IResource resource, PropertyStore options) {
       for (IResourceListener listener : listeners) {
          listener.onPreSave(locator, resource, options);
       }
    }
 
-   private void notifyPostOnSave(IResourceLocator locator, final IResource resource, Options options) {
+   private void notifyPostOnSave(IResourceLocator locator, final IResource resource, PropertyStore options) {
       for (IResourceListener listener : listeners) {
          listener.onPostSave(locator, resource, options);
       }
@@ -106,7 +106,7 @@ public class ResourceManager implements IResourceManager {
    }
 
    @Override
-   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException {
+   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
       IResourceProvider provider = getProvider(locator);
       notifyPreOnAcquire(locator);
       IResource toReturn = provider.acquire(locator, options);
@@ -115,7 +115,7 @@ public class ResourceManager implements IResourceManager {
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException {
       IResourceProvider provider = getProvider(locator);
       notifyPreOnSave(locator, resource, options);
       IResourceLocator actualLocator = provider.save(locator, resource, options);

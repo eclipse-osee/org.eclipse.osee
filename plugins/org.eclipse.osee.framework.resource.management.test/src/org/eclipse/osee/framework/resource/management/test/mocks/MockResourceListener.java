@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.test.mocks;
 
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -62,7 +62,7 @@ public class MockResourceListener implements IResourceListener {
    }
 
    @Override
-   public void onPostSave(IResourceLocator locator, IResource resource, Options options) {
+   public void onPostSave(IResourceLocator locator, IResource resource, PropertyStore options) {
       postSave = true;
       this.resource = resource;
    }
@@ -74,7 +74,7 @@ public class MockResourceListener implements IResourceListener {
    }
 
    @Override
-   public void onPreSave(IResourceLocator locator, IResource resource, Options options) {
+   public void onPreSave(IResourceLocator locator, IResource resource, PropertyStore options) {
       preSave = true;
       this.locator = locator;
    }

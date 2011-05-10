@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsService;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsXmlMessages;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsXmlSearch;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -84,7 +84,7 @@ public class AtsServlet extends UnsecuredOseeHttpServlet {
       @Override
       public IResource getResource(String path) throws OseeCoreException {
          IResourceLocator locator = locatorManager.getResourceLocator(path);
-         return resourceManager.acquire(locator, new Options());
+         return resourceManager.acquire(locator, new PropertyStore());
       }
    }
 

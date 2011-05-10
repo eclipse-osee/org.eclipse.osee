@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management;
 
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -28,12 +30,12 @@ public interface IResourceListener {
    /**
     * Event triggered before a resource is saved
     */
-   public void onPreSave(IResourceLocator locator, IResource resource, Options options);
+   public void onPreSave(IResourceLocator locator, IResource resource, PropertyStore options);
 
    /**
     * Event triggered after a resource is saved
     */
-   public void onPostSave(IResourceLocator locator, IResource resource, Options options);
+   public void onPostSave(IResourceLocator locator, IResource resource, PropertyStore options);
 
    /**
     * Event triggered before a resource is acquired
