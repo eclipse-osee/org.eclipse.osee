@@ -31,9 +31,6 @@ public abstract class Revert {
    private static final String UPDATE_DETAILS_TABLE =
       "UPDATE osee_tx_details SET osee_comment = ?, tx_type = ? WHERE transaction_id = ?";
 
-   private static final String UPDATE_REVERT_TABLE =
-      "INSERT INTO osee_removed_txs (transaction_id, rem_mod_type, rem_tx_current, rem_transaction_id, rem_gamma_id) (SELECT ?, txs.mod_type, txs.tx_current, txs.transaction_id, txs.gamma_id FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.transaction_id = ?)";
-
    private static final String SET_TX_CURRENT_REVERT =
       "UPDATE osee_txs SET tx_current = " + TxChange.CURRENT.getValue() + " WHERE gamma_id = ? and transaction_id = ?";
 
@@ -126,28 +123,9 @@ public abstract class Revert {
 
    @SuppressWarnings("unchecked")
    private void updateTransactionTables(OseeConnection connection, TransactionRecord transId) throws OseeDataStoreException, OseeCoreException {
-      long time = System.currentTimeMillis();
       ConnectionHandler.runPreparedUpdate(connection, UPDATE_DETAILS_TABLE, REVERT_COMMENT,
          TxChange.DELETED.getValue(), transId.getId());
-      int count1 = ConnectionHandler.runBatchUpdate(connection, UPDATE_REVERT_TABLE, gammaIdsToInsert);
-      int count2 = ConnectionHandler.runBatchUpdate(connection, DELETE_TXS_GAMMAS_REVERT, gammaIdsModifications);
-
-      if (count1 != count2) {
-         throw new OseeCoreException("Revert Transaction moved %d transaction but should have moved %d", count1, count2);
-      }
-      if (DEBUG) {
-         displayRevertResults(time, objectReverted, gammaIdsModifications, count2);
-      }
-   }
-
-   private void displayRevertResults(long time, String objectReverted, List<Object[]> gammaIdsModifications, int count2) {
-      System.out.println(String.format("Deleted %d txs for gamma revert in %s", count2, Lib.getElapseString(time)));
-      time = System.currentTimeMillis();
-      for (Object[] items : gammaIdsModifications) {
-         System.out.println(String.format(" Revert %s: [gammaId, transactionId] = %s ", objectReverted,
-            Arrays.deepToString(items)));
-      }
-      System.out.println(String.format("     Displayed all the data in %s", Lib.getElapseString(time)));
+      ConnectionHandler.runBatchUpdate(connection, DELETE_TXS_GAMMAS_REVERT, gammaIdsModifications);
    }
 
    private void setTxCurrentForRevertedObjects(OseeConnection connection) throws OseeCoreException {

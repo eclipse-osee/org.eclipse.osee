@@ -33,16 +33,20 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
  * @author Ryan D. Brooks
  */
 public class PurgeBranchOperation extends AbstractDbTxOperation {
+
+   //@formatter:off
    private static final String SELECT_DELETABLE_GAMMAS =
-      "select txs1.gamma_id from %s txs1 where txs1.branch_id = ? AND txs1.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.branch_id <> txs2.branch_id) AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3 WHERE txs1.gamma_id = txs3.gamma_id AND txs1.branch_id <> txs3.branch_id)";
-   private static final String SELECT_DELETABLE_TXS_REMOVED_GAMMAS =
-      "select txs1.rem_gamma_id from osee_removed_txs txs1, osee_tx_details txd1 where txd1.branch_id = ? AND txs1.transaction_id <> ? AND txs1.transaction_id = txd1.transaction_id AND NOT EXISTS (SELECT 1 FROM osee_txs txs2 WHERE txs1.rem_gamma_id = txs2.gamma_id AND txd1.branch_id <> txs2.branch_id) AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3 WHERE txs1.rem_gamma_id = txs3.gamma_id AND txd1.branch_id <> txs3.branch_id)";
-   private static final String PURGE_GAMMAS = "delete from %s where gamma_id = ?";
-   private static final String DELETE_FROM_BRANCH_TABLE = "delete from osee_branch where branch_id = ?";
+      "SELECT txs1.gamma_id FROM %s txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id <> ? AND NOT EXISTS " +
+      "(SELECT txs2.branch_id FROM osee_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.branch_id <> txs2.branch_id) AND NOT EXISTS " +
+      "(SELECT txs3.branch_id FROM osee_txs_archived txs3 WHERE txs1.gamma_id = txs3.gamma_id AND txs1.branch_id <> txs3.branch_id)";
+   //@formatter:on
+
+   private static final String PURGE_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
+   private static final String DELETE_FROM_BRANCH_TABLE = "DELETE FROM osee_branch WHERE branch_id = ?";
    private static final String DELETE_FROM_MERGE =
-      "delete from osee_merge where merge_branch_id = ? and source_branch_id=?";
-   private static final String DELETE_FROM_CONFLICT = "delete from osee_conflict where merge_branch_id = ?";
-   private static final String DELETE_FROM_TX_DETAILS = "delete from osee_tx_details where branch_id = ?";
+      "DELETE FROM osee_merge WHERE merge_branch_id = ? AND source_branch_id = ?";
+   private static final String DELETE_FROM_CONFLICT = "DELETE FROM osee_conflict WHERE merge_branch_id = ?";
+   private static final String DELETE_FROM_TX_DETAILS = "DELETE FROM osee_tx_details WHERE branch_id = ?";
 
    private final Branch branch;
    private final List<Object[]> deleteableGammas = new ArrayList<Object[]>();
@@ -72,14 +76,13 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
 
       monitor.worked(calculateWork(0.05));
 
-      findDeleteableGammas(SELECT_DELETABLE_TXS_REMOVED_GAMMAS, 0.10);
       findDeleteableGammas(String.format(SELECT_DELETABLE_GAMMAS, sourceTableName), 0.10);
 
       purgeGammas("osee_artifact", 0.10);
       purgeGammas("osee_attribute", 0.10);
       purgeGammas("osee_relation_link", 0.10);
 
-      String sql = String.format("delete from %s where branch_id = ?", sourceTableName);
+      String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
       purgeFromTable(sourceTableName, sql, 0.20, branch.getId());
       purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.09, branch.getId());
       purgeFromTable("Conflict", DELETE_FROM_CONFLICT, 0.01, branch.getId());
@@ -89,7 +92,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       BranchCache branchCache = cachingService.getBranchCache();
       branch.setStorageState(StorageState.PURGED);
       branchCache.storeItems(branch);
-      branchCache.decache(branch);
       branch.internalRemovePurgedBranchFromParent();
    }
 
