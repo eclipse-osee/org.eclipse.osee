@@ -22,26 +22,21 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.artifact.VersionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
-import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
-import org.eclipse.osee.ats.navigate.UserSearchWorkflowSearchItem;
-import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.CustomizeDemoTableTestUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.NavigateTestUtil;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.WorldEditorUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -431,7 +426,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testActionableItemSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
-      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemManager.getActionableItems(Arrays.asList("SAW Code")));
+      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code")));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 3, null, TableLoadOption.DontCopySearchItem);
    }

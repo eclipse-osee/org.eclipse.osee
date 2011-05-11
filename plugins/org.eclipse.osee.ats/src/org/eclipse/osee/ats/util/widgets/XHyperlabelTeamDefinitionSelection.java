@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.ats.world.WorldEditor;

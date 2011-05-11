@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.workdef.config;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AtsArtifactToken;
+import org.eclipse.osee.ats.core.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.ats.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;

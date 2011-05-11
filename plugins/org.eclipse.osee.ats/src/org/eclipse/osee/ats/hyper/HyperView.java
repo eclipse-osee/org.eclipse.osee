@@ -36,7 +36,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.hyper.action.HyperBackAction;
 import org.eclipse.osee.ats.hyper.action.HyperCenterAction;
@@ -635,7 +636,7 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    private void createConnectionMenuBar(final HyperViewItem hvi) {
-      if (AtsUtil.isAtsAdmin() && (connectPopupMenu == null || !connectPopupMenu.isVisible())) {
+      if (AtsUtilCore.isAtsAdmin() && (connectPopupMenu == null || !connectPopupMenu.isVisible())) {
          // final PolylineConnection c = connection;
          connectPopupMenu = new Menu(canvas.getShell(), SWT.POP_UP);
          MenuItem editItem = new MenuItem(connectPopupMenu, SWT.CASCADE);
@@ -811,7 +812,7 @@ public class HyperView extends ViewPart implements IPartListener {
          final HyperViewItem fHvi = hvi;
          popupMenu = new Menu(canvas.getShell(), SWT.POP_UP);
 
-         if (AtsUtil.isAtsAdmin()) {
+         if (AtsUtilCore.isAtsAdmin()) {
             MenuItem editItem = new MenuItem(popupMenu, SWT.CASCADE);
             editItem.setText("Open in Artifact Editor");
             editItem.addSelectionListener(new SelectionAdapter() {

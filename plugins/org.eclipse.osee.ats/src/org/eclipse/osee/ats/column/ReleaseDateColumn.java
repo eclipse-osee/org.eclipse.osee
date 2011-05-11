@@ -6,8 +6,8 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Date;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 

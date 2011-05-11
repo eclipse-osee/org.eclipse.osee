@@ -18,22 +18,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.ReviewFormalTypeColumn;
-import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.review.ReviewFormalType;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -140,7 +141,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       Set<String> actionableItemGuids = new HashSet<String>(aias.size());
       for (ActionableItemArtifact aia : aias) {
          if (recurseChildren) {
-            for (ActionableItemArtifact childTeamDef : ActionableItemManager.getActionableItemsFromItemAndChildren(aia)) {
+            for (ActionableItemArtifact childTeamDef : ActionableItemManagerCore.getActionableItemsFromItemAndChildren(aia)) {
                actionableItemGuids.add(childTeamDef.getGuid());
             }
          } else {

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.operation.ExportChangeReportOperation;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.operation.IOperation;

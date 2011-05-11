@@ -9,22 +9,22 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -62,7 +62,7 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
             if (result.isFalse()) {
                return result.getText();
             }
-            return AtsUtil.doubleToI18nString(getRemainingHours(element));
+            return AtsUtilCore.doubleToI18nString(getRemainingHours(element));
          } catch (OseeCoreException ex) {
             XViewerCells.getCellExceptionString(ex);
          }

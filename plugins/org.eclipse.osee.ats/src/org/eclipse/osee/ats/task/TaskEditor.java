@@ -21,10 +21,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -33,17 +34,17 @@ import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -210,7 +211,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
          Result result =
             ((TaskEditorParameterSearchItemProvider) provider).getWorldSearchItem().isParameterSelectionValid();
          if (result.isFalse()) {
-            result.popup();
+            AWorkbench.popup(result);
             return;
          }
       }
@@ -382,7 +383,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       if (tasks.isEmpty()) {
-         return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
+         return AtsUtilCore.DEFAULT_HOURS_PER_WORK_DAY;
       }
       return tasks.iterator().next().getManHrsPerDayPreference();
    }

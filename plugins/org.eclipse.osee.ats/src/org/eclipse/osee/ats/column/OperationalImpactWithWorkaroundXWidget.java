@@ -6,15 +6,15 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboWithTextAndComboWithText;
 import org.eclipse.osee.framework.ui.swt.Widgets;

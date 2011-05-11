@@ -16,17 +16,10 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 /**
@@ -48,17 +41,19 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
-      int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
-      int maxOccurrence = AttributeTypeManager.getMaxOccurrences(attributeType);
-
       List<DynamicXWidgetLayoutData> xWidgetLayoutData = new ArrayList<DynamicXWidgetLayoutData>();
 
-      DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(attributeType, minOccurrence);
+      DynamicXWidgetLayoutData defaultData =
+         createDynamicXWidgetLayout(attributeType, AttributeTypeManager.getMinOccurrences(attributeType));
       xWidgetLayoutData.add(defaultData);
 
       String xWidgetName;
       try {
-         xWidgetName = getXWidgetName(defaultData, attributeType, minOccurrence, maxOccurrence);
+         xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(attributeType);
+         if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
+            xWidgetName = "XStackedDam";
+            defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
+         }
       } catch (OseeCoreException ex) {
          xWidgetName = "XTextDam";
          StringBuilder builder = new StringBuilder();
@@ -75,45 +70,4 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       return xWidgetLayoutData;
    }
 
-   private String getXWidgetName(DynamicXWidgetLayoutData defaultData, IAttributeType attributeType, int minOccurrence, int maxOccurrence) throws OseeCoreException {
-      String xWidgetName = "";
-      if (attributeType.equals(CoreAttributeTypes.AccessContextId)) {
-         xWidgetName = "XTextFlatDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
-         if (maxOccurrence == 1) {
-            xWidgetName =
-               "XComboDam(" + Collections.toString(",", AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
-         } else {
-            xWidgetName =
-               "XSelectFromMultiChoiceDam(" + Collections.toString(",",
-                  AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
-         }
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
-         if (minOccurrence == 1) {
-            xWidgetName = "XCheckBoxDam";
-         } else {
-            xWidgetName = "XComboBooleanDam";
-         }
-      } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
-         xWidgetName = "XStackedDam";
-         defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
-         xWidgetName = "XDateDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
-         xWidgetName = "XIntegerDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
-         xWidgetName = "XFloatDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BinaryAttribute.class, attributeType)) {
-         xWidgetName = "XLabelDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
-         if (maxOccurrence == 1) {
-            xWidgetName = "XTextDam";
-         } else {
-            xWidgetName = "XStackedDam";
-         }
-      } else {
-         xWidgetName = "XStackedDam";
-      }
-      return xWidgetName;
-   }
 }

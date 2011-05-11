@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.swt.widgets.Composite;
 

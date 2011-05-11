@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;

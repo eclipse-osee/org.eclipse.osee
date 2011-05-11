@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -48,8 +49,8 @@ public class WorldXViewerSorter extends XViewerSorter {
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          } else if (sortXCol.equals(ChangeTypeColumn.getInstance())) {
             int compareInt =
-               getComparator().compare(ChangeTypeColumn.getChangeType(m1).ordinal() + "",
-                  ChangeTypeColumn.getChangeType(m2).ordinal() + "");
+               getComparator().compare(ChangeTypeUtil.getChangeType(m1).ordinal() + "",
+                  ChangeTypeUtil.getChangeType(m2).ordinal() + "");
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          }
 

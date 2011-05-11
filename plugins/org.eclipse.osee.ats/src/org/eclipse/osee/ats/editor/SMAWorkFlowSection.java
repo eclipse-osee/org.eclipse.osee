@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.WorkflowManagerCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
@@ -30,11 +30,13 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -42,8 +44,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -81,7 +81,8 @@ public class SMAWorkFlowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
 
-      isEditable = WorkflowManager.isEditable(sma, page.getStateDefinition(), editor.isPriviledgedEditModeEnabled());
+      isEditable =
+         WorkflowManagerCore.isEditable(sma, page.getStateDefinition(), editor.isPriviledgedEditModeEnabled());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPriviledgedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
@@ -414,7 +415,8 @@ public class SMAWorkFlowSection extends SectionPart {
             // Notify extensions of widget modified
             for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
                try {
-                  item.widgetModified(fSection, xWidget);
+                  item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
+                     WorkflowManagerCore.isEditable(sma, sma.getStateDefinition(), false));
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }

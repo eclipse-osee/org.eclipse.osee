@@ -21,20 +21,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -43,8 +44,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -102,7 +101,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
-            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             new Date(), UserManager.getUser(), null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
@@ -115,7 +114,7 @@ public class DemoTestUtil {
    }
 
    public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoActionableItems) {
-      return ActionableItemManager.getActionableItems(Arrays.asList(demoActionableItems.getName()));
+      return ActionableItemManagerCore.getActionableItems(Arrays.asList(demoActionableItems.getName()));
    }
 
    public static ActionableItemArtifact getActionableItem(DemoActionableItems demoActionableItems) {
@@ -125,7 +124,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
       Set<ActionableItemArtifact> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       ;
-      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManager.getImpactedTeamDefs(actionableItems);
+      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManagerCore.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
          Arrays.asList(UserManager.getUser()), transaction, new Date(), UserManager.getUser(), null);

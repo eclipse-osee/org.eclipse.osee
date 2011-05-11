@@ -17,8 +17,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
@@ -63,7 +64,7 @@ public class ValidationReportOperation extends AbstractOperation {
       rd.log("<b>Artifact Validation Checks: </b> All Errors reported must be fixed.");
       rd.log("<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
       try {
-         ChangeData changeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
+         ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
          Collection<Artifact> changedArtifacts =
             changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW, ModificationType.MODIFIED);
 

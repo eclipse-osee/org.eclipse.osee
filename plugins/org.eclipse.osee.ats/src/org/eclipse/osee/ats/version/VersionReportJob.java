@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
-import org.eclipse.osee.ats.column.PriorityColumn;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.PriorityUtil;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -169,8 +169,8 @@ public class VersionReportJob extends Job {
                   new String[] {
                      "Action",
                      team.getTeamName(),
-                     PriorityColumn.getPriorityStr(team),
-                     ChangeTypeColumn.getChangeTypeStr(team),
+                     PriorityUtil.getPriorityStr(team),
+                     ChangeTypeUtil.getChangeTypeStr(team),
                      team.getName(),
                      team.getHumanReadableId()}, null, (x % 2 == 0 ? null : "#cccccc")));
 

@@ -21,23 +21,31 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.task.TaskResolutionOptionRule;
+import org.eclipse.osee.ats.core.type.ATSAttributes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workdef.StateItem;
+import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.core.workdef.WidgetOption;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -46,13 +54,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -209,24 +214,16 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       return sb.toString();
    }
 
-   public Set<DynamicXWidgetLayoutData> getlayoutDatas() {
+   private Set<DynamicXWidgetLayoutData> getlayoutDatas() {
       return dynamicXWidgetLayout.getLayoutDatas();
    }
 
-   public void addLayoutDatas(List<DynamicXWidgetLayoutData> datas) {
-      dynamicXWidgetLayout.addWorkLayoutDatas(datas);
-   }
-
-   public void addLayoutData(DynamicXWidgetLayoutData data) {
+   private void addLayoutData(DynamicXWidgetLayoutData data) {
       dynamicXWidgetLayout.addWorkLayoutData(data);
    }
 
    public DynamicXWidgetLayoutData getLayoutData(String layoutName) {
       return dynamicXWidgetLayout.getLayoutData(layoutName);
-   }
-
-   public void processInstructions(Document doc) throws OseeCoreException {
-      processLayoutDatas(doc.getDocumentElement());
    }
 
    protected void processXmlLayoutDatas(String xWidgetXml) throws OseeCoreException {
@@ -346,7 +343,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       // Check extension points for page creation
       if (sma != null) {
          for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-            item.xWidgetCreated(xWidget, toolkit, stateDef, art, xModListener, isEditable);
+            item.xWidgetCreated(xWidget, toolkit, stateDef, art, isEditable);
          }
       }
    }
@@ -381,7 +378,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       // Check extension points for page creation
       if (sma != null) {
          for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-            Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, xModListener, isEditable);
+            Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, isEditable);
             if (result.isFalse()) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
             }

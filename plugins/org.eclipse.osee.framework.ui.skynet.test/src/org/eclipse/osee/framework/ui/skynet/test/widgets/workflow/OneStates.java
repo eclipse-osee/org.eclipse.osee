@@ -1,8 +1,8 @@
 package org.eclipse.osee.framework.ui.skynet.test.widgets.workflow;
 
 import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
+import org.eclipse.osee.framework.core.util.WorkPageAdapter;
+import org.eclipse.osee.framework.core.util.WorkPageType;
 
 public class OneStates extends WorkPageAdapter {
 

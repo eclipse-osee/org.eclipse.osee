@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne

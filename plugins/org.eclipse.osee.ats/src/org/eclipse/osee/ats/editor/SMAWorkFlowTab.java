@@ -37,20 +37,23 @@ import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.artifact.note.NoteItem;
-import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.note.NoteItem;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
-import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -59,7 +62,6 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
@@ -144,8 +146,14 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          bodyComp.setLayoutData(gd);
 
          setLoading(true);
-         if (awa.getHelpContext() != null) {
-            HelpUtil.setHelp(managedForm.getForm(), awa.getHelpContext());
+         if (awa.isOfType(AtsArtifactTypes.DecisionReview)) {
+            HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.DECISION_REVIEW);
+
+         } else if (awa.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
+            HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.PEER_TO_PEER_REVIEW);
+
+         } else {
+            HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
          }
 
          refreshData();
@@ -242,13 +250,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
 
-      StateXWidgetPage page = awa.getCurrentAtsWorkPage();
+      StateXWidgetPage page = WorkflowManager.getCurrentAtsWorkPage(awa);
       if (page == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, null,
             "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
             awa.getWorkDefinition().getName());
       }
-      createHeaderSection(awa.getCurrentAtsWorkPage());
+      createHeaderSection(WorkflowManager.getCurrentAtsWorkPage(awa));
       createGoalSection();
       createPageSections();
       createHistorySection();
@@ -319,7 +327,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createPageSections() {
       try {
          // Only display current or past states
-         for (StateXWidgetPage statePage : awa.getStatePages()) {
+         for (StateXWidgetPage statePage : WorkflowManager.getStatePages(awa)) {
             try {
                if (awa.isInState(statePage) || awa.getStateMgr().isStateVisited(statePage)) {
                   // Don't show completed or cancelled state if not currently those state
@@ -442,7 +450,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       IToolBarManager toolBarMgr = managedForm.getForm().getToolBarManager();
       toolBarMgr.removeAll();
 
-      if (awa.isTeamWorkflow() && (((TeamWorkFlowArtifact) awa).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) awa).getBranchMgr().isWorkingBranchInWork())) {
+      if (awa.isTeamWorkflow() && (AtsBranchManagerCore.isCommittedBranchExists(((TeamWorkFlowArtifact) awa)) || AtsBranchManagerCore.isWorkingBranchInWork(((TeamWorkFlowArtifact) awa)))) {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
       }
@@ -453,7 +461,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new EmailActionAction(editor));
       toolBarMgr.add(new AddNoteAction(awa, editor));
       toolBarMgr.add(new OpenInAtsWorldAction(awa));
-      if (AtsUtil.isAtsAdmin()) {
+      if (AtsUtilCore.isAtsAdmin()) {
          toolBarMgr.add(new OpenInArtifactEditorAction(editor));
       }
       toolBarMgr.add(new OpenVersionArtifactAction(awa));

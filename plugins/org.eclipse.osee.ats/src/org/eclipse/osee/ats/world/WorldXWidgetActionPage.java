@@ -27,18 +27,19 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.GoalManager;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
@@ -166,7 +166,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    public void reSearch() throws OseeCoreException {
       Result result = isResearchSearchValid();
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
          return;
       }
       reSearch(false);

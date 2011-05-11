@@ -10,10 +10,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.version.TargetedVersionUtil;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -70,7 +71,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    public static Date getDateFromTargetedVersion(IAttributeType attributeType, Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
-         Artifact verArt = TargetedVersionColumn.getTargetedVersion(teamArt);
+         Artifact verArt = TargetedVersionUtil.getTargetedVersion(teamArt);
          if (verArt != null) {
             return verArt.getSoleAttributeValue(attributeType, null);
          }
@@ -95,7 +96,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       String workflowDate = getDateStrFromWorkflow(attributeType, artifact);
       String versionDate = getDateStrFromTargetedVersion(attributeType, artifact);
       if (Strings.isValid(workflowDate) && Strings.isValid(versionDate)) {
-         return String.format("%s; [%s - %s]", workflowDate, TargetedVersionColumn.getTargetedVersion(artifact),
+         return String.format("%s; [%s - %s]", workflowDate, TargetedVersionUtil.getTargetedVersion(artifact),
             versionDate);
       } else if (Strings.isValid(workflowDate)) {
          return workflowDate;

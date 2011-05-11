@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -35,10 +37,10 @@ public class ShowChangeReportAction extends Action {
       setToolTipText(getText());
       boolean enabled = false;
       try {
-         if (teamArt.getBranchMgr().isWorkingBranchInWork()) {
+         if (AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
             enabled = true;
          } else {
-            enabled = teamArt.getBranchMgr().isCommittedBranchExists();
+            enabled = AtsBranchManagerCore.isCommittedBranchExists(teamArt);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -48,7 +50,7 @@ public class ShowChangeReportAction extends Action {
 
    @Override
    public void run() {
-      teamArt.getBranchMgr().showChangeReport();
+      AtsBranchManager.showChangeReport(teamArt);
    }
 
    @Override

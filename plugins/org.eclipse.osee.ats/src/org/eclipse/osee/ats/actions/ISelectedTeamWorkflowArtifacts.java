@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

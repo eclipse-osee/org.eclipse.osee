@@ -13,18 +13,19 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskResOptionDefinition;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -80,7 +81,7 @@ public class SMAPromptChangeStatus {
    public Result promptChangeStatus(boolean persist) throws OseeCoreException {
       Result result = isValidToChangeStatus(awas);
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
          return result;
       }
 
@@ -118,7 +119,11 @@ public class SMAPromptChangeStatus {
             awa.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
          if (awa.isOfType(AtsArtifactTypes.Task)) {
-            ((TaskArtifact) awa).statusPercentChanged(hours, percent, transaction);
+            Result result = ((TaskArtifact) awa).statusPercentChanged(hours, percent, transaction);
+            if (result.isFalse()) {
+               AWorkbench.popup(result);
+               return;
+            }
          } else {
             if (awa.getWorkDefinition().isStateWeightingEnabled()) {
                awa.getStateMgr().updateMetrics(hours, percent, true);

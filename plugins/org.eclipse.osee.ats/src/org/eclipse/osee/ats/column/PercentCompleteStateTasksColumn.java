@@ -8,15 +8,15 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.swt.SWT;
 
 public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements IXViewerValueColumn {

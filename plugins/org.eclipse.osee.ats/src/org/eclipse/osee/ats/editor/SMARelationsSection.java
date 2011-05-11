@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
@@ -45,7 +45,7 @@ public class SMARelationsSection extends RelationsFormSection {
    protected synchronized void createSection(Section section, FormToolkit toolkit) {
       super.createSection(section, toolkit);
       // Don't allow users to see all relations
-      if (!AtsUtil.isAtsAdmin()) {
+      if (!AtsUtilCore.isAtsAdmin()) {
          getRelationComposite().getTreeViewer().addFilter(userRelationsFilter);
       }
    }

@@ -13,20 +13,22 @@ package org.eclipse.osee.ats.editor.widget;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TransitionOption;
-import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -111,7 +113,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
    public void addAdminRightClickOption() {
       try {
          // If ATS Admin, allow right-click to auto-complete tasks
-         if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+         if (AtsUtilCore.isAtsAdmin() && !AtsUtil.isProductionDb()) {
             labelWidget.addListener(SWT.MouseUp, new Listener() {
                @Override
                public void handleEvent(Event event) {
@@ -133,7 +135,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                                  transitionMgr.transitionToCompleted("", transaction,
                                     TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
                               if (result.isFalse()) {
-                                 result.popup();
+                                 AWorkbench.popup(result);
                                  return;
                               }
                            }

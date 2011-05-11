@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**

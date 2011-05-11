@@ -18,15 +18,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workflow.ChangeTypeLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -95,7 +96,7 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      changeTypeList.setLabelProvider(new ChangeType.ChangeTypeLabelProvider());
+      changeTypeList.setLabelProvider(new ChangeTypeLabelProvider());
       changeTypeList.setContentProvider(new ArrayContentProvider());
       Collection<Object> types = new ArrayList<Object>();
       for (ChangeType type : ChangeType.values()) {

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.editor.SMAPrint;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;

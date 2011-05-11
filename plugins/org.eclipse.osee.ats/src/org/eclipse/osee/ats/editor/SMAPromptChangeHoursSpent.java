@@ -12,10 +12,11 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -41,7 +42,7 @@ public class SMAPromptChangeHoursSpent {
    public Result promptChangeStatus(boolean persist) throws OseeCoreException {
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(awas);
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
          return result;
       }
 

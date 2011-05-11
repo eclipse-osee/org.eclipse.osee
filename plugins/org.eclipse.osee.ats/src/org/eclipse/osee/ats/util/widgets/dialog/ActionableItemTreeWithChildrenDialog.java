@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -43,7 +43,7 @@ public class ActionableItemTreeWithChildrenDialog extends CheckedTreeSelectionDi
    protected Composite dialogComp;
 
    public ActionableItemTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(active, ActionableItemManager.getTopLevelActionableItems(active));
+      this(active, ActionableItemManagerCore.getTopLevelActionableItems(active));
    }
 
    public ActionableItemTreeWithChildrenDialog(Active active, Collection<ActionableItemArtifact> ActionableItemArtifacts) {

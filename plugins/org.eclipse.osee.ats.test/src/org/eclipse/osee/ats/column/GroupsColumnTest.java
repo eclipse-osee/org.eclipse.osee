@@ -5,9 +5,9 @@
  */
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.GroupsColumn;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

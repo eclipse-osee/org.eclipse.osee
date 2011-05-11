@@ -41,20 +41,21 @@ import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.actions.SubscribedAction;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionArtifactRollup;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.ActionArtifactRollup;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -369,7 +370,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
       mm.insertBefore(XViewer.MENU_GROUP_PRE, contrib);
 
-      if (AtsUtil.isAtsAdmin()) {
+      if (AtsUtilCore.isAtsAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.updateEnablement();

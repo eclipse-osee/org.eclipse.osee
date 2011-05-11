@@ -23,15 +23,16 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
-import org.eclipse.osee.ats.config.AtsBulkLoad;
-import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionArtifact;
+import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -41,17 +42,14 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -62,7 +60,6 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
@@ -92,7 +89,6 @@ public final class AtsUtil {
 
    private static boolean emailEnabled = true;
    public final static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
-   private static OseeGroup atsAdminGroup = new OseeGroup("AtsAdmin");
    private static final Date today = new Date();
    public final static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
    public final static String normalColor = "#FFFFFF";
@@ -107,7 +103,6 @@ public final class AtsUtil {
    private static ArtifactTypeEventFilter workItemArtifactTypesFilter = new ArtifactTypeEventFilter(
       CoreArtifactTypes.WorkItemDefinition);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
-   public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
 
    private AtsUtil() {
       super();
@@ -123,19 +118,6 @@ public final class AtsUtil {
 
    public static boolean isProductionDb() throws OseeCoreException {
       return ClientSessionManager.isProductionDataStore();
-   }
-
-   public static boolean isAtsAdmin() {
-      try {
-         return getAtsAdminGroup().isCurrentUserMember();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return false;
-      }
-   }
-
-   public static OseeGroup getAtsAdminGroup() {
-      return atsAdminGroup;
    }
 
    public static Branch getAtsBranch() throws OseeCoreException {
@@ -198,29 +180,13 @@ public final class AtsUtil {
       return toolBar;
    }
 
-   public static String doubleToI18nString(double d) {
-      return doubleToI18nString(d, false);
-   }
-
-   public static String doubleToI18nString(double d, boolean blankIfZero) {
-      if (blankIfZero && d == 0) {
-         return "";
-      }
-      // This enables java to use same string for all 0 cases instead of creating new one
-      else if (d == 0) {
-         return "0.00";
-      } else {
-         return String.format("%4.2f", d);
-      }
-   }
-
    public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
       Result result = ActionableItemManager.editActionableItems(actionArt);
       if (result.isFalse() && result.getText().equals("")) {
          return;
       }
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
       }
    }
 
@@ -230,7 +196,7 @@ public final class AtsUtil {
          return;
       }
       if (result.isFalse() && !result.getText().equals("")) {
-         result.popup();
+         AWorkbench.popup(result);
       }
    }
 
@@ -415,36 +381,6 @@ public final class AtsUtil {
       return item;
    }
 
-   /**
-    * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
-    * 
-    * @param artifacts to iterate through
-    * @param active state to validate against; Both will return all artifacts matching type
-    * @param clazz type of artifacts to consider; null for all
-    * @return set of Artifacts of type clazz that match the given active state of the "Active" or "ats.Active" attribute
-    * value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" == false.
-    */
-   @SuppressWarnings("unchecked")
-   public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
-      List<A> results = new ArrayList<A>();
-      Collection<? extends Artifact> artsOfClass =
-         clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
-      for (Artifact art : artsOfClass) {
-         if (active == Active.Both) {
-            results.add((A) art);
-         } else {
-            // assume active unless otherwise specified
-            boolean attributeActive = ((A) art).getSoleAttributeValue(AtsAttributeTypes.Active, false);
-            if (active == Active.Active && attributeActive) {
-               results.add((A) art);
-            } else if (active == Active.InActive && !attributeActive) {
-               results.add((A) art);
-            }
-         }
-      }
-      return results;
-   }
-
    public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
          if (atsObjectEventFilter.size() == 0) {
@@ -493,16 +429,6 @@ public final class AtsUtil {
     */
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
       return StateManager.getAssigned(userId, clazz);
-   }
-
-   public static Artifact getFromToken(IArtifactToken token) {
-      Artifact toReturn = null;
-      try {
-         toReturn = ArtifactQuery.getArtifactFromToken(token, getAtsBranchToken());
-      } catch (OseeCoreException ex) {
-         // Do Nothing;
-      }
-      return toReturn;
    }
 
    /**

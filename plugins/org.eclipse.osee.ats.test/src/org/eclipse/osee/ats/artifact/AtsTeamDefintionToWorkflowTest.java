@@ -11,8 +11,9 @@
 package org.eclipse.osee.ats.artifact;
 
 import static org.junit.Assert.assertFalse;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactoryLegacyMgr;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -29,7 +30,7 @@ public class AtsTeamDefintionToWorkflowTest {
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.TeamDefinition,
          AtsUtil.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-         if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
+         if (teamDef.isActionable() && WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromTeamDefinition(teamDef) == null) {
             sb.append("Team Definition \"" + teamDef + "\" has no Work Flow associated and is Actionable.");
             error = true;
          }

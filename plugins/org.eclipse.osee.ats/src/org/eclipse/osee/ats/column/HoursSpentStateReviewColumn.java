@@ -8,18 +8,12 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
-import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.swt.SWT;
 
 public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -51,41 +45,12 @@ public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return AtsUtil.doubleToI18nString(getHoursSpentStateReview((Artifact) element));
+            return AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentStateReview((Artifact) element));
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "";
-   }
-
-   /**
-    * Return hours spent working ONLY the SMA stateName (not children SMAs)
-    */
-   public static double getHoursSpentStateReview(Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         double hours = 0;
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-            if (!team.isCancelled()) {
-               hours += getHoursSpentStateReview(team);
-            }
-         }
-         return hours;
-      }
-      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getHoursSpentStateReview(artifact, WorkflowManager.getStateManager(artifact).getCurrentState());
-      }
-      return 0;
-   }
-
-   /**
-    * Return hours spent working ONLY the SMA stateName (not children SMAs)
-    */
-   public static double getHoursSpentStateReview(Artifact artifact, IWorkPage state) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         return ReviewManager.getHoursSpent(TeamWorkFlowManager.cast(artifact), state);
-      }
-      return 0;
    }
 
 }

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;

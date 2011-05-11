@@ -18,16 +18,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 /**
  * @author Donald G. Dunne
@@ -154,7 +154,7 @@ public class ExtendedStatusReportJob extends Job {
             String priStr = sma.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
             values.add(priStr.equals("") ? "." : priStr);
          } else if (col == Columns.Change_Type) {
-            ChangeType changeType = ChangeTypeColumn.getChangeType(sma);
+            ChangeType changeType = ChangeTypeUtil.getChangeType(sma);
             values.add((changeType == ChangeType.None ? "." : changeType.name()));
          } else if (col == Columns.Title) {
             values.add(sma.getName());

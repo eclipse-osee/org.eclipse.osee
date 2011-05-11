@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.config.demo.config;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.UserCommunity;
 
@@ -59,7 +59,7 @@ public class DemoDbActionData {
    public Collection<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String str : actionableItems) {
-         for (ActionableItemArtifact aia : ActionableItemManager.getActionableItems()) {
+         for (ActionableItemArtifact aia : ActionableItemManagerCore.getActionableItemsAll()) {
             if (str.equals(aia.getName())) {
                aias.add(aia);
             }

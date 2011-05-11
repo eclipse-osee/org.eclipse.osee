@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.UserCommunityListDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

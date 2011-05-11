@@ -35,11 +35,11 @@ import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
-import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.search.AtsQuickSearchComposite;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -146,11 +146,11 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
 
                   Label label = new Label(xNavComp, SWT.None);
                   String str = getWhoAmI();
-                  if (AtsUtil.isAtsAdmin()) {
+                  if (AtsUtilCore.isAtsAdmin()) {
                      str += " - Admin";
                   }
                   if (!str.equals("")) {
-                     if (AtsUtil.isAtsAdmin()) {
+                     if (AtsUtilCore.isAtsAdmin()) {
                         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                      } else {
                         label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));

@@ -24,7 +24,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.birt.chart.engine,
  org.eclipse.search,
- org.eclipse.osee.ats.help.ui;resolution:=optional
+ org.eclipse.osee.ats.help.ui;resolution:=optional,
+ org.eclipse.osee.ats.core
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.access,

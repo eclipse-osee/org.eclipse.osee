@@ -17,23 +17,25 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.workdef.StateEventType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -60,7 +62,7 @@ public class AtsBranchCommitJob extends Job {
       Branch workflowWorkingBranch = null;
       try {
          workflowWorkingBranch = teamArt.getWorkingBranch();
-         AtsBranchManager.branchesInCommit.add(workflowWorkingBranch);
+         AtsBranchManagerCore.branchesInCommit.add(workflowWorkingBranch);
          if (workflowWorkingBranch == null) {
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
                "Commit Branch Failed: Can not locate branch for workflow " + teamArt.getHumanReadableId());
@@ -84,7 +86,7 @@ public class AtsBranchCommitJob extends Job {
                final Result tempResult = item.committing(teamArt);
                if (tempResult.isFalse()) {
                   // Allow Admin to override state validation
-                  if (AtsUtil.isAtsAdmin()) {
+                  if (AtsUtilCore.isAtsAdmin()) {
                      Displays.pendInDisplayThread(new Runnable() {
                         @Override
                         public void run() {
@@ -110,7 +112,7 @@ public class AtsBranchCommitJob extends Job {
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
       } finally {
          if (workflowWorkingBranch != null) {
-            AtsBranchManager.branchesInCommit.remove(workflowWorkingBranch);
+            AtsBranchManagerCore.branchesInCommit.remove(workflowWorkingBranch);
          }
       }
       return Status.OK_STATUS;

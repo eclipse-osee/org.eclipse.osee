@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
@@ -118,7 +118,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
    public void reSearch() throws OseeCoreException {
       Result result = isResearchSearchValid();
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
          return;
       }
       taskEditor.handleRefreshAction();

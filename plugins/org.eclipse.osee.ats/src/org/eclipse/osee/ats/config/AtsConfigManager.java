@@ -19,21 +19,22 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.AtsArtifactToken;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.ConvertAtsDslToWorkDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.ats.workdef.WorkDefinition;
-import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
-import org.eclipse.osee.ats.workdef.provider.ConvertAtsDslToWorkDefinition;
 import org.eclipse.osee.ats.workdef.provider.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -124,7 +125,7 @@ public class AtsConfigManager extends AbstractOperation {
       }
       teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
       teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, UserManager.getUser());
-      AtsUtil.getFromToken(AtsArtifactToken.TopTeamDefinition).addChild(teamDefinition);
+      AtsUtilCore.getFromToken(AtsArtifactToken.TopTeamDefinition).addChild(teamDefinition);
       teamDefinition.persist(transaction);
       return teamDefinition;
    }
@@ -139,7 +140,7 @@ public class AtsConfigManager extends AbstractOperation {
       topAia.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAia.persist(transaction);
 
-      AtsUtil.getFromToken(AtsArtifactToken.TopActionableItem).addChild(topAia);
+      AtsUtilCore.getFromToken(AtsArtifactToken.TopActionableItem).addChild(topAia);
       teamDefinition.addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, topAia);
       teamDefinition.persist(transaction);
 
@@ -181,7 +182,7 @@ public class AtsConfigManager extends AbstractOperation {
             AtsWorkDefinitionProvider.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name, resultData,
                transaction);
 
-         Artifact folder = AtsUtil.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
+         Artifact folder = AtsUtilCore.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
          folder.addChild(workDefArt);
          folder.persist(transaction);
       } else {

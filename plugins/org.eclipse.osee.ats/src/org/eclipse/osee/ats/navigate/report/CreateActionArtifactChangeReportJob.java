@@ -20,14 +20,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
@@ -76,7 +78,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
             public void run() {
                Result result = new HtmlExportTable(title, html, true, false).exportCsv();
                if (result.isFalse()) {
-                  result.popup();
+                  AWorkbench.popup(result);
                   return;
                }
                AWorkbench.popup(
@@ -114,7 +116,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
                teamArt.getTeamDefinition().getName());
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
-         for (ICommitConfigArtifact commitConfigArt : teamArt.getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
+         for (ICommitConfigArtifact commitConfigArt : AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt)) {
             processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), attributeType, commitConfigArt, rd);
          }
          x++;
@@ -128,7 +130,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
 
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, IAttributeType attributeType, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
-      ChangeData changeData = teamArt.getBranchMgr().getChangeData(commitConfigArt);
+      ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {

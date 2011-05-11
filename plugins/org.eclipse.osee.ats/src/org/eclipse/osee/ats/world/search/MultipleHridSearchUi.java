@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -64,7 +64,7 @@ public class MultipleHridSearchUi {
       @Override
       public void run() {
          EntryDialog ed = null;
-         if (AtsUtil.isAtsAdmin()) {
+         if (AtsUtilCore.isAtsAdmin()) {
             ed =
                new EntryCheckDialog(data.getName(), "Enter Legacy ID, Guid or HRID (comma separated)", "Include ArtIds");
          } else {

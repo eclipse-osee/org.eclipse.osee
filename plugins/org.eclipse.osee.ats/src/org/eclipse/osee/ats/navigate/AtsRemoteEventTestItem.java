@@ -18,17 +18,19 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.TransitionOption;
-import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,7 +43,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -92,7 +93,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       NewActionJob job = null;
       job =
          new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false,
-            ActionableItemManager.getActionableItems(Arrays.asList("ATS")), null, null);
+            ActionableItemManagerCore.getActionableItems(Arrays.asList("ATS")), null, null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -190,7 +191,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.deleteAttributes(AtsAttributeTypes.ValidationRequired);
       teamArt.deleteAttributes(AtsAttributeTypes.Resolution);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
-      ChangeTypeColumn.setChangeType(teamArt, ChangeType.Support);
+      ChangeTypeUtil.setChangeType(teamArt, ChangeType.Support);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "3");
       teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
          Collections.singleton(getVersion258()));
@@ -217,7 +218,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Make changes and persist
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 2");
-      ChangeTypeColumn.setChangeType(teamArt, ChangeType.Problem);
+      ChangeTypeUtil.setChangeType(teamArt, ChangeType.Problem);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
@@ -249,7 +250,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
       testEquals("Description", "description", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Improvement, ChangeTypeColumn.getChangeType(teamArt));
+      testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamArt));
       testEquals("Priority", "1", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
    }
 
@@ -265,7 +266,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
       testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Support, ChangeTypeColumn.getChangeType(teamArt));
+      testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamArt));
       testEquals("Priority", "3", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
       testEquals("Validation Required", "false",
          String.valueOf(teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null)));

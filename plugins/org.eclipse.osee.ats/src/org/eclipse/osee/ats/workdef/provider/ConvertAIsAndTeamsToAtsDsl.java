@@ -7,11 +7,14 @@ package org.eclipse.osee.ats.workdef.provider;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactoryLegacyMgr;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
@@ -20,7 +23,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,7 +31,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionMatch;
 
 /**
  * Take existing AIs, TeamDefs and Versions and create AtsDsl
@@ -55,7 +56,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
          atsDsl.getTeamDef().add(topTeam);
 
          // Add all AI definitions
-         ActionableItemDef topAi = convertAIDef(ActionableItemManager.getTopActionableItem(), null);
+         ActionableItemDef topAi = convertAIDef(ActionableItemManagerCore.getTopActionableItem(), null);
          atsDsl.getActionableItemDef().add(topAi);
 
       } catch (OseeCoreException ex) {
@@ -125,9 +126,9 @@ public class ConvertAIsAndTeamsToAtsDsl {
       for (User user : teamDef.getPrivilegedMembers()) {
          dslTeamDef.getPriviledged().add(getUserByName(user));
       }
-      WorkFlowDefinitionMatch match = teamDef.getWorkFlowDefinition();
+      WorkDefinitionMatch match = WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromTeamDefinition(teamDef);
       if (match.isMatched()) {
-         dslTeamDef.setWorkDefinition(match.getWorkFlowDefinition().getName());
+         dslTeamDef.setWorkDefinition(match.getWorkDefinition().getName());
       }
       for (Artifact verArt : teamDef.getVersionsArtifacts()) {
          convertVersionArtifact(dslTeamDef, verArt, teamDef);

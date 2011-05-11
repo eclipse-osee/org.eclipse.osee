@@ -15,29 +15,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.DecisionReviewState;
-import org.eclipse.osee.ats.artifact.DecisionReviewManager;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewManager;
+import org.eclipse.osee.ats.core.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.review.defect.DefectItem;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.Disposition;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.InjectionActivity;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.role.Role;
+import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
-import org.eclipse.osee.ats.util.widgets.role.UserRole;
-import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
@@ -74,8 +74,8 @@ public class DemoDbReviews {
       DecisionReviewArtifact reviewArt =
          ReviewManager.createValidateReview(firstTestArt, true, createdDate, createdBy, transaction);
       Result result =
-         DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Followup, UserManager.getUser(),
-            false, transaction);
+         DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Followup, UserManager.getUser(), false,
+            transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }
@@ -83,8 +83,8 @@ public class DemoDbReviews {
 
       // Create a Decision review and transition to Completed
       reviewArt = ReviewManager.createValidateReview(secondTestArt, true, createdDate, createdBy, transaction);
-      DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Completed, UserManager.getUser(),
-         false, transaction);
+      DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Completed, UserManager.getUser(), false,
+         transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }

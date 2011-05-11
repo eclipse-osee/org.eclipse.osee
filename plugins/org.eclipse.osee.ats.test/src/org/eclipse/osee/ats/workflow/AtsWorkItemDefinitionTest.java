@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow;
 
 import static org.junit.Assert.fail;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;

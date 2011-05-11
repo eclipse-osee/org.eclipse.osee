@@ -21,11 +21,13 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
@@ -108,12 +110,13 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
          for (Artifact artifact : artifacts) {
             if (artifact.isOfType(AtsArtifactTypes.Action)) {
                for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-                  if (team.getBranchMgr().isCommittedBranchExists() || team.getBranchMgr().isWorkingBranchInWork()) {
+                  if (AtsBranchManagerCore.isCommittedBranchExists(team) || AtsBranchManagerCore.isWorkingBranchInWork(team)) {
                      addedArts.add(team);
                   }
                }
             }
-            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow) && (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork())) {
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow) && (AtsBranchManagerCore.isCommittedBranchExists(teamArt) || AtsBranchManagerCore.isWorkingBranchInWork(teamArt))) {
                addedArts.add(artifact);
             }
          }
@@ -123,7 +126,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                public void run() {
                   for (Artifact art : addedArts) {
                      if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-                        ((TeamWorkFlowArtifact) art).getBranchMgr().showChangeReport();
+                        AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) art));
                      }
                   }
                }
@@ -145,7 +148,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                         return;
                      }
                      for (Object obj : dialog.getResult()) {
-                        ((TeamWorkFlowArtifact) obj).getBranchMgr().showChangeReport();
+                        AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) obj));
                      }
                   }
                }

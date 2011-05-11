@@ -19,11 +19,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
@@ -39,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
@@ -50,7 +51,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
 
    @Override
    public boolean isCmAdmin() {
-      return AtsUtil.isAtsAdmin();
+      return AtsUtilCore.isAtsAdmin();
    }
 
    @Override
@@ -139,7 +140,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          if (cType == null) {
             cType = ChangeType.Improvement;
          }
-         Set<ActionableItemArtifact> aias = ActionableItemManager.getActionableItems(productNames);
+         Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(productNames);
          if (aias.size() == 0) {
             throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
          }

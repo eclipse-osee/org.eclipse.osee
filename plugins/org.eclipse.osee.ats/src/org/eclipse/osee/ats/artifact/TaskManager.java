@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.artifact;
 
+import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class TaskManager {

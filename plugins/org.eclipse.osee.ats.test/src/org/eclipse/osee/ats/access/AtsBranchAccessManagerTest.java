@@ -8,11 +8,12 @@ package org.eclipse.osee.ats.access;
 import java.util.Arrays;
 import java.util.logging.Level;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
@@ -74,7 +75,7 @@ public class AtsBranchAccessManagerTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertNotNull(teamArt);
 
-      Branch branch = teamArt.getBranchMgr().getWorkingBranch();
+      Branch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
       Assert.assertNotNull(branch);
 
       Assert.assertTrue(mgr.isApplicable(branch));
@@ -131,7 +132,7 @@ public class AtsBranchAccessManagerTest {
 
       String aiContextId = "ai.context.1";
       Artifact aiArt =
-         ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next();
+         ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next();
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist();
 

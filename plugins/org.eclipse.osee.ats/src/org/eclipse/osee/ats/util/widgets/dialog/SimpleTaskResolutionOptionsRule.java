@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
+import org.eclipse.osee.ats.core.task.TaskResolutionOptionRule;
+
 /**
  * @author Donald G. Dunne
  */

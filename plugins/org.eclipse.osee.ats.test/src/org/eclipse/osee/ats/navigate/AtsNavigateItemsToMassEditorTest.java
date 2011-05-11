@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.task.TaskEditor;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.NavigateTestUtil;
 import org.eclipse.osee.ats.version.MassEditTeamVersionItem;

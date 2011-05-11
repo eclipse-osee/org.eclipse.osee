@@ -10,8 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -36,7 +36,7 @@ public class XActionableItemCombo extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<ActionableItemArtifact> teamDefs = ActionableItemManager.getActionableItems(Active.Active);
+         Collection<ActionableItemArtifact> teamDefs = ActionableItemManagerCore.getActionableItems(Active.Active);
          List<ActionableItemArtifact> sortedAiArts = new ArrayList<ActionableItemArtifact>();
          sortedAiArts.addAll(teamDefs);
          Collections.sort(sortedAiArts);

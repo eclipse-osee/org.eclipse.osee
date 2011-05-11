@@ -13,19 +13,19 @@ package org.eclipse.osee.ats.operation;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.TransitionOption;
-import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -55,7 +55,7 @@ public class CancelMultipleWorkflows extends Action {
             TransitionManager transitionMgr = new TransitionManager(awa);
             Result result = transitionMgr.isTransitionValid(TeamState.Cancelled, null, TransitionOption.None);
             if (result.isFalse()) {
-               result.popup();
+               AWorkbench.popup(result);
                return;
             }
          }
@@ -67,7 +67,7 @@ public class CancelMultipleWorkflows extends Action {
                Result result =
                   transitionMgr.transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
                if (result.isFalse()) {
-                  result.popup();
+                  AWorkbench.popup(result);
                   return;
                }
             }

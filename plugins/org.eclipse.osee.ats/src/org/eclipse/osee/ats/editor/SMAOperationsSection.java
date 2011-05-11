@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowBranchChangeDataAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.actions.WorkflowDebugAction;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -178,7 +178,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createAdminSection(Composite parent, FormToolkit toolkit) {
-      if (!AtsUtil.isAtsAdmin()) {
+      if (!AtsUtilCore.isAtsAdmin()) {
          return;
       }
       Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
@@ -220,7 +220,7 @@ public class SMAOperationsSection extends SectionPart {
          if (editor.getAwa().getParentAWA() != null) {
             new XButtonViaAction(new OpenParentAction(editor.getAwa())).createWidgets(sectionBody, 2);
          }
-         if (AtsUtil.isAtsAdmin()) {
+         if (AtsUtilCore.isAtsAdmin()) {
             new XButtonViaAction(new OpenInArtifactEditorAction(editor)).createWidgets(sectionBody, 2);
          }
       } catch (Exception ex) {

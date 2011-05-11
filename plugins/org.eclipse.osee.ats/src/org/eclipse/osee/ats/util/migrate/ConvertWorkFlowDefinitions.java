@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.util.migrate;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.workdef.WorkDefinition;
-import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinitionFactoryLegacy;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -85,7 +85,7 @@ public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
    }
 
    private void convert(WorkFlowDefinition workFlowDef, XResultData resultData, String filename) throws OseeCoreException {
-      WorkDefinition workDef = WorkDefinitionFactory.translateToWorkDefinition(workFlowDef);
+      WorkDefinition workDef = WorkDefinitionFactoryLegacy.translateToWorkDefinition(workFlowDef);
       AtsWorkDefinitionProvider.get().convertAndOpenAtsDsl(workDef, resultData, filename);
    }
 }

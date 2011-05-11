@@ -25,28 +25,29 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.log.AtsLog;
-import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactoryLegacyMgr;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.SMAState;
+import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
+import org.eclipse.osee.ats.core.workflow.XStateDam;
+import org.eclipse.osee.ats.core.workflow.log.AtsLog;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.internal.workflow.SMAState;
-import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
-import org.eclipse.osee.ats.internal.workflow.XStateDam;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -56,6 +57,7 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -80,7 +82,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -327,10 +328,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
-            AtsBranchManager mgr = teamArt.getBranchMgr();
             try {
-               Collection<Branch> branchesCommittedTo = mgr.getBranchesCommittedTo();
-               Branch workingBranch = mgr.getWorkingBranch();
+               Collection<Branch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
+               Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
                if (workingBranch != null && branchesCommittedTo.size() > 0 && workingBranch.getBranchState() != BranchState.COMMITTED && workingBranch.getBranchType() != BranchType.BASELINE) {
                   testNameToResultsMap.put(
                      "testAtsBranchManagerA",
@@ -622,7 +622,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact instanceof ActionableItemArtifact) {
                ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
-               if (aia.isActionable() && TeamDefinitionManager.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+               if (aia.isActionable() && TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                      "testActionableItemToTeamDefinition",
                      "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
@@ -641,7 +641,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact instanceof TeamDefinitionArtifact) {
                TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-               if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
+               if (teamDef.isActionable() && WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromTeamDefinition(teamDef) == null) {
                   testNameToResultsMap.put(
                      "testTeamDefinitionHasWorkflow",
                      "Error: TeamDefintion " + XResultData.getHyperlink(artifact.getName(), artifact) + " has no related workflow and is set to Actionable");

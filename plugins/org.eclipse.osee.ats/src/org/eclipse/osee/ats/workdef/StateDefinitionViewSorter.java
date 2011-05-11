@@ -2,6 +2,7 @@ package org.eclipse.osee.ats.workdef;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 
 /**
  * @author Donald G. Dunne

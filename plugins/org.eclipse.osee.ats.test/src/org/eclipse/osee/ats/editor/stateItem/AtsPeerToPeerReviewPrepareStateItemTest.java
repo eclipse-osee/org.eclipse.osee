@@ -7,14 +7,14 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
@@ -82,7 +82,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
 
       // make call to state item that should 
       AtsPeerToPeerReviewPrepareStateItem stateItem = new AtsPeerToPeerReviewPrepareStateItem();
-      stateItem.xWidgetCreated(decisionComboDam, null, reviewStateDef, peerRevArt, null, true);
+      stateItem.xWidgetCreated(decisionComboDam, null, reviewStateDef, peerRevArt, true);
 
       // verify the decision combo has been disabled
       Assert.assertFalse(decisionComboDam.getComboBox().isEnabled());

@@ -29,11 +29,11 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
-import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsNavigateComposite;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -132,11 +132,11 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
 
                   Label label = new Label(xNavComp, SWT.None);
                   String str = getWhoAmI();
-                  if (AtsUtil.isAtsAdmin()) {
+                  if (AtsUtilCore.isAtsAdmin()) {
                      str += " - Admin";
                   }
                   if (!str.equals("")) {
-                     if (AtsUtil.isAtsAdmin()) {
+                     if (AtsUtilCore.isAtsAdmin()) {
                         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                      } else {
                         label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));

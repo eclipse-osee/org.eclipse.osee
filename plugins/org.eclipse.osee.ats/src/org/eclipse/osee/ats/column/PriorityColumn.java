@@ -12,10 +12,10 @@ import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -129,10 +129,4 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
       return;
    }
 
-   public static String getPriorityStr(Object object) throws OseeCoreException {
-      if (object instanceof Artifact) {
-         return ((Artifact) object).getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
-      }
-      return "";
-   }
 }

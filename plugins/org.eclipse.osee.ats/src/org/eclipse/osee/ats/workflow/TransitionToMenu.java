@@ -15,12 +15,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.TreeItem;
 

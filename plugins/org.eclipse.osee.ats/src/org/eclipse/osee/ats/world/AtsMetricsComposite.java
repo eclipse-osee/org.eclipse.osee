@@ -17,12 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -142,8 +142,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
       }
 
       WorkflowMetrics sMet =
-         new WorkflowMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact(),
-            iAtsMetricsProvider.getManHoursPerDayPreference(), getEstimatedReleaseDate());
+         new WorkflowMetrics(iAtsMetricsProvider.getMetricsArtifacts(),
+            iAtsMetricsProvider.getMetricsVersionArtifact(), iAtsMetricsProvider.getManHoursPerDayPreference(),
+            getEstimatedReleaseDate());
       createOverviewChart(sMet, metricsComposite);
       addSpace();
       createHoursRemainingByAssigneesChart(sMet, metricsComposite);
@@ -279,7 +280,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
-                     cummulativePercentComplete += PercentCompleteTotalColumn.getPercentCompleteTotal(awa);
+                     cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal(awa);
                      processedArts.add(awa);
                   }
                }

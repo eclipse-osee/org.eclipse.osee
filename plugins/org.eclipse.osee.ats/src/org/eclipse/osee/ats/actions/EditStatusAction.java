@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Collections;

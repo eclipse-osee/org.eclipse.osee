@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
@@ -71,7 +71,7 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
                try {
                   for (TeamDefinitionArtifact teamDef : getChecked()) {
                      if (!teamDef.isActionable()) {
-                        AWorkbench.popup("ERROR", ActionableItemManager.getNotActionableItemError(teamDef));
+                        AWorkbench.popup("ERROR", ActionableItemManagerCore.getNotActionableItemError(teamDef));
                      }
                   }
                } catch (Exception ex) {

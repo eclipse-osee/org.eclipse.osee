@@ -14,9 +14,9 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,7 +45,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       } else if (parentElement instanceof TeamDefinitionArtifact && active != null) {
          try {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) parentElement;
-            return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),
+            return AtsUtilCore.getActive(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),
                active, TeamDefinitionArtifact.class).toArray();
          } catch (Exception ex) {
             // do nothing

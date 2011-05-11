@@ -6,11 +6,10 @@
 package org.eclipse.osee.ats.config.copy;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.config.copy.ConfigData;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
@@ -79,7 +78,7 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(ActionableItemManager.getTopActionableItem(), data.getParentActionableItem());
+      Assert.assertEquals(ActionableItemManagerCore.getTopActionableItem(), data.getParentActionableItem());
 
    }
 }

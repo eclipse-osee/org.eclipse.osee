@@ -27,11 +27,11 @@ import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -70,7 +70,7 @@ public class DeleteCoverUnitAction extends Action {
       }
       Result result = saveable.isEditable();
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
          return;
       }
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Coverage Unit", "Delete Coverage Units")) {

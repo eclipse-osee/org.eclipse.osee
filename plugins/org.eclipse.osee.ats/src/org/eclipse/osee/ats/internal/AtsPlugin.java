@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.ats.internal;
 
-import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.core.util.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.core.util.OsgiUtil;

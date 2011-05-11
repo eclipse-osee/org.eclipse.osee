@@ -12,13 +12,14 @@ package org.eclipse.osee.ats.util;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,7 +43,7 @@ public class PriviledgedUserManager {
       if (parentSma != null) {
          users.addAll(parentSma.getStateMgr().getAssignees());
       }
-      if (AtsUtil.isAtsAdmin()) {
+      if (AtsUtilCore.isAtsAdmin()) {
          users.add(UserManager.getUser());
       }
       return users;

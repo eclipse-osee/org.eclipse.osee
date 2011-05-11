@@ -11,13 +11,14 @@
 package org.eclipse.osee.ats.artifact.note;
 
 import java.util.Date;
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.note.AtsNote;
-import org.eclipse.osee.ats.artifact.note.INoteStorageProvider;
-import org.eclipse.osee.ats.artifact.note.NoteItem;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.ats.core.workflow.note.AtsNote;
+import org.eclipse.osee.ats.core.workflow.note.INoteStorageProvider;
+import org.eclipse.osee.ats.core.workflow.note.NoteItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -49,9 +50,9 @@ public class AtsNoteTest {
       }
 
       @Override
-      public Result saveNoteXml(String xml) {
+      public IStatus saveNoteXml(String xml) {
          store = xml;
-         return Result.TrueResult;
+         return Status.OK_STATUS;
       }
 
       @Override

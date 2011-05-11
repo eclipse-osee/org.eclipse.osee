@@ -6,9 +6,9 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.review.ReviewFormalType;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.review.ReviewFormalType;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.version.VersionLockedType;
+import org.eclipse.osee.ats.core.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.version.VersionLockedType;
-import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -67,7 +67,7 @@ public class SMATargetedVersionHeader extends Composite {
                public void linkActivated(HyperlinkEvent e) {
                   try {
                      if (TargetedVersionColumn.promptChangeVersion(sma,
-                        AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+                        AtsUtilCore.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                         VersionLockedType.UnLocked)) {
                         updateLabel(sma);
                         editor.onDirtied();

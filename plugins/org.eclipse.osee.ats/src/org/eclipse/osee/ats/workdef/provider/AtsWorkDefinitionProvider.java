@@ -13,13 +13,16 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.ConvertAtsDslToWorkDefinition;
+import org.eclipse.osee.ats.core.workdef.ModelUtil;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
+import org.eclipse.osee.ats.core.workdef.provider.AtsWorkDefinitionProviderCore;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.workdef.WorkDefinition;
-import org.eclipse.osee.ats.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -102,7 +105,8 @@ public class AtsWorkDefinitionProvider {
       Artifact artifact = null;
       try {
          artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName, AtsUtil.getAtsBranch());
+            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
+               AtsUtilCore.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing; this is what we want
       }
@@ -118,7 +122,8 @@ public class AtsWorkDefinitionProvider {
          }
       } else {
          resultData.log(String.format("Imported new WorkDefinition [%s]", workDefName));
-         artifact = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch(), sheetName);
+         artifact =
+            ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtilCore.getAtsBranch(), sheetName);
       }
       artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefXml);
       artifact.persist(transaction);
@@ -165,7 +170,8 @@ public class AtsWorkDefinitionProvider {
 
    public AtsDsl loadAtsDslFromFile(String modelName, WorkDefinitionSheet sheet) {
       try {
-         AtsDsl atsDsl = loadAtsDsl(modelName, loadWorkFlowDefinitionStringFromFile(sheet));
+         AtsDsl atsDsl =
+            AtsWorkDefinitionProviderCore.loadAtsDsl(modelName, loadWorkFlowDefinitionStringFromFile(sheet));
          return atsDsl;
       } catch (Exception ex) {
          throw new WrappedException(ex);
@@ -205,15 +211,10 @@ public class AtsWorkDefinitionProvider {
    public WorkDefinition loadWorkDefinitionFromArtifact(Artifact artifact) throws OseeCoreException {
       String modelText = artifact.getAttributesToString(AtsAttributeTypes.DslSheet);
       String modelName = artifact.getName() + ".ats";
-      AtsDsl atsDsl = loadAtsDsl(modelName, modelText);
+      AtsDsl atsDsl = AtsWorkDefinitionProviderCore.loadAtsDsl(modelName, modelText);
       ConvertAtsDslToWorkDefinition converter = new ConvertAtsDslToWorkDefinition(modelName, atsDsl);
       return converter.convert();
    };
-
-   private AtsDsl loadAtsDsl(String name, String modelText) throws OseeCoreException {
-      AtsDsl atsDsl = ModelUtil.loadModel(name, modelText);
-      return atsDsl;
-   }
 
    public void convertAndOpenAtsDsl(Artifact workDefArt, XResultData resultData) throws OseeCoreException {
       String dslText = workDefArt.getSoleAttributeValue(AtsAttributeTypes.DslSheet, "");

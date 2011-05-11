@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -19,20 +18,21 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.version.TargetedVersionUtil;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
+import org.eclipse.osee.ats.core.version.VersionLockedType;
+import org.eclipse.osee.ats.core.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.version.VersionLockedType;
-import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -89,8 +89,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             }
             boolean modified =
                promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) useArt),
-                  AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-                  AtsUtil.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
+                  AtsUtilCore.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+                  AtsUtilCore.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");
@@ -108,7 +108,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    }
 
    public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) throws OseeCoreException {
-      if (AtsUtil.isAtsAdmin() && !sma.isTeamWorkflow()) {
+      if (AtsUtilCore.isAtsAdmin() && !sma.isTeamWorkflow()) {
          AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + sma.getName());
          return false;
       }
@@ -125,10 +125,10 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          if (teamArt.isReleased() || teamArt.isVersionLocked()) {
             String error =
                "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
-            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
+            if (AtsUtilCore.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
                error + "\n\nOverride?")) {
                return false;
-            } else if (!AtsUtil.isAtsAdmin()) {
+            } else if (!AtsUtilCore.isAtsAdmin()) {
                AWorkbench.popup("ERROR", error);
                continue;
             }
@@ -162,10 +162,10 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       //now check selected version
       if (newVersion.isVersionLocked()) {
          String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
-         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
+         if (AtsUtilCore.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
             error + "\n\nOverride?")) {
             return false;
-         } else if (!AtsUtil.isAtsAdmin()) {
+         } else if (!AtsUtilCore.isAtsAdmin()) {
             AWorkbench.popup("ERROR", error);
          }
       }
@@ -182,58 +182,6 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       return true;
    }
 
-   public static VersionArtifact getTargetedVersion(Object object) throws OseeCoreException {
-      if (object instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
-         if (teamArt != null) {
-            if (teamArt.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
-               List<Artifact> verArts =
-                  teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-               if (verArts.size() > 1) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                     "Multiple targeted versions for artifact " + teamArt.toStringWithId());
-                  return (VersionArtifact) verArts.iterator().next();
-               } else {
-                  return (VersionArtifact) verArts.iterator().next();
-               }
-            }
-         }
-      }
-      return null;
-   }
-
-   public static String getTargetedVersionStr(Object object) throws OseeCoreException {
-      if (object instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
-         if (teamArt != null) {
-            Collection<Artifact> verArts =
-               teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-            if (verArts.isEmpty()) {
-               return "";
-            }
-            if (verArts.size() > 1) {
-               String errStr =
-                  "Workflow " + teamArt.getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
-               return XViewerCells.getCellExceptionString(errStr);
-            }
-            Artifact verArt = verArts.iterator().next();
-            if (!teamArt.isCompleted() && !teamArt.isCancelled() && verArt.getSoleAttributeValue(
-               AtsAttributeTypes.Released, false)) {
-               String errStr =
-                  "Workflow " + teamArt.getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
-               if (!teamArt.isTargetedErrorLogged()) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
-                  teamArt.setTargetedErrorLogged(true);
-               }
-               return XViewerCells.getCellExceptionString(errStr);
-            }
-            return verArt.getName();
-         }
-      }
-      return "";
-   }
-
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
@@ -248,7 +196,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             return Collections.toString(";", strs);
 
          } else {
-            return getTargetedVersionStr(element);
+            return TargetedVersionUtil.getTargetedVersionStr(element);
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -268,8 +216,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             }
          }
 
-         promptChangeVersion(awas, AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-            AtsUtil.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
+         promptChangeVersion(awas, AtsUtilCore.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+            AtsUtilCore.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
          getXViewer().update(awas.toArray(), null);
          return;
       } catch (OseeCoreException ex) {

@@ -17,16 +17,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 /**
  * @author Donald G. Dunne
@@ -100,7 +100,7 @@ public class VersionMetrics {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
-         if (changeTypes.contains(ChangeTypeColumn.getChangeType(team))) {
+         if (changeTypes.contains(ChangeTypeUtil.getChangeType(team))) {
             teams.add(team);
          }
       }

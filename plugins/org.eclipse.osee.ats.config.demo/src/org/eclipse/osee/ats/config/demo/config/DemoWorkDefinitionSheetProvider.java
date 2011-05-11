@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.IAtsWorkDefinitionSheetProvider;
-import org.eclipse.osee.ats.workdef.WorkDefinitionSheet;
 
 public class DemoWorkDefinitionSheetProvider implements IAtsWorkDefinitionSheetProvider {
 

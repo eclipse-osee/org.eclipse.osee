@@ -19,11 +19,12 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
@@ -101,7 +102,7 @@ public class NewActionPage1 extends WizardPage {
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new ArtifactLabelProvider());
          try {
-            treeViewer.getViewer().setInput(ActionableItemManager.getTopLevelActionableItems(Active.Active));
+            treeViewer.getViewer().setInput(ActionableItemManagerCore.getTopLevelActionableItems(Active.Active));
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
@@ -187,12 +188,12 @@ public class NewActionPage1 extends WizardPage {
       try {
          for (ActionableItemArtifact aia : getSelectedActionableItemArtifacts()) {
             if (!aia.isActionable()) {
-               AWorkbench.popup("ERROR", ActionableItemManager.getNotActionableItemError(aia));
+               AWorkbench.popup("ERROR", ActionableItemManagerCore.getNotActionableItemError(aia));
                return false;
             }
          }
          Collection<TeamDefinitionArtifact> teamDefs =
-            TeamDefinitionManager.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
+            TeamDefinitionManagerCore.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
          if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;

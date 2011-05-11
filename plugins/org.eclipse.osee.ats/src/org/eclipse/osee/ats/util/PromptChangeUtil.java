@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;

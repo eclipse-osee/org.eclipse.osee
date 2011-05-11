@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.GoalManager;
-import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLevel;

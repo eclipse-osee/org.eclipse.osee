@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
-import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
-import org.eclipse.osee.ats.internal.workflow.SMAState;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.workflow.SMAState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Assert;
 
@@ -40,9 +40,9 @@ public class SMATestUtil {
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
          Assert.assertEquals("Percent wrong for " + awa.getHumanReadableId(),
-            PercentCompleteTotalColumn.getPercentCompleteTotal(awa), totalPercent);
+            PercentCompleteTotalUtil.getPercentCompleteTotal(awa), totalPercent);
          Assert.assertEquals("Hours Spent wrong for " + awa.getHumanReadableId(),
-            HoursSpentTotalColumn.getHoursSpentTotal(awa), hoursSpent, 0.0);
+            HoursSpentUtil.getHoursSpentTotal(awa), hoursSpent, 0.0);
 
          for (String stateValue : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             SMAState smaState = new SMAState();

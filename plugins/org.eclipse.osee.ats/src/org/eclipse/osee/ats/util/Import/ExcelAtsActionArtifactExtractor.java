@@ -26,18 +26,19 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam.CreateTeamOption;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -54,7 +55,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -100,7 +100,7 @@ public class ExcelAtsActionArtifactExtractor {
                      rd.logError("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   }
                   ActionableItemArtifact aia = (ActionableItemArtifact) aias.iterator().next();
-                  teamDefs.addAll(ActionableItemManager.getImpactedTeamDefs(Arrays.asList(aia)));
+                  teamDefs.addAll(ActionableItemManagerCore.getImpactedTeamDefs(Arrays.asList(aia)));
                   if (teamDefs.size() == 0) {
                      rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
                   } else if (teamDefs.size() > 1) {
@@ -164,13 +164,14 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionArt == null) {
                actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                     aData.priorityStr, false, null, ActionableItemManager.getActionableItems(aData.actionableItems),
-                     createdDate, createdBy, null, transaction);
+                     aData.priorityStr, false, null,
+                     ActionableItemManagerCore.getActionableItems(aData.actionableItems), createdDate, createdBy, null,
+                     transaction);
                newTeamArts = ActionManager.getTeams(actionArt);
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
-               Set<ActionableItemArtifact> aias = ActionableItemManager.getActionableItems(aData.actionableItems);
+               Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(aData.actionableItems);
                Map<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> entry : teamDefToAias.entrySet()) {
 
@@ -230,7 +231,7 @@ public class ExcelAtsActionArtifactExtractor {
          new HashMap<TeamDefinitionArtifact, Collection<ActionableItemArtifact>>();
       for (ActionableItemArtifact aia : aias) {
          TeamDefinitionArtifact teamDef =
-            TeamDefinitionManager.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
+            TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
          if (teamDefToAias.containsKey(teamDef)) {
             teamDefToAias.get(teamDef).add(aia);
          } else {

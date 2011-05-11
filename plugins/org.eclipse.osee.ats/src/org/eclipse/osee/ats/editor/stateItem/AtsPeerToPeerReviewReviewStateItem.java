@@ -13,20 +13,22 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.widgets.role.UserRole;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
+public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements ITransitionListener {
 
    public AtsPeerToPeerReviewReviewStateItem() {
       super(AtsPeerToPeerReviewReviewStateItem.class.getSimpleName());
@@ -54,6 +56,11 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
          sma.getStateMgr().setAssignees(assignees);
          sma.persist(transaction);
       }
+   }
+
+   @Override
+   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) {
+      return Result.TrueResult;
    }
 
 }

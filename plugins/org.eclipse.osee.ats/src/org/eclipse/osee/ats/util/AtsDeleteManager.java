@@ -19,10 +19,12 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.artifact.AbstractAtsArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -140,6 +142,7 @@ public class AtsDeleteManager {
                art.atsDelete(relatedArts, ignoredArts);
             }
          } else if (deleteArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            SMAEditor.close(java.util.Collections.singleton((AbstractWorkflowArtifact) deleteArt), true);
             ((AbstractWorkflowArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
             for (Artifact loopArt : relatedArts) {
                if (!loopArt.equals(deleteArt)) {
@@ -160,6 +163,11 @@ public class AtsDeleteManager {
             }
          }
          allDeleteArts.addAll(relatedArts);
+      }
+      for (Artifact art : allDeleteArts) {
+         if (art instanceof AbstractWorkflowArtifact) {
+            SMAEditor.close(java.util.Collections.singleton((AbstractWorkflowArtifact) art), true);
+         }
       }
    }
 }

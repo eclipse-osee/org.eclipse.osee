@@ -37,10 +37,10 @@
       </OseeTypes>
    </extension>
    <extension
-         point="org.eclipse.osee.ats.AtsTeamWorkflowProvider">
-      <TeamWorkflowProvider
+         point="org.eclipse.osee.ats.core.AtsTeamWorkflowProvider">
+      <AtsTeamWorkflowProvider
             classname="org.eclipse.osee.ats.config.demo.artifact.DemoTeamWorkflows">
-      </TeamWorkflowProvider>
+      </AtsTeamWorkflowProvider>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">

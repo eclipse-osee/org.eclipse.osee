@@ -17,17 +17,18 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.column.EstimatedHoursColumn;
-import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
-import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
+import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.EstimatedHoursUtil;
+import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -116,10 +117,10 @@ public class WorkflowMetrics {
       manDaysNeeded = 0;
       for (AbstractWorkflowArtifact team : awas) {
          hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
-         estHours += EstimatedHoursColumn.getEstimatedHours(team);
-         hrsSpent += HoursSpentTotalColumn.getHoursSpentTotal(team);
+         estHours += EstimatedHoursUtil.getEstimatedHours(team);
+         hrsSpent += HoursSpentUtil.getHoursSpentTotal(team);
          manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
-         cummulativeWorkflowPercentComplete += PercentCompleteTotalColumn.getPercentCompleteTotal(team);
+         cummulativeWorkflowPercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal(team);
       }
       if (hrsRemainFromEstimates != 0) {
          manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
@@ -339,7 +340,7 @@ public class WorkflowMetrics {
    public int getNumNotEstimated() throws OseeCoreException {
       int count = 0;
       for (AbstractWorkflowArtifact awa : awas) {
-         if (EstimatedHoursColumn.getEstimatedHours(awa) == 0) {
+         if (EstimatedHoursUtil.getEstimatedHours(awa) == 0) {
             count++;
          }
       }

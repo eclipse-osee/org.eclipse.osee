@@ -17,17 +17,16 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsDeleteManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -37,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.junit.AfterClass;
@@ -77,7 +75,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteOneWorkflow,
-            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 
@@ -101,8 +99,9 @@ public class AtsDeleteManagerTest {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.TeamArtDeleteWithTwoWorkflows, ActionableItemManager.getActionableItems(Arrays.asList(
-            DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName())), transaction);
+         createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
+            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName(),
+               DemoActionableItems.SAW_Requirements.getName())), transaction);
       transaction.execute();
 
       // Verify exists
@@ -121,7 +120,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtPurge,
-            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 
@@ -141,7 +140,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionDelete,
-            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 
@@ -161,7 +160,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionPurge,
-            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 

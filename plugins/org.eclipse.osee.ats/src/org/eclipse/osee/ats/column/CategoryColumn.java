@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;

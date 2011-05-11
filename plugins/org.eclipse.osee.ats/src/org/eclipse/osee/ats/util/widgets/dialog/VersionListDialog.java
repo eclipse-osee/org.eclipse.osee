@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameReverseSorter;
 import org.eclipse.osee.framework.ui.swt.Displays;

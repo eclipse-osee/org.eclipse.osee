@@ -10,11 +10,12 @@ import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.workdef.StateColorToSwtColor;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -68,7 +69,7 @@ public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn
    @Override
    public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
       if (element instanceof AbstractWorkflowArtifact) {
-         return Displays.getSystemColor(((AbstractWorkflowArtifact) element).getCurrentAtsWorkPage().getStateDefinition().getColor().getSwtColorId());
+         return Displays.getSystemColor(StateColorToSwtColor.convert(((AbstractWorkflowArtifact) element).getStateDefinition().getColor()));
       }
       return null;
    }

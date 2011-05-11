@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.validate;
 
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

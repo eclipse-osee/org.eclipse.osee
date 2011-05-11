@@ -12,26 +12,27 @@ package org.eclipse.osee.ats.workflow.item;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.type.ATSAttributes;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
-import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.FrameworkXWidgetProvider;
@@ -105,7 +106,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
                workFlowDefId));
          }
       }
-      return null;
+      return new WorkFlowDefinitionMatch();
    }
 
    public WorkFlowDefinitionMatch getWorkFlowDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
@@ -172,7 +173,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          // Otherwise, use workflow defined by WorkflowDefinition
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             WorkFlowDefinitionMatch match2 =
-               ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkFlowDefinition();
+               getWorkFlowDefinitionFromTeamDefition(((TeamWorkFlowArtifact) artifact).getTeamDefinition());
             if (match2.isMatched()) {
                return match2;
             }
@@ -198,6 +199,22 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          }
       }
       return null;
+   }
+
+   public WorkFlowDefinitionMatch getWorkFlowDefinitionFromTeamDefition(TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
+      Artifact teamDef = teamDefinition.getTeamDefinitionHoldingWorkFlow();
+      if (teamDef == null) {
+         return new WorkFlowDefinitionMatch();
+      }
+      Artifact workFlowArt = teamDefinition.getWorkflowArtifact(teamDef);
+      if (workFlowArt == null) {
+         return new WorkFlowDefinitionMatch();
+      }
+      WorkFlowDefinition workDef =
+         (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getName());
+      return new WorkFlowDefinitionMatch(workDef, String.format("from teamDef [%s] related work child [%s]", teamDef,
+         workFlowArt.getName()));
+
    }
 
    public static boolean isValidatePage(StateDefinition stateDefinition) {

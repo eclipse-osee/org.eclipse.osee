@@ -8,8 +8,9 @@ package org.eclipse.osee.ats.artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.config.AtsCacheManager;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
 
 public class VersionManager {
 

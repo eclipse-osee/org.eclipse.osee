@@ -12,7 +12,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;

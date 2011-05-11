@@ -18,16 +18,18 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
-import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.PriorityUtil;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionMetrics;
 import org.eclipse.osee.ats.version.VersionTeamMetrics;
@@ -44,7 +46,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -167,8 +168,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             Collection<TeamWorkFlowArtifact> arts =
                teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
-               if (!team.isCancelled() && ChangeTypeColumn.getChangeType(team) == ChangeType.Problem && (PriorityColumn.getPriorityStr(
-                  team).equals("1") || PriorityColumn.getPriorityStr(team).equals("2"))) {
+               if (!team.isCancelled() && ChangeTypeUtil.getChangeType(team) == ChangeType.Problem && (PriorityUtil.getPriorityStr(
+                  team).equals("1") || PriorityUtil.getPriorityStr(team).equals("2"))) {
                   numOrigDurningNextReleaseCycle++;
                }
             }
@@ -188,7 +189,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             DateUtil.getMMDDYY(thisReleaseEndDate),
             numOrigDurningNextReleaseCycle == 0 ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
             numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-            numOrigDurningNextReleaseCycle == 0 || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
+            numOrigDurningNextReleaseCycle == 0 || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtilCore.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
          monitor.worked(1);
       }
       sb.append(AHTML.endMultiColumnTable());

@@ -9,112 +9,44 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.log.LogItem;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
-import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
-import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.util.WorkflowManagerCore;
+import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.workflow.PriorityUtil;
+import org.eclipse.osee.ats.core.workflow.StateManager;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.StateManager;
-import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.workdef.StateDefinition;
-import org.eclipse.osee.ats.workdef.WidgetDefinition;
-import org.eclipse.osee.ats.workdef.WidgetOption;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.validation.OseeXWidgetValidateManager;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 public class WorkflowManager {
-
-   public static enum ValidType {
-      RequiredForCompletion,
-      RequiredForTransition;
-   }
-   public static class ValidResult {
-      public ValidType type;
-      public WidgetDefinition widgetDef;
-
-      public ValidResult(ValidType type, WidgetDefinition widgetDef) {
-         super();
-         this.type = type;
-         this.widgetDef = widgetDef;
-      }
-   }
-
-   /**
-    * Return collection of problems with state widgets and artifact model storage
-    */
-   public static Collection<ValidResult> isStateValid(AbstractWorkflowArtifact awa, StateDefinition stateDef) throws OseeCoreException {
-      List<ValidResult> results = new ArrayList<WorkflowManager.ValidResult>();
-      for (WidgetDefinition widgetDef : stateDef.getWidgets()) {
-         ValidResult result = isWidgetValid(awa, widgetDef);
-         if (result != null) {
-            results.add(result);
-         }
-      }
-      return results;
-   }
-
-   /**
-    * Return result of validity between widget and artifact model storage
-    */
-   public static ValidResult isWidgetValid(AbstractWorkflowArtifact awa, WidgetDefinition widgetDef) throws OseeCoreException {
-      // validate first with providers of validation
-      if (Strings.isValid(widgetDef.getXWidgetName())) {
-         OseeXWidgetValidateManager.instance.validate(awa, widgetDef.getXWidgetName(), widgetDef.getName());
-      }
-
-      // else fallback on attribute validation if this is an artifact stored widget
-      if (Strings.isValid(widgetDef.getAtrributeName())) {
-         if (widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION)) {
-            if (awa.getAttributesToStringList(AttributeTypeManager.getType(widgetDef.getAtrributeName())).isEmpty()) {
-               return new ValidResult(ValidType.RequiredForCompletion, widgetDef);
-            }
-         } else if (widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_TRANSITION)) {
-            if (awa.getAttributesToStringList(AttributeTypeManager.getType(widgetDef.getAtrributeName())).isEmpty()) {
-               return new ValidResult(ValidType.RequiredForTransition, widgetDef);
-            }
-         }
-      }
-      return null;
-   }
-
-   public static boolean isEditable(AbstractWorkflowArtifact sma, StateDefinition stateDef, boolean priviledgedEditEnabled) throws OseeCoreException {
-      // must be writeable
-      return !sma.isReadOnly() &&
-      // and access control writeable
-      sma.isAccessControlWrite() &&
-      // and current state
-      (stateDef == null || sma.isInState(stateDef)) &&
-      // and one of these
-      //
-      // page is define to allow anyone to edit
-      (sma.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll) ||
-      // team definition has allowed anyone to edit
-      sma.teamDefHasRule(RuleDefinitionOption.AllowEditToAll) ||
-      // priviledged edit mode is on
-      priviledgedEditEnabled ||
-      // current user is assigned
-      sma.isAssigneeMe() ||
-      // current user is ats admin
-      AtsUtil.isAtsAdmin());
-   }
 
    public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa, boolean priviledgedEditEnabled) throws OseeCoreException {
       return !awa.isCompletedOrCancelled() && !awa.isReadOnly() &&
       // and access control writeable
       awa.isAccessControlWrite() && //
 
-      (WorkflowManager.isEditable(awa, awa.getStateDefinition(), priviledgedEditEnabled) || //
+      (WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), priviledgedEditEnabled) || //
       // page is define to allow anyone to edit
       awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
       // team definition has allowed anyone to edit
@@ -255,7 +187,7 @@ public class WorkflowManager {
    public static Double getHoursSpent(Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
       Double hoursSpent = 0.0;
       for (AbstractWorkflowArtifact awa : artifacts) {
-         hoursSpent += HoursSpentTotalColumn.getHoursSpentTotal(awa);
+         hoursSpent += HoursSpentUtil.getHoursSpentTotal(awa);
       }
       return hoursSpent;
    }
@@ -288,7 +220,7 @@ public class WorkflowManager {
       List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact awa : artifacts) {
          TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
-         if (changeTypes.contains(ChangeTypeColumn.getChangeType(teamArt))) {
+         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt))) {
             awas.add(awa);
          }
       }
@@ -303,7 +235,7 @@ public class WorkflowManager {
       List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact awa : artifacts) {
          TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
-         if (priorityTypes.contains(PriorityColumn.getPriorityStr(teamArt))) {
+         if (priorityTypes.contains(PriorityUtil.getPriorityStr(teamArt))) {
             awas.add(awa);
          }
       }
@@ -353,6 +285,30 @@ public class WorkflowManager {
          return (AbstractWorkflowArtifact) artifact;
       }
       return null;
+   }
+
+   public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
+      for (StateXWidgetPage statePage : getStatePages(awa)) {
+         if (awa.getStateMgr().isInState(statePage)) {
+            return statePage;
+         }
+      }
+      return null;
+   }
+
+   public static List<StateXWidgetPage> getStatePages(AbstractWorkflowArtifact awa) {
+      List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
+      for (StateDefinition stateDefinition : awa.getWorkDefinition().getStatesOrdered()) {
+         try {
+            StateXWidgetPage statePage =
+               new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,
+                  ATSXWidgetOptionResolver.getInstance());
+            statePages.add(statePage);
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
+      return statePages;
    }
 
 }

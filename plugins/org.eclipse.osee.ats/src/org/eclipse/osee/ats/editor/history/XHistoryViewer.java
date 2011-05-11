@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;

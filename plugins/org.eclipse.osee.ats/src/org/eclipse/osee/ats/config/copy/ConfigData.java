@@ -6,11 +6,11 @@
 package org.eclipse.osee.ats.config.copy;
 
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -100,7 +100,7 @@ public class ConfigData {
       if (fromAias.size() == 1) {
          parentActionableItem = (ActionableItemArtifact) fromAias.iterator().next().getParent();
       } else {
-         parentActionableItem = ActionableItemManager.getTopActionableItem();
+         parentActionableItem = ActionableItemManagerCore.getTopActionableItem();
       }
       return parentActionableItem;
    }

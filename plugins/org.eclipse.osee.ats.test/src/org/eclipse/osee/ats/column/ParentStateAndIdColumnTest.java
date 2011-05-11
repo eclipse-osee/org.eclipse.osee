@@ -5,14 +5,14 @@
  */
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.ParentHridColumn;
 import org.eclipse.osee.ats.column.ParentStateColumn;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.util.DemoTestUtil;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.DemoWorkType;

@@ -6,13 +6,12 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.column.NumberOfTasksColumn;
-import org.eclipse.osee.ats.column.NumberOfTasksRemainingColumn;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
-import org.eclipse.osee.ats.util.TransitionOption;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,7 +39,8 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       TaskArtifact taskArt = codeArt.getTaskArtifacts().iterator().next();
       Collection<User> taskAssignees = taskArt.getStateMgr().getAssignees();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      taskArt.transitionToCompleted(2, transaction, TransitionOption.OverrideTransitionValidityCheck);
+      Result result = taskArt.transitionToCompleted(2, transaction, TransitionOption.OverrideTransitionValidityCheck);
+      Assert.assertEquals(true, result.isTrue());
       taskArt.persist(transaction);
       transaction.execute();
 
@@ -48,8 +48,10 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("5", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      taskArt.transitionToInWork(taskAssignees.iterator().next(), 0, -2, transaction,
-         TransitionOption.OverrideTransitionValidityCheck);
+      result =
+         taskArt.transitionToInWork(taskAssignees.iterator().next(), 0, -2, transaction,
+            TransitionOption.OverrideTransitionValidityCheck);
+      Assert.assertEquals(true, result.isTrue());
       taskArt.persist(transaction);
       transaction.execute();
 

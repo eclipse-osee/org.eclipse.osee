@@ -11,17 +11,16 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
-import org.eclipse.osee.ats.artifact.ReviewManager;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -40,7 +39,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
    }
 
    @Override
-   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener modListener, boolean isEditable) {
+   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
       try {
          if (art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
          stateDefinition.getPageName().equals(PeerToPeerReviewState.Prepare.getPageName()) && //

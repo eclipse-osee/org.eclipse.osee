@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;

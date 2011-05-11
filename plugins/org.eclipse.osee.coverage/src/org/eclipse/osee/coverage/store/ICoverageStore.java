@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne

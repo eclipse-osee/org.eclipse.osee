@@ -5,16 +5,16 @@
  */
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -45,38 +45,38 @@ public class ChangeTypeColumnTest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(codeArt));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(codeArt));
       Assert.assertNotNull(ChangeTypeColumn.getInstance().getColumnImage(codeArt, ChangeTypeColumn.getInstance(), 0));
 
       Artifact actionArt = codeArt.getParentActionArtifact();
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(actionArt));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(actionArt));
 
       // clear our req change type
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), CategoryColumnTest.class.getSimpleName());
-      ChangeTypeColumn.setChangeType(reqArt, ChangeType.None);
+      ChangeTypeUtil.setChangeType(reqArt, ChangeType.None);
       reqArt.persist(transaction);
       transaction.execute();
 
-      Assert.assertEquals(ChangeType.None, ChangeTypeColumn.getChangeType(reqArt));
+      Assert.assertEquals(ChangeType.None, ChangeTypeUtil.getChangeType(reqArt));
       Assert.assertNull(ChangeTypeColumn.getInstance().getColumnImage(reqArt, ChangeTypeColumn.getInstance(), 0));
 
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(actionArt));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(actionArt));
       Assert.assertEquals("Problem",
          ChangeTypeColumn.getInstance().getColumnText(actionArt, ChangeTypeColumn.getInstance(), 0));
 
       // set change type to Improvement
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), CategoryColumnTest.class.getSimpleName());
-      ChangeTypeColumn.setChangeType(reqArt, ChangeType.Improvement);
+      ChangeTypeUtil.setChangeType(reqArt, ChangeType.Improvement);
       reqArt.persist(transaction);
       transaction.execute();
 
-      Assert.assertEquals(ChangeType.Improvement, ChangeTypeColumn.getChangeType(reqArt));
+      Assert.assertEquals(ChangeType.Improvement, ChangeTypeUtil.getChangeType(reqArt));
       Assert.assertNotNull(ChangeTypeColumn.getInstance().getColumnImage(reqArt, ChangeTypeColumn.getInstance(), 0));
 
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(actionArt));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(actionArt));
       Assert.assertEquals("Problem; Improvement",
          ChangeTypeColumn.getInstance().getColumnText(actionArt, ChangeTypeColumn.getInstance(), 0));
 

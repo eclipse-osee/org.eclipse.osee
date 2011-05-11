@@ -17,16 +17,19 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.type.ATSAttributes;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -45,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -120,7 +122,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       createBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
-            teamArt.getBranchMgr().createWorkingBranch(null, true);
+            AtsBranchManager.createWorkingBranch(teamArt, null, true);
          }
       });
 
@@ -142,7 +144,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       showChangeReport.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
-            teamArt.getBranchMgr().showChangeReport();
+            AtsBranchManager.showChangeReport(teamArt);
          }
       });
 
@@ -151,7 +153,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       deleteBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
-            teamArt.getBranchMgr().deleteWorkingBranch(true);
+            AtsBranchManager.deleteWorkingBranch(teamArt, true);
             refresh();
          }
       });
@@ -309,7 +311,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    }
 
    public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return teamArt.getBranchMgr().isWorkingBranchInWork();
+      return AtsBranchManagerCore.isWorkingBranchInWork(teamArt);
    }
 
    @Override
@@ -329,7 +331,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    }
 
    public void refreshOnBranchEvent() {
-      if (teamArt == null || teamArt.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
+      if (teamArt == null || labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
       Runnable runnable = new Runnable() {

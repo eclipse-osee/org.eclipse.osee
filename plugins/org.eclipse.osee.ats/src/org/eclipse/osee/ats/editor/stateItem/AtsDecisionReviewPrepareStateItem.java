@@ -11,19 +11,21 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.DecisionReviewState;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
+import org.eclipse.osee.ats.core.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.review.XDecisionOptions;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
+public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements ITransitionListener {
 
    public AtsDecisionReviewPrepareStateItem() {
       super(AtsDecisionReviewPrepareStateItem.class.getSimpleName());
@@ -43,6 +45,11 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
          return decOptions.validateDecisionOptions();
       }
       return Result.TrueResult;
+   }
+
+   @Override
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) {
+      // do nothing
    }
 
 }

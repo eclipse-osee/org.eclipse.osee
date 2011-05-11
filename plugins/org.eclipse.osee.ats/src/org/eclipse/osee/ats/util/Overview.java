@@ -15,11 +15,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.log.AtsLog;
+import org.eclipse.osee.ats.core.artifact.AbstractAtsArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -238,7 +239,7 @@ public class Overview {
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "State"}, new Integer[] {70, 150}));
       ArrayList<CellItem> cells = new ArrayList<CellItem>();
       for (TeamWorkFlowArtifact team : teams) {
-         cells.add(new AHTML.CellItem(team.getHyperlinkHtml()));
+         cells.add(new AHTML.CellItem(Overview.getOpenHyperlinkHtml(team)));
          cells.add(new AHTML.CellItem(team.getStateMgr().getCurrentStateName()));
          sb.append(AHTML.addRowMultiColumnTable(cells));
          cells.clear();

@@ -15,23 +15,24 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.review.ReviewFormalType;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.util.widgets.XReviewStateSearchCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
@@ -301,7 +302,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       Collection<ActionableItemArtifact> aias = getSelectedAIs();
       Set<VersionArtifact> versions = new HashSet<VersionArtifact>();
       if (!aias.isEmpty()) {
-         for (TeamDefinitionArtifact teamDef : TeamDefinitionManager.getImpactedTeamDefs(aias)) {
+         for (TeamDefinitionArtifact teamDef : TeamDefinitionManagerCore.getImpactedTeamDefs(aias)) {
             TeamDefinitionArtifact teamDefHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
             if (teamDefHoldingVersions != null) {
                versions.addAll(teamDefHoldingVersions.getVersionsArtifacts());

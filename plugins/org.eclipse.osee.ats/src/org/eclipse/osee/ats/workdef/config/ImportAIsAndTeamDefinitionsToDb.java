@@ -8,20 +8,20 @@ package org.eclipse.osee.ats.workdef.config;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workdef.provider.BooleanDefUtil;
+import org.eclipse.osee.ats.core.workdef.provider.UserRefUtil;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.workdef.provider.BooleanDefUtil;
-import org.eclipse.osee.ats.workdef.provider.UserRefUtil;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -52,7 +52,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    public void execute() throws OseeCoreException {
       importUserDefinitions(atsDsl.getUserDef());
       importTeamDefinitions(atsDsl.getTeamDef(), TeamDefinitionManager.getTopTeamDefinition());
-      importActionableItems(atsDsl.getActionableItemDef(), ActionableItemManager.getTopActionableItem());
+      importActionableItems(atsDsl.getActionableItemDef(), ActionableItemManagerCore.getTopActionableItem());
    }
 
    public void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
@@ -239,7 +239,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (isTeamDef) {
             parent = TeamDefinitionManager.getTopTeamDefinition();
          } else {
-            parent = ActionableItemManager.getTopActionableItem();
+            parent = ActionableItemManagerCore.getTopActionableItem();
          }
       }
       if (parent.getName().equals(artifactName)) {

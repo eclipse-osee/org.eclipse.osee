@@ -14,8 +14,10 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.util.widgets.defect.DefectSeverityToImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -43,11 +45,11 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       } else if (dCol.equals(UserRoleXViewerFactory.Completed_Col)) {
          return ImageManager.getImage(roleItem.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
-         return Severity.getImage(Severity.Major);
+         return DefectSeverityToImage.getImage(Severity.Major);
       } else if (dCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
-         return Severity.getImage(Severity.Minor);
+         return DefectSeverityToImage.getImage(Severity.Minor);
       } else if (dCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
-         return Severity.getImage(Severity.Issue);
+         return DefectSeverityToImage.getImage(Severity.Issue);
       }
       return null;
    }
@@ -59,7 +61,8 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
          return defectItem.getUser().getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-         return defectItem.getHoursSpent() == null ? "" : AtsUtil.doubleToI18nString(defectItem.getHoursSpent(), false);
+         return defectItem.getHoursSpent() == null ? "" : AtsUtilCore.doubleToI18nString(defectItem.getHoursSpent(),
+            false);
       } else if (aCol.equals(UserRoleXViewerFactory.Role_Col)) {
          return defectItem.getRole().name();
       } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {

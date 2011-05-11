@@ -20,18 +20,21 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
-import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
-import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -39,10 +42,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -278,7 +279,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
    public void addAdminRightClickOption() throws OseeCoreException {
       // If ATS Admin, allow right-click to auto-complete tasks
-      if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+      if (AtsUtilCore.isAtsAdmin() && !AtsUtil.isProductionDb()) {
          labelWidget.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -300,7 +301,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                               transitionMgr.transitionToCompleted("", transaction,
                                  TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
                            if (result.isFalse()) {
-                              result.popup();
+                              AWorkbench.popup(result);
                               return;
                            }
                         }

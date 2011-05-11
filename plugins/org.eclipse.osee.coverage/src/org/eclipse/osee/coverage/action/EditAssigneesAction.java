@@ -21,13 +21,13 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -66,7 +66,7 @@ public class EditAssigneesAction extends Action {
       }
       Result result = saveable.isEditable();
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
          return;
       }
 

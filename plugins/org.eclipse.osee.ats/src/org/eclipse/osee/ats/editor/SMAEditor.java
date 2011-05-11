@@ -26,9 +26,10 @@ import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
@@ -41,6 +42,8 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -50,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -60,7 +62,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -330,7 +331,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    private void createAttributesTab() {
       try {
-         if (!AtsUtil.isAtsAdmin()) {
+         if (!AtsUtilCore.isAtsAdmin()) {
             return;
          }
 

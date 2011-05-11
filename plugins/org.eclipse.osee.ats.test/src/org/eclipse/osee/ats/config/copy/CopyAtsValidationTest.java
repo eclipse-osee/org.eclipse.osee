@@ -6,10 +6,10 @@
 package org.eclipse.osee.ats.config.copy;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidation;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;

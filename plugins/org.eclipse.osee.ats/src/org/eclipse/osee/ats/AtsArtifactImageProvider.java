@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;

@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.actions;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -35,7 +37,7 @@ public class ShowMergeManagerAction extends Action {
       setText("Show Merge Manager");
       setToolTipText(getText());
       try {
-         setEnabled(teamArt.getBranchMgr().isWorkingBranchInWork() || teamArt.getBranchMgr().isCommittedBranchExists());
+         setEnabled(AtsBranchManagerCore.isWorkingBranchInWork(teamArt) || AtsBranchManagerCore.isCommittedBranchExists(teamArt));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -43,7 +45,7 @@ public class ShowMergeManagerAction extends Action {
 
    @Override
    public void run() {
-      teamArt.getBranchMgr().showMergeManager();
+      AtsBranchManager.showMergeManager(teamArt);
    }
 
    @Override

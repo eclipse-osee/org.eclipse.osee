@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemTreeWithChildrenDialog;
 import org.eclipse.osee.ats.world.WorldEditor;

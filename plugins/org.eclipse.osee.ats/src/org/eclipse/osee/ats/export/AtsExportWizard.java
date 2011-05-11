@@ -17,10 +17,11 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -58,7 +59,7 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
 
       Result result = mainPage.isEntryValid();
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
          return false;
       }
       try {

@@ -16,10 +16,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PriviledgedUserManager;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -63,7 +63,7 @@ public class PrivilegedEditAction extends Action {
             }
          } else {
             Set<User> users = PriviledgedUserManager.getPrivilegedUsers(sma);
-            if (AtsUtil.isAtsAdmin()) {
+            if (AtsUtilCore.isAtsAdmin()) {
                users.add(UserManager.getUser());
             }
             StringBuffer stringBuffer = new StringBuffer();

@@ -11,9 +11,10 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsArtifactToken;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -33,11 +34,11 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);
 
-      Artifact topAi = ActionableItemManager.getTopActionableItem();
+      Artifact topAi = ActionableItemManagerCore.getTopActionableItem();
       topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAi.persist("Set Top AI to Non Actionable");
 
-      AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();
+      AtsUtilCore.getAtsAdminGroup().getGroupArtifact().persist();
    }
 
    public static void createAtsFolders() throws OseeCoreException {

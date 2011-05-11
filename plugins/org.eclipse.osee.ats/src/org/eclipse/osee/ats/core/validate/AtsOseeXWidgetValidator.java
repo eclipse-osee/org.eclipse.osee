@@ -7,7 +7,9 @@ package org.eclipse.osee.ats.core.validate;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.review.role.UserRoleError;
+import org.eclipse.osee.ats.core.review.role.UserRoleValidator;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

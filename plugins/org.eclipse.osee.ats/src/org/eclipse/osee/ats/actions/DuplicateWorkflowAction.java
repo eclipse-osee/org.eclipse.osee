@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam;
 import org.eclipse.osee.framework.logging.OseeLevel;

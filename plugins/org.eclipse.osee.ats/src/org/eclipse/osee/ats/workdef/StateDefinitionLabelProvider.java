@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workdef;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.swt.graphics.Image;
 
 /**

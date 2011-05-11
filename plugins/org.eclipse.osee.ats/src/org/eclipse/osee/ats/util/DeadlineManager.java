@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Date;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.column.EstimatedReleaseDateColumn;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne

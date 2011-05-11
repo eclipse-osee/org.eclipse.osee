@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -99,8 +100,8 @@ public class XWorkingBranchEnablement {
       if (populated) {
          return;
       }
-      workingBranchInWork = teamArt.getBranchMgr().isWorkingBranchInWork();
-      committedBranchExists = teamArt.getBranchMgr().isCommittedBranchExists();
+      workingBranchInWork = AtsBranchManagerCore.isWorkingBranchInWork(teamArt);
+      committedBranchExists = AtsBranchManagerCore.isCommittedBranchExists(teamArt);
       workingBranch = teamArt.getWorkingBranch();
       populated = true;
    }

@@ -8,15 +8,11 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.PercentCompleteSMAStateUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.swt.SWT;
 
 public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -48,51 +44,12 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return String.valueOf(getPercentCompleteSMAState((Artifact) element));
+            return String.valueOf(PercentCompleteSMAStateUtil.getPercentCompleteSMAState((Artifact) element));
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "";
-   }
-
-   /**
-    * Return Percent Complete working ONLY the current state (not children SMAs)
-    */
-   public static int getPercentCompleteSMAState(Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         if (ActionManager.getTeams(artifact).size() == 1) {
-            return getPercentCompleteSMAState(ActionManager.getFirstTeam(artifact));
-         } else {
-            double percent = 0;
-            int items = 0;
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-               if (!team.isCancelled()) {
-                  percent += getPercentCompleteSMAState(team);
-                  items++;
-               }
-            }
-            if (items > 0) {
-               Double rollPercent = percent / items;
-               return rollPercent.intValue();
-            }
-         }
-         return 0;
-      }
-      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getPercentCompleteSMAState(artifact, WorkflowManager.getStateManager(artifact).getCurrentState());
-      }
-      return 0;
-   }
-
-   /**
-    * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
-    */
-   public static int getPercentCompleteSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManager.getStateManager(artifact).getPercentComplete(state);
-      }
-      return 0;
    }
 
 }

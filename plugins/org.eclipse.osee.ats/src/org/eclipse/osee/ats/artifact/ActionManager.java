@@ -15,12 +15,21 @@ import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.actions.wizard.INewActionListener;
-import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workflow.ActionArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam.CreateTeamOption;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -34,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +64,7 @@ public class ActionManager {
       if (monitor != null) {
          monitor.subTask("Creating WorkFlows");
       }
-      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManager.getImpactedTeamDefs(actionableItems);
+      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManagerCore.getImpactedTeamDefs(actionableItems);
       if (teamDefs.isEmpty()) {
          StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
          for (ActionableItemArtifact aia : actionableItems) {
@@ -172,8 +180,7 @@ public class ActionManager {
     */
    public static void setArtifactIdentifyData(Artifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
       setArtifactIdentifyData(toTeam, fromAction.getName(),
-         fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
-         ChangeTypeColumn.getChangeType(fromAction),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""), ChangeTypeUtil.getChangeType(fromAction),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
          //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
@@ -188,7 +195,7 @@ public class ActionManager {
       if (!desc.equals("")) {
          art.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
       }
-      ChangeTypeColumn.setChangeType(art, changeType);
+      ChangeTypeUtil.setChangeType(art, changeType);
       //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (Strings.isValid(priority)) {
          art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority);

@@ -21,10 +21,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -115,14 +115,14 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    }
 
    private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor) throws OseeCoreException {
-      AtsBranchManager atsBranchMgr = ((TeamWorkFlowArtifact) workflow).getBranchMgr();
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workflow;
 
       List<Change> changes = new ArrayList<Change>();
       IOperation operation = null;
-      if (atsBranchMgr.isCommittedBranchExists()) {
+      if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
          operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
       } else {
-         Branch workingBranch = atsBranchMgr.getWorkingBranch();
+         Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
          if (workingBranch != null && !workingBranch.getBranchType().isBaselineBranch()) {
             operation = ChangeManager.comparedToParent(workingBranch, changes);
          }

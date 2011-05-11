@@ -13,10 +13,12 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,12 +49,12 @@ public class ShowBranchChangeDataAction extends Action {
             return;
          }
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-         if (!teamArt.getBranchMgr().isWorkingBranchInWork() && !teamArt.getBranchMgr().isWorkingBranchEverCommitted()) {
+         if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isWorkingBranchEverCommitted(teamArt)) {
             AWorkbench.popup("Working branch never created or committed.");
             return;
          }
          XResultData result = new XResultData();
-         ChangeData changeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
+         ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
          result.log("Number of changes " + changeData.getChanges().size() + "\n");
          for (Change change : changeData.getChanges()) {
             result.log(String.format("Change [%s]", change));

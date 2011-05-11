@@ -13,13 +13,15 @@ package org.eclipse.osee.ats.version;
 
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.version.VersionArtifact;
+import org.eclipse.osee.ats.core.version.VersionLockedType;
+import org.eclipse.osee.ats.core.version.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -67,7 +69,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsUtil.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(UserManager.getUser())) {
+            if (!AtsUtilCore.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(
+               UserManager.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
@@ -82,7 +85,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             if (errorStr != null) {
                AWorkbench.popup("ERROR", errorStr);
             }
-            if (errorStr != null && !AtsUtil.isAtsAdmin()) {
+            if (errorStr != null && !AtsUtilCore.isAtsAdmin()) {
                return;
             } else if (errorStr != null && !MessageDialog.openConfirm(Displays.getActiveShell(), "Override",
                "ATS Admin Enabled - Override completed condition and release anyway?")) {

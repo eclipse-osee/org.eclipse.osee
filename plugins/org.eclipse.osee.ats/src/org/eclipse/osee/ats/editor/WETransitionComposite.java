@@ -6,29 +6,38 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
-import org.eclipse.osee.ats.workflow.TransitionManager;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -39,6 +48,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -172,19 +182,98 @@ public class WETransitionComposite extends Composite {
 
       StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
       TransitionManager transMgr = new TransitionManager(awa, editor.isPriviledgedEditModeEnabled());
-      Result result = transMgr.handleTransition(toStateDef);
+      String cancellationReason = "";
+      if (toStateDef.isCancelledPage()) {
+         EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+         if (cancelDialog.open() != 0) {
+            return;
+         }
+         cancellationReason = cancelDialog.getEntry();
+      }
+
+      try {
+         handlePopulateStateMetrics(toStateDef);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      Result result = transMgr.handleTransition(toStateDef, cancellationReason);
       if (result.isCancelled()) {
          return;
       } else if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
       }
+   }
+
+   private int getCreationToNowDateDeltaMinutes() throws OseeCoreException {
+      Date createDate = awa.getStateStartedData(awa.getStateDefinition()).getDate();
+      long createDateLong = createDate.getTime();
+      Date date = new Date();
+      float diff = date.getTime() - createDateLong;
+      // System.out.println("diff *" + diff + "*");
+      Float min = diff / 60000;
+      // System.out.println("min *" + min + "*");
+      return min.intValue();
+   }
+
+   private boolean handlePopulateStateMetrics(StateDefinition toStateDefinition) throws OseeCoreException {
+      // Don't log metrics for completed / cancelled states
+      if (toStateDefinition.isCompletedOrCancelledPage()) {
+         return true;
+      }
+
+      // Page has the ability to override the autofill of the metrics
+      if (!isRequireStateHoursSpentPrompt(toStateDefinition) && awa.getStateMgr().getHoursSpent() == 0) {
+         // First, try to autofill if it's only been < 5 min since creation
+         double minSinceCreation = getCreationToNowDateDeltaMinutes();
+         // System.out.println("minSinceCreation *" + minSinceCreation + "*");
+         double hoursSinceCreation = minSinceCreation / 60.0;
+         if (hoursSinceCreation < 0.02) {
+            hoursSinceCreation = 0.02;
+         }
+         // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
+         if (minSinceCreation < 5) {
+            awa.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
+            return true;
+         }
+      }
+
+      if (isRequireStateHoursSpentPrompt(toStateDefinition)) {
+         // Otherwise, open dialog to ask for hours complete
+         String msg =
+            awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(awa.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+         SMAStatusDialog tsd =
+            new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
+               msg, false, Arrays.asList(awa));
+         int result = tsd.open();
+         if (result == 0) {
+            awa.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
+            return true;
+         } else {
+            return false;
+         }
+      } else {
+         return true;
+      }
+   }
+
+   private boolean isRequireStateHoursSpentPrompt(StateDefinition stateDefinition) {
+      return AtsWorkDefinitions.isRequireStateHoursSpentPrompt(stateDefinition);
    }
 
    public void updateTransitionToAssignees() throws OseeCoreException {
       Collection<User> assignees = null;
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         assignees = item.getOverrideTransitionToAssignees(workflowSection);
+         String decisionValueIfApplicable = null;
+         if (awa.isOfType(AtsArtifactTypes.DecisionReview)) {
+            XComboDam xWidget =
+               (XComboDam) workflowSection.getPage().getLayoutData(AtsAttributeTypes.Decision.getName()).getXWidget();
+            if (xWidget != null) {
+               decisionValueIfApplicable = xWidget.get();
+            }
+         }
+         assignees = item.getOverrideTransitionToAssignees(workflowSection.getSma(), decisionValueIfApplicable);
          if (assignees != null) {
             break;
          }

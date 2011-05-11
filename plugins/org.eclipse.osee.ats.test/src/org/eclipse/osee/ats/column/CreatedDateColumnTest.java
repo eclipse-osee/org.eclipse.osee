@@ -6,9 +6,9 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Date;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;

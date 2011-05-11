@@ -13,22 +13,22 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
+import org.eclipse.osee.ats.core.review.DecisionOption;
+import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.review.XDecisionOptions;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.widgets.DecisionOption;
-import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -47,7 +47,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
       if (art.isOfType(AtsArtifactTypes.DecisionReview) && stateDefinition.getPageName().equals(
          DecisionReviewState.Decision.getPageName())) {
          if (xWidget == null) {
@@ -80,8 +80,13 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return null;
    }
 
+   private boolean isApplicable(SMAWorkFlowSection section) {
+      return section.getSma().isOfType(AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
+         DecisionReviewState.Decision.getPageName());
+   }
+
    public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) throws OseeCoreException {
-      DecisionOption decisionOption = getDecisionOption(decArt, decisionComboDam);
+      DecisionOption decisionOption = getDecisionOption(decArt, decisionComboDam.get());
       if (decisionOption == null) {
          return null;
       }
@@ -94,31 +99,28 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException {
-      if (isApplicable(section)) {
-         XWidget xWidget = section.getPage().getLayoutData(AtsAttributeTypes.Decision.getName()).getXWidget();
-         XComboDam decisionComboDam = (XComboDam) xWidget;
-         DecisionReviewArtifact decArt = (DecisionReviewArtifact) section.getSma();
-         return getOverrideTransitionToAssignees(decArt, decisionComboDam);
+   public Collection<User> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException {
+      if (isApplicable(awa)) {
+         DecisionReviewArtifact decArt = (DecisionReviewArtifact) awa;
+         return getOverrideTransitionToAssignees(decArt, decision);
       }
       return null;
    }
 
-   public Collection<User> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, XComboDam decisionComboDam) throws OseeCoreException {
-      DecisionOption decisionOption = getDecisionOption(decArt, decisionComboDam);
+   public Collection<User> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision) throws OseeCoreException {
+      DecisionOption decisionOption = getDecisionOption(decArt, decision);
       if (decisionOption == null) {
          return null;
       }
       return decisionOption.getAssignees();
    }
 
-   private boolean isApplicable(SMAWorkFlowSection section) {
-      return section.getSma().isOfType(AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
+   private boolean isApplicable(AbstractWorkflowArtifact awa) {
+      return awa.isOfType(AtsArtifactTypes.DecisionReview) && awa.getCurrentStateName().equals(
          DecisionReviewState.Decision.getPageName());
    }
 
-   private DecisionOption getDecisionOption(DecisionReviewArtifact decRevArt, XComboDam decisionComboDam) throws OseeCoreException {
-      String decision = decisionComboDam.get();
+   private DecisionOption getDecisionOption(DecisionReviewArtifact decRevArt, String decision) throws OseeCoreException {
       if (decision.equals("")) {
          return null;
       }

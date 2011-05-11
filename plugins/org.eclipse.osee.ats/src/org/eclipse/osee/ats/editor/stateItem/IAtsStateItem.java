@@ -12,17 +12,14 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -34,28 +31,21 @@ public interface IAtsStateItem {
 
    public String getFullName();
 
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException;
 
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException;
 
-   public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException;
+   public void widgetModified(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException;
 
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException;
 
-   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException;
+   public Collection<User> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException;
 
    public String getDescription();
 
    public String getBranchShortName(AbstractWorkflowArtifact sma) throws OseeCoreException;
 
    public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException;
-
-   /**
-    * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
-    */
-   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) throws OseeCoreException;
-
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException;
 
    /**
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.

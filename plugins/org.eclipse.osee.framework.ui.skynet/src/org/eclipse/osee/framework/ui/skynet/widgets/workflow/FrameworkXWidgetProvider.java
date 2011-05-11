@@ -91,10 +91,25 @@ public final class FrameworkXWidgetProvider {
       return reference;
    }
 
+   private String getXWidgetNameBasedOnAttribute(String attributeTypeName) throws OseeCoreException {
+      IAttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+      if (attributeType != null) {
+         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
+         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+         return concreteWidgets.iterator().next().getXWidgetName();
+      }
+      return null;
+   }
+
    public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) throws OseeCoreException {
       String xWidgetName = xWidgetLayoutData.getXWidgetName();
       String name = xWidgetLayoutData.getName();
       XWidget xWidget = null;
+
+      // Set xWidgetName from attribute type if not already set
+      if (!Strings.isValid(xWidgetName) && Strings.isValid(xWidgetLayoutData.getStoreName())) {
+         xWidgetName = getXWidgetNameBasedOnAttribute(xWidgetLayoutData.getStoreName());
+      }
 
       // Look for widget provider to create widget
       for (IXWidgetProvider widgetProvider : getXWidgetProviders()) {

@@ -7,14 +7,14 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Date;
 import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.TransitionOption;
-import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;

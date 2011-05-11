@@ -11,18 +11,20 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
+public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implements ITransitionListener {
 
    public AtsForceAssigneesToTeamLeadsStateItem() {
       super(AtsForceAssigneesToTeamLeadsStateItem.class.getSimpleName());
@@ -42,6 +44,11 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
             sma.persist(transaction);
          }
       }
+   }
+
+   @Override
+   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) {
+      return Result.TrueResult;
    }
 
 }

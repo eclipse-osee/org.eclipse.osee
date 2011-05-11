@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

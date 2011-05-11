@@ -7,9 +7,9 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.column.AssigneeColumn;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

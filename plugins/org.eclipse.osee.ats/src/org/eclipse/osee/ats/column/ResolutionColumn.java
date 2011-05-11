@@ -12,19 +12,21 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskResOptionDefinition;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinitionToSwtColor;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -68,7 +70,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
          // Ensure tasks are related to current state of workflow
          Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
          if (result.isFalse()) {
-            result.popup();
+            AWorkbench.popup(result);
             return false;
          }
 
@@ -114,7 +116,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
             taskArt.getTaskResolutionOptionDefinition((String) taskArt.getSoleAttributeValue(
                AtsAttributeTypes.Resolution, null));
          if (def != null) {
-            return Displays.getSystemColor(def.getColorInt());
+            return Displays.getSystemColor(TaskResOptionDefinitionToSwtColor.getColorInt(def));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -145,7 +147,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
       try {
          Result result = SMAPromptChangeStatus.isValidToChangeStatus(allTasks);
          if (result.isFalse()) {
-            result.popup();
+            AWorkbench.popup(result);
             return;
          }
       } catch (OseeCoreException ex) {

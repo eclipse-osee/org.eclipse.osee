@@ -16,6 +16,9 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.branch.CommitStatus;
+import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -77,8 +80,7 @@ public class CommitXManager extends XViewer {
       try {
          ICommitConfigArtifact configArt = getSelectedConfigArtifacts().iterator().next();
          Branch destBranch = configArt.getParentBranch();
-         AtsBranchManager manager = xCommitManager.getTeamArt().getBranchMgr();
-         CommitStatus commitStatus = manager.getCommitStatus(configArt);
+         CommitStatus commitStatus = AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), configArt);
          if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.Branch_Not_Configured) {
@@ -89,14 +91,14 @@ public class CommitXManager extends XViewer {
                "Talk to project lead as to why commit disabled for version [" + configArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
             destBranch = configArt.getParentBranch();
-            xCommitManager.getTeamArt().getBranchMgr().commitWorkingBranch(true, false, destBranch,
-               manager.isBranchesAllCommittedExcept(destBranch));
+            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, destBranch,
+               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), destBranch));
          } else if (commitStatus == CommitStatus.Merge_In_Progress) {
             destBranch = configArt.getParentBranch();
-            xCommitManager.getTeamArt().getBranchMgr().commitWorkingBranch(true, false, destBranch,
-               manager.isBranchesAllCommittedExcept(destBranch));
+            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, destBranch,
+               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), destBranch));
          } else if (commitStatus == CommitStatus.Committed) {
-            xCommitManager.getTeamArt().getBranchMgr().showChangeReportForBranch(destBranch);
+            AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), destBranch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {
             destBranch = configArt.getParentBranch();
             MessageDialog dialog =
@@ -109,11 +111,11 @@ public class CommitXManager extends XViewer {
             }
             // change report
             if (result == 0) {
-               xCommitManager.getTeamArt().getBranchMgr().showChangeReportForBranch(destBranch);
+               AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), destBranch);
             }
             // merge manager
             else {
-               xCommitManager.getTeamArt().getBranchMgr().showMergeManager(destBranch);
+               AtsBranchManager.showMergeManager(xCommitManager.getTeamArt(), destBranch);
             }
          }
       } catch (OseeCoreException ex) {

@@ -17,14 +17,14 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
@@ -62,14 +62,14 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(ActionableItemManager.getTopLevelActionableItems(active));
+         getTreeViewer().getViewer().setInput(ActionableItemManagerCore.getTopLevelActionableItems(active));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                try {
                   for (ActionableItemArtifact aia : getChecked()) {
                      if (!aia.isActionable()) {
-                        AWorkbench.popup("ERROR", ActionableItemManager.getNotActionableItemError(aia));
+                        AWorkbench.popup("ERROR", ActionableItemManagerCore.getNotActionableItemError(aia));
                      }
                   }
                } catch (Exception ex) {

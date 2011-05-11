@@ -27,7 +27,9 @@ import org.eclipse.osee.ats.ATSPerspective;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.goal.CreateGoalTestArtifacts;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -37,9 +39,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsEditor;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.migrate.ConvertAIsAndTeamDefinitions;
@@ -191,7 +191,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    }
 
    private void createAdminItems(XNavigateItem parent, List<XNavigateItem> items) throws OseeCoreException, OseeArgumentException {
-      if (AtsUtil.isAtsAdmin()) {
+      if (AtsUtilCore.isAtsAdmin()) {
          XNavigateItem adminItems = new XNavigateItem(parent, "Admin", PluginUiImage.ADMIN);
 
          XNavigateItem dbConvertItems = new XNavigateItem(adminItems, "Database Conversions", PluginUiImage.ADMIN);

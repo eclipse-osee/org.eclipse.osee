@@ -18,12 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
-import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData.CreateReview;
 import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
@@ -32,12 +27,19 @@ import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
-import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -51,6 +53,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -69,12 +72,10 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImp
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
@@ -235,7 +236,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          throw new OseeArgumentException("Can't locate Req team.");
       }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
-      Result result = reqTeam.getBranchMgr().createWorkingBranch(null, false);
+      Result result = AtsBranchManager.createWorkingBranch(reqTeam, null, false);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
@@ -291,7 +292,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
       Job job =
-         reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedVersion().getParentBranch(), true);
+         AtsBranchManager.commitWorkingBranch(reqTeam, false, true, reqTeam.getTargetedVersion().getParentBranch(),
+            true);
       try {
          job.join();
       } catch (InterruptedException ex) {
@@ -312,7 +314,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          throw new OseeArgumentException("Can't locate Req team.");
       }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
-      Result result = reqTeam.getBranchMgr().createWorkingBranch(null, false);
+      Result result = AtsBranchManager.createWorkingBranch(reqTeam, null, false);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
@@ -357,7 +359,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          throw new OseeArgumentException("Can't locate Req team.");
       }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
-      Result result = reqTeam.getBranchMgr().createWorkingBranch(null, false);
+      Result result = AtsBranchManager.createWorkingBranch(reqTeam, null, false);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());

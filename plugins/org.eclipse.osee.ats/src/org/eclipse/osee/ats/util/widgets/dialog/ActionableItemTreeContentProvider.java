@@ -14,9 +14,9 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,8 +45,8 @@ public class ActionableItemTreeContentProvider implements ITreeContentProvider {
       } else if (parentElement instanceof ActionableItemArtifact && active != null) {
          try {
             ActionableItemArtifact aia = (ActionableItemArtifact) parentElement;
-            return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(aia, ActionableItemArtifact.class, false), active,
-               ActionableItemArtifact.class).toArray();
+            return AtsUtilCore.getActive(Artifacts.getChildrenOfTypeSet(aia, ActionableItemArtifact.class, false),
+               active, ActionableItemArtifact.class).toArray();
          } catch (Exception ex) {
             // do nothing
          }

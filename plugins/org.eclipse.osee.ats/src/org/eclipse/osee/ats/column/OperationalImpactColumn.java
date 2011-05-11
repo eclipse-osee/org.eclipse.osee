@@ -12,11 +12,11 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -63,8 +63,7 @@ public class OperationalImpactColumn extends XViewerValueColumn {
 
    private String getOperationalImpact(Artifact art) throws OseeCoreException {
       if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         return ((TeamWorkFlowArtifact) art).getArtifact().getSoleAttributeValue(AtsAttributeTypes.OperationalImpact,
-            "");
+         return ((TeamWorkFlowArtifact) art).getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, "");
       }
       if (art.isOfType(AtsArtifactTypes.Action)) {
          Set<String> strs = new HashSet<String>();

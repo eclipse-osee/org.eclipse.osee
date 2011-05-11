@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="AtsTeamWorkflowProvider" name="AtsTeamWorkflowProvider" schema="schema/AtsTeamWorkflowProvider.exsd"/>
+   <extension-point id="AtsTransitionListener" name="AtsTransitionListener" schema="schema/AtsTransitionListener.exsd"/>
+   <extension-point id="AtsLegacyWorkDefinitionProvider" name="AtsLegacyWorkDefinitionProvider" schema="schema/AtsLegacyWorkDefinitionProvider.exsd"/>
+
+</plugin>

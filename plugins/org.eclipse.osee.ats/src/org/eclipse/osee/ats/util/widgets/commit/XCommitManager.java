@@ -20,15 +20,20 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.type.ATSAttributes;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -39,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -97,7 +101,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       }
 
       try {
-         if (!teamArt.getBranchMgr().isWorkingBranchInWork() && !teamArt.getBranchMgr().isCommittedBranchExists()) {
+         if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
             labelWidget.setText(getLabel() + ": No working or committed branches available.");
          } else {
 
@@ -111,7 +115,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             createTaskActionBar(mainComp);
 
             labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
-            if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+            if (AtsUtilCore.isAtsAdmin() && !AtsUtil.isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
                   @Override
                   public void handleEvent(Event event) {
@@ -121,8 +125,8 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                            return;
                         }
                         try {
-                           for (Branch destinationBranch : teamArt.getBranchMgr().getBranchesLeftToCommit()) {
-                              teamArt.getBranchMgr().commitWorkingBranch(false, true, destinationBranch, true);
+                           for (Branch destinationBranch : AtsBranchManagerCore.getBranchesLeftToCommit(teamArt)) {
+                              AtsBranchManager.commitWorkingBranch(teamArt, false, true, destinationBranch, true);
                               Thread.sleep(1000);
                            }
                         } catch (Exception ex) {
@@ -211,7 +215,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       try {
          if (xCommitManager != null && teamArt != null && xCommitManager.getContentProvider() != null) {
             Collection<ICommitConfigArtifact> configArtSet =
-               teamArt.getBranchMgr().getConfigArtifactsConfiguredToCommitTo();
+               AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt);
             xCommitManager.setInput(configArtSet);
             xCommitManager.refresh();
             refresh();
@@ -286,14 +290,14 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       try {
          int backgroundColor = SWT.COLOR_BLACK;
          String infoStr = "Double-click item to perform Action";
-         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr() != null) {
-            if (!xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr().isAllObjectsToCommitToConfigured()) {
+         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt() != null) {
+            if (!AtsBranchManagerCore.isAllObjectsToCommitToConfigured(xCommitManager.getXCommitViewer().getTeamArt())) {
                infoStr = "All branches must be configured and committed - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;
                returnStatus =
                   new Status(IStatus.ERROR, getClass().getSimpleName(),
                      "All branches must be configured and committed.");
-            } else if (!xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr().isBranchesAllCommitted()) {
+            } else if (!AtsBranchManagerCore.isBranchesAllCommitted(xCommitManager.getXCommitViewer().getTeamArt())) {
                infoStr = "All branches must be committed - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;
                returnStatus = new Status(IStatus.ERROR, getClass().getSimpleName(), "All branches must be committed.");

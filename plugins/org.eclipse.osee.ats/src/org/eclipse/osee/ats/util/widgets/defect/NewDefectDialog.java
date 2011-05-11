@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.defect;
 
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;

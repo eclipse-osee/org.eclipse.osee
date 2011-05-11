@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * Allows the New Action wizard to be extended with custom widgets when the appropriate Actionable Items are selected

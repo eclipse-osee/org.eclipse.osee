@@ -17,21 +17,23 @@ import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
-import org.eclipse.osee.ats.config.AtsBulkLoad;
-import org.eclipse.osee.ats.config.AtsConfigManager;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -42,6 +44,7 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -52,8 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -137,7 +139,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action and target for version " + verArtToTarget);
 
       Collection<ActionableItemArtifact> selectedActionableItems =
-         ActionableItemManager.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
+         ActionableItemManagerCore.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -182,7 +184,7 @@ public class AtsBranchConfigurationTest {
 
       // test change report
       OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
-      ChangeData changeData = teamWf.getBranchMgr().getChangeDataFromEarliestTransactionId();
+      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamWf);
       Assert.assertFalse("No changes detected", changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
@@ -231,7 +233,7 @@ public class AtsBranchConfigurationTest {
       // create action,
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action");
       Collection<ActionableItemArtifact> selectedActionableItems =
-         ActionableItemManager.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
+         ActionableItemManagerCore.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction =
@@ -270,7 +272,7 @@ public class AtsBranchConfigurationTest {
 
       // test change report
       OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
-      ChangeData changeData = teamWf.getBranchMgr().getChangeDataFromEarliestTransactionId();
+      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamWf);
       Assert.assertTrue("No changes detected", !changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
@@ -365,8 +367,8 @@ public class AtsBranchConfigurationTest {
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Commit Branch");
       Job job =
-         teamWf.getBranchMgr().commitWorkingBranch(false, true,
-            teamWf.getBranchMgr().getWorkingBranch().getParentBranch(), true);
+         AtsBranchManager.commitWorkingBranch(teamWf, false, true,
+            AtsBranchManagerCore.getWorkingBranch(teamWf).getParentBranch(), true);
       try {
          job.join();
       } catch (InterruptedException ex) {
@@ -377,9 +379,10 @@ public class AtsBranchConfigurationTest {
    public static void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating working branch");
       String implementPageId = namespace + ".Implement";
-      Result result = teamWf.getBranchMgr().createWorkingBranch(implementPageId, false);
+      Result result = AtsBranchManager.createWorkingBranch(teamWf, implementPageId, false);
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
+         AWorkbench.popup(result);
          return;
       }
       TestUtil.sleep(4000);

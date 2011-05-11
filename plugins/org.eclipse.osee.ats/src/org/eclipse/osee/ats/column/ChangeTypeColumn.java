@@ -12,15 +12,18 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.ats.workflow.ChangeTypeDialog;
+import org.eclipse.osee.ats.workflow.ChangeTypeToSwtImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,8 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -78,7 +79,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
       final ChangeTypeDialog dialog = new ChangeTypeDialog(Displays.getActiveShell());
       try {
          if (teams.size() == 1) {
-            ChangeType changeType = getChangeType(teams.iterator().next());
+            ChangeType changeType = ChangeTypeUtil.getChangeType(teams.iterator().next());
             if (changeType != null) {
                dialog.setSelected(changeType);
             }
@@ -92,9 +93,9 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
             ChangeType newChangeType = dialog.getSelection();
             for (TeamWorkFlowArtifact team : teams) {
-               ChangeType currChangeType = getChangeType(team);
+               ChangeType currChangeType = ChangeTypeUtil.getChangeType(team);
                if (currChangeType != newChangeType) {
-                  setChangeType(team, newChangeType);
+                  ChangeTypeUtil.setChangeType(team, newChangeType);
                   if (persist) {
                      team.saveSMA(transaction);
                   }
@@ -147,64 +148,20 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
       return false;
    }
 
-   public static String getChangeTypeStr(Artifact artifact) throws OseeCoreException {
-      ChangeType changeType = getChangeType(artifact);
-      if (changeType == ChangeType.None) {
-         return "";
-      }
-      return changeType.name();
-   }
-
-   public static ChangeType getChangeType(Artifact artifact) throws OseeCoreException {
-      return ChangeType.getChangeType(artifact.getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
-   }
-
-   public static void setChangeType(Artifact artifact, ChangeType changeType) throws OseeCoreException {
-      if (changeType == ChangeType.None) {
-         artifact.deleteSoleAttribute(AtsAttributeTypes.ChangeType);
-      } else {
-         artifact.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
-      }
-   }
-
    @Override
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
       try {
          Artifact useArt = getParentTeamWorkflowOrArtifact(element);
          if (useArt != null) {
-            ChangeType changeType = getChangeType(useArt);
+            ChangeType changeType = ChangeTypeUtil.getChangeType(useArt);
             if (changeType != null) {
-               return changeType.getImage();
+               return ChangeTypeToSwtImage.getImage(changeType);
             }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
-   }
-
-   public static void resetChangeTypeOffChildren(Artifact actionArt) throws OseeCoreException {
-      if (!actionArt.isOfType(AtsArtifactTypes.Action)) {
-         throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
-      }
-      ChangeType changeType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeams(actionArt);
-      if (teamArts.size() == 1) {
-         changeType = getChangeType(teamArts.iterator().next());
-      } else {
-         for (TeamWorkFlowArtifact team : teamArts) {
-            if (!team.isCancelled()) {
-               if (changeType == null) {
-                  changeType = getChangeType(team);
-               } else if (changeType != getChangeType(team)) {
-                  return;
-               }
-            }
-         }
-      }
-      if (changeType != null && getChangeType(actionArt) != changeType) {
-         setChangeType(actionArt, changeType);
-      }
    }
 
    @Override

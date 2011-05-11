@@ -20,13 +20,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -53,7 +56,6 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -145,7 +147,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      }
 
                      // Only validate committed branches cause working branches change too much
-                     if (!teamArt.getBranchMgr().isCommittedBranchExists()) {
+                     if (!AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
                         continue;
                      }
                      Result valid = changeReportValidated(currentDbGuid, teamArt, xResultData, false);
@@ -190,7 +192,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          OseeLog.log(AtsPlugin.class, Level.INFO, str);
 
          // Only validate committed branches cause working branches change too much
-         if (!teamArt.getBranchMgr().isCommittedBranchExists()) {
+         if (!AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
             continue;
          }
          Result valid = changeReportValidated(currentDbGuid, teamArt, rd, false);
@@ -227,7 +229,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          storedChangeReport = artifactForStore.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, null);
       }
       // Retrieve current
-      ChangeData currentChangeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
+      ChangeData currentChangeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
       if (currentChangeData.isEmpty()) {
          return new Result(String.format("FAIL: Unexpected empty change report for %s", teamArt.toStringWithId()));
       }

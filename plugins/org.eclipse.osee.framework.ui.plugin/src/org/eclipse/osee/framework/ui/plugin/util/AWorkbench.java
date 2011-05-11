@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -108,6 +110,12 @@ public final class AWorkbench {
          }
       }
       return editors;
+   }
+
+   public static void popup(Result result) {
+      AWorkbench.popup(
+         (result.isTrue() ? "Success" : "ERROR"),
+         Strings.isValid(result.getText()) ? result.getText() : result.isTrue() ? "Success" : "Error Encountered.  See Error Log View");
    }
 
    public static void popup(final String message) {

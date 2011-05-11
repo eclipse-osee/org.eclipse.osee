@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
 import org.eclipse.osee.framework.logging.OseeLevel;

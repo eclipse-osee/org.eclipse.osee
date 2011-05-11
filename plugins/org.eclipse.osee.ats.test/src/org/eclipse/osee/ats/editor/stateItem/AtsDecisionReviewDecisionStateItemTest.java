@@ -7,23 +7,22 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Collection;
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.DecisionReviewState;
-import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewDecisionStateItem;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -73,7 +72,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsDecisionReviewDecisionStateItem stateItem = new AtsDecisionReviewDecisionStateItem();
-      Result result = stateItem.xWidgetCreating(decisionComboDam, null, stateDef, decRevArt, null, true);
+      Result result = stateItem.xWidgetCreating(decisionComboDam, null, stateDef, decRevArt, true);
 
       // verify no errors and options are as specified in artifact's attribute
       Assert.assertTrue(result.getText(), result.isTrue());
@@ -94,14 +93,14 @@ public class AtsDecisionReviewDecisionStateItemTest {
       decisionComboDam.set(1);
 
       AtsDecisionReviewDecisionStateItem stateItem = new AtsDecisionReviewDecisionStateItem();
-      Collection<User> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam);
+      Collection<User> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertEquals(1, users.size());
       Assert.assertEquals(UserManager.getUser(), users.iterator().next());
 
       // Set No
       decisionComboDam.set(2);
 
-      users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam);
+      users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertTrue(users.isEmpty());
    }
 

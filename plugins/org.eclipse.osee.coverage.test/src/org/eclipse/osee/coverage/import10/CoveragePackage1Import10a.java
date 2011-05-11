@@ -12,8 +12,9 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
@@ -39,7 +40,7 @@ public class CoveragePackage1Import10a extends XNavigateItem {
 
       Result result = CoveragePackageImportTest.setupCoveragePackageForImport10(coveragePackage);
       if (result.isFalse()) {
-         result.popup();
+         AWorkbench.popup(result);
       }
 
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), coveragePackageArtifact, coveragePackage,

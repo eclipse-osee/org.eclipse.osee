@@ -14,23 +14,25 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
-import org.eclipse.osee.ats.artifact.note.NoteItem;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.AssigneeColumn;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.DeadlineColumn;
-import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
-import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
-import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.workflow.PriorityUtil;
+import org.eclipse.osee.ats.core.workflow.note.NoteItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
@@ -90,8 +92,8 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ", ChangeTypeColumn.getChangeTypeStr(sma)),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", PriorityColumn.getPriorityStr(sma)),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ", ChangeTypeUtil.getChangeTypeStr(sma)),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", PriorityUtil.getPriorityStr(sma)),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
       String pcrId = TeamWorkFlowManager.getPcrId(sma);
@@ -142,8 +144,8 @@ public class SMAPrint extends Action {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
                AssigneeColumn.getAssigneeStr(art),
-               PercentCompleteTotalColumn.getPercentCompleteTotal(art) + "",
-               HoursSpentTotalColumn.getHoursSpentTotal(art) + "",
+               PercentCompleteTotalUtil.getPercentCompleteTotal(art) + "",
+               HoursSpentUtil.getHoursSpentTotal(art) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
                art.getHumanReadableId()}));
          }
@@ -156,7 +158,7 @@ public class SMAPrint extends Action {
 
    private void getWorkFlowHtml(XResultData rd) throws OseeCoreException {
       // Only display current or past states
-      for (StateXWidgetPage statePage : sma.getStatePages()) {
+      for (StateXWidgetPage statePage : WorkflowManager.getStatePages(sma)) {
          if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
             // Don't show completed or cancelled state if not currently those state
             if (statePage.isCompletedPage() && !sma.isCompleted()) {
@@ -191,7 +193,7 @@ public class SMAPrint extends Action {
 
    private String getStateHoursSpentHtml(StateXWidgetPage statePage) throws OseeCoreException {
       return AHTML.getLabelValueStr("State Hours Spent",
-         AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage)) + "<br>");
+         AtsUtilCore.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage)) + "<br>");
    }
 
    public boolean isIncludeTaskList() {

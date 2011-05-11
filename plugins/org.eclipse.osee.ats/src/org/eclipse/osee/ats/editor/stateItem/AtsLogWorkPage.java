@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
-import org.eclipse.osee.ats.workdef.WorkDefinition;
 
 /**
  * @author Donald G. Dunne

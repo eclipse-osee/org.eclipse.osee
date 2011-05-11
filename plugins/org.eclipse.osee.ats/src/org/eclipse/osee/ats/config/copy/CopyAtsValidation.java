@@ -7,10 +7,10 @@ package org.eclipse.osee.ats.config.copy;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -47,7 +47,7 @@ public class CopyAtsValidation {
 
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<Artifact>();
-      aias.addAll(ActionableItemManager.getActionableItemsFromItemAndChildren(configData.getActionableItem()));
+      aias.addAll(ActionableItemManagerCore.getActionableItemsFromItemAndChildren(configData.getActionableItem()));
       ValidateAtsDatabase.testActionableItemToTeamDefinition(testNameToResultsMap, aias);
 
       // Validate TeamDefs have Workflow Definitions
@@ -77,7 +77,7 @@ public class CopyAtsValidation {
          resultData.logErrorWithFormat("Could not get new name from name conversion for ActionableItem [%s]",
             aiArt.getName());
       }
-      for (ActionableItemArtifact childAiArt : ActionableItemManager.getActionableItemsFromItemAndChildren(aiArt)) {
+      for (ActionableItemArtifact childAiArt : ActionableItemManagerCore.getActionableItemsFromItemAndChildren(aiArt)) {
          if (!aiArt.equals(childAiArt)) {
             validateActionableItem(childAiArt);
          }

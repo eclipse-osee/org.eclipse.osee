@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**

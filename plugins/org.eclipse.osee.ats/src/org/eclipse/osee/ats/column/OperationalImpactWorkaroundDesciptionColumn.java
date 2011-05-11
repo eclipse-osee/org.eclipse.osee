@@ -10,10 +10,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -49,7 +49,7 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-            return ((TeamWorkFlowArtifact) element).getArtifact().getSoleAttributeValue(
+            return ((TeamWorkFlowArtifact) element).getSoleAttributeValue(
                AtsAttributeTypes.OperationalImpactWorkaroundDescription, "");
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && ActionManager.getTeams(element).size() == 1) {

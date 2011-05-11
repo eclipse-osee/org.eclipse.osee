@@ -11,13 +11,14 @@
 package org.eclipse.osee.ats.artifact.log;
 
 import java.util.Date;
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.log.AtsLog;
-import org.eclipse.osee.ats.artifact.log.ILogStorageProvider;
-import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.ats.core.workflow.log.AtsLog;
+import org.eclipse.osee.ats.core.workflow.log.ILogStorageProvider;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -49,9 +50,9 @@ public class AtsLogTest {
       }
 
       @Override
-      public Result saveLogXml(String xml) {
+      public IStatus saveLogXml(String xml) {
          store = xml;
-         return Result.TrueResult;
+         return Status.OK_STATUS;
       }
 
       @Override

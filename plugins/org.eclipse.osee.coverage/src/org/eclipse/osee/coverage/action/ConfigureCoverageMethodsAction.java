@@ -26,10 +26,11 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -67,7 +68,7 @@ public class ConfigureCoverageMethodsAction extends Action {
             CoverageOptionManagerStore optionsStore = new CoverageOptionManagerStore(packageStore);
             Result isSaveable = optionsStore.isSaveable();
             if (isSaveable.isFalse()) {
-               isSaveable.popup();
+               AWorkbench.popup(isSaveable);
                return;
             }
             String coverageOptions = null;
@@ -97,7 +98,7 @@ public class ConfigureCoverageMethodsAction extends Action {
             optionsStore = new CoverageOptionManagerStore(packageStore);
             isSaveable = optionsStore.isSaveable();
             if (isSaveable.isFalse()) {
-               isSaveable.popup();
+               AWorkbench.popup(isSaveable);
                return;
             }
 
@@ -120,8 +121,7 @@ public class ConfigureCoverageMethodsAction extends Action {
                      Set<String> names = new HashSet<String>();
                      for (CoverageOption option : manager.get()) {
                         if (names.contains(option.getName())) {
-                           throw new OseeArgumentException("Multiple options with same name [%s]",
-                              option.getName());
+                           throw new OseeArgumentException("Multiple options with same name [%s]", option.getName());
                         } else {
                            names.add(option.getName());
                         }

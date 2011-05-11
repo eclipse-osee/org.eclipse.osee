@@ -13,9 +13,10 @@ package org.eclipse.osee.ats.util.widgets.defect;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
-import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.DefectItem;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.Disposition;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.InjectionActivity;
+import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -35,11 +36,11 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       DefectItem defectItem = (DefectItem) element;
       if (dCol.equals(DefectXViewerFactory.Severity_Col)) {
-         return Severity.getImage(defectItem.getSeverity());
+         return DefectSeverityToImage.getImage(defectItem.getSeverity());
       } else if (dCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
          return ImageManager.getImage(FrameworkImage.INFO_SM);
       } else if (dCol.equals(DefectXViewerFactory.Disposition_Col)) {
-         return Disposition.getImage(defectItem.getDisposition());
+         return DefectDispositionToImage.getImage(defectItem.getDisposition());
       } else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
          return ImageManager.getImage(defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
