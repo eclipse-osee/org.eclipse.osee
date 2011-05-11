@@ -66,7 +66,7 @@ public class PurgeTransactionTest {
    }
 
    private void init() throws Exception {
-      branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.getName());
+      branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2);
       preCreateCount = new HashMap<String, Integer>();
       preModifyCount = new HashMap<String, Integer>();
       postModifyPurgeCount = new HashMap<String, Integer>();

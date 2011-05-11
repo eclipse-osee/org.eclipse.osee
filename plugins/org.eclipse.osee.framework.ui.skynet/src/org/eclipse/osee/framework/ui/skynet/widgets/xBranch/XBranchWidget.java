@@ -189,10 +189,6 @@ public class XBranchWidget extends GenericXWidget {
          "Branch Manager");
    }
 
-   public void loadTable() {
-      refresh();
-   }
-
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
       if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
@@ -254,9 +250,6 @@ public class XBranchWidget extends GenericXWidget {
       return AHTML.simplePage("Unhandled");
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
    public BranchXViewer getXViewer() {
       return branchXViewer;
    }

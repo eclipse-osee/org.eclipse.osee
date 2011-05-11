@@ -71,7 +71,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return branches.size() > 0 && AccessControlManager.isOseeAdmin();
+      return !branches.isEmpty() && AccessControlManager.isOseeAdmin();
    }
 
    private String buildDialogMessage(List<Branch> selectedBranches, String actionDesc) {

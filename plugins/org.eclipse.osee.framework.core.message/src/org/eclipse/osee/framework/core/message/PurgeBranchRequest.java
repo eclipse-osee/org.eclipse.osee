@@ -19,7 +19,6 @@ public class PurgeBranchRequest {
    private final boolean recursive;
 
    public PurgeBranchRequest(int branchId, boolean recursive) {
-      super();
       this.branchId = branchId;
       this.recursive = recursive;
    }

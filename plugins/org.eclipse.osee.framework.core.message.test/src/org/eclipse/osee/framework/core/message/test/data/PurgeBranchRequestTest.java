@@ -32,7 +32,6 @@ public class PurgeBranchRequestTest {
    private final int branchId;
 
    public PurgeBranchRequestTest(int expectedBranchId) {
-      super();
       this.request = new PurgeBranchRequest(expectedBranchId, false);
       this.branchId = expectedBranchId;
    }
