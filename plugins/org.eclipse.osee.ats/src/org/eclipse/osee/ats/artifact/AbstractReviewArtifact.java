@@ -15,8 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -139,13 +137,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
          return userRoleManager = new UserRoleManager(this);
       }
       return userRoleManager;
-   }
-
-   @SuppressWarnings("unused")
-   // NOPMD by b0727536 on 9/29/10 8:50 AM
-   public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
-      // Need this cause it removes all error items of this namespace
-      return new Status(IStatus.OK, namespace, "");
    }
 
    public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {

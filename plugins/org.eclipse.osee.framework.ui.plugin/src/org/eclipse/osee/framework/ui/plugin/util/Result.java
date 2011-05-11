@@ -17,7 +17,9 @@ public class Result {
 
    public static Result TrueResult = new Result(true);
    public static Result FalseResult = new Result(false);
+   public static Result CancelledResult = new Result(false, true);
    private final boolean isTrue;
+   private boolean cancelled = false;
    private String text = "";
 
    public Result(boolean valid, String text) {
@@ -32,6 +34,11 @@ public class Result {
 
    public Result(boolean isTrue) {
       this.isTrue = isTrue;
+   }
+
+   public Result(boolean isTrue, boolean cancelled) {
+      this.isTrue = isTrue;
+      this.cancelled = cancelled;
    }
 
    public Result() {
@@ -62,5 +69,13 @@ public class Result {
 
    public void setText(String text) {
       this.text = text;
+   }
+
+   public boolean isCancelled() {
+      return cancelled;
+   }
+
+   public void setCancelled(boolean cancelled) {
+      this.cancelled = cancelled;
    }
 }

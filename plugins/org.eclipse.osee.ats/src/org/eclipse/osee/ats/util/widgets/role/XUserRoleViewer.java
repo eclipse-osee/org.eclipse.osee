@@ -26,6 +26,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
+import org.eclipse.osee.ats.core.validate.UserRoleError;
+import org.eclipse.osee.ats.core.validate.UserRoleValidator;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -359,16 +361,16 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    @Override
    public IStatus isValid() {
       try {
-         if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
+         UserRoleError error = UserRoleValidator.isValid(reviewArt.getArtifact());
+         if (error == UserRoleError.OneRoleEntryRequired) {
             extraInfoLabel.setText("At least one role entry is required. Select \"New Role\" to add.");
             extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one role entry is required");
          }
-         IStatus result = reviewArt.isUserRoleValid(getClass().getSimpleName());
-         if (!result.isOK()) {
-            extraInfoLabel.setText(result.getMessage() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
+         if (!error.isOK()) {
+            extraInfoLabel.setText(error.getError() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
             extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-            return result;
+            return new Status(IStatus.ERROR, getClass().getSimpleName(), error.getError());
          }
          extraInfoLabel.setText("Select \"New Role\" to add.  Select icon in cell to update value.");
          extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));

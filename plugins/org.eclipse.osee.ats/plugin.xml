@@ -486,5 +486,13 @@
                          </action>
       </actionSet>
    </extension>
+      <extension
+            id="AtsOseeXWidgetValidator"
+            name="AtsOseeXWidgetValidator"
+            point="org.eclipse.osee.framework.skynet.core.OseeXWidgetValidator">
+         <OseeXWidgetValidator
+               classname="org.eclipse.osee.ats.core.validate.AtsOseeXWidgetValidator">
+         </OseeXWidgetValidator>
+      </extension>
    
 </plugin>

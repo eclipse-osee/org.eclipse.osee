@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetValidityProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -62,7 +61,7 @@ import org.w3c.dom.Element;
  * 
  * @author Donald G. Dunne
  */
-public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage, IXWidgetValidityProvider {
+public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage {
 
    private static final Pair<IStatus, XWidget> OK_PAIR = new Pair<IStatus, XWidget>(Status.OK_STATUS, null);
    protected DynamicXWidgetLayout dynamicXWidgetLayout;
@@ -439,7 +438,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       data.setArtifact(sma);
       data.setName(widgetDef.getName());
       data.setObject(widgetDef);
-      data.addXWidgetValidityProvider(this);
       if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
          data.getXOptionHandler().add(XOption.REQUIRED);
       }
@@ -479,18 +477,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    public boolean isAllowCommitBranch() {
       return AtsWorkDefinitions.isAllowCommitBranch(stateDefinition);
-   }
-
-   @Override
-   public IStatus isValid(XWidget widget) {
-      if (widget.getObject() instanceof WidgetDefinition) {
-         WidgetDefinition widgetDefinition = (WidgetDefinition) widget.getObject();
-         if (widgetDefinition.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION) && widget.isEmpty()) {
-            return new Status(IStatus.WARNING, SkynetGuiPlugin.PLUGIN_ID, String.format(
-               "Must enter \"%s\" before Completion", widget.getLabel()));
-         }
-      }
-      return Status.OK_STATUS;
    }
 
 }

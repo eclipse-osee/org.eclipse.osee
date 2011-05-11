@@ -108,7 +108,12 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          tracker.open();
       }
 
-      SetWorkbenchOverrideIconBlam.reloadOverrideImage();
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            SetWorkbenchOverrideIconBlam.reloadOverrideImage();
+         }
+      });
 
       OseeEventManager.addListener(this);
 

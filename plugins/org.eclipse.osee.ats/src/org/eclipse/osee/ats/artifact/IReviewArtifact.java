@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,7 +27,5 @@ public interface IReviewArtifact {
    UserRoleManager getUserRoleManager();
 
    Artifact getArtifact();
-
-   IStatus isUserRoleValid(String namespace) throws OseeCoreException;
 
 }

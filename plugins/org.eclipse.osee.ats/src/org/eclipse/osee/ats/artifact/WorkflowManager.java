@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.validation.OseeXWidgetValidateManager;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 public class WorkflowManager {
@@ -67,6 +68,12 @@ public class WorkflowManager {
     * Return result of validity between widget and artifact model storage
     */
    public static ValidResult isWidgetValid(AbstractWorkflowArtifact awa, WidgetDefinition widgetDef) throws OseeCoreException {
+      // validate first with providers of validation
+      if (Strings.isValid(widgetDef.getXWidgetName())) {
+         OseeXWidgetValidateManager.instance.validate(awa, widgetDef.getXWidgetName(), widgetDef.getName());
+      }
+
+      // else fallback on attribute validation if this is an artifact stored widget
       if (Strings.isValid(widgetDef.getAtrributeName())) {
          if (widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION)) {
             if (awa.getAttributesToStringList(AttributeTypeManager.getType(widgetDef.getAtrributeName())).isEmpty()) {

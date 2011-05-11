@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -22,6 +21,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.artifact.WorkflowManager.ValidResult;
+import org.eclipse.osee.ats.artifact.WorkflowManager.ValidType;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
-import org.eclipse.osee.ats.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.workdef.WidgetOption;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -46,10 +45,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
@@ -121,8 +118,11 @@ public class TransitionManager {
          // If overrideAttributeValidation state, don't require page/tasks to be complete
          boolean isOverrideAttributeValidationState =
             awa.getStateDefinition().getOverrideAttributeValidationStates().contains(toStateDefinition);
-         if (!isOverrideAttributeValidationState && !isStateTransitionable(toStateDefinition, toAssignees)) {
-            return;
+         if (!isOverrideAttributeValidationState) {
+            result = isStateTransitionable(awa.getStateDefinition(), toStateDefinition, toAssignees);
+            if (result.isFalse()) {
+               return result;
+            }
          }
 
          // Persist must be done prior and separate from transition
@@ -130,17 +130,17 @@ public class TransitionManager {
 
          // Perform transition separate from persist of previous changes to state machine artifact
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition");
-         Result result = transition(toStateDefinition, toAssignees, transaction, TransitionOption.Persist);
+         result = transition(toStateDefinition, toAssignees, transaction, TransitionOption.Persist);
          transaction.execute();
          if (result.isFalse()) {
-            result.popup();
-            return;
+            return result;
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          awa.setInTransition(false);
       }
+      return Result.TrueResult;
    }
 
    private Result isWorkingBranchTransitionable() throws OseeCoreException {
@@ -163,42 +163,34 @@ public class TransitionManager {
       return AtsWorkDefinitions.isAllowTransitionWithWorkingBranch(toStateDefinition);
    }
 
-   private boolean isStateTransitionable(StateDefinition toStateDefinition, Collection<User> toAssignees) throws OseeCoreException {
+   private Result isStateTransitionable(StateDefinition fromStateDefinition, StateDefinition toStateDefinition, Collection<User> toAssignees) throws OseeCoreException {
       // Validate XWidgets for transition
-      Collection<ValidResult> stateValid = WorkflowManager.isStateValid(awa, toStateDefinition);
-      if (!statusWidgetPair.getFirst().isOK()) {
+      Collection<ValidResult> stateValid = WorkflowManager.isStateValid(awa, fromStateDefinition);
+      StringBuffer sb = new StringBuffer();
+      for (ValidResult validResult : stateValid) {
          // Stop transition if any errors exist
-         if (statusWidgetPair.getFirst().getSeverity() == IStatus.ERROR) {
-            AWorkbench.popup(statusWidgetPair.getFirst().getMessage());
-            return false;
+         if (validResult.type == ValidType.RequiredForTransition) {
+            sb.append(String.format("[%s] required for transition\n", validResult.widgetDef.getName()));
          }
          // Only stop transition on warning if transitioning to completed state and REQUIRED_FOR_COMPLETION
-         else if (statusWidgetPair.getFirst().getSeverity() == IStatus.WARNING) {
-            if (statusWidgetPair.getSecond() == null) {
-               AWorkbench.popup(statusWidgetPair.getFirst().getMessage());
-               return false;
-            } else {
-               XWidget widget = statusWidgetPair.getSecond();
-               if (widget.getObject() instanceof WidgetDefinition) {
-                  WidgetDefinition widgetDefinition = (WidgetDefinition) widget.getObject();
-                  boolean reqForCompletion =
-                     widgetDefinition.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
-                  if (reqForCompletion && toStateDefinition.getWorkPageType() == WorkPageType.Completed) {
-                     AWorkbench.popup(statusWidgetPair.getFirst().getMessage());
-                     return false;
-                  }
-               }
+         else if (validResult.type == ValidType.RequiredForCompletion) {
+            boolean reqForCompletion =
+               validResult.widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
+            if (reqForCompletion && toStateDefinition.getWorkPageType() == WorkPageType.Completed) {
+               sb.append(String.format("[%s] required for completion\n", validResult.widgetDef.getName()));
             }
          }
+      }
+      if (!sb.toString().isEmpty()) {
+         return new Result(sb.toString());
       }
 
       // Loop through this state's tasks to confirm complete
       if (awa instanceof AbstractTaskableArtifact && !awa.isCompletedOrCancelled()) {
          for (TaskArtifact taskArt : ((AbstractTaskableArtifact) awa).getTaskArtifactsFromCurrentState()) {
             if (taskArt.isInWork()) {
-               AWorkbench.popup("Transition Blocked",
-                  "Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
-               return false;
+               return new Result(
+                  "Transition Blocked: Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
             }
          }
       }
@@ -212,17 +204,15 @@ public class TransitionManager {
       if (awa.isOfType(AtsArtifactTypes.TeamWorkflow) && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
       awa.getTargetedVersion() == null && //
       !toStateDefinition.isCancelledPage()) {
-         AWorkbench.popup("Transition Blocked",
-            "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
-         return false;
+         return new Result(
+            "Transition Blocked: Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
       }
 
       // Loop through this state's blocking reviews to confirm complete
       if (awa.isTeamWorkflow()) {
          for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) awa)) {
             if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCompletedOrCancelled()) {
-               AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
-               return false;
+               return new Result("Transition Blocked: All Blocking Reviews must be completed before transition.");
             }
          }
       }
@@ -233,20 +223,20 @@ public class TransitionManager {
             Result result =
                item.transitioning(awa, awa.getStateMgr().getCurrentState(), toStateDefinition, toAssignees);
             if (result.isFalse()) {
-               result.popup();
-               return false;
+               return result;
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Exception occurred during transition; Aborting.", ex);
-            return false;
+            return new Result(String.format("Exception occurred during transition; Aborting. [%s]",
+               ex.getLocalizedMessage()));
          }
       }
 
       // Ask for metrics for this page (store in state versus task?)
       if (!handlePopulateStateMetrics()) {
-         return false;
+         return Result.CancelledResult;
       }
-      return true;
+      return Result.TrueResult;
    }
 
    public int getCreationToNowDateDeltaMinutes() throws OseeCoreException {

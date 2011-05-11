@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -171,8 +172,12 @@ public class WETransitionComposite extends Composite {
 
       StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
       TransitionManager transMgr = new TransitionManager(awa, editor.isPriviledgedEditModeEnabled());
-      transMgr.handleTransition(toStateDef);
-
+      Result result = transMgr.handleTransition(toStateDef);
+      if (result.isCancelled()) {
+         return;
+      } else if (result.isFalse()) {
+         result.popup();
+      }
    }
 
    public void updateTransitionToAssignees() throws OseeCoreException {

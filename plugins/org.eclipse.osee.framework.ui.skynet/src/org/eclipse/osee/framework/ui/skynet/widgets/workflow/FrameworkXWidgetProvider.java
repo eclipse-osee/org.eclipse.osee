@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetValidityProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
@@ -359,9 +358,6 @@ public final class FrameworkXWidgetProvider {
          }
       }
       if (xWidget != null) {
-         for (IXWidgetValidityProvider provider : xWidgetLayoutData.getValidityProviders()) {
-            xWidget.addXWidgetValidityProvider(provider);
-         }
          xWidget.setObject(xWidgetLayoutData.getObject());
       }
       return xWidget;

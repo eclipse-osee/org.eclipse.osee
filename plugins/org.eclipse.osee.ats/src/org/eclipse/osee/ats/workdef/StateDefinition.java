@@ -193,7 +193,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    }
 
    private void getWidgets(List<WidgetDefinition> widgets, List<StateItem> stateItems) {
-      for (StateItem stateItem : getStateItems()) {
+      for (StateItem stateItem : stateItems) {
          if (stateItem instanceof CompositeStateItem) {
             getWidgets(widgets, ((CompositeStateItem) stateItem).getStateItems());
          } else if (stateItem instanceof WidgetDefinition) {

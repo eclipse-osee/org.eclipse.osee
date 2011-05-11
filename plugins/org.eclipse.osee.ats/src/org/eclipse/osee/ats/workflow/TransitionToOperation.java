@@ -97,11 +97,12 @@ public class TransitionToOperation extends AbstractOperation {
             try {
                Result result = transitionManager.isTransitionValid(toStateDef, null, TransitionOption.None);
                if (result.isFalse()) {
-                  rd.logWithFormat("Transition invalid for %s: %s", getArtifactName(awa), result.getText());
+                  rd.logErrorWithFormat("Transition invalid for %s: %s", getArtifactName(awa), result.getText());
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               rd.logWithFormat("Exception [%s] checking validity of transition for %s.  See error log for details.",
+               rd.logErrorWithFormat(
+                  "Exception [%s] checking validity of transition for %s.  See error log for details.",
                   ex.getLocalizedMessage(), awa.toStringWithId());
             }
          }

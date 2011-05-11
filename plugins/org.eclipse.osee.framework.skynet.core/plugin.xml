@@ -19,6 +19,7 @@
    <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
    <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="schema/ArtifactExtractorDelegate.exsd"/>
    <extension-point id="OseeTypesHandler" name="OseeTypesHandler" schema="schema/OseeTypesHandler.exsd"/>
+   <extension-point id="OseeXWidgetValidator" name="OseeXWidgetValidator" schema="schema/OseeXWidgetValidator.exsd"/>
    
       <extension
          id="MappedAttributeDataProvider"
