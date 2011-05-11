@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -31,12 +30,9 @@ public class UserArtifactFactory extends ArtifactFactory {
       super(CoreArtifactTypes.User);
    }
 
-   public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      if (artifactType.equals(CoreArtifactTypes.User)) {
-         return new User(this, guid, humandReadableId, branch, artifactType);
-      }
-      throw new OseeArgumentException("did not recognize the artifact type [%s]", artifactType);
+   @Override
+   public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      return new User(this, guid, humandReadableId, branch, artifactType);
    }
 
    @Override
@@ -45,5 +41,4 @@ public class UserArtifactFactory extends ArtifactFactory {
       artifactTypes.add(CoreArtifactTypes.User);
       return artifactTypes;
    }
-
 }
