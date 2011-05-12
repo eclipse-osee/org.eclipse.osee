@@ -32,6 +32,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
@@ -381,16 +382,23 @@ public final class Lib {
       return inputStreamToChangeSet(in).toString();
    }
 
-   public static ChangeSet inputStreamToChangeSet(InputStream in) throws IOException {
-      InputStreamReader reader = new InputStreamReader(in, "UTF-8");
-      ChangeSet set = new ChangeSet();
-
-      char[] chars = new char[8000];
-      int readCount = 0;
-      while ((readCount = reader.read(chars)) != -1) {
-         set.insertBefore(0, chars, 0, readCount, true);
+   public static ChangeSet inputStreamToChangeSet(InputStream in, String charset) throws IOException {
+      InputStreamReader reader = new InputStreamReader(in, charset);
+      try {
+         ChangeSet set = new ChangeSet();
+         char[] chars = new char[8000];
+         int readCount = 0;
+         while ((readCount = reader.read(chars)) != -1) {
+            set.insertBefore(0, chars, 0, readCount, true);
+         }
+         return set;
+      } finally {
+         close(reader);
       }
-      return set;
+   }
+
+   public static ChangeSet inputStreamToChangeSet(InputStream in) throws IOException {
+      return inputStreamToChangeSet(in, "UTF-8");
    }
 
    public static byte[] inputStreamToBytes(InputStream inputStream) throws IOException {
@@ -417,7 +425,7 @@ public final class Lib {
       return CharBuffer.wrap(inputStreamToChangeSet(in).toCharArray());
    }
 
-   public static InputStream stringToInputStream(String value) throws Exception {
+   public static InputStream stringToInputStream(String value) throws UnsupportedEncodingException {
       InputStream stream = null;
       if (value != null) {
          String data = value.trim();
@@ -483,18 +491,7 @@ public final class Lib {
    }
 
    public static String fileToString(File file) throws IOException {
-      StringBuilder builder = new StringBuilder();
-      Reader reader = null;
-      try {
-         reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-         int ch;
-         while ((ch = reader.read()) > -1) {
-            builder.append((char) ch);
-         }
-      } finally {
-         Lib.close(reader);
-      }
-      return builder.toString();
+      return new String(fileToChars(file, "UTF8"));
    }
 
    public static byte[] fileToBytes(File file) throws IOException {
@@ -536,15 +533,11 @@ public final class Lib {
    }
 
    public static CharBuffer fileToCharBuffer(File file, String charset) throws IOException {
-      char[] chars = new char[(int) file.length()];
-      InputStreamReader inputStream = null;
-      try {
-         inputStream = new InputStreamReader(new FileInputStream(file), charset);
-         inputStream.read(chars);
-      } finally {
-         Lib.close(inputStream);
-      }
-      return CharBuffer.wrap(chars);
+      return CharBuffer.wrap(fileToChars(file, charset));
+   }
+
+   public static char[] fileToChars(File file, String charset) throws IOException {
+      return inputStreamToChangeSet(new FileInputStream(file), charset).toCharArray();
    }
 
    public static String fillString(char c, int n) {
