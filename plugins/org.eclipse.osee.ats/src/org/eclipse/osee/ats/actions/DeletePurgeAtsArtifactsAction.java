@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
@@ -29,9 +28,8 @@ public class DeletePurgeAtsArtifactsAction extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public DeletePurgeAtsArtifactsAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super();
+      super("Delete/Purge Ats Artifact(s)", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
       this.selectedAtsArtifacts = selectedAtsArtifacts;
-      setText("Delete/Purge Ats Artifact(s)");
       setToolTipText(getText());
    }
 
@@ -45,14 +43,9 @@ public class DeletePurgeAtsArtifactsAction extends Action {
       }
    }
 
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
-   }
-
    public void updateEnablement() {
       try {
-         setEnabled(selectedAtsArtifacts.getSelectedSMAArtifacts().size() > 0);
+         setEnabled(!selectedAtsArtifacts.getSelectedSMAArtifacts().isEmpty());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          setEnabled(false);
