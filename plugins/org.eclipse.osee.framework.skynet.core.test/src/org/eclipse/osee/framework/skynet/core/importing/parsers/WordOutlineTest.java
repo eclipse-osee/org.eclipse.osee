@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -56,7 +54,7 @@ public final class WordOutlineTest {
    /**
     * Note: some of the data objects need to repeat data from previous test because they are considered to be
     * lastHeaderNumber or lastHeaderName or lastContent
-    *
+    * 
     * @return collection of data sets used as input for parameterized unit test
     */
    @Parameters
@@ -81,7 +79,7 @@ public final class WordOutlineTest {
    public void testDelegate() throws Exception {
       delegate.initialize();
 
-      String rawData = getResourceData(dataFileName);
+      String rawData = Lib.fileToString(getClass(), dataFileName);
       Matcher matcher = PARAGRAPH_REGEX.matcher(rawData);
       boolean foundSomething = false;
 
@@ -129,19 +127,6 @@ public final class WordOutlineTest {
 
    private static DelegateData data(String headerNumber, String headerName, String content) {
       return new DelegateData(headerNumber, headerName, content);
-   }
-
-   private static String getResourceData(String name) throws IOException {
-      InputStream inputStream = null;
-      String data;
-      try {
-         inputStream = WordOutlineTest.class.getResourceAsStream(name);
-         data = Lib.inputStreamToString(inputStream);
-         Assert.assertTrue(Strings.isValid(data));
-      } finally {
-         Lib.close(inputStream);
-      }
-      return data;
    }
 
    private static final class DelegateData {

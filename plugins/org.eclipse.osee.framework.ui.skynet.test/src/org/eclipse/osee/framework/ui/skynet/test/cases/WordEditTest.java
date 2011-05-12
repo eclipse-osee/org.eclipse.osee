@@ -12,8 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +19,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -84,7 +81,7 @@ public class WordEditTest {
       Artifact artifact = createArtifact(branch, ARTIFACT_NAME_1);
       artifact.persist();
 
-      String testData = getExpectedContent();
+      String testData = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       Assert.assertNotNull(testData);
       String expected = replaceGuidMarkers(testData, artifact.getGuid());
 
@@ -152,16 +149,6 @@ public class WordEditTest {
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, artifactName);
       Assert.assertNotNull(artifact);
       return artifact;
-   }
-
-   private static final String getExpectedContent() throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(WordEditTest.class.getResourceAsStream(TEST_WORD_EDIT_FILE_NAME));
-         return Lib.inputStreamToString(inputStream);
-      } finally {
-         Lib.close(inputStream);
-      }
    }
 
    private static final class UpdateArtifactListener implements IArtifactEventListener {

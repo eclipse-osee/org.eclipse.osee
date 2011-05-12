@@ -15,13 +15,11 @@ import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.PREV
 import static org.eclipse.osee.support.test.util.DemoSawBuilds.SAW_Bld_1;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -160,15 +158,7 @@ public class WordTemplateProcessorTest {
       new PurgeArtifacts(Collections.singletonList(myRootArtifact)).execute();
    }
 
-   private static String getResourceData(String name) throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = WordTemplateProcessorTest.class.getResourceAsStream(name);
-         String data = Lib.inputStreamToString(inputStream);
-         Assert.assertTrue(Strings.isValid(data));
-         return data;
-      } finally {
-         Lib.close(inputStream);
-      }
+   private static String getResourceData(String relativePath) throws IOException {
+      return Lib.fileToString(WordTemplateProcessorTest.class, relativePath);
    }
 }

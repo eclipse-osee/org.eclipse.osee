@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.renderer.imageDetection;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,8 +56,8 @@ public class WordImageCompareTest {
 
    private boolean compareFile(String firstFileName, String secondFileName) throws IOException {
       boolean isEqual = false;
-      String firstFile = getContent(firstFileName);
-      String secondFile = getContent(secondFileName);
+      String firstFile = Lib.fileToString(getClass(), firstFileName);
+      String secondFile = Lib.fileToString(getClass(), secondFileName);
 
       List<WordmlPicture> firstFileImages = createPictureList(firstFile);
       List<WordmlPicture> secondFileImages = createPictureList(secondFile);
@@ -92,16 +90,5 @@ public class WordImageCompareTest {
          startIndex = currentEndIndex;
       }
       return pictures;
-   }
-
-   private static final String getContent(String filePath) throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(WordImageCompareTest.class.getResourceAsStream(filePath));
-         String data = Lib.inputStreamToString(inputStream);
-         return data.replaceAll("\r?\n", "\r\n");
-      } finally {
-         Lib.close(inputStream);
-      }
    }
 }

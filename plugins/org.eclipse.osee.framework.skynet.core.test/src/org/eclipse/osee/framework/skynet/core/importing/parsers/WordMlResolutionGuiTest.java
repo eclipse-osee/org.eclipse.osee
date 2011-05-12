@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -65,7 +61,7 @@ public class WordMlResolutionGuiTest {
       resolvingGui.setMockUserAnswer(ContentType.CONTENT);
 
       //pre load with some real data
-      String rawData = getResourceData(FILE_INPUT);
+      String rawData = Lib.fileToString(getClass(), FILE_INPUT);
       Matcher matcher = PARAGRAPH_REGEX.matcher(rawData);
       boolean foundSomething = false;
       matcher.find();//skip 1.0
@@ -92,18 +88,5 @@ public class WordMlResolutionGuiTest {
       Assert.assertNull(delegate.getLastHeaderNumber());
       Assert.assertNull(delegate.getLastHeaderName());
       Assert.assertNull(delegate.getLastContent());
-   }
-
-   private static String getResourceData(String name) throws IOException {
-
-      InputStream inputStream = null;
-      try {
-         inputStream = WordMlResolutionGuiTest.class.getResourceAsStream(name);
-         String data = Lib.inputStreamToString(inputStream);
-         Assert.assertTrue(Strings.isValid(data));
-         return data;
-      } finally {
-         Lib.close(inputStream);
-      }
    }
 }

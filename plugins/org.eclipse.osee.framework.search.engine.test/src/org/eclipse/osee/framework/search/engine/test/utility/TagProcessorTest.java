@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test.utility;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -117,12 +116,6 @@ public class TagProcessorTest {
    }
 
    private static String getResource(String resourceName) throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(TagProcessorTest.class.getResourceAsStream("data/" + resourceName));
-         return Lib.inputStreamToString(inputStream);
-      } finally {
-         Lib.close(inputStream);
-      }
+      return Lib.fileToString(TagProcessorTest.class, "data/" + resourceName);
    }
 }

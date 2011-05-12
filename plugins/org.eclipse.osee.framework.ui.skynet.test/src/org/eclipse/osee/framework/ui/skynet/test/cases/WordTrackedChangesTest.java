@@ -12,10 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -48,19 +44,20 @@ public class WordTrackedChangesTest {
 
    @org.junit.Test
    public void testFindTrackChanges() throws Exception {
-      assertTrue(WordUtil.containsWordAnnotations(getFileContent(TEST_WORD_EDIT_FILE_NAME)));
+      String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
+      assertTrue(WordUtil.containsWordAnnotations(content));
    }
 
    @org.junit.Test
    public void testRemoveTrackChanges() throws Exception {
-      String content = getFileContent(TEST_WORD_EDIT_FILE_NAME);
+      String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       content = WordUtil.removeAnnotations(content);
       assertFalse(WordUtil.containsWordAnnotations(content));
    }
 
    @org.junit.Test
    public void testWholeWordSaveWithTrackChanges() throws Exception {
-      String content = getFileContent(TEST_WORD_EDIT_FILE_NAME);
+      String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt =
@@ -69,17 +66,6 @@ public class WordTrackedChangesTest {
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
 
       assertTrue(WordUtil.containsWordAnnotations(unlinkedContent));
-   }
-
-   private String getFileContent(String fileName) throws IOException {
-      InputStream stream = null;
-      try {
-         stream = this.getClass().getResourceAsStream(fileName);
-         String returnString = Lib.inputStreamToString(stream);
-         return returnString;
-      } finally {
-         Lib.close(stream);
-      }
    }
 
    @After

@@ -18,7 +18,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Stack;
-import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
@@ -93,8 +92,7 @@ public final class UtfReadingRuleTest {
          Assert.fail("unexpected/wrong exception thrown testCharset()");
       }
 
-      //trim off extra data
-      String expectedUtf8String = Lib.fileToString(getInputFile());
+      String expectedUtf8String = Lib.fileToString(getClass(), FILE_INPUT);
       String actual = rule.getLastOutput().toString().trim();
       Assert.assertEquals(expectedUtf8String, actual);
    }

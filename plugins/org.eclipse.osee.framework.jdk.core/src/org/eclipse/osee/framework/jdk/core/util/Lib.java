@@ -491,7 +491,17 @@ public final class Lib {
    }
 
    public static String fileToString(File file) throws IOException {
-      return new String(fileToChars(file, "UTF8"));
+      return new String(fileToChars(file, "UTF-8"));
+   }
+
+   public static String fileToString(Class<?> clazz, String relativePath) throws IOException {
+      InputStream stream = null;
+      try {
+         stream = clazz.getResourceAsStream(relativePath);
+         return inputStreamToString(stream);
+      } finally {
+         Lib.close(stream);
+      }
    }
 
    public static byte[] fileToBytes(File file) throws IOException {
@@ -529,7 +539,7 @@ public final class Lib {
    }
 
    public static CharBuffer fileToCharBuffer(File file) throws IOException {
-      return fileToCharBuffer(file, "UTF8");
+      return fileToCharBuffer(file, "UTF-8");
    }
 
    public static CharBuffer fileToCharBuffer(File file, String charset) throws IOException {

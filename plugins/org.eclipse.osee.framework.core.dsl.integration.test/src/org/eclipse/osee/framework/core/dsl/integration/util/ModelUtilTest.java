@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.util;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
@@ -48,19 +46,9 @@ public class ModelUtilTest {
    private static final String TYPE_TEST_INPUT = "testTypeModel.osee";
    private static final String ACCESS_TEST_INPUT = "testAccessModel.osee";
 
-   private String getRawXTextData(String testInputFile) throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(this.getClass().getResourceAsStream(testInputFile));
-         return Lib.inputStreamToString(inputStream);
-      } finally {
-         Lib.close(inputStream);
-      }
-   }
-
    @Test
    public void testModelUtilLoadType() throws OseeCoreException, IOException {
-      String rawXTextData = getRawXTextData(TYPE_TEST_INPUT);
+      String rawXTextData = Lib.fileToString(getClass(), TYPE_TEST_INPUT);
 
       OseeDsl model1 = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
 
@@ -105,7 +93,7 @@ public class ModelUtilTest {
 
    @Test
    public void testModelUtilLoadAccess() throws OseeCoreException, IOException {
-      String rawXTextData = getRawXTextData(ACCESS_TEST_INPUT);
+      String rawXTextData = Lib.fileToString(getClass(), ACCESS_TEST_INPUT);
 
       OseeDsl model1 = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
       Assert.assertEquals(2, model1.getArtifactTypes().size());

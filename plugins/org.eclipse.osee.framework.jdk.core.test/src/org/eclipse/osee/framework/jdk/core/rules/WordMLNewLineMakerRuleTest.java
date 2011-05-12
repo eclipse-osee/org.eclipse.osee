@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.rules;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.regex.Matcher;
@@ -72,14 +71,8 @@ public final class WordMLNewLineMakerRuleTest {
    }
 
    private static String getResourceData(String name) throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = WordMLNewLineMakerRuleTest.class.getResourceAsStream(name);
-         String data = Lib.inputStreamToString(inputStream);
-         Assert.assertTrue(Strings.isValid(data));
-         return data;
-      } finally {
-         Lib.close(inputStream);
-      }
+      String data = Lib.fileToString(WordMLNewLineMakerRuleTest.class, name);
+      Assert.assertTrue(Strings.isValid(data));
+      return data;
    }
 }

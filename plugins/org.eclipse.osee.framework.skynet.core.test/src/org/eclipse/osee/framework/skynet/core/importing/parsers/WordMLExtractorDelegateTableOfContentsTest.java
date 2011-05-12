@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.operation.StringOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
@@ -39,7 +36,7 @@ public final class WordMLExtractorDelegateTableOfContentsTest {
 
       StringOperationLogger logger = new StringOperationLogger();
 
-      Matcher matcher = PARAGRAPHREGEX.matcher(getFileAsString(TABLE_OF_CONTENTS_FILE));
+      Matcher matcher = PARAGRAPHREGEX.matcher(Lib.fileToString(getClass(), TABLE_OF_CONTENTS_FILE));
       boolean foundSomething = false;
       while (matcher.find()) {
          foundSomething = true;
@@ -50,22 +47,4 @@ public final class WordMLExtractorDelegateTableOfContentsTest {
          logger.toString().isEmpty());
       Assert.assertTrue(foundSomething);
    }
-
-   private static String getFileAsString(String nameOfFile) {
-      StringBuilder buffer = new StringBuilder();
-      InputStream inputStream = null;
-      try {
-         inputStream = WordMLExtractorDelegateTableOfContentsTest.class.getResourceAsStream(TABLE_OF_CONTENTS_FILE);
-         buffer.append(Lib.inputStreamToString(inputStream));
-         Assert.assertTrue(buffer.length() != 0);
-      } catch (IOException ex) {
-         Assert.assertTrue(String.format("%s something when wrong while reading a file...",
-            WordMLExtractorDelegateTableOfContentsTest.class.getName()), true);
-      } finally {
-         Lib.close(inputStream);
-      }
-
-      return buffer.toString();
-   }
-
 }
