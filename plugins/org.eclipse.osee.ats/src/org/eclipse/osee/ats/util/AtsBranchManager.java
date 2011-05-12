@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -107,17 +106,6 @@ public class AtsBranchManager {
             AtsBranchManagerCore.getWorkingBranch(teamArt).getBaseTransaction());
       } else if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
          for (TransactionRecord transactionId : AtsBranchManagerCore.getTransactionIds(teamArt, true)) {
-            if (transactionId.getBranchId() == destinationBranch.getId()) {
-               MergeView.openView(transactionId);
-
-            }
-         }
-      }
-   }
-
-   public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, getWorkingBranch());
-      return !conflictManager.remainingConflictsExist();
             if (transactionId.getBranchId() == destinationBranch.getId()) {
                MergeView.openView(transactionId);
 
