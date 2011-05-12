@@ -265,11 +265,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
       // provided for subclass implementation
    }
 
-   @Deprecated
-   public void onAttributePersist(SkynetTransaction transaction) {
-      // provided for subclass implementation
-   }
-
    @Override
    public final int getArtId() {
       return artId;
@@ -1041,7 +1036,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
 
       if (hasDirtyAttributes() || hasDirtyArtifactType()) {
          transaction.addArtifactAndAttributes(this);
-         onAttributePersist(transaction);
       }
    }
 

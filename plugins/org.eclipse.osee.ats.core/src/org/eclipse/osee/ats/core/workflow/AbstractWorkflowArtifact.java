@@ -166,21 +166,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   @Override
-   public void onAttributePersist(SkynetTransaction transaction) {
-      // Since multiple ways exist to change the assignees, notification is performed on the persist
-      if (isDeleted()) {
-         return;
-      }
-      try {
-         // TODO Add this back in
-         //         AtsNotification.notifyNewAssigneesAndReset(this, false);
-         //         AtsNotification.notifyOriginatorAndReset(this, false);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
    @SuppressWarnings("unused")
    public boolean isValidationRequired() throws OseeCoreException {
       return false;

@@ -10,15 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.notify;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
@@ -27,6 +32,14 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.osgi.framework.Bundle;
 
 /**
@@ -34,10 +47,10 @@ import org.osgi.framework.Bundle;
  */
 public class AtsNotification {
 
-   private static Set<IAtsNotification> atsNotificationItems = new HashSet<IAtsNotification>();
-   private static AtsNotification instance = new AtsNotification();
-   private static Map<String, Collection<User>> preSaveStateAssignees = new HashMap<String, Collection<User>>();
-   private static Map<String, User> guidToOriginatorMap = new HashMap<String, User>(500);
+   private final static Set<IAtsNotification> atsNotificationItems = new HashSet<IAtsNotification>();
+   private final static AtsNotification instance = new AtsNotification();
+   private final static Map<String, Collection<User>> preSaveStateAssignees = new HashMap<String, Collection<User>>();
+   private final static Map<String, User> guidToOriginatorMap = new HashMap<String, User>(500);
 
    private AtsNotification() {
 
@@ -68,6 +81,50 @@ public class AtsNotification {
             }
          }
       }
+
+      OseeEventManager.addListener(new IArtifactEventListener() {
+
+         @Override
+         public List<? extends IEventFilter> getEventFilters() {
+            ArtifactTypeEventFilter filter = new ArtifactTypeEventFilter(AtsArtifactTypes.AbstractWorkflowArtifact);
+            return Arrays.asList(filter);
+         }
+
+         @Override
+         public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+            // Since multiple ways exist to change the assignees, notification is performed on the persist
+            if (sender.isLocal()) {
+               Collection<Artifact> artifacts =
+                  artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Added);
+               for (Artifact artifact : artifacts) {
+                  if (!artifact.isDeleted()) {
+                     try {
+                        if (artifact instanceof AbstractWorkflowArtifact) {
+                           AbstractWorkflowArtifact workFlow = (AbstractWorkflowArtifact) artifact;
+                           // TODO Add this back in
+                           // AtsNotification.notifyNewAssigneesAndReset(workFlow, false);
+                           // AtsNotification.notifyOriginatorAndReset(workFlow, false);
+                        }
+                     } catch (Exception ex) {
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     }
+
+                     if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+                        try {
+                           if (artifact instanceof AbstractReviewArtifact) {
+                              AbstractReviewArtifact review = (AbstractReviewArtifact) artifact;
+                              review.notifyReviewersComplete();
+                           }
+                        } catch (Exception ex) {
+                           OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                        }
+                     }
+                  }
+               }
+            }
+         }
+
+      });
    }
 
    public static AtsNotification getInstance() {

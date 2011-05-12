@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -55,20 +54,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       super.onInitializationComplete();
       initializeSMA();
    };
-
-   @Override
-   public void onAttributePersist(SkynetTransaction transaction) {
-      super.onAttributePersist(transaction);
-      // Since multiple ways exist to change the assignees, notification is performed on the persist
-      if (isDeleted()) {
-         return;
-      }
-      try {
-         notifyReviewersComplete();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
 
    @Override
    public void initalizePreSaveCache() {
