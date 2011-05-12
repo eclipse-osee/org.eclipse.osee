@@ -11,10 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Robert A. Fisher
@@ -94,7 +96,7 @@ public class InRelationSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       StringBuffer sql = new StringBuffer();
 
       boolean first = true;
@@ -127,14 +129,14 @@ public class InRelationSearch implements ISearchPrimitive {
       }
       sql.append(" AND rel_1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs1.transaction_id) FROM osee_relation_link rel2, osee_txs txs1 WHERE rel2.rel_link_id = rel_1.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.branch_id = ? AND txs1.mod_type <>?)");
 
-      dataList.add(branch.getId());
+      dataList.add(BranchManager.getBranchId(branch));
       dataList.add(ModificationType.DELETED.getValue());
 
       return sql.toString();
    }
 
    @Override
-   public String getTableSql(List<Object> dataList, Branch branch) {
+   public String getTableSql(List<Object> dataList, IOseeBranch branch) {
       return relationTables;
    }
 

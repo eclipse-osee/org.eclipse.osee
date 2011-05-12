@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,7 +31,7 @@ public abstract class XTypeListViewer extends XListViewer {
       setSorter(new ViewerSorter());
    }
 
-   public Branch resolveBranch(String branchGuid) {
+   public IOseeBranch resolveBranch(String branchGuid) {
       try {
          if (GUID.isValid(branchGuid)) {
             return BranchManager.getBranchByGuid(branchGuid);

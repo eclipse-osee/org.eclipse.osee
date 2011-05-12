@@ -12,7 +12,8 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.w3c.dom.Document;
@@ -45,12 +46,12 @@ public class FromArtifactsSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       return "art_id in (" + ArtifactPersistenceManager.getIdSql(criteria, all, dataList, branch) + ")";
    }
 
    @Override
-   public String getTableSql(List<Object> dataList, Branch branch) {
+   public String getTableSql(List<Object> dataList, IOseeBranch branch) {
       return "osee_artifact";
    }
 

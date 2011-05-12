@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -31,16 +33,17 @@ import org.eclipse.ui.progress.UIJob;
 
 public final class ChangeUiUtil {
 
-   public static void open(Branch branch) throws OseeCoreException {
+   public static void open(IOseeBranch branch) throws OseeCoreException {
+      Branch heavyBranch = BranchManager.getBranch(branch);
       Conditions.checkNotNull(branch, "Branch");
-      if (branch.getBranchType() == BranchType.BASELINE) {
+      if (heavyBranch.getBranchType() == BranchType.BASELINE) {
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
             "You have chosen to show a change report for a BASLINE branch.\n\n" + //
             "This could be a very long running task and consume large resources.\n\nAre you sure?")) {
             return;
          }
       }
-      open(createInput(branch, true));
+      open(createInput(heavyBranch, true));
    }
 
    public static void open(TransactionRecord transactionId) throws OseeCoreException {

@@ -15,14 +15,11 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collection;
-
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -42,8 +39,7 @@ public class NativeArtifactTest {
 
    @org.junit.Test
    public void testNativeArtifact() throws Exception {
-      CsvArtifact csvArtifact =
-         CsvArtifact.getCsvArtifact(getClass().getSimpleName(), BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), true);
+      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, true);
       assertNotNull(csvArtifact);
       Artifact artifact = csvArtifact.getArtifact();
       assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent));
@@ -88,14 +84,12 @@ public class NativeArtifactTest {
    }
 
    private Artifact getNativeArtifact() throws Exception {
-      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
-      return CsvArtifact.getCsvArtifact(getClass().getSimpleName(), branch, false).getArtifact();
+      return CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, false).getArtifact();
    }
 
    private void cleanup() throws Exception {
-      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

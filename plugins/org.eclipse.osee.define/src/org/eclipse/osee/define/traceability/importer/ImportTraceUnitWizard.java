@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.operations.ImportTraceUnitsOperation;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -39,7 +39,7 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       try {
-         Branch importToBranch = page.getSelectedBranch();
+         IOseeBranch importToBranch = page.getSelectedBranch();
          boolean isRecursive = page.isFolderRecursionAllowed();
          boolean isPersistChanges = page.isArtifactPersistanceAllowed();
          URI source = page.getSourceURI();

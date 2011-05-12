@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -38,7 +39,7 @@ public class BranchSelectComposite extends Composite {
 
    private Button branchSelectButton;
    private Text branchSelectTextWidget;
-   private Branch selectedBranch;
+   private IOseeBranch selectedBranch;
    private final Set<Listener> listeners;
    private final boolean allowOnlyWorkingBranches;
 
@@ -102,7 +103,7 @@ public class BranchSelectComposite extends Composite {
       });
    }
 
-   public Branch getSelectedBranch() {
+   public IOseeBranch getSelectedBranch() {
       return selectedBranch;
    }
 
@@ -126,7 +127,7 @@ public class BranchSelectComposite extends Composite {
       }
    }
 
-   public void setSelected(Branch branch) {
+   public void setSelected(IOseeBranch branch) {
       if (branch != null) {
          selectedBranch = branch;
          branchSelectTextWidget.setText(selectedBranch.getName());
@@ -158,7 +159,7 @@ public class BranchSelectComposite extends Composite {
    /**
     * @param defaultSelectedBranch the defaultSelectedBranch to set
     */
-   public void setDefaultSelectedBranch(Branch defaultSelectedBranch) {
+   public void setDefaultSelectedBranch(IOseeBranch defaultSelectedBranch) {
       setSelected(defaultSelectedBranch);
    }
 

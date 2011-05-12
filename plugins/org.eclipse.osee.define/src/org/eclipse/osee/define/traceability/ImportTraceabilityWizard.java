@@ -14,7 +14,7 @@ import java.io.File;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,7 +36,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       try {
-         Branch branch = mainPage.getSelectedBranch();
+         IOseeBranch branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
          Operations.executeWorkAndCheckStatus(new ScriptTraceabilityOperation(file, branch, true));
       } catch (Exception ex) {

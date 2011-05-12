@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
@@ -69,7 +67,7 @@ public class AtsBranchAccessManagerTest {
    public void testIsApplicable() throws OseeCoreException {
       AtsBranchAccessManager mgr = new AtsBranchAccessManager();
       Assert.assertFalse(mgr.isApplicable(AtsUtil.getAtsBranch()));
-      Assert.assertFalse(mgr.isApplicable(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1)));
+      Assert.assertFalse(mgr.isApplicable(DemoSawBuilds.SAW_Bld_1));
 
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);

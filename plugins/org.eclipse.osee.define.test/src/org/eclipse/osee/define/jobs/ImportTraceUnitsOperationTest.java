@@ -47,7 +47,8 @@ public final class ImportTraceUnitsOperationTest {
 
    private static final String TEST_ONE_FILE = "ImportTraceUnitsTest1.txt";
    private static final String TEST_TWO_FILE = "ImportTraceUnitsTest2.txt";
-   private static final IOseeBranch TEST_BRANCH = TokenFactory.createBranch("BIkSWxVrZClFHss6FTAA", "Trace Unit Branch");
+   private static final IOseeBranch TEST_BRANCH =
+      TokenFactory.createBranch("BIkSWxVrZClFHss6FTAA", "Trace Unit Branch");
    private static final int RUNS = 3;
 
    private Branch importToBranch;
@@ -64,11 +65,9 @@ public final class ImportTraceUnitsOperationTest {
    @Before
    public void setup() throws OseeCoreException {
       if (BranchManager.branchExists(TEST_BRANCH)) {
-         Branch branch = BranchManager.getBranch(TEST_BRANCH);
-         BranchManager.purgeBranch(branch);
+         BranchManager.purgeBranch(TEST_BRANCH);
       }
-      Branch baseBranch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2);
-      importToBranch = BranchManager.createWorkingBranch(baseBranch, TEST_BRANCH, UserManager.getUser());
+      importToBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, TEST_BRANCH, UserManager.getUser());
    }
 
    @After

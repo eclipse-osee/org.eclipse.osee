@@ -14,9 +14,9 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -37,7 +37,7 @@ public class AccessControlHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
       boolean hasArtifacts = artifacts.size() == 1;

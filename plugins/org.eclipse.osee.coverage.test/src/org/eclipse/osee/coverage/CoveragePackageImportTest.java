@@ -43,11 +43,11 @@ import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -157,7 +157,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -187,7 +187,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -317,7 +317,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -421,7 +421,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -540,7 +540,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -667,7 +667,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -786,7 +786,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -957,7 +957,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -1110,7 +1110,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -1234,7 +1234,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 
@@ -1368,7 +1368,7 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 

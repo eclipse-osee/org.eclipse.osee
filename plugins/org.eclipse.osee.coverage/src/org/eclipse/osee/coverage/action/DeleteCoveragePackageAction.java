@@ -20,8 +20,8 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,7 +54,7 @@ public class DeleteCoveragePackageAction extends Action {
          if (!CoverageUtil.getBranchFromUser(false)) {
             return;
          }
-         Branch branch = CoverageUtil.getBranch();
+         IOseeBranch branch = CoverageUtil.getBranch();
          CoveragePackageArtifactListDialog dialog =
             new CoveragePackageArtifactListDialog("Delete Package", "Select Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(branch));

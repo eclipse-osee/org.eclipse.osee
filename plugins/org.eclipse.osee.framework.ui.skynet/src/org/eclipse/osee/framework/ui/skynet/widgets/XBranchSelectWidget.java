@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
@@ -38,7 +38,7 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
 
    private BranchSelectComposite selectComposite;
    private Composite composite;
-   private Branch defaultBranch;
+   private IOseeBranch defaultBranch;
 
    private final List<Listener> listeners = new ArrayList<Listener>();
 
@@ -93,17 +93,17 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    }
 
    @Override
-   public Branch getData() {
+   public IOseeBranch getData() {
       return getSelection();
    }
 
-   public Branch getSelection() {
+   public IOseeBranch getSelection() {
       return selectComposite.getSelectedBranch();
    }
 
    @Override
    public String getReportData() {
-      Branch branch = selectComposite.getSelectedBranch();
+      IOseeBranch branch = selectComposite.getSelectedBranch();
       return branch != null ? branch.getName() : "";
    }
 
@@ -174,7 +174,7 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
       }
    }
 
-   public void setSelection(Branch branch) {
+   public void setSelection(IOseeBranch branch) {
       defaultBranch = branch;
       if (selectComposite != null) {
          selectComposite.setSelected(branch);

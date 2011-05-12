@@ -16,7 +16,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
  */
 public class OpenArtifactExplorerHandler extends AbstractHandler {
 
-   private List<Branch> getSelectedBranches() {
+   private List<? extends IOseeBranch> getSelectedBranches() {
       ISelectionProvider selectionProvider =
          AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
@@ -38,7 +38,7 @@ public class OpenArtifactExplorerHandler extends AbstractHandler {
 
    @Override
    public Object execute(ExecutionEvent arg0) {
-      List<Branch> branches = getSelectedBranches();
+      List<? extends IOseeBranch> branches = getSelectedBranches();
       if (!branches.isEmpty()) {
          ArtifactExplorer.exploreBranch(branches.iterator().next());
       }

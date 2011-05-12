@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -42,7 +43,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * Creates a new Artifact in the specified branch
     */
    @SuppressWarnings("unchecked")
-   public T getNewArtifact(Branch branch) throws OseeCoreException {
+   public T getNewArtifact(IOseeBranch branch) throws OseeCoreException {
       checkForNull(branch);
       return (T) ArtifactTypeManager.addArtifact(oteArtifactType, branch);
    }
@@ -70,7 +71,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @return artifact instances
     */
    @SuppressWarnings("unchecked")
-   public Set<T> getAllArtifacts(Branch branch) throws OseeArgumentException {
+   public Set<T> getAllArtifacts(IOseeBranch branch) throws OseeArgumentException {
       checkForNull(branch);
       Set<T> toReturn = new HashSet<T>();
       try {

@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -226,7 +227,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       artifactExplorer.initializeSelectionBox();
    }
 
-   private static ArtifactExplorer findView(Branch inputBranch, IWorkbenchPage page) {
+   private static ArtifactExplorer findView(IOseeBranch inputBranch, IWorkbenchPage page) {
       for (IViewReference view : page.getViewReferences()) {
          if (view.getId().equals(ArtifactExplorer.VIEW_ID)) {
             if (view.getView(false) != null && inputBranch.equals(((ArtifactExplorer) view.getView(false)).branch)) {
@@ -294,9 +295,9 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             @Override
             public void handleEvent(Event event) {
                try {
-                  Branch selectedBranch = branchSelect.getData();
+                  IOseeBranch selectedBranch = branchSelect.getData();
                   if (selectedBranch != null) {
-                     branch = selectedBranch;
+                     branch = BranchManager.getBranch(selectedBranch);
                      explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
@@ -442,7 +443,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    /**
     * Reveal an artifact in the viewer and select it.
     */
-   public static void exploreBranch(Branch branch) {
+   public static void exploreBranch(IOseeBranch branch) {
       if (branch != null) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          findView(branch, page);

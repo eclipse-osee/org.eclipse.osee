@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -77,7 +78,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
       branchSelect.setSelection(branch);
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branchSelect.getData();
    }
 
@@ -245,7 +246,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
 
    @SuppressWarnings("unchecked")
    private void refreshItems() {
-      Branch branch = getBranch();
+      IOseeBranch branch = getBranch();
       if (branch != null) {
          List<Object> data = (List<Object>) treeViewer.getInput();
          data.clear();
@@ -254,7 +255,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
       }
    }
 
-   private Artifact getBaseArtifact(Branch branch) {
+   private Artifact getBaseArtifact(IOseeBranch branch) {
       Artifact toReturn = null;
       try {
          toReturn = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);

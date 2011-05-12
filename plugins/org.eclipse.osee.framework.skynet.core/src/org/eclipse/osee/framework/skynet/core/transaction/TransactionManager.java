@@ -170,7 +170,7 @@ public final class TransactionManager {
       return transactionId;
    }
 
-   public static synchronized TransactionRecord internalCreateTransactionRecord(Branch branch, User userToBlame, String comment) throws OseeCoreException {
+   public static synchronized TransactionRecord internalCreateTransactionRecord(IOseeBranch branch, User userToBlame, String comment) throws OseeCoreException {
       Integer transactionNumber = ConnectionHandler.getSequence().getNextTransactionId();
       if (comment == null) {
          comment = "";
@@ -180,8 +180,8 @@ public final class TransactionManager {
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
       TransactionRecordFactory factory = Activator.getInstance().getTransactionFactory();
       TransactionRecord transactionId =
-         factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getId(), comment, transactionTime,
-            authorArtId, -1, txType);
+         factory.createOrUpdate(getTransactionCache(), transactionNumber, BranchManager.getBranchId(branch), comment,
+            transactionTime, authorArtId, -1, txType);
       transactionId.setBranchCache(Activator.getInstance().getOseeCacheService().getBranchCache());
       return transactionId;
    }

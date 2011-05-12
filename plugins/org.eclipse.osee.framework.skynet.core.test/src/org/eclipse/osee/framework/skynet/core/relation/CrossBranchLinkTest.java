@@ -11,16 +11,13 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -57,18 +54,15 @@ public class CrossBranchLinkTest {
       artifacts.addAll(ArtifactQuery.getArtifactListFromName(CrossBranchLinkTest.class.getSimpleName() + "%",
          BranchManager.getCommonBranch(), EXCLUDE_DELETED));
       artifacts.addAll(ArtifactQuery.getArtifactListFromName(CrossBranchLinkTest.class.getSimpleName() + "%",
-         BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid()), EXCLUDE_DELETED));
+         DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED));
       new PurgeArtifacts(artifacts).execute();
       TestUtil.sleep(4000);
    }
 
    @Test
    public void testCrossBranchLink() throws OseeCoreException {
-      Branch sawBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
-      Assert.assertNotNull(sawBranch);
-
       Artifact artifact1 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, sawBranch,
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName() + "-1");
       artifact1.addAttribute(CoreAttributeTypes.StaticId, CrossBranchLinkTest.class.getSimpleName());
       artifact1.persist();
@@ -90,7 +84,7 @@ public class CrossBranchLinkTest {
       Assert.assertEquals(artifact1, link.getArtifact());
 
       Artifact artifact2 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, sawBranch,
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName() + "-2");
       artifact2.addAttribute(CoreAttributeTypes.StaticId, CrossBranchLinkTest.class.getSimpleName());
       artifact2.persist();
@@ -98,7 +92,7 @@ public class CrossBranchLinkTest {
       CrossBranchLinkManager.addRelation(folderArt, CoreRelationTypes.SupportingInfo_SupportingInfo, artifact2);
 
       Artifact artifact3 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, sawBranch,
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName() + "-3");
       artifact3.addAttribute(CoreAttributeTypes.StaticId, CrossBranchLinkTest.class.getSimpleName());
       artifact3.persist();

@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.IS;
 import java.util.List;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Robert A. Fisher
@@ -57,7 +59,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       StringBuilder sql = new StringBuilder();
 
       if (operator == DeprecatedOperator.LIKE || operator == DeprecatedOperator.CONTAINS) {
@@ -69,7 +71,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
 
       sql.append(" AND attr_type_1.attr_type_id = attr_1.attr_type_id AND attr_1.gamma_id = txs.gamma_id AND txs.tx_current = 1 and txs.branch_id = ?");
 
-      dataList.add(branch.getId());
+      dataList.add(BranchManager.getBranchId(branch));
 
       if (attributeValue != null) {
          sql.append(" AND attr_1.value ");
@@ -85,7 +87,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getTableSql(List<Object> dataList, Branch branch) {
+   public String getTableSql(List<Object> dataList, IOseeBranch branch) {
       return tables;
    }
 

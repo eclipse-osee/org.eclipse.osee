@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.config.demo.DemoSubsystems;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,8 +46,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
    }
 
-   private void populateProgramBranch(IOseeBranch branch) throws OseeCoreException {
-      Branch programBranch = BranchManager.getBranch(branch);
+   private void populateProgramBranch(IOseeBranch programBranch) throws OseeCoreException {
       Artifact sawProduct =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, programBranch, "SAW Product Decomposition");
 

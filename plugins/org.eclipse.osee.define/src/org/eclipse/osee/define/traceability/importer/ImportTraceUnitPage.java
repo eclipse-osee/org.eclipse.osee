@@ -28,6 +28,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -278,7 +280,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    protected boolean validateSourceGroup() {
       boolean result = directoryFileSelector.validate(this);
       if (result) {
-         Branch branch = getSelectedBranch();
+         IOseeBranch branch = getSelectedBranch();
          if (branch == null) {
             result = false;
             setErrorMessage("Please select a valid working branch");
@@ -305,7 +307,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       return isWidgetAccessible(directoryFileSelector) ? directoryFileSelector.getFile().toURI() : null;
    }
 
-   public Branch getSelectedBranch() {
+   public IOseeBranch getSelectedBranch() {
       return isWidgetAccessible(branchSelectComposite) ? branchSelectComposite.getSelectedBranch() : null;
    }
 
@@ -399,9 +401,13 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       super.saveWidgetValues();
       IDialogSettings settings = getDialogSettings();
       if (settings != null) {
-         Branch branch = getSelectedBranch();
+         IOseeBranch branch = getSelectedBranch();
          if (branch != null) {
-            settings.put(BRANCH_KEY, branch.getId());
+            try {
+               settings.put(BRANCH_KEY, BranchManager.getBranchId(branch));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            }
          }
 
          settings.put(SELECTED_TRACE_HANDLERS_KEY, getTraceUnitHandlerIds());

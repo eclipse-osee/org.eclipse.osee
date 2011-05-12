@@ -46,8 +46,8 @@ public final class ArtifactDataAccessor implements ArtifactDataProvider {
       if (object instanceof Artifact) {
          final Artifact artifact = (Artifact) object;
          proxy = new XArtifactProxy(artifact);
-      } else if (object instanceof Branch) {
-         Branch branch = (Branch) object;
+      } else if (object instanceof IOseeBranch) {
+         IOseeBranch branch = (Branch) object;
          final Artifact artifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
          proxy = new XArtifactProxy(artifact);
       }

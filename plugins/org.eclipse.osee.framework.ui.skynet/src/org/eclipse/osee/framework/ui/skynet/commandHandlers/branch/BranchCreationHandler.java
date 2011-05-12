@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -89,15 +90,15 @@ public class BranchCreationHandler extends CommandHandler {
       }
 
       Object object = structuredSelection.getFirstElement();
-      Branch branch = null;
+      IOseeBranch branch = null;
 
-      if (object instanceof Branch) {
-         branch = (Branch) object;
+      if (object instanceof IOseeBranch) {
+         branch = (IOseeBranch) object;
       } else if (object instanceof TransactionRecord) {
          branch = ((TransactionRecord) object).getBranch();
       }
 
-      if (branch == null || branch.getArchiveState().isArchived()) {
+      if (branch == null || BranchManager.getBranch(branch).getArchiveState().isArchived()) {
          return false;
       }
 

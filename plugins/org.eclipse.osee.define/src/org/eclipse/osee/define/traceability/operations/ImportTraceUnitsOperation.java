@@ -16,22 +16,22 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ImportTraceUnitsOperation extends AbstractOperation {
-   private final Branch importToBranch;
+   private final IOseeBranch importToBranch;
    private final boolean isRecursive;
    private final boolean isPersistChanges;
    private final boolean fileWithMultiPaths;
    private final URI source;
    private final String[] traceTypeIds;
 
-   public ImportTraceUnitsOperation(String jobName, Branch importToBranch, URI source, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, String... traceHandlerIds) {
+   public ImportTraceUnitsOperation(String jobName, IOseeBranch importToBranch, URI source, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, String... traceHandlerIds) {
       super("ImportTraceUnitsOperation", Activator.PLUGIN_ID);
       this.importToBranch = importToBranch;
       this.source = source;

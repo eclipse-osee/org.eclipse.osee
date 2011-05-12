@@ -27,17 +27,18 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
@@ -77,9 +78,9 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       OseeEventManager.removeListener(this);
    }
 
-   private Artifact getAssociatedArtifact(Branch objectBranch) throws OseeCoreException {
+   private Artifact getAssociatedArtifact(IOseeBranch branch) throws OseeCoreException {
       Artifact toReturn = null;
-      int artId = objectBranch.getAssociatedArtifactId();
+      int artId = BranchManager.getBranch(branch).getAssociatedArtifactId();
       if (artId > 0) {
          toReturn = ArtifactQuery.getArtifactFromId(artId, AtsUtil.getAtsBranchToken());
       } else {
@@ -91,7 +92,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    /**
     * True if not common branch and branch's associated artifact is a Team Workflow artifact
     */
-   public boolean isApplicable(Branch objectBranch) {
+   public boolean isApplicable(IOseeBranch objectBranch) {
       boolean result = false;
       try {
          if (!AtsUtil.getAtsBranchToken().equals(objectBranch)) {
@@ -106,7 +107,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       return result;
    }
 
-   public Collection<IAccessContextId> getContextId(Branch branch) {
+   public Collection<IAccessContextId> getContextId(IOseeBranch branch) {
       if (branchGuidToContextIdCache.containsKey(branch.getGuid())) {
          return branchGuidToContextIdCache.get(branch.getGuid());
       }

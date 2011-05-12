@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -37,8 +36,7 @@ public class WordTrackedChangesTest {
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
-         WordTrackedChangesTest.class.getSimpleName());
+      FrameworkTestUtil.cleanupSimpleTest(DemoSawBuilds.SAW_Bld_1, WordTrackedChangesTest.class.getSimpleName());
       RenderingUtil.setPopupsAllowed(false);
    }
 
@@ -59,9 +57,9 @@ public class WordTrackedChangesTest {
    public void testWholeWordSaveWithTrackChanges() throws Exception {
       String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
-      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch, getClass().getSimpleName());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, DemoSawBuilds.SAW_Bld_1,
+            getClass().getSimpleName());
       newArt.persist();
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
 
@@ -70,8 +68,7 @@ public class WordTrackedChangesTest {
 
    @After
    public void tearDown() throws Exception {
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid()),
-         WordTrackedChangesTest.class.getSimpleName());
+      FrameworkTestUtil.cleanupSimpleTest(DemoSawBuilds.SAW_Bld_1, WordTrackedChangesTest.class.getSimpleName());
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), WordTrackedChangesTest.class.getSimpleName());
    }
 }

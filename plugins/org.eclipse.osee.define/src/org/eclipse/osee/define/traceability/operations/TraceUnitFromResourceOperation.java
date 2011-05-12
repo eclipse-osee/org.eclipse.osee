@@ -22,12 +22,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Roberto E. Escobar
@@ -64,7 +65,7 @@ public class TraceUnitFromResourceOperation {
       operation.execute(monitor);
    }
 
-   public static void importTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, Branch importToBranch, String... traceUnitHandlerIds) throws OseeCoreException {
+   public static void importTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, IOseeBranch importToBranch, String... traceUnitHandlerIds) throws OseeCoreException {
       checkBranchArguments(importToBranch);
 
       ResourceToTraceUnit operation =
@@ -110,13 +111,13 @@ public class TraceUnitFromResourceOperation {
       }
    }
 
-   private static void checkBranchArguments(Branch importToBranch) throws OseeArgumentException {
+   private static void checkBranchArguments(IOseeBranch importToBranch) throws OseeCoreException {
       if (importToBranch == null) {
          throw new OseeArgumentException("Branch to import into was null");
       }
-      if (!importToBranch.getBranchType().isOfType(BranchType.WORKING)) {
-         throw new OseeArgumentException("Branch to import into was not a working branch: [%s]",
-            importToBranch);
+      BranchType branchType = BranchManager.getBranch(importToBranch).getBranchType();
+      if (!branchType.isOfType(BranchType.WORKING)) {
+         throw new OseeArgumentException("Branch to import into was not a working branch: [%s]", importToBranch);
       }
    }
 }

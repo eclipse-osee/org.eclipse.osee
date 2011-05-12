@@ -28,6 +28,7 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageItemProvider;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -49,7 +50,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class CoverageUtil {
 
-   private static Branch branch = null;
+   private static IOseeBranch branch = null;
    private static List<Listener> branchChangeListeners = new ArrayList<Listener>();
 
    public static boolean getBranchFromUser(boolean force) throws OseeCoreException {
@@ -150,11 +151,11 @@ public class CoverageUtil {
       }
    }
 
-   public static Branch getBranch() {
+   public static IOseeBranch getBranch() {
       return branch;
    }
 
-   public static void setNavigatorSelectedBranch(Branch branch) {
+   public static void setNavigatorSelectedBranch(IOseeBranch branch) {
       CoverageUtil.branch = branch;
       for (Listener listener : branchChangeListeners) {
          listener.handleEvent(null);

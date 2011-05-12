@@ -19,6 +19,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,8 +64,8 @@ public class CopyHandler extends AbstractHandler {
                   selectionObject = ((Match) object).getElement();
                }
 
-               if (selectionObject instanceof Branch) {
-                  names.add(((Branch) selectionObject).getName());
+               if (selectionObject instanceof IOseeBranch) {
+                  names.add(((IOseeBranch) selectionObject).getName());
                } else if (selectionObject instanceof Artifact) {
                   Artifact artifact = (Artifact) selectionObject;
                   names.add(artifact.getName());

@@ -21,11 +21,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.data.RequirementData;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -58,7 +58,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private int pathPrefixLength;
    private final boolean writeOutResults;
 
-   public ScriptTraceabilityOperation(File file, Branch branch, boolean writeOutResults) throws IOException {
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults) throws IOException {
       super("Importing Traceability", DefinePlugin.PLUGIN_ID);
       this.file = file;
       this.requirementData = new RequirementData(branch);

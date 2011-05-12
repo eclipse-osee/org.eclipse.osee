@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -79,7 +80,7 @@ public class DemoDbUtil {
       return getArtTypeRequirements(CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
-   public static Collection<Artifact> getArtTypeRequirements(IArtifactType artifactType, String artifactNameStr, Branch branch) throws OseeCoreException {
+   public static Collection<Artifact> getArtTypeRequirements(IArtifactType artifactType, String artifactNameStr, IOseeBranch branch) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
          "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       Collection<Artifact> arts =

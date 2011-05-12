@@ -15,7 +15,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractSelectionChangedHandler;
@@ -36,7 +36,8 @@ public class OpenBranchGraph extends AbstractSelectionChangedHandler {
       try {
          ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection();
          if (selection instanceof IStructuredSelection) {
-            List<Branch> branches = Handlers.getBranchesFromStructuredSelection((IStructuredSelection) selection);
+            List<? extends IOseeBranch> branches =
+               Handlers.getBranchesFromStructuredSelection((IStructuredSelection) selection);
             if (!branches.isEmpty()) {
                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
                   new BranchGraphEditorInput(branches.iterator().next()), BranchGraphEditor.EDITOR_ID);

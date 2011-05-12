@@ -12,11 +12,12 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
@@ -36,9 +37,9 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       dataList.add(aritfactType.getId());
-      dataList.add(branch.getId());
+      dataList.add(BranchManager.getBranchId(branch));
       dataList.add(relationTypeId);
 
       return sql;
@@ -50,7 +51,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getTableSql(List<Object> dataList, Branch branch) {
+   public String getTableSql(List<Object> dataList, IOseeBranch branch) {
       return tables;
    }
 

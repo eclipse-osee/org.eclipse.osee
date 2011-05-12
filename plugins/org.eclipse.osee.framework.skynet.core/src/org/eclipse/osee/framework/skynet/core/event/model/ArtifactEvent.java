@@ -59,7 +59,7 @@ public class ArtifactEvent extends FrameworkEvent {
       return relationReorderRecords;
    }
 
-   public boolean isForBranch(Branch branch) {
+   public boolean isForBranch(IOseeBranch branch) {
       return getBranchGuid().equals(branch.getGuid());
    }
 

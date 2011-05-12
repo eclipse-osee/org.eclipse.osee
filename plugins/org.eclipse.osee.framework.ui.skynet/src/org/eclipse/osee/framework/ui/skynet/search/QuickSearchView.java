@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.SearchOptions;
@@ -82,7 +83,7 @@ public class QuickSearchView extends GenericViewPart implements Listener {
       if (memento != null) {
          if (Widgets.isAccessible(searchComposite)) {
             memento.putString(LAST_QUERY_KEY_ID, searchComposite.getQuery());
-            Branch branch = branchSelect.getData();
+            IOseeBranch branch = branchSelect.getData();
             if (branch != null) {
                memento.putString(LAST_BRANCH_GUID, branch.getGuid());
             }
@@ -229,7 +230,7 @@ public class QuickSearchView extends GenericViewPart implements Listener {
    public void handleEvent(Event event) {
       if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
          branchLabel.setText("");
-         final Branch branch = branchSelect.getData();
+         final IOseeBranch branch = branchSelect.getData();
          if (branch == null) {
             branchLabel.setText("Error: Must Select a Branch");
          } else if (Widgets.isAccessible(searchComposite) && searchComposite.isExecuteSearchEvent(event) && Widgets.isAccessible(optionsComposite)) {

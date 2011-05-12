@@ -16,7 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,12 +29,12 @@ import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
  * @author Roberto E. Escobar
  */
 public class OutfileToArtifactOperation {
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final URI[] filesToImport;
    private final List<Artifact> results;
    private final List<URI> filesWithErrors;
 
-   public OutfileToArtifactOperation(Branch branch, URI... filesToImport) {
+   public OutfileToArtifactOperation(IOseeBranch branch, URI... filesToImport) {
       this.branch = branch;
       this.filesToImport = filesToImport;
       this.results = new ArrayList<Artifact>();

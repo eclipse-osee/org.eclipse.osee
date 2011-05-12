@@ -16,6 +16,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -70,11 +71,11 @@ public abstract class GeneralBranchHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return !branches.isEmpty() && AccessControlManager.isOseeAdmin();
    }
 
-   private String buildDialogMessage(List<Branch> selectedBranches, String actionDesc) {
+   private String buildDialogMessage(List<? extends IOseeBranch> selectedBranches, String actionDesc) {
       StringBuilder branchesStatement = new StringBuilder();
       branchesStatement.append(String.format("Are you sure you want to %s branch(es): ", actionDesc));
       branchesStatement.append(Strings.buildStatment(selectedBranches));

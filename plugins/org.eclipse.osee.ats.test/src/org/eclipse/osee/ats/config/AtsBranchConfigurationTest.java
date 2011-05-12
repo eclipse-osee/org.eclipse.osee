@@ -279,11 +279,11 @@ public class AtsBranchConfigurationTest {
       Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
    }
 
-   public static void cleanupBranchTest(IOseeBranch testType) throws Exception {
-      String namespace = "org.branchTest." + testType.getName().toLowerCase();
+   public static void cleanupBranchTest(IOseeBranch branch) throws Exception {
+      String namespace = "org.branchTest." + branch.getName().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
       Artifact aArt =
-         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, testType.getName() + " Req Changes",
+         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, branch.getName() + " Req Changes",
             AtsUtil.getAtsBranch());
       if (aArt != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -301,7 +301,7 @@ public class AtsBranchConfigurationTest {
       if (arts.size() > 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact verArt : arts) {
-            if (verArt.getName().contains(testType.getName())) {
+            if (verArt.getName().contains(branch.getName())) {
                verArt.deleteAndPersist(transaction, true);
             }
          }
@@ -310,7 +310,7 @@ public class AtsBranchConfigurationTest {
 
       // Delete Team Definitions
       Artifact art =
-         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, testType.getName(),
+         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, branch.getName(),
             AtsUtil.getAtsBranch());
       if (art != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -320,7 +320,7 @@ public class AtsBranchConfigurationTest {
 
       // Delete AIs
       art =
-         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, testType.getName(),
+         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, branch.getName(),
             AtsUtil.getAtsBranch());
       if (art != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -347,17 +347,13 @@ public class AtsBranchConfigurationTest {
          BranchManager.refreshBranches();
          // delete working branches
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
-            if (workingBranch.getName().contains(testType.getName())) {
+            if (workingBranch.getName().contains(branch.getName())) {
                BranchManager.purgeBranch(workingBranch);
                TestUtil.sleep(2000);
             }
          }
-         // delete baseline branch
-         Branch branch = BranchManager.getBranchByGuid(testType.getGuid());
-         if (branch != null) {
-            BranchManager.purgeBranch(branch);
-            TestUtil.sleep(2000);
-         }
+         BranchManager.purgeBranch(branch);
+         TestUtil.sleep(2000);
 
       } catch (BranchDoesNotExist ex) {
          // do nothing

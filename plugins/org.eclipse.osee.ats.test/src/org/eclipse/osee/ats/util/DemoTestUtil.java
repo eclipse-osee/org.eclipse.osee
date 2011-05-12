@@ -34,13 +34,11 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -62,10 +60,9 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
-      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
-
       Collection<Artifact> robotArtifacts =
-         ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%", branch);
+         ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%",
+            DemoSawBuilds.SAW_Bld_1);
       if (robotArtifacts.size() < 6) {
          return new Result(
             String.format(

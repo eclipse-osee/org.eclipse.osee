@@ -15,13 +15,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.junit.Assert;
 
 /**
  * @author Jeff C. Phillips
@@ -30,10 +27,9 @@ public class ReplaceWithAttributeTest {
 
    @org.junit.Test
    public void testReplaceAttributeVersion() throws Exception {
-      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
-      Assert.assertNotNull(branch);
       Artifact artifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch, getClass().getSimpleName());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
+            getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Name"));
       artifact.persist();
 

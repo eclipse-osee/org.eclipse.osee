@@ -26,9 +26,9 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -133,7 +133,7 @@ public class CoverageUnitPersistTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
       }, mergeItems);

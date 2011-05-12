@@ -13,8 +13,6 @@ package org.eclipse.osee.coverage.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
@@ -22,15 +20,12 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -108,13 +103,8 @@ public class CoverageTestUtil {
       }
    }
 
-   public static Branch getTestBranch() {
-      try {
-         return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return null;
+   public static IOseeBranch getTestBranch() {
+      return DemoSawBuilds.SAW_Bld_1;
    }
 
    public static Artifact getSelectedCoveragePackageFromDialog() throws OseeCoreException {

@@ -13,7 +13,6 @@ package org.eclipse.osee.coverage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -34,8 +33,8 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.vcast.IVectorCastCoverageImportProvider;
 import org.eclipse.osee.coverage.vcast.VectorCastAdaCoverageImporter;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
@@ -45,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -163,7 +163,7 @@ public class VectorCastImportTest {
          }
 
          @Override
-         public Branch getBranch() {
+         public IOseeBranch getBranch() {
             return CoverageTestUtil.getTestBranch();
          }
 

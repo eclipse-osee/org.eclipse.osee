@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -35,7 +35,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
  * @author Ryan Schmitt
  */
 public class PurgeTransactionTest {
-   private Branch branch;
+   private IOseeBranch branch;
    Collection<Artifact> softArts;
    private SkynetTransaction createTransaction;
    private SkynetTransaction modifyTransaction;
@@ -66,7 +66,7 @@ public class PurgeTransactionTest {
    }
 
    private void init() throws Exception {
-      branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2);
+      branch = DemoSawBuilds.SAW_Bld_2;
       preCreateCount = new HashMap<String, Integer>();
       preModifyCount = new HashMap<String, Integer>();
       postModifyPurgeCount = new HashMap<String, Integer>();

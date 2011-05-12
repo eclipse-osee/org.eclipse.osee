@@ -74,7 +74,7 @@ public class ArtifactTypeManager {
       return getAllTypes();
    }
 
-   public static Collection<ArtifactType> getConcreteArtifactTypes(Branch branch) throws OseeCoreException {
+   public static Collection<ArtifactType> getConcreteArtifactTypes(IOseeBranch branch) throws OseeCoreException {
       Collection<ArtifactType> types = getAllTypes();
       Iterator<ArtifactType> iterator = types.iterator();
       while (iterator.hasNext()) {

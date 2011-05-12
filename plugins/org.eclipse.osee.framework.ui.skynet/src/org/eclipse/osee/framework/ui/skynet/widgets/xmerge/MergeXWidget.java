@@ -555,8 +555,12 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
       @Override
       public void run() {
          if (sourceBranch.getBranchState().isRebaselineInProgress()) {
-            ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
-            BranchManager.completeUpdateBranch(conflictManager, true, false);
+            try {
+               ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
+               BranchManager.completeUpdateBranch(conflictManager, true, false);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       }
    }

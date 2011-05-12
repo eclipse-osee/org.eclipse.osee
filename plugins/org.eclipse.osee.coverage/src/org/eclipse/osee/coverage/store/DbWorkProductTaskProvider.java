@@ -19,8 +19,8 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.model.WorkProductTask;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,10 +32,10 @@ import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
 
    private CoveragePackage coveragePackage;
-   private final Branch branch;
+   private final IOseeBranch branch;
    List<WorkProductAction> actions = new ArrayList<WorkProductAction>();
 
-   public DbWorkProductTaskProvider(Branch branch) {
+   public DbWorkProductTaskProvider(IOseeBranch branch) {
       this.branch = branch;
    }
 
@@ -73,7 +73,7 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
       }
    }
 
-   private void checkForErrorCase(List<String> relatedActionGuids, List<Artifact> relatedArtifacts, Branch branch) {
+   private void checkForErrorCase(List<String> relatedActionGuids, List<Artifact> relatedArtifacts, IOseeBranch branch) {
       boolean found = false;
       for (String guid : relatedActionGuids) {
          for (Artifact art : relatedArtifacts) {

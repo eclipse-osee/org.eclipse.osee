@@ -13,10 +13,8 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -135,8 +133,7 @@ public class BranchStateTest {
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
-         ConflictManagerExternal conflictManager =
-            new ConflictManagerExternal(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), workingBranch);
+         ConflictManagerExternal conflictManager = new ConflictManagerExternal(DemoSawBuilds.SAW_Bld_1, workingBranch);
          BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
@@ -253,8 +250,8 @@ public class BranchStateTest {
       Artifact sameArtifact = null;
       try {
          baseArtifact =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
-               BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), "Test Object");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, DemoSawBuilds.SAW_Bld_1,
+               "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist();
 

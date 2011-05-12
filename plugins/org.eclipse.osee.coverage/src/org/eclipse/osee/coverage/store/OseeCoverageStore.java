@@ -16,9 +16,9 @@ import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,11 +32,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public abstract class OseeCoverageStore extends CoverageStore {
    protected Artifact artifact;
-   protected Branch branch;
+   protected IOseeBranch branch;
    private final IArtifactType artifactType;
    private final ICoverage coverage;
 
-   public OseeCoverageStore(ICoverage coverage, IArtifactType artifactType, Branch branch) {
+   public OseeCoverageStore(ICoverage coverage, IArtifactType artifactType, IOseeBranch branch) {
       super(coverage);
       this.coverage = coverage;
       this.artifactType = artifactType;
@@ -88,8 +88,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
 
    public abstract Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException;
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branch;
    }
-
 }

@@ -18,10 +18,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -195,8 +195,8 @@ public class PolicyDialog extends Dialog {
       String name = "";
       if (object instanceof Artifact) {
          name = ((Artifact) object).getName();
-      } else if (object instanceof Branch) {
-         name = ((Branch) object).getName();
+      } else if (object instanceof IOseeBranch) {
+         name = ((IOseeBranch) object).getName();
       }
       return name;
    }

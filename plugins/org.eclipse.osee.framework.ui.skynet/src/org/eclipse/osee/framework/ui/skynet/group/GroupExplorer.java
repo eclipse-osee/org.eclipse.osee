@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -117,7 +118,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          @Override
          public void handleEvent(Event event) {
             try {
-               branch = branchSelect.getData();
+               branch = BranchManager.getBranch(branchSelect.getData());
                refresh();
                groupExpDnd.setBranch(branch);
             } catch (Exception ex) {
@@ -438,7 +439,11 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       super.saveState(memento);
       memento = memento.createChild(INPUT);
       if (branch != null) {
-         memento.putInteger(BRANCH_ID, branch.getId());
+         try {
+            memento.putInteger(BRANCH_ID, BranchManager.getBranchId(branch));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
       }
    }
 

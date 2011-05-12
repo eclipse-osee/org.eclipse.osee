@@ -131,8 +131,6 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-         Branch saw1Branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
-
          // Import all requirements on SAW_Bld_1 Branch
          demoDbImportReqsTx();
 
@@ -140,8 +138,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Create traceability between System, Subsystem and Software requirements
          SkynetTransaction demoDbTraceability =
-            new SkynetTransaction(saw1Branch, "Populate Demo DB - Create Traceability");
-         demoDbTraceabilityTx(demoDbTraceability, saw1Branch);
+            new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, "Populate Demo DB - Create Traceability");
+         demoDbTraceabilityTx(demoDbTraceability, DemoSawBuilds.SAW_Bld_1);
          demoDbTraceability.execute();
 
          DemoDbUtil.sleep(5000);
@@ -207,9 +205,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       try {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
          Branch childBranch =
-            BranchManager.createBaselineBranch(parentBranch, DemoSawBuilds.SAW_Bld_2,
+            BranchManager.createBaselineBranch(DemoSawBuilds.SAW_Bld_1, DemoSawBuilds.SAW_Bld_2,
                UserManager.getUser(SystemUser.OseeSystem));
 
          DemoDbUtil.sleep(5000);
@@ -500,7 +497,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void demoDbTraceabilityTx(SkynetTransaction transaction, Branch branch) {
+   private void demoDbTraceabilityTx(SkynetTransaction transaction, IOseeBranch branch) {
       try {
          Collection<Artifact> systemArts =
             DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SystemRequirement, "Robot", branch);

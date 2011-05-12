@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
  */
 public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery {
    private final FilterModelList filterList;
-   private final Branch branch;
+   private final IOseeBranch branch;
    private String criteriaLabel = "";
 
-   public FilterArtifactSearchQuery(FilterModelList filterList, Branch branch) {
+   public FilterArtifactSearchQuery(FilterModelList filterList, IOseeBranch branch) {
       this.filterList = filterList;
       this.branch = branch;
    }

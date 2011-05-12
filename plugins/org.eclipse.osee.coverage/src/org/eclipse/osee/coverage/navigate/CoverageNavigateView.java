@@ -22,7 +22,7 @@ import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -85,7 +85,7 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
          @Override
          public void handleEvent(Event event) {
             try {
-               Branch selectedBranch = xBranchSelectWidget.getData();
+               IOseeBranch selectedBranch = xBranchSelectWidget.getData();
                if (selectedBranch != null) {
                   CoverageUtil.setNavigatorSelectedBranch(selectedBranch);
                }

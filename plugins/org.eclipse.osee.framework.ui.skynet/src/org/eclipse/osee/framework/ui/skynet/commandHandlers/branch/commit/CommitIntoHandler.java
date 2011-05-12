@@ -16,6 +16,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -68,7 +69,7 @@ public class CommitIntoHandler extends CommitHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return branches.size() == 1 && AccessControlManager.isOseeAdmin();
    }
 

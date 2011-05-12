@@ -15,8 +15,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -123,7 +123,7 @@ public class User extends Artifact {
       setSetting(CoreAttributeTypes.FavoriteBranch.getName(), favoriteBranch.getGuid());
    }
 
-   public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
+   public boolean isFavoriteBranch(IOseeBranch branch) throws OseeCoreException {
       Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          if (branch.getGuid().equals(attribute.getValue())) {

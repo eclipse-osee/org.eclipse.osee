@@ -29,9 +29,9 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TestRunStorageKey;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
@@ -264,14 +264,14 @@ public class OutfileImportPage extends WizardDataTransferPage {
    @Override
    protected boolean validateDestinationGroup() {
       boolean toReturn = super.validateDestinationGroup();
-      Branch branch = branchSelect.getData();
+      IOseeBranch branch = branchSelect.getData();
       if (branch == null) {
          setMessage(null);
          setErrorMessage("Please select a working branch. Cannot import into a null branch.");
          toReturn &= false;
       } else {
          try {
-            if (!branch.hasParentBranch()) {
+            if (!BranchManager.getBranch(branch).hasParentBranch()) {
                setMessage(null);
                setErrorMessage("Please select a working branch. Cannot import into a top-level branch.");
                toReturn &= false;
@@ -303,10 +303,10 @@ public class OutfileImportPage extends WizardDataTransferPage {
             branchIds = new String[0];
          }
 
-         Branch branch = branchSelect.getData();
+         IOseeBranch branch = branchSelect.getData();
          try {
-            if (branch != null && branch.hasParentBranch()) {
-               String lastBranchSelected = Integer.toString(branch.getId());
+            if (branch != null && BranchManager.getBranch(branch).hasParentBranch()) {
+               String lastBranchSelected = Integer.toString(BranchManager.getBranchId(branch));
                branchIds = addToHistory(branchIds, lastBranchSelected);
 
                settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);

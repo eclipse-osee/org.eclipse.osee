@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -69,9 +70,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       private IProgressMonitor monitor;
       private final String artifactName;
       private final XResultData rd = new XResultData();
-      private final Branch branch;
+      private final IOseeBranch branch;
 
-      public ActionToArtifactImpactJob(String artifactName, Branch branch) {
+      public ActionToArtifactImpactJob(String artifactName, IOseeBranch branch) {
          super("Searching \"" + artifactName + "\"...");
          this.artifactName = artifactName;
          this.branch = branch;
@@ -114,7 +115,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             processArts.addAll(srchArts);
          }
          int x = 1;
-         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getShortName() + "\"");
+         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getName() + "\"");
 
          HashCollection<Artifact, TransactionRecord> transactionMap =
             ChangeManager.getModifingTransactions(processArts);

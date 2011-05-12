@@ -77,7 +77,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    public static BranchAccessObject getBranchAccessObjectFromCache(IOseeBranch branch) throws OseeCoreException {
-      return cache.get(BranchManager.getBranch(branch).getId());
+      return cache.get(BranchManager.getBranchId(branch));
    }
 
    @Override

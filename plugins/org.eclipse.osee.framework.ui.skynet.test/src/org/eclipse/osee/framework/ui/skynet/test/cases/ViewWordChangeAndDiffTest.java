@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -119,15 +119,15 @@ public final class ViewWordChangeAndDiffTest {
       TestUtil.severeLoggingEnd(severeLoggingMonitor);
    }
 
-   private Branch getTestBranch() throws OseeCoreException {
+   private IOseeBranch getTestBranch() throws OseeCoreException {
       // get the changes on the specified branch
       if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2)) {
-         return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2);
+         return DemoSawBuilds.SAW_Bld_2;
       }
-      return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
+      return DemoSawBuilds.SAW_Bld_1;
    }
 
-   private static Collection<Change> getChanges(Branch testBranch) throws OseeCoreException {
+   private static Collection<Change> getChanges(IOseeBranch testBranch) throws OseeCoreException {
       Collection<Change> changes = new ArrayList<Change>();
       IOperation operation = ChangeManager.comparedToParent(testBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);

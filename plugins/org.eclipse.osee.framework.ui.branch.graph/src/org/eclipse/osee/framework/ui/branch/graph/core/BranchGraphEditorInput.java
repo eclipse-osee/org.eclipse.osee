@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.PlatformUI;
@@ -24,15 +24,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class BranchGraphEditorInput implements IEditorInput {
 
-   private final Branch branch;
+   private final IOseeBranch branch;
    private TransactionRecord transactionId;
 
-   public BranchGraphEditorInput(Branch branch) {
+   public BranchGraphEditorInput(IOseeBranch branch) {
       this.branch = branch;
    }
 
    public BranchGraphEditorInput() throws OseeCoreException {
-      this(BranchManager.getSystemRootBranch());
+      this(CoreBranches.SYSTEM_ROOT);
    }
 
    @Override
@@ -68,7 +68,7 @@ public class BranchGraphEditorInput implements IEditorInput {
       return transactionId;
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branch;
    }
 

@@ -40,8 +40,8 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -332,8 +332,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    @Override
-   public Branch getBranch() throws OseeCoreException {
+   public IOseeBranch getBranch() throws OseeCoreException {
       return xCoverageViewer.getSaveable().getBranch();
    }
-
 }

@@ -18,8 +18,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -37,7 +37,7 @@ public class TestUnitData extends BaseTraceDataCache {
    private final HashMap<String, Artifact> testProcedureMap;
    private final HashMap<String, Artifact> testSupportMap;
 
-   public TestUnitData(Branch branch) {
+   public TestUnitData(IOseeBranch branch) {
       super("Test Unit Data", branch);
       this.testCaseMap = new HashMap<String, Artifact>();
       this.testProcedureMap = new HashMap<String, Artifact>();

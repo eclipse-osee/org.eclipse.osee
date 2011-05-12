@@ -30,8 +30,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -139,8 +139,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       }
    }
 
-   private Branch getSelectedBranch() {
-      Branch branch = branchSelect.getData();
+   private IOseeBranch getSelectedBranch() {
+      IOseeBranch branch = branchSelect.getData();
       if (branch == null) {
          branch = BranchManager.getLastBranch();
       }

@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,8 +38,8 @@ public class ChangeReportHandler extends AbstractHandler {
          try {
             if (selectedObject instanceof TransactionRecord) {
                ChangeUiUtil.open((TransactionRecord) selectedObject);
-            } else if (selectedObject instanceof Branch) {
-               ChangeUiUtil.open((Branch) selectedObject);
+            } else if (selectedObject instanceof IOseeBranch) {
+               ChangeUiUtil.open((IOseeBranch) selectedObject);
             }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -62,7 +62,7 @@ public class ChangeReportHandler extends AbstractHandler {
 
          if (selectedObject instanceof TransactionRecord) {
             enabled = ((TransactionRecord) selectedObject).getTxType() != TransactionDetailsType.Baselined;
-         } else if (selectedObject instanceof Branch) {
+         } else if (selectedObject instanceof IOseeBranch) {
             enabled = true;
          }
       }

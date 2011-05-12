@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.util;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -48,7 +46,7 @@ public class FrameworkTestUtil {
    /**
     * Creates a simple artifact and adds it to the root artifact default hierarchical relation
     */
-   public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, Branch branch) throws OseeCoreException {
+   public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, IOseeBranch branch) throws OseeCoreException {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
       softArt.addAttribute(CoreAttributeTypes.Subsystem, "Electrical");
@@ -57,7 +55,7 @@ public class FrameworkTestUtil {
       return softArt;
    }
 
-   public static Collection<Artifact> createSimpleArtifacts(IArtifactType artifactType, int numArts, String name, Branch branch) throws OseeCoreException {
+   public static Collection<Artifact> createSimpleArtifacts(IArtifactType artifactType, int numArts, String name, IOseeBranch branch) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (int x = 1; x < numArts + 1; x++) {
          arts.add(createSimpleArtifact(artifactType, name + " " + x, branch));

@@ -13,8 +13,8 @@ package org.eclipse.osee.coverage.util;
 import java.util.Collection;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -31,5 +31,5 @@ public interface ISaveable {
 
    public Result isEditable();
 
-   public Branch getBranch() throws OseeCoreException;
+   public IOseeBranch getBranch() throws OseeCoreException;
 }

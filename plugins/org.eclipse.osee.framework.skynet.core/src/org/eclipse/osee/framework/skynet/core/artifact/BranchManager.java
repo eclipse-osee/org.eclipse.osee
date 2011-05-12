@@ -225,7 +225,7 @@ public class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   public static void purgeBranch(final Branch branch) throws OseeCoreException {
+   public static void purgeBranch(final IOseeBranch branch) throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
    }
 
@@ -248,20 +248,22 @@ public class BranchManager {
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
     */
-   public static Job deleteBranch(final Branch branch) {
+   public static Job deleteBranch(final IOseeBranch branch) {
       return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
    }
 
-   public static IStatus deleteBranchAndPend(final Branch branch) {
+   public static IStatus deleteBranchAndPend(final IOseeBranch branch) {
       return Operations.executeWork(new DeleteBranchOperation(branch));
    }
 
    /**
     * Delete branches from the system. (sets branch state to deleted. operation is undo-able)
+    * 
+    * @throws OseeCoreException
     */
-   public static Job deleteBranch(final List<Branch> branches) {
+   public static Job deleteBranch(final List<? extends IOseeBranch> branches) {
       List<IOperation> ops = new ArrayList<IOperation>();
-      for (Branch branch : branches) {
+      for (IOseeBranch branch : branches) {
          ops.add(new DeleteBranchOperation(branch));
       }
       return Operations.executeAsJob(new CompositeOperation("Deleting multiple branches...", Activator.PLUGIN_ID, ops),
@@ -465,7 +467,7 @@ public class BranchManager {
       return getCommonBranch();
    }
 
-   public static Branch getLastBranch() {
+   public static IOseeBranch getLastBranch() {
       if (instance.lastBranch == null) {
          instance.initializeLastBranchValue();
       }

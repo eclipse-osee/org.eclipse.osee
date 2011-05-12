@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -118,7 +119,7 @@ public class AtsBranchCommitJob extends Job {
       return Status.OK_STATUS;
    }
 
-   private void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
+   private void commit(boolean commitPopup, IOseeBranch sourceBranch, IOseeBranch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       boolean branchCommitted = false;
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
 

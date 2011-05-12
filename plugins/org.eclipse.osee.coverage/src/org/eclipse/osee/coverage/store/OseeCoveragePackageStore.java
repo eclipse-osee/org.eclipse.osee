@@ -31,12 +31,12 @@ import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -67,7 +67,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       load(coverageOptionManager);
    }
 
-   public OseeCoveragePackageStore(CoveragePackage coveragePackage, Branch branch) {
+   public OseeCoveragePackageStore(CoveragePackage coveragePackage, IOseeBranch branch) {
       super(coveragePackage, CoverageArtifactTypes.CoveragePackage, branch);
       this.coveragePackage = coveragePackage;
    }
@@ -76,7 +76,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       return coveragePackage;
    }
 
-   public static OseeCoveragePackageStore get(CoveragePackage coveragePackage, Branch branch) {
+   public static OseeCoveragePackageStore get(CoveragePackage coveragePackage, IOseeBranch branch) {
       return new OseeCoveragePackageStore(coveragePackage, branch);
    }
 
@@ -225,7 +225,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       return coveragePackage.isEditable();
    }
 
-   public static Collection<Artifact> getCoveragePackageArtifacts(Branch branch) throws OseeCoreException {
+   public static Collection<Artifact> getCoveragePackageArtifacts(IOseeBranch branch) throws OseeCoreException {
       return ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoveragePackage, branch);
    }
 

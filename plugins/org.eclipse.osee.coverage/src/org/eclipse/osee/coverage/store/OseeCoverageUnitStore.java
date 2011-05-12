@@ -28,9 +28,9 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -60,7 +60,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       load(coverageOptionManager);
    }
 
-   public OseeCoverageUnitStore(CoverageUnit coverageUnit, Branch branch) {
+   public OseeCoverageUnitStore(CoverageUnit coverageUnit, IOseeBranch branch) {
       super(coverageUnit,
          coverageUnit.isFolder() ? CoverageArtifactTypes.CoverageFolder : CoverageArtifactTypes.CoverageUnit, branch);
       this.coverageUnit = coverageUnit;
@@ -71,7 +71,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       return unitStore.getCoverageUnit();
    }
 
-   public static OseeCoverageUnitStore get(CoverageUnit coverageUnit, Branch branch) {
+   public static OseeCoverageUnitStore get(CoverageUnit coverageUnit, IOseeBranch branch) {
       return new OseeCoverageUnitStore(coverageUnit, branch);
    }
 

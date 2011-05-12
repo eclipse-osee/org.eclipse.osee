@@ -14,7 +14,7 @@ import java.io.File;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
@@ -123,7 +123,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       return directoryFileSelector.getFile();
    }
 
-   public Branch getSelectedBranch() {
+   public IOseeBranch getSelectedBranch() {
       return branchSelectComposite.getSelectedBranch();
    }
 

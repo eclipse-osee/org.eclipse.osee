@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 public class ArtifactQuery {
 
    public static Artifact getArtifactFromToken(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
-      return getArtifactFromId(artifactToken.getGuid(), BranchManager.getBranch(branch));
+      return getArtifactFromId(artifactToken.getGuid(), branch);
    }
 
    public static Artifact getArtifactFromToken(EventBasicGuidArtifact guidArt) throws OseeCoreException {

@@ -14,11 +14,8 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import java.util.Collection;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -39,7 +36,7 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testCreateCsvArtifact() throws Exception {
-      CsvArtifact csv = CsvArtifact.getCsvArtifact(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), true);
+      CsvArtifact csv = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_1, true);
       assertEquals(csv.getCsvData(), "");
       csv.getArtifact().setName(id);
       csv.setCsvData(csvData);
@@ -48,7 +45,7 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testgetCsvArtifactAndAppendData() throws Exception {
-      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), false);
+      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_1, false);
       assertNotNull(csvArt);
       assertEquals(csvData, csvArt.getCsvData());
       csvArt.appendData(appendData);
@@ -57,7 +54,7 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testCsvGetData() throws Exception {
-      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), false);
+      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_1, false);
       assertNotNull(csvArt);
       assertEquals(csvData + "\n" + appendData, csvArt.getCsvData());
    }
@@ -68,8 +65,7 @@ public class CsvArtifactTest {
    }
 
    private void cleanup() throws Exception {
-      Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), EXCLUDE_DELETED);
+      Collection<Artifact> arts = ArtifactQuery.getArtifactListFromName(id, DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

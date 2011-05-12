@@ -16,13 +16,13 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -67,7 +67,7 @@ public class TestRunOperator {
       }
    }
 
-   public static TestRunOperator getNewArtifactWithOperator(Branch branch) throws OseeCoreException {
+   public static TestRunOperator getNewArtifactWithOperator(IOseeBranch branch) throws OseeCoreException {
       return new TestRunOperator(TEST_RUN_ARTIFACT_FETCHER.getNewArtifact(branch));
    }
 

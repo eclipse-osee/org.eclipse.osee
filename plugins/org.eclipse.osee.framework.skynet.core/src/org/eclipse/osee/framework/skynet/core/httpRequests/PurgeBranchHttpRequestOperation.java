@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
@@ -38,9 +39,9 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
    private final Branch branch;
    private final boolean recursive;
 
-   public PurgeBranchHttpRequestOperation(Branch branch, boolean recursive) {
+   public PurgeBranchHttpRequestOperation(IOseeBranch branch, boolean recursive) throws OseeCoreException {
       super("Purge " + branch, Activator.PLUGIN_ID);
-      this.branch = branch;
+      this.branch = BranchManager.getBranch(branch);
       this.recursive = recursive;
    }
 

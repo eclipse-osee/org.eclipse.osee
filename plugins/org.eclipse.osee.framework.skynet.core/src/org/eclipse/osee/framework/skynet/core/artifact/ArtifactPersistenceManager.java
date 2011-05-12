@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,11 +48,11 @@ public class ArtifactPersistenceManager {
    private static final String RELATION_NEW_ON_BRANCH =
       "SELECT count(1) FROM osee_relation_link rel, osee_txs txs WHERE rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
 
-   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) {
+   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       return getSelectArtIdSql(searchCriteria, dataList, null, branch);
    }
 
-   private static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, String alias, Branch branch) {
+   private static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, String alias, IOseeBranch branch) throws OseeCoreException {
       StringBuilder sql = new StringBuilder();
 
       sql.append("SELECT ");
@@ -74,11 +75,11 @@ public class ArtifactPersistenceManager {
       return sql;
    }
 
-   public static String getIdSql(List<ISearchPrimitive> searchCriteria, boolean all, List<Object> dataList, Branch branch) {
+   public static String getIdSql(List<ISearchPrimitive> searchCriteria, boolean all, List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       return getSql(searchCriteria, all, ARTIFACT_ID_SELECT, dataList, branch);
    }
 
-   private static String getSql(List<ISearchPrimitive> searchCriteria, boolean all, String header, List<Object> dataList, Branch branch) {
+   private static String getSql(List<ISearchPrimitive> searchCriteria, boolean all, String header, List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
       StringBuilder sql = new StringBuilder(header);
 
       if (all) {
@@ -118,9 +119,9 @@ public class ArtifactPersistenceManager {
    }
 
    @Deprecated
-   public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws OseeCoreException {
+   public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, IOseeBranch branch, ISearchConfirmer confirmer) throws OseeCoreException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
-      queryParameters.add(branch.getId());
+      queryParameters.add(BranchManager.getBranchId(branch));
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
          queryParameters.toArray(), 100, LoadLevel.FULL, INCLUDE_CACHE, confirmer, null, EXCLUDE_DELETED);
    }

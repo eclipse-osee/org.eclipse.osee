@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -45,7 +46,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return branches.size() == 1;
    }
 }

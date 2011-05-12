@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -23,15 +24,16 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class DeleteBranchOperation extends AbstractOperation {
 
-   private final Branch branch;
+   private final IOseeBranch branch;
 
-   public DeleteBranchOperation(Branch branch) {
+   public DeleteBranchOperation(IOseeBranch branch) {
       super("Delete Branch: " + branch, Activator.PLUGIN_ID);
       this.branch = branch;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      Branch branch = BranchManager.getBranch(this.branch);
       BranchState originalState = branch.getBranchState();
       BranchArchivedState originalArchivedState = branch.getArchiveState();
       try {

@@ -13,19 +13,15 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -48,10 +44,9 @@ public class Artifact_setAttributeValues {
 
    @org.junit.Test
    public void testSetAttributeValues() throws Exception {
-      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
-      Assert.assertNotNull(branch);
       Artifact artifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch, getClass().getSimpleName());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
+            getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, firstSet);
       artifact.persist();
 
@@ -102,17 +97,13 @@ public class Artifact_setAttributeValues {
    }
 
    private Artifact getArtifact() throws Exception {
-      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
-      Assert.assertNotNull(branch);
-      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, EXCLUDE_DELETED).iterator().next();
+      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED).iterator().next();
    }
 
    private static void cleanup() throws Exception {
-      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
-      Assert.assertNotNull(branch);
       Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(), branch,
-            EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(),
+            DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }
