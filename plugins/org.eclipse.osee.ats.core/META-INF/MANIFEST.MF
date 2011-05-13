@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Core
 Bundle-SymbolicName: org.eclipse.osee.ats.core;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.9.9.qualifier
 Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -58,3 +58,4 @@ Export-Package: org.eclipse.osee.ats.core.access,
  org.eclipse.osee.ats.core.workflow.note,
  org.eclipse.osee.ats.core.workflow.transition
 Require-Bundle: org.eclipse.osee.framework.skynet.core
+Bundle-Vendor: Eclipse Open System Engineering Environment

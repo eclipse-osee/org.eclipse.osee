@@ -70,6 +70,7 @@ plugin@org.eclipse.osee.coverage=SVN,url=https://dev.eclipse.org/svnroot/technol
 plugin@org.eclipse.osee.coverage.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.coverage.help.ui
 
 feature@org.eclipse.osee.ats.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=features/org.eclipse.osee.ats.feature
+plugin@org.eclipse.osee.ats.core=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.ats.core
 plugin@org.eclipse.osee.ats=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.ats
 plugin@org.eclipse.osee.ats.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.ats.help.ui
 
