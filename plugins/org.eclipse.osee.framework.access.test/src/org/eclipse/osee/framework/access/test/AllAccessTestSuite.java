@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.access.test;
 
 import org.eclipse.osee.framework.access.test.internal.InternalAccessTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,5 +21,8 @@ import org.junit.runners.Suite;
 InternalAccessTestSuite.class, //
 })
 public class AllAccessTestSuite {
-   // Test Suite Class
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

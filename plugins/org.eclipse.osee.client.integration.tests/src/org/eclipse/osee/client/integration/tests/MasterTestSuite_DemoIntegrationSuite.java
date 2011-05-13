@@ -13,6 +13,7 @@ package org.eclipse.osee.client.integration.tests;
 import java.util.logging.Level;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbInit;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbTests;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -30,6 +31,7 @@ public class MasterTestSuite_DemoIntegrationSuite {
 
    @BeforeClass
    public static void setup() throws Exception {
+      OseeProperties.setIsInTest(true);
       OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO,
          "Starting osee client integration test suite...");
    }

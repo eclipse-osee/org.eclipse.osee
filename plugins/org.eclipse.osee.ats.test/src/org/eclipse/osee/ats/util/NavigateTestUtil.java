@@ -115,8 +115,6 @@ public final class NavigateTestUtil {
    public static void compare(int expectedNumOfType, int actualNumOfType, String expectedStr) {
       if (expectedNumOfType != actualNumOfType) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, expectedStr, null);
-      } else {
-         OseeLog.log(AtsPlugin.class, Level.INFO, expectedStr);
       }
       Assert.assertTrue(expectedStr, actualNumOfType == expectedNumOfType);
    }
@@ -124,8 +122,6 @@ public final class NavigateTestUtil {
    public static void compare(boolean expectedCond, boolean actualCond, String expectedStr) {
       if (expectedCond != actualCond) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, expectedStr, null);
-      } else {
-         OseeLog.log(AtsPlugin.class, Level.INFO, expectedStr);
       }
       Assert.assertTrue(expectedStr, expectedCond == actualCond);
    }

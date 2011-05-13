@@ -58,7 +58,6 @@ public class ImportAIsAndTeamDefinitionsToDb {
    public void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
       for (UserDef dslUserDef : userDefs) {
          String dslUserName = Strings.unquote(dslUserDef.getName());
-         System.out.println("   - Importing User " + dslUserName);
          Artifact userArt = null;
          if (dslUserDef.getUserDefOption().contains("GetOrCreate")) {
             userArt = UserManager.createUser(getOseeUser(dslUserDef), transaction);
@@ -103,7 +102,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    public void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) throws OseeCoreException {
       for (TeamDef dslTeamDef : teamDefs) {
          String dslTeamName = Strings.unquote(dslTeamDef.getName());
-         System.out.println("   - Importing Team " + dslTeamName);
+         //         System.out.println("   - Importing Team " + dslTeamName);
          Artifact newTeam = null;
          if (dslTeamDef.getTeamDefOption().contains("GetOrCreate")) {
             newTeam = getOrCreate(dslTeamName, true, parentArtifact);

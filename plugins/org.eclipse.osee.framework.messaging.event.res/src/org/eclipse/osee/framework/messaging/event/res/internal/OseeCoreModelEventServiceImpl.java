@@ -15,8 +15,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
@@ -47,18 +49,18 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void fail(Throwable th) {
-      System.err.println(getClass().getSimpleName() + " - fail: " + th.getLocalizedMessage());
-      th.printStackTrace();
+      OseeLog.log(Activator.class, Level.SEVERE, th);
+
    }
 
    @Override
    public void sendRemoteEvent(RemoteEvent remoteEvent) throws OseeCoreException {
       ResMessages resMessage = getResMessageType(remoteEvent);
       if (resMessage == null) {
-         System.out.println(String.format("ResEventManager: Unhandled remote event [%s]", remoteEvent));
+         OseeLog.log(Activator.class, Level.INFO, null, "ResEventManager: Unhandled remote event [%s]", resMessage);
       } else if (connectionNode == null) {
-         System.out.println(String.format(
-            "ResEventManager: Connection node was null - unable to send remote event [%s] ", resMessage));
+         OseeLog.log(Activator.class, Level.INFO, null,
+            "ResEventManager: Connection node was null - unable to send remote event [%s]", resMessage);
       } else {
          connectionNode.send(resMessage, remoteEvent, this);
       }
@@ -90,7 +92,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void addFrameworkListener(IFrameworkEventListener frameworkEventListener) {
-      System.out.println("Registering Client for Remote Events\n");
+      OseeLog.log(Activator.class, Level.INFO, "Registering Client for Remote Events");
 
       for (Entry<ResMessages, Boolean> messageEntries : messages.entrySet()) {
          ResMessages resMessageID = messageEntries.getKey();
@@ -101,7 +103,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void removeFrameworkListener(IFrameworkEventListener frameworkEventListener) {
-      System.out.println("De-Registering Client for Remote Events\n");
+      OseeLog.log(Activator.class, Level.INFO, "De-Registering Client for Remote Events");
 
       HashCollection<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners != null) {

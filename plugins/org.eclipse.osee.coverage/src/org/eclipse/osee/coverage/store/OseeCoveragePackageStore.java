@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 
 /**
  * @author Donald G. Dunne
@@ -134,7 +133,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException {
       boolean newCoveragePackage = getArtifact(false) == null;
       getArtifact(true);
-      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
+      //      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
       artifact.setName(coveragePackage.getName());
       coverageEvent.getPackage().setEventType(newCoveragePackage ? CoverageEventType.Added : CoverageEventType.Modified);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Active, coveragePackage.isEditable().isTrue());
@@ -147,12 +146,12 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          }
       }
       artifact.persist(transaction);
-      elapsedTime.end();
+      //      elapsedTime.end();
       return Result.TrueResult;
    }
 
    public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, Collection<ICoverage> coverages) throws OseeCoreException {
-      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save(coverages)");
+      //      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save(coverages)");
       for (ICoverage coverage : coverages) {
          CoverageUnit coverageUnit = null;
          if (coverage instanceof CoverageItem) {
@@ -165,7 +164,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, transaction.getBranch());
          store.save(transaction, coverageEvent);
       }
-      elapsedTime.end();
+      //      elapsedTime.end();
       return Result.TrueResult;
    }
 

@@ -72,6 +72,7 @@ public class AtsBranchConfigurationTest {
       "BranchViaTeamDef");
    public static final IOseeBranch BRANCH_VIA_VERSIONS = TokenFactory.createBranch("AyH_e6damwQgvDhKfBBB",
       "BranchViaVersions");
+   private final boolean DEBUG = false;
 
    private static Collection<String> appendToName(IOseeBranch branch, String... postFixes) {
       Collection<String> data = new ArrayList<String>();
@@ -95,12 +96,16 @@ public class AtsBranchConfigurationTest {
 
    @org.junit.Test
    public void testBranchViaVersions() throws Exception {
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Running testBranchViaVersions...");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Running testBranchViaVersions...");
+      }
 
       // Cleanup from previous run
       cleanupBranchTest(BRANCH_VIA_VERSIONS);
 
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
+      }
 
       // create team definition and actionable item
       String name = BRANCH_VIA_VERSIONS.getName();
@@ -110,14 +115,18 @@ public class AtsBranchConfigurationTest {
       configureAts(namespace, name, versions, actionableItems);
 
       // create main branch
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
+      }
       // Create SAW_Bld_2 branch off SAW_Bld_1
       Branch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_VERSIONS);
 
       TestUtil.sleep(2000);
 
       // configure version to use branch and allow create/commit
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring version to use branch and allow create/commit");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring version to use branch and allow create/commit");
+      }
       TeamDefinitionArtifact teamDef =
          (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
             BRANCH_VIA_VERSIONS.getName(), AtsUtil.getAtsBranch());
@@ -136,7 +145,9 @@ public class AtsBranchConfigurationTest {
       TestUtil.sleep(2000);
 
       // create action and target for version
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action and target for version " + verArtToTarget);
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action and target for version " + verArtToTarget);
+      }
 
       Collection<ActionableItemArtifact> selectedActionableItems =
          ActionableItemManagerCore.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
@@ -156,7 +167,9 @@ public class AtsBranchConfigurationTest {
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
 
       // Transition to desired state
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
+      }
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       dtwm.transitionTo(TeamState.Implement, null, false, transaction);
@@ -169,7 +182,9 @@ public class AtsBranchConfigurationTest {
       createBranch(namespace, teamWf);
 
       // make changes
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
+      }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
       Artifact blk3MainArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
@@ -183,7 +198,9 @@ public class AtsBranchConfigurationTest {
       TestUtil.sleep(2000);
 
       // test change report
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
+      }
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamWf);
       Assert.assertFalse("No changes detected", changeData.isEmpty());
 
@@ -195,13 +212,17 @@ public class AtsBranchConfigurationTest {
    @org.junit.Test
    public void testBranchViaTeamDefinition() throws Exception {
 
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Running testBranchViaTeamDefinition...");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Running testBranchViaTeamDefinition...");
+      }
 
       // Cleanup from previous run
       cleanupBranchTest(BRANCH_VIA_TEAM_DEFINITION);
 
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
-      // create team definition and actionable item
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
+         // create team definition and actionable item
+      }
 
       String name = BRANCH_VIA_TEAM_DEFINITION.getName();
       String namespace = asNamespace(BRANCH_VIA_TEAM_DEFINITION);
@@ -210,14 +231,18 @@ public class AtsBranchConfigurationTest {
       configureAts(namespace, name, versions, actionableItems);
 
       // create main branch
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
+      }
       // Create SAW_Bld_2 branch off SAW_Bld_1
       Branch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_TEAM_DEFINITION);
 
       TestUtil.sleep(2000);
 
       // configure team def to use branch
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring team def to use branch and allow create/commit");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring team def to use branch and allow create/commit");
+      }
       TeamDefinitionArtifact teamDef =
          (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
             BRANCH_VIA_TEAM_DEFINITION.getName(), AtsUtil.getAtsBranch());
@@ -231,7 +256,9 @@ public class AtsBranchConfigurationTest {
       TestUtil.sleep(2000);
 
       // create action,
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action");
+      }
       Collection<ActionableItemArtifact> selectedActionableItems =
          ActionableItemManagerCore.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       Assert.assertFalse(selectedActionableItems.isEmpty());
@@ -248,7 +275,9 @@ public class AtsBranchConfigurationTest {
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
 
       // Transition to desired state
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
+      }
       transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: Transition to desired state");
       dtwm.transitionTo(TeamState.Implement, null, false, transaction);
@@ -259,7 +288,9 @@ public class AtsBranchConfigurationTest {
       createBranch(namespace, teamWf);
 
       // make changes
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
+      }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
       Artifact blk3MainArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
@@ -271,7 +302,9 @@ public class AtsBranchConfigurationTest {
       commitBranch(teamWf);
 
       // test change report
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
+      }
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamWf);
       Assert.assertTrue("No changes detected", !changeData.isEmpty());
 
@@ -281,7 +314,6 @@ public class AtsBranchConfigurationTest {
 
    public static void cleanupBranchTest(IOseeBranch branch) throws Exception {
       String namespace = "org.branchTest." + branch.getName().toLowerCase();
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
       Artifact aArt =
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, branch.getName() + " Req Changes",
             AtsUtil.getAtsBranch());
@@ -361,7 +393,6 @@ public class AtsBranchConfigurationTest {
    }
 
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Commit Branch");
       Job job =
          AtsBranchManager.commitWorkingBranch(teamWf, false, true,
             AtsBranchManagerCore.getWorkingBranch(teamWf).getParentBranch(), true);
@@ -373,7 +404,6 @@ public class AtsBranchConfigurationTest {
    }
 
    public static void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Creating working branch");
       String implementPageId = namespace + ".Implement";
       Result result = AtsBranchManager.createWorkingBranch(teamWf, implementPageId, false);
       if (result.isFalse()) {

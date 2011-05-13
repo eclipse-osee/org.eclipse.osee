@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTestSuite;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeInheritanceTest;
@@ -99,6 +100,7 @@ import org.junit.runners.Suite;
 public class FrameworkCore_Demo_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",

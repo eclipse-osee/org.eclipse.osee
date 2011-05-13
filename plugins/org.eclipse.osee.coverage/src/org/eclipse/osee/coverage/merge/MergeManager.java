@@ -54,7 +54,7 @@ public class MergeManager {
       Collection<? extends ICoverage> children = coverageImport.getChildren();
       int count = 0;
       for (ICoverage importCoverage : children) {
-         System.out.println(String.format("Get merge items from %d/%d - [%s]", count, children.size(), importCoverage));
+         //         System.out.println(String.format("Get merge items from %d/%d - [%s]", count, children.size(), importCoverage));
          processImportCoverage(importCoverage, mergeItems, resultData);
          count++;
       }

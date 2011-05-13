@@ -15,6 +15,8 @@ import org.eclipse.osee.framework.core.test.exception.ExceptionTestSuite;
 import org.eclipse.osee.framework.core.test.internal.InternalCoreTestSuite;
 import org.eclipse.osee.framework.core.test.ops.OpsTestSuite;
 import org.eclipse.osee.framework.core.test.util.UtilCoreTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -29,5 +31,8 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 public class FrameworkCoreTestSuite {
-   // Test Suite Class
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

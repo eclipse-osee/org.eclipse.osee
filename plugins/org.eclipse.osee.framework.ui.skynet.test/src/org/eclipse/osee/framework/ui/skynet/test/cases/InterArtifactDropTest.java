@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
 import org.junit.Before;
 
@@ -112,9 +110,7 @@ public class InterArtifactDropTest {
    }
 
    public static void sleep(long milliseconds) throws Exception {
-      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Sleeping " + milliseconds);
       Thread.sleep(milliseconds);
-      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Awake");
    }
 
 }

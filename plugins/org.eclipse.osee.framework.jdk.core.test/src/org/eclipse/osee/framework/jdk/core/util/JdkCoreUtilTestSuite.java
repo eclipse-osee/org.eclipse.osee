@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import org.eclipse.osee.framework.jdk.core.util.io.IoTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlTestSuite;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,5 +31,8 @@ import org.junit.runners.Suite;
    ReservedCharactersTest.class,
    StringsTest.class,})
 public class JdkCoreUtilTestSuite {
-   // Test Suite Class
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

@@ -152,7 +152,7 @@ public class PurgeArtifacts extends DbTransaction {
 
          OseeLog.log(
             Activator.class,
-            Level.INFO,
+            Level.FINE,
             String.format(
                "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d].  txs vs. total versions [%d vs %d]",
                txsDeletes, relationVersions, attributeVersions, artifactVersions, txDetails,

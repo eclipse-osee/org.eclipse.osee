@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -299,9 +298,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    @Override
    public void update(Object element) {
-      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - update");
+      //      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - update");
       xCoverageViewer.getXViewer().update(element, null);
-      elapsedTime.end();
+      //      elapsedTime.end();
    }
 
    @Override

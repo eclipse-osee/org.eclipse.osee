@@ -15,7 +15,9 @@ import org.eclipse.osee.framework.core.model.test.AllCoreModelTestSuite;
 import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
 import org.eclipse.osee.framework.database.test.DatabaseTestSuite;
 import org.eclipse.osee.framework.jdk.core.JdkCoreTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.lifecycle.test.AllLifecycleTestSuite;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -28,5 +30,8 @@ import org.junit.runners.Suite;
    AllCoreMessageTestSuite.class,
    AllLifecycleTestSuite.class,})
 public class CoreRuntimeFeatureTestsSuite {
-   // Test Suite class
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

@@ -23,6 +23,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
 
+   public boolean DEBUG = false;
+
    public CustomizeDemoTableTestUtil(XViewer viewer) {
       super(viewer);
    }
@@ -32,7 +34,9 @@ public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
     */
    @Override
    public Control createDialogArea(Composite parent) {
-      OseeLog.log(AtsPlugin.class, Level.INFO, "===> Simulating CustomizationView " + "\"...");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "===> Simulating CustomizationView " + "\"...");
+      }
       return super.createDialogArea(parent);
    }
 
@@ -40,7 +44,9 @@ public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
     * for testing purposes - simulate the add all button click
     */
    public void handleAddAllItemButtonClick() {
-      OseeLog.log(AtsPlugin.class, Level.INFO, "===> Simulating CustomizationView Add All Columns" + "\"...");
+      if (DEBUG) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "===> Simulating CustomizationView Add All Columns" + "\"...");
+      }
       super.handleAddAllItem();
       super.handleLoadConfigCust();
    }

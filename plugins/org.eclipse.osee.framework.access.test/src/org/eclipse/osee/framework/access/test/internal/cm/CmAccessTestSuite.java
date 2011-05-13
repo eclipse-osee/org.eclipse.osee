@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal.cm;
 
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,5 +23,8 @@ CmAccessProviderTest.class, //
  * @author Roberto E. Escobar
  */
 public class CmAccessTestSuite {
-   // Test Suite Class
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

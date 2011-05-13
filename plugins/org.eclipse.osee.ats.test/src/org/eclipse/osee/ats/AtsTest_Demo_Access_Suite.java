@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.osee.ats.access.AtsBranchAccessManagerTest;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,5 +22,8 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Demo_Access_Suite {
-   // Tests listed above
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

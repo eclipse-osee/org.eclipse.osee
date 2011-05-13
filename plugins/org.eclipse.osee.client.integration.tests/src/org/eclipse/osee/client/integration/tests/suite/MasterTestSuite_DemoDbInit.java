@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -35,6 +36,7 @@ public class MasterTestSuite_DemoDbInit {
 
    @BeforeClass
    public static void setup() throws Exception {
+      OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       RenderingUtil.setPopupsAllowed(false);

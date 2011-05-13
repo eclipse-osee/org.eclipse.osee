@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.Review_Demo_Suite;
 import org.eclipse.osee.coverage.Coverage_Db_Suite;
 import org.eclipse.osee.define.AllDefineTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.test.AllEventResTestSuite;
 import org.eclipse.osee.framework.skynet.core.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -48,6 +49,7 @@ import org.junit.runners.Suite;
 public class MasterTestSuite_DemoDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",

@@ -76,7 +76,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -159,9 +158,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       List<Collection<Integer>> artIdLists = null;
 
       // Un-comment to process whole Common branch - Normal Mode
-      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
+      //      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
       artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
-      elapsedTime.end();
+      //      elapsedTime.end();
 
       // Un-comment to process specific artifact from common - Test Mode
       // artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(524575)));
@@ -178,11 +177,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          int artSetNum = 1;
          for (Collection<Integer> artIdList : artIdLists) {
             // Don't process all lists if just trying to test this report
-            elapsedTime =
-               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
-                  artIdLists.size()));
+            //            elapsedTime =
+            //               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
+            //                  artIdLists.size()));
             Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
-            elapsedTime.end();
+            //            elapsedTime.end();
             count += artifacts.size();
 
             testArtifactIds(artifacts);

@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperationTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsUtilTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidationTest;
 import org.eclipse.osee.ats.workflow.AtsWorkItemDefinitionTest;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -35,5 +37,8 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Config_Suite {
-   // test provided above
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

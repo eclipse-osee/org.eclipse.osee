@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryPerformanceTests;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryTestProduction;
 import org.junit.Assert;
@@ -27,6 +28,7 @@ public class FrameworkCore_Production_Suite {
 
    @BeforeClass
    public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
       Assert.assertTrue("Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("lba"));
    }

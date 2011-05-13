@@ -13,12 +13,9 @@ package org.eclipse.osee.framework.skynet.core.revision;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.Collection;
 import java.util.LinkedList;
-
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -71,9 +68,7 @@ public class DeletionTest {
    private static final String GET_RELATION_DEBUG =
       "select txs.branch_id, txs.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, rel.rel_link_id, rel.a_art_id, rel.b_art_id FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ?";
 
-   private static final boolean DEBUG =
-      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
-
+   private static final boolean DEBUG = false;
    private static final boolean DELETE_TRANSACTION_TEST = true;
    private static final boolean INDIVIDUAL_DELETE_TEST = true;
 
@@ -362,15 +357,16 @@ public class DeletionTest {
    public static void dumpArtifact(Artifact artifact) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         System.out.println("  Artifact Dump : " + artifact.getName());
-         chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranch().getId(), artifact.getArtId());
-         while (chStmt.next()) {
-            System.out.println(String.format(
-               "      Art Id = %d  Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
-               chStmt.getInt("art_id"), chStmt.getInt("branch_id"), chStmt.getInt("tx_current"),
-               chStmt.getInt("mod_type"), chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id")));
+         if (DEBUG) {
+            System.out.println("  Artifact Dump : " + artifact.getName());
+            chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranch().getId(), artifact.getArtId());
+            while (chStmt.next()) {
+               System.out.println(String.format(
+                  "      Art Id = %d  Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
+                  chStmt.getInt("art_id"), chStmt.getInt("branch_id"), chStmt.getInt("tx_current"),
+                  chStmt.getInt("mod_type"), chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id")));
+            }
          }
-
       } finally {
          chStmt.close();
       }
@@ -379,16 +375,17 @@ public class DeletionTest {
    public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException, OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         System.out.println("  Attribute Dump");
-         chStmt.runPreparedQuery(GET_ATTRIBUTE_DEBUG, attribute.getArtifact().getBranch().getId(), attribute.getId());
-         while (chStmt.next()) {
-            System.out.println(String.format(
-               "        Attribute Id = %d  Art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
-               chStmt.getInt("attr_id"), chStmt.getInt("art_id"), chStmt.getInt("branch_id"),
-               chStmt.getInt("tx_current"), chStmt.getInt("mod_type"), chStmt.getInt("transaction_id"),
-               chStmt.getInt("gamma_id")));
+         if (DEBUG) {
+            System.out.println("  Attribute Dump");
+            chStmt.runPreparedQuery(GET_ATTRIBUTE_DEBUG, attribute.getArtifact().getBranch().getId(), attribute.getId());
+            while (chStmt.next()) {
+               System.out.println(String.format(
+                  "        Attribute Id = %d  Art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
+                  chStmt.getInt("attr_id"), chStmt.getInt("art_id"), chStmt.getInt("branch_id"),
+                  chStmt.getInt("tx_current"), chStmt.getInt("mod_type"), chStmt.getInt("transaction_id"),
+                  chStmt.getInt("gamma_id")));
+            }
          }
-
       } finally {
          chStmt.close();
       }
@@ -397,16 +394,17 @@ public class DeletionTest {
    public static void dumpRelation(RelationLink relation, Artifact artifact) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         System.out.println("  Relation Dump");
-         chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getBranch().getId(), relation.getId());
-         while (chStmt.next()) {
-            System.out.println(String.format(
-               "        Relation Id = %d  a_art_id = %d b_art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
-               chStmt.getInt("rel_link_id"), chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"),
-               chStmt.getInt("branch_id"), chStmt.getInt("tx_current"), chStmt.getInt("mod_type"),
-               chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id")));
+         if (DEBUG) {
+            System.out.println("  Relation Dump");
+            chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getBranch().getId(), relation.getId());
+            while (chStmt.next()) {
+               System.out.println(String.format(
+                  "        Relation Id = %d  a_art_id = %d b_art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
+                  chStmt.getInt("rel_link_id"), chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"),
+                  chStmt.getInt("branch_id"), chStmt.getInt("tx_current"), chStmt.getInt("mod_type"),
+                  chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id")));
+            }
          }
-
       } finally {
          chStmt.close();
       }

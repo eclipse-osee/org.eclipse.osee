@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.access.test.internal;
 
 import org.eclipse.osee.framework.access.test.internal.cm.CmAccessTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,5 +22,8 @@ CmAccessTestSuite.class, //
    OnEditOperationTest.class, //
 })
 public class InternalAccessTestSuite {
-   // Test Suite Class
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

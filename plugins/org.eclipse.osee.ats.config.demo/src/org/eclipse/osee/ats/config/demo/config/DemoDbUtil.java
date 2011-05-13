@@ -59,13 +59,11 @@ public class DemoDbUtil {
    }
 
    public static void sleep(long milliseconds) throws OseeCoreException {
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Sleeping " + milliseconds);
       try {
          Thread.sleep(milliseconds);
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Awake");
    }
 
    public static Result isDbPopulatedWithDemoData(Branch branch) throws OseeCoreException {

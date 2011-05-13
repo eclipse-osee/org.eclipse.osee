@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test;
 
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.search.engine.test.attribute.AttributeTestSuite;
 import org.eclipse.osee.framework.search.engine.test.internal.InternalTestSuite;
 import org.eclipse.osee.framework.search.engine.test.language.LanguageTestSuite;
 import org.eclipse.osee.framework.search.engine.test.utility.UtilityTestSuite;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,5 +32,8 @@ import org.junit.runners.Suite;
 //@formatter:on   
 })
 public class AllSearchEngineTestSuite {
-   // Test Suite Class
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
 }

@@ -8,6 +8,8 @@ package org.eclipse.osee.ote.core.model;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Michael P. Masterson
@@ -23,37 +25,34 @@ public class ModelFinderService {
    }
 
    public void start() {
-      System.out.println("##########################Starting model finder");
+      OseeLog.log(ModelFinderService.class, Level.INFO, "### Starting model finder");
       ModelFinderService.instance = this;
    }
 
    public void stop() {
-      System.out.println("########################### Stopping model finder");
+      OseeLog.log(ModelFinderService.class, Level.INFO, "### Stopping model finder");
       models.clear();
    }
 
    public void addModel(IModel newModel) {
       try {
-         System.out.printf("################################ Adding model %s\n", newModel.getKey());
+         OseeLog.log(ModelFinderService.class, Level.INFO, null, "### Adding model %s\n", newModel.getKey());
          models.put(newModel.getKey(), newModel);
-      }
-      catch (RemoteException ex) {
+      } catch (RemoteException ex) {
          ex.printStackTrace();
       }
    }
 
    public void removeModel(IModel newModel) {
       try {
-         System.out.printf("################################# Removing model %s\n", newModel.getKey());
+         OseeLog.log(ModelFinderService.class, Level.INFO, null, "### Removing model %s\n", newModel.getKey());
          models.remove(newModel.getKey());
-      }
-      catch (RemoteException ex) {
+      } catch (RemoteException ex) {
          ex.printStackTrace();
       }
    }
 
-   public <T extends IModel>  T getModel(ModelKey<T> key)
-   {
+   public <T extends IModel> T getModel(ModelKey<T> key) {
       IModel retVal = models.get(key);
       return (T) retVal;
    }
