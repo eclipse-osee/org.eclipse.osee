@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -373,26 +374,23 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
 
       @Override
-      @SuppressWarnings("unchecked")
-      public void addModelActivityListener(IModelListener listener, ModelKey key) throws RemoteException {
+      public void addModelActivityListener(IModelListener listener, ModelKey<?> key) throws RemoteException {
          env.getModelManager().addModelActivityListener(listener, key);
       }
 
       @Override
-      @SuppressWarnings("unchecked")
-      public void removeModelActivityListener(IModelListener listener, ModelKey key) throws RemoteException {
+      public void removeModelActivityListener(IModelListener listener, ModelKey<?> key) throws RemoteException {
          env.getModelManager().removeModelActivityListener(listener, key);
       }
 
       @Override
-      @SuppressWarnings("unchecked")
-      public List<ModelKey> getRegisteredModels() throws RemoteException {
+      public List<ModelKey<?>> getRegisteredModels() throws RemoteException {
          return env.getModelManager().getRegisteredModels();
       }
 
       @Override
       @SuppressWarnings("unchecked")
-      public Remote getRemoteModel(ModelKey key) throws RemoteException {
+      public Remote getRemoteModel(ModelKey<?> key) throws RemoteException {
          try {
             Class modelClass;
             try {
@@ -410,14 +408,13 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
 
       @Override
-      @SuppressWarnings("unchecked")
-      public void releaseReference(ModelKey key) throws RemoteException {
+      public void releaseReference(ModelKey<?> key) throws RemoteException {
          env.getModelManager().releaseReference(key);
       }
 
       @Override
       @SuppressWarnings("unchecked")
-      public void changeModelState(ModelKey key, ModelState state) throws RemoteException {
+      public void changeModelState(ModelKey<?> key, ModelState state) throws RemoteException {
          Class modelClass;
          try {
             modelClass = env.loadClassFromScriptLoader(key.getClassName());
@@ -429,8 +426,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
 
       @Override
-      @SuppressWarnings("unchecked")
-      public ModelState getModelState(ModelKey key) throws RemoteException {
+      public ModelState getModelState(ModelKey<?> key) throws RemoteException {
          return env.getModelManager().getModelState(key);
       }
 
