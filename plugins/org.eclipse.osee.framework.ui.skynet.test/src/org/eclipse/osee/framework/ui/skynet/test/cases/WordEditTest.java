@@ -156,8 +156,7 @@ public class WordEditTest {
       InputStream inputStream = null;
       try {
          inputStream = new BufferedInputStream(WordEditTest.class.getResourceAsStream(TEST_WORD_EDIT_FILE_NAME));
-         String data = Lib.inputStreamToString(inputStream);
-         return data.replaceAll("\r?\n", "\r\n");
+         return Lib.inputStreamToString(inputStream);
       } finally {
          Lib.close(inputStream);
       }
