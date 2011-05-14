@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLink
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -344,49 +343,6 @@ public class RelationManager {
          }
       }
       return null;
-   }
-
-   /**
-    * @param relationType if not null persists the relations of this type, otherwise persists relations of all types
-    */
-   public static void persistRelationsFor(SkynetTransaction transaction, Artifact artifact, RelationType relationType) throws OseeCoreException {
-      List<RelationLink> selectedRelations;
-      if (relationType == null) {
-         selectedRelations = relationCache.getAll(artifact);
-      } else {
-         selectedRelations = relationCache.getAllByType(artifact, relationType);
-      }
-
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if (relation.isDirty()) {
-               transaction.addRelation(relation);
-
-               try {
-                  Artifact artifactOnOtherSide = relation.getArtifactOnOtherSide(artifact);
-                  List<RelationLink> otherSideRelations =
-                     relationCache.getAllByType(artifactOnOtherSide, relation.getRelationType());
-                  for (int i = 0; i < otherSideRelations.size(); i++) {
-                     if (relation.equals(otherSideRelations.get(i))) {
-                        if (i + 1 < otherSideRelations.size()) {
-                           RelationLink nextRelation = otherSideRelations.get(i + 1);
-                           if (nextRelation.isDirty()) {
-                              transaction.addRelation(nextRelation);
-                           }
-                        }
-                     }
-                  }
-               } catch (ArtifactDoesNotExist ex) {
-                  OseeLog.log(
-                     RelationManager.class,
-                     Level.SEVERE,
-                     String.format(
-                        "Unable to to persist other side relation order because the artifact on the other side of [%s, %s] doesn't exist. ",
-                        artifact.toString(), relation.toString()), ex);
-               }
-            }
-         }
-      }
    }
 
    public static List<RelationLink> getRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {

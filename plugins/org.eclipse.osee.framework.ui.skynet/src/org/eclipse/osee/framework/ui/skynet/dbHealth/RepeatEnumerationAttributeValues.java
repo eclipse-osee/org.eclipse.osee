@@ -99,7 +99,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
                AttributeType attributeType = AttributeTypeManager.getType(attrData.getAttributeTypeId());
                if (attributeType.isEnumerated()) {
                   artifact.setAttributeValues(attributeType, artifact.getAttributesToStringList(attributeType));
-                  transaction.addArtifactAndAttributes(artifact);
+                  artifact.persist(transaction);
                }
             }
             transaction.execute();

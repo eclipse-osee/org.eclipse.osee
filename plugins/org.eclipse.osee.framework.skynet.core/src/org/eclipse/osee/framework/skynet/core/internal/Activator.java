@@ -55,7 +55,6 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      trackers.add(new ServiceDependencyTracker(context, new SkynetTransactionAccessServiceHandler()));
       trackers.add(new ServiceDependencyTracker(context, new ClientCachingServiceRegHandler()));
       trackers.add(new ServiceDependencyTracker(context, new ClientWorkbenchUserRegHandler()));
 

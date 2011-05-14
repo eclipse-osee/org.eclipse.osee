@@ -12,25 +12,21 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
-import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,9 +48,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
  */
 public final class SkynetTransaction extends AbstractOperation {
 
-   private static final String GET_EXISTING_ATTRIBUTE_IDS =
-      "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact art1, osee_txs txs1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = art1.art_id AND art1.gamma_id = txs1.gamma_id AND txs1.branch_id <> ?";
-
    private TransactionRecord transactionId;
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
@@ -70,6 +63,7 @@ public final class SkynetTransaction extends AbstractOperation {
    private final String comment;
    private User user;
    private final TransactionMonitor txMonitor = new TransactionMonitor();
+   private SkynetTransactionAccess access;
 
    public SkynetTransaction(Branch branch, String comment) {
       super(comment, Activator.PLUGIN_ID);
@@ -83,37 +77,26 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      AttributeType attributeType = attribute.getAttributeType();
-      int attrId = -1;
-      // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch
-      if (attributeType.getMaxOccurrences() == 1) {
-         try {
-            chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getId(), artifact.getArtId(),
-               artifact.getBranch().getId());
-
-            if (chStmt.next()) {
-               attrId = chStmt.getInt("attr_id");
-            }
-         } finally {
-            chStmt.close();
-         }
-      }
-      if (attrId < 1) {
-         attrId = ConnectionHandler.getSequence().getNextAttributeId();
-      }
-      return attrId;
+      return StoreSkynetTransactionOperation.getNewAttributeId(artifact, attribute);
    }
 
    private int getNewRelationId() throws OseeCoreException {
       return ConnectionHandler.getSequence().getNextRelationId();
    }
 
-   private User getAuthor() throws OseeDataStoreException, OseeCoreException {
+   private User getAuthor() throws OseeCoreException {
       if (user == null) {
          user = UserManager.getUser();
       }
       return user;
+   }
+
+   private SkynetTransactionAccess getAccess() throws OseeCoreException {
+      if (access == null) {
+         IAccessControlService service = Activator.getInstance().getAccessControlService();
+         access = new SkynetTransactionAccess(service, getAuthor(), getBranch());
+      }
+      return access;
    }
 
    private Collection<BaseTransactionData> getTransactionData() {
@@ -147,57 +130,6 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    /**
-    * Performs branch validation checks
-    */
-   private void checkBranch(Artifact artifact) throws OseeStateException {
-      ensureCorrectBranch(artifact);
-      ensureBranchIsEditable(artifact);
-   }
-
-   /**
-    * Performs branch validation checks
-    */
-   private void checkBranch(RelationLink link) throws OseeStateException {
-      ensureCorrectBranch(link);
-      ensureBranchIsEditable(link);
-   }
-
-   private void ensureCorrectBranch(RelationLink link) throws OseeStateException {
-      if (!link.getBranch().equals(branch)) {
-         String msg =
-            String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
-               link.getId(), link.getBranch(), branch);
-         throw new OseeStateException(msg);
-      }
-   }
-
-   private void ensureCorrectBranch(Artifact artifact) throws OseeStateException {
-      if (!artifact.getBranch().equals(branch)) {
-         String msg =
-            String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
-               artifact.getGuid(), artifact.getBranch(), branch);
-         throw new OseeStateException(msg);
-      }
-   }
-
-   private void ensureBranchIsEditable(RelationLink link) throws OseeStateException {
-      if (!link.getBranch().isEditable()) {
-         String msg =
-            String.format("The relation link [%s] is on a non-editable branch [%s]", link.getId(), link.getBranch());
-         throw new OseeStateException(msg);
-      }
-   }
-
-   private void ensureBranchIsEditable(Artifact artifact) throws OseeStateException {
-      if (!artifact.getBranch().isEditable()) {
-         String msg =
-            String.format("The artifact [%s] is on a non-editable branch [%s]", artifact.getGuid(),
-               artifact.getBranch());
-         throw new OseeStateException(msg);
-      }
-   }
-
-   /**
     * Returns the next transaction to be used by the system<br>
     * <br>
     * IF transaction has not been executed, this is the transaction that will be used.<br>
@@ -207,34 +139,49 @@ public final class SkynetTransaction extends AbstractOperation {
       return getTransactionRecord().getId();
    }
 
-   public void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
-      checkBranch(artifact);
+   public void addArtifact(Artifact artifact) throws OseeCoreException {
+      addArtifact(artifact, true);
+   }
 
-      if (artifact.isDeleted() && !artifact.isInDb()) {
-         for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-            if (attribute.isDirty()) {
-               attribute.setNotDirty();
+   private void addArtifact(Artifact artifact, boolean force) throws OseeCoreException {
+      boolean wasAdded = alreadyProcessedArtifacts.add(artifact);
+      if (wasAdded || force) {
+         addArtifactAndAttributes(artifact);
+         addRelations(artifact);
+      }
+   }
+
+   private void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
+      getAccess().checkAccess(artifact);
+
+      if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType()) {
+
+         if (artifact.isDeleted() && !artifact.isInDb()) {
+            for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+               if (attribute.isDirty()) {
+                  attribute.setNotDirty();
+               }
+            }
+            return;
+         }
+         madeChanges = true;
+
+         if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted()) {
+            BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
+            if (txItem == null) {
+               artifactReferences.add(artifact);
+               txItem = new ArtifactTransactionData(artifact);
+               transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
+            } else {
+               updateTxItem(txItem, artifact.getModType());
             }
          }
-         return;
-      }
-      madeChanges = true;
 
-      if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted()) {
-         BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
-         if (txItem == null) {
-            artifactReferences.add(artifact);
-            txItem = new ArtifactTransactionData(artifact);
-            transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
-         } else {
-            updateTxItem(txItem, artifact.getModType());
-         }
-      }
-
-      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-         if (attribute.isDirty()) {
-            artifactReferences.add(artifact);
-            addAttribute(artifact, attribute);
+         for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+            if (attribute.isDirty()) {
+               artifactReferences.add(artifact);
+               addAttribute(artifact, attribute);
+            }
          }
       }
    }
@@ -256,8 +203,18 @@ public final class SkynetTransaction extends AbstractOperation {
       }
    }
 
-   public void addRelation(RelationLink link) throws OseeCoreException {
-      checkBranch(link);
+   private void addRelations(Artifact artifact) throws OseeCoreException {
+      List<RelationLink> links = artifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED);
+
+      for (RelationLink relation : links) {
+         if (relation.isDirty()) {
+            addRelation(relation);
+         }
+      }
+   }
+
+   private void addRelation(RelationLink link) throws OseeCoreException {
+      getAccess().checkAccess(link);
       madeChanges = true;
       link.setNotDirty();
 
@@ -292,8 +249,12 @@ public final class SkynetTransaction extends AbstractOperation {
          relationEventType = RelationEventType.Added;
       }
 
-      persitRelatedArtifact(aArtifact);
-      persitRelatedArtifact(bArtifact);
+      /**
+       * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to
+       * be persisted and desired for other cases.
+       */
+      addArtifact(aArtifact, false);
+      addArtifact(bArtifact, false);
 
       BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
       if (txItem == null) {
@@ -301,19 +262,6 @@ public final class SkynetTransaction extends AbstractOperation {
          transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
       } else {
          updateTxItem(txItem, modificationType);
-      }
-   }
-
-   /**
-    * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to be
-    * persisted and desired for other cases.
-    */
-   private void persitRelatedArtifact(Artifact artifact) throws OseeCoreException {
-      if (artifact != null) {
-         if (!alreadyProcessedArtifacts.contains(artifact)) {
-            alreadyProcessedArtifacts.add(artifact);
-            artifact.persist(this);
-         }
       }
    }
 
@@ -332,7 +280,7 @@ public final class SkynetTransaction extends AbstractOperation {
          txMonitor.reportTxStart(SkynetTransaction.this, getBranch());
          monitor.worked(smallWork);
          if (madeChanges) {
-            IOperation subOp = createLifeCycleOp();
+            IOperation subOp = createStorageOp();
             doSubWork(subOp, monitor, 0.80);
          }
       } finally {
@@ -342,15 +290,9 @@ public final class SkynetTransaction extends AbstractOperation {
       }
    }
 
-   private IOperation createLifeCycleOp() throws OseeCoreException {
-      ILifecycleService service = Activator.getInstance().getLifecycleServices();
-
-      Set<IBasicArtifact<?>> objectsToCheck = new HashSet<IBasicArtifact<?>>();
-      objectsToCheck.addAll(getArtifactReferences());
-      objectsToCheck.addAll(alreadyProcessedArtifacts);
-      AbstractLifecyclePoint<?> lifecyclePoint = new SkynetTransactionCheckPoint(getAuthor(), objectsToCheck);
-      return new StoreSkynetTransactionOperation(getName(), service, lifecyclePoint, getBranch(),
-         getTransactionRecord(), getTransactionData(), getArtifactReferences());
+   private IOperation createStorageOp() throws OseeCoreException {
+      return new StoreSkynetTransactionOperation(getName(), getBranch(), getTransactionRecord(), getTransactionData(),
+         getArtifactReferences());
    }
 
    //TODO this method needs to be removed

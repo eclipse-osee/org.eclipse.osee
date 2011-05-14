@@ -1024,25 +1024,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
       RelationManager.prepareRelationsForReload(this);
    }
 
-   private final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
-      if (!UserManager.duringMainUserCreation() && !getAccessControlService().hasPermission(getBranch(),
-         PermissionEnum.WRITE)) {
-         throw new OseeArgumentException("No write permissions for the branch [%s] that this artifact belongs to",
-            getBranch());
-      }
-      if (isHistorical()) {
-         throw new OseeArgumentException("The artifact [%s] must be at the head of the branch to be edited.", getGuid());
-      }
-
-      if (hasDirtyAttributes() || hasDirtyArtifactType()) {
-         transaction.addArtifactAndAttributes(this);
-      }
-   }
-
-   private final void persistRelations(SkynetTransaction transaction) throws OseeCoreException {
-      RelationManager.persistRelationsFor(transaction, this, null);
-   }
-
    public final void persist() throws OseeCoreException {
       persist("artifact.persist() default transaction");
    }
@@ -1057,8 +1038,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
       if (transaction == null) {
          persist();
       } else {
-         persistAttributes(transaction);
-         persistRelations(transaction);
+         transaction.addArtifact(this);
       }
    }
 

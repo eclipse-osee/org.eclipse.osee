@@ -24,17 +24,17 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DatabaseTransactions;
 import org.eclipse.osee.framework.database.core.IDbTransactionWork;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
-import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
-import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -47,7 +47,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.In
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public final class StoreSkynetTransactionOperation extends AbstractLifecycleOperation implements IDbTransactionWork, InsertDataCollector {
+public final class StoreSkynetTransactionOperation extends AbstractOperation implements IDbTransactionWork, InsertDataCollector {
+
+   private static final String GET_EXISTING_ATTRIBUTE_IDS =
+      "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact art1, osee_txs txs1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = art1.art_id AND art1.gamma_id = txs1.gamma_id AND txs1.branch_id <> ?";
+
    private static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
 
@@ -61,8 +65,8 @@ public final class StoreSkynetTransactionOperation extends AbstractLifecycleOper
 
    private boolean executedWithException;
 
-   public StoreSkynetTransactionOperation(String name, ILifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, Branch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
-      super(service, lifecyclePoint, name, Activator.PLUGIN_ID);
+   public StoreSkynetTransactionOperation(String name, Branch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
+      super(name, Activator.PLUGIN_ID);
       this.branch = branch;
       this.transactionRecord = transactionRecord;
       this.txDatas = txDatas;
@@ -86,7 +90,7 @@ public final class StoreSkynetTransactionOperation extends AbstractLifecycleOper
    }
 
    @Override
-   protected void doCoreWork(IProgressMonitor monitor) throws Exception {
+   protected void doWork(IProgressMonitor monitor) throws Exception {
       DatabaseTransactions.execute(this);
    }
 
@@ -201,4 +205,28 @@ public final class StoreSkynetTransactionOperation extends AbstractLifecycleOper
          OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
    }
+
+   protected static int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      AttributeType attributeType = attribute.getAttributeType();
+      int attrId = -1;
+      // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch
+      if (attributeType.getMaxOccurrences() == 1) {
+         try {
+            chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getId(), artifact.getArtId(),
+               artifact.getBranch().getId());
+
+            if (chStmt.next()) {
+               attrId = chStmt.getInt("attr_id");
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      if (attrId < 1) {
+         attrId = ConnectionHandler.getSequence().getNextAttributeId();
+      }
+      return attrId;
+   }
+
 }
