@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact.annotation;
+package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

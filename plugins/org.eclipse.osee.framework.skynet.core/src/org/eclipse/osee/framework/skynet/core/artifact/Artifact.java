@@ -25,10 +25,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -76,9 +72,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeCh
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
+import org.eclipse.osee.framework.skynet.core.artifact.revert.ArtifactRevert;
 import org.eclipse.osee.framework.skynet.core.artifact.revert.ArtifactRevert;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -91,7 +85,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.osgi.framework.Bundle;
 
 /**
  * {@link ArtifactTest}
@@ -111,7 +104,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    private final String humanReadableId;
    private ArtifactType artifactType;
    private final ArtifactFactory parentFactory;
-   private AttributeAnnotationManager annotationMgr;
    private int transactionId = TRANSACTION_SENTINEL;
    private int artId;
    private int gammaId;
@@ -143,23 +135,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
     */
    public final boolean isHistorical() {
       return historical;
-   }
-
-   public final Set<ArtifactAnnotation> getAnnotations() {
-      Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
-      for (IArtifactAnnotation annotation : getAnnotationExtensions()) {
-         annotation.getAnnotations(this, annotations);
-      }
-      return annotations;
-   }
-
-   public final boolean isAnnotationWarning() {
-      for (ArtifactAnnotation notify : getAnnotations()) {
-         if (notify.getType() == ArtifactAnnotation.Type.Warning || notify.getType() == ArtifactAnnotation.Type.Error) {
-            return true;
-         }
-      }
-      return false;
    }
 
    /**
@@ -1491,52 +1466,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
       }
 
       return elementName;
-   }
-
-   private Set<IArtifactAnnotation> artifactAnnotationExtensions;
-
-   private Set<IArtifactAnnotation> getAnnotationExtensions() {
-      if (artifactAnnotationExtensions != null) {
-         return artifactAnnotationExtensions;
-      }
-      artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
-      IExtensionPoint point =
-         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
-      if (point == null) {
-         System.err.println("Can't access ArtifactAnnotation extension point");
-         return artifactAnnotationExtensions;
-      }
-      IExtension[] extensions = point.getExtensions();
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         String classname = null;
-         String bundleName = null;
-         for (IConfigurationElement el : elements) {
-            if (el.getName().equals("ArtifactAnnotation")) {
-               classname = el.getAttribute("classname");
-               bundleName = el.getContributor().getName();
-               if (classname != null && bundleName != null) {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  try {
-                     Class<?> taskClass = bundle.loadClass(classname);
-                     Object obj = taskClass.newInstance();
-                     artifactAnnotationExtensions.add((IArtifactAnnotation) obj);
-                  } catch (Exception ex) {
-                     ex.printStackTrace();
-                  }
-               }
-
-            }
-         }
-      }
-      return artifactAnnotationExtensions;
-   }
-
-   public final AttributeAnnotationManager getAnnotationMgr() {
-      if (annotationMgr == null) {
-         annotationMgr = new AttributeAnnotationManager(this);
-      }
-      return annotationMgr;
    }
 
    @Override

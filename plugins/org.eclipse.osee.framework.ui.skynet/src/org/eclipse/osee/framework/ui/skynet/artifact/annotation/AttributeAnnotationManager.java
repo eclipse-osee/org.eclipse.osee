@@ -8,31 +8,67 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact.annotation;
+package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
- * Provides access to annotations stored as the "Annotation" attribute in the specified artifact. NOTE: Annotations can
- * also be provided through IArtifactAnnotation extension point.
+ * Provides access to annotations stored as the "Annotation" attribute in the specified artifact or provided through
+ * IArtifactAnnotation extension point.
  * 
  * @author Donald G. Dunne
  */
 public class AttributeAnnotationManager {
    private final Artifact artifact;
+   private static Map<String, AttributeAnnotationManager> hridToManager =
+      new HashMap<String, AttributeAnnotationManager>(50);
 
-   public AttributeAnnotationManager(Artifact artifact) {
+   public static AttributeAnnotationManager get(Artifact artifact) {
+      if (!hridToManager.containsKey(artifact.getHumanReadableId())) {
+         hridToManager.put(artifact.getHumanReadableId(), new AttributeAnnotationManager(artifact));
+      }
+      return hridToManager.get(artifact.getHumanReadableId());
+   }
+
+   private AttributeAnnotationManager(Artifact artifact) {
       this.artifact = artifact;
    }
 
    private Collection<Attribute<String>> getAttributes() throws OseeCoreException {
       return artifact.getAttributes(CoreAttributeTypes.Annotation);
+   }
+
+   public static final Set<ArtifactAnnotation> getAnnotations(Artifact artifact) throws OseeCoreException {
+      if (!hridToManager.containsKey(artifact) && artifact.getAttributeCount(CoreAttributeTypes.Annotation) == 0) {
+         return Collections.emptySet();
+      }
+      ensureLoaded();
+      Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
+      for (IArtifactAnnotation annotation : extensionDefinedObjects.getObjects()) {
+         annotation.getAnnotations(artifact, annotations);
+      }
+      return annotations;
+   }
+
+   public static final boolean isAnnotationWarning(Artifact artifact) throws OseeCoreException {
+      for (ArtifactAnnotation notify : getAnnotations(artifact)) {
+         if (notify.getType() == ArtifactAnnotation.Type.Warning || notify.getType() == ArtifactAnnotation.Type.Error) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
@@ -77,4 +113,15 @@ public class AttributeAnnotationManager {
          }
       }
    }
+
+   private static ExtensionDefinedObjects<IArtifactAnnotation> extensionDefinedObjects;
+
+   private static void ensureLoaded() {
+      if (extensionDefinedObjects == null) {
+         extensionDefinedObjects =
+            new ExtensionDefinedObjects<IArtifactAnnotation>(
+               "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation", "ArtifactAnnotation", "classname");
+      }
+   }
+
 }

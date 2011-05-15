@@ -16,9 +16,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -30,7 +27,7 @@ public class AttributeAnnotationHandler implements IArtifactAnnotation {
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       try {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.Annotation)) {
-            AttributeAnnotationManager mgr = new AttributeAnnotationManager(artifact);
+            AttributeAnnotationManager mgr = AttributeAnnotationManager.get(artifact);
             annotations.addAll(mgr.getAnnotations());
          }
       } catch (OseeCoreException ex) {

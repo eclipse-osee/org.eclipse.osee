@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -42,20 +42,24 @@ public class AnnotationComposite extends Composite {
       setLayout(ALayout.getZeroMarginLayout(2, false));
 
       for (ArtifactAnnotation.Type type : ArtifactAnnotation.Type.getOrderedTypes()) {
-         for (ArtifactAnnotation notify : artifact.getAnnotations()) {
-            if (notify.getType() != type) {
-               continue;
-            }
-            if (notify.getType() == ArtifactAnnotation.Type.None) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeStateException(
-                  "None is an invalid annotation type on artifact [%s]", artifact.getGuid()));
-               continue;
-            }
-            Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
-            iconLabel.setImage(ArtifactImageManager.getAnnotationImage(notify.getType()));
+         try {
+            for (ArtifactAnnotation notify : AttributeAnnotationManager.get(artifact).getAnnotations()) {
+               if (notify.getType() != type) {
+                  continue;
+               }
+               if (notify.getType() == ArtifactAnnotation.Type.None) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeStateException(
+                     "None is an invalid annotation type on artifact [%s]", artifact.getGuid()));
+                  continue;
+               }
+               Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
+               iconLabel.setImage(ArtifactImageManager.getAnnotationImage(notify.getType()));
 
-            Label alertLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
-            alertLabel.setText(notify.getType().name() + ": " + notify.getContent());
+               Label alertLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
+               alertLabel.setText(notify.getType().name() + ": " + notify.getContent());
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Exception resolving annotations", ex);
          }
       }
       if (toolkit != null) {

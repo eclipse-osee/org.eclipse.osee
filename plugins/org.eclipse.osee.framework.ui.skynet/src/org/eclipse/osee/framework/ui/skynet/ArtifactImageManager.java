@@ -32,12 +32,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotation;
+import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
@@ -282,7 +283,8 @@ public final class ArtifactImageManager {
             return ImageManager.setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT).getImageKey();
          }
 
-         if (castedArtifact.isAnnotationWarning()) {
+         AttributeAnnotationManager.get(castedArtifact);
+         if (AttributeAnnotationManager.isAnnotationWarning(castedArtifact)) {
             return ImageManager.setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY, Location.BOT_LEFT).getImageKey();
          }
       } catch (OseeCoreException ex) {

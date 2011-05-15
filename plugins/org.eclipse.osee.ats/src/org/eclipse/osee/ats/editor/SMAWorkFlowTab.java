@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
+import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
@@ -638,8 +639,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) {
-      if (awa.getAnnotations().size() > 0) {
-         new AnnotationComposite(toolkit, comp, SWT.None, awa);
+      try {
+         if (AttributeAnnotationManager.getAnnotations(awa).size() > 0) {
+            new AnnotationComposite(toolkit, comp, SWT.None, awa);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception resolving annotations", ex);
       }
    }
 
