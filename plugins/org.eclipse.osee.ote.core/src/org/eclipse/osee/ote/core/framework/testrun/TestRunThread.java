@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core.framework.testrun;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -118,24 +119,23 @@ public class TestRunThread extends OseeTestThread {
       if (Thread.currentThread() == this.getThread()) {
          throw new TestException("", Level.SEVERE);
       }
-      //
       if (lock.isLocked()) {
          // test case is in process
-         this.interrupt();
+    	 int count = 0;
+    	 do{
+    		 this.interrupt();
+    		 try{
+    			 this.join(10);
+    		 } catch (InterruptedException ex){
+    		 }
+    		 count++;
+    	 } while (this.isAlive() && count < 200);
       }
-      try {
-         this.join(60000);
-
-         if (this.isAlive()) {
-            OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
-               "Waited 60s for test to abort but the thread did not die."));
-            return false;
-         }
-      } catch (InterruptedException ex) {
-         OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
-            "Failed to wait for abort to complete successfully.", ex));
-         return false;
-      }
+     if (this.isAlive()) {
+        OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
+           "Waited 60s for test to abort but the thread did not die."));
+        return false;
+     }
       return true;
    }
 

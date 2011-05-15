@@ -215,6 +215,12 @@ public abstract class TestScript implements ITimeout {
    }
 
    public void abort() {
+	  synchronized (this) {
+		try{
+			this.notifyAll();
+		} catch (Throwable th){
+		}
+	  }
       OseeLog.log(TestEnvironment.class, Level.SEVERE, "Aborting script", new Exception());
       aborted = true;
    }
