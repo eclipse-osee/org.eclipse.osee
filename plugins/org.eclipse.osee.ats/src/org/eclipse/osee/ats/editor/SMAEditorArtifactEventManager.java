@@ -79,7 +79,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       } catch (OseeCoreException ex) {
          return;
       }
-      for (final ISMAEditorEventHandler handler : handlers) {
+      for (final ISMAEditorEventHandler handler : new CopyOnWriteArrayList<ISMAEditorEventHandler>(handlers)) {
          try {
             safelyProcessHandler(artifactEvent, handler);
          } catch (Exception ex) {
