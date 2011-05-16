@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.model.CoverageUnitPersistTest;
 import org.eclipse.osee.coverage.test.store.ArtifactTestUnitStoreTest;
 import org.eclipse.osee.coverage.test.store.TestUnitCacheTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.BeforeClass;
@@ -42,6 +43,7 @@ import org.junit.runners.Suite;
 public class Coverage_Db_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
       assertTrue("Should be run on test database.", TestUtil.isTestDb());
       assertTrue(
          "Application Server must be running.",

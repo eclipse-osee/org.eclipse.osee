@@ -8,7 +8,7 @@
       <metrics>
         <complexity>1</complexity>
         <coverage coverage_type="STATEMENT">
-          <covered>0</covered>
+          <covered>4</covered>
           <total>4</total>
         </coverage>
       </metrics>

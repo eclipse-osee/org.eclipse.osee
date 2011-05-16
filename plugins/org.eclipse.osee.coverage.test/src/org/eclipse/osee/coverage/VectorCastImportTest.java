@@ -106,6 +106,7 @@ public class VectorCastImportTest {
          });
       coverageImport = vectorCastImporter.run(null);
       Assert.assertNotNull(coverageImport);
+      Assert.assertFalse(coverageImport.getLog().isErrors());
 
       // Check import results
       Assert.assertEquals(12, coverageImport.getCoverageItems().size());
@@ -285,10 +286,10 @@ public class VectorCastImportTest {
       OseeData.getFolder("vcast.wrk").getLocation().toFile();
       helper.copyPluginFileToOseeData("support/vcastData/vcast.vcp", "vcast.wrk/vcast.vcp");
       helper.copyPluginFileToOseeData("support/vcastData/CCAST_.CFG", "vcast.wrk/CCAST_.CFG");
-      helper.copyPluginFileToOseeData("support/vcastData/CCAST_.CFG", "vcast.wrk/build_info.xml");
 
       // create vcast dir and files within
       OseeData.getFolder("vcast.wrk/vcast").getLocation().toFile();
+      helper.copyPluginFileToOseeData("support/vcastData/vcast/build_info.xml", "vcast.wrk/vcast/build_info.xml");
       helper.copyPluginFileToOseeData("support/vcastData/vcast_aggregate_coverage_report.html",
          "vcast.wrk/vcast/vcast_aggregate_coverage_report.html");
       helper.copyPluginFileToOseeData("support/vcastData/vcast/test_main.2.LIS", "vcast.wrk/vcast/test_main.2.LIS");
@@ -298,12 +299,12 @@ public class VectorCastImportTest {
       helper.copyPluginFileToOseeData("support/vcastData/vcast/test_scheduler.2.xml",
          "vcast.wrk/vcast/test_scheduler.2.xml");
       OseeData.getFolder("vcast.wrk/vcast/results").getLocation().toFile();
-      helper.copyPluginFileToOseeData("support/vcastData/vcast/results/test_unit_1",
-         "vcast.wrk/vcast/results/test_unit_1");
-      helper.copyPluginFileToOseeData("support/vcastData/vcast/results/test_unit_2",
-         "vcast.wrk/vcast/results/test_unit_2");
-      helper.copyPluginFileToOseeData("support/vcastData/vcast/results/test_unit_3",
-         "vcast.wrk/vcast/results/test_unit_3");
+      helper.copyPluginFileToOseeData("support/vcastData/vcast/results/test_unit_1.DAT",
+         "vcast.wrk/vcast/results/test_unit_1.DAT");
+      helper.copyPluginFileToOseeData("support/vcastData/vcast/results/test_unit_2.DAT",
+         "vcast.wrk/vcast/results/test_unit_2.DAT");
+      helper.copyPluginFileToOseeData("support/vcastData/vcast/results/test_unit_3.DAT",
+         "vcast.wrk/vcast/results/test_unit_3.DAT");
    }
 
 }
