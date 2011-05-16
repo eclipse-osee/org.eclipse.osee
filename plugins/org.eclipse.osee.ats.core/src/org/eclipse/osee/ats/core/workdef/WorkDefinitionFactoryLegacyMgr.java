@@ -5,17 +5,10 @@
  */
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
@@ -53,38 +46,13 @@ public class WorkDefinitionFactoryLegacyMgr {
     * due to lazy initialization, this function is non-reentrant therefore, the synchronized keyword is necessary
     */
    public synchronized static void ensureLoaded() {
-      if (legacyMgr == null) {
 
-         IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint(
-               "org.eclipse.osee.ats.core.AtsLegacyWorkDefinitionProvider");
-         if (point == null) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-               "Can't access AtsLegacyWorkDefinitionProvider extension point");
-         }
-         IExtension[] extensions = point.getExtensions();
-         for (IExtension extension : extensions) {
-            IConfigurationElement[] elements = extension.getConfigurationElements();
-            String classname = null;
-            String bundleName = null;
-            for (IConfigurationElement el : elements) {
-               if (el.getName().equals("AtsLegacyWorkDefinitionProvider")) {
-                  classname = el.getAttribute("classname");
-                  bundleName = el.getContributor().getName();
-                  if (classname != null && bundleName != null) {
-                     Bundle bundle = Platform.getBundle(bundleName);
-                     try {
-                        Class<?> taskClass = bundle.loadClass(classname);
-                        Object obj = taskClass.newInstance();
-                        legacyMgr = (IWorkDefintionFactoryLegacyMgr) obj;
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-                           "Error loading AtsLegacyWorkDefinitionProvider extension", ex);
-                     }
-                  }
-               }
-            }
-         }
+      if (legacyMgr == null) {
+         ExtensionDefinedObjects<IWorkDefintionFactoryLegacyMgr> objects =
+            new ExtensionDefinedObjects<IWorkDefintionFactoryLegacyMgr>(
+               "org.eclipse.osee.ats.core.AtsLegacyWorkDefinitionProvider", "AtsLegacyWorkDefinitionProvider",
+               "classname");
+         legacyMgr = objects.getObjects().iterator().next();
       }
    }
 
