@@ -92,9 +92,9 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    }
 
    protected void store(OseeConnection connection) throws OseeCoreException {
-      if (this.data.isEmpty() != true) {
-         getDatabaseService().runBatchUpdate(connection, getMetaData().getQuery(), this.data);
-         this.data.clear();
+      if (!data.isEmpty()) {
+         getDatabaseService().runBatchUpdate(connection, getMetaData().getQuery(), data);
+         data.clear();
       }
    }
 

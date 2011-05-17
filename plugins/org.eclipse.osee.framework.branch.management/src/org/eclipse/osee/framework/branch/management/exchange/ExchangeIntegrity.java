@@ -15,19 +15,15 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
-import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -38,7 +34,8 @@ public class ExchangeIntegrity {
    private final OseeServices services;
    private final IOseeExchangeDataProvider exportDataProvider;
    private final ExchangeDataProcessor processor;
-   private String checkExchange;
+   private final List<ReferentialIntegrityConstraint> constraints = new ArrayList<ReferentialIntegrityConstraint>();
+   private String verifyFile;
 
    public ExchangeIntegrity(OseeServices services, IOseeExchangeDataProvider exportDataProvider, ExchangeDataProcessor processor) {
       this.services = services;
@@ -47,128 +44,116 @@ public class ExchangeIntegrity {
    }
 
    public String getExchangeCheckFileName() {
-      return checkExchange;
+      return verifyFile;
+   }
+
+   private void initializeConstraints() {
+      ReferentialIntegrityConstraint constraint;
+
+      constraint = new ReferentialIntegrityConstraint(ExportItem.OSEE_TX_DETAILS_DATA, "transaction_id");
+      constraint.addForeignKey(ExportItem.OSEE_BRANCH_DATA, "parent_transaction_id", "baseline_transaction_id");
+      constraint.addForeignKey(ExportItem.OSEE_TXS_DATA, "transaction_id");
+      constraint.addForeignKey(ExportItem.OSEE_TXS_ARCHIVED_DATA, "transaction_id");
+      constraint.addForeignKey(ExportItem.OSEE_MERGE_DATA, "commit_transaction_id");
+      constraints.add(constraint);
+
+      constraint = new ReferentialIntegrityConstraint(ExportItem.OSEE_ARTIFACT_DATA, "art_id");
+      constraint.addForeignKey(ExportItem.OSEE_TX_DETAILS_DATA, "author", "commit_art_id");
+      constraint.addForeignKey(ExportItem.OSEE_ATTRIBUTE_DATA, "art_id");
+      constraint.addForeignKey(ExportItem.OSEE_RELATION_LINK_DATA, "a_art_id", "b_art_id");
+      constraint.addForeignKey(ExportItem.OSEE_ARTIFACT_ACL_DATA, "art_id", "privilege_entity_id");
+      constraint.addForeignKey(ExportItem.OSEE_BRANCH_ACL_DATA, "privilege_entity_id");
+      constraints.add(constraint);
+
+      constraint = new ReferentialIntegrityConstraint(ExportItem.OSEE_ARTIFACT_DATA, "gamma_id");
+      constraint.addPrimaryKey(ExportItem.OSEE_ATTRIBUTE_DATA, "gamma_id");
+      constraint.addPrimaryKey(ExportItem.OSEE_RELATION_LINK_DATA, "gamma_id");
+      constraint.addForeignKey(ExportItem.OSEE_TXS_DATA, "gamma_id");
+      constraint.addForeignKey(ExportItem.OSEE_TXS_ARCHIVED_DATA, "gamma_id");
+      constraint.addForeignKey(ExportItem.OSEE_CONFLICT_DATA, "source_gamma_id");
+      constraint.addForeignKey(ExportItem.OSEE_CONFLICT_DATA, "dest_gamma_id");
+      constraints.add(constraint);
+
+      constraint = new ReferentialIntegrityConstraint(ExportItem.OSEE_BRANCH_DATA, "branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_BRANCH_DATA, "parent_branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_TXS_DATA, "branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_TXS_ARCHIVED_DATA, "branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_TX_DETAILS_DATA, "branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_ARTIFACT_ACL_DATA, "branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_BRANCH_ACL_DATA, "branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_MERGE_DATA, "source_branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_MERGE_DATA, "dest_branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_MERGE_DATA, "merge_branch_id");
+      constraint.addForeignKey(ExportItem.OSEE_CONFLICT_DATA, "merge_branch_id");
+      constraints.add(constraint);
    }
 
    public void execute() throws OseeCoreException {
       long startTime = System.currentTimeMillis();
+
+      initializeConstraints();
+
+      Writer writer = null;
       try {
-         ManifestSaxHandler manifestSaxHandler = new ManifestSaxHandler();
-         processor.parse(ExportItem.EXPORT_MANIFEST, manifestSaxHandler);
+         writer = openResults();
 
-         List<IExportItem> filesToCheck = new ArrayList<IExportItem>();
-         filesToCheck.addAll(manifestSaxHandler.getImportFiles());
-         filesToCheck.add(manifestSaxHandler.getBranchFile());
-
-         final List<IndexCollector> checkList = ExchangeDb.createCheckList();
-         for (final IExportItem importFile : filesToCheck) {
-            processor.parse(importFile,
-               new CheckSaxHandler(services, exportDataProvider, checkList, importFile.getFileName()));
+         for (ReferentialIntegrityConstraint constraint : constraints) {
+            OseeLog.format(Activator.class, Level.INFO, "Verifing constraint [%s]", constraint.getPrimaryKeyListing());
+            constraint.checkConstraint(services.getDatabaseService(), processor);
+            writeConstraintResults(writer, constraint);
          }
-         checkExchange = exportDataProvider.getExportedDataRoot().getName() + ".verify.xml";
-         writeResults(exportDataProvider.getExportedDataRoot().getParentFile(), checkExchange, checkList);
+         ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       } finally {
+         Lib.close(writer);
          processor.cleanUp();
-         OseeLog.log(
-            this.getClass(),
-            Level.INFO,
-            String.format("Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
-               Lib.getElapseString(startTime)));
+         OseeLog.format(Activator.class, Level.INFO, "Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
+            Lib.getElapseString(startTime));
       }
    }
 
-   private void writeResults(File writeLocation, String fileName, List<IndexCollector> checkList) throws IOException {
-      Writer writer = null;
-      try {
-         writer = ExchangeUtil.createXmlWriter(writeLocation, fileName, (int) Math.pow(2, 20));
-         ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
+   private void writeConstraintResults(Writer writer, ReferentialIntegrityConstraint constraint) throws IOException {
+      HashCollection<String, Long> missingPrimaryKeys = constraint.getMissingPrimaryKeys();
 
-         for (IndexCollector integrityCheck : checkList) {
-            boolean passedCheck = !integrityCheck.hasErrors();
-            writer.append("\t");
-            ExportImportXml.openPartialXmlNode(writer, ExportImportXml.ENTRY);
-            ExportImportXml.addXmlAttribute(writer, ExportImportXml.ID, integrityCheck.getSource());
-            ExportImportXml.addXmlAttribute(writer, "status", passedCheck ? "OK" : "FAILED");
+      Set<Long> unreferencedPrimaryKeys = constraint.getUnreferencedPrimaryKeys();
+      boolean passedCheck = missingPrimaryKeys.isEmpty() && unreferencedPrimaryKeys.isEmpty();
 
-            if (passedCheck) {
-               ExportImportXml.closePartialXmlNode(writer);
-            } else {
-               ExportImportXml.endOpenedPartialXmlNode(writer);
-               Map<String, Set<Long>> results = integrityCheck.getItemsNotFound();
-               for (String key : results.keySet()) {
-                  Set<Long> values = results.get(key);
-                  writer.append("\t\t");
-                  ExportImportXml.openPartialXmlNode(writer, "error");
-                  ExportImportXml.addXmlAttribute(writer, ExportImportXml.ID, key);
-                  ExportImportXml.endOpenedPartialXmlNode(writer);
-                  Xml.writeAsCdata(writer, "\t\t\t" + values.toString());
-                  writer.append("\n\t\t");
-                  ExportImportXml.closeXmlNode(writer, "error");
-               }
-               writer.append("\t");
-               ExportImportXml.closeXmlNode(writer, ExportImportXml.ENTRY);
-            }
+      writer.append("\t");
+      ExportImportXml.openPartialXmlNode(writer, ExportImportXml.PRIMARY_KEY);
+      ExportImportXml.addXmlAttribute(writer, ExportImportXml.ID, constraint.getPrimaryKeyListing());
+      ExportImportXml.addXmlAttribute(writer, "status", passedCheck ? "OK" : "FAILED");
+
+      if (passedCheck) {
+         ExportImportXml.closePartialXmlNode(writer);
+      } else {
+         ExportImportXml.endOpenedPartialXmlNode(writer);
+         writer.append("\t\t");
+         ExportImportXml.openXmlNode(writer, ExportImportXml.UNREFERENCED_PRIMARY_KEY);
+         Xml.writeAsCdata(writer, "\t\t\t" + unreferencedPrimaryKeys.toString());
+         writer.append("\n\t\t");
+         ExportImportXml.closeXmlNode(writer, ExportImportXml.UNREFERENCED_PRIMARY_KEY);
+
+         for (String foreignKey : missingPrimaryKeys.keySet()) {
+            writer.append("\t\t");
+            ExportImportXml.openPartialXmlNode(writer, "ForeignKey");
+            ExportImportXml.addXmlAttribute(writer, ExportImportXml.ID, foreignKey);
+            ExportImportXml.endOpenedPartialXmlNode(writer);
+            Xml.writeAsCdata(writer, "\t\t\t" + missingPrimaryKeys.getValues(foreignKey).toString());
+            writer.append("\n\t\t");
+            ExportImportXml.closeXmlNode(writer, "ForeignKey");
          }
-         ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
-      } finally {
-         if (writer != null) {
-            writer.close();
-         }
+         writer.append("\t");
+         ExportImportXml.closeXmlNode(writer, ExportImportXml.PRIMARY_KEY);
       }
    }
 
-   private final class CheckSaxHandler extends DbTableSaxHandler {
-      private final List<IndexCollector> checkList;
-      private final String fileBeingProcessed;
+   private Writer openResults() throws IOException {
+      verifyFile = exportDataProvider.getExportedDataRoot().getName() + ".verify.xml";
+      File writeLocation = exportDataProvider.getExportedDataRoot().getParentFile();
 
-      protected CheckSaxHandler(OseeServices services, IOseeExchangeDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) {
-         super(services, exportDataProvider, true, 0);
-         this.checkList = checkList;
-         this.fileBeingProcessed = Lib.removeExtension(fileBeingProcessed);
-         System.out.println(String.format("Verifying: [%s]", fileBeingProcessed));
-      }
-
-      @Override
-      protected void processData(Map<String, String> fieldMap) {
-         String conflictId = fieldMap.get(ExchangeDb.CONFLICT_ID);
-         String conflictType = fieldMap.get(ExchangeDb.CONFLICT_TYPE);
-         if (Strings.isValid(conflictId) && Strings.isValid(conflictType)) {
-            int conflictOrdinal = Integer.valueOf(conflictType);
-            for (ConflictType type : ConflictType.values()) {
-               if (type.getValue() == conflictOrdinal) {
-                  String keyName = ExchangeDb.CONFLICT_ID;
-                  switch (type) {
-                     case ARTIFACT:
-                        keyName = ExchangeDb.ARTIFACT_ID;
-                        break;
-                     case ATTRIBUTE:
-                        keyName = ExchangeDb.ATTRIBUTE_ID;
-                        break;
-                     case RELATION:
-                        keyName = ExchangeDb.RELATION_ID;
-                        break;
-                     default:
-                        break;
-                  }
-                  fieldMap.put(keyName, conflictId);
-                  break;
-               }
-            }
-         }
-         for (IndexCollector integrityCheck : checkList) {
-            integrityCheck.processData(fileBeingProcessed, fieldMap);
-         }
-      }
-
-      @Override
-      protected void finishData() {
-         for (IndexCollector integrityCheck : checkList) {
-            integrityCheck.removeFalsePositives();
-         }
-         super.finishData();
-      }
+      Writer writer = ExchangeUtil.createXmlWriter(writeLocation, verifyFile, (int) Math.pow(2, 20));
+      ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
+      return writer;
    }
-
 }

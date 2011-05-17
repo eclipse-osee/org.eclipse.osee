@@ -66,8 +66,8 @@ public final class IndexCollector {
       return source;
    }
 
-   protected void processData(String source, Map<String, String> fieldMap) {
-      if (this.source.equals(source)) {
+   void processData(String source, Map<String, String> fieldMap) {
+      if (this.source.toString().equals(source)) {
          if (fieldMap.containsKey(primaryKey)) {
             String value = fieldMap.get(primaryKey);
             if (Strings.isValid(value)) {

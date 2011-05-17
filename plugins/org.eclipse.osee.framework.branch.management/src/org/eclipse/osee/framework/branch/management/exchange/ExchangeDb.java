@@ -38,7 +38,7 @@ public class ExchangeDb {
    public static final String ATTRIBUTE_ID = "attr_id";
    public static final String ARTIFACT_ID = "art_id";
    public static final String RELATION_ID = "rel_link_id";
-   private static final String BRANCH_ID = "branch_id";
+   public static final String BRANCH_ID = "branch_id";
    public static final String CONFLICT_ID = "conflict_id";
    public static final String CONFLICT_TYPE = "conflict_type";
    public static final String TYPE_GUID = "type_guid";

@@ -24,6 +24,8 @@ public class ExportImportXml {
    public static final String METADATA = "metadata";
    public static final String DATA = "data";
    public static final String ENTRY = "entry";
+   public static final String PRIMARY_KEY = "PrimaryKey";
+   public static final String UNREFERENCED_PRIMARY_KEY = "unreferencedPrimaryKeys";
    public static final String BINARY_CONTENT = "binaryContent";
    public static final String STRING_CONTENT = "stringContent";
    public static final String OSEE_COMMENT = "osee_comment";
