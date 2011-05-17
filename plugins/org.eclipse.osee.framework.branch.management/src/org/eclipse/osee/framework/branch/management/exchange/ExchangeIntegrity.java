@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ExchangeIntegrity {
          }
          checkExchange = exportDataProvider.getExportedDataRoot().getName() + ".verify.xml";
          writeResults(exportDataProvider.getExportedDataRoot().getParentFile(), checkExchange, checkList);
-      } catch (Exception ex) {
+      } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       } finally {
          processor.cleanUp();
@@ -78,7 +79,7 @@ public class ExchangeIntegrity {
       }
    }
 
-   private void writeResults(File writeLocation, String fileName, List<IndexCollector> checkList) throws Exception {
+   private void writeResults(File writeLocation, String fileName, List<IndexCollector> checkList) throws IOException {
       Writer writer = null;
       try {
          writer = ExchangeUtil.createXmlWriter(writeLocation, fileName, (int) Math.pow(2, 20));

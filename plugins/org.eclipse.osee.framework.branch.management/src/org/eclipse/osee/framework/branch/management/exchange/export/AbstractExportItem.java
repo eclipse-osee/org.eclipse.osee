@@ -114,7 +114,7 @@ public abstract class AbstractExportItem implements Runnable {
             }
          }
          ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
-      } catch (Exception ex) {
+      } catch (IOException ex) {
          notifyOnExportException(ex);
       } finally {
          if (writer != null) {

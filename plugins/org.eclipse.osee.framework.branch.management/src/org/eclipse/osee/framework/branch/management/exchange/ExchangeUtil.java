@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -44,7 +45,7 @@ public class ExchangeUtil {
    private ExchangeUtil() {
    }
 
-   public static Writer createXmlWriter(File tempFolder, String name, int bufferSize) throws Exception {
+   public static Writer createXmlWriter(File tempFolder, String name, int bufferSize) throws IOException {
       File indexFile = new File(tempFolder, name);
       Writer writer =
          new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), ExportImportXml.XML_ENCODING),
