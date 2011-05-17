@@ -175,7 +175,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
       @Override
-      public void processRow(String[] row) throws OseeArgumentException {
+      public void processRow(String[] row) throws OseeCoreException {
          rowCount++;
          if (importingRelations) {
             String guida = null;

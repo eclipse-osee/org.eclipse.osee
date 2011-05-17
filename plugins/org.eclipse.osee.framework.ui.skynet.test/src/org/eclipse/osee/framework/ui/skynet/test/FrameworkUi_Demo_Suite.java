@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.test.artifact.ArtifactPromptChangeTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.BlamXWidgetTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.operation.EmailGroupsBlamTest;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.test.renderer.imageDetection.WordIma
 import org.eclipse.osee.framework.ui.skynet.test.util.enumeration.AbstractEnumerationTest;
 import org.eclipse.osee.framework.ui.skynet.test.widgets.workflow.WorkPageAdapterTest;
 import org.eclipse.osee.framework.ui.skynet.test.render.word.WordTestSuite;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -70,5 +72,12 @@ public class FrameworkUi_Demo_Suite {
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+      OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + FrameworkUi_Demo_Suite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + FrameworkUi_Demo_Suite.class.getSimpleName());
    }
 }

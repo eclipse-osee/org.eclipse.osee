@@ -27,8 +27,10 @@ import org.eclipse.osee.support.test.util.DemoUsers;
  */
 public class DemoDbTasks {
 
-   public static void createTasks() throws Exception {
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create tasks off code workflows");
+   public static void createTasks(boolean DEBUG) throws Exception {
+      if (DEBUG) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create tasks off code workflows");
+      }
       boolean firstTaskWorkflow = true;
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();

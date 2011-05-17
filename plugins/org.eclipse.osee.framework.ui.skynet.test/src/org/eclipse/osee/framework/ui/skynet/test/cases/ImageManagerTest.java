@@ -81,7 +81,7 @@ public abstract class ImageManagerTest {
    /**
     * Test that image that is not found, returns MISSING image
     */
-   @org.junit.Test
+   @org.junit.Test(expected = Exception.class)
    public void testFrameworkImageMissing() throws Exception {
       // This will throw an OseeLog exception cause NOT_HERE can't be found; this is expected
       assertEquals(ImageManager.getImage(MissingImage.NOT_HERE), ImageManager.getImage(ImageManager.MISSING));

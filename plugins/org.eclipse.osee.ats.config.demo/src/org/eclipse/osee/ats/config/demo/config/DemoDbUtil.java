@@ -66,25 +66,29 @@ public class DemoDbUtil {
       }
    }
 
-   public static Result isDbPopulatedWithDemoData(Branch branch) throws OseeCoreException {
-      if (DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot, branch).size() != 6) {
+   public static Result isDbPopulatedWithDemoData(boolean DEBUG, Branch branch) throws OseeCoreException {
+      if (DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot, branch).size() != 6) {
          return new Result(
             "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       }
       return Result.TrueResult;
    }
 
-   public static Collection<Artifact> getSoftwareRequirements(SoftwareRequirementStrs str, Branch branch) throws OseeCoreException {
-      return getArtTypeRequirements(CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
+   public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, Branch branch) throws OseeCoreException {
+      return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
-   public static Collection<Artifact> getArtTypeRequirements(IArtifactType artifactType, String artifactNameStr, IOseeBranch branch) throws OseeCoreException {
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-         "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
+   public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, IOseeBranch branch) throws OseeCoreException {
+      if (DEBUG) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
+      }
       Collection<Artifact> arts =
          ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
 
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
+      if (DEBUG) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
+      }
       return arts;
    }
    public static enum SoftwareRequirementStrs {
@@ -97,9 +101,11 @@ public class DemoDbUtil {
    };
    public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
-   public static Artifact getInterfaceInitializationSoftwareRequirement(Branch branch) throws OseeCoreException {
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-         "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
+   public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, Branch branch) throws OseeCoreException {
+      if (DEBUG) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+            "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
+      }
       return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, INTERFACE_INITIALIZATION,
          branch);
    }

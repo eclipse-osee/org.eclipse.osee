@@ -30,7 +30,7 @@ public final class WordUiUtil {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               XResultData rd = new XResultData();
+               XResultData rd = new XResultData(false);
                rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled: ");
                rd.log(warningString + "\n");
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));

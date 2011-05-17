@@ -256,7 +256,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Specializes in extraction of "1.0 scope" type of outline number and names. Outline name can also be spread out
     * over multiple {@code <w:t> } elements.<br/>
-    *
+    * 
     * @note Paragraph numbering must be zero based. "1.0 SCOPE" instead of "1. SCOPE"
     */
    private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage) throws OseeCoreException {
@@ -333,7 +333,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       setContent();
    }
 
-   public void processHeadingText(RoughArtifact roughArtifact, String headingText) {
+   public void processHeadingText(RoughArtifact roughArtifact, String headingText) throws OseeCoreException {
       roughArtifact.addAttribute("Name", headingText.trim());
    }
 

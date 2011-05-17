@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -92,13 +91,13 @@ public class DatabaseInitializationOperation {
       if (line.equalsIgnoreCase("Y")) {
          isConfigured = true;
          OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
-         long startTime = System.currentTimeMillis();
+         // long startTime = System.currentTimeMillis();
 
          try {
             processTasks();
          } finally {
-            System.out.println(String.format("Database Configuration completed in [%s] ms",
-               Lib.getElapseString(startTime)));
+            // System.out.println(String.format("Database Configuration completed in [%s] ms",
+            //   Lib.getElapseString(startTime)));
          }
       }
 
@@ -255,7 +254,7 @@ public class DatabaseInitializationOperation {
       boolean serverOk = isApplicationServerAlive(serverUrl);
       Conditions.checkExpressionFailOnTrue(!serverOk,
          "Error connecting to application server [%s].\nPlease ensure server is running and try again.", serverUrl);
-      System.out.println("OSEE Application Server Validation [PASSED]");
+      // System.out.println("OSEE Application Server Validation [PASSED]");
    }
 
    public static void executeWithoutPrompting(String choice) throws OseeCoreException {

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 
@@ -30,7 +31,7 @@ public abstract class SoftwareRequirementHandler extends WordOutlineExtractorDel
    }
 
    @Override
-   public void processHeadingText(RoughArtifact roughArtifact, String headingText) {
+   public void processHeadingText(RoughArtifact roughArtifact, String headingText) throws OseeCoreException {
       StringBuilder text = new StringBuilder(headingText);
       Matcher matcher = partitionPattern.matcher(text);
       boolean isRequirement = false;

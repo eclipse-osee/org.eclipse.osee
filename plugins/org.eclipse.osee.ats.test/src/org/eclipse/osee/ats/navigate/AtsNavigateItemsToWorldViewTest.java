@@ -88,8 +88,6 @@ public class AtsNavigateItemsToWorldViewTest {
       arts.clear();
       NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
       // delete an artifact, look for expected !Errors in the XCol
-      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.TeamDefinition);
-      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ActionableItem);
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ChangeType);
    }
 

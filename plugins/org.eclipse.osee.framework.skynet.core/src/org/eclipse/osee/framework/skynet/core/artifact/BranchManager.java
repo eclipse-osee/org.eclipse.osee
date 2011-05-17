@@ -450,7 +450,7 @@ public class BranchManager {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
          new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
             "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider", "DefaultInitialBranchProvider",
-            "class");
+            "class", true);
       for (IDefaultInitialBranchesProvider provider : extensions.getObjects()) {
          try {
             // Guard against problematic extensions

@@ -13,11 +13,23 @@ package org.eclipse.osee.define;
 import org.eclipse.osee.define.blam.operation.BlamTestSuite;
 import org.eclipse.osee.define.jobs.JobsTestSuite;
 import org.eclipse.osee.define.traceability.TestUnitAnnotationUtilityTest;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({BlamTestSuite.class, JobsTestSuite.class, TestUnitAnnotationUtilityTest.class})
 public final class AllDefineTestSuite {
-   // Tests added above
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + AllDefineTestSuite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + AllDefineTestSuite.class.getSimpleName());
+   }
 }

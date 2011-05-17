@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -22,19 +22,19 @@ public class RoughArtifactTest {
 
    private static RoughArtifact ra;
 
-   @BeforeClass
+   @org.junit.BeforeClass
    public static void setUpBeforeClass() {
       ra = new RoughArtifact(RoughArtifactKind.PRIMARY);
    }
 
-   @Test
-   public void testAddAttributeWithNulls() {
-      String nullString = null;
-      ra.addAttribute(nullString, "");
+   //TODO: Not sure what this is testing
+   @org.junit.Test(expected = NullPointerException.class)
+   public void testAddAttributeWithNulls() throws OseeCoreException {
+      ra.addAttribute((String) null, "");
    }
 
-   @Test
-   public void nonExistingEnumeration() {
+   @org.junit.Test(expected = OseeTypeDoesNotExist.class)
+   public void testNonExistingEnumeration() throws OseeCoreException {
       ra.addAttribute("Apple", "Orange");
    }
 }

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -82,10 +81,7 @@ public class WorkDefinitionFactory {
             match = WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromReverseId(id);
          }
          if (match.isMatched()) {
-            if (!OseeProperties.isInTest()) {
-               OseeLog.log(Activator.class, Level.INFO, null, "Loaded Work Definition [%s]", match);
-               System.out.println();
-            }
+            OseeLog.log(Activator.class, Level.INFO, null, "Loaded Work Definition [%s]", match);
             workDefIdToWorkDefintion.put(id, match);
          }
       }
@@ -232,7 +228,7 @@ public class WorkDefinitionFactory {
       String overrideId = WorkDefinitionFactoryLegacyMgr.getOverrideId(id);
       if (Strings.isValid(overrideId)) {
          // Only display this override once in log
-         if (!errorDisplayed.contains(overrideId) && !OseeProperties.isInTest()) {
+         if (!errorDisplayed.contains(overrideId)) {
             OseeLog.log(Activator.class, Level.INFO,
                String.format("Override WorkDefinition [%s] with [%s]", id, overrideId));
             errorDisplayed.add(overrideId);

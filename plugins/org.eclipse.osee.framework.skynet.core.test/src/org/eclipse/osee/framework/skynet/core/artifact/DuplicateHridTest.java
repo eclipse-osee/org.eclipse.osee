@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -35,8 +34,8 @@ public class DuplicateHridTest {
       String random_HRID = generate_random_HRID();
       assertFalse("Duplicate check returned false positive", ArtifactFactory.isUniqueHRID(known_duplicate));
       assertTrue("Duplicate check returned false negative", ArtifactFactory.isUniqueHRID(random_HRID));
-      System.out.println("isUniqueHrid(\"" + known_duplicate + "\") returns " + ArtifactFactory.isUniqueHRID(known_duplicate));
-      System.out.println("isUnqiueHrid(\"" + random_HRID + "\") returns " + ArtifactFactory.isUniqueHRID(random_HRID));
+      // System.out.println("isUniqueHrid(\"" + known_duplicate + "\") returns " + ArtifactFactory.isUniqueHRID(known_duplicate));
+      // System.out.println("isUnqiueHrid(\"" + random_HRID + "\") returns " + ArtifactFactory.isUniqueHRID(random_HRID));
    }
 
    /* Queries the database and grabs the first HRID it sees */

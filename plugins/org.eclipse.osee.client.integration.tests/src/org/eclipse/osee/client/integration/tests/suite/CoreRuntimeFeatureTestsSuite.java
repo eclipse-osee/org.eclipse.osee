@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.database.test.DatabaseTestSuite;
 import org.eclipse.osee.framework.jdk.core.JdkCoreTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.lifecycle.test.AllLifecycleTestSuite;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -33,5 +34,11 @@ public class CoreRuntimeFeatureTestsSuite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + CoreRuntimeFeatureTestsSuite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + CoreRuntimeFeatureTestsSuite.class.getSimpleName());
    }
 }

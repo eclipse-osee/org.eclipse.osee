@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.core.message.test;
 
 import org.eclipse.osee.framework.core.message.test.data.DataTestSuite;
 import org.eclipse.osee.framework.core.message.test.translation.TranslationTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,5 +24,14 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 public class AllCoreMessageTestSuite {
-   // Test Suite
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      System.out.println("\nBegin " + AllCoreMessageTestSuite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + AllCoreMessageTestSuite.class.getSimpleName() + "\n\n");
+   }
 }

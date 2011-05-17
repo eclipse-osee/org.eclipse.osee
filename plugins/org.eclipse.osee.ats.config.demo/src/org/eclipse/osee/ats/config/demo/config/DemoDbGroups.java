@@ -30,11 +30,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class DemoDbGroups {
    public static String TEST_GROUP_NAME = "Test Group";
 
-   public static List<TeamWorkFlowArtifact> createGroups() throws Exception {
+   public static List<TeamWorkFlowArtifact> createGroups(boolean DEBUG) throws Exception {
 
       // Create group of all resulting objects
       List<TeamWorkFlowArtifact> codeWorkflows = new ArrayList<TeamWorkFlowArtifact>();
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Groups and add objects");
+      if (DEBUG) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Groups and add objects");
+      }
       Artifact groupArt = UniversalGroup.addGroup(TEST_GROUP_NAME, AtsUtil.getAtsBranch());
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 

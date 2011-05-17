@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -54,6 +55,12 @@ public class Coverage_Db_Suite {
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("lba") || ClientSessionManager.getSession().getAuthenticationProtocol().equals(
             "demo"));
       RenderingUtil.setPopupsAllowed(false);
+      System.out.println("\n\nBegin " + Coverage_Db_Suite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + Coverage_Db_Suite.class.getSimpleName());
    }
 
 }

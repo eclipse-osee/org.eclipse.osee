@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ConflictTest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManagerTest;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.word.UpdateBookmarkIdTest;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -100,11 +101,17 @@ import org.junit.runners.Suite;
 public class FrameworkCore_Demo_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
+      System.out.println("\n\nBegin " + FrameworkCore_Demo_Suite.class.getSimpleName());
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + FrameworkCore_Demo_Suite.class.getSimpleName());
    }
 
 }

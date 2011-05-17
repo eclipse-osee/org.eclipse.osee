@@ -44,7 +44,7 @@ public class MasterTestSuite_DemoDbInit {
 
    @org.junit.Test
    public void testDemoDbInit() throws Exception {
-      OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin database initialization...");
+      System.out.println("\nBegin database initialization...");
 
       String lastAuthenticationProtocol = OseeClientProperties.getAuthenticationProtocol();
       try {
@@ -66,11 +66,13 @@ public class MasterTestSuite_DemoDbInit {
          ClientSessionManager.getSession();
       }
       OseeClientProperties.setInDbInit(false);
+      System.out.println("End database initialization...");
 
    }
 
    @org.junit.Test
    public void testPopulateDemoDb() {
+      System.out.println("\nBegin Populate Demo DB...");
       Assert.assertTrue("DbInit must be successful to continue", wasDbInitSuccessful);
       try {
          ClientSessionManager.releaseSession();
@@ -84,6 +86,7 @@ public class MasterTestSuite_DemoDbInit {
 
          PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
          populateDemoActions.run(false);
+         System.out.println("End Populate Demo DB...");
       } catch (Exception ex) {
          Assert.fail(Lib.exceptionToString(ex));
       }

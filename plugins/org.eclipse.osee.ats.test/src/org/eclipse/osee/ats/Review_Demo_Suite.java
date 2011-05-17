@@ -13,6 +13,7 @@ package org.eclipse.osee.ats;
 import org.eclipse.osee.ats.review.ReviewNavigateItemsToWorldViewTest;
 import org.eclipse.osee.ats.review.ReviewWorldSearchItemDemoTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,5 +29,11 @@ public class Review_Demo_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + Review_Demo_Suite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + Review_Demo_Suite.class.getSimpleName());
    }
 }

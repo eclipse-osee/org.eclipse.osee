@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,7 +41,7 @@ public class RoughArtifact {
    private final Collection<RoughArtifact> children;
    private IArtifactType primaryArtifactType;
 
-   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
+   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) throws OseeCoreException {
       this(roughArtifactKind);
       addAttribute("Name", name);
    }
@@ -92,19 +91,15 @@ public class RoughArtifact {
       addURIAttribute(attributeType.getName(), file);
    }
 
-   public void addAttribute(String typeName, String value) {
-      if (Strings.isValid(typeName, value)) {
-         if (isEnumeration(typeName)) {
-            if (isMultipleEnum(typeName, value)) {
-               attributes.addMultiple(typeName, getEnumValues(value));
-            } else {
-               attributes.add(typeName, value.trim());
-            }
+   public void addAttribute(String typeName, String value) throws OseeCoreException {
+      if (isEnumeration(typeName)) {
+         if (isMultipleEnum(typeName, value)) {
+            attributes.addMultiple(typeName, getEnumValues(value));
          } else {
-            attributes.add(typeName, value);
+            attributes.add(typeName, value.trim());
          }
       } else {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "typeName or value is invalid. addAttribute(...) failed");
+         attributes.add(typeName, value);
       }
    }
 
@@ -116,14 +111,10 @@ public class RoughArtifact {
       return data;
    }
 
-   private boolean isEnumeration(String typeName) {
+   private boolean isEnumeration(String typeName) throws OseeCoreException {
       boolean result = false;
-      try {
-         AttributeType type = AttributeTypeManager.getType(typeName);
-         result = type.isEnumerated();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      AttributeType type = AttributeTypeManager.getType(typeName);
+      result = type.isEnumerated();
       return result;
    }
 

@@ -105,10 +105,7 @@ public class HttpProcessor {
             config.setProxy(data.getHost(), data.getPort());
          }
       }
-      // Don't display INFO if running tests
-      if (!OseeProperties.isInTest()) {
-         OseeLog.format(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
-      }
+      OseeLog.format(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
    }
 
    public static String acquireString(URL url) throws Exception {

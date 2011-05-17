@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -38,10 +37,8 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    public Artifact resolve(final RoughArtifact roughArtifact, final IOseeBranch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       IArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
-      if (!OseeProperties.isInTest()) {
-         OseeLog.format(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]",
-            roughArtifact, roughArtifact.getAttributes());
-      }
+      OseeLog.format(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]",
+         roughArtifact, roughArtifact.getAttributes());
 
       Artifact realArtifact =
          ArtifactTypeManager.addArtifact(artifactType, branch, roughArtifact.getGuid(),

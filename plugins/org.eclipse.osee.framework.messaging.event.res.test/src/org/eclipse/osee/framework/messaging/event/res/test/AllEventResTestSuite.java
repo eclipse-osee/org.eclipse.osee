@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res.test;
 
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.test.internal.InternalResTestSuite;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,5 +23,14 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AllEventResTestSuite {
-   // Test Suite
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + AllEventResTestSuite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + AllEventResTestSuite.class.getSimpleName());
+   }
 }

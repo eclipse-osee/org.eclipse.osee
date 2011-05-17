@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -60,7 +59,7 @@ public class ConflictTestManager {
       MODIFY_AND_DELETE;
    };
 
-   private static final boolean DEBUG = true;
+   private static final boolean DEBUG = false;
    //         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
    private static final String FOLDER = "System Requirements";
@@ -217,11 +216,15 @@ public class ConflictTestManager {
       }
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          if (conflictDefs[i].destDelete) {
-            System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId() + " index " + i);
+            if (DEBUG) {
+               System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId() + " index " + i);
+            }
             destArtifacts[i].deleteAndPersist();
          }
          if (conflictDefs[i].sourceDelete) {
-            System.out.println("Deleting Artifact with ID " + sourceArtifacts[i].getArtId() + " index " + i);
+            if (DEBUG) {
+               System.out.println("Deleting Artifact with ID " + sourceArtifacts[i].getArtId() + " index " + i);
+            }
             sourceArtifacts[i].deleteAndPersist();
          }
          if (DEBUG) {

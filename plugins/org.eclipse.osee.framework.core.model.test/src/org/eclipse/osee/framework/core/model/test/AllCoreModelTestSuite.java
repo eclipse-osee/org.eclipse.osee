@@ -14,6 +14,9 @@ import org.eclipse.osee.framework.core.model.test.access.AccessTestSuite;
 import org.eclipse.osee.framework.core.model.test.cache.CacheTestSuite;
 import org.eclipse.osee.framework.core.model.test.fields.FieldTestSuite;
 import org.eclipse.osee.framework.core.model.test.type.TypeTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -28,5 +31,14 @@ AccessTestSuite.class, //
  * @author Roberto E. Escobar
  */
 public class AllCoreModelTestSuite {
-   // Test Suite
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + AllCoreModelTestSuite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + AllCoreModelTestSuite.class.getSimpleName());
+   }
 }

@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.column.TeamColumnTest;
 import org.eclipse.osee.ats.column.TypeColumnTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -74,5 +75,11 @@ public class AtsTest_Demo_Column_Suite {
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+      System.out.println("\n\nBegin " + AtsTest_Demo_Column_Suite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + AtsTest_Demo_Column_Suite.class.getSimpleName());
    }
 }

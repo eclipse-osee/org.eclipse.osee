@@ -12,11 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -117,8 +115,8 @@ public class ChangeManagerTest {
    }
 
    public static void sleep(long milliseconds) throws Exception {
-      OseeLog.log(ChangeManagerTest.class, Level.INFO, "Sleeping " + milliseconds);
+      // OseeLog.log(ChangeManagerTest.class, Level.INFO, "Sleeping " + milliseconds);
       Thread.sleep(milliseconds);
-      OseeLog.log(ChangeManagerTest.class, Level.INFO, "Awake");
+      // OseeLog.log(ChangeManagerTest.class, Level.INFO, "Awake");
    }
 }

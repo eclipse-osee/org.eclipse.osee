@@ -25,7 +25,7 @@ public class ConvertAIsAndTeamDefinitions extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      XResultData resultData = new XResultData();
+      XResultData resultData = new XResultData(false);
       AtsWorkDefinitionProvider.get().convertAndOpenAIandTeamAtsDsl(resultData);
       resultData.report(getName());
    }

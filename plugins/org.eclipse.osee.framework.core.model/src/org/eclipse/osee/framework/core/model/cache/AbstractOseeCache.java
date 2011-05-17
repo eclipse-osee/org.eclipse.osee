@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -300,9 +299,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    @Override
    public synchronized boolean reloadCache() throws OseeCoreException {
       getDataAccessor().load(this);
-      if (!OseeProperties.isInTest()) {
-         OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
-      }
+      OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
       setLastLoaded(System.currentTimeMillis());
       return true;
    }

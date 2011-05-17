@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.operation;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -31,12 +32,16 @@ public class LogProgressMonitor implements IProgressMonitor {
    @Override
    public void beginTask(String name, int totalWork) {
       this.taskName = name;
-      OseeLog.log(Activator.class, Level.INFO, String.format("Start: %s", taskName));
+      if (!OseeProperties.isInTest()) {
+         OseeLog.log(Activator.class, Level.INFO, String.format("Start: %s", taskName));
+      }
    }
 
    @Override
    public void done() {
-      OseeLog.log(Activator.class, Level.INFO, String.format("Finish: %s", taskName));
+      if (!OseeProperties.isInTest()) {
+         OseeLog.log(Activator.class, Level.INFO, String.format("Finish: %s", taskName));
+      }
    }
 
    @Override
@@ -58,7 +63,9 @@ public class LogProgressMonitor implements IProgressMonitor {
    public void setTaskName(String name) {
       if (Strings.isValid(name)) {
          this.taskName = name;
-         OseeLog.log(Activator.class, Level.INFO, name);
+         if (!OseeProperties.isInTest()) {
+            OseeLog.log(Activator.class, Level.INFO, name);
+         }
       }
    }
 

@@ -64,8 +64,8 @@ public class ResultsEditorConverterTest {
       StringWriter writer = new StringWriter();
       MockResultsProvider provider = new MockResultsProvider("Test Provider");
       executeConversion("html", writer, provider);
-      System.out.println(writer.toString());
-      //      Assert.assertEquals(getExpectedHTMLReport(provider), writer.toString().replaceAll("\n", ""));
+      Assert.fail("The below line was commented out and fails, don't know why.");
+      Assert.assertEquals(getExpectedHTMLReport(provider), writer.toString().replaceAll("\n", ""));
    }
 
    @Test
@@ -206,7 +206,7 @@ public class ResultsEditorConverterTest {
    private byte[] getExpectedOtherReport(String type, MockResultsProvider provider) throws Exception {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       TableWriterAdaptor writerAdaptor = new TableWriterAdaptor(type, outputStream);
-      writerAdaptor.writeTitle("Report");
+      writerAdaptor.writeTitle("Report from " + getClass().getSimpleName());
       writerAdaptor.openDocument();
       for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
          writerAdaptor.writeTitle(tab.getTabName());

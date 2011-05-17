@@ -21,9 +21,11 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.test.AllEventResTestSuite;
 import org.eclipse.osee.framework.skynet.core.FrameworkCore_Demo_Suite;
+import org.eclipse.osee.framework.skynet.core.artifact.DirtyArtifactCacheTest;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -39,7 +41,9 @@ import org.junit.runners.Suite;
    AtsTest_Config_Suite.class,
    AtsTest_Demo_Suite.class,
    FrameworkUi_Demo_Suite.class,
-   AllDefineTestSuite.class})
+   AllDefineTestSuite.class,
+   // This should always be last test of master suite
+   DirtyArtifactCacheTest.class})
 /**
  * This suite should contain all cases and suites that can be run against a Demo Db Init and Demo Populated osee
  * database.
@@ -49,6 +53,7 @@ import org.junit.runners.Suite;
 public class MasterTestSuite_DemoDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
+      System.out.println("\nBegin " + MasterTestSuite_DemoDbTests.class.getSimpleName());
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
@@ -59,4 +64,8 @@ public class MasterTestSuite_DemoDbTests {
       RenderingUtil.setPopupsAllowed(false);
    }
 
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + MasterTestSuite_DemoDbTests.class.getSimpleName() + "\n\n");
+   }
 }

@@ -22,9 +22,11 @@ import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
 import org.eclipse.osee.framework.skynet.core.mocks.MockLinker;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -50,8 +52,10 @@ public class RelationCacheTest {
    private static RelationType relType1;
    private static RelationType relType2;
 
+   private static SevereLoggingMonitor severeLoggingMonitor;
+
    @BeforeClass
-   public static void setup() throws OseeCoreException {
+   public static void setup() throws Exception {
       branch1 = MockDataFactory.createBranch(100);
       branch1.setId(100);
 
@@ -75,10 +79,12 @@ public class RelationCacheTest {
       DataFactory.setEveryOtherToDeleted(sourceLinksRelType2);
 
       checkAssumptions();
+
+      severeLoggingMonitor = TestUtil.severeLoggingStart();
    }
 
    @AfterClass
-   public static void tearDown() {
+   public static void tearDown() throws Exception {
       branch1 = null;
       branch2 = null;
 
@@ -91,6 +97,8 @@ public class RelationCacheTest {
 
       relType1 = null;
       relType2 = null;
+
+      TestUtil.severeLoggingEnd(severeLoggingMonitor);
    }
 
    @Test

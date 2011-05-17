@@ -160,7 +160,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       Map<String, Artifact> nameToVerArt = new HashMap<String, Artifact>();
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
-         System.out.println("   - Importing Version " + dslVerName);
+         // System.out.println("   - Importing Version " + dslVerName);
          Artifact newVer =
             ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName);
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
@@ -186,8 +186,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          String aiName = Strings.unquote(dslVersionDef.getName());
          Artifact verArt = nameToVerArt.get(aiName);
          for (String parallelVerStr : dslVersionDef.getParallelVersion()) {
-            System.out.println(String.format("   - Importing Parallel Version [%s] -> Child [%s]", aiName,
-               parallelVerStr));
+            // System.out.println(String.format("   - Importing Parallel Version [%s] -> Child [%s]", aiName, parallelVerStr));
             Artifact childArt = nameToVerArt.get(parallelVerStr);
             verArt.addRelation(AtsRelationTypes.ParallelVersion_Child, childArt);
          }
@@ -197,7 +196,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    public void importActionableItems(EList<ActionableItemDef> aiDefs, Artifact parentArtifact) throws OseeCoreException {
       for (ActionableItemDef dslAIDef : aiDefs) {
          String dslAIName = Strings.unquote(dslAIDef.getName());
-         System.out.println("   - Importing Actionable Item " + dslAIName);
+         // System.out.println("   - Importing Actionable Item " + dslAIName);
          Artifact newAi = null;
          if (dslAIDef.getAiDefOption().contains("GetOrCreate")) {
             newAi = getOrCreate(dslAIName, false, parentArtifact);

@@ -46,11 +46,11 @@ import org.eclipse.osee.support.test.util.DemoUsers;
  */
 public class DemoDbReviews {
 
-   public static void createReviews() throws Exception {
+   public static void createReviews(boolean DEBUG) throws Exception {
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config - Create Reviews");
-      createPeerToPeerReviews(transaction);
-      createDecisionReviews(transaction);
+      createPeerToPeerReviews(DEBUG, transaction);
+      createDecisionReviews(DEBUG, transaction);
       transaction.execute();
    }
 
@@ -61,12 +61,14 @@ public class DemoDbReviews {
     * 3) Decision in Complete state w Joe Smith assignee and completed<br>
     * <br>
     */
-   public static void createDecisionReviews(SkynetTransaction transaction) throws Exception {
+   public static void createDecisionReviews(boolean DEBUG, SkynetTransaction transaction) throws Exception {
 
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();
 
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Decision reviews");
+      if (DEBUG) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Decision reviews");
+      }
       TeamWorkFlowArtifact firstTestArt = getSampleReviewTestWorkflows().get(0);
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
 
@@ -116,9 +118,11 @@ public class DemoDbReviews {
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
     */
-   public static void createPeerToPeerReviews(SkynetTransaction transaction) throws Exception {
+   public static void createPeerToPeerReviews(boolean DEBUG, SkynetTransaction transaction) throws Exception {
 
-      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Peer To Peer reviews");
+      if (DEBUG) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Peer To Peer reviews");
+      }
       TeamWorkFlowArtifact firstCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(0);
       TeamWorkFlowArtifact secondCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(1);
 
