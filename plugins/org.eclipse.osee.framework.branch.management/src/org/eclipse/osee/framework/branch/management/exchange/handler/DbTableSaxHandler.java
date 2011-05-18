@@ -26,6 +26,10 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -92,6 +96,18 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
+   private int getTypeId(AbstractOseeCache<? extends AbstractOseeType> cache, Map<String, String> fieldMap) throws OseeCoreException {
+      Conditions.checkNotNull(cache, "cache");
+      String guid = fieldMap.get(ExchangeDb.TYPE_GUID);
+      AbstractOseeType typeObject = cache.getByGuid(guid);
+      Conditions.checkNotNull(typeObject, "type", "type [%s] was not found in cache [%s]", guid, cache.getCacheId());
+      return typeObject.getId();
+   }
+
+   private IOseeCachingService getCachingService() {
+      return services.getCachingService();
+   }
+
    @Override
    protected void processData(Map<String, String> fieldMap) throws OseeCoreException {
       boolean process = true;
@@ -119,20 +135,17 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
             }
 
             if (exportItem.equals(ExportItem.OSEE_ARTIFACT_DATA)) {
-               int typeId =
-                  services.getCachingService().getArtifactTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+               int typeId = getTypeId(getCachingService().getArtifactTypeCache(), fieldMap);
                fieldMap.put("art_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_ATTRIBUTE_DATA)) {
-               int typeId =
-                  services.getCachingService().getAttributeTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+               int typeId = getTypeId(getCachingService().getAttributeTypeCache(), fieldMap);
                fieldMap.put("attr_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_RELATION_LINK_DATA)) {
-               int typeId =
-                  services.getCachingService().getRelationTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+               int typeId = getTypeId(getCachingService().getRelationTypeCache(), fieldMap);
                fieldMap.put("rel_link_type_id", String.valueOf(typeId));
             }
 
