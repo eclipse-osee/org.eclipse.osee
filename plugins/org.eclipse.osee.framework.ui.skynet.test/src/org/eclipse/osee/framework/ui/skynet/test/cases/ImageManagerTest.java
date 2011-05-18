@@ -22,14 +22,15 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -116,8 +117,8 @@ public abstract class ImageManagerTest {
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
       Artifact folder =
-         StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
-            BranchManager.getCommonBranch());
+         ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.Folder, CoreAttributeTypes.StaticId,
+            "user.groups", BranchManager.getCommonBranch());
       assertTrue("Image returned not a folder image.",
          ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
    }
@@ -126,8 +127,8 @@ public abstract class ImageManagerTest {
    public void testSetArtifactTypeImageInDb() throws Exception {
 
       Artifact folder =
-         StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
-            BranchManager.getCommonBranch());
+         ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.Folder, CoreAttributeTypes.StaticId,
+            "user.groups", BranchManager.getCommonBranch());
 
       // Check folder image
       assertTrue("Image returned not a \"Folder\" image.",

@@ -751,6 +751,32 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    }
 
    /**
+    * Will add the single string value if it does not already exist. Will also cleanup if more than one exists with same
+    * value. Will not touch any other values.
+    */
+   public void setSingletonAttributeValue(IAttributeType attributeType, String value) throws OseeCoreException {
+      List<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.StaticId, value);
+      if (attributes.isEmpty()) {
+         addAttribute(attributeType, value);
+      } else if (attributes.size() > 1) {
+         // keep one of the attributes
+         for (int x = 1; x < attributes.size(); x++) {
+            Attribute<String> attr = attributes.get(x);
+            attr.delete();
+         }
+      }
+   }
+
+   /**
+    * Will remove one or more of the single string value if artifact has it. Will not touch any other values.
+    */
+   public void deleteSingletonAttributeValue(IAttributeType attributeType, String value) throws OseeCoreException {
+      for (Attribute<?> attribute : getAttributes(attributeType, value)) {
+         attribute.delete();
+      }
+   }
+
+   /**
     * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
     * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
     * excess attributes will be deleted.

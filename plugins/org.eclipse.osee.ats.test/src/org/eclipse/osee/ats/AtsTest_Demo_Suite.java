@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats;
 
 import static org.junit.Assert.assertTrue;
+import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.log.AtsLogTest;
 import org.eclipse.osee.ats.artifact.log.LogItemTest;
 import org.eclipse.osee.ats.artifact.note.AtsNoteTest;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.util.ImportActionsViaSpreadsheetTest;
 import org.eclipse.osee.ats.workflow.SMAPromptChangeStatusTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -70,10 +72,12 @@ public class AtsTest_Demo_Suite {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       System.out.println("\n\nBegin " + AtsTest_Demo_Suite.class.getSimpleName());
+      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
+      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
       System.out.println("End " + AtsTest_Demo_Suite.class.getSimpleName());
    }
 }

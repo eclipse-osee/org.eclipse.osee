@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 
 /**
  * Supports the loading, modifying and saving of General Document artifacts of extension csv
@@ -67,12 +67,14 @@ public class CsvArtifact {
       artifact.setName(artifactName);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Extension, "csv");
       artifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent, csvData);
-      StaticIdManager.setSingletonAttributeValue(artifact, staticId);
+      artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
       return new CsvArtifact(artifact);
    }
 
    public static CsvArtifact getCsvArtifact(String staticId, IOseeBranch branch, boolean create) throws OseeCoreException {
-      Artifact art = StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralDocument, staticId, branch, true);
+      Artifact art =
+         ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralDocument, CoreAttributeTypes.StaticId,
+            staticId, branch, true);
       if (art != null) {
          return new CsvArtifact(art);
       }

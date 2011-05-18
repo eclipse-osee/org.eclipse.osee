@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.define;
 
+import junit.framework.Assert;
 import org.eclipse.osee.define.blam.operation.BlamTestSuite;
 import org.eclipse.osee.define.jobs.JobsTestSuite;
 import org.eclipse.osee.define.traceability.TestUnitAnnotationUtilityTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -26,10 +28,12 @@ public final class AllDefineTestSuite {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AllDefineTestSuite.class.getSimpleName());
+      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
+      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
       System.out.println("End " + AllDefineTestSuite.class.getSimpleName());
    }
 }

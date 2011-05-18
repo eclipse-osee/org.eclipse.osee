@@ -12,12 +12,11 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-
 import java.util.Collection;
 import java.util.Date;
-
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -58,7 +57,7 @@ public class Artifact_getLastModified {
       previousModifyDate = artifact.getLastModified();
 
       // Test post-modified
-      StaticIdManager.setSingletonAttributeValue(artifact, "this");
+      artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "this");
       Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
       artifact.persist();
 

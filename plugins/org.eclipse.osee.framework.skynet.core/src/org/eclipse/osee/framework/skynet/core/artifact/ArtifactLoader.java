@@ -121,12 +121,6 @@ public final class ArtifactLoader {
 
          if (confirmer == null || confirmer.canProceed(loadedItems.size())) {
             loadArtifactsData(queryId, loadedItems, loadLevel, reload, historical, allowDeleted);
-
-            if (!historical) {
-               for (Artifact artifact : loadedItems) {
-                  ArtifactCache.cacheByStaticId(artifact);
-               }
-            }
          }
       } finally {
          clearQuery(queryId);

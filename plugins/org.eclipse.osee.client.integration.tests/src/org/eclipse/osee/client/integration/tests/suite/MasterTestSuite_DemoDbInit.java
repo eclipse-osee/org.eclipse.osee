@@ -86,7 +86,7 @@ public class MasterTestSuite_DemoDbInit {
 
          PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
          populateDemoActions.run(false);
-         System.out.println("End Populate Demo DB...");
+         System.out.println("End Populate Demo DB...\n");
       } catch (Exception ex) {
          Assert.fail(Lib.exceptionToString(ex));
       }

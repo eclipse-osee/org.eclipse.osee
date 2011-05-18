@@ -16,11 +16,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -44,8 +46,13 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
          OseeLog.log(Activator.class, Level.INFO, "Loading ATS Configuration");
          Artifact headingArt = AtsUtilCore.getFromToken(AtsArtifactToken.HeadingFolder);
          // Loading artifacts will cache them in ArtifactCache
-         RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-            CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version);
+         for (Artifact artifact : RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
+            CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+            // CacheByText for all staticId values
+            for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+               ArtifactCache.cacheByTextId(staticId, artifact);
+            }
+         }
          // Load Work Definitions
          // TODO not doing anymore
          //         WorkItemDefinitionFactory.loadDefinitions();

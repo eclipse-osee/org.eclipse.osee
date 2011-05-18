@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
+import junit.framework.Assert;
 import org.eclipse.osee.ats.review.ReviewNavigateItemsToWorldViewTest;
 import org.eclipse.osee.ats.review.ReviewWorldSearchItemDemoTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -30,10 +32,12 @@ public class Review_Demo_Suite {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + Review_Demo_Suite.class.getSimpleName());
+      Assert.assertTrue(OseeData.isProjectOpen());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
+      Assert.assertTrue(OseeData.isProjectOpen());
       System.out.println("End " + Review_Demo_Suite.class.getSimpleName());
    }
 }

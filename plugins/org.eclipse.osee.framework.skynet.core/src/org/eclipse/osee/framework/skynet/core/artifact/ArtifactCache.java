@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
@@ -91,14 +91,6 @@ public final class ArtifactCache {
       ACTIVE_CACHE.updateReferenceType(artId, branchId);
    }
 
-   static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
-      if (!artifact.isHistorical()) {
-         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            cacheByStaticId(staticId, artifact);
-         }
-      }
-   }
-
    /**
     * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
     * indicate that the map previously associated null with key, if the implementation supports null values.)
@@ -108,27 +100,6 @@ public final class ArtifactCache {
          throw new OseeArgumentException("historical artifact cannot be cached by text [%s]", key);
       }
       return ACTIVE_CACHE.cacheByText(key, artifact);
-   }
-
-   public static void cacheByStaticId(String staticId, Artifact artifact) throws OseeCoreException {
-      if (artifact.isHistorical()) {
-         throw new OseeArgumentException("historical artifact cannot be cached by staticId [%s]", staticId);
-      }
-      ACTIVE_CACHE.cacheByStaticId(staticId, artifact);
-   }
-
-   public static void cacheByStaticId(Artifact artifact) throws OseeCoreException {
-      for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-         cacheByStaticId(staticId, artifact);
-      }
-   }
-
-   public static Collection<Artifact> getArtifactsByStaticId(String staticId) {
-      return ACTIVE_CACHE.getByStaticId(staticId);
-   }
-
-   public static Collection<Artifact> getArtifactsByStaticId(String staticId, IOseeBranch branch) {
-      return ACTIVE_CACHE.getByStaticId(staticId, branch);
    }
 
    public static List<Artifact> getArtifactsByType(IArtifactType artifactType) {
@@ -220,10 +191,31 @@ public final class ArtifactCache {
    }
 
    /**
-    * @returns the active artifact based on the previously provided text key and branch
+    * Return single active artifact stored by text and branch or null if none.
+    * 
+    * @throws OseeStateException if more than one artifact stored.
     */
    public static Artifact getByTextId(String key, IOseeBranch branch) throws OseeCoreException {
-      return ACTIVE_CACHE.getByText(key, BranchManager.getBranch(branch));
+      Artifact artifact = ACTIVE_CACHE.getByText(key, BranchManager.getBranch(branch));
+      // decache if deleted
+      if (artifact != null && artifact.isDeleted()) {
+         ACTIVE_CACHE.deCacheByText(key, branch, artifact);
+      }
+      return artifact;
+   }
+
+   public static Collection<Artifact> getListByTextId(String key, IOseeBranch branch) throws OseeCoreException {
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      Collection<Artifact> cached = ACTIVE_CACHE.getListByText(key, BranchManager.getBranch(branch));
+      // decache any deleted artifacts
+      for (Artifact artifact : cached) {
+         if (artifact.isDeleted()) {
+            ACTIVE_CACHE.deCacheByText(key, branch, artifact);
+         } else {
+            artifacts.add(artifact);
+         }
+      }
+      return artifacts;
    }
 
 }

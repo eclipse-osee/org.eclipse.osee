@@ -12,14 +12,16 @@ package org.eclipse.osee.framework.skynet.core.artifact.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 
@@ -27,26 +29,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
  * @author Roberto E. Escobar
  */
 public class ActiveArtifactCache extends AbstractArtifactCache {
-   private static final double TEXT_PERCENT_INITIAL_CAPACITY = 0.20;
-   private static final double STATIC_ID_PERCENT_INITIAL_CAPACITY = 0.20;
 
    private final CompositeKeyHashMap<IArtifactType, ArtifactKey, Object> byArtifactTypeCache;
-   private final CompositeKeyHashMap<String, IOseeBranch, Object> keyedArtifactCache;
-   private final HashCollection<String, Object> staticIdArtifactCache;
+   private final CompositeKeyHashMap<String, IOseeBranch, Set<Object>> keyedArtifactCache;
 
    public ActiveArtifactCache(int initialCapacity) {
       super(initialCapacity);
       byArtifactTypeCache = new CompositeKeyHashMap<IArtifactType, ArtifactKey, Object>(initialCapacity, true);
 
-      int textCacheSize = getFromBase(initialCapacity, TEXT_PERCENT_INITIAL_CAPACITY);
-      keyedArtifactCache = new CompositeKeyHashMap<String, IOseeBranch, Object>(textCacheSize, true);
-
-      int staticIdCacheSize = getFromBase(initialCapacity, STATIC_ID_PERCENT_INITIAL_CAPACITY);
-      staticIdArtifactCache = new HashCollection<String, Object>(true, HashSet.class, staticIdCacheSize);
-   }
-
-   private int getFromBase(int base, double percentage) {
-      return (int) (base * percentage);
+      keyedArtifactCache = new CompositeKeyHashMap<String, IOseeBranch, Set<Object>>(200, true);
    }
 
    @Override
@@ -60,46 +51,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
    public void deCache(Artifact artifact) {
       super.deCache(artifact);
       byArtifactTypeCache.remove(artifact.getArtifactType(), new ArtifactKey(artifact));
-      // TODO ?
-      //      deCacheFromTextCache(artifact);
-      //      deCacheFromStaticIdCache(artifact);
    }
-
-   //   private void deCacheFromTextCache(Artifact artifact) {
-   //      List<Pair<String, IOseeBranch>> toRemove = new ArrayList<Pair<String, IOseeBranch>>();
-   //      for (Entry<Pair<String, IOseeBranch>, Object> entry : keyedArtifactCache.entrySet()) {
-   //         Object object = entry.getValue();
-   //         Artifact cachedArt = asArtifact(object);
-   //         if (cachedArt == null || cachedArt.equals(artifact)) {
-   //            toRemove.add(entry.getKey());
-   //         }
-   //      }
-   //
-   //      for (Pair<String, IOseeBranch> key : toRemove) {
-   //         keyedArtifactCache.remove(key.getFirst(), key.getSecond());
-   //      }
-   //   }
-   //
-   //   private void deCacheFromStaticIdCache(Artifact artifact) {
-   //      HashCollection<String, Object> keysToRemove = new HashCollection<String, Object>();
-   //      for (String name : staticIdArtifactCache.keySet()) {
-   //         Collection<Object> items = staticIdArtifactCache.getValues(name);
-   //         if (items != null) {
-   //            for (Object object : items) {
-   //               Artifact cachedArt = asArtifact(object);
-   //               if (cachedArt == null || cachedArt.equals(artifact)) {
-   //                  keysToRemove.put(name, object);
-   //               }
-   //            }
-   //         }
-   //      }
-   //
-   //      for (String name : keysToRemove.keySet()) {
-   //         for (Object object : keysToRemove.getValues(name)) {
-   //            staticIdArtifactCache.removeValue(name, object);
-   //         }
-   //      }
-   //   }
 
    @Override
    protected Integer getKey2(Artifact artifact) {
@@ -132,36 +84,36 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       return items;
    }
 
-   public Artifact getByText(String text, Branch branch) {
-      return asArtifact(keyedArtifactCache.get(text, branch));
+   public void deCacheByText(String text, IOseeBranch branch, Artifact artifact) {
+      super.deCache(artifact);
+      Set<Object> objects = keyedArtifactCache.get(text, branch);
+      objects.remove(artifact);
    }
 
-   public Collection<Artifact> getByStaticId(String staticId) {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      Collection<Object> cachedArts = staticIdArtifactCache.getValues(staticId);
-      if (cachedArts != null) {
-         for (Object obj : cachedArts) {
-            Artifact artifact = asArtifact(obj);
-            if (artifact != null && !artifact.isDeleted()) {
-               artifacts.add(artifact);
-            }
+   /**
+    * Return single artifact stored by text and branch or null if none.
+    * 
+    * @throws OseeStateException if more than one artifact stored.
+    */
+   public Artifact getByText(String text, IOseeBranch branch) throws OseeCoreException {
+      Set<Object> objects = keyedArtifactCache.get(text, branch);
+      if (objects != null) {
+         if (objects.size() > 1) {
+            throw new OseeStateException(String.format("Expected only one value for [%s]; found [%d]", text,
+               objects.size()));
+         } else if (objects.size() == 1) {
+            return asArtifact(objects.iterator().next());
          }
       }
-      return artifacts;
+      return null;
    }
 
-   public Collection<Artifact> getByStaticId(String staticId, IOseeBranch branch) {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      Collection<Object> cachedArts = staticIdArtifactCache.getValues(staticId);
-      if (cachedArts != null) {
-         for (Object obj : cachedArts) {
-            Artifact artifact = asArtifact(obj);
-            if (artifact != null && !artifact.isDeleted() && artifact.getBranch().equals(branch)) {
-               artifacts.add(artifact);
-            }
-         }
+   public Collection<Artifact> getListByText(String text, IOseeBranch branch) {
+      Set<Object> objects = keyedArtifactCache.get(text, branch);
+      if (objects == null) {
+         return Collections.emptyList();
       }
-      return artifacts;
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(objects);
    }
 
    /**
@@ -169,17 +121,17 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
     * indicate that the map previously associated null with key, if the implementation supports null values.)
     */
    public Artifact cacheByText(String key, Artifact artifact) {
-      Object object = cache(artifact);
-      return asArtifact(keyedArtifactCache.put(key, artifact.getBranch(), object));
-   }
-
-   /**
-    * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
-    * indicate that the map previously associated null with key, if the implementation supports null values.)
-    */
-   public Artifact cacheByStaticId(String staticId, Artifact artifact) {
-      Object object = cache(artifact);
-      return asArtifact(staticIdArtifactCache.put(staticId, object));
+      cache(artifact);
+      Set<Object> objects = keyedArtifactCache.get(key, artifact.getBranch());
+      if (objects == null) {
+         objects = new HashSet<Object>();
+         keyedArtifactCache.put(key, artifact.getBranch(), objects);
+      }
+      if (objects.contains(artifact)) {
+         return artifact;
+      }
+      objects.add(artifact);
+      return null;
    }
 
    @Override
@@ -188,7 +140,6 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       builder.append(super.toString());
       builder.append(String.format("ByType:     [%s]\n", byArtifactTypeCache.size()));
       builder.append(String.format("ByText:     [%s]\n", keyedArtifactCache.size()));
-      builder.append(String.format("ByStaticId: [%s]\n", staticIdArtifactCache.size()));
       return builder.toString();
    }
 }

@@ -142,7 +142,6 @@ public class AttributeLoader {
             }
             setLastAttributePersistTransaction(artifact, transactionNumbers);
             artifact.meetMinimumAttributeCounts(false);
-            ArtifactCache.cachePostAttributeLoad(artifact);
          }
       }
    }

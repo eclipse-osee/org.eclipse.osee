@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQueryTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTestSuite;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeInheritanceTest;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ReplaceWithAttributeTest;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryTestDemo;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFiltersTest;
@@ -89,7 +89,7 @@ import org.junit.runners.Suite;
    ConflictTest.class,
    ChangeManagerTest.class,
    RelationDeletionTest.class,
-   StaticIdManagerTest.class,
+   ArtifactCacheQueryTest.class,
    BranchStateTest.class,
    DuplicateHridTest.class,
    RelationOrderingTest.class,

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -48,9 +50,9 @@ public class RelationOrderingTest {
    @BeforeClass
    @AfterClass
    public static void setupTeardown() throws Exception {
-      Set<Artifact> artsToDel =
-         StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.Folder, STATIC_ID_TO_DELETE,
-            BranchManager.getCommonBranch());
+      Set<Artifact> artsToDel = new HashSet<Artifact>();
+      artsToDel.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.Folder,
+         CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE, BranchManager.getCommonBranch()));
       if (artsToDel.size() > 0) {
          new PurgeArtifacts(artsToDel).execute();
          Thread.sleep(5000);
@@ -187,7 +189,7 @@ public class RelationOrderingTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
             "Main Folder - " + guid);
       mainFolder.persist(transaction);
-      StaticIdManager.setSingletonAttributeValue(mainFolder, STATIC_ID_TO_DELETE);
+      mainFolder.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch()).addChild(mainFolder);
       List<Artifact> children = new ArrayList<Artifact>();
       for (int x = 0; x < 3; x++) {
@@ -195,7 +197,7 @@ public class RelationOrderingTest {
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
                "New Child " + x + " - " + guid);
          children.add(childArt);
-         StaticIdManager.setSingletonAttributeValue(childArt, STATIC_ID_TO_DELETE);
+         childArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
          mainFolder.addChild(childArt);
          childArt.persist(transaction);
       }
@@ -206,7 +208,7 @@ public class RelationOrderingTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
             "New Artifact " + guid);
       mainFolder.addChild(newArtifact);
-      StaticIdManager.setSingletonAttributeValue(newArtifact, STATIC_ID_TO_DELETE);
+      newArtifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
       newArtifact.persist();
 
       for (Artifact child : children) {

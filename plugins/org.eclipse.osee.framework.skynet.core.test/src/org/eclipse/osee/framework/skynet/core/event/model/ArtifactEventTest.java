@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -37,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -242,7 +240,7 @@ public class ArtifactEventTest {
 
    private void testArtifactRelationEvents__modifyArtifact(Artifact newArt) throws Exception {
       clearEventCollections();
-      StaticIdManager.setSingletonAttributeValue(newArt, "this");
+      newArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "this");
       newArt.persist();
 
       Assert.assertEquals(1, resultEventArtifacts.size());
@@ -828,7 +826,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // reload Artifact
-      StaticIdManager.setSingletonAttributeValue(newArt, "this");
+      newArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "this");
       Assert.assertTrue(newArt.isDirty());
       newArt.reloadAttributesAndRelations();
       Assert.assertFalse(newArt.isDirty());

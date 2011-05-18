@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
+import junit.framework.Assert;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewDecisionStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItemTest;
@@ -17,6 +18,7 @@ import org.eclipse.osee.ats.editor.stateItem.AtsHandleAddReviewRuleStateItemTest
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItemTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -40,10 +42,12 @@ public class AtsTest_Demo_StateItem_Suite {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Demo_StateItem_Suite.class.getSimpleName());
+      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
+      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
       System.out.println("End " + AtsTest_Demo_StateItem_Suite.class.getSimpleName());
    }
 }

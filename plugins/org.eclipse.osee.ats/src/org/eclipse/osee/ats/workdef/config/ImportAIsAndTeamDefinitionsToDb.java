@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 public class ImportAIsAndTeamDefinitionsToDb {
@@ -123,7 +122,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          boolean hasVersions = dslTeamDef.getVersion().size() > 0;
          newTeam.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, configuredForTeamUsesVersions | hasVersions);
          for (String staticId : dslTeamDef.getStaticId()) {
-            StaticIdManager.setSingletonAttributeValue(newTeam, staticId);
+            newTeam.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
          }
          for (Artifact user : UserRefUtil.getUsers(dslTeamDef.getLead())) {
             newTeam.addRelation(AtsRelationTypes.TeamLead_Lead, user);
@@ -178,7 +177,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newVer.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, dslVersionDef.getBaselineBranchGuid());
          }
          for (String staticId : dslVersionDef.getStaticId()) {
-            StaticIdManager.setSingletonAttributeValue(newVer, staticId);
+            newVer.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
          }
       }
       // Handle parallel versions
@@ -213,7 +212,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          //         newAi.setSoleAttributeValue(CoreAttributeTypes.Active, BooleanDefUtil.get(dslAIDef.getActive(), true));
          newAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, BooleanDefUtil.get(dslAIDef.getActionable(), true));
          for (String staticId : dslAIDef.getStaticId()) {
-            StaticIdManager.setSingletonAttributeValue(newAi, staticId);
+            newAi.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
          }
          for (Artifact user : UserRefUtil.getUsers(dslAIDef.getLead())) {
             newAi.addRelation(AtsRelationTypes.TeamLead_Lead, user);
