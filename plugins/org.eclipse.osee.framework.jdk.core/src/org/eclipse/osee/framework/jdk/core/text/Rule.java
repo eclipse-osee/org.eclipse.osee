@@ -51,7 +51,7 @@ public abstract class Rule {
 
    /**
     * Implement this to receive the content of the entire file in {@code seq}
-    *
+    * 
     * @param seq
     * @return
     */
@@ -119,8 +119,6 @@ public abstract class Rule {
                changeSet.applyChanges(outFile);
             }
          }
-      } else {
-         System.out.println("The file " + inFile + " does not exist!");
       }
    }
 
@@ -148,7 +146,12 @@ public abstract class Rule {
             Rule rule = (Rule) obj;
             for (int i = 2; i < args.length; i++) {
                try {
-                  rule.process(new File(args[i]));
+                  File file = new File(args[i]);
+                  if (!file.exists()) {
+                     System.out.println("The file " + file + " does not exist!");
+                  } else {
+                     rule.process(file);
+                  }
                } catch (Exception ex) {
                   System.out.println("Exception in Rule!!! " + rule.currentOutfileName + ": " + ex.getMessage());
                   ex.printStackTrace();
