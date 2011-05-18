@@ -384,7 +384,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
 
       @Override
-      public List<ModelKey<?>> getRegisteredModels() throws RemoteException {
+      public List<ModelKey> getRegisteredModels() throws RemoteException {
          return env.getModelManager().getRegisteredModels();
       }
 

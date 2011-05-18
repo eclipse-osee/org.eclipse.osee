@@ -28,7 +28,10 @@ public interface IModelManager {
 
    void notifyModelStateListener(ModelKey<?> key, ModelState state) throws RemoteException;
 
-   List<ModelKey<?>> getRegisteredModels();
+   @Deprecated
+   void notifyModeStateListener(ModelKey key, ModelState state) throws RemoteException;
+   
+   List<ModelKey> getRegisteredModels();
 
    void releaseReference(IModel model);
 

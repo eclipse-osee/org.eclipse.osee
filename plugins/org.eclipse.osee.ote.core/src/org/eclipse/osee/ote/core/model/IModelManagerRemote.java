@@ -19,7 +19,7 @@ import java.util.List;
  * @author Andrew M. Finkbeiner
  */
 public interface IModelManagerRemote extends Remote {
-   List<ModelKey<?>> getRegisteredModels() throws RemoteException;
+   List<ModelKey> getRegisteredModels() throws RemoteException;
 
    Remote getRemoteModel(ModelKey<?> key) throws RemoteException;
 

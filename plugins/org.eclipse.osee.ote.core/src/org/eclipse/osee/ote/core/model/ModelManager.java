@@ -36,7 +36,7 @@ public class ModelManager implements IModelManager, DestroyableService {
 
    private final List<IModelListener> modelListeners;
    private final Map<ModelKey<?>, ModelReference> modelReferenceMap;
-   private final List<ModelKey<?>> registeredModels;
+   private final List<ModelKey> registeredModels;
    private final WeakReference<TestEnvironment> testEnvironment;
 
    private boolean isDestroyed = false;
@@ -62,7 +62,7 @@ public class ModelManager implements IModelManager, DestroyableService {
 
    public ModelManager(TestEnvironment testEnvironment) {
       this.testEnvironment = new WeakReference<TestEnvironment>(testEnvironment);
-      registeredModels = new ArrayList<ModelKey<?>>();
+      registeredModels = new ArrayList<ModelKey>();
       modelListeners = new ArrayList<IModelListener>();
       modelReferenceMap = new HashMap<ModelKey<?>, ModelReference>();
    }
@@ -216,7 +216,7 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    @Override
-   public List<ModelKey<?>> getRegisteredModels() {
+   public List<ModelKey> getRegisteredModels() {
       return registeredModels;
    }
 
@@ -293,6 +293,11 @@ public class ModelManager implements IModelManager, DestroyableService {
          modelReferenceMap.get(cleanKey).notifyModelStateListener();
       }
    }
+   
+   @Override
+   public void notifyModeStateListener(ModelKey key, ModelState state) throws RemoteException {
+	   notifyModelStateListener(key, state);
+   }
 
    private <CLASSTYPE extends IModel> void notifyModelDispose(ModelKey<?> key) throws RemoteException {
       @SuppressWarnings("rawtypes")
@@ -344,5 +349,7 @@ public class ModelManager implements IModelManager, DestroyableService {
       registeredModels.clear();
       isDestroyed = true;
    }
+
+
 
 }
