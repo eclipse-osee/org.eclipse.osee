@@ -26,20 +26,26 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * @author Ryan D. Brooks
  */
 public class NativeArtifactTest {
 
-   @org.junit.Test
-   public void testCleanupPre() throws Exception {
-      cleanup();
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws Exception {
+      Collection<Artifact> arts =
+         ArtifactQuery.getArtifactListFromName(NativeArtifactTest.class.getSimpleName(), DemoSawBuilds.SAW_Bld_2,
+            EXCLUDE_DELETED);
+      new PurgeArtifacts(arts).execute();
    }
 
    @org.junit.Test
    public void testNativeArtifact() throws Exception {
-      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, true);
+      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_2, true);
       assertNotNull(csvArtifact);
       Artifact artifact = csvArtifact.getArtifact();
       assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent));
@@ -78,18 +84,8 @@ public class NativeArtifactTest {
       }
    }
 
-   @org.junit.Test
-   public void testCleanupPost() throws Exception {
-      cleanup();
-   }
-
    private Artifact getNativeArtifact() throws Exception {
-      return CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, false).getArtifact();
+      return CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_2, false).getArtifact();
    }
 
-   private void cleanup() throws Exception {
-      Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED);
-      new PurgeArtifacts(arts).execute();
-   }
 }
