@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.init;
 
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
@@ -33,6 +34,8 @@ import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -52,7 +55,15 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       createOseeDatastore();
 
-      //      Platform.getBundle("org.eclipse.osee.framework.ui.skynet");
+      Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.skynet.core");
+      int state = bundle.getState();
+      if (state != Bundle.ACTIVE) {
+         try {
+            bundle.start();
+         } catch (BundleException ex) {
+            throw new OseeCoreException(ex);
+         }
+      }
       IOseeCachingService service = DatabaseInitActivator.getInstance().getCachingService();
       service.clearAll();
 
