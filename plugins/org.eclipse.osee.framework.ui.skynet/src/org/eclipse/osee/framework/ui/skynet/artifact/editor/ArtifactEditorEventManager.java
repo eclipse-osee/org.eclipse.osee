@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -100,14 +101,21 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
             if (!modifiedArts.isEmpty() || !relModifiedArts.isEmpty() || !relOrderChangedArtifacts.isEmpty()) {
                for (IArtifactEditorEventHandler handler : handlers) {
                   try {
-                     if (!handler.isDisposed()) {
-                        if (handler.getArtifactFromEditorInput() != null && modifiedArts.contains(handler.getArtifactFromEditorInput())) {
+                     if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null) {
+
+                        if (modifiedArts.contains(handler.getArtifactFromEditorInput())) {
                            handler.refreshDirtyArtifact();
+                        }
+
+                        for (Artifact art : modifiedArts) {
+                           if (art.isOfType(CoreArtifactTypes.AccessControlModel)) {
+                              handler.refreshDirtyArtifact();
+                           }
                         }
 
                         boolean relModified = relModifiedArts.contains(handler.getArtifactFromEditorInput());
                         boolean reorderArt = relOrderChangedArtifacts.contains(handler.getArtifactFromEditorInput());
-                        if (handler.getArtifactFromEditorInput() != null && (relModified || reorderArt)) {
+                        if (relModified || reorderArt) {
                            handler.refreshRelations();
                            handler.getEditor().onDirtied();
                         }
