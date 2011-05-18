@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
@@ -29,14 +31,16 @@ public class CsvArtifactTest {
    private static String csvData = "Name, Value1, Value2\narf,1,3\nbarn,3,5";
    private static String appendData = "snarf,6,3";
 
-   @org.junit.Test
-   public void testCleanupPre() throws Exception {
-      cleanup();
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws Exception {
+      Collection<Artifact> arts = ArtifactQuery.getArtifactListFromName(id, DemoSawBuilds.SAW_Bld_2, EXCLUDE_DELETED);
+      new PurgeArtifacts(arts).execute();
    }
 
    @org.junit.Test
    public void testCreateCsvArtifact() throws Exception {
-      CsvArtifact csv = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_1, true);
+      CsvArtifact csv = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_2, true);
       assertEquals(csv.getCsvData(), "");
       csv.getArtifact().setName(id);
       csv.setCsvData(csvData);
@@ -45,7 +49,7 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testgetCsvArtifactAndAppendData() throws Exception {
-      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_1, false);
+      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_2, false);
       assertNotNull(csvArt);
       assertEquals(csvData, csvArt.getCsvData());
       csvArt.appendData(appendData);
@@ -54,18 +58,9 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testCsvGetData() throws Exception {
-      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_1, false);
+      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_2, false);
       assertNotNull(csvArt);
       assertEquals(csvData + "\n" + appendData, csvArt.getCsvData());
    }
 
-   @org.junit.Test
-   public void testCleanupPost() throws Exception {
-      cleanup();
-   }
-
-   private void cleanup() throws Exception {
-      Collection<Artifact> arts = ArtifactQuery.getArtifactListFromName(id, DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED);
-      new PurgeArtifacts(arts).execute();
-   }
 }
