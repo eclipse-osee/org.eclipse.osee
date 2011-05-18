@@ -117,10 +117,12 @@ public class DatabaseInitializationOperation {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin Database Initialization...");
       DbInitConfiguration configuration = getConfiguration();
       for (String pointId : configuration.getTaskExtensionIds()) {
+         System.out.print(".");
          IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
          checkValidExtension(extension, pointId);
          runDbInitTasks(configuration, extension);
       }
+      System.out.println(".");
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Database Initialization Complete.");
    }
 
