@@ -29,27 +29,23 @@ public class DialogPopupLoggerListener implements ILoggerListener {
    @Override
    public void log(String loggerName, Level level, String message, Throwable th) {
       if (level == OseeLevel.SEVERE_POPUP) {
-         String title = "OSEE Error";
-         String messageText = message;
-         String reasonMessage = "";
-         if (th != null) {
-            reasonMessage = th.getMessage();
-         }
+         final String title = "OSEE Error";
          final IStatus status;
+         final String realMessageText;
          if (th != null) {
             List<IStatus> exc = new ArrayList<IStatus>();
             exceptionToString(true, loggerName, th, exc);
             status =
-               new MultiStatus(loggerName, IStatus.ERROR, exc.toArray(new IStatus[exc.size()]), reasonMessage, th);
+               new MultiStatus(loggerName, IStatus.ERROR, exc.toArray(new IStatus[exc.size()]), th.getMessage(), th);
+            realMessageText = message;
          } else {
-            status = new Status(IStatus.ERROR, loggerName, -20, reasonMessage, th);
+            status = new Status(IStatus.ERROR, loggerName, -20, message, th);
+            realMessageText = null;
          }
-         final String realTitle = title;
-         final String realMessageText = messageText;
          Displays.pendInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               ErrorDialog.openError(Displays.getActiveShell(), realTitle, realMessageText, status);
+               ErrorDialog.openError(Displays.getActiveShell(), title, realMessageText, status);
             }
          });
       }
