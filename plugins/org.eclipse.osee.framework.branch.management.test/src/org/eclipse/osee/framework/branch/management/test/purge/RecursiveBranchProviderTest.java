@@ -23,15 +23,18 @@ import org.junit.Test;
  */
 public class RecursiveBranchProviderTest {
 
+   private int getExpectedNumberOfBranches() throws OseeCoreException {
+      return MockBranchProvider.createTestBranches().size();
+   }
+
    @Test
    public void testGetBranches() throws OseeCoreException {
-      MockBranchProvider mbp = new MockBranchProvider();
       BranchFilter filter = new BranchFilter();
       filter.setNegatedBranchTypes(BranchType.BASELINE);
 
-      RecursiveBranchProvider provider = new RecursiveBranchProvider(mbp.getRootBranch(), filter);
+      RecursiveBranchProvider provider = new RecursiveBranchProvider(MockBranchProvider.getRootBranch(), filter);
       int numBranches = provider.getBranches().size();
-      Assert.assertEquals(numBranches, 8);
+      Assert.assertEquals(getExpectedNumberOfBranches(), numBranches);
    }
 
    @Test(expected = OseeCoreException.class)

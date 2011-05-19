@@ -24,16 +24,12 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  */
 public final class MockBranchProvider implements IBranchesProvider {
 
-   private Branch root;
-   private final Collection<Branch> branches = new ArrayList<Branch>();
+   private final static String ROOT_BRANCH_NAME = "ROOT";
 
-   public MockBranchProvider() throws OseeCoreException {
-      initializeData();
-   }
-
-   private void initializeData() throws OseeCoreException {
+   public static Collection<Branch> createTestBranches() throws OseeCoreException {
+      Collection<Branch> branches = new ArrayList<Branch>();
       //create a root branch
-      root = new Branch(GUID.create(), "root", BranchType.SYSTEM_ROOT, BranchState.COMMITTED, false);
+      Branch root = new Branch(GUID.create(), ROOT_BRANCH_NAME, BranchType.SYSTEM_ROOT, BranchState.COMMITTED, false);
 
       //add a child to root (parent)
       Branch parent = new Branch(GUID.create(), "parent", BranchType.SYSTEM_ROOT, BranchState.CREATED, false);
@@ -76,14 +72,21 @@ public final class MockBranchProvider implements IBranchesProvider {
       branches.add(child3);
       branches.add(grandChild1);
       branches.add(parent);
+
+      return branches;
    }
 
-   public Branch getRootBranch() {
-      return root;
+   public static Branch getRootBranch() throws OseeCoreException {
+      for (Branch branch : MockBranchProvider.createTestBranches()) {
+         if (branch.getName().equals(ROOT_BRANCH_NAME)) {
+            return branch;
+         }
+      }
+      return null;
    }
 
    @Override
-   public Collection<Branch> getBranches() {
-      return branches;
+   public Collection<Branch> getBranches() throws OseeCoreException {
+      return MockBranchProvider.createTestBranches();
    }
 }
