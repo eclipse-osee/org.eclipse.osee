@@ -19,6 +19,7 @@ public class ArtifactNameComparator implements Comparator<IArtifact> {
    private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");
    private final Matcher numberMatcher = numberPattern.matcher("");
    private boolean descending = false;
+   private static final int NUMBER_STRING_LIMIT = 19;
 
    public ArtifactNameComparator(boolean descending) {
       this.descending = descending;
@@ -33,10 +34,12 @@ public class ArtifactNameComparator implements Comparator<IArtifact> {
       if (numberMatcher.matches()) {
          numberMatcher.reset(name2);
          if (numberMatcher.matches()) {
-            if (descending) {
-               return Integer.valueOf(name2).compareTo(Integer.valueOf(name1));
-            } else {
-               return Integer.valueOf(name1).compareTo(Integer.valueOf(name2));
+            if ((name1.length() < NUMBER_STRING_LIMIT) && (name2.length() < NUMBER_STRING_LIMIT)) {
+               if (descending) {
+                  return Long.valueOf(name2).compareTo(Long.valueOf(name1));
+               } else {
+                  return Long.valueOf(name1).compareTo(Long.valueOf(name2));
+               }
             }
          }
       }
