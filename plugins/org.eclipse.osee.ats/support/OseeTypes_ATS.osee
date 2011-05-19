@@ -23,7 +23,7 @@ artifactType "ats.Review" extends "ats.State Machine" {
    attribute "ats.Review Blocks"
 }
 
-artifactType "ats.Review Review" extends "ats.Review" {
+artifactType "PeerToPeer Review" extends "ats.Review" {
    guid "AAMFDhh_300dpgmNtRAA"
    attribute "ats.Location"
    attribute "ats.Review Defect"
@@ -32,6 +32,10 @@ artifactType "ats.Review Review" extends "ats.Review" {
    attribute "ats.LOC Reviewed"
    attribute "ats.Pages Changed"
    attribute "ats.Pages Reviewed"
+   attribute "ats.Review Formal Type"
+   attribute "ats.Meeting Attendee"
+   attribute "ats.Meeting Length"
+   attribute "ats.Meeting Location"
 }
 
 artifactType "Decision Review" extends "ats.Review" {
@@ -62,8 +66,11 @@ artifactType "Team Definition" extends "ats.Ats Artifact", "Abstract Access Cont
    attribute "ats.Actionable"
    attribute "ats.Allow Create Branch"
    attribute "ats.Allow Commit Branch"
+   attribute "ats.Related Task Workflow Definition Old"
    attribute "ats.Related Task Workflow Definition"
+   attribute "ats.Workflow Definition Old"
    attribute "ats.Workflow Definition"
+   attribute "ats.Rule Definition"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Artifact", "Abstract Access Controlled" {
@@ -99,6 +106,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.Estimated Hours"
    attribute "ats.Estimated Release Date"
    attribute "ats.Log"
+   attribute "ats.Percent Complete"
    attribute "ats.Release Date"
    attribute "ats.Resolution"
    attribute "ats.SMA Note"
@@ -114,6 +122,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.Cancelled Date"
    attribute "ats.Cancelled From State"
    attribute "ats.Cancelled Reason"
+   attribute "ats.Workflow Definition Old"
    attribute "ats.Workflow Definition"
 }
 
@@ -145,6 +154,7 @@ artifactType "Team Workflow" extends "ats.State Machine", "Abstract Access Contr
    attribute "ats.Operational Impact Description"
    attribute "ats.Operational Impact Workaround"
    attribute "ats.Operational Impact Workaround Description"
+   attribute "ats.Related Task Workflow Definition Old"
    attribute "ats.Related Task Workflow Definition"
 }
 
@@ -176,15 +186,36 @@ attributeType "ats.Current State Type" extends StringAttribute {
    max 1
 }
 
-attributeType "ats.Workflow Definition" extends StringAttribute {
+attributeType "ats.Workflow Definition Old" extends StringAttribute {
    guid "ADG50fkFrQIxmfZgk3gA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
-attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
+attributeType "ats.Workflow Definition" extends StringAttribute {
+   guid "AbksV06OrBP_ceKCeSQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Rule Definition" extends StringAttribute {
+   guid "AEqAJNnkyW4_d5_WhpgA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "ats.Related Task Workflow Definition Old" extends StringAttribute {
    guid "AdR02A0xcUq4arK58BAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
+   guid "AblApNMuhjVuyDRq6VgA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -376,6 +407,21 @@ attributeType "ats.Review Blocks" extends EnumeratedAttribute {
    enumType "enum.ats.review.blocks"
 }
 
+attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
+   guid "AOwrClAkonFC_UKqyJAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "enum.ats.review.formalType"
+}
+
+oseeEnumType "enum.ats.review.formalType" {
+   guid "AOwcwimB611lejOyNxQA"
+   entry "InFormal" entryGuid "AOwhbvyBMHKCIuhSzwgA"
+   entry "Formal" entryGuid "AOwiPVD_jCOHV4KnAQwA"
+}
+
+
 oseeEnumType "enum.ats.point" {
    guid "AYyqLF5WrgvoWwAJhbAA"
    entry "1" entryGuid "AYyqLF5WrgvoWwAJhbAA"
@@ -455,6 +501,14 @@ attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
    defaultValue "0.0"
 }
 
+attributeType "ats.Percent Complete" extends IntegerAttribute {
+   guid "AALLbOZiBBDN39YsRSAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0"
+}
+
 attributeType "ats.Numeric1" extends FloatingPointAttribute {
    guid "AABY2xxQsDm811kCViwA"
    dataProvider DefaultAttributeDataProvider
@@ -481,6 +535,14 @@ attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
 
 attributeType "ats.Hours Per Work Day" extends FloatingPointAttribute {
    guid "AAMFEdGlqFsZp22RMdAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0.0"
+}
+
+attributeType "ats.Meeting Length" extends FloatingPointAttribute {
+   guid "APoxOFjXzV49ZmO3CfwA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -755,6 +817,23 @@ attributeType "ats.Location" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   fileExtension "txt"
+}
+
+attributeType "ats.Meeting Location" extends StringAttribute {
+   guid "APom8wytSX0G3mcb3qQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   fileExtension "txt"
+}
+
+attributeType "ats.Meeting Attendee" extends StringAttribute {
+   guid "APrZQQaOlFcX1CxbO6QA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
    fileExtension "txt"
 }
 
