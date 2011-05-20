@@ -353,40 +353,7 @@
 			<References schema="OSEE" table="OSEE_PERMISSION" column="PERMISSION_ID"  />
 		</Constraint>
    </Table>
-	   
-   <Table name="OSEE_RELATION_LINK_TYPE_ACL" schema="OSEE" tablespace="osee_data">
-		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
-	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="RELATION_LINK_TYPE_ACL_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
-		<Constraint schema="OSEE" id="RELATION_LINK_TYPE_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_PERMISSION" column="PERMISSION_ID"  />
-		</Constraint>
-   </Table>
-	   
-   <Table name="OSEE_ARTIFACT_TYPE_ACL" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
-	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_ART_TYPE_ACL_AT_P_B_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
-		<Constraint schema="OSEE" id="ARTIFACT_TYPE_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_PERMISSION" column="PERMISSION_ID"  />
-		</Constraint>
-   </Table>
-	   
-   <Table name="OSEE_ATTRIBUTE_TYPE_ACL" schema="OSEE" tablespace="osee_data">
-		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
-	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_ATTR_TYPE_ACL_A_P_B_PK" type="PRIMARY KEY" appliesTo="ATTR_TYPE_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
-		<Constraint schema="OSEE" id="ATTRIBUTE_TYPE_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_PERMISSION" column="PERMISSION_ID"  />
-		</Constraint>
-   </Table>
-	   
+   
    <Table name="OSEE_BRANCH_ACL" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
