@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -66,6 +65,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -89,11 +89,9 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
-import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
-import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
@@ -617,12 +615,11 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             try {
                Artifact parent = getParent();
 
-               IAccessPolicyHandlerService policy = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
+               AccessPolicy policy = SkynetGuiPlugin.getInstance().getAccessPolicy();
 
                PermissionStatus status =
-                  policy.hasArtifactRelatablePermission(Collections.singleton(parent),
-                     java.util.Collections.singleton(CoreRelationTypes.Default_Hierarchical__Child),
-                     PermissionEnum.WRITE, Level.FINE);
+                  policy.canRelationBeModified(parent, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
+
                if (status.matched()) {
                   ArtifactTypeFilteredTreeEntryDialog dialog = getDialog();
                   if (dialog.open() == Window.OK) {
@@ -1008,8 +1005,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                artifactTransferData.add(artifact);
             }
          }
-         artifactClipboard.setArtifactsToClipboard(new ArtifactAccessProvider(),
-            SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifactTransferData);
+         artifactClipboard.setArtifactsToClipboard(SkynetGuiPlugin.getInstance().getAccessPolicy(),
+            artifactTransferData);
       }
    }
 
@@ -1240,25 +1237,30 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          // Use this menu listener until all menu items can be moved to
          // GlobaMenu
          try {
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+            Object obj = selection.getFirstElement();
+            boolean canModifyDH = false;
+            if (obj instanceof Artifact) {
+               Artifact art = (Artifact) obj;
+               AccessPolicy service = SkynetGuiPlugin.getInstance().getAccessPolicy();
+               canModifyDH =
+                  service.canRelationBeModified(art, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
+            }
+
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
             lockMenuItem.setText((permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
 
             lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
 
-            IAccessPolicyHandlerService service = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
-            PermissionStatus status =
-               service.hasRelationSidePermission(
-                  java.util.Collections.singleton(CoreRelationTypes.Default_Hierarchical__Child), PermissionEnum.WRITE,
-                  Level.FINE);
-
-            createMenuItem.setEnabled(permiss.isWritePermission() || status.matched());
+            createMenuItem.setEnabled(permiss.isWritePermission() || canModifyDH);
 
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
             copyMenuItem.setEnabled(permiss.isReadPermission());
+
             boolean clipboardEmpty = artifactClipboard.isEmpty();
-            pasteMenuItem.setEnabled(permiss.isWritePermission() && !clipboardEmpty);
-            pasteSpecialMenuItem.setEnabled(permiss.isWritePermission() && !clipboardEmpty);
+            pasteMenuItem.setEnabled(canModifyDH && !clipboardEmpty);
+            pasteSpecialMenuItem.setEnabled(canModifyDH && !clipboardEmpty);
             renameArtifactMenuItem.setEnabled(permiss.isWritePermission());
 
          } catch (Exception ex) {

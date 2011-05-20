@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.lifecycle.ILifecycleServiceProvider;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
 import org.osgi.framework.Bundle;
@@ -69,7 +69,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
       createServiceTracker(context, ILifecycleService.class, OseeServiceTrackerId.LIFECYCLE_SERVER);
-      createServiceTracker(context, IAccessControlService.class, OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE);
+      createServiceTracker(context, AccessPolicy.class, OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE);
 
       for (ServiceDependencyTracker dependencyTracker : trackers) {
          dependencyTracker.open();
@@ -131,7 +131,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       return clazz.cast(service);
    }
 
-   public IAccessControlService getAccessControlService() {
+   public AccessPolicy getAccessPolicy() {
       try {
          Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
          if (bundle.getState() != Bundle.ACTIVE) {
@@ -140,6 +140,6 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       } catch (BundleException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return getTracker(OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE, IAccessControlService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE, AccessPolicy.class);
    }
 }

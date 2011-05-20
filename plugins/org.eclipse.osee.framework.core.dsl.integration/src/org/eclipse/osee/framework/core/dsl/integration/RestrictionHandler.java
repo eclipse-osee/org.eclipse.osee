@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.Arti
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.model.access.Scope;
 
 /**
  * @author Roberto E. Escobar
@@ -21,5 +22,5 @@ import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 public interface RestrictionHandler<T> {
    public T asCastedObject(ObjectRestriction objectRestriction);
 
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) throws OseeCoreException;
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scopeLevel) throws OseeCoreException;
 }

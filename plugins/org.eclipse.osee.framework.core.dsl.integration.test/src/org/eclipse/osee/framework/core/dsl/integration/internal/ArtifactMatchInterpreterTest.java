@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
@@ -21,12 +20,10 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
-import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Condition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator;
@@ -35,6 +32,7 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -55,7 +53,8 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testArtifactNameEq() throws OseeCoreException {
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where artifactName EQ \"Test Artifact\";");
+      XArtifactMatcher matcher =
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactName EQ \"Test Artifact\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_NAME, CompareOp.EQ,
          "Test Artifact");
@@ -71,7 +70,8 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testArtifactNameLike() throws OseeCoreException {
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where artifactName LIKE \".*arti.*\";");
+      XArtifactMatcher matcher =
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactName LIKE \".*arti.*\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_NAME, CompareOp.LIKE,
          ".*arti.*");
@@ -84,7 +84,8 @@ public class ArtifactMatchInterpreterTest {
    @Test
    public void testArtifactGuidEq() throws OseeCoreException {
       String guid = GUID.create();
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"" + guid + "\";");
+      XArtifactMatcher matcher =
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"" + guid + "\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, guid);
 
@@ -95,7 +96,7 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testArtifactGuidLike() throws OseeCoreException {
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where artifactGuid LIKE \"\\w+\";");
+      XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid LIKE \"\\w+\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_GUID, CompareOp.LIKE,
          "\\w+");
@@ -107,7 +108,7 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testArtifactBranchNameEq() throws OseeCoreException {
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where branchName EQ \"branch1\";");
+      XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where branchName EQ \"branch1\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_NAME, CompareOp.EQ,
          "branch1");
@@ -123,7 +124,8 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testArtifactBranchNameLike() throws OseeCoreException {
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where branchName LIKE \".*hello.*\";");
+      XArtifactMatcher matcher =
+         MockModel.createMatcher("artifactMatcher \"Test\" where branchName LIKE \".*hello.*\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_NAME, CompareOp.LIKE,
          ".*hello.*");
@@ -136,7 +138,8 @@ public class ArtifactMatchInterpreterTest {
    @Test
    public void testArtifactBranchGuidEq() throws OseeCoreException {
       String guid = GUID.create();
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where branchGuid EQ \"" + guid + "\";");
+      XArtifactMatcher matcher =
+         MockModel.createMatcher("artifactMatcher \"Test\" where branchGuid EQ \"" + guid + "\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_GUID, CompareOp.EQ, guid);
 
@@ -147,10 +150,9 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testArtifactBranchGuidLike() throws OseeCoreException {
-      XArtifactMatcher matcher = createMatcher("artifactMatcher \"Test\" where branchGuid LIKE \"\\w+\";");
+      XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where branchGuid LIKE \"\\w+\";");
 
-      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_GUID, CompareOp.LIKE,
-         "\\w+");
+      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_GUID, CompareOp.LIKE, "\\w+");
 
       ArtifactProxy proxy = createProxy(GUID.create(), "art1", "ABCDEFGHIJK123456789", "");
       boolean actual = interpreter.matches(matcher, proxy);
@@ -160,7 +162,7 @@ public class ArtifactMatchInterpreterTest {
    @Test
    public void testCompoundCondition1() throws OseeCoreException {
       XArtifactMatcher andMatcher =
-         createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND artifactName EQ \"myArtifact\";");
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND artifactName EQ \"myArtifact\";");
 
       Iterator<Condition> iterator = andMatcher.getConditions().iterator();
       DslAsserts.assertEquals(iterator.next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, "ABCDEFGHIJK123456789");
@@ -170,7 +172,7 @@ public class ArtifactMatchInterpreterTest {
       Assert.assertEquals(XLogicOperator.AND, andMatcher.getOperators().iterator().next());
 
       XArtifactMatcher orMatcher =
-         createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" OR artifactName EQ \"myArtifact\";");
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" OR artifactName EQ \"myArtifact\";");
 
       Iterator<Condition> iterator2 = orMatcher.getConditions().iterator();
       DslAsserts.assertEquals(iterator2.next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, "ABCDEFGHIJK123456789");
@@ -198,7 +200,7 @@ public class ArtifactMatchInterpreterTest {
    @Test
    public void testCompoundCondition2() throws OseeCoreException {
       XArtifactMatcher matcher =
-         createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND (branchName EQ \"myArtifact\" OR branchGuid EQ \"123456789101112131415\");");
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND (branchName EQ \"myArtifact\" OR branchGuid EQ \"123456789101112131415\");");
 
       Assert.assertEquals(2, matcher.getConditions().size());
       Iterator<Condition> iterator = matcher.getConditions().iterator();
@@ -247,11 +249,6 @@ public class ArtifactMatchInterpreterTest {
       Assert.assertEquals(true, interpreter.matches(matcher, proxy6));
       Assert.assertEquals(true, interpreter.matches(matcher, proxy7));
       Assert.assertEquals(true, interpreter.matches(matcher, proxy8));
-   }
-
-   private static XArtifactMatcher createMatcher(String rawXTextData) throws OseeCoreException {
-      OseeDsl model = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
-      return model.getArtifactMatchRefs().iterator().next();
    }
 
    private static ArtifactProxy createProxy(String artGuid, String artifactName) {

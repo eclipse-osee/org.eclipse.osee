@@ -1221,13 +1221,22 @@ public interface OseeDslPackage extends EPackage
   int RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE = OBJECT_RESTRICTION_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF = OBJECT_RESTRICTION_FEATURE_COUNT + 2;
+
+  /**
    * The number of structural features of the '<em>Relation Type Restriction</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RELATION_TYPE_RESTRICTION_FEATURE_COUNT = OBJECT_RESTRICTION_FEATURE_COUNT + 2;
+  int RELATION_TYPE_RESTRICTION_FEATURE_COUNT = OBJECT_RESTRICTION_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}' enum.
@@ -2256,6 +2265,17 @@ public interface OseeDslPackage extends EPackage
   EAttribute getRelationTypeRestriction_RestrictedToSide();
 
   /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Artifact Matcher Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction#getArtifactMatcherRef()
+   * @see #getRelationTypeRestriction()
+   * @generated
+   */
+  EReference getRelationTypeRestriction_ArtifactMatcherRef();
+
+  /**
    * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3107,6 +3127,14 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EAttribute RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE = eINSTANCE.getRelationTypeRestriction_RestrictedToSide();
+
+    /**
+     * The meta object literal for the '<em><b>Artifact Matcher Ref</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF = eINSTANCE.getRelationTypeRestriction_ArtifactMatcherRef();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}' enum.

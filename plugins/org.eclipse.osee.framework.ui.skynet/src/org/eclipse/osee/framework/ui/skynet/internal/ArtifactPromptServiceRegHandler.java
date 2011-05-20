@@ -14,7 +14,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.PromptFactory;
 import org.osgi.framework.BundleContext;
@@ -24,7 +24,7 @@ public class ArtifactPromptServiceRegHandler extends AbstractTrackingHandler {
 
    //@formatter:off
    private static final Class<?>[] SERVICE_DEPENDENCY = new Class<?>[] {
-      IAccessPolicyHandlerService.class,
+      AccessPolicy.class,
    };
    //@formatter:on
 
@@ -38,7 +38,7 @@ public class ArtifactPromptServiceRegHandler extends AbstractTrackingHandler {
 
    @Override
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-      IAccessPolicyHandlerService policyHandlerService = getService(IAccessPolicyHandlerService.class, services);
+      AccessPolicy policyHandlerService = getService(AccessPolicy.class, services);
 
       IPromptFactory promptFactory = new PromptFactory();
       service = new ArtifactPromptService(promptFactory, policyHandlerService);

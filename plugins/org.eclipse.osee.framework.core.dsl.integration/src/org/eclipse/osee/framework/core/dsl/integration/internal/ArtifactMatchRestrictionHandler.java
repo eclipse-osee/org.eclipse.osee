@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.model.access.Scope;
 
 /**
  * @author Roberto E. Escobar
@@ -43,13 +44,13 @@ public class ArtifactMatchRestrictionHandler implements RestrictionHandler<Artif
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) throws OseeCoreException {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scope) throws OseeCoreException {
       ArtifactMatchRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XArtifactMatcher artifactMatcher = restriction.getArtifactMatcherRef();
          if (matcherInterpreter.matches(artifactMatcher, artifactProxy)) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<IBasicArtifact<?>>(artifactProxy.getObject(), permission));
+            collector.collect(new AccessDetail<IBasicArtifact<?>>(artifactProxy.getObject(), permission, scope));
          }
       }
    }

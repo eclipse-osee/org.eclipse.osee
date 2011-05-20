@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -63,19 +62,17 @@ public class SkynetTransactionAccess {
    }
 
    public void checkAccessControl(Artifact artifact) throws OseeCoreException {
-      if (!DbUtil.isDbInit()) {
-         Collection<?> items = Collections.singleton(artifact);
-         try {
-            AccessDataQuery accessContext = getService().getAccessData(getUserArtifact(), items);
-            if (!accessContext.matchesAll(PermissionEnum.WRITE)) {
-               throw new OseeCoreException(
-                  String.format(
-                     "Access Denied - [%s] does not have valid permission to edit this artifact\n itemsToPersist:[%s]\n accessContext:[%s]",
-                     getUserArtifact(), items, accessContext));
-            }
-         } catch (OseeCoreException ex) {
-            throw new OseeCoreException("Error during access check", ex);
+      Collection<?> items = Collections.singleton(artifact);
+      try {
+         AccessDataQuery accessContext = getService().getAccessData(getUserArtifact(), items);
+         if (!accessContext.matchesAll(PermissionEnum.WRITE)) {
+            throw new OseeCoreException(
+               String.format(
+                  "Access Denied - [%s] does not have valid permission to edit this artifact\n itemsToPersist:[%s]\n accessContext:[%s]",
+                  getUserArtifact(), items, accessContext));
          }
+      } catch (OseeCoreException ex) {
+         throw new OseeCoreException("Error during access check", ex);
       }
    }
 

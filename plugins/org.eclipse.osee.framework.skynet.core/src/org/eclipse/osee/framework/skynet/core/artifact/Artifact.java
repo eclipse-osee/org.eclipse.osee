@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -60,7 +59,6 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -69,6 +67,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -974,18 +973,13 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
       return hasDirtyAttributes() || hasDirtyRelations() || hasDirtyArtifactType();
    }
 
-   private IAccessControlService getAccessControlService() {
-      return Activator.getInstance().getAccessControlService();
-   }
-
    public final boolean isReadOnly() {
-      try {
-         return isDeleted() || isHistorical() || !getBranch().isEditable() || !getAccessControlService().hasPermission(
-            this, PermissionEnum.WRITE);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return true;
+      boolean result = true;
+      AccessPolicy service = Activator.getInstance().getAccessPolicy();
+      if (service != null) {
+         result = service.isReadOnly(this);
       }
+      return result;
    }
 
    public final void revert() {

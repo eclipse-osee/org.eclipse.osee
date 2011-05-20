@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
 
@@ -28,9 +28,9 @@ import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
 public final class ArtifactPromptService {
 
    private final IPromptFactory promptFactory;
-   private final IAccessPolicyHandlerService policyHandler;
+   private final AccessPolicy policyHandler;
 
-   public ArtifactPromptService(IPromptFactory promptFactory, IAccessPolicyHandlerService policyHandler) {
+   public ArtifactPromptService(IPromptFactory promptFactory, AccessPolicy policyHandler) {
       this.promptFactory = promptFactory;
       this.policyHandler = policyHandler;
    }

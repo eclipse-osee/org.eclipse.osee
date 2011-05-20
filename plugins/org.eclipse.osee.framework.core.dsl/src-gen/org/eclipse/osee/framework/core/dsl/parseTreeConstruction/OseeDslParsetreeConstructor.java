@@ -4951,15 +4951,13 @@ protected class XArtifactMatcher_SemicolonKeyword_5 extends KeywordToken  {
  * //  OSEE ACCESS MODEL                //
  * ///////////////////////////////////////
  * AccessContext:
- * 	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
- * 	superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
- * 	hierarchyRestrictions+=HierarchyRestriction)+ "}";
+ * 	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING])? "{" "guid" guid=STRING ";"
+ * 	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}";
  *
  **/
 
-// "accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
-// superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
-// hierarchyRestrictions+=HierarchyRestriction)+ "}"
+// "accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING])? "{" "guid" guid=STRING ";"
+// (accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}"
 protected class AccessContext_Group extends GroupToken {
 	
 	public AccessContext_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -5043,7 +5041,7 @@ protected class AccessContext_NameAssignment_1 extends AssignmentToken  {
 
 }
 
-// ("extends" superAccessContexts+=[AccessContext|STRING] ("," superAccessContexts+=[AccessContext|STRING])*)?
+// ("extends" superAccessContexts+=[AccessContext|STRING])?
 protected class AccessContext_Group_2 extends GroupToken {
 	
 	public AccessContext_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -5058,8 +5056,7 @@ protected class AccessContext_Group_2 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AccessContext_Group_2_2(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new AccessContext_SuperAccessContextsAssignment_2_1(lastRuleCallOrigin, this, 1, inst);
+			case 0: return new AccessContext_SuperAccessContextsAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -5110,7 +5107,7 @@ protected class AccessContext_SuperAccessContextsAssignment_2_1 extends Assignme
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("superAccessContexts",true)) == null) return null;
+		if((value = eObjectConsumer.getConsumable("superAccessContexts",false)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("superAccessContexts");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
@@ -5124,89 +5121,6 @@ protected class AccessContext_SuperAccessContextsAssignment_2_1 extends Assignme
 	}
 
 }
-
-// ("," superAccessContexts+=[AccessContext|STRING])*
-protected class AccessContext_Group_2_2 extends GroupToken {
-	
-	public AccessContext_Group_2_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getAccessContextAccess().getGroup_2_2();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new AccessContext_SuperAccessContextsAssignment_2_2_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// ","
-protected class AccessContext_CommaKeyword_2_2_0 extends KeywordToken  {
-	
-	public AccessContext_CommaKeyword_2_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getAccessContextAccess().getCommaKeyword_2_2_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new AccessContext_Group_2_2(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new AccessContext_SuperAccessContextsAssignment_2_1(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// superAccessContexts+=[AccessContext|STRING]
-protected class AccessContext_SuperAccessContextsAssignment_2_2_1 extends AssignmentToken  {
-	
-	public AccessContext_SuperAccessContextsAssignment_2_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getAccessContextAccess().getSuperAccessContextsAssignment_2_2_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new AccessContext_CommaKeyword_2_2_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("superAccessContexts",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("superAccessContexts");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextCrossReference_2_2_1_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextCrossReference_2_2_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
 
 
 // "{"
@@ -6472,12 +6386,12 @@ protected class AttributeTypeRestriction_SemicolonKeyword_5 extends KeywordToken
  *
  * RelationTypeRestriction:
  * 	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
- * 	restrictedToSide=XRelationSideEnum ";";
+ * 	restrictedToSide=XRelationSideEnum ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])? ";";
  *
  **/
 
 // permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
-// restrictedToSide=XRelationSideEnum ";"
+// restrictedToSide=XRelationSideEnum ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])? ";"
 protected class RelationTypeRestriction_Group extends GroupToken {
 	
 	public RelationTypeRestriction_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -6492,7 +6406,7 @@ protected class RelationTypeRestriction_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new RelationTypeRestriction_SemicolonKeyword_5(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new RelationTypeRestriction_SemicolonKeyword_6(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -6654,22 +6568,105 @@ protected class RelationTypeRestriction_RestrictedToSideAssignment_4 extends Ass
 
 }
 
-// ";"
-protected class RelationTypeRestriction_SemicolonKeyword_5 extends KeywordToken  {
+// ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])?
+protected class RelationTypeRestriction_Group_5 extends GroupToken {
 	
-	public RelationTypeRestriction_SemicolonKeyword_5(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public RelationTypeRestriction_Group_5(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getRelationTypeRestrictionAccess().getGroup_5();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new RelationTypeRestriction_ArtifactMatcherRefAssignment_5_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "artifact"
+protected class RelationTypeRestriction_ArtifactKeyword_5_0 extends KeywordToken  {
+	
+	public RelationTypeRestriction_ArtifactKeyword_5_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_5();
+		return grammarAccess.getRelationTypeRestrictionAccess().getArtifactKeyword_5_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
 			case 0: return new RelationTypeRestriction_RestrictedToSideAssignment_4(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// artifactMatcherRef=[XArtifactMatcher|STRING]
+protected class RelationTypeRestriction_ArtifactMatcherRefAssignment_5_1 extends AssignmentToken  {
+	
+	public RelationTypeRestriction_ArtifactMatcherRefAssignment_5_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getRelationTypeRestrictionAccess().getArtifactMatcherRefAssignment_5_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new RelationTypeRestriction_ArtifactKeyword_5_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("artifactMatcherRef",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("artifactMatcherRef");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getRelationTypeRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getRelationTypeRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ";"
+protected class RelationTypeRestriction_SemicolonKeyword_6 extends KeywordToken  {
+	
+	public RelationTypeRestriction_SemicolonKeyword_6(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_6();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new RelationTypeRestriction_Group_5(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new RelationTypeRestriction_RestrictedToSideAssignment_4(lastRuleCallOrigin, this, 1, inst);
 			default: return null;
 		}	
 	}

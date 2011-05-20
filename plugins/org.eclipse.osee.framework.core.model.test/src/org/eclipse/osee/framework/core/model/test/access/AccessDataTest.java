@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -30,11 +29,13 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.test.mocks.ModelAsserts;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -132,9 +133,12 @@ public class AccessDataTest {
    public void testAccessDetailMerge() throws OseeCoreException {
       AccessData data = new AccessData();
 
-      AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny");
+      AccessDetail<?> detail1 =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+            new Scope().add("same_scope"));
       AccessDetail<?> detail2 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write");
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
+            new Scope().add("same_scope"));
       data.add(artifactToCheck, detail1);
       data.add(artifactToCheck, detail2);
 
@@ -145,14 +149,18 @@ public class AccessDataTest {
       Assert.assertEquals(detail2.getAccessObject(), actualDetail.getAccessObject());
 
       Assert.assertEquals(PermissionEnum.DENY, actualDetail.getPermission());
-      Assert.assertEquals("item 1 - deny", actualDetail.getReason());
+      Assert.assertEquals("item 1 - deny, item 2 - write", actualDetail.getReason());
+      Assert.assertEquals("/same_scope", actualDetail.getScope().getPath());
    }
 
    @Test
    public void testAccessDetailMultipleKeys() throws OseeCoreException {
-      AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny");
+      AccessDetail<?> detail1 =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+            new Scope().add("same_scope"));
       AccessDetail<?> detail2 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write");
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
+            new Scope().add("same_scope"));
 
       AccessData data = new AccessData();
       data.add(branchToCheck1, detail1);
@@ -172,13 +180,62 @@ public class AccessDataTest {
       Assert.assertTrue(details.size() == 1);
       actualDetail = details.iterator().next();
       Assert.assertEquals(detail2, actualDetail);
+      Assert.assertEquals("/same_scope", actualDetail.getScope().getPath());
+   }
+
+   @Test
+   public void testAccessDetailMultipleScopeLevels() throws OseeCoreException {
+      AccessDetail<?> detail1 =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+            new Scope().add("more").add("specific").add("scope"));
+      AccessDetail<?> detail2 =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
+            new Scope().add("less").add("specific"));
+
+      AccessData data = new AccessData();
+      data.add(branchToCheck1, detail1);
+      data.add(branchToCheck1, detail2);
+
+      Collection<AccessDetail<?>> details = data.getAccess(branchToCheck1);
+      Assert.assertTrue(details.size() == 1);
+      AccessDetail<?> actualDetail = details.iterator().next();
+      Assert.assertEquals(detail1, actualDetail);
+      Assert.assertEquals("/more/specific/scope", actualDetail.getScope().getPath());
+   }
+
+   @Test
+   public void testAccessDetailLegacyScope() throws OseeCoreException {
+      AccessDetail<?> specificDetail =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+            new Scope().add("more").add("specific").add("scope"));
+      AccessDetail<?> lessSpecificDetail =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
+            new Scope().add("less").add("specific"));
+      AccessDetail<?> legacyDetail =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
+            Scope.createLegacyScope());
+
+      AccessData data = new AccessData();
+      data.add(branchToCheck1, specificDetail);
+      data.add(branchToCheck1, legacyDetail);
+      data.add(branchToCheck1, lessSpecificDetail);
+
+      Collection<AccessDetail<?>> details = data.getAccess(branchToCheck1);
+      Assert.assertTrue(details.size() == 1);
+      AccessDetail<?> actualDetail = details.iterator().next();
+      Assert.assertEquals(specificDetail, actualDetail);
+      Assert.assertEquals("/more/specific/scope", actualDetail.getScope().getPath());
+      Assert.assertEquals(PermissionEnum.DENY, actualDetail.getPermission());
    }
 
    @Test
    public void testToString() throws OseeCoreException {
-      AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny");
+      AccessDetail<?> detail1 =
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+            new Scope().add("scope 1"));
       AccessDetail<?> detail2 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write");
+         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
+            new Scope().add("scope 2"));
 
       AccessData data = new AccessData();
       Assert.assertEquals("accessData []", data.toString());
@@ -187,8 +244,8 @@ public class AccessDataTest {
 
       String message =
          "accessData [\n" + //
-         "\tCommon - accessDetail [ object=[RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A]] permission=[WRITE] reason=[item 2 - write]],\n" + //
-         "\tSystem Root Branch - accessDetail [ object=[RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A]] permission=[DENY] reason=[item 1 - deny]],\n" + //
+         "\tCommon - AccessDetail [permission=WRITE, scope=/scope_2, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 2 - write],\n" + //
+         "\tSystem Root Branch - AccessDetail [permission=DENY, scope=/scope_1, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 1 - deny],\n" + //
          "]";
       Assert.assertEquals(message, data.toString());
    }
@@ -206,7 +263,8 @@ public class AccessDataTest {
 
    private static AccessDetail<?> createDetail(int index, Object expAccessObject) {
       PermissionEnum expPermission = PermissionEnum.values()[Math.abs(index % PermissionEnum.values().length)];
-      return MockDataFactory.createAccessDetails(expAccessObject, expPermission, "reason: " + index);
+      return MockDataFactory.createAccessDetails(expAccessObject, expPermission, "reason: " + index,
+         new Scope().add("scope: " + index));
    }
 
    private static void createTestObjects(Collection<AccessDetail<?>> expectedDetails, Object... objects) {

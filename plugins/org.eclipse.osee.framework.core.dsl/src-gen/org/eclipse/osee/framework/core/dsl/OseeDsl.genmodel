@@ -149,6 +149,7 @@
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypeRestriction">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypeRestriction/relationTypeRef"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypeRestriction/restrictedToSide"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationTypeRestriction/artifactMatcherRef"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

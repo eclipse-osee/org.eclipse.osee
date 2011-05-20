@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model.access;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -56,15 +55,10 @@ public final class AccessData {
       Conditions.checkNotNull(key, "access key");
       Conditions.checkNotNull(data, "access data");
 
-      AccessDetail<?> access = accessMap.get(key, data.getAccessObject());
-      if (access == null) {
-         accessMap.put(key, data.getAccessObject(), data);
-      } else {
-         PermissionEnum original = access.getPermission();
-         PermissionEnum newPermission = data.getPermission();
-         PermissionEnum netPermission = PermissionEnum.getMostRestrictive(original, newPermission);
-         access.setPermission(netPermission);
-      }
+      AccessDetail<?> original = accessMap.get(key, data.getAccessObject());
+
+      AccessDetail<?> resolvedAccess = AccessDetail.resolveAccess(original, data);
+      accessMap.put(key, data.getAccessObject(), resolvedAccess);
    }
 
    public Collection<AccessDetail<?>> getAccess(Object key) throws OseeCoreException {

@@ -90,7 +90,7 @@ public final class ArtifactDataAccessor implements ArtifactDataProvider {
       public Collection<ArtifactProxy> getHierarchy() {
          Collection<ArtifactProxy> hierarchy = new HashSet<ArtifactProxy>();
          try {
-            Artifact artifactPtr = self;
+            Artifact artifactPtr = self.getParent();
             while (artifactPtr != null) {
                hierarchy.add(new XArtifactProxy(artifactPtr));
                artifactPtr = artifactPtr.getParent();

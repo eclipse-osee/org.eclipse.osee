@@ -104,7 +104,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          firePropertyChange(PROP_DIRTY);
       } catch (OseeCoreException ex) {
          onDirtied();
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

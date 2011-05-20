@@ -43,7 +43,7 @@ public class AccessModelInterpreterServiceRegHandler extends AbstractTrackingHan
             new ArtifactMatchRestrictionHandler(matcher),
             new ArtifactTypeRestrictionHandler(),
             new AttributeTypeRestrictionHandler(),
-            new RelationTypeRestrictionHandler()};
+            new RelationTypeRestrictionHandler(matcher)};
 
       AccessModelInterpreter service =
          new AccessModelInterpreterImpl(artifactDataProvider, matcher, restrictionHandlers);

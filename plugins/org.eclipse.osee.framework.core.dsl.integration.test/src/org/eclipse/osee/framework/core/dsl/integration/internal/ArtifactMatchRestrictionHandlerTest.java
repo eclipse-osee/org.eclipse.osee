@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,7 +50,8 @@ public class ArtifactMatchRestrictionHandlerTest extends BaseRestrictionHandlerT
       matcher.setMatchesResult(false);
 
       MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), null);
-      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
+      Scope expectedScope = new Scope().add("fail");
+      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
 
       Assert.assertEquals(artifactRef, matcher.getMatcher());
       Assert.assertEquals(artData, matcher.getProxy());
@@ -67,8 +69,9 @@ public class ArtifactMatchRestrictionHandlerTest extends BaseRestrictionHandlerT
       DefaultBasicArtifact expectedAccessObject = new DefaultBasicArtifact(1, GUID.create(), "Another Artifact");
       MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject);
 
+      Scope expectedScope = new Scope().add("fail");
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,
-         PermissionEnum.WRITE);
+         PermissionEnum.WRITE, expectedScope);
 
       Assert.assertEquals(artifactRef, matcher.getMatcher());
       Assert.assertEquals(artData, matcher.getProxy());

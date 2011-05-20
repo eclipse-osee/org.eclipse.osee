@@ -259,22 +259,20 @@ public class AccessControlService implements IAccessControlService {
    @Override
    public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
       boolean result = true;
-      if (!DbUtil.isDbInit()) {
-         // System.out.println(String.format("hasPermission: obj [%s] request [%s]", object, permission));
-         Collection<?> objectsToCheck = null;
-         if (object instanceof Collection<?>) {
-            objectsToCheck = (Collection<?>) object;
-         } else if (object instanceof Array) {
-            objectsToCheck = Arrays.asList((Array) object);
-         } else {
-            objectsToCheck = Collections.singletonList(object);
-         }
-         IBasicArtifact<?> subject = UserManager.getUser();
-         AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
-         // System.out.println(String.format("hasPermission: accessQuery [%s]", accessQuery));
-         result = accessQuery.matchesAll(permission);
-         // System.out.println(String.format("hasPermission: result [%s]", result));
+      // System.out.println(String.format("hasPermission: obj [%s] request [%s]", object, permission));
+      Collection<?> objectsToCheck = null;
+      if (object instanceof Collection<?>) {
+         objectsToCheck = (Collection<?>) object;
+      } else if (object instanceof Array) {
+         objectsToCheck = Arrays.asList((Array) object);
+      } else {
+         objectsToCheck = Collections.singletonList(object);
       }
+      IBasicArtifact<?> subject = UserManager.getUser();
+      AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
+      // System.out.println(String.format("hasPermission: accessQuery [%s]", accessQuery));
+      result = accessQuery.matchesAll(permission);
+      // System.out.println(String.format("hasPermission: result [%s]", result));
       return result;
    }
 
@@ -282,9 +280,11 @@ public class AccessControlService implements IAccessControlService {
    public AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
       ILifecycleService service = getLifecycleService();
       AccessData accessData = new AccessData();
-      AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
-      IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
-      Operations.checkForErrorStatus(status);
+      if (!DbUtil.isDbInit()) {
+         AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
+         IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
+         Operations.checkForErrorStatus(status);
+      }
       return new AccessDataQuery(accessData);
    }
 

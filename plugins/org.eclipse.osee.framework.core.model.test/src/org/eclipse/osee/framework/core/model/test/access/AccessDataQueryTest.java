@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.test.access;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -24,8 +24,11 @@ import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.test.mocks.MockArtifact;
+import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -90,8 +93,8 @@ public class AccessDataQueryTest {
       IAttributeType attributeType = CoreAttributeTypes.ParagraphNumber;
       IAttributeType wordAttributeType = CoreAttributeTypes.WordTemplateContent;
 
-      data.add(artifactToCheck, new AccessDetail<IAttributeType>(attributeType, PermissionEnum.WRITE));
-      data.add(artifactToCheck, new AccessDetail<IAttributeType>(wordAttributeType, PermissionEnum.READ));
+      data.add(artifactToCheck, new AccessDetail<IAttributeType>(attributeType, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<IAttributeType>(wordAttributeType, PermissionEnum.READ, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
       PermissionStatus status = new PermissionStatus();
@@ -120,8 +123,8 @@ public class AccessDataQueryTest {
       IBasicArtifact<?> artifact1 = new MockArtifact("1", "one", branch, artifactType, 1);
       IBasicArtifact<?> artifact2 = new MockArtifact("2", "two", branch, artifactType, 2);
 
-      data.add(artifact1, new AccessDetail<IBasicArtifact<?>>(artifact1, PermissionEnum.READ));
-      data.add(artifact2, new AccessDetail<IBasicArtifact<?>>(artifact2, PermissionEnum.WRITE));
+      data.add(artifact1, new AccessDetail<IBasicArtifact<?>>(artifact1, PermissionEnum.READ, new Scope()));
+      data.add(artifact2, new AccessDetail<IBasicArtifact<?>>(artifact2, PermissionEnum.WRITE, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
 
@@ -135,13 +138,51 @@ public class AccessDataQueryTest {
       IOseeBranch common = CoreBranches.COMMON;
       IOseeBranch branch = CoreBranches.SYSTEM_ROOT;
 
-      data.add(common, new AccessDetail<IOseeBranch>(common, PermissionEnum.READ));
-      data.add(branch, new AccessDetail<IOseeBranch>(branch, PermissionEnum.WRITE));
+      data.add(common, new AccessDetail<IOseeBranch>(common, PermissionEnum.READ, new Scope()));
+      data.add(branch, new AccessDetail<IOseeBranch>(branch, PermissionEnum.WRITE, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
 
       Assert.assertTrue(query.matchesAll(PermissionEnum.READ));
       Assert.assertFalse(query.matchesAll(PermissionEnum.WRITE));
+   }
+
+   @Test
+   public void testArtifactMatches() throws OseeCoreException {
+      IOseeBranch branch = CoreBranches.COMMON;
+      IBasicArtifact<?> accessArtifact = new MockArtifact(GUID.create(), "test1", branch, CoreArtifactTypes.Folder, 45);
+      IBasicArtifact<?> typeAccessArtifact =
+         new MockArtifact(GUID.create(), "test2", branch, CoreArtifactTypes.Folder, 46);
+      IBasicArtifact<?> noAccessArtifact =
+         new MockArtifact(GUID.create(), "test3", branch, CoreArtifactTypes.Folder, 47);
+      IArtifactType artType = TokenFactory.createArtifactType("AAMFDg_wmiYHHY5swJwA", "Folder");
+
+      AccessDetail<?> specificArtDetail =
+         MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.DENY, "",
+            new Scope().add("very").add("specific"));
+      AccessDetail<?> legacyArtDetail =
+         MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.FULLACCESS, "", Scope.createLegacyScope());
+      AccessDetail<?> typeDetail =
+         MockDataFactory.createAccessDetails(artType, PermissionEnum.WRITE, "", new Scope().add("very"));
+
+      AccessData data = new AccessData();
+      data.add(accessArtifact, specificArtDetail);
+      data.add(accessArtifact, legacyArtDetail);
+      data.add(accessArtifact, typeDetail);
+      data.add(typeAccessArtifact, typeDetail);
+
+      AccessDataQuery query = new AccessDataQuery(data);
+      PermissionStatus ps = new PermissionStatus();
+      query.artifactMatches(PermissionEnum.WRITE, accessArtifact, ps);
+      Assert.assertFalse(ps.matched());
+
+      ps = new PermissionStatus();
+      query.artifactMatches(PermissionEnum.WRITE, typeAccessArtifact, ps);
+      Assert.assertTrue(ps.matched());
+
+      ps = new PermissionStatus();
+      query.artifactMatches(PermissionEnum.WRITE, noAccessArtifact, ps);
+      Assert.assertTrue(ps.matched());
    }
 
    private TestObject getTestData() throws OseeCoreException {
@@ -150,9 +191,9 @@ public class AccessDataQueryTest {
       IBasicArtifact<?> artifactToCheck = new MockArtifact(GUID.create(), "Hello", branchToCheck, artifactType, 12);
       AccessData data = new AccessData();
 
-      data.add(branchToCheck, new AccessDetail<IOseeBranch>(branchToCheck, PermissionEnum.WRITE));
-      data.add(artifactToCheck, new AccessDetail<IBasicArtifact<?>>(artifactToCheck, PermissionEnum.WRITE));
-      data.add(artifactToCheck, new AccessDetail<IArtifactType>(artifactType, PermissionEnum.WRITE));
+      data.add(branchToCheck, new AccessDetail<IOseeBranch>(branchToCheck, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<IBasicArtifact<?>>(artifactToCheck, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<IArtifactType>(artifactType, PermissionEnum.WRITE, new Scope()));
 
       return new TestObject(artifactToCheck, data);
    }

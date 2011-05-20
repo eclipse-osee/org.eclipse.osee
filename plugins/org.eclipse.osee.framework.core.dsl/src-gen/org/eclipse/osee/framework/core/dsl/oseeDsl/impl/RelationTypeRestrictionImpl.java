@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#getRelationTypeRef <em>Relation Type Ref</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#getRestrictedToSide <em>Restricted To Side</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RelationTypeRestrictionImpl#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}</li>
  * </ul>
  * </p>
  *
@@ -63,6 +65,16 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
    * @ordered
    */
   protected XRelationSideEnum restrictedToSide = RESTRICTED_TO_SIDE_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getArtifactMatcherRef() <em>Artifact Matcher Ref</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getArtifactMatcherRef()
+   * @generated
+   * @ordered
+   */
+  protected XArtifactMatcher artifactMatcherRef;
 
   /**
    * <!-- begin-user-doc -->
@@ -156,6 +168,49 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
    * <!-- end-user-doc -->
    * @generated
    */
+  public XArtifactMatcher getArtifactMatcherRef()
+  {
+    if (artifactMatcherRef != null && artifactMatcherRef.eIsProxy())
+    {
+      InternalEObject oldArtifactMatcherRef = (InternalEObject)artifactMatcherRef;
+      artifactMatcherRef = (XArtifactMatcher)eResolveProxy(oldArtifactMatcherRef);
+      if (artifactMatcherRef != oldArtifactMatcherRef)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
+      }
+    }
+    return artifactMatcherRef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public XArtifactMatcher basicGetArtifactMatcherRef()
+  {
+    return artifactMatcherRef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setArtifactMatcherRef(XArtifactMatcher newArtifactMatcherRef)
+  {
+    XArtifactMatcher oldArtifactMatcherRef = artifactMatcherRef;
+    artifactMatcherRef = newArtifactMatcherRef;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -166,6 +221,9 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
         return basicGetRelationTypeRef();
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE:
         return getRestrictedToSide();
+      case OseeDslPackage.RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF:
+        if (resolve) return getArtifactMatcherRef();
+        return basicGetArtifactMatcherRef();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -185,6 +243,9 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
         return;
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE:
         setRestrictedToSide((XRelationSideEnum)newValue);
+        return;
+      case OseeDslPackage.RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF:
+        setArtifactMatcherRef((XArtifactMatcher)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -206,6 +267,9 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE:
         setRestrictedToSide(RESTRICTED_TO_SIDE_EDEFAULT);
         return;
+      case OseeDslPackage.RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF:
+        setArtifactMatcherRef((XArtifactMatcher)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -224,6 +288,8 @@ public class RelationTypeRestrictionImpl extends ObjectRestrictionImpl implement
         return relationTypeRef != null;
       case OseeDslPackage.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE:
         return restrictedToSide != RESTRICTED_TO_SIDE_EDEFAULT;
+      case OseeDslPackage.RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF:
+        return artifactMatcherRef != null;
     }
     return super.eIsSet(featureID);
   }

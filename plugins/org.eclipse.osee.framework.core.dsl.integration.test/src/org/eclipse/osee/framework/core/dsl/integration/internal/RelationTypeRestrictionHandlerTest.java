@@ -15,15 +15,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.dsl.integration.internal.RelationTypeRestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -33,12 +32,16 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -49,8 +52,8 @@ import org.junit.Test;
 public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTest<RelationTypeRestriction> {
 
    public RelationTypeRestrictionHandlerTest() {
-      super(new RelationTypeRestrictionHandler(), MockModel.createRelationTypeRestriction(),
-         MockModel.createAttributeTypeRestriction());
+      super(new RelationTypeRestrictionHandler(new ArtifactMatchInterpreter()),
+         MockModel.createRelationTypeRestriction(), MockModel.createAttributeTypeRestriction());
    }
 
    @Test
@@ -64,7 +67,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       // Artifact Data has no relation types therefore relation type will not match
       MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), null);
-      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
+      Scope expectedScope = new Scope().add("fail");
+      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
    }
 
    @Test
@@ -85,7 +89,10 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       MockArtifactProxy artData =
          new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
-      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
+      RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
+      Scope expectedScope = new Scope();
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject,
+         PermissionEnum.WRITE, expectedScope);
    }
 
    @Test
@@ -110,7 +117,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       MockArtifactProxy artData =
          new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
-      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE);
+      Scope expectedScope = new Scope();
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject,
+         PermissionEnum.WRITE, expectedScope);
    }
 
    @Test
@@ -131,7 +140,11 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       MockArtifactProxy artData =
          new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
-      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
+
+      RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
+      Scope expectedScope = new Scope();
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject,
+         PermissionEnum.WRITE, expectedScope);
    }
 
    @Test
@@ -156,7 +169,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       MockArtifactProxy artData =
          new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
-      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE);
+      Scope expectedScope = new Scope();
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject,
+         PermissionEnum.WRITE, expectedScope);
    }
 
    @Test
@@ -193,7 +208,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          }
       };
 
-      getRestrictionHandler().process(restriction, artData, collector);
+      Scope expectedScope = new Scope();
+      getRestrictionHandler().process(restriction, artData, collector, expectedScope);
 
       AccessDetail<?> actualAccess = actualAccesses.get(0);
       Assert.assertEquals(actualAccess.getPermission(), PermissionEnum.WRITE);
@@ -202,6 +218,47 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       actualAccess = actualAccesses.get(1);
       Assert.assertEquals(actualAccess.getPermission(), PermissionEnum.WRITE);
       Assert.assertEquals(expectedObject2, actualAccess.getAccessObject());
+   }
+
+   private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope) throws OseeCoreException {
+      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+
+      RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
+      restriction.setPermission(AccessPermissionEnum.ALLOW);
+      restriction.setRelationTypeRef(relationTypeRef);
+      restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
+
+      XArtifactMatcher matcher =
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactName EQ \"" + matcherArtifactName + "\";");
+      restriction.setArtifactMatcherRef(matcher);
+
+      RelationType testRelationType =
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+
+      IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
+      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
+      artArtType.setSuperTypes(superTypes);
+
+      IBasicArtifact<Object> dummy = new DefaultBasicArtifact(43, GUID.create(), artifactName);
+      MockArtifactProxy artData =
+         new MockArtifactProxy(GUID.create(), artArtType, dummy, null, Collections.singleton(testRelationType));
+      RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject,
+         PermissionEnum.WRITE, expectedScope);
+   }
+
+   @Test
+   public void testProcessRelationWithArtifactMatch() throws OseeCoreException {
+      testProcessRelationWithArtifactHelper("artifactToMatch", "artifactToMatch",
+         new Scope().addSubPath("artifactToMatch"));
+   }
+
+   @Test
+   public void testProcessRelationWithArtifactNoMatch() throws OseeCoreException {
+      testProcessRelationWithArtifactHelper("artifactToMatch", "differentArtifactToMatch", new Scope());
    }
 
    private static RelationType getTestRelationType(IRelationType relationType, IArtifactType aArtTypeToken, IArtifactType bArtTypeToken) {

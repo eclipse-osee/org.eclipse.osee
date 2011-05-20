@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
-import org.junit.Assert;
+import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -31,6 +33,11 @@ public final class MockModel {
 
    private MockModel() {
       // Utility class
+   }
+
+   public static XArtifactMatcher createMatcher(String rawXTextData) throws OseeCoreException {
+      OseeDsl model = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
+      return model.getArtifactMatchRefs().iterator().next();
    }
 
    public static OseeDsl createDsl() {

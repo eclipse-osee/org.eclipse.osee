@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,11 +21,11 @@ import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -63,12 +61,11 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
 
    private boolean isLocked(RelationTypeSide relationTypeSide) {
       boolean isLocked = true;
-      IAccessPolicyHandlerService policyHandlerService;
+      AccessPolicy policyHandlerService;
       try {
-         policyHandlerService = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
+         policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
          PermissionStatus permissionStatus =
-            policyHandlerService.hasRelationSidePermission(Collections.singleton(relationTypeSide),
-               PermissionEnum.WRITE, Level.FINE);
+            policyHandlerService.canRelationBeModified(artifact, null, relationTypeSide, Level.FINE);
          isLocked = !permissionStatus.matched();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

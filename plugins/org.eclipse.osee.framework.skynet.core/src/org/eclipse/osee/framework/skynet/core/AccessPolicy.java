@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.artifact;
+package org.eclipse.osee.framework.skynet.core;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -20,18 +20,22 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-public interface IAccessPolicyHandlerService {
+public interface AccessPolicy {
+
+   boolean isReadOnly(Artifact artifact);
+
+   void removePermissions(IOseeBranch branch) throws OseeCoreException;
+
+   PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) throws OseeCoreException;
+
    PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException;
-
-   PermissionStatus hasRelationSidePermission(Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException;
 
    PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException;
 
    PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException;
 
-   PermissionStatus hasArtifactRelatablePermission(Collection<? extends IBasicArtifact<?>> artifacts, Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, IRelationTypeSide relationTypeSide, Level level) throws OseeCoreException;
 
-   IAccessControlService getAccessService();
 }

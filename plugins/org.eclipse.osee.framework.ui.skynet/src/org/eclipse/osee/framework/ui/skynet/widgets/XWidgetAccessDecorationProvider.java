@@ -17,10 +17,10 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator.Decorator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -32,9 +32,9 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
 
    private static final Image LOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
 
-   private final IAccessPolicyHandlerService policyHandlerService;
+   private final AccessPolicy policyHandlerService;
 
-   public XWidgetAccessDecorationProvider(IAccessPolicyHandlerService policyHandlerService) {
+   public XWidgetAccessDecorationProvider(AccessPolicy policyHandlerService) {
       this.policyHandlerService = policyHandlerService;
    }
 

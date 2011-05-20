@@ -1241,6 +1241,16 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EReference getRelationTypeRestriction_ArtifactMatcherRef()
+  {
+    return (EReference)relationTypeRestrictionEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getRelationMultiplicityEnum()
   {
     return relationMultiplicityEnumEEnum;
@@ -1440,6 +1450,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     relationTypeRestrictionEClass = createEClass(RELATION_TYPE_RESTRICTION);
     createEReference(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF);
     createEAttribute(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE);
+    createEReference(relationTypeRestrictionEClass, RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF);
 
     // Create enums
     relationMultiplicityEnumEEnum = createEEnum(RELATION_MULTIPLICITY_ENUM);
@@ -1609,6 +1620,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEClass(relationTypeRestrictionEClass, RelationTypeRestriction.class, "RelationTypeRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getRelationTypeRestriction_RelationTypeRef(), this.getXRelationType(), null, "relationTypeRef", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRelationTypeRestriction_RestrictedToSide(), this.getXRelationSideEnum(), "restrictedToSide", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRelationTypeRestriction_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, RelationTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.class, "RelationMultiplicityEnum");

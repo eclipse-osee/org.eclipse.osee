@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -35,7 +34,9 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.test.mocks.MockAccessDetailCollector;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -46,13 +47,13 @@ public final class DslAsserts {
       // Utility class
    }
 
-   public static void assertNullAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy) throws OseeCoreException {
-      assertAccessDetail(handler, restriction, artifactProxy, null, null);
+   public static void assertNullAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Scope expectedScopeLevel) throws OseeCoreException {
+      assertAccessDetail(handler, restriction, artifactProxy, null, null, expectedScopeLevel);
    }
 
-   public static void assertAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Object expectedAccessObject, PermissionEnum expectedPermission) throws OseeCoreException {
+   public static void assertAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Object expectedAccessObject, PermissionEnum expectedPermission, Scope expectedScopeLevel) throws OseeCoreException {
       MockAccessDetailCollector collector = new MockAccessDetailCollector();
-      handler.process(restriction, artifactProxy, collector);
+      handler.process(restriction, artifactProxy, collector, new Scope());
       AccessDetail<?> actualDetail = collector.getAccessDetails();
       if (expectedAccessObject == null) {
          Assert.assertNull(actualDetail);
@@ -60,6 +61,7 @@ public final class DslAsserts {
          Assert.assertNotNull(actualDetail);
          Assert.assertEquals(expectedPermission, actualDetail.getPermission());
          Assert.assertEquals(expectedAccessObject, actualDetail.getAccessObject());
+         Assert.assertEquals(expectedScopeLevel, actualDetail.getScope());
       }
    }
 

@@ -11,22 +11,29 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -39,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Robert A. Fisher
@@ -63,7 +71,7 @@ public final class SkynetTransaction extends AbstractOperation {
    private final String comment;
    private User user;
    private final TransactionMonitor txMonitor = new TransactionMonitor();
-   private SkynetTransactionAccess access;
+   private AccessPolicy access;
 
    public SkynetTransaction(Branch branch, String comment) {
       super(comment, Activator.PLUGIN_ID);
@@ -91,10 +99,75 @@ public final class SkynetTransaction extends AbstractOperation {
       return user;
    }
 
-   private SkynetTransactionAccess getAccess() throws OseeCoreException {
+   private void checkAccess(Artifact artifact) throws OseeCoreException {
+      Branch txBranch = getBranch();
+      if (!artifact.getBranch().equals(txBranch)) {
+         String msg =
+            String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
+               artifact.getGuid(), artifact.getBranch(), txBranch);
+         throw new OseeStateException(msg);
+      }
+
+      checkBranch(artifact);
+      checkNotHistorical(artifact);
+      getAccess().hasArtifactPermission(Collections.singleton(artifact), PermissionEnum.WRITE, Level.FINE);
+   }
+
+   private void checkBranch(IArtifact artifact) throws OseeCoreException {
+      if (!isBranchWritable(artifact.getBranch())) {
+         throw new OseeStateException("The artifact [%s] is on a non-editable branch [%s] ", artifact,
+            artifact.getBranch());
+      }
+   }
+
+   private void checkBranch(RelationLink link) throws OseeCoreException {
+      if (!isBranchWritable(link.getBranch())) {
+         throw new OseeStateException("The relation link [%s] is on a non-editable branch [%s] ", link,
+            link.getBranch());
+      }
+   }
+
+   private void checkNotHistorical(Artifact artifact) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeStateException("The artifact [%s] must be at the head of the branch to be edited.",
+            artifact.getGuid());
+      }
+   }
+
+   private boolean isBranchWritable(Branch branch) throws OseeCoreException {
+      boolean toReturn = true;
+      if (!UserManager.duringMainUserCreation()) {
+         toReturn =
+            getAccess().hasBranchPermission(branch, PermissionEnum.WRITE, Level.FINE).matched() && branch.isEditable();
+      }
+      return toReturn;
+   }
+
+   private void checkAccess(Artifact artifact, RelationLink link) throws OseeCoreException {
+      checkBranch(link);
+      Branch txBranch = getBranch();
+      if (!link.getBranch().equals(txBranch)) {
+         String msg =
+            String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
+               link.getId(), link.getBranch(), txBranch);
+         throw new OseeStateException(msg);
+      }
+
+      RelationSide sideToCheck = link.getSide(artifact).oppositeSide();
+      PermissionStatus status =
+         getAccess().canRelationBeModified(artifact, null, new RelationTypeSide(link.getRelationType(), sideToCheck),
+            Level.FINE);
+
+      if (!status.matched()) {
+         throw new OseeCoreException(
+            "Access Denied - [%s] does not have valid permission to edit this relation\n itemsToPersist:[%s]\n reason:[%s]",
+            getAuthor(), link, status.getReason());
+      }
+   }
+
+   private AccessPolicy getAccess() {
       if (access == null) {
-         IAccessControlService service = Activator.getInstance().getAccessControlService();
-         access = new SkynetTransactionAccess(service, getAuthor(), getBranch());
+         access = Activator.getInstance().getAccessPolicy();
       }
       return access;
    }
@@ -152,10 +225,7 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    private void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
-      getAccess().checkAccess(artifact);
-
       if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType()) {
-
          if (artifact.isDeleted() && !artifact.isInDb()) {
             for (Attribute<?> attribute : artifact.internalGetAttributes()) {
                if (attribute.isDirty()) {
@@ -164,6 +234,7 @@ public final class SkynetTransaction extends AbstractOperation {
             }
             return;
          }
+         checkAccess(artifact);
          madeChanges = true;
 
          if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted()) {
@@ -208,13 +279,13 @@ public final class SkynetTransaction extends AbstractOperation {
 
       for (RelationLink relation : links) {
          if (relation.isDirty()) {
-            addRelation(relation);
+            addRelation(artifact, relation);
          }
       }
    }
 
-   private void addRelation(RelationLink link) throws OseeCoreException {
-      getAccess().checkAccess(link);
+   private void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
+      checkAccess(artifact, link);
       madeChanges = true;
       link.setNotDirty();
 

@@ -24,10 +24,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
-import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
@@ -48,7 +47,7 @@ public class ArtifactPromptChangeTest {
       List<Artifact> artifacts = new ArrayList<Artifact>();
 
       MockPromptFactory MockPromptFactory = new MockPromptFactory();
-      IAccessPolicyHandlerService policyHandler = new MockAccessPolicyHandler();
+      AccessPolicy policyHandler = new MockAccessPolicyHandler();
       MockPromptFactory.createPrompt(CoreAttributeTypes.Annotation, "", artifacts, persist, false);
 
       ArtifactPromptService artifactPromptChange = new ArtifactPromptService(MockPromptFactory, policyHandler);
@@ -58,21 +57,25 @@ public class ArtifactPromptChangeTest {
       Assert.assertTrue(artifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false));
    }
 
-   private static class MockAccessPolicyHandler implements IAccessPolicyHandlerService {
-
-      @SuppressWarnings("unused")
-      @Override
-      public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
-         return new PermissionStatus();
-      }
-
-      @Override
-      public PermissionStatus hasRelationSidePermission(Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
-         return new PermissionStatus();
-      }
+   private static class MockAccessPolicyHandler implements AccessPolicy {
 
       @Override
       public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
+         return new PermissionStatus();
+      }
+
+      @Override
+      public boolean isReadOnly(Artifact artifact) {
+         return false;
+      }
+
+      @Override
+      public PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) throws OseeCoreException {
+         return new PermissionStatus();
+      }
+
+      @Override
+      public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
          return new PermissionStatus();
       }
 
@@ -82,13 +85,12 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public IAccessControlService getAccessService() {
-         return null;
+      public PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, IRelationTypeSide relationTypeSide, Level level) throws OseeCoreException {
+         return new PermissionStatus();
       }
 
       @Override
-      public PermissionStatus hasArtifactRelatablePermission(Collection<? extends IBasicArtifact<?>> artifacts, Collection<? extends IRelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
-         return new PermissionStatus();
+      public void removePermissions(IOseeBranch branch) throws OseeCoreException {
       }
 
    }

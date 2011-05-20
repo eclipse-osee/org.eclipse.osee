@@ -62,8 +62,9 @@ public class RelationTypeSideSorter extends RelationTypeSide {
          } else {
             return getIArtifact().equals(arg.getIArtifact()) && super.equals(arg);
          }
+      } else {
+         return super.equals(arg0);
       }
-      return false;
    }
 
    @Override

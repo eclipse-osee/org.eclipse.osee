@@ -56,7 +56,6 @@ public class GlobalMenu {
 
    private MenuItem deleteMenuItem;
    private MenuItem purgeMenuItem;
-   private MenuItem tagMenuItem;
    public static enum GlobalMenuItem {
       DeleteArtifacts,
       PurgeArtifacts;
@@ -105,13 +104,10 @@ public class GlobalMenu {
          try {
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
             if (deleteMenuItem != null) {
-               deleteMenuItem.setEnabled(permiss.isFullAccess());
+               deleteMenuItem.setEnabled(permiss.isWritePermission());
             }
             if (purgeMenuItem != null) {
                purgeMenuItem.setEnabled(permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
-            }
-            if (tagMenuItem != null) {
-               tagMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isFullAccess());
             }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

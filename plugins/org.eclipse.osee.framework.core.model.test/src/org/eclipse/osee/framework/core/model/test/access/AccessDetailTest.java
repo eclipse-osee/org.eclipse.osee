@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.core.model.test.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,17 +36,19 @@ public class AccessDetailTest {
    private final PermissionEnum expPermission;
    private final String expReason;
    private final AccessDetail<?> target;
+   private final Scope scope;
 
-   public AccessDetailTest(AccessDetail<?> target, Object expAccessObject, PermissionEnum expPermission, String expReason) {
+   public AccessDetailTest(AccessDetail<?> target, Object expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
       this.target = target;
       this.expAccessObject = expAccessObject;
       this.expPermission = expPermission;
       this.expReason = expReason;
+      this.scope = scope;
    }
 
    @Test
    public void testGetReason() {
-      Assert.assertEquals(expReason, target.getReason());
+      Assert.assertEquals(Strings.isValid(expReason) ? expReason : scope.getPath(), target.getReason());
    }
 
    @Test
@@ -75,11 +78,13 @@ public class AccessDetailTest {
       Assert.assertTrue(target.equals(target));
       Assert.assertTrue(target.hashCode() == target.hashCode());
 
-      AccessDetail<?> other = MockDataFactory.createAccessDetails(expAccessObject, PermissionEnum.NONE, null);
+      AccessDetail<?> other =
+         MockDataFactory.createAccessDetails(expAccessObject, PermissionEnum.NONE, null, new Scope().add("other"));
       Assert.assertTrue(target.equals(other));
       Assert.assertTrue(target.hashCode() == other.hashCode());
 
-      AccessDetail<?> nulled = MockDataFactory.createAccessDetails(null, PermissionEnum.NONE, null);
+      AccessDetail<?> nulled =
+         MockDataFactory.createAccessDetails(null, PermissionEnum.NONE, null, new Scope().add("nulled"));
       Assert.assertFalse(target.equals(nulled));
       Assert.assertTrue(target.hashCode() != nulled.hashCode());
 
@@ -94,27 +99,27 @@ public class AccessDetailTest {
    @Test
    public void testToString() {
       String expected =
-         "accessDetail [ object=[" + expAccessObject + "] permission=[" + expPermission + "] reason=[" + expReason + "]]";
+         "AccessDetail [permission=" + expPermission + ", scope=" + scope + ", accessObject=" + expAccessObject + ", reason=" + (Strings.isValid(expReason) ? expReason : scope) + "]";
       Assert.assertEquals(expected, target.toString());
    }
 
    @Parameters
    public static Collection<Object[]> getData() throws OseeCoreException {
       Collection<Object[]> data = new ArrayList<Object[]>();
-      addTest(data, "Hello", PermissionEnum.DENY, "A reason");
-      addTest(data, 456, PermissionEnum.WRITE, null);
-      addTest(data, MockDataFactory.createArtifactType(4), PermissionEnum.FULLACCESS, "reason3");
-      addTest(data, MockDataFactory.createAttributeType(), PermissionEnum.READ, "xx");
+      addTest(data, "Hello", PermissionEnum.DENY, "A reason", new Scope().add("hello_scope"));
+      addTest(data, 456, PermissionEnum.WRITE, null, new Scope().add("456_scope"));
+      addTest(data, MockDataFactory.createArtifactType(4), PermissionEnum.FULLACCESS, "reason3", new Scope());
+      addTest(data, MockDataFactory.createAttributeType(), PermissionEnum.READ, "xx", new Scope().add("xx"));
       return data;
    }
 
-   private static <T> void addTest(Collection<Object[]> data, T expAccessObject, PermissionEnum expPermission, String expReason) {
+   private static <T> void addTest(Collection<Object[]> data, T expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
       String reasonToCheck = expReason;
       if (expReason == null) {
          reasonToCheck = Strings.emptyString();
       }
-      AccessDetail<T> target = MockDataFactory.createAccessDetails(expAccessObject, expPermission, expReason);
-      data.add(new Object[] {target, expAccessObject, expPermission, reasonToCheck});
+      AccessDetail<T> target = MockDataFactory.createAccessDetails(expAccessObject, expPermission, expReason, scope);
+      data.add(new Object[] {target, expAccessObject, expPermission, reasonToCheck, scope});
    }
 
 }

@@ -78,7 +78,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
    private void handleResponse(BranchCommitResponse response, Branch sourceBranch) throws OseeCoreException {
       TransactionRecord newTransaction = response.getTransaction();
-      Activator.getInstance().getAccessControlService().removePermissions(sourceBranch);
+      Activator.getInstance().getAccessPolicy().removePermissions(sourceBranch);
       // Update commit artifact cache with new information
       if (sourceBranch.getAssociatedArtifactId() > 0) {
          TransactionManager.cacheCommittedArtifactTransaction(BranchManager.getAssociatedArtifact(sourceBranch),

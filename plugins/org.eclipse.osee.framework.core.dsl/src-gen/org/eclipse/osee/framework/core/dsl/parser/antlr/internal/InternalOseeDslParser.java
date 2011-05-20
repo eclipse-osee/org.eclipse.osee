@@ -4717,7 +4717,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleAccessContext"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1990:1: ruleAccessContext returns [EObject current=null] : (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )* )? otherlv_6= '{' otherlv_7= 'guid' ( (lv_guid_8_0= RULE_STRING ) ) otherlv_9= ';' ( ( (lv_accessRules_10_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) ) )+ otherlv_12= '}' ) ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1990:1: ruleAccessContext returns [EObject current=null] : (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' ) ;
     public final EObject ruleAccessContext() throws RecognitionException {
         EObject current = null;
 
@@ -4727,24 +4727,22 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
         Token otherlv_3=null;
         Token otherlv_4=null;
         Token otherlv_5=null;
-        Token otherlv_6=null;
+        Token lv_guid_6_0=null;
         Token otherlv_7=null;
-        Token lv_guid_8_0=null;
-        Token otherlv_9=null;
-        Token otherlv_12=null;
-        EObject lv_accessRules_10_0 = null;
+        Token otherlv_10=null;
+        EObject lv_accessRules_8_0 = null;
 
-        EObject lv_hierarchyRestrictions_11_0 = null;
+        EObject lv_hierarchyRestrictions_9_0 = null;
 
 
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1993:28: ( (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )* )? otherlv_6= '{' otherlv_7= 'guid' ( (lv_guid_8_0= RULE_STRING ) ) otherlv_9= ';' ( ( (lv_accessRules_10_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) ) )+ otherlv_12= '}' ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1994:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )* )? otherlv_6= '{' otherlv_7= 'guid' ( (lv_guid_8_0= RULE_STRING ) ) otherlv_9= ';' ( ( (lv_accessRules_10_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) ) )+ otherlv_12= '}' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1993:28: ( (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1994:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1994:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )* )? otherlv_6= '{' otherlv_7= 'guid' ( (lv_guid_8_0= RULE_STRING ) ) otherlv_9= ';' ( ( (lv_accessRules_10_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) ) )+ otherlv_12= '}' )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1994:3: otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )* )? otherlv_6= '{' otherlv_7= 'guid' ( (lv_guid_8_0= RULE_STRING ) ) otherlv_9= ';' ( ( (lv_accessRules_10_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) ) )+ otherlv_12= '}'
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1994:1: (otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:1994:3: otherlv_0= 'accessContext' ( (lv_name_1_0= RULE_STRING ) ) (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )? otherlv_4= '{' otherlv_5= 'guid' ( (lv_guid_6_0= RULE_STRING ) ) otherlv_7= ';' ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+ otherlv_10= '}'
             {
             otherlv_0=(Token)match(input,68,FOLLOW_68_in_ruleAccessContext4198); 
 
@@ -4776,16 +4774,16 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2016:2: (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )* )?
-            int alt35=2;
-            int LA35_0 = input.LA(1);
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2016:2: (otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) )?
+            int alt34=2;
+            int LA34_0 = input.LA(1);
 
-            if ( (LA35_0==16) ) {
-                alt35=1;
+            if ( (LA34_0==16) ) {
+                alt34=1;
             }
-            switch (alt35) {
+            switch (alt34) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2016:4: otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )*
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2016:4: otherlv_2= 'extends' ( (otherlv_3= RULE_STRING ) )
                     {
                     otherlv_2=(Token)match(input,16,FOLLOW_16_in_ruleAccessContext4233); 
 
@@ -4812,78 +4810,29 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2033:2: (otherlv_4= ',' ( (otherlv_5= RULE_STRING ) ) )*
-                    loop34:
-                    do {
-                        int alt34=2;
-                        int LA34_0 = input.LA(1);
-
-                        if ( (LA34_0==17) ) {
-                            alt34=1;
-                        }
-
-
-                        switch (alt34) {
-                    	case 1 :
-                    	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2033:4: otherlv_4= ',' ( (otherlv_5= RULE_STRING ) )
-                    	    {
-                    	    otherlv_4=(Token)match(input,17,FOLLOW_17_in_ruleAccessContext4266); 
-
-                    	        	newLeafNode(otherlv_4, grammarAccess.getAccessContextAccess().getCommaKeyword_2_2_0());
-                    	        
-                    	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2037:1: ( (otherlv_5= RULE_STRING ) )
-                    	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2038:1: (otherlv_5= RULE_STRING )
-                    	    {
-                    	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2038:1: (otherlv_5= RULE_STRING )
-                    	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2039:3: otherlv_5= RULE_STRING
-                    	    {
-
-                    	    			if (current==null) {
-                    	    	            current = createModelElement(grammarAccess.getAccessContextRule());
-                    	    	        }
-                    	            
-                    	    otherlv_5=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAccessContext4286); 
-
-                    	    		newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextCrossReference_2_2_1_0()); 
-                    	    	
-
-                    	    }
-
-
-                    	    }
-
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    break loop34;
-                        }
-                    } while (true);
-
 
                     }
                     break;
 
             }
 
-            otherlv_6=(Token)match(input,18,FOLLOW_18_in_ruleAccessContext4302); 
+            otherlv_4=(Token)match(input,18,FOLLOW_18_in_ruleAccessContext4267); 
 
-                	newLeafNode(otherlv_6, grammarAccess.getAccessContextAccess().getLeftCurlyBracketKeyword_3());
+                	newLeafNode(otherlv_4, grammarAccess.getAccessContextAccess().getLeftCurlyBracketKeyword_3());
                 
-            otherlv_7=(Token)match(input,19,FOLLOW_19_in_ruleAccessContext4314); 
+            otherlv_5=(Token)match(input,19,FOLLOW_19_in_ruleAccessContext4279); 
 
-                	newLeafNode(otherlv_7, grammarAccess.getAccessContextAccess().getGuidKeyword_4());
+                	newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getGuidKeyword_4());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2058:1: ( (lv_guid_8_0= RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2059:1: (lv_guid_8_0= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2041:1: ( (lv_guid_6_0= RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2042:1: (lv_guid_6_0= RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2059:1: (lv_guid_8_0= RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2060:3: lv_guid_8_0= RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2042:1: (lv_guid_6_0= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2043:3: lv_guid_6_0= RULE_STRING
             {
-            lv_guid_8_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAccessContext4331); 
+            lv_guid_6_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAccessContext4296); 
 
-            			newLeafNode(lv_guid_8_0, grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
+            			newLeafNode(lv_guid_6_0, grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
             		
 
             	        if (current==null) {
@@ -4892,7 +4841,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                    		setWithLastConsumed(
                    			current, 
                    			"guid",
-                    		lv_guid_8_0, 
+                    		lv_guid_6_0, 
                     		"STRING");
             	    
 
@@ -4901,40 +4850,40 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_9=(Token)match(input,67,FOLLOW_67_in_ruleAccessContext4348); 
+            otherlv_7=(Token)match(input,67,FOLLOW_67_in_ruleAccessContext4313); 
 
-                	newLeafNode(otherlv_9, grammarAccess.getAccessContextAccess().getSemicolonKeyword_6());
+                	newLeafNode(otherlv_7, grammarAccess.getAccessContextAccess().getSemicolonKeyword_6());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2080:1: ( ( (lv_accessRules_10_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) ) )+
-            int cnt36=0;
-            loop36:
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2063:1: ( ( (lv_accessRules_8_0= ruleObjectRestriction ) ) | ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) ) )+
+            int cnt35=0;
+            loop35:
             do {
-                int alt36=3;
-                int LA36_0 = input.LA(1);
+                int alt35=3;
+                int LA35_0 = input.LA(1);
 
-                if ( ((LA36_0>=84 && LA36_0<=85)) ) {
-                    alt36=1;
+                if ( ((LA35_0>=84 && LA35_0<=85)) ) {
+                    alt35=1;
                 }
-                else if ( (LA36_0==69) ) {
-                    alt36=2;
+                else if ( (LA35_0==69) ) {
+                    alt35=2;
                 }
 
 
-                switch (alt36) {
+                switch (alt35) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2080:2: ( (lv_accessRules_10_0= ruleObjectRestriction ) )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2063:2: ( (lv_accessRules_8_0= ruleObjectRestriction ) )
             	    {
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2080:2: ( (lv_accessRules_10_0= ruleObjectRestriction ) )
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2081:1: (lv_accessRules_10_0= ruleObjectRestriction )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2063:2: ( (lv_accessRules_8_0= ruleObjectRestriction ) )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2064:1: (lv_accessRules_8_0= ruleObjectRestriction )
             	    {
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2081:1: (lv_accessRules_10_0= ruleObjectRestriction )
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2082:3: lv_accessRules_10_0= ruleObjectRestriction
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2064:1: (lv_accessRules_8_0= ruleObjectRestriction )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2065:3: lv_accessRules_8_0= ruleObjectRestriction
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getAccessContextAccess().getAccessRulesObjectRestrictionParserRuleCall_7_0_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleObjectRestriction_in_ruleAccessContext4370);
-            	    lv_accessRules_10_0=ruleObjectRestriction();
+            	    pushFollow(FOLLOW_ruleObjectRestriction_in_ruleAccessContext4335);
+            	    lv_accessRules_8_0=ruleObjectRestriction();
 
             	    state._fsp--;
 
@@ -4945,7 +4894,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	           		add(
             	           			current, 
             	           			"accessRules",
-            	            		lv_accessRules_10_0, 
+            	            		lv_accessRules_8_0, 
             	            		"ObjectRestriction");
             	    	        afterParserOrEnumRuleCall();
             	    	    
@@ -4959,19 +4908,19 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	    }
             	    break;
             	case 2 :
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2099:6: ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2082:6: ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) )
             	    {
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2099:6: ( (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction ) )
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2100:1: (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2082:6: ( (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction ) )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2083:1: (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction )
             	    {
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2100:1: (lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction )
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2101:3: lv_hierarchyRestrictions_11_0= ruleHierarchyRestriction
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2083:1: (lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2084:3: lv_hierarchyRestrictions_9_0= ruleHierarchyRestriction
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsHierarchyRestrictionParserRuleCall_7_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleHierarchyRestriction_in_ruleAccessContext4397);
-            	    lv_hierarchyRestrictions_11_0=ruleHierarchyRestriction();
+            	    pushFollow(FOLLOW_ruleHierarchyRestriction_in_ruleAccessContext4362);
+            	    lv_hierarchyRestrictions_9_0=ruleHierarchyRestriction();
 
             	    state._fsp--;
 
@@ -4982,7 +4931,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	           		add(
             	           			current, 
             	           			"hierarchyRestrictions",
-            	            		lv_hierarchyRestrictions_11_0, 
+            	            		lv_hierarchyRestrictions_9_0, 
             	            		"HierarchyRestriction");
             	    	        afterParserOrEnumRuleCall();
             	    	    
@@ -4997,17 +4946,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt36 >= 1 ) break loop36;
+            	    if ( cnt35 >= 1 ) break loop35;
                         EarlyExitException eee =
-                            new EarlyExitException(36, input);
+                            new EarlyExitException(35, input);
                         throw eee;
                 }
-                cnt36++;
+                cnt35++;
             } while (true);
 
-            otherlv_12=(Token)match(input,20,FOLLOW_20_in_ruleAccessContext4411); 
+            otherlv_10=(Token)match(input,20,FOLLOW_20_in_ruleAccessContext4376); 
 
-                	newLeafNode(otherlv_12, grammarAccess.getAccessContextAccess().getRightCurlyBracketKeyword_8());
+                	newLeafNode(otherlv_10, grammarAccess.getAccessContextAccess().getRightCurlyBracketKeyword_8());
                 
 
             }
@@ -5030,7 +4979,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleHierarchyRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2129:1: entryRuleHierarchyRestriction returns [EObject current=null] : iv_ruleHierarchyRestriction= ruleHierarchyRestriction EOF ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2112:1: entryRuleHierarchyRestriction returns [EObject current=null] : iv_ruleHierarchyRestriction= ruleHierarchyRestriction EOF ;
     public final EObject entryRuleHierarchyRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5038,17 +4987,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2130:2: (iv_ruleHierarchyRestriction= ruleHierarchyRestriction EOF )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2131:2: iv_ruleHierarchyRestriction= ruleHierarchyRestriction EOF
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2113:2: (iv_ruleHierarchyRestriction= ruleHierarchyRestriction EOF )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2114:2: iv_ruleHierarchyRestriction= ruleHierarchyRestriction EOF
             {
              newCompositeNode(grammarAccess.getHierarchyRestrictionRule()); 
-            pushFollow(FOLLOW_ruleHierarchyRestriction_in_entryRuleHierarchyRestriction4447);
+            pushFollow(FOLLOW_ruleHierarchyRestriction_in_entryRuleHierarchyRestriction4412);
             iv_ruleHierarchyRestriction=ruleHierarchyRestriction();
 
             state._fsp--;
 
              current =iv_ruleHierarchyRestriction; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleHierarchyRestriction4457); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleHierarchyRestriction4422); 
 
             }
 
@@ -5066,7 +5015,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleHierarchyRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2138:1: ruleHierarchyRestriction returns [EObject current=null] : (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' ) ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2121:1: ruleHierarchyRestriction returns [EObject current=null] : (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' ) ;
     public final EObject ruleHierarchyRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5080,28 +5029,28 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2141:28: ( (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2142:1: (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2124:28: ( (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2125:1: (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2142:1: (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2142:3: otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}'
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2125:1: (otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2125:3: otherlv_0= 'childrenOf' ( (otherlv_1= RULE_STRING ) ) otherlv_2= '{' ( (lv_accessRules_3_0= ruleObjectRestriction ) )+ otherlv_4= '}'
             {
-            otherlv_0=(Token)match(input,69,FOLLOW_69_in_ruleHierarchyRestriction4494); 
+            otherlv_0=(Token)match(input,69,FOLLOW_69_in_ruleHierarchyRestriction4459); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getHierarchyRestrictionAccess().getChildrenOfKeyword_0());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2146:1: ( (otherlv_1= RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2147:1: (otherlv_1= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2129:1: ( (otherlv_1= RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2130:1: (otherlv_1= RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2147:1: (otherlv_1= RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2148:3: otherlv_1= RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2130:1: (otherlv_1= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2131:3: otherlv_1= RULE_STRING
             {
 
             			if (current==null) {
             	            current = createModelElement(grammarAccess.getHierarchyRestrictionRule());
             	        }
                     
-            otherlv_1=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleHierarchyRestriction4514); 
+            otherlv_1=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleHierarchyRestriction4479); 
 
             		newLeafNode(otherlv_1, grammarAccess.getHierarchyRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_1_0()); 
             	
@@ -5111,33 +5060,33 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_2=(Token)match(input,18,FOLLOW_18_in_ruleHierarchyRestriction4526); 
+            otherlv_2=(Token)match(input,18,FOLLOW_18_in_ruleHierarchyRestriction4491); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getHierarchyRestrictionAccess().getLeftCurlyBracketKeyword_2());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2163:1: ( (lv_accessRules_3_0= ruleObjectRestriction ) )+
-            int cnt37=0;
-            loop37:
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2146:1: ( (lv_accessRules_3_0= ruleObjectRestriction ) )+
+            int cnt36=0;
+            loop36:
             do {
-                int alt37=2;
-                int LA37_0 = input.LA(1);
+                int alt36=2;
+                int LA36_0 = input.LA(1);
 
-                if ( ((LA37_0>=84 && LA37_0<=85)) ) {
-                    alt37=1;
+                if ( ((LA36_0>=84 && LA36_0<=85)) ) {
+                    alt36=1;
                 }
 
 
-                switch (alt37) {
+                switch (alt36) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2164:1: (lv_accessRules_3_0= ruleObjectRestriction )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2147:1: (lv_accessRules_3_0= ruleObjectRestriction )
             	    {
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2164:1: (lv_accessRules_3_0= ruleObjectRestriction )
-            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2165:3: lv_accessRules_3_0= ruleObjectRestriction
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2147:1: (lv_accessRules_3_0= ruleObjectRestriction )
+            	    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2148:3: lv_accessRules_3_0= ruleObjectRestriction
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesObjectRestrictionParserRuleCall_3_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleObjectRestriction_in_ruleHierarchyRestriction4547);
+            	    pushFollow(FOLLOW_ruleObjectRestriction_in_ruleHierarchyRestriction4512);
             	    lv_accessRules_3_0=ruleObjectRestriction();
 
             	    state._fsp--;
@@ -5161,15 +5110,15 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt37 >= 1 ) break loop37;
+            	    if ( cnt36 >= 1 ) break loop36;
                         EarlyExitException eee =
-                            new EarlyExitException(37, input);
+                            new EarlyExitException(36, input);
                         throw eee;
                 }
-                cnt37++;
+                cnt36++;
             } while (true);
 
-            otherlv_4=(Token)match(input,20,FOLLOW_20_in_ruleHierarchyRestriction4560); 
+            otherlv_4=(Token)match(input,20,FOLLOW_20_in_ruleHierarchyRestriction4525); 
 
                 	newLeafNode(otherlv_4, grammarAccess.getHierarchyRestrictionAccess().getRightCurlyBracketKeyword_4());
                 
@@ -5194,7 +5143,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleObjectRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2193:1: entryRuleObjectRestriction returns [EObject current=null] : iv_ruleObjectRestriction= ruleObjectRestriction EOF ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2176:1: entryRuleObjectRestriction returns [EObject current=null] : iv_ruleObjectRestriction= ruleObjectRestriction EOF ;
     public final EObject entryRuleObjectRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5202,17 +5151,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2194:2: (iv_ruleObjectRestriction= ruleObjectRestriction EOF )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2195:2: iv_ruleObjectRestriction= ruleObjectRestriction EOF
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2177:2: (iv_ruleObjectRestriction= ruleObjectRestriction EOF )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2178:2: iv_ruleObjectRestriction= ruleObjectRestriction EOF
             {
              newCompositeNode(grammarAccess.getObjectRestrictionRule()); 
-            pushFollow(FOLLOW_ruleObjectRestriction_in_entryRuleObjectRestriction4596);
+            pushFollow(FOLLOW_ruleObjectRestriction_in_entryRuleObjectRestriction4561);
             iv_ruleObjectRestriction=ruleObjectRestriction();
 
             state._fsp--;
 
              current =iv_ruleObjectRestriction; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleObjectRestriction4606); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleObjectRestriction4571); 
 
             }
 
@@ -5230,7 +5179,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleObjectRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2202:1: ruleObjectRestriction returns [EObject current=null] : (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction ) ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2185:1: ruleObjectRestriction returns [EObject current=null] : (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction ) ;
     public final EObject ruleObjectRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5246,41 +5195,41 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2205:28: ( (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2206:1: (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2188:28: ( (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2189:1: (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2206:1: (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction )
-            int alt38=4;
-            int LA38_0 = input.LA(1);
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2189:1: (this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction | this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction | this_RelationTypeRestriction_2= ruleRelationTypeRestriction | this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction )
+            int alt37=4;
+            int LA37_0 = input.LA(1);
 
-            if ( (LA38_0==84) ) {
-                int LA38_1 = input.LA(2);
+            if ( (LA37_0==84) ) {
+                int LA37_1 = input.LA(2);
 
-                if ( (LA38_1==70) ) {
+                if ( (LA37_1==70) ) {
                     switch ( input.LA(3) ) {
                     case 23:
                         {
-                        alt38=4;
+                        alt37=4;
                         }
                         break;
                     case 53:
                         {
-                        alt38=3;
-                        }
-                        break;
-                    case 15:
-                        {
-                        alt38=2;
+                        alt37=3;
                         }
                         break;
                     case 71:
                         {
-                        alt38=1;
+                        alt37=1;
+                        }
+                        break;
+                    case 15:
+                        {
+                        alt37=2;
                         }
                         break;
                     default:
                         NoViableAltException nvae =
-                            new NoViableAltException("", 38, 3, input);
+                            new NoViableAltException("", 37, 3, input);
 
                         throw nvae;
                     }
@@ -5288,39 +5237,39 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("", 38, 1, input);
+                        new NoViableAltException("", 37, 1, input);
 
                     throw nvae;
                 }
             }
-            else if ( (LA38_0==85) ) {
-                int LA38_2 = input.LA(2);
+            else if ( (LA37_0==85) ) {
+                int LA37_2 = input.LA(2);
 
-                if ( (LA38_2==70) ) {
+                if ( (LA37_2==70) ) {
                     switch ( input.LA(3) ) {
                     case 23:
                         {
-                        alt38=4;
+                        alt37=4;
                         }
                         break;
                     case 53:
                         {
-                        alt38=3;
-                        }
-                        break;
-                    case 15:
-                        {
-                        alt38=2;
+                        alt37=3;
                         }
                         break;
                     case 71:
                         {
-                        alt38=1;
+                        alt37=1;
+                        }
+                        break;
+                    case 15:
+                        {
+                        alt37=2;
                         }
                         break;
                     default:
                         NoViableAltException nvae =
-                            new NoViableAltException("", 38, 3, input);
+                            new NoViableAltException("", 37, 3, input);
 
                         throw nvae;
                     }
@@ -5328,25 +5277,25 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("", 38, 2, input);
+                        new NoViableAltException("", 37, 2, input);
 
                     throw nvae;
                 }
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 38, 0, input);
+                    new NoViableAltException("", 37, 0, input);
 
                 throw nvae;
             }
-            switch (alt38) {
+            switch (alt37) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2207:5: this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2190:5: this_ArtifactMatchRestriction_0= ruleArtifactMatchRestriction
                     {
                      
                             newCompositeNode(grammarAccess.getObjectRestrictionAccess().getArtifactMatchRestrictionParserRuleCall_0()); 
                         
-                    pushFollow(FOLLOW_ruleArtifactMatchRestriction_in_ruleObjectRestriction4653);
+                    pushFollow(FOLLOW_ruleArtifactMatchRestriction_in_ruleObjectRestriction4618);
                     this_ArtifactMatchRestriction_0=ruleArtifactMatchRestriction();
 
                     state._fsp--;
@@ -5359,12 +5308,12 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2217:5: this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2200:5: this_ArtifactTypeRestriction_1= ruleArtifactTypeRestriction
                     {
                      
                             newCompositeNode(grammarAccess.getObjectRestrictionAccess().getArtifactTypeRestrictionParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleArtifactTypeRestriction_in_ruleObjectRestriction4680);
+                    pushFollow(FOLLOW_ruleArtifactTypeRestriction_in_ruleObjectRestriction4645);
                     this_ArtifactTypeRestriction_1=ruleArtifactTypeRestriction();
 
                     state._fsp--;
@@ -5377,12 +5326,12 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2227:5: this_RelationTypeRestriction_2= ruleRelationTypeRestriction
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2210:5: this_RelationTypeRestriction_2= ruleRelationTypeRestriction
                     {
                      
                             newCompositeNode(grammarAccess.getObjectRestrictionAccess().getRelationTypeRestrictionParserRuleCall_2()); 
                         
-                    pushFollow(FOLLOW_ruleRelationTypeRestriction_in_ruleObjectRestriction4707);
+                    pushFollow(FOLLOW_ruleRelationTypeRestriction_in_ruleObjectRestriction4672);
                     this_RelationTypeRestriction_2=ruleRelationTypeRestriction();
 
                     state._fsp--;
@@ -5395,12 +5344,12 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 4 :
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2237:5: this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2220:5: this_AttributeTypeRestriction_3= ruleAttributeTypeRestriction
                     {
                      
                             newCompositeNode(grammarAccess.getObjectRestrictionAccess().getAttributeTypeRestrictionParserRuleCall_3()); 
                         
-                    pushFollow(FOLLOW_ruleAttributeTypeRestriction_in_ruleObjectRestriction4734);
+                    pushFollow(FOLLOW_ruleAttributeTypeRestriction_in_ruleObjectRestriction4699);
                     this_AttributeTypeRestriction_3=ruleAttributeTypeRestriction();
 
                     state._fsp--;
@@ -5433,7 +5382,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleArtifactMatchRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2253:1: entryRuleArtifactMatchRestriction returns [EObject current=null] : iv_ruleArtifactMatchRestriction= ruleArtifactMatchRestriction EOF ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2236:1: entryRuleArtifactMatchRestriction returns [EObject current=null] : iv_ruleArtifactMatchRestriction= ruleArtifactMatchRestriction EOF ;
     public final EObject entryRuleArtifactMatchRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5441,17 +5390,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2254:2: (iv_ruleArtifactMatchRestriction= ruleArtifactMatchRestriction EOF )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2255:2: iv_ruleArtifactMatchRestriction= ruleArtifactMatchRestriction EOF
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2237:2: (iv_ruleArtifactMatchRestriction= ruleArtifactMatchRestriction EOF )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2238:2: iv_ruleArtifactMatchRestriction= ruleArtifactMatchRestriction EOF
             {
              newCompositeNode(grammarAccess.getArtifactMatchRestrictionRule()); 
-            pushFollow(FOLLOW_ruleArtifactMatchRestriction_in_entryRuleArtifactMatchRestriction4769);
+            pushFollow(FOLLOW_ruleArtifactMatchRestriction_in_entryRuleArtifactMatchRestriction4734);
             iv_ruleArtifactMatchRestriction=ruleArtifactMatchRestriction();
 
             state._fsp--;
 
              current =iv_ruleArtifactMatchRestriction; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleArtifactMatchRestriction4779); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleArtifactMatchRestriction4744); 
 
             }
 
@@ -5469,7 +5418,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleArtifactMatchRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2262:1: ruleArtifactMatchRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2245:1: ruleArtifactMatchRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) ;
     public final EObject ruleArtifactMatchRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5483,22 +5432,22 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2265:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2266:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2248:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2249:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2266:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2266:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';'
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2249:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2249:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifact' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';'
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2266:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2267:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2249:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2250:1: (lv_permission_0_0= ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2267:1: (lv_permission_0_0= ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2268:3: lv_permission_0_0= ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2250:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2251:3: lv_permission_0_0= ruleAccessPermissionEnum
             {
              
             	        newCompositeNode(grammarAccess.getArtifactMatchRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactMatchRestriction4825);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactMatchRestriction4790);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -5520,26 +5469,26 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleArtifactMatchRestriction4837); 
+            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleArtifactMatchRestriction4802); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getArtifactMatchRestrictionAccess().getEditKeyword_1());
                 
-            otherlv_2=(Token)match(input,71,FOLLOW_71_in_ruleArtifactMatchRestriction4849); 
+            otherlv_2=(Token)match(input,71,FOLLOW_71_in_ruleArtifactMatchRestriction4814); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getArtifactMatchRestrictionAccess().getArtifactKeyword_2());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2292:1: ( (otherlv_3= RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2293:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2275:1: ( (otherlv_3= RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2276:1: (otherlv_3= RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2293:1: (otherlv_3= RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2294:3: otherlv_3= RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2276:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2277:3: otherlv_3= RULE_STRING
             {
 
             			if (current==null) {
             	            current = createModelElement(grammarAccess.getArtifactMatchRestrictionRule());
             	        }
                     
-            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleArtifactMatchRestriction4869); 
+            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleArtifactMatchRestriction4834); 
 
             		newLeafNode(otherlv_3, grammarAccess.getArtifactMatchRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_3_0()); 
             	
@@ -5549,7 +5498,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_4=(Token)match(input,67,FOLLOW_67_in_ruleArtifactMatchRestriction4881); 
+            otherlv_4=(Token)match(input,67,FOLLOW_67_in_ruleArtifactMatchRestriction4846); 
 
                 	newLeafNode(otherlv_4, grammarAccess.getArtifactMatchRestrictionAccess().getSemicolonKeyword_4());
                 
@@ -5574,7 +5523,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleArtifactTypeRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2317:1: entryRuleArtifactTypeRestriction returns [EObject current=null] : iv_ruleArtifactTypeRestriction= ruleArtifactTypeRestriction EOF ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2300:1: entryRuleArtifactTypeRestriction returns [EObject current=null] : iv_ruleArtifactTypeRestriction= ruleArtifactTypeRestriction EOF ;
     public final EObject entryRuleArtifactTypeRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5582,17 +5531,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2318:2: (iv_ruleArtifactTypeRestriction= ruleArtifactTypeRestriction EOF )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2319:2: iv_ruleArtifactTypeRestriction= ruleArtifactTypeRestriction EOF
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2301:2: (iv_ruleArtifactTypeRestriction= ruleArtifactTypeRestriction EOF )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2302:2: iv_ruleArtifactTypeRestriction= ruleArtifactTypeRestriction EOF
             {
              newCompositeNode(grammarAccess.getArtifactTypeRestrictionRule()); 
-            pushFollow(FOLLOW_ruleArtifactTypeRestriction_in_entryRuleArtifactTypeRestriction4917);
+            pushFollow(FOLLOW_ruleArtifactTypeRestriction_in_entryRuleArtifactTypeRestriction4882);
             iv_ruleArtifactTypeRestriction=ruleArtifactTypeRestriction();
 
             state._fsp--;
 
              current =iv_ruleArtifactTypeRestriction; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleArtifactTypeRestriction4927); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleArtifactTypeRestriction4892); 
 
             }
 
@@ -5610,7 +5559,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleArtifactTypeRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2326:1: ruleArtifactTypeRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2309:1: ruleArtifactTypeRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) ;
     public final EObject ruleArtifactTypeRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5624,22 +5573,22 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2329:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2330:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2312:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2313:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2330:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2330:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';'
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2313:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2313:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'artifactType' ( (otherlv_3= RULE_STRING ) ) otherlv_4= ';'
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2330:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2331:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2313:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2314:1: (lv_permission_0_0= ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2331:1: (lv_permission_0_0= ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2332:3: lv_permission_0_0= ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2314:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2315:3: lv_permission_0_0= ruleAccessPermissionEnum
             {
              
             	        newCompositeNode(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactTypeRestriction4973);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactTypeRestriction4938);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -5661,26 +5610,26 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleArtifactTypeRestriction4985); 
+            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleArtifactTypeRestriction4950); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getArtifactTypeRestrictionAccess().getEditKeyword_1());
                 
-            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleArtifactTypeRestriction4997); 
+            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleArtifactTypeRestriction4962); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeKeyword_2());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2356:1: ( (otherlv_3= RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2357:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2339:1: ( (otherlv_3= RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2340:1: (otherlv_3= RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2357:1: (otherlv_3= RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2358:3: otherlv_3= RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2340:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2341:3: otherlv_3= RULE_STRING
             {
 
             			if (current==null) {
             	            current = createModelElement(grammarAccess.getArtifactTypeRestrictionRule());
             	        }
                     
-            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleArtifactTypeRestriction5017); 
+            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleArtifactTypeRestriction4982); 
 
             		newLeafNode(otherlv_3, grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_3_0()); 
             	
@@ -5690,7 +5639,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_4=(Token)match(input,67,FOLLOW_67_in_ruleArtifactTypeRestriction5029); 
+            otherlv_4=(Token)match(input,67,FOLLOW_67_in_ruleArtifactTypeRestriction4994); 
 
                 	newLeafNode(otherlv_4, grammarAccess.getArtifactTypeRestrictionAccess().getSemicolonKeyword_4());
                 
@@ -5715,7 +5664,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleAttributeTypeRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2381:1: entryRuleAttributeTypeRestriction returns [EObject current=null] : iv_ruleAttributeTypeRestriction= ruleAttributeTypeRestriction EOF ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2364:1: entryRuleAttributeTypeRestriction returns [EObject current=null] : iv_ruleAttributeTypeRestriction= ruleAttributeTypeRestriction EOF ;
     public final EObject entryRuleAttributeTypeRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5723,17 +5672,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2382:2: (iv_ruleAttributeTypeRestriction= ruleAttributeTypeRestriction EOF )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2383:2: iv_ruleAttributeTypeRestriction= ruleAttributeTypeRestriction EOF
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2365:2: (iv_ruleAttributeTypeRestriction= ruleAttributeTypeRestriction EOF )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2366:2: iv_ruleAttributeTypeRestriction= ruleAttributeTypeRestriction EOF
             {
              newCompositeNode(grammarAccess.getAttributeTypeRestrictionRule()); 
-            pushFollow(FOLLOW_ruleAttributeTypeRestriction_in_entryRuleAttributeTypeRestriction5065);
+            pushFollow(FOLLOW_ruleAttributeTypeRestriction_in_entryRuleAttributeTypeRestriction5030);
             iv_ruleAttributeTypeRestriction=ruleAttributeTypeRestriction();
 
             state._fsp--;
 
              current =iv_ruleAttributeTypeRestriction; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleAttributeTypeRestriction5075); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleAttributeTypeRestriction5040); 
 
             }
 
@@ -5751,7 +5700,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleAttributeTypeRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2390:1: ruleAttributeTypeRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2373:1: ruleAttributeTypeRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' ) ;
     public final EObject ruleAttributeTypeRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5768,22 +5717,22 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2393:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2394:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2376:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2377:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2394:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2394:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';'
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2377:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2377:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'attributeType' ( (otherlv_3= RULE_STRING ) ) (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';'
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2394:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2395:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2377:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2378:1: (lv_permission_0_0= ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2395:1: (lv_permission_0_0= ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2396:3: lv_permission_0_0= ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2378:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2379:3: lv_permission_0_0= ruleAccessPermissionEnum
             {
              
             	        newCompositeNode(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleAttributeTypeRestriction5121);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleAttributeTypeRestriction5086);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -5805,26 +5754,26 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleAttributeTypeRestriction5133); 
+            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleAttributeTypeRestriction5098); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getAttributeTypeRestrictionAccess().getEditKeyword_1());
                 
-            otherlv_2=(Token)match(input,23,FOLLOW_23_in_ruleAttributeTypeRestriction5145); 
+            otherlv_2=(Token)match(input,23,FOLLOW_23_in_ruleAttributeTypeRestriction5110); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeKeyword_2());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2420:1: ( (otherlv_3= RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2421:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2403:1: ( (otherlv_3= RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2404:1: (otherlv_3= RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2421:1: (otherlv_3= RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2422:3: otherlv_3= RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2404:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2405:3: otherlv_3= RULE_STRING
             {
 
             			if (current==null) {
             	            current = createModelElement(grammarAccess.getAttributeTypeRestrictionRule());
             	        }
                     
-            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5165); 
+            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5130); 
 
             		newLeafNode(otherlv_3, grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefXAttributeTypeCrossReference_3_0()); 
             	
@@ -5834,37 +5783,37 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2433:2: (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )?
-            int alt39=2;
-            int LA39_0 = input.LA(1);
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2416:2: (otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) ) )?
+            int alt38=2;
+            int LA38_0 = input.LA(1);
 
-            if ( (LA39_0==72) ) {
-                alt39=1;
+            if ( (LA38_0==72) ) {
+                alt38=1;
             }
-            switch (alt39) {
+            switch (alt38) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2433:4: otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) )
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2416:4: otherlv_4= 'of' otherlv_5= 'artifactType' ( (otherlv_6= RULE_STRING ) )
                     {
-                    otherlv_4=(Token)match(input,72,FOLLOW_72_in_ruleAttributeTypeRestriction5178); 
+                    otherlv_4=(Token)match(input,72,FOLLOW_72_in_ruleAttributeTypeRestriction5143); 
 
                         	newLeafNode(otherlv_4, grammarAccess.getAttributeTypeRestrictionAccess().getOfKeyword_4_0());
                         
-                    otherlv_5=(Token)match(input,15,FOLLOW_15_in_ruleAttributeTypeRestriction5190); 
+                    otherlv_5=(Token)match(input,15,FOLLOW_15_in_ruleAttributeTypeRestriction5155); 
 
                         	newLeafNode(otherlv_5, grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeKeyword_4_1());
                         
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2441:1: ( (otherlv_6= RULE_STRING ) )
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2442:1: (otherlv_6= RULE_STRING )
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2424:1: ( (otherlv_6= RULE_STRING ) )
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2425:1: (otherlv_6= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2442:1: (otherlv_6= RULE_STRING )
-                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2443:3: otherlv_6= RULE_STRING
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2425:1: (otherlv_6= RULE_STRING )
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2426:3: otherlv_6= RULE_STRING
                     {
 
                     			if (current==null) {
                     	            current = createModelElement(grammarAccess.getAttributeTypeRestrictionRule());
                     	        }
                             
-                    otherlv_6=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5210); 
+                    otherlv_6=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5175); 
 
                     		newLeafNode(otherlv_6, grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_4_2_0()); 
                     	
@@ -5880,7 +5829,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_7=(Token)match(input,67,FOLLOW_67_in_ruleAttributeTypeRestriction5224); 
+            otherlv_7=(Token)match(input,67,FOLLOW_67_in_ruleAttributeTypeRestriction5189); 
 
                 	newLeafNode(otherlv_7, grammarAccess.getAttributeTypeRestrictionAccess().getSemicolonKeyword_5());
                 
@@ -5905,7 +5854,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleRelationTypeRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2466:1: entryRuleRelationTypeRestriction returns [EObject current=null] : iv_ruleRelationTypeRestriction= ruleRelationTypeRestriction EOF ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2449:1: entryRuleRelationTypeRestriction returns [EObject current=null] : iv_ruleRelationTypeRestriction= ruleRelationTypeRestriction EOF ;
     public final EObject entryRuleRelationTypeRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5913,17 +5862,17 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2467:2: (iv_ruleRelationTypeRestriction= ruleRelationTypeRestriction EOF )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2468:2: iv_ruleRelationTypeRestriction= ruleRelationTypeRestriction EOF
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2450:2: (iv_ruleRelationTypeRestriction= ruleRelationTypeRestriction EOF )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2451:2: iv_ruleRelationTypeRestriction= ruleRelationTypeRestriction EOF
             {
              newCompositeNode(grammarAccess.getRelationTypeRestrictionRule()); 
-            pushFollow(FOLLOW_ruleRelationTypeRestriction_in_entryRuleRelationTypeRestriction5260);
+            pushFollow(FOLLOW_ruleRelationTypeRestriction_in_entryRuleRelationTypeRestriction5225);
             iv_ruleRelationTypeRestriction=ruleRelationTypeRestriction();
 
             state._fsp--;
 
              current =iv_ruleRelationTypeRestriction; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleRelationTypeRestriction5270); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleRelationTypeRestriction5235); 
 
             }
 
@@ -5941,7 +5890,7 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleRelationTypeRestriction"
-    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2475:1: ruleRelationTypeRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) otherlv_5= ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2458:1: ruleRelationTypeRestriction returns [EObject current=null] : ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) (otherlv_5= 'artifact' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' ) ;
     public final EObject ruleRelationTypeRestriction() throws RecognitionException {
         EObject current = null;
 
@@ -5949,6 +5898,8 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
         Token otherlv_2=null;
         Token otherlv_3=null;
         Token otherlv_5=null;
+        Token otherlv_6=null;
+        Token otherlv_7=null;
         Enumerator lv_permission_0_0 = null;
 
         Enumerator lv_restrictedToSide_4_0 = null;
@@ -5957,22 +5908,22 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2478:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) otherlv_5= ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2479:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) otherlv_5= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2461:28: ( ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) (otherlv_5= 'artifact' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2462:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) (otherlv_5= 'artifact' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2479:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) otherlv_5= ';' )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2479:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) otherlv_5= ';'
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2462:1: ( ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) (otherlv_5= 'artifact' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2462:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) ) otherlv_1= 'edit' otherlv_2= 'relationType' ( (otherlv_3= RULE_STRING ) ) ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) ) (otherlv_5= 'artifact' ( (otherlv_6= RULE_STRING ) ) )? otherlv_7= ';'
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2479:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2480:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2462:2: ( (lv_permission_0_0= ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2463:1: (lv_permission_0_0= ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2480:1: (lv_permission_0_0= ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2481:3: lv_permission_0_0= ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2463:1: (lv_permission_0_0= ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2464:3: lv_permission_0_0= ruleAccessPermissionEnum
             {
              
             	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleRelationTypeRestriction5316);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_ruleRelationTypeRestriction5281);
             lv_permission_0_0=ruleAccessPermissionEnum();
 
             state._fsp--;
@@ -5994,26 +5945,26 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleRelationTypeRestriction5328); 
+            otherlv_1=(Token)match(input,70,FOLLOW_70_in_ruleRelationTypeRestriction5293); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getRelationTypeRestrictionAccess().getEditKeyword_1());
                 
-            otherlv_2=(Token)match(input,53,FOLLOW_53_in_ruleRelationTypeRestriction5340); 
+            otherlv_2=(Token)match(input,53,FOLLOW_53_in_ruleRelationTypeRestriction5305); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2());
                 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2505:1: ( (otherlv_3= RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2506:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2488:1: ( (otherlv_3= RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2489:1: (otherlv_3= RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2506:1: (otherlv_3= RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2507:3: otherlv_3= RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2489:1: (otherlv_3= RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2490:3: otherlv_3= RULE_STRING
             {
 
             			if (current==null) {
             	            current = createModelElement(grammarAccess.getRelationTypeRestrictionRule());
             	        }
                     
-            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleRelationTypeRestriction5360); 
+            otherlv_3=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleRelationTypeRestriction5325); 
 
             		newLeafNode(otherlv_3, grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeCrossReference_3_0()); 
             	
@@ -6023,16 +5974,16 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2518:2: ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2519:1: (lv_restrictedToSide_4_0= ruleXRelationSideEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2501:2: ( (lv_restrictedToSide_4_0= ruleXRelationSideEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2502:1: (lv_restrictedToSide_4_0= ruleXRelationSideEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2519:1: (lv_restrictedToSide_4_0= ruleXRelationSideEnum )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2520:3: lv_restrictedToSide_4_0= ruleXRelationSideEnum
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2502:1: (lv_restrictedToSide_4_0= ruleXRelationSideEnum )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2503:3: lv_restrictedToSide_4_0= ruleXRelationSideEnum
             {
              
             	        newCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0()); 
             	    
-            pushFollow(FOLLOW_ruleXRelationSideEnum_in_ruleRelationTypeRestriction5381);
+            pushFollow(FOLLOW_ruleXRelationSideEnum_in_ruleRelationTypeRestriction5346);
             lv_restrictedToSide_4_0=ruleXRelationSideEnum();
 
             state._fsp--;
@@ -6054,9 +6005,51 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_5=(Token)match(input,67,FOLLOW_67_in_ruleRelationTypeRestriction5393); 
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2519:2: (otherlv_5= 'artifact' ( (otherlv_6= RULE_STRING ) ) )?
+            int alt39=2;
+            int LA39_0 = input.LA(1);
 
-                	newLeafNode(otherlv_5, grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_5());
+            if ( (LA39_0==71) ) {
+                alt39=1;
+            }
+            switch (alt39) {
+                case 1 :
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2519:4: otherlv_5= 'artifact' ( (otherlv_6= RULE_STRING ) )
+                    {
+                    otherlv_5=(Token)match(input,71,FOLLOW_71_in_ruleRelationTypeRestriction5359); 
+
+                        	newLeafNode(otherlv_5, grammarAccess.getRelationTypeRestrictionAccess().getArtifactKeyword_5_0());
+                        
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2523:1: ( (otherlv_6= RULE_STRING ) )
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2524:1: (otherlv_6= RULE_STRING )
+                    {
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2524:1: (otherlv_6= RULE_STRING )
+                    // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:2525:3: otherlv_6= RULE_STRING
+                    {
+
+                    			if (current==null) {
+                    	            current = createModelElement(grammarAccess.getRelationTypeRestrictionRule());
+                    	        }
+                            
+                    otherlv_6=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleRelationTypeRestriction5379); 
+
+                    		newLeafNode(otherlv_6, grammarAccess.getRelationTypeRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0()); 
+                    	
+
+                    }
+
+
+                    }
+
+
+                    }
+                    break;
+
+            }
+
+            otherlv_7=(Token)match(input,67,FOLLOW_67_in_ruleRelationTypeRestriction5393); 
+
+                	newLeafNode(otherlv_7, grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_6());
                 
 
             }
@@ -6897,60 +6890,60 @@ public class InternalOseeDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_68_in_ruleAccessContext4198 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleAccessContext4215 = new BitSet(new long[]{0x0000000000050000L});
     public static final BitSet FOLLOW_16_in_ruleAccessContext4233 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleAccessContext4253 = new BitSet(new long[]{0x0000000000060000L});
-    public static final BitSet FOLLOW_17_in_ruleAccessContext4266 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleAccessContext4286 = new BitSet(new long[]{0x0000000000060000L});
-    public static final BitSet FOLLOW_18_in_ruleAccessContext4302 = new BitSet(new long[]{0x0000000000080000L});
-    public static final BitSet FOLLOW_19_in_ruleAccessContext4314 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleAccessContext4331 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_ruleAccessContext4348 = new BitSet(new long[]{0x0000000000000000L,0x0000000000300020L});
-    public static final BitSet FOLLOW_ruleObjectRestriction_in_ruleAccessContext4370 = new BitSet(new long[]{0x0000000000100000L,0x0000000000300020L});
-    public static final BitSet FOLLOW_ruleHierarchyRestriction_in_ruleAccessContext4397 = new BitSet(new long[]{0x0000000000100000L,0x0000000000300020L});
-    public static final BitSet FOLLOW_20_in_ruleAccessContext4411 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleHierarchyRestriction_in_entryRuleHierarchyRestriction4447 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleHierarchyRestriction4457 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_69_in_ruleHierarchyRestriction4494 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleHierarchyRestriction4514 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_ruleHierarchyRestriction4526 = new BitSet(new long[]{0x0000000000000000L,0x0000000000300000L});
-    public static final BitSet FOLLOW_ruleObjectRestriction_in_ruleHierarchyRestriction4547 = new BitSet(new long[]{0x0000000000100000L,0x0000000000300000L});
-    public static final BitSet FOLLOW_20_in_ruleHierarchyRestriction4560 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleObjectRestriction_in_entryRuleObjectRestriction4596 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleObjectRestriction4606 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleArtifactMatchRestriction_in_ruleObjectRestriction4653 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleArtifactTypeRestriction_in_ruleObjectRestriction4680 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRelationTypeRestriction_in_ruleObjectRestriction4707 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAttributeTypeRestriction_in_ruleObjectRestriction4734 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleArtifactMatchRestriction_in_entryRuleArtifactMatchRestriction4769 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleArtifactMatchRestriction4779 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactMatchRestriction4825 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
-    public static final BitSet FOLLOW_70_in_ruleArtifactMatchRestriction4837 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_71_in_ruleArtifactMatchRestriction4849 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleArtifactMatchRestriction4869 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_ruleArtifactMatchRestriction4881 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleArtifactTypeRestriction_in_entryRuleArtifactTypeRestriction4917 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleArtifactTypeRestriction4927 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactTypeRestriction4973 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
-    public static final BitSet FOLLOW_70_in_ruleArtifactTypeRestriction4985 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleArtifactTypeRestriction4997 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleArtifactTypeRestriction5017 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_ruleArtifactTypeRestriction5029 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAttributeTypeRestriction_in_entryRuleAttributeTypeRestriction5065 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleAttributeTypeRestriction5075 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleAttributeTypeRestriction5121 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
-    public static final BitSet FOLLOW_70_in_ruleAttributeTypeRestriction5133 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_ruleAttributeTypeRestriction5145 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5165 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000108L});
-    public static final BitSet FOLLOW_72_in_ruleAttributeTypeRestriction5178 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleAttributeTypeRestriction5190 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5210 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_ruleAttributeTypeRestriction5224 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRelationTypeRestriction_in_entryRuleRelationTypeRestriction5260 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleRelationTypeRestriction5270 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleRelationTypeRestriction5316 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
-    public static final BitSet FOLLOW_70_in_ruleRelationTypeRestriction5328 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_53_in_ruleRelationTypeRestriction5340 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleRelationTypeRestriction5360 = new BitSet(new long[]{0x0000000000000000L,0x0000000001C00000L});
-    public static final BitSet FOLLOW_ruleXRelationSideEnum_in_ruleRelationTypeRestriction5381 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleAccessContext4253 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_ruleAccessContext4267 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_19_in_ruleAccessContext4279 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleAccessContext4296 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_ruleAccessContext4313 = new BitSet(new long[]{0x0000000000000000L,0x0000000000300020L});
+    public static final BitSet FOLLOW_ruleObjectRestriction_in_ruleAccessContext4335 = new BitSet(new long[]{0x0000000000100000L,0x0000000000300020L});
+    public static final BitSet FOLLOW_ruleHierarchyRestriction_in_ruleAccessContext4362 = new BitSet(new long[]{0x0000000000100000L,0x0000000000300020L});
+    public static final BitSet FOLLOW_20_in_ruleAccessContext4376 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleHierarchyRestriction_in_entryRuleHierarchyRestriction4412 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleHierarchyRestriction4422 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_69_in_ruleHierarchyRestriction4459 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleHierarchyRestriction4479 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_ruleHierarchyRestriction4491 = new BitSet(new long[]{0x0000000000000000L,0x0000000000300000L});
+    public static final BitSet FOLLOW_ruleObjectRestriction_in_ruleHierarchyRestriction4512 = new BitSet(new long[]{0x0000000000100000L,0x0000000000300000L});
+    public static final BitSet FOLLOW_20_in_ruleHierarchyRestriction4525 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleObjectRestriction_in_entryRuleObjectRestriction4561 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleObjectRestriction4571 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleArtifactMatchRestriction_in_ruleObjectRestriction4618 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleArtifactTypeRestriction_in_ruleObjectRestriction4645 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRelationTypeRestriction_in_ruleObjectRestriction4672 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAttributeTypeRestriction_in_ruleObjectRestriction4699 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleArtifactMatchRestriction_in_entryRuleArtifactMatchRestriction4734 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleArtifactMatchRestriction4744 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactMatchRestriction4790 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_70_in_ruleArtifactMatchRestriction4802 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_71_in_ruleArtifactMatchRestriction4814 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleArtifactMatchRestriction4834 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_ruleArtifactMatchRestriction4846 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleArtifactTypeRestriction_in_entryRuleArtifactTypeRestriction4882 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleArtifactTypeRestriction4892 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleArtifactTypeRestriction4938 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_70_in_ruleArtifactTypeRestriction4950 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleArtifactTypeRestriction4962 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleArtifactTypeRestriction4982 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_ruleArtifactTypeRestriction4994 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAttributeTypeRestriction_in_entryRuleAttributeTypeRestriction5030 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleAttributeTypeRestriction5040 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleAttributeTypeRestriction5086 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_70_in_ruleAttributeTypeRestriction5098 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_ruleAttributeTypeRestriction5110 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5130 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000108L});
+    public static final BitSet FOLLOW_72_in_ruleAttributeTypeRestriction5143 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleAttributeTypeRestriction5155 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleAttributeTypeRestriction5175 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_ruleAttributeTypeRestriction5189 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRelationTypeRestriction_in_entryRuleRelationTypeRestriction5225 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleRelationTypeRestriction5235 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_ruleRelationTypeRestriction5281 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_70_in_ruleRelationTypeRestriction5293 = new BitSet(new long[]{0x0020000000000000L});
+    public static final BitSet FOLLOW_53_in_ruleRelationTypeRestriction5305 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleRelationTypeRestriction5325 = new BitSet(new long[]{0x0000000000000000L,0x0000000001C00000L});
+    public static final BitSet FOLLOW_ruleXRelationSideEnum_in_ruleRelationTypeRestriction5346 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000088L});
+    public static final BitSet FOLLOW_71_in_ruleRelationTypeRestriction5359 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleRelationTypeRestriction5379 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_67_in_ruleRelationTypeRestriction5393 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_73_in_ruleRelationMultiplicityEnum5443 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_74_in_ruleRelationMultiplicityEnum5460 = new BitSet(new long[]{0x0000000000000002L});

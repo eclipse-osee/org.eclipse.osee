@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
@@ -38,16 +39,16 @@ import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.accessProviders.RelationTypeAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
-import org.eclipse.osee.framework.ui.skynet.accessProviders.RelationTypeAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -75,6 +76,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -480,9 +482,25 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       public void menuShown(MenuEvent e) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          boolean valid = selection.getFirstElement() instanceof WrapperForRelationLink;
+         if (selection.getFirstElement() instanceof WrapperForRelationLink) {
+            WrapperForRelationLink data = (WrapperForRelationLink) selection.getFirstElement();
+            AccessPolicy policyHandlerService;
+            try {
+               policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
+
+               RelationTypeSide rts = new RelationTypeSide(data.getRelationType(), data.getRelationSide());
+               valid =
+                  policyHandlerService.canRelationBeModified(
+                     artifact,
+                     java.util.Collections.singleton(data.getArtifactA().equals(artifact) ? data.getArtifactB() : data.getArtifactA()),
+                     rts, Level.INFO).matched();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
 
          for (MenuItem item : accessControlitems) {
-            item.setEnabled(valid && !checkLinksReadOnly());
+            item.setEnabled(valid);
          }
 
          for (MenuItem item : artEnabledOnlyitems) {
@@ -540,14 +558,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
     * Performs the deletion functionality
     */
    private void performDeleteRelation(IStructuredSelection selection) {
-      if (checkLinksReadOnly()) {
-         MessageDialog.openError(
-            Displays.getActiveShell(),
-            "Delete Relation Error",
-            "Access control has restricted this action. The current user does not have sufficient permission to delete objects on this artifact.");
-         return;
-      }
-
       Object[] objects = selection.toArray();
       for (Object object : objects) {
          if (hasWriteRelationTypePermission(object)) {
@@ -617,10 +627,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       refresh();
    }
 
-   private boolean checkLinksReadOnly() {
-      return artifact.isReadOnly();
-   }
-
    private class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       boolean isFeedbackAfter = false;
 
@@ -645,6 +651,15 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          return artifacts;
       }
 
+      private boolean ensureRelationCanBeAdded(IRelationType relationType, Artifact artifactA, Artifact artifactB) {
+         try {
+            RelationManager.ensureRelationCanBeAdded(relationType, artifactA, artifactB);
+         } catch (OseeCoreException ex) {
+            return false;
+         }
+         return true;
+      }
+
       @Override
       public void performDragOver(DropTargetEvent event) {
          Tree tree = treeViewer.getTree();
@@ -654,31 +669,76 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          event.detail = DND.DROP_NONE;
 
          if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
-            if (checkLinksReadOnly()) {
-               event.detail = DND.DROP_NONE;
+            try {
+               RelationTypeSideSorter data = (RelationTypeSideSorter) selected.getData();
+               ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+               Artifact[] selectedArtifacts = artData.getArtifacts();
+               String toolTipText = "";
 
-               MessageDialog.openError(
-                  Displays.getActiveShell(),
-                  "Create Relation Error",
-                  "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
-               return;
-            } else {
-               event.detail = DND.DROP_COPY;
-               tree.setInsertMark(null, false);
+               boolean canRelate = false;
+               for (Artifact i : selectedArtifacts) {
+                  canRelate = ensureRelationCanBeAdded(data.getRelationType(), data.getArtifact(), i);
+                  if (!canRelate) {
+                     toolTipText +=
+                        String.format("Relation: Relation [%s] cannot be added between [%s] and [%s]\n",
+                           data.getRelationType().getName(), data.getArtifact().getName(), i.getName());
+
+                  }
+               }
+
+               AccessPolicy policyHandlerService =
+                  SkynetGuiPlugin.getInstance().getAccessPolicy();
+
+               boolean matched =
+                  policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts), data,
+                     Level.INFO).matched();
+
+               if (matched) {
+                  event.detail = DND.DROP_COPY;
+                  tree.setInsertMark(null, false);
+               } else {
+                  toolTipText += (toolTipText.length() == 0 ? "" : " \n");
+                  toolTipText += "Access: Access Control has prevented this relation";
+
+               }
+               if (!matched || !canRelate) {
+                  ToolTip tt = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
+                  tt.setText("RELATION ERROR");
+                  tt.setMessage(toolTipText);
+                  tt.setVisible(true);
+               }
+
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
+
          } else if (selected != null && selected.getData() instanceof WrapperForRelationLink) {
             WrapperForRelationLink targetLink = (WrapperForRelationLink) selected.getData();
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object obj = selection.getFirstElement();
             if (obj instanceof WrapperForRelationLink) {
                WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
+               boolean matched = false;
+               try {
+                  AccessPolicy policyHandlerService =
+                     SkynetGuiPlugin.getInstance().getAccessPolicy();
+                  RelationTypeSide rts =
+                     new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
 
-               if (checkLinksReadOnly()) {
+                  matched =
+                     policyHandlerService.canRelationBeModified(
+                        artifact,
+                        Arrays.asList(artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
+                        rts, Level.INFO).matched();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+               if (!matched) {
                   event.detail = DND.DROP_NONE;
-                  MessageDialog.openError(
-                     Displays.getActiveShell(),
-                     "Create Relation Error",
-                     "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+                  ToolTip tt = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
+                  tt.setText("MOVE ERROR");
+                  tt.setMessage("Access Control has restricted this action.");
+                  tt.setVisible(true);
                   return;
                }
                // the links must be in the same group
@@ -728,7 +788,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                   WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                   Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                   for (Artifact artifactToMove : artifactsToMove) {
-                  IRelationTypeSide typeSide =
+                     IRelationTypeSide typeSide =
                         new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
                      artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
                   }
@@ -758,18 +818,22 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       boolean hasPermission = false;
       try {
          RelationTypeSide relationTypeSide = null;
+         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
          if (object instanceof WrapperForRelationLink) {//used for ordering
             WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
             relationTypeSide = new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
+            artifacts.add(artifact.equals(targetLink.getArtifactA()) ? targetLink.getArtifactB() : targetLink.getArtifactA());
          } else if (object instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter group = (RelationTypeSideSorter) object;
             relationTypeSide = new RelationTypeSide(group.getRelationType(), group.getSide());
+            artifacts.add(group.getArtifact());
          }
 
-         RelationTypeAccessProvider relationTypeAccessProvider = new RelationTypeAccessProvider();
+         AccessPolicy policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
+
          hasPermission =
-            relationTypeAccessProvider.relationTypeHasPermission(
-               SkynetGuiPlugin.getInstance().getPolicyHandlerService(), Arrays.asList(relationTypeSide));
+            policyHandlerService.canRelationBeModified(artifact, artifacts, relationTypeSide, Level.INFO).matched();
+
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

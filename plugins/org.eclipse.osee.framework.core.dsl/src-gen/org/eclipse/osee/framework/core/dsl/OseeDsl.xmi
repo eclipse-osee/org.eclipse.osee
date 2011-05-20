@@ -641,17 +641,6 @@
               <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.2"/>
             </terminal>
           </elements>
-          <elements xsi:type="xtext:Group" cardinality="*">
-            <elements xsi:type="xtext:Keyword" value=","/>
-            <elements xsi:type="xtext:Assignment" feature="superAccessContexts" operator="+=">
-              <terminal xsi:type="xtext:CrossReference">
-                <type metamodel="/0/@metamodelDeclarations.0">
-                  <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//AccessContext"/>
-                </type>
-                <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.2"/>
-              </terminal>
-            </elements>
-          </elements>
         </elements>
         <elements xsi:type="xtext:Keyword" value="{"/>
         <elements xsi:type="xtext:Keyword" value="guid"/>
@@ -812,6 +801,17 @@
         </elements>
         <elements xsi:type="xtext:Assignment" feature="restrictedToSide" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.36"/>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="artifact"/>
+          <elements xsi:type="xtext:Assignment" feature="artifactMatcherRef" operator="=">
+            <terminal xsi:type="xtext:CrossReference">
+              <type metamodel="/0/@metamodelDeclarations.0">
+                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XArtifactMatcher"/>
+              </type>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.2"/>
+            </terminal>
+          </elements>
         </elements>
         <elements xsi:type="xtext:Keyword" value=";"/>
       </alternatives>

@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -77,8 +76,7 @@ public class CopyHandler extends AbstractHandler {
                clipboard.setTextToClipboard(names);
             } else if (!names.isEmpty() && !artifacts.isEmpty()) {
                try {
-                  clipboard.setArtifactsToClipboard(new ArtifactAccessProvider(),
-                     SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifacts);
+                  clipboard.setArtifactsToClipboard(SkynetGuiPlugin.getInstance().getAccessPolicy(), artifacts);
                } catch (OseeCoreException ex) {
                   throw new ExecutionException(ex.getLocalizedMessage());
                }

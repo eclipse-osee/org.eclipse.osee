@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.model.test.mocks;
 
 import java.util.Date;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -61,12 +62,12 @@ public final class MockDataFactory {
       return cxt;
    }
 
-   public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason) {
+   public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
       AccessDetail<T> target;
       if (expReason != null) {
-         target = new AccessDetail<T>(expAccessObject, expPermission, expReason);
+         target = new AccessDetail<T>(expAccessObject, expPermission, scope, expReason);
       } else {
-         target = new AccessDetail<T>(expAccessObject, expPermission);
+         target = new AccessDetail<T>(expAccessObject, expPermission, scope);
       }
       return target;
    }

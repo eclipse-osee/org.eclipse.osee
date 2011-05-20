@@ -11,7 +11,8 @@
 package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -49,7 +50,7 @@ public class OseeDslAccessModel implements AccessModel {
          "No matching access context was found in access dsl for [%s]", contextId);
 
       for (Object objectToCheck : objectsToCheck) {
-         Collection<AccessDetail<?>> accessDetail = new HashSet<AccessDetail<?>>();
+         List<AccessDetail<?>> accessDetail = new LinkedList<AccessDetail<?>>();
          AccessDetailCollector collector = new AccessDataCollector(accessDetail);
          interpreter.computeAccessDetails(collector, context, objectToCheck);
          accessData.addAll(objectToCheck, accessDetail);

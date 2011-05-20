@@ -2030,36 +2030,19 @@ ruleAccessContext returns [EObject current=null]
 	}
 
 )
-)(	otherlv_4=',' 
+))?	otherlv_4='{' 
     {
-    	newLeafNode(otherlv_4, grammarAccess.getAccessContextAccess().getCommaKeyword_2_2_0());
+    	newLeafNode(otherlv_4, grammarAccess.getAccessContextAccess().getLeftCurlyBracketKeyword_3());
+    }
+	otherlv_5='guid' 
+    {
+    	newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getGuidKeyword_4());
     }
 (
 (
+		lv_guid_6_0=RULE_STRING
 		{
-			if ($current==null) {
-	            $current = createModelElement(grammarAccess.getAccessContextRule());
-	        }
-        }
-	otherlv_5=RULE_STRING
-	{
-		newLeafNode(otherlv_5, grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextCrossReference_2_2_1_0()); 
-	}
-
-)
-))*)?	otherlv_6='{' 
-    {
-    	newLeafNode(otherlv_6, grammarAccess.getAccessContextAccess().getLeftCurlyBracketKeyword_3());
-    }
-	otherlv_7='guid' 
-    {
-    	newLeafNode(otherlv_7, grammarAccess.getAccessContextAccess().getGuidKeyword_4());
-    }
-(
-(
-		lv_guid_8_0=RULE_STRING
-		{
-			newLeafNode(lv_guid_8_0, grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
+			newLeafNode(lv_guid_6_0, grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -2068,28 +2051,28 @@ ruleAccessContext returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"guid",
-        		lv_guid_8_0, 
+        		lv_guid_6_0, 
         		"STRING");
 	    }
 
 )
-)	otherlv_9=';' 
+)	otherlv_7=';' 
     {
-    	newLeafNode(otherlv_9, grammarAccess.getAccessContextAccess().getSemicolonKeyword_6());
+    	newLeafNode(otherlv_7, grammarAccess.getAccessContextAccess().getSemicolonKeyword_6());
     }
 ((
 (
 		{ 
 	        newCompositeNode(grammarAccess.getAccessContextAccess().getAccessRulesObjectRestrictionParserRuleCall_7_0_0()); 
 	    }
-		lv_accessRules_10_0=ruleObjectRestriction		{
+		lv_accessRules_8_0=ruleObjectRestriction		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getAccessContextRule());
 	        }
        		add(
        			$current, 
        			"accessRules",
-        		lv_accessRules_10_0, 
+        		lv_accessRules_8_0, 
         		"ObjectRestriction");
 	        afterParserOrEnumRuleCall();
 	    }
@@ -2101,22 +2084,22 @@ ruleAccessContext returns [EObject current=null]
 		{ 
 	        newCompositeNode(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsHierarchyRestrictionParserRuleCall_7_1_0()); 
 	    }
-		lv_hierarchyRestrictions_11_0=ruleHierarchyRestriction		{
+		lv_hierarchyRestrictions_9_0=ruleHierarchyRestriction		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getAccessContextRule());
 	        }
        		add(
        			$current, 
        			"hierarchyRestrictions",
-        		lv_hierarchyRestrictions_11_0, 
+        		lv_hierarchyRestrictions_9_0, 
         		"HierarchyRestriction");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))+	otherlv_12='}' 
+))+	otherlv_10='}' 
     {
-    	newLeafNode(otherlv_12, grammarAccess.getAccessContextAccess().getRightCurlyBracketKeyword_8());
+    	newLeafNode(otherlv_10, grammarAccess.getAccessContextAccess().getRightCurlyBracketKeyword_8());
     }
 )
 ;
@@ -2533,9 +2516,26 @@ ruleRelationTypeRestriction returns [EObject current=null]
 	    }
 
 )
-)	otherlv_5=';' 
+)(	otherlv_5='artifact' 
     {
-    	newLeafNode(otherlv_5, grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_5());
+    	newLeafNode(otherlv_5, grammarAccess.getRelationTypeRestrictionAccess().getArtifactKeyword_5_0());
+    }
+(
+(
+		{
+			if ($current==null) {
+	            $current = createModelElement(grammarAccess.getRelationTypeRestrictionRule());
+	        }
+        }
+	otherlv_6=RULE_STRING
+	{
+		newLeafNode(otherlv_6, grammarAccess.getRelationTypeRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0()); 
+	}
+
+)
+))?	otherlv_7=';' 
+    {
+    	newLeafNode(otherlv_7, grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_6());
     }
 )
 ;

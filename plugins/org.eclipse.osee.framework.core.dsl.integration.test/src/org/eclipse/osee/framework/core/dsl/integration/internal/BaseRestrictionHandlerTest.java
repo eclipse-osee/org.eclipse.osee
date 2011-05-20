@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.access.Scope;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -55,11 +56,13 @@ public abstract class BaseRestrictionHandlerTest<T extends ObjectRestriction> {
 
    @Test
    public void testProcessNullObjectRestriction() throws OseeCoreException {
-      DslAsserts.assertNullAccessDetail(restrictionHandler, null, null);
+      Scope expectedScope = new Scope().add("fail");
+      DslAsserts.assertNullAccessDetail(restrictionHandler, null, null, expectedScope);
    }
 
    @Test
    public void testProcessInvalidObjectRestriction() throws OseeCoreException {
-      DslAsserts.assertNullAccessDetail(restrictionHandler, invalidRestriction, null);
+      Scope expectedScope = new Scope().add("fail");
+      DslAsserts.assertNullAccessDetail(restrictionHandler, invalidRestriction, null, expectedScope);
    }
 }

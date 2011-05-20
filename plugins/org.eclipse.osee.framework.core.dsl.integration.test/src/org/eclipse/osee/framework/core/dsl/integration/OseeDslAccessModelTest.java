@@ -15,8 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
-import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -28,6 +26,7 @@ import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -85,8 +84,12 @@ public class OseeDslAccessModelTest {
 
       final Object checkedObject = new Object();
 
-      final AccessDetail<?> detail1 = new AccessDetail<Object>(checkedObject, PermissionEnum.READ, "detail 1");
-      final AccessDetail<?> detail2 = new AccessDetail<Object>(checkedObject, PermissionEnum.WRITE, "detail 2");
+      Scope detail1Scope = new Scope().add("fail");
+      Scope detail2Scope = new Scope().add("fail");
+      final AccessDetail<?> detail1 =
+         new AccessDetail<Object>(checkedObject, PermissionEnum.READ, detail1Scope, "detail 1");
+      final AccessDetail<?> detail2 =
+         new AccessDetail<Object>(checkedObject, PermissionEnum.WRITE, detail2Scope, "detail 2");
 
       final AccessData accessData = new AccessData();
 

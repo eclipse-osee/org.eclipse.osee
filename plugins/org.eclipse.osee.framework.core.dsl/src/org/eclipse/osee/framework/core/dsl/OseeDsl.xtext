@@ -116,8 +116,7 @@ XArtifactMatcher:
 ///////////////////////////////////////
 AccessContext:
 	'accessContext' name=STRING ('extends'
-	superAccessContexts+=[AccessContext|STRING] (','
-	superAccessContexts+=[AccessContext|STRING])*)? '{' 'guid' guid=STRING ';'
+	superAccessContexts+=[AccessContext|STRING])? '{' 'guid' guid=STRING ';'
 	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ '}';
 
 HierarchyRestriction:
@@ -143,7 +142,8 @@ AttributeTypeRestriction:
 
 RelationTypeRestriction:
 	permission=AccessPermissionEnum 'edit' 'relationType' relationTypeRef=[XRelationType|STRING]
-	restrictedToSide=XRelationSideEnum ';';
+	restrictedToSide=XRelationSideEnum ('artifact' artifactMatcherRef=[XArtifactMatcher|STRING])? ';';
+
 
 enum XRelationSideEnum:
 	SIDE_A | SIDE_B | BOTH;

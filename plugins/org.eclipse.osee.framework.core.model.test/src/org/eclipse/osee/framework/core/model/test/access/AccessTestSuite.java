@@ -19,6 +19,7 @@ AccessDataTest.class, //
    AccessDataQueryTest.class, //
    AccessDetailTest.class, //
    PermissionStatusTest.class, //
+   ScopeTest.class, //
 })
 /**
  * @author Roberto E. Escobar

@@ -13,29 +13,42 @@ package org.eclipse.osee.framework.core.model.access;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
-public class AccessDetail<T> {
-   private PermissionEnum permission;
-   private final T accessObject;
-   private final String reason;
+public class AccessDetail<T> { //implements Comparable<AccessDetail<?>> {
 
-   public AccessDetail(T accessObject, PermissionEnum permission) {
-      this.accessObject = accessObject;
-      this.permission = permission;
-      this.reason = Strings.emptyString();
+   private final T accessObject;
+   private PermissionEnum permission;
+   private Scope scope;
+   private String reason;
+
+   public AccessDetail(T accessObject, PermissionEnum permission, Scope scope) {
+      this(accessObject, permission, scope, Strings.emptyString());
    }
 
-   public AccessDetail(T accessObject, PermissionEnum permission, String reason) {
+   public AccessDetail(T accessObject, PermissionEnum permission, Scope scope, String reason) {
       this.accessObject = accessObject;
       this.permission = permission;
       this.reason = reason;
+      this.scope = scope;
    }
 
    public String getReason() {
-      return reason;
+      return Strings.isValid(reason) ? reason : scope.getPath();
+   }
+
+   public void setReason(String reason) {
+      this.reason = reason;
    }
 
    public PermissionEnum getPermission() {
       return permission;
+   }
+
+   public Scope getScope() {
+      return scope;
+   }
+
+   public void setScope(Scope scope) {
+      this.scope = scope;
    }
 
    public T getAccessObject() {
@@ -71,7 +84,52 @@ public class AccessDetail<T> {
 
    @Override
    public String toString() {
-      return String.format("accessDetail [ object=[%s] permission=[%s] reason=[%s]]", getAccessObject(),
-         getPermission(), getReason());
+      return "AccessDetail [permission=" + getPermission() + ", scope=" + getScope() + ", accessObject=" + getAccessObject() + ", reason=" + getReason() + "]";
+   }
+
+   public static AccessDetail<?> resolveAccess(AccessDetail<?> original, AccessDetail<?> data) {
+      AccessDetail<?> toReturn = data;
+      if (original != null) {
+         Scope origScope = original.getScope();
+         Scope dataScope = data.getScope();
+
+         if (origScope.isLegacy() || dataScope.isLegacy() || origScope.getPath().equals(dataScope.getPath())) {
+            toReturn = getMostRestrictive(original, data);
+         } else {
+            if (dataScope.getScopeDepth() > origScope.getScopeDepth()) {
+               toReturn = data;
+            } else {
+               toReturn = original;
+            }
+         }
+
+      }
+      return toReturn;
+   }
+
+   private static AccessDetail<?> getMostRestrictive(AccessDetail<?> original, AccessDetail<?> data) {
+      PermissionEnum origPermission = original.getPermission();
+      PermissionEnum newPermission = data.getPermission();
+      PermissionEnum netPermission = PermissionEnum.getMostRestrictive(origPermission, newPermission);
+
+      AccessDetail<?> toReturn;
+      if (netPermission.equals(origPermission)) {
+         toReturn = original;
+         String netReason = merge(toReturn.getReason(), data.getReason());
+         toReturn.setReason(netReason);
+      } else {
+         toReturn = data;
+      }
+      return toReturn;
+   }
+
+   public static String merge(String reason1, String reason2) {
+      StringBuilder builder = new StringBuilder();
+      builder.append(reason1);
+      if (!reason1.equals(reason2)) {
+         builder.append(", ");
+         builder.append(reason2);
+      }
+      return builder.toString();
    }
 }

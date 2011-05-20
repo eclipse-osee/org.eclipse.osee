@@ -64,6 +64,7 @@ public class RelationTypeRestrictionItemProvider
 
          addRelationTypeRefPropertyDescriptor(object);
          addRestrictedToSidePropertyDescriptor(object);
+         addArtifactMatcherRefPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -108,6 +109,28 @@ public class RelationTypeRestrictionItemProvider
              false,
              false,
              ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
+    * This adds a property descriptor for the Artifact Matcher Ref feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addArtifactMatcherRefPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_RelationTypeRestriction_artifactMatcherRef_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_artifactMatcherRef_feature", "_UI_RelationTypeRestriction_type"),
+             OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__ARTIFACT_MATCHER_REF,
+             true,
+             false,
+             true,
+             null,
              null,
              null));
    }

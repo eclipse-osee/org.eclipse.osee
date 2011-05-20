@@ -1246,11 +1246,6 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cSuperAccessContextsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
 		private final CrossReference cSuperAccessContextsAccessContextCrossReference_2_1_0 = (CrossReference)cSuperAccessContextsAssignment_2_1.eContents().get(0);
 		private final RuleCall cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1 = (RuleCall)cSuperAccessContextsAccessContextCrossReference_2_1_0.eContents().get(1);
-		private final Group cGroup_2_2 = (Group)cGroup_2.eContents().get(2);
-		private final Keyword cCommaKeyword_2_2_0 = (Keyword)cGroup_2_2.eContents().get(0);
-		private final Assignment cSuperAccessContextsAssignment_2_2_1 = (Assignment)cGroup_2_2.eContents().get(1);
-		private final CrossReference cSuperAccessContextsAccessContextCrossReference_2_2_1_0 = (CrossReference)cSuperAccessContextsAssignment_2_2_1.eContents().get(0);
-		private final RuleCall cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_2_1_0_1 = (RuleCall)cSuperAccessContextsAccessContextCrossReference_2_2_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		private final Keyword cGuidKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		private final Assignment cGuidAssignment_5 = (Assignment)cGroup.eContents().get(5);
@@ -1267,14 +1262,12 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		////  OSEE ACCESS MODEL                //
 		/////////////////////////////////////////
 		//AccessContext:
-		//	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
-		//	superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
-		//	hierarchyRestrictions+=HierarchyRestriction)+ "}";
+		//	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING])? "{" "guid" guid=STRING ";"
+		//	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}";
 		public ParserRule getRule() { return rule; }
 
-		//"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
-		//superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
-		//hierarchyRestrictions+=HierarchyRestriction)+ "}"
+		//"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING])? "{" "guid" guid=STRING ";"
+		//(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//"accessContext"
@@ -1286,7 +1279,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
 
-		//("extends" superAccessContexts+=[AccessContext|STRING] ("," superAccessContexts+=[AccessContext|STRING])*)?
+		//("extends" superAccessContexts+=[AccessContext|STRING])?
 		public Group getGroup_2() { return cGroup_2; }
 
 		//"extends"
@@ -1300,21 +1293,6 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//STRING
 		public RuleCall getSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1() { return cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1; }
-
-		//("," superAccessContexts+=[AccessContext|STRING])*
-		public Group getGroup_2_2() { return cGroup_2_2; }
-
-		//","
-		public Keyword getCommaKeyword_2_2_0() { return cCommaKeyword_2_2_0; }
-
-		//superAccessContexts+=[AccessContext|STRING]
-		public Assignment getSuperAccessContextsAssignment_2_2_1() { return cSuperAccessContextsAssignment_2_2_1; }
-
-		//[AccessContext|STRING]
-		public CrossReference getSuperAccessContextsAccessContextCrossReference_2_2_1_0() { return cSuperAccessContextsAccessContextCrossReference_2_2_1_0; }
-
-		//STRING
-		public RuleCall getSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_2_1_0_1() { return cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_2_1_0_1; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
@@ -1592,15 +1570,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_0_1 = (RuleCall)cRelationTypeRefXRelationTypeCrossReference_3_0.eContents().get(1);
 		private final Assignment cRestrictedToSideAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final RuleCall cRestrictedToSideXRelationSideEnumEnumRuleCall_4_0 = (RuleCall)cRestrictedToSideAssignment_4.eContents().get(0);
-		private final Keyword cSemicolonKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cArtifactKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cArtifactMatcherRefAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final CrossReference cArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0 = (CrossReference)cArtifactMatcherRefAssignment_5_1.eContents().get(0);
+		private final RuleCall cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_5_1_0_1 = (RuleCall)cArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0.eContents().get(1);
+		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//RelationTypeRestriction:
 		//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
-		//	restrictedToSide=XRelationSideEnum ";";
+		//	restrictedToSide=XRelationSideEnum ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])? ";";
 		public ParserRule getRule() { return rule; }
 
 		//permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
-		//restrictedToSide=XRelationSideEnum ";"
+		//restrictedToSide=XRelationSideEnum ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])? ";"
 		public Group getGroup() { return cGroup; }
 
 		//permission=AccessPermissionEnum
@@ -1630,8 +1613,23 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//XRelationSideEnum
 		public RuleCall getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0() { return cRestrictedToSideXRelationSideEnumEnumRuleCall_4_0; }
 
+		//("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])?
+		public Group getGroup_5() { return cGroup_5; }
+
+		//"artifact"
+		public Keyword getArtifactKeyword_5_0() { return cArtifactKeyword_5_0; }
+
+		//artifactMatcherRef=[XArtifactMatcher|STRING]
+		public Assignment getArtifactMatcherRefAssignment_5_1() { return cArtifactMatcherRefAssignment_5_1; }
+
+		//[XArtifactMatcher|STRING]
+		public CrossReference getArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0() { return cArtifactMatcherRefXArtifactMatcherCrossReference_5_1_0; }
+
+		//STRING
+		public RuleCall getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_5_1_0_1() { return cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_5_1_0_1; }
+
 		//";"
-		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
+		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
 	}
 	
 	
@@ -2200,9 +2198,8 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	////  OSEE ACCESS MODEL                //
 	/////////////////////////////////////////
 	//AccessContext:
-	//	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
-	//	superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
-	//	hierarchyRestrictions+=HierarchyRestriction)+ "}";
+	//	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING])? "{" "guid" guid=STRING ";"
+	//	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}";
 	public AccessContextElements getAccessContextAccess() {
 		return (pAccessContext != null) ? pAccessContext : (pAccessContext = new AccessContextElements());
 	}
@@ -2274,7 +2271,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	//RelationTypeRestriction:
 	//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
-	//	restrictedToSide=XRelationSideEnum ";";
+	//	restrictedToSide=XRelationSideEnum ("artifact" artifactMatcherRef=[XArtifactMatcher|STRING])? ";";
 	public RelationTypeRestrictionElements getRelationTypeRestrictionAccess() {
 		return (pRelationTypeRestriction != null) ? pRelationTypeRestriction : (pRelationTypeRestriction = new RelationTypeRestrictionElements());
 	}

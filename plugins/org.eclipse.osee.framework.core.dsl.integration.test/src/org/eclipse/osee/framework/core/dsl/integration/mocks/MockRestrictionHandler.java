@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.Arti
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.junit.Assert;
 
 /**
@@ -48,7 +49,7 @@ public class MockRestrictionHandler implements RestrictionHandler<Object> {
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scopeLevel) {
       wasProcessCalled = true;
       Assert.assertEquals(expectedObjectRestriction, objectRestriction);
       Assert.assertEquals(expectedArtifactProxy, artifactProxy);

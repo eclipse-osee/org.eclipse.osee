@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -73,30 +74,47 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
    }
 
    private void collectApplicable(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData) throws OseeCoreException {
-      processContext(collector, context, artifactData);
+      Scope scope = getScope(context);
+      processContext(collector, context, artifactData, scope);
+
       for (AccessContext superContext : context.getSuperAccessContexts()) {
          collectApplicable(collector, superContext, artifactData);
       }
    }
 
-   private void processContext(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData) throws OseeCoreException {
-      collectRestrictions(collector, artifactData, context.getAccessRules());
-      Collection<HierarchyRestriction> restrictions = context.getHierarchyRestrictions();
+   private Scope getScope(AccessContext context) {
+      Scope scope = new Scope();
+      scopeHelper(scope, context);
+      return scope;
+   }
 
+   private void scopeHelper(Scope scope, AccessContext context) {
+      for (AccessContext parent : context.getSuperAccessContexts()) {
+         scopeHelper(scope, parent);
+      }
+      scope.add(context.getName());
+   }
+
+   private void processContext(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData, Scope scope) throws OseeCoreException {
+      collectRestrictions(collector, artifactData, context.getAccessRules(), scope);
+
+      Collection<HierarchyRestriction> restrictions = context.getHierarchyRestrictions();
       Collection<ArtifactProxy> proxyHierarchy = artifactData.getHierarchy();
 
       for (HierarchyRestriction hierarchy : restrictions) {
          XArtifactMatcher artifactRef = hierarchy.getArtifactMatcherRef();
          if (matcher.matches(artifactRef, proxyHierarchy)) {
-            collectRestrictions(collector, artifactData, hierarchy.getAccessRules());
+            String tag = String.format("childOf-%s", artifactRef.getName());
+            Scope child = scope.clone().addSubPath(tag);
+            collectRestrictions(collector, artifactData, hierarchy.getAccessRules(), child);
          }
       }
    }
 
-   private void collectRestrictions(AccessDetailCollector collector, ArtifactProxy artifactData, Collection<ObjectRestriction> restrictions) throws OseeCoreException {
+   private void collectRestrictions(AccessDetailCollector collector, ArtifactProxy artifactData, Collection<ObjectRestriction> restrictions, Scope scope) throws OseeCoreException {
       for (ObjectRestriction objectRestriction : restrictions) {
          for (RestrictionHandler<?> restrictionHandler : restrictionHandlers) {
-            restrictionHandler.process(objectRestriction, artifactData, collector);
+            restrictionHandler.process(objectRestriction, artifactData, collector, scope);
          }
       }
    }

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -81,9 +82,9 @@ public class AttributeFormPart extends AbstractFormPart {
    public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
       try {
-         decorator.addProvider(new XWidgetAccessDecorationProvider(
-            SkynetGuiPlugin.getInstance().getPolicyHandlerService()));
-      } catch (OseeCoreException ex) {
+         AccessPolicy policy = SkynetGuiPlugin.getInstance().getAccessPolicy();
+         decorator.addProvider(new XWidgetAccessDecorationProvider(policy));
+      } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
       }
    }

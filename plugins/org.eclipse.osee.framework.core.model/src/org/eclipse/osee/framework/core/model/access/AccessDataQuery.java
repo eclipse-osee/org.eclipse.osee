@@ -39,14 +39,14 @@ public class AccessDataQuery {
 
    public void branchMatches(PermissionEnum permissionToMatch, IOseeBranch branchToMatch, PermissionStatus permissionStatus) throws OseeCoreException {
       Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
-      checkAccess(branchAccessDetails, branchToMatch, permissionToMatch, permissionStatus);
+      setTypePermissionStatus(permissionStatus, permissionToMatch, branchAccessDetails, branchToMatch);
    }
 
    public void branchArtifactTypeMatches(PermissionEnum permissionToMatch, IOseeBranch branchToMatch, IArtifactType artifactType, PermissionStatus permissionStatus) throws OseeCoreException {
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
-         checkAccess(branchAccessDetails, artifactType, permissionToMatch, permissionStatus);
+         setTypePermissionStatus(permissionStatus, permissionToMatch, branchAccessDetails, artifactType);
       }
    }
 
@@ -54,7 +54,7 @@ public class AccessDataQuery {
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
-         checkAccess(branchAccessDetails, attributeType, permissionToMatch, permissionStatus);
+         setTypePermissionStatus(permissionStatus, permissionToMatch, branchAccessDetails, attributeType);
       }
    }
 
@@ -62,7 +62,7 @@ public class AccessDataQuery {
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
-         checkAccess(branchAccessDetails, relationType, permissionToMatch, permissionStatus);
+         setTypePermissionStatus(permissionStatus, permissionToMatch, branchAccessDetails, relationType);
       }
    }
 
@@ -72,35 +72,76 @@ public class AccessDataQuery {
       branchArtifactTypeMatches(permissionToMatch, branchToMatch, typeToMatch, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> artifactAccessDetails = accessData.getAccess(artifact);
-         checkAccess(artifactAccessDetails, typeToMatch, permissionToMatch, permissionStatus);
+         setTypePermissionStatus(permissionStatus, permissionToMatch, artifactAccessDetails, artifact);
       }
    }
 
-   public void artifactMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, PermissionStatus permissionStatus) throws OseeCoreException {
-      artifactTypeMatches(permissionToMatch, artifact, permissionStatus);
-      if (permissionStatus.matched()) {
-         Collection<AccessDetail<?>> artifactAccessDetails = accessData.getAccess(artifact);
-         checkAccess(artifactAccessDetails, artifact, permissionToMatch, permissionStatus);
+   public void artifactMatches(PermissionEnum permissionToMatch, final IBasicArtifact<?> artifact, PermissionStatus permissionStatus) throws OseeCoreException {
+      Collection<AccessDetail<?>> mainList = accessData.getAccess(artifact);
+      AccessDetail<?> mostSpecific = getNetAccess(mainList, new AccessFilter() {
+
+         @Override
+         public boolean accept(AccessDetail<?> access) {
+            return access.getAccessObject().equals(artifact) || access.getAccessObject().equals(
+               artifact.getArtifactType());
+         }
+      });
+
+      setPermissionStatus(permissionStatus, permissionToMatch, mostSpecific);
+   }
+
+   private class ObjectFilter implements AccessFilter {
+      Object toFilter;
+
+      ObjectFilter(Object toFilter) {
+         this.toFilter = toFilter;
+      }
+
+      @Override
+      public boolean accept(AccessDetail<?> access) {
+         return access.getAccessObject().equals(toFilter);
       }
    }
 
-   public void attributeTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, IAttributeType attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
+   private class RelationTypeSideFilter implements AccessFilter {
+      IRelationTypeSide toFilter;
+
+      RelationTypeSideFilter(IRelationTypeSide toFilter) {
+         this.toFilter = toFilter;
+      }
+
+      @Override
+      public boolean accept(AccessDetail<?> access) {
+         if (access.getAccessObject() instanceof IRelationTypeSide) {
+            IRelationTypeSide toCheck = (IRelationTypeSide) access.getAccessObject();
+            return (toCheck.getSide().equals(toFilter.getSide())) && (toCheck.getGuid().equals(toFilter.getGuid()));
+         }
+         return false;
+      }
+   }
+
+   public void attributeTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, final IAttributeType attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
       artifactMatches(permissionToMatch, artifact, permissionStatus);
       if (permissionStatus.matched()) {
 
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(artifact.getBranch());
-         checkAccess(branchAccessDetails, attributeType, permissionToMatch, permissionStatus);
+         AccessFilter filter = new ObjectFilter(attributeType);
+         AccessDetail<?> branchPermission = getNetAccess(branchAccessDetails, filter);
+         setPermissionStatus(permissionStatus, permissionToMatch, branchPermission);
 
          if (permissionStatus.matched()) {
             Collection<AccessDetail<?>> artifactAccessDetails = accessData.getAccess(artifact);
-            checkAccess(artifactAccessDetails, attributeType, permissionToMatch, permissionStatus);
+            AccessDetail<?> attributePermission = getNetAccess(artifactAccessDetails, filter);
+            setPermissionStatus(permissionStatus, permissionToMatch, attributePermission);
          }
       }
    }
 
-   public void relationTypeMatches(PermissionEnum permissionToMatch, IRelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
-      Collection<AccessDetail<?>> relationAccessDetails = accessData.getAccess(relationTypeSide);
-      checkAccess(relationAccessDetails, relationTypeSide, permissionToMatch, permissionStatus);
+   public void relationTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, IRelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
+      Collection<AccessDetail<?>> relationAccessDetails = accessData.getAccess(artifact);
+      AccessFilter filter = new RelationTypeSideFilter(relationTypeSide);
+      AccessDetail<?> relationDetail = getNetAccess(relationAccessDetails, filter);
+      setPermissionStatus(permissionStatus, permissionToMatch, relationDetail);
    }
 
    public boolean matchesAll(PermissionEnum permissionToMatch) throws OseeCoreException {
@@ -118,22 +159,40 @@ public class AccessDataQuery {
       return permissionStatus.matched();
    }
 
-   private <T> void checkAccess(Collection<AccessDetail<?>> accessList, T itemToMatch, PermissionEnum permissionToMatch, PermissionStatus status) {
-      for (AccessDetail<?> data : accessList) {
-         Object object = data.getAccessObject();
-         if (itemToMatch.equals(object)) {
-            if (data.getPermission() == null) {
-               status.setMatches(false);
-               status.setReason("null permission");
-            } else {
-               boolean matches = data.getPermission().matches(permissionToMatch);
-               if (!matches) {
-                  status.setReason(data.getReason());
-               }
-               status.setMatches(matches);
-            }
-            break;
+   private <T> void setTypePermissionStatus(PermissionStatus permissionStatus, PermissionEnum permissionToMatch, Collection<AccessDetail<?>> accessDetails, T toMatch) {
+      AccessFilter filter = new ObjectFilter(toMatch);
+      AccessDetail<?> accessDetail = getNetAccess(accessDetails, filter);
+      setPermissionStatus(permissionStatus, permissionToMatch, accessDetail);
+   }
+
+   private void setPermissionStatus(PermissionStatus status, PermissionEnum permissionToMatch, AccessDetail<?> mostSpecific) {
+      if (mostSpecific == null) {
+         return;
+      }
+      if (mostSpecific.getPermission() == null) {
+         status.setMatches(false);
+      } else {
+         boolean matches = mostSpecific.getPermission().matches(permissionToMatch);
+         if (!matches) {
+            status.setReason(mostSpecific.getReason());
+         }
+         status.setMatches(matches);
+      }
+   }
+
+   private interface AccessFilter {
+
+      public boolean accept(AccessDetail<?> access);
+
+   }
+
+   private AccessDetail<?> getNetAccess(Collection<AccessDetail<?>> toFilter, AccessFilter filter) {
+      AccessDetail<?> mostSpecific = null;
+      for (AccessDetail<?> entry : toFilter) {
+         if (filter.accept(entry)) {
+            mostSpecific = AccessDetail.resolveAccess(mostSpecific, entry);
          }
       }
+      return mostSpecific;
    }
 }

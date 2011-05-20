@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
@@ -63,12 +64,14 @@ public class ObjectAccessProvider implements IAccessProvider {
          reason = "User Permission set to Read - artifact's branch is not editable - artifact is read only";
       }
       //artifact.isDeleted()
-      accessData.add(artifact, new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, reason));
+      accessData.add(artifact,
+         new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, Scope.createLegacyScope(), reason));
    }
 
    private void setBranchAccessData(IBasicArtifact<?> userArtifact, Branch branch, AccessData accessData) throws OseeCoreException {
       String reason = "Legacy Branch Permission";
       PermissionEnum userPermission = accessService.getBranchPermission(userArtifact, branch);
-      accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission, reason));
+      accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission, Scope.createLegacyScope(), reason));
    }
+
 }

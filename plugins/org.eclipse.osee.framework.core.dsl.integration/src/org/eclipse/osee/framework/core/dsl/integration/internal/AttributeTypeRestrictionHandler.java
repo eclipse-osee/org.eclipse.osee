@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
@@ -40,7 +41,7 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) throws OseeCoreException {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scopeLevel) throws OseeCoreException {
       AttributeTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XAttributeType attributeTypeRef = restriction.getAttributeTypeRef();
@@ -58,7 +59,7 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
 
          if (isApplicable) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<IAttributeType>(attributeTypeToMatch, permission));
+            collector.collect(new AccessDetail<IAttributeType>(attributeTypeToMatch, permission, scopeLevel));
          }
       }
    }
