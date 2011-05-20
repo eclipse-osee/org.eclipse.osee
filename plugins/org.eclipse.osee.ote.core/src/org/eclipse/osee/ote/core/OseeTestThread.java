@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.internal.Activator;
@@ -100,7 +101,6 @@ public abstract class OseeTestThread {
    }
 
    public void interrupt() {
-      OseeLog.log(TestEnvironment.class, Level.INFO, "Calling interrupt() on " + thread.getName(), new Trace());
       thread.interrupt();
    }
 
