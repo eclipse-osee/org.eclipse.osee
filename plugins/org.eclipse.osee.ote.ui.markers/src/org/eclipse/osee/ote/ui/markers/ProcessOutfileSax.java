@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -101,7 +102,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       handler.getHandler("TestPoint").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
-            if (currentData.isFailed()) {
+        	if (currentData != null && currentData.isFailed()) {
                testPointDatas.add(currentData);
             }
             currentData = null;
