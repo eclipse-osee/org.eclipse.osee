@@ -15,9 +15,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -116,7 +117,7 @@ public class EntryDialog extends MessageDialog {
             public void handleEvent(Event event) {
                XResultData resultData = new XResultData();
                resultData.addRaw(entryText);
-               resultData.report(dialogTitle);
+               XResultDataUI.report(resultData,dialogTitle);
                close();
             }
          });

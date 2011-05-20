@@ -13,10 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -36,7 +37,7 @@ public class OseeXViewerTreeReport extends XViewerTreeReport {
          String html = getHtml(items);
          XResultData xResultData = new XResultData();
          xResultData.addRaw(html);
-         xResultData.report(title, Manipulations.RAW_HTML);
+         XResultDataUI.report(xResultData, title, Manipulations.RAW_HTML);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

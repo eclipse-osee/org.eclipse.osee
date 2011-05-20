@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * Single import of coverage information that includes

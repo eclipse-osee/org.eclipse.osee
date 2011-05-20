@@ -17,11 +17,12 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactoryLegacy;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
@@ -80,7 +81,7 @@ public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
             String filename = idToName.get(selectedWorkFlowDef.getName());
             convert(selectedWorkFlowDef, resultData, filename);
          }
-         resultData.report(getName());
+         XResultDataUI.report(resultData,getName());
       }
    }
 

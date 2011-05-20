@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -51,7 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -173,7 +174,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
-      rd.report("Fix bad data", Manipulations.RAW_HTML);
+      XResultDataUI.report(rd,"Fix bad data", Manipulations.RAW_HTML);
 
    }
 

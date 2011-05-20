@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.PlatformUI;
@@ -134,7 +135,7 @@ public class AtsExportManager extends Action {
                   if (artifact instanceof AbstractWorkflowArtifact) {
                      SMAPrint smaPrint = new SMAPrint(((AbstractWorkflowArtifact) artifact));
                      smaPrint.setIncludeTaskList(includeTaskList);
-                     String html = smaPrint.getResultData().getReport("").getManipulatedHtml();
+                     String html = XResultDataUI.getReport(smaPrint.getResultData(), "").getManipulatedHtml();
                      if (multipleFile) {
                         try {
                            if (asHtmlToFile) {

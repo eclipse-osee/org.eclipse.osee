@@ -11,11 +11,11 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 public class CoveragePackage extends CoveragePackageBase {
 

@@ -25,13 +25,14 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -86,7 +87,7 @@ public class ValidationReportOperation extends AbstractOperation {
             if (title.length() > 60) {
                title = title.substring(0, 59) + "...";
             }
-            rd.report(title, Manipulations.CONVERT_NEWLINES, Manipulations.ERROR_RED,
+            XResultDataUI.report(rd, title, Manipulations.CONVERT_NEWLINES, Manipulations.ERROR_RED,
                Manipulations.ERROR_WARNING_HEADER, Manipulations.WARNING_YELLOW);
          }
       });

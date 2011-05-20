@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -38,11 +39,11 @@ public final class WordUiUtil {
                for (Artifact artifact : artifacts) {
                   rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                      artifact.toString(),
-                     XResultData.getHyperlink(artifact)}));
+                     XResultDataUI.getHyperlink(artifact)}));
                }
                rd.addRaw(AHTML.endMultiColumnTable());
                if (RenderingUtil.arePopupsAllowed()) {
-                  rd.report("Unhandled Artifacts");
+                  XResultDataUI.report(rd, "Unhandled Artifacts");
                } else {
                   OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
                      String.format("Test - Skip Unhandled Artifacts Report - %s - [%s]", warningString, artifacts));

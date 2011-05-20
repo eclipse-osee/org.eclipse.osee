@@ -14,8 +14,9 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -47,7 +48,7 @@ public class TreeViewerReport {
       String html = getHtml(items);
       XResultData xResultData = new XResultData();
       xResultData.addRaw(html);
-      xResultData.report(title, Manipulations.RAW_HTML);
+      XResultDataUI.report(xResultData, title, Manipulations.RAW_HTML);
    }
 
    public String getHtml(TreeItem items[]) {

@@ -22,13 +22,14 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditorConverter;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
@@ -92,7 +93,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
       if (Strings.isValid(detailedReport)) {
          XResultData result = new XResultData();
          result.addRaw(detailedReport.toString());
-         XResultPage page = result.getReport(operation.getName(), Manipulations.RAW_HTML);
+         XResultPage page = XResultDataUI.getReport(result, operation.getName(), Manipulations.RAW_HTML);
 
          String fileName = generateFileName("html", operation);
          summaryLinks.add(fileName);

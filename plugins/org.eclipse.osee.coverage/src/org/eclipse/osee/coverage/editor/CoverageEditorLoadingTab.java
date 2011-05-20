@@ -12,10 +12,11 @@ package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -73,7 +74,7 @@ public class CoverageEditorLoadingTab extends FormPage implements IRefreshAction
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            xResultsComp.setHtmlText(rd.getReport("").getManipulatedHtml(), "");
+            xResultsComp.setHtmlText(XResultDataUI.getReport(rd,"").getManipulatedHtml(), "");
          }
       });
    }

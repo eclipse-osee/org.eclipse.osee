@@ -15,8 +15,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Donald G. Dunne
@@ -45,7 +46,7 @@ public class ValidateReqChangeReport {
    }
 
    static String getRequirementHyperlink(Artifact art) {
-      return XResultData.getHyperlink(art.getName() + "(" + art.getHumanReadableId() + ")", art.getHumanReadableId(),
+      return XResultDataUI.getHyperlink(art.getName() + "(" + art.getHumanReadableId() + ")", art.getHumanReadableId(),
          art.getBranch().getId());
    }
 }

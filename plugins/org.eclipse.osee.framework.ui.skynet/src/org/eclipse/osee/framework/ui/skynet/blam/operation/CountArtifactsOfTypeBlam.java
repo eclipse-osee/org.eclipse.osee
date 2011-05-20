@@ -15,12 +15,13 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * Counts artifact of type or inherited type
@@ -48,7 +49,7 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
             rd.addRaw(AHTML.addRowMultiColumnTable(artType.toString(), String.valueOf(count)));
          }
          rd.addRaw(AHTML.endMultiColumnTable());
-         rd.report("Artifact Type Count");
+         XResultDataUI.report(rd,"Artifact Type Count");
       } else {
          IArtifactType artType = variableMap.getArtifactType("Artifact Type");
          int count =

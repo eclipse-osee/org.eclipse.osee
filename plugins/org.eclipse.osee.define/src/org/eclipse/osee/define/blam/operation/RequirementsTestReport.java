@@ -20,12 +20,13 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 public class RequirementsTestReport extends AbstractBlam {
@@ -128,7 +129,7 @@ public class RequirementsTestReport extends AbstractBlam {
       report.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(report.toString());
-      rd.report("Requirements Test Report", Manipulations.RAW_HTML);
+      XResultDataUI.report(rd,"Requirements Test Report", Manipulations.RAW_HTML);
    }
 
    private void init(VariableMap variableMap) throws OseeCoreException, IOException {

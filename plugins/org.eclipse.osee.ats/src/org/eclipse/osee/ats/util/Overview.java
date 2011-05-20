@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 
 public class Overview {
@@ -264,7 +264,7 @@ public class Overview {
    }
 
    public static String getOpenHyperlinkHtml(String name, String guidOrHrid, int branchId) {
-      return XResultData.getHyperlink(name, guidOrHrid, branchId);
+      return XResultDataUI.getHyperlink(name, guidOrHrid, branchId);
    }
 
    public static String getOpenHyperlinkHtml(String name, Artifact art) {

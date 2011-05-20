@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
@@ -36,6 +35,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -150,7 +150,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          return;
       }
 
-      resultData.report(title);
+      XResultDataUI.report(resultData, title);
    }
 
    public static void sleep(long milliseconds) {
@@ -312,7 +312,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
       }
       validateActionAtStart(actionArt);
-      resultData.report(title);
+      XResultDataUI.report(resultData, title);
    }
 
    private void runDestinationTestEnd(String ttNum) throws OseeCoreException {
@@ -330,7 +330,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
       }
       validateActionAtEnd(actionArt);
-      resultData.report(title);
+      XResultDataUI.report(resultData, title);
    }
 
 }

@@ -12,10 +12,11 @@ package org.eclipse.osee.ats.util.migrate;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 public class ConvertAIsAndTeamDefinitions extends XNavigateItemAction {
 
@@ -27,7 +28,7 @@ public class ConvertAIsAndTeamDefinitions extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData resultData = new XResultData(false);
       AtsWorkDefinitionProvider.get().convertAndOpenAIandTeamAtsDsl(resultData);
-      resultData.report(getName());
+      XResultDataUI.report(resultData, getName());
    }
 
 }

@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -59,7 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -173,7 +174,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                "Save Import Record?");
          if (dialog.open() == 0) {
             XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
-            rd.report("Import");
+            XResultDataUI.report(rd,"Import");
             if (dialog.isChecked()) {
                Branch branch = coverageEditor.getBranch();
                if (branch == null) {
@@ -335,7 +336,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                //               elapsedTime.logPoint("setInput");
                xImportViewer2.getXViewer().setInput(mergeItems);
                if (debugReport) {
-                  resultData.report("Re-Load");
+                  XResultDataUI.report(resultData,"Re-Load");
                }
                //               elapsedTime.end();
             }

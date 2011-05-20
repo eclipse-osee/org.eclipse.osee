@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -45,7 +46,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -83,7 +84,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
             OseeNotificationManager.getInstance().setEmailEnabled(false);
             XResultData rd = new XResultData(false);
             runIt(monitor, rd);
-            rd.report(getName());
+            XResultDataUI.report(rd, getName());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -177,7 +178,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
          }
          if (testNameToResultsMap != null && set) {
             testNameToResultsMap.put("setCreatedAttributes",
-               "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding created attributes.");
+               "Info: " + XResultDataUI.getHyperlink(aba.getName(), aba) + " adding created attributes.");
          }
       }
    }
@@ -210,7 +211,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
          }
          if (testNameToResultsMap != null && set) {
             testNameToResultsMap.put("setCancelledAttributes",
-               "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding cancelled attributes.");
+               "Info: " + XResultDataUI.getHyperlink(aba.getName(), aba) + " adding cancelled attributes.");
          }
       }
    }
@@ -244,7 +245,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
          }
          if (testNameToResultsMap != null && set) {
             testNameToResultsMap.put("setCompletedAttributes",
-               "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding completed attributes.");
+               "Info: " + XResultDataUI.getHyperlink(aba.getName(), aba) + " adding completed attributes.");
          }
       }
    }
@@ -267,7 +268,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
       if (testNameToResultsMap != null && set) {
          testNameToResultsMap.put("setCurrentStateType",
-            "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding current state type.");
+            "Info: " + XResultDataUI.getHyperlink(aba.getName(), aba) + " adding current state type.");
       }
    }
 
@@ -280,7 +281,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
                   if (testNameToResultsMap != null) {
                      testNameToResultsMap.put(
                         "convertWorkPageDefinitions",
-                        "Info: WorkPageDefinition: " + XResultData.getHyperlink(artifact.getName(), artifact) + " adding Work Page Type attribute.");
+                        "Info: WorkPageDefinition: " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " adding Work Page Type attribute.");
                   }
                   if (page.getPageName().equals("Completed")) {
                      artifact.setSoleAttributeValue(CoreAttributeTypes.WorkPageType, WorkPageType.Completed.name());

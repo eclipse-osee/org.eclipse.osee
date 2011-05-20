@@ -24,13 +24,14 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.validate.CoveragePackageOrderValidator;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -123,13 +124,13 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
 
       if (coveragePackageBase.getLog() != null) {
          rd.log(AHTML.newline() + AHTML.bold("Log:") + AHTML.newline());
-         rd.addRaw(coveragePackageBase.getLog().getReport("").getManipulatedHtml());
+         rd.addRaw(XResultDataUI.getReport(coveragePackageBase.getLog(), "").getManipulatedHtml());
       }
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            String html = rd.getReport(coveragePackageBase.getName()).getManipulatedHtml();
+            String html = XResultDataUI.getReport(rd, coveragePackageBase.getName()).getManipulatedHtml();
             xResultsComp.setHtmlText(html, coveragePackageBase.getName());
          }
       });

@@ -44,8 +44,8 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetRef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 public class ConvertWorkDefinitionToAtsDsl {
 

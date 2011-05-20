@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.swt.program.Program;
 
@@ -178,14 +178,14 @@ public class XResultPage {
                   String hrid = value;
                   hrid = hrid.replaceAll("^.*:", "");
                   if (cmdNameHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr = hrid + " (" + XResultData.getHyperlinkForAction("ATS-" + name, hrid);
-                     replaceStr += "  " + XResultData.getHyperlinkForArtifactEditor("AE-" + name, hrid);
+                     String replaceStr = hrid + " (" + XResultDataUI.getHyperlinkForAction("ATS-" + name, hrid);
+                     replaceStr += "  " + XResultDataUI.getHyperlinkForArtifactEditor("AE-" + name, hrid);
                      replaceStr += ")";
                      str = str.replaceAll(cmdNameHrid, replaceStr);
                   } else if (cmdNameHrid.startsWith(HyperType.ATS.name())) {
-                     str = str.replaceAll(cmdNameHrid, XResultData.getHyperlinkForAction(name, hrid));
+                     str = str.replaceAll(cmdNameHrid, XResultDataUI.getHyperlinkForAction(name, hrid));
                   } else if (cmdNameHrid.startsWith(HyperType.ART.name())) {
-                     str = str.replaceAll(cmdNameHrid, XResultData.getHyperlinkForArtifactEditor(name, hrid));
+                     str = str.replaceAll(cmdNameHrid, XResultDataUI.getHyperlinkForArtifactEditor(name, hrid));
                   }
                }
                // Retrieve all ATS=HRSID matches and replace with hyperlinking
@@ -198,14 +198,14 @@ public class XResultPage {
                   String hrid = cmdHrid;
                   hrid = hrid.replaceAll("^.*?=", "");
                   if (cmdHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr = hrid + " (" + XResultData.getHyperlinkForAction("ATS", hrid);
-                     replaceStr += "  " + XResultData.getHyperlinkForArtifactEditor("AE", hrid);
+                     String replaceStr = hrid + " (" + XResultDataUI.getHyperlinkForAction("ATS", hrid);
+                     replaceStr += "  " + XResultDataUI.getHyperlinkForArtifactEditor("AE", hrid);
                      replaceStr += ")";
                      str = str.replaceAll(cmdHrid, replaceStr);
                   } else if (cmdHrid.startsWith(HyperType.ATS.name())) {
-                     str = str.replaceAll(cmdHrid, XResultData.getHyperlinkForAction(hrid, hrid));
+                     str = str.replaceAll(cmdHrid, XResultDataUI.getHyperlinkForAction(hrid, hrid));
                   } else if (cmdHrid.startsWith(HyperType.ART.name())) {
-                     str = str.replaceAll(cmdHrid, XResultData.getHyperlinkForArtifactEditor(hrid, hrid));
+                     str = str.replaceAll(cmdHrid, XResultDataUI.getHyperlinkForArtifactEditor(hrid, hrid));
                   }
                }
             }

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
@@ -134,7 +135,7 @@ public class DatabaseHealth extends AbstractBlam {
             if (Strings.isValid(detailedReport)) {
                XResultData result = new XResultData();
                result.addRaw(detailedReport.toString());
-               result.report(operation.getName(), Manipulations.RAW_HTML);
+               XResultDataUI.report(result, operation.getName(), Manipulations.RAW_HTML);
             } else {
                ResultsEditor.open(operation.getResultsProvider());
             }

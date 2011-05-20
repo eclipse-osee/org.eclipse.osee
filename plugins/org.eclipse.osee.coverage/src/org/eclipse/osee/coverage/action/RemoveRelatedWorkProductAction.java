@@ -23,11 +23,12 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.model.WorkProductTask;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Display;
@@ -63,7 +64,7 @@ public class RemoveRelatedWorkProductAction extends Action {
       resultData.log("Selected Work Product Actions have related Tasks.  Remove first before removing Action.\n");
       validateWorkProductGuid(selActions, coverageEditorWorkProductTab.getCoveragePackage(), resultData);
       if (resultData.isErrors()) {
-         resultData.report("Work Product Report");
+         XResultDataUI.report(resultData,"Work Product Report");
          return;
       }
 

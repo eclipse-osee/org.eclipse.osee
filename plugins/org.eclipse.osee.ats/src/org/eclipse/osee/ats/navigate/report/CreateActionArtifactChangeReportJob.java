@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -71,7 +72,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          if (rd.toString().equals("")) {
             rd.log("No Problems Found");
          }
-         final String html = rd.getReport(jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
+         final String html = XResultDataUI.getReport(rd,jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
          final String title = jobName;
          Displays.pendInDisplayThread(new Runnable() {
             @Override

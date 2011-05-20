@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -81,7 +82,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -134,9 +135,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             XResultData rd = new XResultData();
 
             runIt(monitor, rd);
-            rd.report(getName());
+            XResultDataUI.report(rd, getName());
             if (Strings.isValid(emailOnComplete)) {
-               String html = rd.getReport(getName()).getManipulatedHtml();
+               String html = XResultDataUI.getReport(rd, getName()).getManipulatedHtml();
                EmailUtil.emailHtml(java.util.Collections.singleton(emailOnComplete),
                   String.format("Sync - %s [%s]", DateUtil.getDateNow(), getName()), html);
             }
@@ -239,7 +240,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             // Check that HRIDs not duplicated on Common branch
             if (hrids.contains(artifact.getHumanReadableId())) {
                testNameToResultsMap.put("testArtifactIds",
-                  "Error: Duplicate HRIDs: " + XResultData.getHyperlink(artifact));
+                  "Error: Duplicate HRIDs: " + XResultDataUI.getHyperlink(artifact));
             }
             // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
@@ -260,7 +261,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          } catch (Exception ex) {
             testNameToResultsMap.put(
                "testArtifactIds",
-               "Error: " + artifact.getArtifactTypeName() + " " + XResultData.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+               "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
          }
       }
    }
@@ -278,7 +279,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testVersionArtifacts",
-                  "Error: " + verArt.getArtifactTypeName() + " " + XResultData.getHyperlink(verArt) + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
+                  "Error: " + verArt.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(verArt) + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -297,7 +298,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testTeamDefinitionss",
-                  "Error: " + teamDef.getArtifactTypeName() + " " + XResultData.getHyperlink(teamDef) + " exception testing testTeamDefinitions: " + ex.getLocalizedMessage());
+                  "Error: " + teamDef.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(teamDef) + " exception testing testTeamDefinitions: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -310,16 +311,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             try {
                if (teamArt.getActionableItemsDam().getActionableItems().isEmpty()) {
                   testNameToResultsMap.put("testTeamWorkflows",
-                     "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has 0 ActionableItems");
+                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has 0 ActionableItems");
                }
                if (teamArt.getTeamDefinition() == null) {
                   testNameToResultsMap.put("testTeamWorkflows",
-                     "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has no TeamDefinition");
+                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has no TeamDefinition");
                }
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testTeamWorkflows",
-                  teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
+                  teamArt.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -335,7 +336,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (workingBranch != null && branchesCommittedTo.size() > 0 && workingBranch.getBranchState() != BranchState.COMMITTED && workingBranch.getBranchType() != BranchType.BASELINE) {
                   testNameToResultsMap.put(
                      "testAtsBranchManagerA",
-                     "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
+                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
                }
                if (workingBranch != null && workingBranch.getBranchState() == BranchState.COMMITTED && workingBranch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
                   String fixStr = "";
@@ -346,12 +347,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                   testNameToResultsMap.put(
                      "testAtsBranchManagerB",
-                     "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has committed working branch [" + workingBranch.getGuid() + "] but not archived" + fixStr);
+                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed working branch [" + workingBranch.getGuid() + "] but not archived" + fixStr);
                }
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testAtsBranchManager",
-                  teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
+                  teamArt.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -382,7 +383,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       } catch (Exception ex) {
          testNameToResultsMap.put(
             "validateBranchGuid",
-            "Error: " + artifact.getArtifactTypeName() + " " + XResultData.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+            "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
       }
    }
 
@@ -411,7 +412,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if (attr.getValue() == null) {
                      testNameToResultsMap.put(
                         "testAtsAttributeValues",
-                        "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
+                        "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
                      if (fixAttributeValues) {
                         attr.delete();
                      }
@@ -430,7 +431,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if ((state.getName().equals("Completed") || state.getName().equals("Cancelled")) && state.getPercentComplete() != 0) {
                         testNameToResultsMap.put(
                            "testAtsAttributeValues",
-                           "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
+                           "Error: ats.State error for SMA: " + XResultDataUI.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
                         if (fixAttributeValues) {
                            state.setPercentComplete(0);
                            stateDam.setState(state);
@@ -447,7 +448,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if ((state.getName().equals("Completed") || state.getName().equals("Cancelled")) && state.getPercentComplete() != 0) {
                      testNameToResultsMap.put(
                         "testAtsAttributeValues",
-                        "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
+                        "Error: ats.CurrentState error for SMA: " + XResultDataUI.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
                      if (fixAttributeValues) {
                         state.setPercentComplete(0);
                         currentStateDam.setState(state);
@@ -460,8 +461,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               testNameToResultsMap.put("testAtsAttributeValues",
-                  "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
+               testNameToResultsMap.put(
+                  "testAtsAttributeValues",
+                  "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
             }
          }
          transaction.execute();
@@ -478,7 +480,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (count > attrType.getMaxOccurrences()) {
                String result =
                   String.format(
-                     "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
+                     "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
                      artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
                      artifact.getAttributesToString(attrType));
                Map<String, Attribute<?>> valuesAttrMap = new HashMap<String, Attribute<?>>();
@@ -517,7 +519,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.Action) && ActionManager.getTeams(artifact).isEmpty()) {
                testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
-                  "Error: Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
+                  "Error: Action " + XResultDataUI.getHyperlink(artifact) + " has no Team Workflows\n");
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -534,12 +536,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                try {
                   if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
                      testNameToResultsMap.put("testAtsWorkflowsHaveAction",
-                        "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+                        "Error: Team " + XResultDataUI.getHyperlink(artifact) + " has no parent Action\n");
                      noParent = true;
                   }
                } catch (Exception ex) {
                   testNameToResultsMap.put("testAtsWorkflowsHaveAction",
-                     "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action: exception " + ex);
+                     "Error: Team " + XResultDataUI.getHyperlink(artifact) + " has no parent Action: exception " + ex);
                   noParent = true;
                }
                // Create temporary action so these can be either purged or re-assigned
@@ -550,7 +552,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      tempParentAction.setName("Temp Parent Action");
                      testNameToResultsMap.put(
                         "testAtsWorkflowsHaveAction",
-                        "Error: Temp Parent Action " + XResultData.getHyperlink(tempParentAction) + " created for orphaned teams.");
+                        "Error: Temp Parent Action " + XResultDataUI.getHyperlink(tempParentAction) + " created for orphaned teams.");
 
                   }
                   tempParentAction.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, artifact);
@@ -575,7 +577,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() > 1) {
                   testNameToResultsMap.put(
                      "testAtsWorkflowsHaveZeroOrOneVersion",
-                     "Error: Team workflow " + XResultData.getHyperlink(teamArt) + " has " + teamArt.getRelatedArtifacts(
+                     "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has " + teamArt.getRelatedArtifacts(
                         AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() + " versions");
                }
             }
@@ -597,7 +599,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (taskArtifact.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma).size() != 1) {
                   testNameToResultsMap.put(
                      "testTasksHaveParentWorkflow",
-                     "Error: Task " + XResultData.getHyperlink(taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
+                     "Error: Task " + XResultDataUI.getHyperlink(taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
                         AtsRelationTypes.SmaToTask_Sma).size() + " parents.");
                   badTasks.add(taskArtifact);
                }
@@ -626,7 +628,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (aia.isActionable() && TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                      "testActionableItemToTeamDefinition",
-                     "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
+                     "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
                }
             }
          } catch (OseeCoreException ex) {
@@ -645,7 +647,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (teamDef.isActionable() && WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromTeamDefinition(teamDef) == null) {
                   testNameToResultsMap.put(
                      "testTeamDefinitionHasWorkflow",
-                     "Error: TeamDefintion " + XResultData.getHyperlink(artifact.getName(), artifact) + " has no related workflow and is set to Actionable");
+                     "Error: TeamDefintion " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has no related workflow and is set to Actionable");
                }
             }
          } catch (OseeCoreException ex) {
@@ -664,18 +666,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   reviewArtifact).isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
-                     "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
+                     "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
                }
                if (reviewArtifact.getAttributes(AtsAttributeTypes.Role).size() > 0 && UserRoleManager.getUserRoles(
                   reviewArtifact).isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
-                     "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
+                     "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
                }
             } catch (OseeCoreException ex) {
                testNameToResultsMap.put(
                   "testReviewsHaveValidDefectAndRoleXml",
-                  "Error: Exception processing Review " + XResultData.getHyperlink(reviewArtifact) + " defect test " + ex.getLocalizedMessage());
+                  "Error: Exception processing Review " + XResultDataUI.getHyperlink(reviewArtifact) + " defect test " + ex.getLocalizedMessage());
             }
          }
       }
@@ -689,7 +691,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (reviewArtifact.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team).isEmpty() && reviewArtifact.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveParentWorkflowOrActionableItems",
-                     "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has 0 related parents and 0 actionable items.");
+                     "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has 0 related parents and 0 actionable items.");
                }
             }
          } catch (OseeCoreException ex) {
@@ -709,11 +711,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   try {
                      testNameToResultsMap.put(
                         "testAtsLogs",
-                        "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " originator == null");
+                        "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " originator == null");
                   } catch (Exception ex) {
                      testNameToResultsMap.put(
                         "testAtsLogs",
-                        "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing originator: " + ex.getLocalizedMessage());
+                        "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing originator: " + ex.getLocalizedMessage());
                   }
                }
                for (IWorkPage state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
@@ -723,22 +725,22 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         try {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " state \"" + state + "\" logItem == null");
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem == null");
                         } catch (Exception ex) {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing logItem: " + ex.getLocalizedMessage());
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem: " + ex.getLocalizedMessage());
 
                         }
                      } else if (logItem.getDate() == null) {
                         try {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " state \"" + state + "\" logItem.date == null");
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem.date == null");
                         } catch (Exception ex) {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
 
                         }
                      }
@@ -751,13 +753,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if (logItem.getUser() == null) {
                      testNameToResultsMap.put(
                         "testAtsLogs",
-                        "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " user == null for userId \"" + logItem.getUserId() + "\"");
+                        "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " user == null for userId \"" + logItem.getUserId() + "\"");
                   }
                }
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testAtsLogs",
-                  "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
+                  "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -784,7 +786,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if ((awa.isCompleted() || awa.isCancelled()) && awa.getStateMgr().getAssignees().size() > 0) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " cancel/complete with attribute assignees");
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
                      awa.getStateMgr().clearAssignees();
                      awa.persist();
@@ -795,7 +797,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   unAssignedUser)) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " is unassigned and assigned => " + Artifacts.toString(
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " is unassigned and assigned => " + Artifacts.toString(
                         "; ", awa.getStateMgr().getAssignees()));
                   if (fixAssignees) {
                      awa.getStateMgr().removeAssignee(unAssignedUser);
@@ -810,7 +812,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (!awa.isCompleted() && !awa.isCancelled() && awa.getStateMgr().getAssignees().isEmpty()) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " In Work without assignees");
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " In Work without assignees");
                }
             } catch (OseeCoreException ex) {
                testNameToResultsMap.put("testStateMachineAssignees",

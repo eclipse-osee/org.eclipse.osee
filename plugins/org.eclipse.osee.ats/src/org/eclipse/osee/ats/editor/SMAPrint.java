@@ -37,11 +37,12 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
@@ -61,7 +62,7 @@ public class SMAPrint extends Action {
    public void run() {
       try {
          XResultData xResultData = getResultData();
-         xResultData.report("Print Preview of " + sma.getName(), Manipulations.RAW_HTML);
+         XResultDataUI.report(xResultData, "Print Preview of " + sma.getName(), Manipulations.RAW_HTML);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -117,7 +118,7 @@ public class SMAPrint extends Action {
 
       XResultData rd = new XResultData();
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
-      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {resultData.getReport("").getManipulatedHtml(
+      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {XResultDataUI.getReport(resultData, "").getManipulatedHtml(
          Arrays.asList(Manipulations.NONE))}));
       rd.addRaw(AHTML.endMultiColumnTable());
 

@@ -14,9 +14,9 @@ import static org.junit.Assert.fail;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
-import org.eclipse.osee.ats.health.ValidateAtsDatabase;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -39,7 +39,7 @@ public class AtsValidateAtsDatabaseTest {
       validateAtsDatabase.setFixAssignees(false);
       validateAtsDatabase.setFixAttributeValues(false);
       validateAtsDatabase.runIt(null, rd);
-      Matcher m = Pattern.compile("Error:.*$").matcher(rd.getReport("").getManipulatedHtml());
+      Matcher m = Pattern.compile("Error:.*$").matcher(XResultDataUI.getReport(rd, "").getManipulatedHtml());
       while (m.find()) {
          fail(m.group());
       }

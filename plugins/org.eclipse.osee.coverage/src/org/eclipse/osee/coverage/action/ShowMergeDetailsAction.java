@@ -23,11 +23,12 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -67,7 +68,7 @@ public class ShowMergeDetailsAction extends Action {
             if (matchItem != null && matchItem.getPackageItem() != null) {
                MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
                XResultData resultData = mergeManager.getMergeDetails(importCoverageEditorItem, new XResultData(false));
-               resultData.report("Merge Details - " + importCoverageEditorItem.getName());
+               XResultDataUI.report(resultData,"Merge Details - " + importCoverageEditorItem.getName());
             } else {
                AWorkbench.popup("Can't find match item");
                return;

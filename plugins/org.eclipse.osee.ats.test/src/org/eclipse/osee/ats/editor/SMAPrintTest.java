@@ -16,11 +16,11 @@ import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.editor.SMAPrint;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -48,14 +48,14 @@ public class SMAPrintTest {
       XResultData resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 7000);
+      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 7000);
 
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
       smaPrint = new SMAPrint(peerArt);
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 3500);
+      Assert.assertTrue(XResultDataUI.getReport(resultData,"report").getManipulatedHtml().length() > 3500);
 
       TaskArtifact taskArt = null;
       for (TaskArtifact taskArtifact : teamArt.getTaskArtifacts()) {
@@ -68,7 +68,7 @@ public class SMAPrintTest {
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 2700);
+      Assert.assertTrue(XResultDataUI.getReport(resultData,"report").getManipulatedHtml().length() > 2700);
 
       teamArt =
          (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
@@ -79,7 +79,7 @@ public class SMAPrintTest {
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 2900);
+      Assert.assertTrue(XResultDataUI.getReport(resultData,"report").getManipulatedHtml().length() > 2900);
 
       TestUtil.severeLoggingEnd(monitorLog);
    }

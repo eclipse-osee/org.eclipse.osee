@@ -17,11 +17,12 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
@@ -173,7 +174,7 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
-      rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
+      XResultDataUI.report(rd,getVerifyTaskName(), Manipulations.RAW_HTML);
 
       sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
@@ -182,7 +183,7 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
       sbFull.append(AHTML.endMultiColumnTable());
       rd = new XResultData();
       rd.addRaw(sbFull.toString());
-      rd.report(getVerifyTaskName() + " Verbose", Manipulations.RAW_HTML);
+      XResultDataUI.report(rd,getVerifyTaskName() + " Verbose", Manipulations.RAW_HTML);
    }
 
    //{"Rel Link ID 1", "Rel Link ID 2", "Parent Art ID 1", "Parent Art ID 2", "Child Art ID",

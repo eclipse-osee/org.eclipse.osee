@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -29,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * Perform keyword search (in word order) for a list of keywords. Results will be in an excel spreadsheet where each
@@ -79,7 +80,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       for (Entry<Artifact, Collection<String>> entry : artifactToMatch.entrySet()) {
          List<String> valueList = new ArrayList<String>();
          valueList.addAll(Arrays.asList(entry.getKey().getName(), Collections.toString(";", entry.getValue()),
-            entry.getKey().getGuid(), XResultData.getHyperlink("open", entry.getKey()),
+            entry.getKey().getGuid(), XResultDataUI.getHyperlink("open", entry.getKey()),
             entry.getKey().getArtifactTypeName()));
          for (AttributeType attrType : attrTypes) {
             valueList.add(entry.getKey().getAttributesToString(attrType));
@@ -88,7 +89,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       }
       resultData.addRaw(AHTML.endMultiColumnTable());
       resultData.log("Keywordgroups: \n" + keywordgroups);
-      resultData.report(String.format("[%s] on branch [%s]", getName(), branch));
+      XResultDataUI.report(resultData, String.format("[%s] on branch [%s]", getName(), branch));
    }
 
    @Override

@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,7 +30,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotifyUsersJob;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Donald G. Dunne
@@ -85,7 +86,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                for (OseeNotificationEvent event : notify.getNotificationEvents(monitor)) {
                   numEvents++;
                   rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(),
-                     XResultData.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
+                     XResultDataUI.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
                      Artifacts.toString("; ", event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
                   if (sendNotifications) {
                      OseeNotificationManager.getInstance().addNotificationEvent(event);
@@ -93,7 +94,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                }
             }
             rd.addRaw(AHTML.endMultiColumnTable());
-            rd.report(getName() + " - (" + numEvents + " Events)");
+            XResultDataUI.report(rd, getName() + " - (" + numEvents + " Events)");
             if (sendNotifications) {
                OseeNotificationManager.getInstance().sendNotifications();
                AWorkbench.popup("Complete", numEvents + " Notifications Sent");

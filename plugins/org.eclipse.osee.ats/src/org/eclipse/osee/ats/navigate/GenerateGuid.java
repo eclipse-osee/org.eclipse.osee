@@ -11,11 +11,12 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 public class GenerateGuid extends XNavigateItemAction {
 
@@ -33,7 +34,7 @@ public class GenerateGuid extends XNavigateItemAction {
          }
          resultData.log(guid);
       }
-      resultData.report("GUIDs");
+      XResultDataUI.report(resultData,"GUIDs");
    }
 
 }

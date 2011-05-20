@@ -16,13 +16,14 @@ import org.eclipse.osee.ats.core.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 public class ImportWorkDefinitionsItem extends XNavigateItemAction {
 
@@ -47,7 +48,7 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
          if (!resultData.isErrors()) {
             transaction.execute();
          }
-         resultData.report(getName());
+         XResultDataUI.report(resultData,getName());
       }
    }
 }

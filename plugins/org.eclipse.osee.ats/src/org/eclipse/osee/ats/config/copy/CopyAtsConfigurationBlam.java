@@ -13,13 +13,14 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.XActionableItemCombo;
 import org.eclipse.osee.ats.util.widgets.XTeamDefinitionCombo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -79,7 +80,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
          new CopyAtsValidation(data, resultData).validate();
          if (resultData.isErrors() || !data.isPersistChanges()) {
             resultData.log("Validation Complete");
-            resultData.report(getName());
+            XResultDataUI.report(resultData,getName());
             return;
          }
 

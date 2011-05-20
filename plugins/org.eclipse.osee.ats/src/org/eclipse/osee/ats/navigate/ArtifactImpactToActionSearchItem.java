@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +39,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -83,7 +84,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          this.monitor = monitor;
          try {
             getMatrixItems();
-            rd.report(TITLE + " - \"" + artifactName + "\"");
+            XResultDataUI.report(rd, TITLE + " - \"" + artifactName + "\"");
             return Status.OK_STATUS;
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -140,7 +141,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                         assocArt.getArtifactTypeName(),
                         "Working",
-                        XResultData.getHyperlink(assocArt),
+                        XResultDataUI.getHyperlink(assocArt),
                         assocArt.getName()}));
                   } else {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getName()}));

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Roberto E. Escobar
@@ -45,7 +45,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
    private void handleStatus(Artifact itemChecked, IStatus status) throws Exception {
       if (!status.isOK()) {
          String link =
-            XResultData.getHyperlink(
+            XResultDataUI.getHyperlink(
                String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()),
                itemChecked.getHumanReadableId(), itemChecked.getBranch().getId());
          String message = String.format("%s: %s", link, status.getMessage());

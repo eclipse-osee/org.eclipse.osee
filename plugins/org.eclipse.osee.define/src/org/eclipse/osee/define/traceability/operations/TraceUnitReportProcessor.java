@@ -13,9 +13,10 @@ package org.eclipse.osee.define.traceability.operations;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Roberto E. Escobar
@@ -67,6 +68,6 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
       resultData.addRaw(AHTML.endMultiColumnTable());
       System.out.println(String.format("Completed in: %s", Lib.getElapseString(startTime)));
       System.out.println(String.format("Memory Leaked: %s", Runtime.getRuntime().totalMemory() - startMemory));
-      resultData.report("Report");
+      XResultDataUI.report(resultData,"Report");
    }
 }

@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Megumi Telles
@@ -134,7 +135,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
          rd.addRaw(AHTML.endMultiColumnTable());
 
       } finally {
-         rd.report(getName());
+         XResultDataUI.report(rd,getName());
       }
    }
 
