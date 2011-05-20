@@ -14,11 +14,15 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.role.UserRole;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectSeverityToImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -36,20 +40,24 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       UserRole roleItem = (UserRole) element;
-      if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-         return ArtifactImageManager.getImage(roleItem.getUser());
-      } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
-         return ImageManager.getImage(AtsImage.ROLE);
-      } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-         return ImageManager.getImage(FrameworkImage.CLOCK);
-      } else if (dCol.equals(UserRoleXViewerFactory.Completed_Col)) {
-         return ImageManager.getImage(roleItem.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
-      } else if (dCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
-         return DefectSeverityToImage.getImage(Severity.Major);
-      } else if (dCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
-         return DefectSeverityToImage.getImage(Severity.Minor);
-      } else if (dCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
-         return DefectSeverityToImage.getImage(Severity.Issue);
+      try {
+         if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
+            return ArtifactImageManager.getImage(roleItem.getUser());
+         } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
+            return ImageManager.getImage(AtsImage.ROLE);
+         } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
+            return ImageManager.getImage(FrameworkImage.CLOCK);
+         } else if (dCol.equals(UserRoleXViewerFactory.Completed_Col)) {
+            return ImageManager.getImage(roleItem.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
+         } else if (dCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
+            return DefectSeverityToImage.getImage(Severity.Major);
+         } else if (dCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
+            return DefectSeverityToImage.getImage(Severity.Minor);
+         } else if (dCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
+            return DefectSeverityToImage.getImage(Severity.Issue);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
       return null;
    }
@@ -68,11 +76,14 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {
          return String.valueOf(defectItem.isCompleted());
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
-         return xViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMajor(defectItem.getUser()) + "";
+         ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
+         return defectMgr.getNumMajor(defectItem.getUser()) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
-         return xViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMinor(defectItem.getUser()) + "";
+         ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
+         return defectMgr.getNumMinor(defectItem.getUser()) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
-         return xViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumIssues(defectItem.getUser()) + "";
+         ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
+         return defectMgr.getNumIssues(defectItem.getUser()) + "";
       }
       return "unhandled column";
    }

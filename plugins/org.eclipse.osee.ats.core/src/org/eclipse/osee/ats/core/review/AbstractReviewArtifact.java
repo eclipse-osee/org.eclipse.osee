@@ -17,19 +17,21 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.ats.core.review.defect.DefectManager;
 import org.eclipse.osee.ats.core.review.role.UserRole;
 import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -39,8 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  */
 public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
 
-   protected DefectManager defectManager;
-   protected UserRoleManager userRoleManager;
    private ActionableItemManagerCore actionableItemsDam;
    private Collection<UserRole> preSaveReviewRoleComplete;
    private Boolean standAlone = null;
@@ -65,12 +65,25 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       }
    }
 
+   @Override
+   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
+      if (this.isOfType(AtsArtifactTypes.DecisionReview)) {
+         return StateManager.getImplementersByState(this, DecisionReviewState.Decision);
+      } else {
+         Collection<IBasicUser> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
+         for (UserRole role : UserRoleManager.getUserRoles(this)) {
+            users.add(role.getUser());
+         }
+         return users;
+      }
+   }
+
    private Collection<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
-      return this.getUserRoleManager().getRoleUsersReviewComplete();
+      return new UserRoleManager(this).getRoleUsersReviewComplete();
    }
 
    public void notifyReviewersComplete() throws OseeCoreException {
-      UserRoleManager userRoleManager = this.getUserRoleManager();
+      UserRoleManager userRoleManager = new UserRoleManager(this);
       //all reviewers are complete; send notification to author/moderator
       // TODO Add this back in once move to ats.core
       //      if (!preSaveReviewRoleComplete.equals(userRoleManager.getRoleUsersReviewComplete()) && userRoleManager.getUserRoles(
@@ -88,8 +101,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    @Override
    protected void initializeSMA() throws OseeCoreException {
       super.initializeSMA();
-      defectManager = new DefectManager(this);
-      userRoleManager = new UserRoleManager(this);
       actionableItemsDam = new ActionableItemManagerCore(this);
    }
 
@@ -112,20 +123,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
          return ReviewBlockType.None;
       }
       return ReviewBlockType.valueOf(typeStr);
-   }
-
-   public DefectManager getDefectManager() {
-      if (defectManager == null) {
-         defectManager = new DefectManager(this);
-      }
-      return defectManager;
-   }
-
-   public UserRoleManager getUserRoleManager() {
-      if (userRoleManager == null) {
-         return userRoleManager = new UserRoleManager(this);
-      }
-      return userRoleManager;
    }
 
    public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {

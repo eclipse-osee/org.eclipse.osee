@@ -6,9 +6,12 @@
 package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
+import java.util.Date;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
+import org.eclipse.osee.ats.core.workdef.WidgetDefinitionFloatMinMaxConstraint;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinitionIntMinMaxConstraint;
+import org.eclipse.osee.ats.core.workdef.WidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.core.workdef.WidgetOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.WorkPageType;
@@ -25,7 +28,7 @@ public class AtsXWidgetValidatorTest {
    private static AtsXWidgetValidator validator = new AtsXWidgetValidator() {
 
       @Override
-      public WidgetResult validateTransition(IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition toStateDef) {
+      public WidgetResult validateTransition(IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) {
          return null;
       }
    };
@@ -67,15 +70,18 @@ public class AtsXWidgetValidatorTest {
    }
 
    @org.junit.Test
-   public void testalidateWidgetIsRequired() throws OseeCoreException {
+   public void testValidateWidgetIsRequired() throws OseeCoreException {
       WidgetDefinition widgetDef = new WidgetDefinition("test");
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
-      StateDefinition toStateDef = new StateDefinition("working state");
+      StateDefinition fromStateDef = new StateDefinition("from");
+      fromStateDef.setWorkPageType(WorkPageType.Working);
+      StateDefinition toStateDef = new StateDefinition("to");
       toStateDef.setWorkPageType(WorkPageType.Working);
 
       // widget required_for_transition, state is working state returns incomplete state and details
-      WidgetResult result = validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, toStateDef);
+      WidgetResult result =
+         validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
@@ -84,7 +90,8 @@ public class AtsXWidgetValidatorTest {
       toStateDef.setWorkPageType(WorkPageType.Completed);
 
       // widget required_for_transition, state is completed state, returns incomplete state and details
-      result = validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, toStateDef);
+      result =
+         validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
@@ -97,14 +104,16 @@ public class AtsXWidgetValidatorTest {
       toStateDef.setWorkPageType(WorkPageType.Working);
 
       // widget required_for_completed, state is working state returns Valid state and no details
-      result = validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, toStateDef);
+      result =
+         validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       ValidatorTestUtil.assertValidResult(result);
 
       toStateDef.setName("completed");
       toStateDef.setWorkPageType(WorkPageType.Completed);
 
       // widget required_for_completed, state is completed state, returns incomplete state and details
-      result = validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, toStateDef);
+      result =
+         validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
@@ -178,6 +187,88 @@ public class AtsXWidgetValidatorTest {
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
       Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
+   }
+
+   @org.junit.Test
+   public void testIsFloat() {
+      Assert.assertFalse(validator.isFloat("asf"));
+
+      Assert.assertFalse(validator.isFloat("4a"));
+
+      Assert.assertTrue(validator.isFloat("345.0"));
+   }
+
+   @org.junit.Test
+   public void testGetFloat() {
+      Assert.assertEquals(null, validator.getFloat("asf"));
+
+      Assert.assertEquals(null, validator.getFloat("4a"));
+
+      Assert.assertEquals(new Double(345.0), validator.getFloat("345.0"));
+   }
+
+   @org.junit.Test
+   public void testGetFloatMinMaxValueSet() {
+
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
+
+      Assert.assertNull(validator.getConstraintOfType(widgetDef, WidgetDefinitionFloatMinMaxConstraint.class));
+      Assert.assertEquals(null, validator.getFloatMinValueSet(widgetDef));
+      Assert.assertEquals(null, validator.getFloatMaxValueSet(widgetDef));
+
+      WidgetDefinitionFloatMinMaxConstraint constraint = new WidgetDefinitionFloatMinMaxConstraint(34.3, 45.5);
+      widgetDef.getConstraints().add(constraint);
+
+      Assert.assertEquals(new Double(34.3), validator.getFloatMinValueSet(widgetDef));
+      Assert.assertEquals(new Double(45.5), validator.getFloatMaxValueSet(widgetDef));
+   }
+
+   @org.junit.Test
+   public void testIsValidFloat() throws OseeCoreException {
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
+
+      WidgetResult result = validator.isValidFloat(new MockValueProvider(Arrays.asList("asdf", "345.0")), widgetDef);
+      Assert.assertEquals(WidgetStatus.Invalid_Type, result.getStatus());
+      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
+      Assert.assertTrue(Strings.isValid(result.getDetails()));
+
+      result = validator.isValidFloat(new MockValueProvider(Arrays.asList("23.2", "345.0")), widgetDef);
+      ValidatorTestUtil.assertValidResult(result);
+
+      WidgetDefinitionFloatMinMaxConstraint constraint = new WidgetDefinitionFloatMinMaxConstraint(34.3, 45.5);
+      widgetDef.getConstraints().add(constraint);
+      result = validator.isValidFloat(new MockValueProvider(Arrays.asList("37.3", "42.1")), widgetDef);
+      ValidatorTestUtil.assertValidResult(result);
+
+      result = validator.isValidFloat(new MockValueProvider(Arrays.asList("12.0", "42.1")), widgetDef);
+      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
+      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
+      Assert.assertTrue(Strings.isValid(result.getDetails()));
+   }
+
+   @org.junit.Test
+   public void testIsValidDate() throws OseeCoreException {
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
+
+      WidgetResult result = validator.isValidDate(new MockDateValueProvider(Arrays.asList(new Date())), widgetDef);
+      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+
+   }
+
+   @org.junit.Test
+   public void testGetListMinMaxValueSelected() {
+
+      WidgetDefinition widgetDef = new WidgetDefinition("test");
+
+      Assert.assertNull(validator.getConstraintOfType(widgetDef, WidgetDefinitionListMinMaxSelectedConstraint.class));
+      Assert.assertEquals(null, validator.getListMinSelected(widgetDef));
+      Assert.assertEquals(null, validator.getListMaxSelected(widgetDef));
+
+      WidgetDefinitionListMinMaxSelectedConstraint constraint = new WidgetDefinitionListMinMaxSelectedConstraint(2, 4);
+      widgetDef.getConstraints().add(constraint);
+
+      Assert.assertEquals(new Integer(2), validator.getListMinSelected(widgetDef));
+      Assert.assertEquals(new Integer(4), validator.getListMaxSelected(widgetDef));
    }
 
 }

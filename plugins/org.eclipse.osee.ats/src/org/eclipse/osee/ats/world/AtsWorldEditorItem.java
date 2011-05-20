@@ -16,8 +16,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowViaWorldEditorAction;
 import org.eclipse.osee.ats.actions.ExportChangeReportsAction;
 import org.eclipse.osee.ats.export.AtsExportManager;
-import org.eclipse.osee.ats.operation.CancelMultipleWorkflows;
-import org.eclipse.osee.ats.operation.CompleteMultipleWorkflows;
 import org.eclipse.osee.ats.task.TaskXViewer;
 
 /**
@@ -28,8 +26,7 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
    @Override
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
       return Arrays.asList(new AtsExportManager(worldEditor), new ExportChangeReportsAction(worldEditor),
-         new DuplicateWorkflowViaWorldEditorAction(worldEditor), new CompleteMultipleWorkflows(worldEditor),
-         new CancelMultipleWorkflows(worldEditor));
+         new DuplicateWorkflowViaWorldEditorAction(worldEditor));
    }
 
    @Override

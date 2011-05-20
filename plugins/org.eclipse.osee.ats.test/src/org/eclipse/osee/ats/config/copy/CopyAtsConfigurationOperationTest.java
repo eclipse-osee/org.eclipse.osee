@@ -8,13 +8,11 @@ package org.eclipse.osee.ats.config.copy;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.ActionableItemManager;
-import org.eclipse.osee.ats.config.copy.ConfigData;
-import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperation;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
-import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -33,7 +31,7 @@ public class CopyAtsConfigurationOperationTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest("CISv2");
+      AtsTestUtil.cleanupSimpleTest("CISv2");
    }
 
    @Test

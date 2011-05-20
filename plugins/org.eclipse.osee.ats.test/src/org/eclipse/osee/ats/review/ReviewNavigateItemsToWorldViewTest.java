@@ -16,8 +16,6 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.VisitedItems;
-import org.eclipse.osee.ats.review.GenerateReviewParticipationReport;
-import org.eclipse.osee.ats.review.ReviewNavigateViewItems;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.MassEditorUtil;
 import org.eclipse.osee.ats.util.NavigateTestUtil;
@@ -70,22 +68,22 @@ public class ReviewNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testOpenDecisionReviews() throws Exception {
-      runGeneralLoadingTest("Show Open Decision Reviews", AtsArtifactTypes.DecisionReview, 7, null);
+      runGeneralLoadingTest("Show Open Decision Reviews", AtsArtifactTypes.DecisionReview, 5, null);
    }
 
    @org.junit.Test
    public void testWorkflowsWaitingDecisionReviews() throws Exception {
-      runGeneralLoadingTest("Show Workflows Waiting Decision Reviews", AtsArtifactTypes.TeamWorkflow, 7, null);
+      runGeneralLoadingTest("Show Workflows Waiting Decision Reviews", AtsArtifactTypes.TeamWorkflow, 5, null);
    }
 
    @org.junit.Test
    public void testOpenPeerReviews() throws Exception {
-      runGeneralLoadingTest("Show Open PeerToPeer Reviews", AtsArtifactTypes.PeerToPeerReview, 7, null);
+      runGeneralLoadingTest("Show Open PeerToPeer Reviews", AtsArtifactTypes.PeerToPeerReview, 5, null);
    }
 
    @org.junit.Test
    public void testWorkflowsWaitingPeerToPeerReviews() throws Exception {
-      runGeneralLoadingTest("Show Workflows Waiting PeerToPeer Reviews", AtsArtifactTypes.TeamWorkflow, 6, null);
+      runGeneralLoadingTest("Show Workflows Waiting PeerToPeer Reviews", AtsArtifactTypes.TeamWorkflow, 4, null);
    }
 
    @org.junit.Test

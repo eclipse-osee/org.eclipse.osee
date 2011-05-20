@@ -397,6 +397,18 @@
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.51"/>
           </elements>
         </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="minConstraint"/>
+          <elements xsi:type="xtext:Assignment" feature="minConstraint" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </elements>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="maxConstraint"/>
+          <elements xsi:type="xtext:Assignment" feature="maxConstraint" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </elements>
+        </elements>
         <elements xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
@@ -995,6 +1007,8 @@
         <elements xsi:type="xtext:Keyword" value="NOT_ENABLED"/>
         <elements xsi:type="xtext:Keyword" value="EDITABLE"/>
         <elements xsi:type="xtext:Keyword" value="NOT_EDITABLE"/>
+        <elements xsi:type="xtext:Keyword" value="FUTURE_DATE_REQUIRED"/>
+        <elements xsi:type="xtext:Keyword" value="NOT_FUTURE_DATE_REQUIRED"/>
         <elements xsi:type="xtext:Keyword" value="MULTI_SELECT"/>
         <elements xsi:type="xtext:Keyword" value="HORIZONTAL_LABEL"/>
         <elements xsi:type="xtext:Keyword" value="VERTICAL_LABEL"/>

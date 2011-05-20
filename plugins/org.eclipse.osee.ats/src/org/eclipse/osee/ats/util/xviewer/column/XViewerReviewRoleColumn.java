@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.swt.SWT;
@@ -60,7 +61,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
 
    private static String getRolesStr(AbstractReviewArtifact reviewArt, User user) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
-      for (UserRole role : reviewArt.getUserRoleManager().getUserRoles()) {
+      for (UserRole role : UserRoleManager.getUserRoles(reviewArt)) {
          if (role.getUser().equals(user)) {
             builder.append(role.getRole().name());
             builder.append(", ");

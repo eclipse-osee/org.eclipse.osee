@@ -17,13 +17,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.validation.OseeXWidgetValidateManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -262,38 +259,7 @@ public abstract class XWidget {
    }
 
    public IStatus isValid() {
-      IStatus status = Status.OK_STATUS;
-      if (this instanceof IArtifactStoredWidget) {
-         Collection<IStatus> statuses;
-         try {
-            statuses =
-               OseeXWidgetValidateManager.instance.validate(((IArtifactStoredWidget) this).getArtifact(),
-                  getClass().getSimpleName(), label);
-         } catch (OseeCoreException ex) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, String.format(
-               "Exception retriving validation for widget [%s]", getClass().getSimpleName()), null);
-         }
-         if (statuses.size() == 1) {
-            return statuses.iterator().next();
-         } else if (statuses.size() > 1) {
-            return new MultiStatus(SkynetGuiPlugin.PLUGIN_ID, getCombinedStatus(statuses),
-               statuses.toArray(new IStatus[statuses.size()]), "Validation Results", null);
-         }
-      }
-      return status;
-   }
-
-   private int getCombinedStatus(Collection<IStatus> statuses) {
-      int status = IStatus.OK;
-      for (IStatus stat : statuses) {
-         if (stat.getSeverity() == IStatus.ERROR) {
-            status = IStatus.ERROR;
-            break;
-         } else if (stat.getSeverity() == IStatus.WARNING) {
-            status = IStatus.WARNING;
-         }
-      }
-      return status;
+      return Status.OK_STATUS;
    }
 
    public String toHTML(String labelFont) {

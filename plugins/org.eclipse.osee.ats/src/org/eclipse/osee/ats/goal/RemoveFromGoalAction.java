@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

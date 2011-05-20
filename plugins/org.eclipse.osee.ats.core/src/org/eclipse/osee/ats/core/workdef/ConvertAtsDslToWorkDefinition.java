@@ -384,11 +384,27 @@ public class ConvertAtsDslToWorkDefinition {
                String.format("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
          }
       }
+      processMinMaxConstraints(widgetDef, dslWidgetDef.getMinConstraint(), dslWidgetDef.getMaxConstraint());
 
       widgetDef.setHeight(dslWidgetDef.getHeight());
       widgetDef.setDefaultValue(dslWidgetDef.getDefaultValue());
       extractDslWidgetDefOptions(dslWidgetDef.getOption(), SHEET_NAME, widgetDef);
       return widgetDef;
+   }
+
+   private void processMinMaxConstraints(WidgetDefinition widgetDef, String minConstraint, String maxConstraint) {
+      if (!Strings.isValid(minConstraint) && !Strings.isValid(maxConstraint)) {
+         return;
+      }
+      if (widgetDef.getXWidgetName().contains("Float")) {
+         widgetDef.getConstraints().add(new WidgetDefinitionFloatMinMaxConstraint(minConstraint, minConstraint));
+      }
+      if (widgetDef.getXWidgetName().contains("Integer")) {
+         widgetDef.getConstraints().add(new WidgetDefinitionIntMinMaxConstraint(minConstraint, minConstraint));
+      }
+      if (widgetDef.getXWidgetName().contains("List")) {
+         widgetDef.getConstraints().add(new WidgetDefinitionListMinMaxSelectedConstraint(minConstraint, minConstraint));
+      }
    }
 
    private void extractDslWidgetDefOptions(EList<String> options, String SHEET_NAME, WidgetDefinition widgetDef) {

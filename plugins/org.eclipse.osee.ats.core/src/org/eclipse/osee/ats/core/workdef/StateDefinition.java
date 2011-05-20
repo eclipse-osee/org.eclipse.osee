@@ -182,9 +182,11 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    }
 
    /**
-    * Recursively decend StateItems and grab all widgetDefs
+    * Recursively decend StateItems and grab all widgetDefs.<br>
+    * <br>
+    * Note: Modifing this list will not affect the state widgets. Use addStateItem().
     */
-   public List<WidgetDefinition> getWidgets() {
+   public List<WidgetDefinition> getWidgetsFromStateItems() {
       List<WidgetDefinition> widgets = new ArrayList<WidgetDefinition>();
       getWidgets(widgets, getStateItems());
       return widgets;

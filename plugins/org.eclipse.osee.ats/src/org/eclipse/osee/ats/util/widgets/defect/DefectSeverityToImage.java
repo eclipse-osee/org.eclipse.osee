@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.util.widgets.defect;
 
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 

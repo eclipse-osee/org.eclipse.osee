@@ -294,7 +294,7 @@ public final class UserManager {
       }
    }
 
-   public static boolean isUserInactive(Collection<IBasicUser> users) throws OseeCoreException {
+   public static boolean isUserInactive(Collection<? extends IBasicUser> users) throws OseeCoreException {
       for (IBasicUser user : users) {
          if (!user.isActive()) {
             return true;
@@ -303,7 +303,7 @@ public final class UserManager {
       return false;
    }
 
-   public static boolean isUserSystem(Collection<IBasicUser> users) throws OseeCoreException {
+   public static boolean isUserSystem(Collection<? extends IBasicUser> users) throws OseeCoreException {
       for (IBasicUser user : users) {
          if (isSystemUser(user)) {
             return true;
@@ -321,7 +321,7 @@ public final class UserManager {
       return false;
    }
 
-   public static boolean isUserCurrentUser(Collection<IBasicUser> users) throws OseeCoreException {
+   public static boolean isUserCurrentUser(Collection<? extends IBasicUser> users) throws OseeCoreException {
       for (IBasicUser user : users) {
          if (UserManager.getUser().equals(user)) {
             return true;

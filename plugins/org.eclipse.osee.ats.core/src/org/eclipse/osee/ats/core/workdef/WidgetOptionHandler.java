@@ -38,6 +38,10 @@ public class WidgetOptionHandler {
          options.remove(WidgetOption.ALIGN_CENTER);
          options.remove(WidgetOption.ALIGN_LEFT);
          options.remove(WidgetOption.ALIGN_RIGHT);
+      } else if (xOption == WidgetOption.FUTURE_DATE_REQUIRED) {
+         options.remove(WidgetOption.NOT_FUTURE_DATE_REQUIRED);
+      } else if (xOption == WidgetOption.NOT_FUTURE_DATE_REQUIRED) {
+         options.remove(WidgetOption.FUTURE_DATE_REQUIRED);
       } else if (xOption == WidgetOption.HORIZONTAL_LABEL) {
          options.remove(WidgetOption.VERTICAL_LABEL);
       } else if (xOption == WidgetOption.EDITABLE) {

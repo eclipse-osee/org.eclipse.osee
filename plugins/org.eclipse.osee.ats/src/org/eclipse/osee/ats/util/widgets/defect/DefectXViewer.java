@@ -24,10 +24,10 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange.Option;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
-import org.eclipse.osee.ats.core.review.defect.DefectItem;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Disposition;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.InjectionActivity;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Disposition;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.InjectionActivity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -234,17 +234,17 @@ public class DefectXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public Collection<DefectItem> getLoadedDefectItems() {
+   public Collection<ReviewDefectItem> getLoadedDefectItems() {
       return ((DefectContentProvider) getContentProvider()).getRootSet();
    }
 
-   public void add(Collection<DefectItem> defectItems) {
+   public void add(Collection<ReviewDefectItem> defectItems) {
       if ((DefectContentProvider) getContentProvider() != null) {
          ((DefectContentProvider) getContentProvider()).add(defectItems);
       }
    }
 
-   public void set(Collection<? extends DefectItem> defectItems) {
+   public void set(Collection<? extends ReviewDefectItem> defectItems) {
       if ((DefectContentProvider) getContentProvider() != null) {
          ((DefectContentProvider) getContentProvider()).set(defectItems);
       }
@@ -266,12 +266,12 @@ public class DefectXViewer extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public List<DefectItem> getSelectedDefectItems() {
-      List<DefectItem> arts = new ArrayList<DefectItem>();
+   public List<ReviewDefectItem> getSelectedDefectItems() {
+      List<ReviewDefectItem> arts = new ArrayList<ReviewDefectItem>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add((DefectItem) item.getData());
+            arts.add((ReviewDefectItem) item.getData());
          }
       }
       return arts;
@@ -282,9 +282,9 @@ public class DefectXViewer extends XViewer {
       if (!xDefectViewer.isEditable()) {
          return;
       }
-      ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+      ArrayList<ReviewDefectItem> defectItems = new ArrayList<ReviewDefectItem>();
       for (TreeItem item : treeItems) {
-         defectItems.add((DefectItem) item.getData());
+         defectItems.add((ReviewDefectItem) item.getData());
       }
       try {
          promptChangeData((XViewerColumn) treeColumn.getData(), defectItems, isColumnMultiEditEnabled());
@@ -309,8 +309,8 @@ public class DefectXViewer extends XViewer {
       }
       try {
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         DefectItem defectItem = (DefectItem) treeItem.getData();
-         List<DefectItem> defectItems = new ArrayList<DefectItem>();
+         ReviewDefectItem defectItem = (ReviewDefectItem) treeItem.getData();
+         List<ReviewDefectItem> defectItems = new ArrayList<ReviewDefectItem>();
          defectItems.add(defectItem);
          if (xCol.equals(DefectXViewerFactory.Severity_Col) || xCol.equals(DefectXViewerFactory.Disposition_Col) || xCol.equals(DefectXViewerFactory.Created_Date_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Description_Col) || xCol.equals(DefectXViewerFactory.Resolution_Col) || xCol.equals(DefectXViewerFactory.Location_Col) || xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
             return promptChangeData(xCol, defectItems, false);
@@ -321,9 +321,9 @@ public class DefectXViewer extends XViewer {
       return false;
    }
 
-   private boolean setInjectionActivity(Collection<DefectItem> defectItems, InjectionActivity newInjectionActivity) {
+   private boolean setInjectionActivity(Collection<ReviewDefectItem> defectItems, InjectionActivity newInjectionActivity) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getInjectionActivity().equals(newInjectionActivity)) {
             defectItem.setInjectionActivity(newInjectionActivity);
             // at least one in the list has been changed.
@@ -335,9 +335,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setUser(Collection<DefectItem> defectItems, User user) {
+   private boolean setUser(Collection<ReviewDefectItem> defectItems, User user) throws OseeCoreException {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getUser().equals(user)) {
             defectItem.setUser(user);
             // at least one in the list has been changed.
@@ -349,9 +349,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setLocation(Collection<DefectItem> defectItems, String loc) {
+   private boolean setLocation(Collection<ReviewDefectItem> defectItems, String loc) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getLocation().equals(loc)) {
             defectItem.setLocation(loc);
             if (!modified) {
@@ -362,9 +362,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setDescription(Collection<DefectItem> defectItems, String desc) {
+   private boolean setDescription(Collection<ReviewDefectItem> defectItems, String desc) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.toString().equals(desc)) {
             defectItem.setDescription(desc);
             if (!modified) {
@@ -376,9 +376,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setClosed(Collection<DefectItem> defectItems, boolean closed) {
+   private boolean setClosed(Collection<ReviewDefectItem> defectItems, boolean closed) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (defectItem.isClosed() != closed) {
             defectItem.setClosed(closed);
             if (!modified) {
@@ -389,9 +389,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setSeverity(Collection<DefectItem> defectItems, Severity severity) {
+   private boolean setSeverity(Collection<ReviewDefectItem> defectItems, Severity severity) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getSeverity().equals(severity)) {
             defectItem.setSeverity(severity);
             if (!modified) {
@@ -402,9 +402,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setDisposition(Collection<DefectItem> defectItems, Disposition disposition) {
+   private boolean setDisposition(Collection<ReviewDefectItem> defectItems, Disposition disposition) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getDisposition().equals(disposition)) {
             defectItem.setDisposition(disposition);
             if (!modified) {
@@ -415,9 +415,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setDate(Collection<DefectItem> defectItems, Date date) {
+   private boolean setDate(Collection<ReviewDefectItem> defectItems, Date date) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getDate().equals(date)) {
             defectItem.setDate(date);
             if (!modified) {
@@ -428,9 +428,9 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setResolution(Collection<DefectItem> defectItems, String resolution) {
+   private boolean setResolution(Collection<ReviewDefectItem> defectItems, String resolution) {
       boolean modified = false;
-      for (DefectItem defectItem : defectItems) {
+      for (ReviewDefectItem defectItem : defectItems) {
          defectItem.setResolution(resolution);
          if (!modified) {
             modified = true;
@@ -439,10 +439,10 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   public boolean promptChangeData(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit) throws OseeCoreException {
+   public boolean promptChangeData(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit) throws OseeCoreException {
       boolean modified = false;
       if (defectItems != null && !defectItems.isEmpty()) {
-         DefectItem defectItem = (DefectItem) defectItems.toArray()[0];
+         ReviewDefectItem defectItem = (ReviewDefectItem) defectItems.toArray()[0];
          if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
             modified = handleSeverityCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
          } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
@@ -469,7 +469,7 @@ public class DefectXViewer extends XViewer {
       return false;
    }
 
-   private boolean handleInjectionActivityCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleInjectionActivityCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       EnumStringSingleSelectionDialog enumDialog =
          XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), InjectionActivity.strValues(),
             (columnMultiEdit ? null : defectItem.getInjectionActivity().name()));
@@ -479,7 +479,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleUserCol(Collection<DefectItem> defectItems, boolean modified) throws OseeCoreException {
+   private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) throws OseeCoreException {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
       int result = ld.open();
       if (result == 0) {
@@ -488,7 +488,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleLocationCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleLocationCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       String loc =
          XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getLocation()), null,
             Option.MULTI_LINE);
@@ -498,7 +498,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleResolutionCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleResolutionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       String resolution =
          XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getResolution()), null,
             Option.MULTI_LINE);
@@ -508,7 +508,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleDescriptionCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleDescriptionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       String desc =
          XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getDescription()), null,
             Option.MULTI_LINE);
@@ -518,7 +518,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleClosedCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleClosedCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       Boolean closed =
          XPromptChange.promptChangeBoolean(xCol.getName(), xCol.getName(),
             (columnMultiEdit ? false : defectItem.isClosed()));
@@ -528,7 +528,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleCreatedDateCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleCreatedDateCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       Date selDate = XPromptChange.promptChangeDate(xCol.getName(), (columnMultiEdit ? defectItem.getDate() : null));
       if (selDate != null) {
          modified = setDate(defectItems, selDate);
@@ -536,7 +536,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleDispositionCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleDispositionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       EnumStringSingleSelectionDialog enumDialog =
          XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Disposition.strValues(),
             (columnMultiEdit ? null : defectItem.getDisposition().name()));
@@ -546,7 +546,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   private boolean handleSeverityCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
+   private boolean handleSeverityCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       EnumStringSingleSelectionDialog enumDialog =
          XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Severity.strValues(),
             (columnMultiEdit ? null : defectItem.getSeverity().name()));
@@ -556,13 +556,14 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   public boolean executeTransaction(Collection<DefectItem> defectItems) throws OseeCoreException {
+   public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) throws OseeCoreException {
       SkynetTransaction transaction =
          new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Defects");
-      for (DefectItem defectItem : defectItems) {
-         xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
+      for (ReviewDefectItem defectItem : defectItems) {
+         xDefectViewer.getDefectManager().addOrUpdateDefectItem(defectItem);
          update(defectItem, null);
       }
+      xDefectViewer.getDefectManager().saveToArtifact(xDefectViewer.getReviewArt());
       transaction.execute();
       xDefectViewer.notifyXModifiedListeners();
       return true;

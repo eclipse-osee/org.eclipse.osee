@@ -9,6 +9,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -42,7 +43,7 @@ public class ReviewNumIssuesColumn extends XViewerAtsColumn implements IXViewerV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof PeerToPeerReviewArtifact) {
-            return String.valueOf(((PeerToPeerReviewArtifact) element).getDefectManager().getNumIssues());
+            return String.valueOf(new ReviewDefectManager((PeerToPeerReviewArtifact) element).getNumIssues());
          }
       } catch (OseeCoreException ex) {
          XViewerCells.getCellExceptionString(ex);

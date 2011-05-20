@@ -13,7 +13,13 @@ package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget;
+import org.eclipse.osee.ats.core.review.defect.AtsXDefectValidator;
+import org.eclipse.osee.ats.core.review.role.AtsXUserRoleValidator;
+import org.eclipse.osee.ats.core.validator.AtsOperationalImpactValidator;
+import org.eclipse.osee.ats.core.validator.AtsOperationalImpactWithWorkaroundValidator;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
+import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
+import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -45,19 +51,24 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XStateCombo();
       } else if (widgetName.equals(XStateSearchCombo.WIDGET_ID)) {
          toReturn = new XStateSearchCombo();
-      } else if (name.equals("Commit Manager") || widgetName.equals("XCommitManager")) {
+      } else if (widgetName.equals("XCommitManager")) {
          toReturn = new XCommitManager();
-      } else if (name.equals("Working Branch") || widgetName.equals("XWorkingBranch")) {
+      } else if (widgetName.equals("XWorkingBranch")) {
          toReturn = new XWorkingBranch();
-      } else if (widgetName.equals(OperationalImpactXWidget.WIDGET_NAME)) {
+      } else if (widgetName.equals(AtsOperationalImpactValidator.WIDGET_NAME)) {
          toReturn = new OperationalImpactXWidget();
       } else if (widgetName.equals(XTeamDefinitionCombo.WIDGET_ID)) {
          toReturn = new XTeamDefinitionCombo();
       } else if (widgetName.equals(XActionableItemCombo.WIDGET_ID)) {
          toReturn = new XActionableItemCombo();
-      } else if (widgetName.equals(OperationalImpactWithWorkaroundXWidget.WIDGET_NAME)) {
+      } else if (widgetName.equals(AtsOperationalImpactWithWorkaroundValidator.WIDGET_NAME)) {
          toReturn = new OperationalImpactWithWorkaroundXWidget();
+      } else if (widgetName.equals(AtsXDefectValidator.WIDGET_NAME)) {
+         return new XDefectViewer();
+      } else if (widgetName.equals(AtsXUserRoleValidator.WIDGET_NAME)) {
+         return new XUserRoleViewer();
       }
+
       return toReturn;
    }
 }

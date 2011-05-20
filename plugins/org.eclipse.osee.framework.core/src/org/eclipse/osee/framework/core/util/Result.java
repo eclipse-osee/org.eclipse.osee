@@ -11,13 +11,12 @@
 
 package org.eclipse.osee.framework.core.util;
 
-
 public class Result {
 
    public static Result TrueResult = new Result(true);
    public static Result FalseResult = new Result(false);
    public static Result CancelledResult = new Result(false, true);
-   private final boolean isTrue;
+   private boolean isTrue;
    private boolean cancelled = false;
    private String text = "";
 
@@ -31,6 +30,11 @@ public class Result {
       this.text = text;
    }
 
+   public Result(String format, Object... objects) {
+      this.isTrue = false;
+      this.text = String.format(format, objects);
+   }
+
    public Result(boolean isTrue) {
       this.isTrue = isTrue;
    }
@@ -38,6 +42,10 @@ public class Result {
    public Result(boolean isTrue, boolean cancelled) {
       this.isTrue = isTrue;
       this.cancelled = cancelled;
+   }
+
+   public void set(boolean isTrue) {
+      this.isTrue = isTrue;
    }
 
    public Result() {
@@ -63,6 +71,10 @@ public class Result {
 
    public void setText(String text) {
       this.text = text;
+   }
+
+   public void setTextWithFormat(String format, Object... objects) {
+      this.text = String.format(format, objects);
    }
 
    public boolean isCancelled() {

@@ -49,8 +49,8 @@ public class AtsNotification {
 
    private final static Set<IAtsNotification> atsNotificationItems = new HashSet<IAtsNotification>();
    private final static AtsNotification instance = new AtsNotification();
-   private final static Map<String, Collection<IBasicUser>> preSaveStateAssignees =
-      new HashMap<String, Collection<IBasicUser>>();
+   private final static Map<String, Collection<? extends IBasicUser>> preSaveStateAssignees =
+      new HashMap<String, Collection<? extends IBasicUser>>();
    private final static Map<String, IBasicUser> guidToOriginatorMap = new HashMap<String, IBasicUser>(500);
 
    private AtsNotification() {

@@ -12,11 +12,13 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
@@ -111,7 +113,12 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Assigned)) {
-         Collection<IBasicUser> assignees = notifyUsers != null ? notifyUsers : awa.getStateMgr().getAssignees();
+         Collection<IBasicUser> assignees = new HashSet<IBasicUser>();
+         if (notifyUsers != null) {
+            assignees.addAll(notifyUsers);
+         } else {
+            assignees.addAll(awa.getStateMgr().getAssignees());
+         }
          assignees.remove(UserManager.getUser());
          assignees = EmailUtil.getValidEmailUsers(assignees);
          assignees = EmailUtil.getActiveEmailUsers(assignees);
@@ -156,13 +163,13 @@ public class AtsNotifyUsers implements IArtifactEventListener {
             }
          }
       }
-      if (types.contains(NotifyType.Reviewed) && awa instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) awa).getUserRoleManager() != null) {
-         Collection<IBasicUser> authorModerator =
-            ((AbstractReviewArtifact) awa).getUserRoleManager().getRoleUsersAuthorModerator();
+      UserRoleManager roleMgr = new UserRoleManager(awa);
+      if (types.contains(NotifyType.Reviewed) && awa instanceof AbstractReviewArtifact) {
+         Collection<IBasicUser> authorModerator = roleMgr.getRoleUsersAuthorModerator();
          authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
          authorModerator = EmailUtil.getActiveEmailUsers(authorModerator);
          if (authorModerator.size() > 0) {
-            for (UserRole role : ((AbstractReviewArtifact) awa).getUserRoleManager().getRoleUsersReviewComplete()) {
+            for (UserRole role : roleMgr.getRoleUsersReviewComplete()) {
                notificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator, getIdString(awa),
                   NotifyType.Reviewed.name(), String.format("[%s] titled [%s] has been Reviewed by [%s]",
                      awa.getArtifactTypeName(), awa.getName(), role.getUser().getName())));

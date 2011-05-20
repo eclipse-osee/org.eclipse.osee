@@ -952,17 +952,25 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cOptionKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
 		private final Assignment cOptionAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
 		private final RuleCall cOptionWidgetOptionParserRuleCall_8_1_0 = (RuleCall)cOptionAssignment_8_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
+		private final Keyword cMinConstraintKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
+		private final Assignment cMinConstraintAssignment_9_1 = (Assignment)cGroup_9.eContents().get(1);
+		private final RuleCall cMinConstraintSTRINGTerminalRuleCall_9_1_0 = (RuleCall)cMinConstraintAssignment_9_1.eContents().get(0);
+		private final Group cGroup_10 = (Group)cGroup.eContents().get(10);
+		private final Keyword cMaxConstraintKeyword_10_0 = (Keyword)cGroup_10.eContents().get(0);
+		private final Assignment cMaxConstraintAssignment_10_1 = (Assignment)cGroup_10.eContents().get(1);
+		private final RuleCall cMaxConstraintSTRINGTerminalRuleCall_10_1_0 = (RuleCall)cMaxConstraintAssignment_10_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_11 = (Keyword)cGroup.eContents().get(11);
 		
 		//WidgetDef:
 		//	"widgetDefinition" name=WIDGET_NAME_REFERENCE "{" ("attributeName" attributeName=STRING)? ("description"
 		//	description=STRING)? ("xWidgetName" xWidgetName=STRING)? ("defaultValue" defaultValue=STRING)? ("height" height=INT)?
-		//	("option" option+=WidgetOption)* "}";
+		//	("option" option+=WidgetOption)* ("minConstraint" minConstraint=STRING)? ("maxConstraint" maxConstraint=STRING)? "}";
 		public ParserRule getRule() { return rule; }
 
 		//"widgetDefinition" name=WIDGET_NAME_REFERENCE "{" ("attributeName" attributeName=STRING)? ("description"
 		//description=STRING)? ("xWidgetName" xWidgetName=STRING)? ("defaultValue" defaultValue=STRING)? ("height" height=INT)?
-		//("option" option+=WidgetOption)* "}"
+		//("option" option+=WidgetOption)* ("minConstraint" minConstraint=STRING)? ("maxConstraint" maxConstraint=STRING)? "}"
 		public Group getGroup() { return cGroup; }
 
 		//"widgetDefinition"
@@ -1049,8 +1057,32 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//WidgetOption
 		public RuleCall getOptionWidgetOptionParserRuleCall_8_1_0() { return cOptionWidgetOptionParserRuleCall_8_1_0; }
 
+		//("minConstraint" minConstraint=STRING)?
+		public Group getGroup_9() { return cGroup_9; }
+
+		//"minConstraint"
+		public Keyword getMinConstraintKeyword_9_0() { return cMinConstraintKeyword_9_0; }
+
+		//minConstraint=STRING
+		public Assignment getMinConstraintAssignment_9_1() { return cMinConstraintAssignment_9_1; }
+
+		//STRING
+		public RuleCall getMinConstraintSTRINGTerminalRuleCall_9_1_0() { return cMinConstraintSTRINGTerminalRuleCall_9_1_0; }
+
+		//("maxConstraint" maxConstraint=STRING)?
+		public Group getGroup_10() { return cGroup_10; }
+
+		//"maxConstraint"
+		public Keyword getMaxConstraintKeyword_10_0() { return cMaxConstraintKeyword_10_0; }
+
+		//maxConstraint=STRING
+		public Assignment getMaxConstraintAssignment_10_1() { return cMaxConstraintAssignment_10_1; }
+
+		//STRING
+		public RuleCall getMaxConstraintSTRINGTerminalRuleCall_10_1_0() { return cMaxConstraintSTRINGTerminalRuleCall_10_1_0; }
+
 		//"}"
-		public Keyword getRightCurlyBracketKeyword_9() { return cRightCurlyBracketKeyword_9; }
+		public Keyword getRightCurlyBracketKeyword_11() { return cRightCurlyBracketKeyword_11; }
 	}
 
 	public class WidgetRefElements extends AbstractParserRuleElementFinder {
@@ -2317,43 +2349,47 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cNOT_ENABLEDKeyword_5 = (Keyword)cAlternatives.eContents().get(5);
 		private final Keyword cEDITABLEKeyword_6 = (Keyword)cAlternatives.eContents().get(6);
 		private final Keyword cNOT_EDITABLEKeyword_7 = (Keyword)cAlternatives.eContents().get(7);
-		private final Keyword cMULTI_SELECTKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
-		private final Keyword cHORIZONTAL_LABELKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
-		private final Keyword cVERTICAL_LABELKeyword_10 = (Keyword)cAlternatives.eContents().get(10);
-		private final Keyword cLABEL_AFTERKeyword_11 = (Keyword)cAlternatives.eContents().get(11);
-		private final Keyword cLABEL_BEFOREKeyword_12 = (Keyword)cAlternatives.eContents().get(12);
-		private final Keyword cNO_LABELKeyword_13 = (Keyword)cAlternatives.eContents().get(13);
-		private final Keyword cSORTEDKeyword_14 = (Keyword)cAlternatives.eContents().get(14);
-		private final Keyword cADD_DEFAULT_VALUEKeyword_15 = (Keyword)cAlternatives.eContents().get(15);
-		private final Keyword cNO_DEFAULT_VALUEKeyword_16 = (Keyword)cAlternatives.eContents().get(16);
-		private final Keyword cBEGIN_COMPOSITE_4Keyword_17 = (Keyword)cAlternatives.eContents().get(17);
-		private final Keyword cBEGIN_COMPOSITE_6Keyword_18 = (Keyword)cAlternatives.eContents().get(18);
-		private final Keyword cBEGIN_COMPOSITE_8Keyword_19 = (Keyword)cAlternatives.eContents().get(19);
-		private final Keyword cBEGIN_COMPOSITE_10Keyword_20 = (Keyword)cAlternatives.eContents().get(20);
-		private final Keyword cEND_COMPOSITEKeyword_21 = (Keyword)cAlternatives.eContents().get(21);
-		private final Keyword cFILL_NONEKeyword_22 = (Keyword)cAlternatives.eContents().get(22);
-		private final Keyword cFILL_HORIZONTALLYKeyword_23 = (Keyword)cAlternatives.eContents().get(23);
-		private final Keyword cFILL_VERTICALLYKeyword_24 = (Keyword)cAlternatives.eContents().get(24);
-		private final Keyword cALIGN_LEFTKeyword_25 = (Keyword)cAlternatives.eContents().get(25);
-		private final Keyword cALIGN_RIGHTKeyword_26 = (Keyword)cAlternatives.eContents().get(26);
-		private final Keyword cALIGN_CENTERKeyword_27 = (Keyword)cAlternatives.eContents().get(27);
-		private final RuleCall cWIDGET_OPTION_NAMEParserRuleCall_28 = (RuleCall)cAlternatives.eContents().get(28);
+		private final Keyword cFUTURE_DATE_REQUIREDKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
+		private final Keyword cNOT_FUTURE_DATE_REQUIREDKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
+		private final Keyword cMULTI_SELECTKeyword_10 = (Keyword)cAlternatives.eContents().get(10);
+		private final Keyword cHORIZONTAL_LABELKeyword_11 = (Keyword)cAlternatives.eContents().get(11);
+		private final Keyword cVERTICAL_LABELKeyword_12 = (Keyword)cAlternatives.eContents().get(12);
+		private final Keyword cLABEL_AFTERKeyword_13 = (Keyword)cAlternatives.eContents().get(13);
+		private final Keyword cLABEL_BEFOREKeyword_14 = (Keyword)cAlternatives.eContents().get(14);
+		private final Keyword cNO_LABELKeyword_15 = (Keyword)cAlternatives.eContents().get(15);
+		private final Keyword cSORTEDKeyword_16 = (Keyword)cAlternatives.eContents().get(16);
+		private final Keyword cADD_DEFAULT_VALUEKeyword_17 = (Keyword)cAlternatives.eContents().get(17);
+		private final Keyword cNO_DEFAULT_VALUEKeyword_18 = (Keyword)cAlternatives.eContents().get(18);
+		private final Keyword cBEGIN_COMPOSITE_4Keyword_19 = (Keyword)cAlternatives.eContents().get(19);
+		private final Keyword cBEGIN_COMPOSITE_6Keyword_20 = (Keyword)cAlternatives.eContents().get(20);
+		private final Keyword cBEGIN_COMPOSITE_8Keyword_21 = (Keyword)cAlternatives.eContents().get(21);
+		private final Keyword cBEGIN_COMPOSITE_10Keyword_22 = (Keyword)cAlternatives.eContents().get(22);
+		private final Keyword cEND_COMPOSITEKeyword_23 = (Keyword)cAlternatives.eContents().get(23);
+		private final Keyword cFILL_NONEKeyword_24 = (Keyword)cAlternatives.eContents().get(24);
+		private final Keyword cFILL_HORIZONTALLYKeyword_25 = (Keyword)cAlternatives.eContents().get(25);
+		private final Keyword cFILL_VERTICALLYKeyword_26 = (Keyword)cAlternatives.eContents().get(26);
+		private final Keyword cALIGN_LEFTKeyword_27 = (Keyword)cAlternatives.eContents().get(27);
+		private final Keyword cALIGN_RIGHTKeyword_28 = (Keyword)cAlternatives.eContents().get(28);
+		private final Keyword cALIGN_CENTERKeyword_29 = (Keyword)cAlternatives.eContents().get(29);
+		private final RuleCall cWIDGET_OPTION_NAMEParserRuleCall_30 = (RuleCall)cAlternatives.eContents().get(30);
 		
 		//// STRING is for future expansion
 		//// WARNING: Any new WidgetOption need to be added to AtsDslProposalProvider for content assist
 		//WidgetOption:
 		//	"REQUIRED_FOR_TRANSITION" | "NOT_REQUIRED_FOR_TRANSITION" | "REQUIRED_FOR_COMPLETION" | "NOT_REQUIRED_FOR_COMPLETION"
-		//	| "ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" |
-		//	"LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" | "ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" |
-		//	"BEGIN_COMPOSITE_4" | "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" | "BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE"
-		//	| "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME;
+		//	| "ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "FUTURE_DATE_REQUIRED" | "NOT_FUTURE_DATE_REQUIRED" |
+		//	"MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" | "LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" |
+		//	"ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" | "BEGIN_COMPOSITE_4" | "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" |
+		//	"BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE" | "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" |
+		//	"ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME;
 		public ParserRule getRule() { return rule; }
 
 		//"REQUIRED_FOR_TRANSITION" | "NOT_REQUIRED_FOR_TRANSITION" | "REQUIRED_FOR_COMPLETION" | "NOT_REQUIRED_FOR_COMPLETION" |
-		//"ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" |
-		//"LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" | "ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" | "BEGIN_COMPOSITE_4"
-		//| "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" | "BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE" |
-		//"FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME
+		//"ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "FUTURE_DATE_REQUIRED" | "NOT_FUTURE_DATE_REQUIRED" |
+		//"MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" | "LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" |
+		//"ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" | "BEGIN_COMPOSITE_4" | "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" |
+		//"BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE" | "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" |
+		//"ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"REQUIRED_FOR_TRANSITION"
@@ -2380,68 +2416,74 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"NOT_EDITABLE"
 		public Keyword getNOT_EDITABLEKeyword_7() { return cNOT_EDITABLEKeyword_7; }
 
+		//"FUTURE_DATE_REQUIRED"
+		public Keyword getFUTURE_DATE_REQUIREDKeyword_8() { return cFUTURE_DATE_REQUIREDKeyword_8; }
+
+		//"NOT_FUTURE_DATE_REQUIRED"
+		public Keyword getNOT_FUTURE_DATE_REQUIREDKeyword_9() { return cNOT_FUTURE_DATE_REQUIREDKeyword_9; }
+
 		//"MULTI_SELECT"
-		public Keyword getMULTI_SELECTKeyword_8() { return cMULTI_SELECTKeyword_8; }
+		public Keyword getMULTI_SELECTKeyword_10() { return cMULTI_SELECTKeyword_10; }
 
 		//"HORIZONTAL_LABEL"
-		public Keyword getHORIZONTAL_LABELKeyword_9() { return cHORIZONTAL_LABELKeyword_9; }
+		public Keyword getHORIZONTAL_LABELKeyword_11() { return cHORIZONTAL_LABELKeyword_11; }
 
 		//"VERTICAL_LABEL"
-		public Keyword getVERTICAL_LABELKeyword_10() { return cVERTICAL_LABELKeyword_10; }
+		public Keyword getVERTICAL_LABELKeyword_12() { return cVERTICAL_LABELKeyword_12; }
 
 		//"LABEL_AFTER"
-		public Keyword getLABEL_AFTERKeyword_11() { return cLABEL_AFTERKeyword_11; }
+		public Keyword getLABEL_AFTERKeyword_13() { return cLABEL_AFTERKeyword_13; }
 
 		//"LABEL_BEFORE"
-		public Keyword getLABEL_BEFOREKeyword_12() { return cLABEL_BEFOREKeyword_12; }
+		public Keyword getLABEL_BEFOREKeyword_14() { return cLABEL_BEFOREKeyword_14; }
 
 		//"NO_LABEL"
-		public Keyword getNO_LABELKeyword_13() { return cNO_LABELKeyword_13; }
+		public Keyword getNO_LABELKeyword_15() { return cNO_LABELKeyword_15; }
 
 		//"SORTED"
-		public Keyword getSORTEDKeyword_14() { return cSORTEDKeyword_14; }
+		public Keyword getSORTEDKeyword_16() { return cSORTEDKeyword_16; }
 
 		//"ADD_DEFAULT_VALUE"
-		public Keyword getADD_DEFAULT_VALUEKeyword_15() { return cADD_DEFAULT_VALUEKeyword_15; }
+		public Keyword getADD_DEFAULT_VALUEKeyword_17() { return cADD_DEFAULT_VALUEKeyword_17; }
 
 		//"NO_DEFAULT_VALUE"
-		public Keyword getNO_DEFAULT_VALUEKeyword_16() { return cNO_DEFAULT_VALUEKeyword_16; }
+		public Keyword getNO_DEFAULT_VALUEKeyword_18() { return cNO_DEFAULT_VALUEKeyword_18; }
 
 		//"BEGIN_COMPOSITE_4"
-		public Keyword getBEGIN_COMPOSITE_4Keyword_17() { return cBEGIN_COMPOSITE_4Keyword_17; }
+		public Keyword getBEGIN_COMPOSITE_4Keyword_19() { return cBEGIN_COMPOSITE_4Keyword_19; }
 
 		//"BEGIN_COMPOSITE_6"
-		public Keyword getBEGIN_COMPOSITE_6Keyword_18() { return cBEGIN_COMPOSITE_6Keyword_18; }
+		public Keyword getBEGIN_COMPOSITE_6Keyword_20() { return cBEGIN_COMPOSITE_6Keyword_20; }
 
 		//"BEGIN_COMPOSITE_8"
-		public Keyword getBEGIN_COMPOSITE_8Keyword_19() { return cBEGIN_COMPOSITE_8Keyword_19; }
+		public Keyword getBEGIN_COMPOSITE_8Keyword_21() { return cBEGIN_COMPOSITE_8Keyword_21; }
 
 		//"BEGIN_COMPOSITE_10"
-		public Keyword getBEGIN_COMPOSITE_10Keyword_20() { return cBEGIN_COMPOSITE_10Keyword_20; }
+		public Keyword getBEGIN_COMPOSITE_10Keyword_22() { return cBEGIN_COMPOSITE_10Keyword_22; }
 
 		//"END_COMPOSITE"
-		public Keyword getEND_COMPOSITEKeyword_21() { return cEND_COMPOSITEKeyword_21; }
+		public Keyword getEND_COMPOSITEKeyword_23() { return cEND_COMPOSITEKeyword_23; }
 
 		//"FILL_NONE"
-		public Keyword getFILL_NONEKeyword_22() { return cFILL_NONEKeyword_22; }
+		public Keyword getFILL_NONEKeyword_24() { return cFILL_NONEKeyword_24; }
 
 		//"FILL_HORIZONTALLY"
-		public Keyword getFILL_HORIZONTALLYKeyword_23() { return cFILL_HORIZONTALLYKeyword_23; }
+		public Keyword getFILL_HORIZONTALLYKeyword_25() { return cFILL_HORIZONTALLYKeyword_25; }
 
 		//"FILL_VERTICALLY"
-		public Keyword getFILL_VERTICALLYKeyword_24() { return cFILL_VERTICALLYKeyword_24; }
+		public Keyword getFILL_VERTICALLYKeyword_26() { return cFILL_VERTICALLYKeyword_26; }
 
 		//"ALIGN_LEFT"
-		public Keyword getALIGN_LEFTKeyword_25() { return cALIGN_LEFTKeyword_25; }
+		public Keyword getALIGN_LEFTKeyword_27() { return cALIGN_LEFTKeyword_27; }
 
 		//"ALIGN_RIGHT"
-		public Keyword getALIGN_RIGHTKeyword_26() { return cALIGN_RIGHTKeyword_26; }
+		public Keyword getALIGN_RIGHTKeyword_28() { return cALIGN_RIGHTKeyword_28; }
 
 		//"ALIGN_CENTER"
-		public Keyword getALIGN_CENTERKeyword_27() { return cALIGN_CENTERKeyword_27; }
+		public Keyword getALIGN_CENTERKeyword_29() { return cALIGN_CENTERKeyword_29; }
 
 		//WIDGET_OPTION_NAME
-		public RuleCall getWIDGET_OPTION_NAMEParserRuleCall_28() { return cWIDGET_OPTION_NAMEParserRuleCall_28; }
+		public RuleCall getWIDGET_OPTION_NAMEParserRuleCall_30() { return cWIDGET_OPTION_NAMEParserRuleCall_30; }
 	}
 
 	public class PAGE_TYPE_NAMEElements extends AbstractParserRuleElementFinder {
@@ -2877,7 +2919,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//WidgetDef:
 	//	"widgetDefinition" name=WIDGET_NAME_REFERENCE "{" ("attributeName" attributeName=STRING)? ("description"
 	//	description=STRING)? ("xWidgetName" xWidgetName=STRING)? ("defaultValue" defaultValue=STRING)? ("height" height=INT)?
-	//	("option" option+=WidgetOption)* "}";
+	//	("option" option+=WidgetOption)* ("minConstraint" minConstraint=STRING)? ("maxConstraint" maxConstraint=STRING)? "}";
 	public WidgetDefElements getWidgetDefAccess() {
 		return (pWidgetDef != null) ? pWidgetDef : (pWidgetDef = new WidgetDefElements());
 	}
@@ -3312,10 +3354,11 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//// WARNING: Any new WidgetOption need to be added to AtsDslProposalProvider for content assist
 	//WidgetOption:
 	//	"REQUIRED_FOR_TRANSITION" | "NOT_REQUIRED_FOR_TRANSITION" | "REQUIRED_FOR_COMPLETION" | "NOT_REQUIRED_FOR_COMPLETION"
-	//	| "ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" |
-	//	"LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" | "ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" |
-	//	"BEGIN_COMPOSITE_4" | "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" | "BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE"
-	//	| "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME;
+	//	| "ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "FUTURE_DATE_REQUIRED" | "NOT_FUTURE_DATE_REQUIRED" |
+	//	"MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" | "LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" |
+	//	"ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" | "BEGIN_COMPOSITE_4" | "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" |
+	//	"BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE" | "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" |
+	//	"ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME;
 	public WidgetOptionElements getWidgetOptionAccess() {
 		return (pWidgetOption != null) ? pWidgetOption : (pWidgetOption = new WidgetOptionElements());
 	}

@@ -157,4 +157,5 @@ public class TestUtil {
                postCount.get(tableName)), postCount.get(tableName).equals(prevCount.get(tableName)));
       }
    }
+
 }

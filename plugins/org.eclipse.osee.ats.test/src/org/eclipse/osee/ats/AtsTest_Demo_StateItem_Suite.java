@@ -13,7 +13,6 @@ package org.eclipse.osee.ats;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewDecisionStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItemTest;
-import org.eclipse.osee.ats.editor.stateItem.AtsHandleAddReviewRuleStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItemTest;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItemTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -29,8 +28,7 @@ import org.junit.runners.Suite;
    AtsPeerToPeerReviewReviewStateItemTest.class,
    AtsPeerToPeerReviewPrepareStateItemTest.class,
    AtsDecisionReviewDecisionStateItemTest.class,
-   AtsDecisionReviewPrepareStateItemTest.class,
-   AtsHandleAddReviewRuleStateItemTest.class})
+   AtsDecisionReviewPrepareStateItemTest.class})
 /**
  * This test suite contains tests that must be run against demo database
  * 

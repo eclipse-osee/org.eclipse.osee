@@ -25,9 +25,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.core.review.IReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.role.UserRole;
 import org.eclipse.osee.ats.core.review.role.UserRoleError;
+import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.review.role.UserRoleValidator;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -77,12 +79,14 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    private UserRoleXViewer xViewer;
    private IDirtiableEditor editor;
-   private IReviewArtifact reviewArt;
+   private PeerToPeerReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
    private ToolItem newUserRoleItem, deleteUserRoleItem;
    private Label extraInfoLabel;
    private ToolBar toolBar;
-   private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();
+   private UserRoleManager roleMgr;
+
+   private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<PeerToPeerReviewArtifact, Integer>();
 
    public XUserRoleViewer() {
       super("Roles");
@@ -91,7 +95,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    @Override
    public Artifact getArtifact() {
-      return reviewArt.getArtifact();
+      return reviewArt;
    }
 
    @Override
@@ -266,7 +270,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    public void loadTable() {
       try {
          if (reviewArt != null && xViewer != null) {
-            xViewer.set(reviewArt.getUserRoleManager().getUserRoles());
+            xViewer.set(roleMgr.getUserRoles());
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -290,9 +294,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction =
-               new SkynetTransaction(reviewArt.getArtifact().getBranch(), "Delete Review Roles");
-            removeUserRoleHelper(items, persist, transaction);
+            SkynetTransaction transaction = new SkynetTransaction(reviewArt.getBranch(), "Delete Review Roles");
+            removeUserRoleHelper(items, transaction);
             transaction.execute();
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -300,9 +303,10 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   private void removeUserRoleHelper(List<UserRole> items, SkynetTransaction transaction) throws OseeCoreException {
       for (UserRole userRole : items) {
-         reviewArt.getUserRoleManager().removeUserRole(userRole, persist, transaction);
+         roleMgr.removeUserRole(userRole);
+         roleMgr.saveToArtifact(reviewArt, transaction);
          xViewer.remove(userRole);
       }
       loadTable();
@@ -312,7 +316,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    public void handleNewUserRole() {
       try {
          SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
-         reviewArt.getUserRoleManager().addOrUpdateUserRole(new UserRole(), false, transaction);
+         roleMgr.addOrUpdateUserRole(new UserRole());
+         roleMgr.saveToArtifact(reviewArt, transaction);
          transaction.execute();
          notifyXModifiedListeners();
          loadTable();
@@ -402,14 +407,15 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             "Major",
             "Minor",
             "Issues"}));
-         for (UserRole item : reviewArt.getUserRoleManager().getUserRoles()) {
+         ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt);
+         for (UserRole item : roleMgr.getUserRoles()) {
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().name(),
                item.getUser().getName(),
                item.getHoursSpentStr(),
-               reviewArt.getUserRoleManager().getNumMajor(item.getUser()) + "",
-               reviewArt.getUserRoleManager().getNumMinor(item.getUser()) + "",
-               reviewArt.getUserRoleManager().getNumIssues(item.getUser()) + ""}));
+               defectMgr.getNumMajor(item.getUser()) + "",
+               defectMgr.getNumMinor(item.getUser()) + "",
+               defectMgr.getNumIssues(item.getUser()) + ""}));
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
@@ -439,12 +445,13 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       this.editor = editor;
    }
 
-   public IReviewArtifact getReviewArt() {
+   public PeerToPeerReviewArtifact getReviewArt() {
       return reviewArt;
    }
 
-   public void setReviewArt(IReviewArtifact reviewArt) {
+   public void setReviewArt(PeerToPeerReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
+      roleMgr = new UserRoleManager(reviewArt);
       if (xViewer != null) {
          loadTable();
       }
@@ -452,7 +459,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    @Override
    public void setArtifact(Artifact artifact) {
-      setReviewArt((IReviewArtifact) artifact);
+      setReviewArt((PeerToPeerReviewArtifact) artifact);
    }
 
    @Override
@@ -499,6 +506,10 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             }
          }
       });
+   }
+
+   public UserRoleManager getUserRoleMgr() {
+      return roleMgr;
    }
 
 }

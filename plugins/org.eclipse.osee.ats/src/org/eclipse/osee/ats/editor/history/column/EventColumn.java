@@ -106,8 +106,8 @@ public class EventColumn extends XViewerValueColumn {
             is.getHoursSpentStr()))) {
             return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(is) + " hrs";
          }
-         Collection<IBasicUser> wasAssignees = was.getAssignees();
-         Collection<IBasicUser> isAssignees = is.getAssignees();
+         Collection<? extends IBasicUser> wasAssignees = was.getAssignees();
+         Collection<? extends IBasicUser> isAssignees = is.getAssignees();
          Set<IBasicUser> assigned = new HashSet<IBasicUser>();
          Set<IBasicUser> unAssigned = new HashSet<IBasicUser>();
          for (IBasicUser isAssignee : isAssignees) {

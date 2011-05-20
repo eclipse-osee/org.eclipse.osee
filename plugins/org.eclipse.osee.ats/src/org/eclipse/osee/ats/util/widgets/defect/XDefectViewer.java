@@ -25,10 +25,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.core.review.IReviewArtifact;
-import org.eclipse.osee.ats.core.review.defect.DefectItem;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Disposition;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectError;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectValidator;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.Result;
@@ -82,13 +83,14 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    private DefectXViewer xViewer;
    private IDirtiableEditor editor;
-   private IReviewArtifact reviewArt;
+   private PeerToPeerReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
    private ToolItem newDefectItem, deleteDefectItem;
    private Label extraInfoLabel;
    private Composite parentComposite;
    private ToolBar toolBar;
-   private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();
+   private ReviewDefectManager defectManager;
+   private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<PeerToPeerReviewArtifact, Integer>();
 
    public XDefectViewer() {
       super("Defects");
@@ -308,7 +310,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
    public void loadTable() {
       try {
          if (reviewArt != null && xViewer != null) {
-            xViewer.set(reviewArt.getDefectManager().getDefectItems());
+            xViewer.set(defectManager.getDefectItems());
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -328,7 +330,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (!str.equals("")) {
-                  reviewArt.getDefectManager().addDefectItem(str, false, transaction);
+                  defectManager.addDefectItem(str, false, transaction);
                }
             }
             transaction.execute();
@@ -341,13 +343,13 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
    }
 
    public void handleDeleteDefect(boolean persist) {
-      final List<DefectItem> items = getSelectedDefectItems();
+      final List<ReviewDefectItem> items = getSelectedDefectItems();
       if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No Defects Selected");
          return;
       }
       StringBuilder builder = new StringBuilder();
-      for (DefectItem defectItem : items) {
+      for (ReviewDefectItem defectItem : items) {
          builder.append("\"" + defectItem.getDescription() + "\"\n");
       }
 
@@ -365,10 +367,10 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       }
    }
 
-   private void deleteDefectHelper(List<DefectItem> items, boolean persist, SkynetTransaction transaction) {
+   private void deleteDefectHelper(List<ReviewDefectItem> items, boolean persist, SkynetTransaction transaction) {
       try {
-         for (DefectItem defectItem : items) {
-            reviewArt.getDefectManager().removeDefectItem(defectItem, persist, transaction);
+         for (ReviewDefectItem defectItem : items) {
+            defectManager.removeDefectItem(defectItem, persist, transaction);
             xViewer.remove(defectItem);
          }
          loadTable();
@@ -384,7 +386,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       if (ed.open() == 0) {
          try {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
-            DefectItem item = new DefectItem();
+            ReviewDefectItem item = new ReviewDefectItem();
             item.setDescription(ed.getEntry());
             if (ed.getSeverity() != null) {
                item.setSeverity(ed.getSeverity());
@@ -392,7 +394,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             if (Strings.isValid(ed.getEntry2())) {
                item.setLocation(ed.getEntry2());
             }
-            reviewArt.getDefectManager().addOrUpdateDefectItem(item, false, transaction);
+            defectManager.addOrUpdateDefectItem(item);
+            defectManager.saveToArtifact(reviewArt);
             transaction.execute();
             notifyXModifiedListeners();
             loadTable();
@@ -403,8 +406,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
    }
 
    @SuppressWarnings("rawtypes")
-   public List<DefectItem> getSelectedDefectItems() {
-      List<DefectItem> items = new ArrayList<DefectItem>();
+   public List<ReviewDefectItem> getSelectedDefectItems() {
+      List<ReviewDefectItem> items = new ArrayList<ReviewDefectItem>();
       if (xViewer == null) {
          return items;
       }
@@ -414,7 +417,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         items.add((DefectItem) obj);
+         items.add((ReviewDefectItem) obj);
       }
       return items;
    }
@@ -449,13 +452,12 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one defect entry is required");
          }
          if (reviewArt != null) {
-            for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-               if (item.isClosed() == false || item.getDisposition() == Disposition.None || item.getSeverity() == Severity.None && item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject) {
-                  extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
-                  extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                  return new Status(IStatus.ERROR, getClass().getSimpleName(),
-                     "Review not complete until all items are marked for severity, disposition and closed");
-               }
+            ReviewDefectError error = ReviewDefectValidator.isValid(reviewArt.getArtifact());
+            if (error == ReviewDefectError.AllItemsMustBeMarkedAndClosed) {
+               extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
+               extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+               return new Status(IStatus.ERROR, getClass().getSimpleName(),
+                  "Review not complete until all items are marked for severity, disposition and closed");
             }
          }
          extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
@@ -489,7 +491,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             "Resolution",
             "Location",
             "Closted"}));
-         for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
+         for (ReviewDefectItem item : defectManager.getDefectItems()) {
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                DateUtil.getMMDDYY(item.getDate()),
                item.getUser().getName(),
@@ -529,12 +531,9 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       this.editor = editor;
    }
 
-   public IReviewArtifact getReviewArt() {
-      return reviewArt;
-   }
-
-   public void setReviewArt(IReviewArtifact reviewArt) {
+   public void setArtifact(PeerToPeerReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
+      defectManager = new ReviewDefectManager(reviewArt);
       if (xViewer != null) {
          loadTable();
       }
@@ -542,7 +541,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    @Override
    public void setArtifact(Artifact artifact) {
-      setReviewArt((IReviewArtifact) artifact);
+      setArtifact((PeerToPeerReviewArtifact) artifact);
    }
 
    @Override
@@ -594,6 +593,14 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
    @Override
    public boolean isEmpty() {
       return xViewer.getTree().getItemCount() == 0;
+   }
+
+   public PeerToPeerReviewArtifact getReviewArt() {
+      return reviewArt;
+   }
+
+   public ReviewDefectManager getDefectManager() {
+      return defectManager;
    }
 
 }

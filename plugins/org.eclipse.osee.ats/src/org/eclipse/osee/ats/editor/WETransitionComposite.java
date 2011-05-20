@@ -11,6 +11,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -19,7 +22,10 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -30,15 +36,18 @@ import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -179,30 +188,97 @@ public class WETransitionComposite extends Composite {
 
    private void handleTransitionButtonSelection(final SMAEditor editor, final boolean isEditable) {
       editor.doSave(null);
+      final List<AbstractWorkflowArtifact> awas = Arrays.asList(awa);
+      final StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
+      ITransitionHelper helper = new TransitionHelperAdapter() {
 
-      StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
-      TransitionManager transMgr = new TransitionManager(awa, editor.isPriviledgedEditModeEnabled());
-      String cancellationReason = "";
-      if (toStateDef.isCancelledPage()) {
-         EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-         if (cancelDialog.open() != 0) {
-            return;
+         @Override
+         public boolean isPriviledgedEditEnabled() {
+            return editor.isPriviledgedEditModeEnabled();
          }
-         cancellationReason = cancelDialog.getEntry();
-      }
 
-      try {
-         handlePopulateStateMetrics(toStateDef);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+         @Override
+         public String getToStateName() {
+            return toStateDef.getName();
+         }
 
-      Result result = transMgr.handleTransition(toStateDef, cancellationReason);
-      if (result.isCancelled()) {
-         return;
-      } else if (result.isFalse()) {
-         AWorkbench.popup(result);
-      }
+         @Override
+         public Collection<? extends IBasicUser> getToAssignees() throws OseeCoreException {
+            return awa.getTransitionAssignees();
+         }
+
+         @Override
+         public String getName() {
+            return "Workflow Editor Transition";
+         }
+
+         @Override
+         public Result handleExtraHoursSpent() {
+            final Result result = new Result(true, "");
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  boolean resultBool = false;
+                  try {
+                     resultBool = handlePopulateStateMetrics(toStateDef);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     result.set(false);
+                     result.setText(String.format("Error processing extra hours spent for [%s]",
+                        awas.iterator().next().toStringWithId()));
+                  }
+                  if (!resultBool) {
+                     result.setCancelled(true);
+                     result.set(false);
+                  }
+               }
+            }, true);
+            return result;
+         }
+
+         @Override
+         public Result getCompleteOrCancellationReason() {
+            final Result result = new Result(true, "");
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  StateDefinition toStateDef = getAwas().iterator().next().getStateDefinitionByName(getToStateName());
+                  if (toStateDef.isCancelledPage()) {
+                     EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+                     if (cancelDialog.open() != 0) {
+                        result.setCancelled(true);
+                     }
+                     result.set(true);
+                     result.setText(cancelDialog.getEntry());
+                  }
+
+               }
+            }, true);
+            return result;
+         }
+
+         @Override
+         public Collection<AbstractWorkflowArtifact> getAwas() {
+            return awas;
+         }
+
+      };
+      final TransitionToOperation operation = new TransitionToOperation(helper);
+      Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
+
+         @Override
+         public void done(IJobChangeEvent event) {
+            TransitionResults results = operation.getResults();
+            if (!results.isEmpty()) {
+               String resultStr = results.getResultString();
+               results.logExceptions();
+               AWorkbench.popup(MessageType.Error, "Transition Failed", resultStr);
+            }
+         }
+
+      });
    }
 
    private int getCreationToNowDateDeltaMinutes() throws OseeCoreException {

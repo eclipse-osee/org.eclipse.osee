@@ -13,21 +13,25 @@ package org.eclipse.osee.ats.workflow;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
 import java.util.Collection;
+import junit.framework.Assert;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.task.TaskStates;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.SMATestUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SimpleTaskResolutionOptionsRule;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,7 +52,7 @@ public class SMAPromptChangeStatusTest {
 
    @BeforeClass
    public static void testCleanupPre() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(SMAPromptChangeStatusTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(SMAPromptChangeStatusTest.class.getSimpleName());
    }
 
    @org.junit.Test
@@ -143,9 +147,14 @@ public class SMAPromptChangeStatusTest {
 
       // test that if one task is cancelled, can't change status
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      TransitionManager transitionMgr = new TransitionManager(cancelTask);
-      transitionMgr.transition(TaskStates.Cancelled, (User) null, transaction, TransitionOption.Persist);
-      transaction.execute();
+      TransitionHelper helper =
+         new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getPageName(),
+            null, null, TransitionOption.None);
+      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionResults results = transitionMgr.handleAll();
+      transitionMgr.getTransaction().execute();
+      Assert.assertTrue("Transition should have no errors", results.isEmpty());
+
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
       assertTrue(result.isFalse());
       assertTrue(result.getText().contains("Can not status a cancelled"));
@@ -173,7 +182,7 @@ public class SMAPromptChangeStatusTest {
 
    @AfterClass
    public static void testCleanupPost() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(SMAPromptChangeStatusTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(SMAPromptChangeStatusTest.class.getSimpleName());
    }
 
 }

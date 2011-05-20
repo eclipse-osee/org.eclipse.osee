@@ -96,6 +96,8 @@ WidgetDef:
 	('defaultValue' defaultValue=STRING)?
 	('height' height=INT)?
 	('option' option+=WidgetOption)*
+	('minConstraint' minConstraint=STRING)?
+	('maxConstraint' maxConstraint=STRING)?
 	'}';
 
 WidgetRef:
@@ -284,6 +286,7 @@ WidgetOption:
 	'REQUIRED_FOR_COMPLETION' | 'NOT_REQUIRED_FOR_COMPLETION' |
 	'ENABLED' | 'NOT_ENABLED' |
 	'EDITABLE' | 'NOT_EDITABLE' |
+	'FUTURE_DATE_REQUIRED' | 'NOT_FUTURE_DATE_REQUIRED' |
 	'MULTI_SELECT' |
 	'HORIZONTAL_LABEL' | 'VERTICAL_LABEL' |
 	'LABEL_AFTER' | 'LABEL_BEFORE' | 'NO_LABEL' |

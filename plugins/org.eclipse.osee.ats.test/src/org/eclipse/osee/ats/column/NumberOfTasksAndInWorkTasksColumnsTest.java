@@ -6,9 +6,10 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
+import java.util.HashSet;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.model.IBasicUser;
@@ -37,9 +38,10 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("6", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
       TaskArtifact taskArt = codeArt.getTaskArtifacts().iterator().next();
-      Collection<IBasicUser> taskAssignees = taskArt.getStateMgr().getAssignees();
+      Collection<IBasicUser> taskAssignees = new HashSet<IBasicUser>();
+      taskAssignees.addAll(codeArt.getStateMgr().getAssignees());
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      Result result = taskArt.transitionToCompleted(2, transaction, TransitionOption.OverrideTransitionValidityCheck);
+      Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 2, transaction);
       Assert.assertEquals(true, result.isTrue());
       taskArt.persist(transaction);
       transaction.execute();
@@ -48,9 +50,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("5", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      result =
-         taskArt.transitionToInWork(taskAssignees.iterator().next(), 0, -2, transaction,
-            TransitionOption.OverrideTransitionValidityCheck);
+      result = TaskManager.transitionToInWork(taskArt, taskAssignees.iterator().next(), 0, -2, transaction);
       Assert.assertEquals(true, result.isTrue());
       taskArt.persist(transaction);
       transaction.execute();

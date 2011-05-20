@@ -5,8 +5,6 @@
  */
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.ats.column.AssigneeColumn;
-import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;

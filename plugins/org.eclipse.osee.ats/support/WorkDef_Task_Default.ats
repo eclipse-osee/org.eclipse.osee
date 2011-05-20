@@ -32,7 +32,7 @@ workDefinition "WorkDef_Task_Default" {
          widget "Description"
          composite {
             numColumns 6
-            attributeWidget "ats.Estimated Hours" with REQUIRED_FOR_TRANSITION
+            attributeWidget "ats.Estimated Hours"
             attributeWidget "ats.Estimated Completion Date"
             widget "Related To State"
          }

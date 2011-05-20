@@ -28,22 +28,30 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 public class UserRole {
 
    private Role role = Role.Reviewer;
-   private User user;
+   private String userId;
    private Double hoursSpent = null;
    private String guid = GUID.create();
    private Boolean completed = false;
 
    public UserRole() throws OseeCoreException {
-      this(Role.Reviewer, UserManager.getUser(), null, false);
+      this(Role.Reviewer, UserManager.getUser().getUserId(), null, false);
    }
 
-   public UserRole(Role role, User user) {
-      this(role, user, 0.0, false);
+   public UserRole(Role role, User user) throws OseeCoreException {
+      this(role, user.getUserId());
    }
 
-   public UserRole(Role role, User user, Double hoursSpent, Boolean completed) {
+   public UserRole(Role role, String userId) {
+      this(role, userId, 0.0, false);
+   }
+
+   public UserRole(Role role, User user, Double hoursSpent, Boolean completed) throws OseeCoreException {
+      this(role, user.getUserId(), hoursSpent, completed);
+   }
+
+   public UserRole(Role role, String userId, Double hoursSpent, Boolean completed) {
       this.role = role;
-      this.user = user;
+      this.userId = userId;
       this.hoursSpent = hoursSpent;
       this.completed = completed;
    }
@@ -52,14 +60,14 @@ public class UserRole {
       fromXml(xml);
    }
 
-   public void update(UserRole dItem) throws OseeCoreException {
+   public void update(UserRole dItem) {
       fromXml(dItem.toXml());
    }
 
-   public String toXml() throws OseeCoreException {
+   public String toXml() {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("role", role.name()));
-      sb.append(AXml.addTagData("userId", user.getUserId()));
+      sb.append(AXml.addTagData("userId", userId));
       sb.append(AXml.addTagData("hoursSpent", hoursSpent == null ? "" : String.valueOf(hoursSpent)));
       sb.append(AXml.addTagData("completed", String.valueOf(completed)));
       sb.append(AXml.addTagData("guid", guid));
@@ -69,7 +77,7 @@ public class UserRole {
    public void fromXml(String xml) {
       try {
          this.role = Role.valueOf(AXml.getTagData(xml, "role"));
-         this.user = UserManager.getUserByUserId(AXml.getTagData(xml, "userId"));
+         this.userId = AXml.getTagData(xml, "userId");
          String hoursSpent = AXml.getTagData(xml, "hoursSpent");
          if (Strings.isValid(hoursSpent)) {
             this.hoursSpent = NumberFormat.getInstance().parse(hoursSpent).doubleValue();
@@ -104,40 +112,25 @@ public class UserRole {
 
    @Override
    public String toString() {
-      return role + " - " + user + " - " + hoursSpent + " - " + (completed ? "Completed" : "InWork");
+      return role + " - " + userId + " - " + hoursSpent + " - " + (completed ? "Completed" : "InWork");
    }
 
-   /**
-    * @return the role
-    */
    public Role getRole() {
       return role;
    }
 
-   /**
-    * @param role the role to set
-    */
    public void setRole(Role role) {
       this.role = role;
    }
 
-   /**
-    * @return the user
-    */
-   public User getUser() {
-      return user;
+   public User getUser() throws OseeCoreException {
+      return UserManager.getUserByUserId(userId);
    }
 
-   /**
-    * @param user the user to set
-    */
-   public void setUser(User user) {
-      this.user = user;
+   public void setUser(User user) throws OseeCoreException {
+      this.userId = user.getUserId();
    }
 
-   /**
-    * @return the hoursSpent
-    */
    public Double getHoursSpent() {
       return hoursSpent;
    }
@@ -146,39 +139,27 @@ public class UserRole {
       return hoursSpent == null ? "" : AtsUtilCore.doubleToI18nString(hoursSpent, true);
    }
 
-   /**
-    * @param hoursSpent the hoursSpent to set
-    */
    public void setHoursSpent(Double hoursSpent) {
       this.hoursSpent = hoursSpent;
    }
 
-   /**
-    * @return the guid
-    */
    public String getGuid() {
       return guid;
    }
 
-   /**
-    * @param guid the guid to set
-    */
    public void setGuid(String guid) {
       this.guid = guid;
    }
 
-   /**
-    * @return the completed
-    */
    public boolean isCompleted() {
       return completed;
    }
 
-   /**
-    * @param completed the completed to set
-    */
    public void setCompleted(boolean completed) {
       this.completed = completed;
    }
 
+   public String getUserId() {
+      return userId;
+   }
 }

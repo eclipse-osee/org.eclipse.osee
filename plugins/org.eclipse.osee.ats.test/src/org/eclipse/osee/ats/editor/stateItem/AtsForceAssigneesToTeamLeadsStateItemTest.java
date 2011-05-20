@@ -9,6 +9,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workdef.RuleDefinition;
@@ -64,7 +65,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
          authStateDef.getRules().removeAll(toRemove);
       }
 
-      DemoTestUtil.cleanupSimpleTest(AtsForceAssigneesToTeamLeadsStateItemTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(AtsForceAssigneesToTeamLeadsStateItemTest.class.getSimpleName());
    }
 
    @Test

@@ -681,13 +681,31 @@ public interface AtsDslPackage extends EPackage
   int WIDGET_DEF__OPTION = 6;
 
   /**
+   * The feature id for the '<em><b>Min Constraint</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int WIDGET_DEF__MIN_CONSTRAINT = 7;
+
+  /**
+   * The feature id for the '<em><b>Max Constraint</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int WIDGET_DEF__MAX_CONSTRAINT = 8;
+
+  /**
    * The number of structural features of the '<em>Widget Def</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int WIDGET_DEF_FEATURE_COUNT = 7;
+  int WIDGET_DEF_FEATURE_COUNT = 9;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.LayoutItemImpl <em>Layout Item</em>}' class.
@@ -2152,6 +2170,28 @@ public interface AtsDslPackage extends EPackage
   EAttribute getWidgetDef_Option();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMinConstraint <em>Min Constraint</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Min Constraint</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMinConstraint()
+   * @see #getWidgetDef()
+   * @generated
+   */
+  EAttribute getWidgetDef_MinConstraint();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMaxConstraint <em>Max Constraint</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Max Constraint</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMaxConstraint()
+   * @see #getWidgetDef()
+   * @generated
+   */
+  EAttribute getWidgetDef_MaxConstraint();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetRef <em>Widget Ref</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3399,6 +3439,22 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute WIDGET_DEF__OPTION = eINSTANCE.getWidgetDef_Option();
+
+    /**
+     * The meta object literal for the '<em><b>Min Constraint</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute WIDGET_DEF__MIN_CONSTRAINT = eINSTANCE.getWidgetDef_MinConstraint();
+
+    /**
+     * The meta object literal for the '<em><b>Max Constraint</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute WIDGET_DEF__MAX_CONSTRAINT = eINSTANCE.getWidgetDef_MaxConstraint();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetRefImpl <em>Widget Ref</em>}' class.

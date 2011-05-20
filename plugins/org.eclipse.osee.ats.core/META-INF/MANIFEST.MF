@@ -3,11 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ATS Core
 Bundle-SymbolicName: org.eclipse.osee.ats.core;singleton:=true
 Bundle-Version: 0.9.9.qualifier
+Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.google.inject;version="2.0.0",
- org.eclipse.core.runtime;version="3.4.0",
+Import-Package: com.google.inject,
+ org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
@@ -38,7 +39,7 @@ Import-Package: com.google.inject;version="2.0.0",
  org.eclipse.osee.framework.skynet.core.attribute,
  org.eclipse.osee.framework.skynet.core.utility,
  org.eclipse.xtext.resource,
- org.osgi.framework;version="1.3.0"
+ org.osgi.framework
 Export-Package: org.eclipse.osee.ats.core.access,
  org.eclipse.osee.ats.core.artifact,
  org.eclipse.osee.ats.core.branch,

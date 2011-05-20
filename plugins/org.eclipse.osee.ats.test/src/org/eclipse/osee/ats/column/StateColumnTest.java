@@ -5,8 +5,6 @@
  */
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.ats.column.AssigneeColumn;
-import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.DemoTestUtil;

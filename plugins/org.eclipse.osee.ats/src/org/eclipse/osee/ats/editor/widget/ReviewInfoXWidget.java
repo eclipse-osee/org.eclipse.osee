@@ -21,12 +21,17 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -34,13 +39,11 @@ import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
@@ -131,7 +134,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      }
                      NewDecisionReviewJob job =
                         new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
-                           null, ReviewManager.getDefaultDecisionReviewOptions(), null, new Date(),
+                           null, DecisionReviewManager.getDefaultDecisionReviewOptions(), null, new Date(),
                            UserManager.getUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
@@ -289,24 +292,24 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      return;
                   }
                   try {
-                     SkynetTransaction transaction =
-                        new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Reviews");
+                     List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
                      for (AbstractReviewArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
                               revArt.getStateMgr().setAssignee(UserManager.getUser());
                            }
-                           TransitionManager transitionMgr = new TransitionManager(revArt);
-                           Result result =
-                              transitionMgr.transitionToCompleted("", transaction,
-                                 TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
-                           if (result.isFalse()) {
-                              AWorkbench.popup(result);
-                              return;
-                           }
+                           awas.add(revArt);
                         }
                      }
-                     transaction.execute();
+                     TransitionHelper helper =
+                        new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getPageName(),
+                           null, null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                     TransitionManager transitionMgr = new TransitionManager(helper);
+                     TransitionResults results = transitionMgr.handleAll();
+                     if (!results.isEmpty()) {
+                        AWorkbench.popup(String.format("Transition Error %s", results.toString()));
+                     }
+                     transitionMgr.getTransaction().execute();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
@@ -315,5 +318,4 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          });
       }
    }
-
 }

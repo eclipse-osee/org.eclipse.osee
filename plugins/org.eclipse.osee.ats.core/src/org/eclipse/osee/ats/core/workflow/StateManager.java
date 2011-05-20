@@ -204,11 +204,11 @@ public class StateManager {
       return str;
    }
 
-   public Collection<IBasicUser> getAssignees() throws OseeCoreException {
+   public Collection<? extends IBasicUser> getAssignees() throws OseeCoreException {
       return getAssignees(getCurrentState());
    }
 
-   public Collection<IBasicUser> getAssignees(IWorkPage state) throws OseeCoreException {
+   public Collection<? extends IBasicUser> getAssignees(IWorkPage state) throws OseeCoreException {
       SMAState smaState = getSMAState(state, false);
       if (smaState == null) {
          return Collections.emptyList();
@@ -318,7 +318,7 @@ public class StateManager {
       return getVisitedStateNames().contains(state.getPageName());
    }
 
-   public void transitionHelper(Collection<IBasicUser> toAssignees, StateDefinition fromState, StateDefinition toState, String cancelReason) throws OseeCoreException {
+   public void transitionHelper(Collection<? extends IBasicUser> toAssignees, StateDefinition fromState, StateDefinition toState, String cancelReason) throws OseeCoreException {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 
@@ -327,8 +327,12 @@ public class StateManager {
       if (previousState == null) {
          currentStateDam.setState(new SMAState(toState, toAssignees));
       } else {
-         if (!org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(previousState.getAssignees(), toAssignees)) {
-            previousState.setAssignees(toAssignees);
+         List<IBasicUser> previousAssignees = new ArrayList<IBasicUser>();
+         previousAssignees.addAll(previousState.getAssignees());
+         List<IBasicUser> nextAssignees = new ArrayList<IBasicUser>();
+         nextAssignees.addAll(toAssignees);
+         if (!org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(previousAssignees, nextAssignees)) {
+            previousState.setAssignees(nextAssignees);
          }
          currentStateDam.setState(previousState);
       }

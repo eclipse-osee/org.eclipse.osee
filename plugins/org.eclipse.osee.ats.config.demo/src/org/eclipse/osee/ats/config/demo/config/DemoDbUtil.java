@@ -13,10 +13,14 @@ package org.eclipse.osee.ats.config.demo.config;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -42,6 +46,12 @@ public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
    private static List<TeamWorkFlowArtifact> codeArts;
+
+   public static void checkDbInitSuccess() throws OseeCoreException {
+      if (!isDbInitSuccessful()) {
+         throw new OseeStateException("DbInit must be successful to continue");
+      }
+   }
 
    public static void checkDbInitAndPopulateSuccess() throws OseeCoreException {
       if (!isDbInitSuccessful()) {
@@ -139,6 +149,18 @@ public class DemoDbUtil {
 
    public static User getDemoUser(IUserToken demoUser) throws OseeCoreException {
       return UserManager.getUserByName(demoUser.getName());
+   }
+
+   public static Collection<ActionableItemArtifact> getActionableItems(String[] aiasNames) throws OseeCoreException {
+      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      for (String str : aiasNames) {
+         for (ActionableItemArtifact aia : ActionableItemManagerCore.getActionableItemsAll()) {
+            if (str.equals(aia.getName())) {
+               aias.add(aia);
+            }
+         }
+      }
+      return aias;
    }
 
 }

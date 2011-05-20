@@ -199,7 +199,7 @@ public class UserRoleXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setUser(Collection<UserRole> userRoles, User user) {
+   private boolean setUser(Collection<UserRole> userRoles, User user) throws OseeCoreException {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
          if (user != null && userRole.getUser() != user) {
@@ -263,9 +263,10 @@ public class UserRoleXViewer extends XViewer {
       SkynetTransaction transaction =
          new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Roles");
       for (UserRole userRole : userRoles) {
-         xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false, transaction);
+         xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);
          update(userRole, null);
       }
+      xUserRoleViewer.getUserRoleMgr().saveToArtifact(xUserRoleViewer.getReviewArt(), transaction);
       transaction.execute();
       xUserRoleViewer.refresh();
       xUserRoleViewer.notifyXModifiedListeners();

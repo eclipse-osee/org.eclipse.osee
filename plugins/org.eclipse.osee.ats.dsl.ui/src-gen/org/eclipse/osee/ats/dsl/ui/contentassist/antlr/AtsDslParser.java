@@ -105,6 +105,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getWidgetDefAccess().getGroup_6(), "rule__WidgetDef__Group_6__0");
 					put(grammarAccess.getWidgetDefAccess().getGroup_7(), "rule__WidgetDef__Group_7__0");
 					put(grammarAccess.getWidgetDefAccess().getGroup_8(), "rule__WidgetDef__Group_8__0");
+					put(grammarAccess.getWidgetDefAccess().getGroup_9(), "rule__WidgetDef__Group_9__0");
+					put(grammarAccess.getWidgetDefAccess().getGroup_10(), "rule__WidgetDef__Group_10__0");
 					put(grammarAccess.getWidgetRefAccess().getGroup(), "rule__WidgetRef__Group__0");
 					put(grammarAccess.getAttrWidgetAccess().getGroup(), "rule__AttrWidget__Group__0");
 					put(grammarAccess.getAttrWidgetAccess().getGroup_2(), "rule__AttrWidget__Group_2__0");
@@ -190,6 +192,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getWidgetDefAccess().getDefaultValueAssignment_6_1(), "rule__WidgetDef__DefaultValueAssignment_6_1");
 					put(grammarAccess.getWidgetDefAccess().getHeightAssignment_7_1(), "rule__WidgetDef__HeightAssignment_7_1");
 					put(grammarAccess.getWidgetDefAccess().getOptionAssignment_8_1(), "rule__WidgetDef__OptionAssignment_8_1");
+					put(grammarAccess.getWidgetDefAccess().getMinConstraintAssignment_9_1(), "rule__WidgetDef__MinConstraintAssignment_9_1");
+					put(grammarAccess.getWidgetDefAccess().getMaxConstraintAssignment_10_1(), "rule__WidgetDef__MaxConstraintAssignment_10_1");
 					put(grammarAccess.getWidgetRefAccess().getWidgetAssignment_1(), "rule__WidgetRef__WidgetAssignment_1");
 					put(grammarAccess.getAttrWidgetAccess().getAttributeNameAssignment_1(), "rule__AttrWidget__AttributeNameAssignment_1");
 					put(grammarAccess.getAttrWidgetAccess().getOptionAssignment_2_1(), "rule__AttrWidget__OptionAssignment_2_1");

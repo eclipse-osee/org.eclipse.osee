@@ -27,13 +27,15 @@ import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -163,10 +165,14 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      TransitionManager transitionMgr = new TransitionManager(teamArt);
-      transitionMgr.transition(TeamState.Analyze, Collections.singleton((IBasicUser) UserManager.getUser()),
-         transaction, TransitionOption.Persist);
-      teamArt.persist(transaction);
+      TransitionHelper helper =
+         new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getPageName(),
+            Collections.singleton(UserManager.getUser()), null, TransitionOption.None);
+      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+      TransitionResults results = transitionMgr.handleAll();
+      if (!results.isEmpty()) {
+         throw new OseeStateException(results.toString());
+      }
       transaction.execute();
    }
 

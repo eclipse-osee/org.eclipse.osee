@@ -6,13 +6,12 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
-import org.junit.Assert;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,6 +22,7 @@ import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(AtsPeerToPeerReviewPrepareStateItemTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(AtsPeerToPeerReviewPrepareStateItemTest.class.getSimpleName());
    }
 
    @Test

@@ -28,7 +28,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;

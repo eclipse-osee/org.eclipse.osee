@@ -19,20 +19,20 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class OseeNotificationEvent {
 
-   private Collection<IBasicUser> users;
+   private Collection<? extends IBasicUser> users;
    private final String id;
    private String type;
    private String description;
    private String url;
 
-   public OseeNotificationEvent(Collection<IBasicUser> users, String id, String type, String description) {
+   public OseeNotificationEvent(Collection<? extends IBasicUser> users, String id, String type, String description) {
       this.users = users;
       this.id = id;
       this.type = type;
       this.description = description;
    }
 
-   public OseeNotificationEvent(Collection<IBasicUser> users, String id, String type, String description, String url) {
+   public OseeNotificationEvent(Collection<? extends IBasicUser> users, String id, String type, String description, String url) {
       this(users, id, type, description);
       this.url = url;
    }
@@ -54,11 +54,11 @@ public class OseeNotificationEvent {
       return description;
    }
 
-   public Collection<IBasicUser> getUsers() {
+   public Collection<? extends IBasicUser> getUsers() {
       return users;
    }
 
-   public void setUsers(Collection<IBasicUser> users) {
+   public void setUsers(Collection<? extends IBasicUser> users) {
       this.users = users;
    }
 

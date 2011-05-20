@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -75,19 +77,19 @@ public class XDecisionOptions {
       return null;
    }
 
-   public Result validateDecisionOptions() throws OseeCoreException {
-      return validateDecisionOptions(getSma().getSoleAttributeValue(getAttributeType(), ""));
+   public void validateDecisionOptions(TransitionResults results) throws OseeCoreException {
+      validateDecisionOptions(results, getSma(), getSma().getSoleAttributeValue(getAttributeType(), ""));
    }
 
-   public static Result validateDecisionOptions(String decisionOptions) {
+   public static void validateDecisionOptions(TransitionResults results, AbstractWorkflowArtifact awa, String decisionOptions) {
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionOption state = new DecisionOption();
          Result result = state.setFromXml(decsionOpt);
          if (result.isFalse()) {
-            return new Result("Invalid Decision Option \"" + decsionOpt + "\" " + result.getText());
+            results.addResult(awa,
+               new TransitionResult("Invalid Decision Option \"" + decsionOpt + "\" " + result.getText()));
          }
       }
-      return Result.TrueResult;
    }
 
    public String toXml(Set<DecisionOption> opts) throws OseeCoreException {

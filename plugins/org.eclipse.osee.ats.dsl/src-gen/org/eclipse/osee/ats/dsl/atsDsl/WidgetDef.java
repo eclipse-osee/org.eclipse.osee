@@ -25,6 +25,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getHeight <em>Height</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getOption <em>Option</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMinConstraint <em>Min Constraint</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMaxConstraint <em>Max Constraint</em>}</li>
  * </ul>
  * </p>
  *
@@ -205,5 +207,57 @@ public interface WidgetDef extends EObject
    * @generated
    */
   EList<String> getOption();
+
+  /**
+   * Returns the value of the '<em><b>Min Constraint</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Min Constraint</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Min Constraint</em>' attribute.
+   * @see #setMinConstraint(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getWidgetDef_MinConstraint()
+   * @model
+   * @generated
+   */
+  String getMinConstraint();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMinConstraint <em>Min Constraint</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Min Constraint</em>' attribute.
+   * @see #getMinConstraint()
+   * @generated
+   */
+  void setMinConstraint(String value);
+
+  /**
+   * Returns the value of the '<em><b>Max Constraint</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Max Constraint</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Max Constraint</em>' attribute.
+   * @see #setMaxConstraint(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getWidgetDef_MaxConstraint()
+   * @model
+   * @generated
+   */
+  String getMaxConstraint();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMaxConstraint <em>Max Constraint</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Max Constraint</em>' attribute.
+   * @see #getMaxConstraint()
+   * @generated
+   */
+  void setMaxConstraint(String value);
 
 } // WidgetDef

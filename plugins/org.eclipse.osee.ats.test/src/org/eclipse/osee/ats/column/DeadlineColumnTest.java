@@ -7,8 +7,7 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Calendar;
 import java.util.Date;
-import org.junit.Assert;
-import org.eclipse.osee.ats.column.DeadlineColumn;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -18,6 +17,7 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -29,7 +29,7 @@ public class DeadlineColumnTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(DeadlineColumnTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(DeadlineColumnTest.class.getSimpleName());
    }
 
    @org.junit.Test

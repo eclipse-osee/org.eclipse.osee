@@ -6,6 +6,8 @@
 package org.eclipse.osee.ats.core.validator;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 
 /**
  * @author Donald G. Dunne
@@ -37,6 +39,11 @@ public class MockValueProvider implements IValueProvider {
    @Override
    public Collection<String> getValues() {
       return values;
+   }
+
+   @Override
+   public Collection<Date> getDateValues() {
+      return Collections.emptyList();
    }
 
 }

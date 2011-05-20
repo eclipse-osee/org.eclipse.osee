@@ -27,7 +27,9 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
@@ -244,4 +246,18 @@ public final class Artifacts {
       return false;
    }
 
+   public static String getDirtyReport(Artifact artifact) {
+      String rString = null;
+      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+         if (attribute.isDirty()) {
+            rString = "Attribute: " + attribute.getNameValueDescription();
+            break;
+         }
+      }
+
+      if (rString == null) {
+         rString = RelationManager.reportHasDirtyLinks(artifact);
+      }
+      return rString;
+   }
 }

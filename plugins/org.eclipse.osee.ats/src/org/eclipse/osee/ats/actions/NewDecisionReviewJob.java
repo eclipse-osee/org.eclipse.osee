@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
@@ -59,8 +59,8 @@ public class NewDecisionReviewJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          DecisionReviewArtifact decArt =
-            ReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState, description,
-               options, assignees, createdDate, createdBy);
+            DecisionReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState,
+               description, options, assignees, createdDate, createdBy);
          decArt.persist();
          AtsUtil.openATSAction(decArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

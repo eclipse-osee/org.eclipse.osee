@@ -35,21 +35,22 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoTeam;
 import org.eclipse.osee.support.test.util.DemoWorkType;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 
 /**
@@ -59,6 +60,18 @@ public class DemoTestUtil {
    public static Map<DemoWorkType, Artifact> unCommittedWorkflows;
    public static Map<DemoWorkType, Artifact> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
+
+   public static void validateArtifactCache() throws OseeStateException {
+      if (ArtifactCache.getDirtyArtifacts().size() > 0) {
+         for (Artifact artifact : ArtifactCache.getDirtyArtifacts()) {
+            System.err.println(String.format("Artifact [%s] is dirty [%s]", artifact.toStringWithId(),
+               Artifacts.getDirtyReport(artifact)));
+         }
+         throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
+            ArtifactCache.getDirtyArtifacts().size());
+      }
+
+   }
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Collection<Artifact> robotArtifacts =
@@ -148,18 +161,6 @@ public class DemoTestUtil {
          UserManager.getUser(), transaction);
    }
 
-   /**
-    * Deletes all artifacts with names that start with any title given
-    */
-   public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
-      for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", AtsUtil.getAtsBranch(), EXCLUDE_DELETED));
-      }
-      new PurgeArtifacts(artifacts).execute();
-      TestUtil.sleep(4000);
-   }
-
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
@@ -208,13 +209,6 @@ public class DemoTestUtil {
          }
       }
       return committedWorkflows.get(demoWorkType);
-   }
-
-   /**
-    * Deletes any artifact with name that starts with title
-    */
-   public static void cleanupSimpleTest(String title) throws Exception {
-      cleanupSimpleTest(Arrays.asList(title));
    }
 
    public static void setUpTest() throws Exception {

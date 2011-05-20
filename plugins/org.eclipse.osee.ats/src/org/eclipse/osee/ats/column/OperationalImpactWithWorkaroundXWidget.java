@@ -31,7 +31,6 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    TeamWorkFlowArtifact teamArt;
    public static String ID = "ats.OperationalImpactWithWorkaround";
    public static String ID_REQUIRED = "ats.OperationalImpactWithWorkaround.required";
-   public static String WIDGET_NAME = "OperationalImpactWithWorkaroundXWidget";
 
    public OperationalImpactWithWorkaroundXWidget() {
       super("Operational Impact", "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true, true,

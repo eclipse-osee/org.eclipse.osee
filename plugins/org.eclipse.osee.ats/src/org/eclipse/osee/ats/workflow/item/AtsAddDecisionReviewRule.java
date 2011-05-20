@@ -12,22 +12,13 @@ package org.eclipse.osee.ats.workflow.item;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
-import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.review.ReviewManager;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.RuleDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
-import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
@@ -62,31 +53,6 @@ public class AtsAddDecisionReviewRule {
 
    public static String getDecisionParameterValue(RuleDefinition ruleDefinition, DecisionParameter decisionParameter) {
       return ruleDefinition.getWorkDataValue(decisionParameter.name());
-   }
-
-   /**
-    * Creates decision review if one of same name doesn't already exist
-    */
-   public static DecisionReviewArtifact createNewDecisionReview(DecisionReviewDefinition revDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, User createdBy) throws OseeCoreException {
-      if (Artifacts.artNames(ReviewManager.getReviews(teamArt)).contains(revDef.getTitle())) {
-         // Already created this review
-         return null;
-      }
-      DecisionReviewArtifact decArt = null;
-      if (revDef.isAutoTransitionToDecision()) {
-         decArt =
-            ReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, revDef.getTitle(),
-               revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(), revDef.getOptions(),
-               UserManager.getUsersByUserId(revDef.getAssignees()), createdDate, createdBy, transaction);
-      } else {
-         decArt =
-            ReviewManager.createNewDecisionReview(teamArt, revDef.getTitle(), revDef.getDescription(),
-               revDef.getRelatedToState(), revDef.getBlockingType(), revDef.getOptions(),
-               UserManager.getUsersByUserId(revDef.getAssignees()), createdDate, createdBy, transaction);
-      }
-
-      decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()));
-      return decArt;
    }
 
    public static ReviewBlockType getReviewBlockTypeOrDefault(RuleDefinition ruleDefinition) {

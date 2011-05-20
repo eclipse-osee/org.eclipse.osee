@@ -1543,9 +1543,53 @@ ruleWidgetDef returns [EObject current=null]
 	    }
 
 )
-))*	otherlv_15='}' 
+))*(	otherlv_15='minConstraint' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getWidgetDefAccess().getRightCurlyBracketKeyword_9());
+    	newLeafNode(otherlv_15, grammarAccess.getWidgetDefAccess().getMinConstraintKeyword_9_0());
+    }
+(
+(
+		lv_minConstraint_16_0=RULE_STRING
+		{
+			newLeafNode(lv_minConstraint_16_0, grammarAccess.getWidgetDefAccess().getMinConstraintSTRINGTerminalRuleCall_9_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getWidgetDefRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"minConstraint",
+        		lv_minConstraint_16_0, 
+        		"STRING");
+	    }
+
+)
+))?(	otherlv_17='maxConstraint' 
+    {
+    	newLeafNode(otherlv_17, grammarAccess.getWidgetDefAccess().getMaxConstraintKeyword_10_0());
+    }
+(
+(
+		lv_maxConstraint_18_0=RULE_STRING
+		{
+			newLeafNode(lv_maxConstraint_18_0, grammarAccess.getWidgetDefAccess().getMaxConstraintSTRINGTerminalRuleCall_10_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getWidgetDefRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"maxConstraint",
+        		lv_maxConstraint_18_0, 
+        		"STRING");
+	    }
+
+)
+))?	otherlv_19='}' 
+    {
+    	newLeafNode(otherlv_19, grammarAccess.getWidgetDefAccess().getRightCurlyBracketKeyword_11());
     }
 )
 ;
@@ -3752,151 +3796,165 @@ ruleWidgetOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleTo
     }
 
     |
+	kw='FUTURE_DATE_REQUIRED' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFUTURE_DATE_REQUIREDKeyword_8()); 
+    }
+
+    |
+	kw='NOT_FUTURE_DATE_REQUIRED' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNOT_FUTURE_DATE_REQUIREDKeyword_9()); 
+    }
+
+    |
 	kw='MULTI_SELECT' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getMULTI_SELECTKeyword_8()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getMULTI_SELECTKeyword_10()); 
     }
 
     |
 	kw='HORIZONTAL_LABEL' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getHORIZONTAL_LABELKeyword_9()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getHORIZONTAL_LABELKeyword_11()); 
     }
 
     |
 	kw='VERTICAL_LABEL' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getVERTICAL_LABELKeyword_10()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getVERTICAL_LABELKeyword_12()); 
     }
 
     |
 	kw='LABEL_AFTER' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getLABEL_AFTERKeyword_11()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getLABEL_AFTERKeyword_13()); 
     }
 
     |
 	kw='LABEL_BEFORE' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getLABEL_BEFOREKeyword_12()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getLABEL_BEFOREKeyword_14()); 
     }
 
     |
 	kw='NO_LABEL' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNO_LABELKeyword_13()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNO_LABELKeyword_15()); 
     }
 
     |
 	kw='SORTED' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getSORTEDKeyword_14()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getSORTEDKeyword_16()); 
     }
 
     |
 	kw='ADD_DEFAULT_VALUE' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getADD_DEFAULT_VALUEKeyword_15()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getADD_DEFAULT_VALUEKeyword_17()); 
     }
 
     |
 	kw='NO_DEFAULT_VALUE' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNO_DEFAULT_VALUEKeyword_16()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNO_DEFAULT_VALUEKeyword_18()); 
     }
 
     |
 	kw='BEGIN_COMPOSITE_4' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_4Keyword_17()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_4Keyword_19()); 
     }
 
     |
 	kw='BEGIN_COMPOSITE_6' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_6Keyword_18()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_6Keyword_20()); 
     }
 
     |
 	kw='BEGIN_COMPOSITE_8' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_8Keyword_19()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_8Keyword_21()); 
     }
 
     |
 	kw='BEGIN_COMPOSITE_10' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_10Keyword_20()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_10Keyword_22()); 
     }
 
     |
 	kw='END_COMPOSITE' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getEND_COMPOSITEKeyword_21()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getEND_COMPOSITEKeyword_23()); 
     }
 
     |
 	kw='FILL_NONE' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_NONEKeyword_22()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_NONEKeyword_24()); 
     }
 
     |
 	kw='FILL_HORIZONTALLY' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_HORIZONTALLYKeyword_23()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_HORIZONTALLYKeyword_25()); 
     }
 
     |
 	kw='FILL_VERTICALLY' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_VERTICALLYKeyword_24()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_VERTICALLYKeyword_26()); 
     }
 
     |
 	kw='ALIGN_LEFT' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_LEFTKeyword_25()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_LEFTKeyword_27()); 
     }
 
     |
 	kw='ALIGN_RIGHT' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_RIGHTKeyword_26()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_RIGHTKeyword_28()); 
     }
 
     |
 	kw='ALIGN_CENTER' 
     {
         $current.merge(kw);
-        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_CENTERKeyword_27()); 
+        newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_CENTERKeyword_29()); 
     }
 
     |
     { 
-        newCompositeNode(grammarAccess.getWidgetOptionAccess().getWIDGET_OPTION_NAMEParserRuleCall_28()); 
+        newCompositeNode(grammarAccess.getWidgetOptionAccess().getWIDGET_OPTION_NAMEParserRuleCall_30()); 
     }
-    this_WIDGET_OPTION_NAME_28=ruleWIDGET_OPTION_NAME    {
-		$current.merge(this_WIDGET_OPTION_NAME_28);
+    this_WIDGET_OPTION_NAME_30=ruleWIDGET_OPTION_NAME    {
+		$current.merge(this_WIDGET_OPTION_NAME_30);
     }
 
     { 

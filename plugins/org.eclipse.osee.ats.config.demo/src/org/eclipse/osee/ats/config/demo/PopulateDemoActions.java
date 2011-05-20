@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
@@ -26,21 +25,24 @@ import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
 import org.eclipse.osee.ats.config.demo.config.DemoDbReviews;
 import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.config.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
-import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -48,10 +50,8 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -131,6 +131,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (DbUtil.isDbInit() || !prompt || prompt && MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
          getName())) {
 
+         DemoTestUtil.validateArtifactCache();
+
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Populate Demo Database");
 
          AtsBulkLoad.reloadConfig(true);
@@ -154,31 +156,12 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
          createMainWorkingBranchTx();
 
-         // Create SAW_Bld_2 Actions
-         SkynetTransaction sawActionsTransaction =
-            new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Actions");
-         Set<Artifact> actionArts =
-            createActions(DemoDbActionData.getReqSawActionsData(), DemoSawBuilds.SAW_Bld_2.toString(), null,
-               sawActionsTransaction);
-         sawActionsTransaction.execute();
-         // Sleep to wait for the persist of the actions
-         DemoDbUtil.sleep(3000);
-
-         for (Artifact actionArt : actionArts) {
-            if (actionArt.getName().contains("(committed)")) {
-               // Working Branch off SAW_Bld_2, Make Changes, Commit
-               makeAction1ReqChanges(actionArt);
-            } else if (actionArt.getName().contains("(uncommitted)")) {
-               // Working Branch off SAW_Bld_2, Make Changes, DON'T Commit
-               makeAction2ReqChanges(actionArt);
-            } else if (actionArt.getName().contains("(uncommitted-conflicted)")) {
-               // Working Branch off SAW_Bld_2, Make Conflicted Changes, DON'T Commit
-               makeAction3ReqChanges(actionArt);
-            }
-         }
+         // Create SWB_Bld_2 Actions and Reviews
+         PopulateSawBuild2Actions.run();
 
          // Create actions against non-requirement AIs and Teams
          createNonReqChangeDemoActions();
+         createGenericDemoActions();
 
          // Mark all CIS Code "Team Workflows" as Favorites for "Joe Smith"
          if (DEBUG) {
@@ -207,6 +190,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create and transition reviews off sample workflows
          DemoDbReviews.createReviews(DEBUG);
 
+         DemoTestUtil.validateArtifactCache();
          TestUtil.severeLoggingEnd(monitorLog);
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Populate Complete");
       }
@@ -231,219 +215,6 @@ public class PopulateDemoActions extends XNavigateItemAction {
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }
-   }
-
-   private void makeAction1ReqChanges(Artifact actionArt) throws OseeCoreException {
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Making Action 1 Requirement Changes");
-      }
-      TeamWorkFlowArtifact reqTeam = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
-         if (team.getTeamDefinition().getName().contains("Req")) {
-            reqTeam = team;
-         }
-      }
-
-      if (reqTeam == null) {
-         throw new OseeArgumentException("Can't locate Req team.");
-      }
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
-      }
-      Result result = AtsBranchManager.createWorkingBranch(reqTeam, null, false);
-      if (result.isFalse()) {
-         throw new OseeArgumentException(
-            new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
-      }
-
-      DemoDbUtil.sleep(5000);
-
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot,
-         reqTeam.getWorkingBranch())) {
-         if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               new StringBuilder("Modifying artifact => ").append(art).toString());
-         }
-         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
-         art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Navigation.name());
-         Artifact navArt =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Navigation.name(),
-               reqTeam.getWorkingBranch());
-         art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
-         art.persist();
-      }
-
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Event,
-         reqTeam.getWorkingBranch())) {
-         if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               new StringBuilder("Modifying artifact => ").append(art).toString());
-         }
-         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
-         art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-         Artifact robotArt =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
-               reqTeam.getWorkingBranch());
-         art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
-         art.persist();
-      }
-
-      // Delete two artifacts
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.daVinci,
-         reqTeam.getWorkingBranch())) {
-         if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               new StringBuilder("Deleting artifact => ").append(art).toString());
-         }
-         art.deleteAndPersist();
-      }
-
-      // Add three new artifacts
-      Artifact parentArt = DemoDbUtil.getInterfaceInitializationSoftwareRequirement(DEBUG, reqTeam.getWorkingBranch());
-      for (int x = 1; x < 4; x++) {
-         String name = "Robot Interface Init " + x;
-         if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
-         }
-         Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
-         newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-         newArt.persist();
-         parentArt.addChild(newArt);
-         parentArt.persist();
-      }
-
-      DemoDbUtil.sleep(2000L);
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
-      }
-      Job job =
-         AtsBranchManager.commitWorkingBranch(reqTeam, false, true, reqTeam.getTargetedVersion().getParentBranch(),
-            true);
-      try {
-         job.join();
-      } catch (InterruptedException ex) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Completing Action");
-      }
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Completing Action");
-      }
-   }
-
-   private void makeAction3ReqChanges(Artifact actionArt) throws Exception {
-      TeamWorkFlowArtifact reqTeam = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
-         if (team.getTeamDefinition().getName().contains("Req")) {
-            reqTeam = team;
-         }
-      }
-
-      if (reqTeam == null) {
-         throw new OseeArgumentException("Can't locate Req team.");
-      }
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
-      }
-      Result result = AtsBranchManager.createWorkingBranch(reqTeam, null, false);
-      if (result.isFalse()) {
-         throw new OseeArgumentException(
-            new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
-      }
-
-      DemoDbUtil.sleep(5000);
-
-      Artifact branchArtifact =
-         DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
-            DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            new StringBuilder("Modifying branch artifact => ").append(branchArtifact).toString());
-      }
-      branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
-      branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-      Artifact comArt =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
-            reqTeam.getWorkingBranch());
-      branchArtifact.addRelation(CoreRelationTypes.Allocation__Component, comArt);
-      branchArtifact.persist();
-
-      Artifact parentArtifact =
-         DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
-            DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            new StringBuilder("Modifying parent artifact => ").append(parentArtifact).toString());
-      }
-      parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
-      parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem,
-         DemoSubsystems.Cognitive_Decision_Aiding.name());
-      parentArtifact.persist();
-
-   }
-
-   private void makeAction2ReqChanges(Artifact actionArt) throws Exception {
-      TeamWorkFlowArtifact reqTeam = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
-         if (team.getTeamDefinition().getName().contains("Req")) {
-            reqTeam = team;
-         }
-      }
-
-      if (reqTeam == null) {
-         throw new OseeArgumentException("Can't locate Req team.");
-      }
-      if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
-      }
-      Result result = AtsBranchManager.createWorkingBranch(reqTeam, null, false);
-      if (result.isFalse()) {
-         throw new OseeArgumentException(
-            new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
-      }
-
-      DemoDbUtil.sleep(5000);
-
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Functional,
-         reqTeam.getWorkingBranch())) {
-         if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               new StringBuilder("Modifying artifact => ").append(art).toString());
-         }
-         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
-         art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-         Artifact comArt =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
-               reqTeam.getWorkingBranch());
-
-         art.addRelation(CoreRelationTypes.Allocation__Component, comArt);
-         art.persist();
-      }
-
-      // Delete one artifacts
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.CISST,
-         reqTeam.getWorkingBranch())) {
-         if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               new StringBuilder("Deleting artifact => ").append(art).toString());
-         }
-         art.deleteAndPersist();
-      }
-
-      // Add two new artifacts
-      Artifact parentArt = DemoDbUtil.getInterfaceInitializationSoftwareRequirement(DEBUG, reqTeam.getWorkingBranch());
-      for (int x = 15; x < 17; x++) {
-         String name = "Claw Interface Init " + x;
-         if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
-         }
-         Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
-         newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-         parentArt.addChild(newArt);
-
-         newArt.persist();
-      }
-
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
@@ -474,10 +245,16 @@ public class PopulateDemoActions extends XNavigateItemAction {
             DemoSawBuilds.SAW_Bld_1.toString(), TeamState.Completed, transaction));
       appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_1.getName(), transaction);
 
+      transaction.execute();
+   }
+
+   private void createGenericDemoActions() throws Exception {
       if (DEBUG) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "createNonReqChangeDemoActions - getGenericActionData");
       }
+      SkynetTransaction transaction =
+         new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Generic Actions");
       createActions(DemoDbActionData.getGenericActionData(), null, null, transaction);
       transaction.execute();
    }
@@ -493,7 +270,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private Set<Artifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
+   private Set<Artifact> createActions(List<DemoDbActionData> actionDatas, String versionStr, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
       Set<Artifact> actionArts = new HashSet<Artifact>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
@@ -512,7 +289,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   aData.getActionableItems(), createdDate, createdBy, null, transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
-               TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
+               TeamWorkFlowManager dtwm =
+                  new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
+                     TransitionOption.OverrideTransitionValidityCheck);
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {
@@ -521,8 +300,27 @@ public class PopulateDemoActions extends XNavigateItemAction {
                      }
                   }
                }
+               boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
+               if (isSwDesign) {
+                  // set reviews to non-blocking so can transition to Completed
+                  for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamWf)) {
+                     reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
+                  }
+               }
+
                // Transition to desired state
-               dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false, transaction);
+               Result result =
+                  dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false,
+                     transaction);
+               if (result.isFalse()) {
+                  throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
+                     aData.toState.getPageName(), result.getText());
+               }
+               if (!teamWf.isCompletedOrCancelled()) {
+                  // Reset assignees that may have been overwritten during transition 
+                  teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
+               }
+
                teamWf.persist(transaction);
                if (Strings.isValid(versionStr)) {
                   Artifact verArt =

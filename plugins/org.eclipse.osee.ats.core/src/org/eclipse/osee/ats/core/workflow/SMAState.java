@@ -46,7 +46,7 @@ public class SMAState {
       return result;
    }
 
-   public SMAState(IWorkPage stateDef, Collection<IBasicUser> assignees) throws OseeCoreException {
+   public SMAState(IWorkPage stateDef, Collection<? extends IBasicUser> assignees) throws OseeCoreException {
       this(stateDef);
       if (assignees != null) {
          setAssignees(assignees);
@@ -94,14 +94,14 @@ public class SMAState {
       return super.equals(obj);
    }
 
-   public Collection<IBasicUser> getAssignees() {
+   public Collection<? extends IBasicUser> getAssignees() {
       return assignees;
    }
 
    /**
     * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignees(Collection<IBasicUser> assignees) throws OseeCoreException {
+   public void setAssignees(Collection<? extends IBasicUser> assignees) throws OseeCoreException {
       if (assignees != null) {
          if (assignees.contains(UserManager.getUser(SystemUser.OseeSystem)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
             throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");

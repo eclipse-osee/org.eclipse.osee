@@ -66,6 +66,9 @@ public class SMATargetedVersionHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
+                     if (editor.isDirty()) {
+                        editor.doSave(null);
+                     }
                      if (TargetedVersionColumn.promptChangeVersion(sma,
                         AtsUtilCore.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                         VersionLockedType.UnLocked)) {
@@ -95,12 +98,14 @@ public class SMATargetedVersionHeader extends Composite {
    }
 
    private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
-      String value = "Not Set";
-      if (sma.getTargetedVersion() != null) {
-         value = sma.getTargetedVersion().getName();
+      if (Widgets.isAccessible(valueLabel)) {
+         String value = "Not Set";
+         if (sma.getTargetedVersion() != null) {
+            value = sma.getTargetedVersion().getName();
+         }
+         valueLabel.setText(value);
+         valueLabel.getParent().layout();
       }
-      valueLabel.setText(value);
-      valueLabel.getParent().layout();
    }
 
    @Override

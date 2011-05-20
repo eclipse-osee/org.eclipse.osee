@@ -16,10 +16,10 @@ import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.GoalManager;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionArtifact;
@@ -156,7 +156,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       oteGoal.addMember(ActionManager.getFirstTeam(action));
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(action);
       PeerToPeerReviewArtifact peerReviewArt =
-         ReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", transaction);
+         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", transaction);
       oteGoal.addMember(peerReviewArt);
       teamArt.persist(transaction);
       return teamArt;

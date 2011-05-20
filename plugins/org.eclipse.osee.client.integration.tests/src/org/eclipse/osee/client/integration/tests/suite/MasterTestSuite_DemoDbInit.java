@@ -10,21 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.suite;
 
-import org.eclipse.osee.ats.config.demo.PopulateActionsTest;
-import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfigTest;
-import org.eclipse.osee.ats.config.demo.config.DemoDbGroupsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   DemoDbInitTest.class,
-   PopulateDemoDatabaseTest.class,
-   DemoDatabaseConfigTest.class,
-   DemoDbGroupsTest.class,
-   PopulateActionsTest.class})
+@Suite.SuiteClasses({DemoDbInitTest.class})
 /**
- * DbInit, DbPopulate and Tests to ensure that all went as expected.
+ * Wipes database and initializes with demo schema
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_DemoDbInit {

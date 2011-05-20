@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
-import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
@@ -201,7 +200,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.Task, DemoTestUtil.getNumTasks());
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 18);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 22);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       // Only 2 decision reviews should have been created by Joe, rest are Rule reviews created by OseeSystem user
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 2);
@@ -222,7 +221,7 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 25);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
-      runGeneralXColTest(74, false);
+      runGeneralXColTest(70, false);
    }
 
    private void runGeneralUserSearchTest(XNavigateItem item, int expectedNum) throws Exception {
@@ -262,7 +261,7 @@ public class AtsNavigateItemsToWorldViewTest {
       OseeLog.log(AtsPlugin.class, Level.INFO,
          "Testing User's items relating to " + DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
-      runGeneralLoadingTest(item, AtsArtifactTypes.AbstractWorkflowArtifact, 8,
+      runGeneralLoadingTest(item, AtsArtifactTypes.AbstractWorkflowArtifact, 12,
          DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
@@ -355,9 +354,9 @@ public class AtsNavigateItemsToWorldViewTest {
       selectedTeamDefs.clear();
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 7);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.UnReleased, 7);
-      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 6);
+      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 10);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Released, 0);
-      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Both, 6);
+      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Both, 10);
       List<String> teamDefs = new ArrayList<String>();
       teamDefs.add("SAW Test");
       teamDefs.add("SAW Design");
@@ -366,7 +365,7 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 3);
       selectedTeamDefs.clear();
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 6);
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 10);
    }
 
    private void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
@@ -451,41 +450,9 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
    }
 
-   @org.junit.Test
-   public void testShowOpenDecisionReviewsSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open Decision Reviews");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 7);
-   }
-
-   @org.junit.Test
-   public void testShowWorkflowsWaitingForDecisionReviewsSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting Decision Reviews");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 7);
-   }
-
-   @org.junit.Test
-   public void testShowOpenPeerToPeerReviewsSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open PeerToPeer Reviews");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 7);
-   }
-
-   @org.junit.Test
-   public void testShowWorkflowsWaitingForPeerToPeerReviewsSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting PeerToPeer Reviews");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 6);
-   }
-
    private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, IArtifactType artifactType, int numOfType, User user) throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
       return runGeneralLoadingTest(item, artifactType, numOfType, user);
-   }
-
-   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType) throws Exception {
-      return runGeneralLoadingTest(item, artifactType, numOfType, null);
    }
 
    private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, User user) throws Exception {

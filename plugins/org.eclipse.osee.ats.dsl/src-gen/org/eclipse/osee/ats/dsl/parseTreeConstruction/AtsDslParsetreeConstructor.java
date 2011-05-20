@@ -4393,13 +4393,13 @@ protected class WorkDef_RightCurlyBracketKeyword_8 extends KeywordToken  {
  * WidgetDef:
  * 	"widgetDefinition" name=WIDGET_NAME_REFERENCE "{" ("attributeName" attributeName=STRING)? ("description"
  * 	description=STRING)? ("xWidgetName" xWidgetName=STRING)? ("defaultValue" defaultValue=STRING)? ("height" height=INT)?
- * 	("option" option+=WidgetOption)* "}";
+ * 	("option" option+=WidgetOption)* ("minConstraint" minConstraint=STRING)? ("maxConstraint" maxConstraint=STRING)? "}";
  *
  **/
 
 // "widgetDefinition" name=WIDGET_NAME_REFERENCE "{" ("attributeName" attributeName=STRING)? ("description"
 // description=STRING)? ("xWidgetName" xWidgetName=STRING)? ("defaultValue" defaultValue=STRING)? ("height" height=INT)?
-// ("option" option+=WidgetOption)* "}"
+// ("option" option+=WidgetOption)* ("minConstraint" minConstraint=STRING)? ("maxConstraint" maxConstraint=STRING)? "}"
 protected class WidgetDef_Group extends GroupToken {
 	
 	public WidgetDef_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -4414,7 +4414,7 @@ protected class WidgetDef_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new WidgetDef_RightCurlyBracketKeyword_9(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new WidgetDef_RightCurlyBracketKeyword_11(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -4995,16 +4995,38 @@ protected class WidgetDef_OptionAssignment_8_1 extends AssignmentToken  {
 }
 
 
-// "}"
-protected class WidgetDef_RightCurlyBracketKeyword_9 extends KeywordToken  {
+// ("minConstraint" minConstraint=STRING)?
+protected class WidgetDef_Group_9 extends GroupToken {
 	
-	public WidgetDef_RightCurlyBracketKeyword_9(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public WidgetDef_Group_9(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getWidgetDefAccess().getGroup_9();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new WidgetDef_MinConstraintAssignment_9_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "minConstraint"
+protected class WidgetDef_MinConstraintKeyword_9_0 extends KeywordToken  {
+	
+	public WidgetDef_MinConstraintKeyword_9_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getWidgetDefAccess().getRightCurlyBracketKeyword_9();
+		return grammarAccess.getWidgetDefAccess().getMinConstraintKeyword_9_0();
 	}
 
     @Override
@@ -5017,6 +5039,157 @@ protected class WidgetDef_RightCurlyBracketKeyword_9 extends KeywordToken  {
 			case 4: return new WidgetDef_Group_4(lastRuleCallOrigin, this, 4, inst);
 			case 5: return new WidgetDef_Group_3(lastRuleCallOrigin, this, 5, inst);
 			case 6: return new WidgetDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 6, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// minConstraint=STRING
+protected class WidgetDef_MinConstraintAssignment_9_1 extends AssignmentToken  {
+	
+	public WidgetDef_MinConstraintAssignment_9_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getWidgetDefAccess().getMinConstraintAssignment_9_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new WidgetDef_MinConstraintKeyword_9_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("minConstraint",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("minConstraint");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getWidgetDefAccess().getMinConstraintSTRINGTerminalRuleCall_9_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getWidgetDefAccess().getMinConstraintSTRINGTerminalRuleCall_9_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("maxConstraint" maxConstraint=STRING)?
+protected class WidgetDef_Group_10 extends GroupToken {
+	
+	public WidgetDef_Group_10(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getWidgetDefAccess().getGroup_10();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new WidgetDef_MaxConstraintAssignment_10_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "maxConstraint"
+protected class WidgetDef_MaxConstraintKeyword_10_0 extends KeywordToken  {
+	
+	public WidgetDef_MaxConstraintKeyword_10_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getWidgetDefAccess().getMaxConstraintKeyword_10_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new WidgetDef_Group_9(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new WidgetDef_Group_8(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new WidgetDef_Group_7(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new WidgetDef_Group_6(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new WidgetDef_Group_5(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new WidgetDef_Group_4(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new WidgetDef_Group_3(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new WidgetDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 7, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// maxConstraint=STRING
+protected class WidgetDef_MaxConstraintAssignment_10_1 extends AssignmentToken  {
+	
+	public WidgetDef_MaxConstraintAssignment_10_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getWidgetDefAccess().getMaxConstraintAssignment_10_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new WidgetDef_MaxConstraintKeyword_10_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("maxConstraint",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("maxConstraint");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getWidgetDefAccess().getMaxConstraintSTRINGTerminalRuleCall_10_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getWidgetDefAccess().getMaxConstraintSTRINGTerminalRuleCall_10_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// "}"
+protected class WidgetDef_RightCurlyBracketKeyword_11 extends KeywordToken  {
+	
+	public WidgetDef_RightCurlyBracketKeyword_11(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getWidgetDefAccess().getRightCurlyBracketKeyword_11();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new WidgetDef_Group_10(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new WidgetDef_Group_9(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new WidgetDef_Group_8(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new WidgetDef_Group_7(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new WidgetDef_Group_6(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new WidgetDef_Group_5(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new WidgetDef_Group_4(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new WidgetDef_Group_3(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new WidgetDef_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, this, 8, inst);
 			default: return null;
 		}	
 	}

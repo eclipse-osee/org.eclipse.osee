@@ -18,8 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.util.AtsNotifyUsers.NotifyType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
@@ -106,7 +108,9 @@ public class AtsNotifyUsersTest {
       List<IBasicUser> expected = new ArrayList<IBasicUser>();
       expected.add(jason_ValidEmail);
       expected.add(kay_ValidEmail);
-      Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expected, event.getUsers()));
+      List<IBasicUser> users = new ArrayList<IBasicUser>();
+      users.addAll(event.getUsers());
+      Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expected, users));
       Assert.assertEquals(
          "You have been set as the assignee of [Demo Code Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest]",
          event.getDescription());
@@ -163,11 +167,15 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       teamArt.getStateMgr().initializeStateMachine(TeamState.Endorse);
-      TransitionManager transMgr = new TransitionManager(teamArt);
+      TransitionHelper helper =
+         new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getPageName(),
+            null, "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      transMgr.transitionToCancelled("this is the reason", transaction,
-         TransitionOption.OverrideTransitionValidityCheck);
+      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+      TransitionResults results = transitionMgr.handleAll();
       transaction.execute();
+      Assert.assertTrue("Transition should have no errors", results.isEmpty());
+
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(NotifyType.Cancelled.name(), event.getType());

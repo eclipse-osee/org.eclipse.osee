@@ -7,14 +7,14 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Collection;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
@@ -47,8 +47,9 @@ public class AtsDecisionReviewDecisionStateItemTest {
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
                AtsUtil.getAtsBranch());
          decRevArt.setName(getClass().getSimpleName());
-         decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions,
-            ReviewManager.getDecisionReviewOptionsString(ReviewManager.getDefaultDecisionReviewOptions()));
+         decRevArt.setSoleAttributeValue(
+            AtsAttributeTypes.DecisionReviewOptions,
+            DecisionReviewManager.getDecisionReviewOptionsString(DecisionReviewManager.getDefaultDecisionReviewOptions()));
          decRevArt.persist();
       }
    }
@@ -56,7 +57,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(AtsDecisionReviewDecisionStateItemTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(AtsDecisionReviewDecisionStateItemTest.class.getSimpleName());
    }
 
    @Test

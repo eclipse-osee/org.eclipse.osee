@@ -66,10 +66,10 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    @Override
-   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<IBasicUser> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
-      super.transitioned(fromState, toState, toAssignees, persist, transaction);
+   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(fromState, toState, toAssignees, transaction);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
-         taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, persist, transaction);
+         taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, transaction);
       }
    }
 

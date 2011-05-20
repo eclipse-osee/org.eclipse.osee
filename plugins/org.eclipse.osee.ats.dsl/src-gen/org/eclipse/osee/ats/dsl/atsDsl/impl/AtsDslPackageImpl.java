@@ -937,6 +937,26 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getWidgetDef_MinConstraint()
+  {
+    return (EAttribute)widgetDefEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getWidgetDef_MaxConstraint()
+  {
+    return (EAttribute)widgetDefEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getWidgetRef()
   {
     return widgetRefEClass;
@@ -1700,6 +1720,8 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(widgetDefEClass, WIDGET_DEF__DEFAULT_VALUE);
     createEAttribute(widgetDefEClass, WIDGET_DEF__HEIGHT);
     createEAttribute(widgetDefEClass, WIDGET_DEF__OPTION);
+    createEAttribute(widgetDefEClass, WIDGET_DEF__MIN_CONSTRAINT);
+    createEAttribute(widgetDefEClass, WIDGET_DEF__MAX_CONSTRAINT);
 
     widgetRefEClass = createEClass(WIDGET_REF);
     createEReference(widgetRefEClass, WIDGET_REF__WIDGET);
@@ -1895,6 +1917,8 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getWidgetDef_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, WidgetDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getWidgetDef_Height(), ecorePackage.getEInt(), "height", null, 0, 1, WidgetDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getWidgetDef_Option(), ecorePackage.getEString(), "option", null, 0, -1, WidgetDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getWidgetDef_MinConstraint(), ecorePackage.getEString(), "minConstraint", null, 0, 1, WidgetDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getWidgetDef_MaxConstraint(), ecorePackage.getEString(), "maxConstraint", null, 0, 1, WidgetDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(widgetRefEClass, WidgetRef.class, "WidgetRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getWidgetRef_Widget(), this.getWidgetDef(), null, "widget", null, 0, 1, WidgetRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

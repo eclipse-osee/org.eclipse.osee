@@ -112,25 +112,50 @@ public final class AWorkbench {
       return editors;
    }
 
-   public static void popup(Result result) {
+   public static void popup(String title, Result result) {
       AWorkbench.popup(
-         (result.isTrue() ? "Success" : "ERROR"),
+         Strings.isValid(title) ? title : ((result.isTrue() ? "Success" : "ERROR")),
          Strings.isValid(result.getText()) ? result.getText() : result.isTrue() ? "Success" : "Error Encountered.  See Error Log View");
+
+   }
+
+   public static void popup(Result result) {
+      popup((String) null, result);
    }
 
    public static void popup(final String message) {
       popup(message, message);
    }
 
+   public static enum MessageType {
+      Informational,
+      Error,
+      Confirm;
+   }
+
    public static void popup(final String title, final String message) {
+      popup(MessageType.Informational, title, message);
+   }
+
+   public static void popup(final MessageType messageType, final String title, final String message) {
       if (!PlatformUI.isWorkbenchRunning()) {
          OseeLog.log(AWorkbench.class, Level.SEVERE, message);
       } else {
          getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
-               MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-                  message);
+               if (messageType == MessageType.Informational) {
+                  MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+                     message);
+               } else if (messageType == MessageType.Error) {
+                  MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+                     message);
+
+               } else if (messageType == MessageType.Confirm) {
+                  MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+                     message);
+
+               }
             }
          });
       }

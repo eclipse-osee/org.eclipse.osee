@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.core.review.defect.DefectItem;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class DefectContentProvider implements ITreeContentProvider {
 
-   protected Collection<DefectItem> rootSet = new HashSet<DefectItem>();
+   protected Collection<ReviewDefectItem> rootSet = new HashSet<ReviewDefectItem>();
    private final DefectXViewer xViewer;
 
    public DefectContentProvider(DefectXViewer WorldXViewer) {
@@ -29,11 +29,11 @@ public class DefectContentProvider implements ITreeContentProvider {
       this.xViewer = WorldXViewer;
    }
 
-   public void add(final DefectItem item) {
+   public void add(final ReviewDefectItem item) {
       add(Arrays.asList(item));
    }
 
-   public void add(final Collection<? extends DefectItem> items) {
+   public void add(final Collection<? extends ReviewDefectItem> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -46,7 +46,7 @@ public class DefectContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void set(final Collection<? extends DefectItem> arts) {
+   public void set(final Collection<? extends ReviewDefectItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -115,7 +115,7 @@ public class DefectContentProvider implements ITreeContentProvider {
    /**
     * @return the rootSet
     */
-   public Collection<DefectItem> getRootSet() {
+   public Collection<ReviewDefectItem> getRootSet() {
       return rootSet;
    }
 

@@ -6,8 +6,9 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Date;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
@@ -32,7 +33,7 @@ public class EstimatedHoursColumnTest {
    @AfterClass
    @BeforeClass
    public static void cleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(EstimatedHoursColumnTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(EstimatedHoursColumnTest.class.getSimpleName());
    }
 
    @org.junit.Test
@@ -54,7 +55,7 @@ public class EstimatedHoursColumnTest {
          teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), UserManager.getUser());
       taskArt2.persist(transaction);
       PeerToPeerReviewArtifact peerArt =
-         ReviewManager.createNewPeerToPeerReview(teamArt1, getClass().getSimpleName(),
+         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1, getClass().getSimpleName(),
             teamArt1.getStateMgr().getCurrentStateName(), transaction);
       peerArt.persist(transaction);
       transaction.execute();

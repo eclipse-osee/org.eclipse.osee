@@ -58,7 +58,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       return super.setupImage(artifact);
    }
 
-   public static org.eclipse.swt.graphics.Image getUserImage(Collection<IBasicUser> users) throws OseeCoreException {
+   public static org.eclipse.swt.graphics.Image getUserImage(Collection<? extends IBasicUser> users) throws OseeCoreException {
       if (users.size() > 0) {
          if (UserManager.isUserSystem(users)) {
             return ImageManager.getImage(FrameworkImage.USER_GREY);

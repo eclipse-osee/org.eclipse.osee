@@ -26,14 +26,14 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewDefinitionManager;
+import org.eclipse.osee.ats.core.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
-import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -303,7 +303,8 @@ public class AtsBranchManager {
       for (DecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
             DecisionReviewArtifact decArt =
-               AtsAddDecisionReviewRule.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate, createdBy);
+               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate,
+                  createdBy);
             if (decArt != null) {
                decArt.persist(transaction);
             }
@@ -312,7 +313,7 @@ public class AtsBranchManager {
       for (PeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
             PeerToPeerReviewArtifact peerArt =
-               AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(peerRevDef, transaction, teamArt, createdDate,
+               PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef, transaction, teamArt, createdDate,
                   createdBy);
             if (peerArt != null) {
                peerArt.persist(transaction);

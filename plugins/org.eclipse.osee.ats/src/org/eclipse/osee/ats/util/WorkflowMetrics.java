@@ -17,9 +17,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -94,7 +94,8 @@ public class WorkflowMetrics {
          }
          if (art instanceof AbstractWorkflowArtifact) {
             awas.add((AbstractWorkflowArtifact) art);
-            Collection<IBasicUser> users = ((AbstractWorkflowArtifact) art).getStateMgr().getAssignees();
+            Collection<IBasicUser> users = new HashSet<IBasicUser>();
+            users.addAll(((AbstractWorkflowArtifact) art).getStateMgr().getAssignees());
             assignees.addAll(users);
             assigneesAssignedOrCompleted.addAll(users);
             for (IBasicUser user : users) {

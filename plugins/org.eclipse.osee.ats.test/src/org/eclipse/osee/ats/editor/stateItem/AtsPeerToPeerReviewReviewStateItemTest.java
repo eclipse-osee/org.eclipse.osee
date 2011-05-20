@@ -7,17 +7,19 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.review.role.Role;
 import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,7 +42,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       if (peerRevArt == null) {
          // setup fake review artifact with decision options set
-         peerRevArt = ReviewManager.createNewPeerToPeerReview(null, getClass().getName(), "", null);
+         peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(null, getClass().getName(), "", null);
          peerRevArt.setName(getClass().getSimpleName());
          peerRevArt.persist();
       }
@@ -49,7 +51,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(AtsPeerToPeerReviewReviewStateItemTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(AtsPeerToPeerReviewReviewStateItemTest.class.getSimpleName());
    }
 
    @Test
@@ -62,10 +64,13 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // set roles
       UserRole userRole = new UserRole(Role.Author, UserManager.getUserByName("Joe Smith"));
-      peerRevArt.getUserRoleManager().addOrUpdateUserRole(userRole, false, null);
+      UserRoleManager roleMgr = new UserRoleManager(peerRevArt);
+      roleMgr.addOrUpdateUserRole(userRole);
       userRole = new UserRole(Role.Reviewer, UserManager.getUserByName("Alex Kay"));
-      peerRevArt.getUserRoleManager().addOrUpdateUserRole(userRole, false, null);
-      peerRevArt.persist();
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "test transition");
+      roleMgr.addOrUpdateUserRole(userRole);
+      roleMgr.saveToArtifact(peerRevArt, transaction);
+      transaction.execute();
 
       // assignee should be user roles
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());

@@ -31,7 +31,6 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    TeamWorkFlowArtifact teamArt;
    public static String ID = "ats.OperationalImpact";
    public static String ID_REQUIRED = "ats.OperationalImpact.required";
-   public static String WIDGET_NAME = "OperationalImpactXWidget";
 
    public OperationalImpactXWidget() {
       super("Operational Impact", "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true);

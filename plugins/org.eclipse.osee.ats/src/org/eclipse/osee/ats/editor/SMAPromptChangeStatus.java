@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskManager;
 import org.eclipse.osee.ats.core.task.TaskResOptionDefinition;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
@@ -119,7 +120,7 @@ public class SMAPromptChangeStatus {
             awa.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
          if (awa.isOfType(AtsArtifactTypes.Task)) {
-            Result result = ((TaskArtifact) awa).statusPercentChanged(hours, percent, transaction);
+            Result result = TaskManager.statusPercentChanged(((TaskArtifact) awa), hours, percent, transaction);
             if (result.isFalse()) {
                AWorkbench.popup(result);
                return;

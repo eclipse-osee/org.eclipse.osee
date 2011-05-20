@@ -36,6 +36,8 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getHeight <em>Height</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getOption <em>Option</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getMinConstraint <em>Min Constraint</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getMaxConstraint <em>Max Constraint</em>}</li>
  * </ul>
  * </p>
  *
@@ -172,6 +174,46 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
    * @ordered
    */
   protected EList<String> option;
+
+  /**
+   * The default value of the '{@link #getMinConstraint() <em>Min Constraint</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinConstraint()
+   * @generated
+   * @ordered
+   */
+  protected static final String MIN_CONSTRAINT_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getMinConstraint() <em>Min Constraint</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinConstraint()
+   * @generated
+   * @ordered
+   */
+  protected String minConstraint = MIN_CONSTRAINT_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMaxConstraint() <em>Max Constraint</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxConstraint()
+   * @generated
+   * @ordered
+   */
+  protected static final String MAX_CONSTRAINT_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getMaxConstraint() <em>Max Constraint</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxConstraint()
+   * @generated
+   * @ordered
+   */
+  protected String maxConstraint = MAX_CONSTRAINT_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -351,6 +393,52 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getMinConstraint()
+  {
+    return minConstraint;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMinConstraint(String newMinConstraint)
+  {
+    String oldMinConstraint = minConstraint;
+    minConstraint = newMinConstraint;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.WIDGET_DEF__MIN_CONSTRAINT, oldMinConstraint, minConstraint));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getMaxConstraint()
+  {
+    return maxConstraint;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMaxConstraint(String newMaxConstraint)
+  {
+    String oldMaxConstraint = maxConstraint;
+    maxConstraint = newMaxConstraint;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.WIDGET_DEF__MAX_CONSTRAINT, oldMaxConstraint, maxConstraint));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -370,6 +458,10 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
         return getHeight();
       case AtsDslPackage.WIDGET_DEF__OPTION:
         return getOption();
+      case AtsDslPackage.WIDGET_DEF__MIN_CONSTRAINT:
+        return getMinConstraint();
+      case AtsDslPackage.WIDGET_DEF__MAX_CONSTRAINT:
+        return getMaxConstraint();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -407,6 +499,12 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
         getOption().clear();
         getOption().addAll((Collection<? extends String>)newValue);
         return;
+      case AtsDslPackage.WIDGET_DEF__MIN_CONSTRAINT:
+        setMinConstraint((String)newValue);
+        return;
+      case AtsDslPackage.WIDGET_DEF__MAX_CONSTRAINT:
+        setMaxConstraint((String)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -442,6 +540,12 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
       case AtsDslPackage.WIDGET_DEF__OPTION:
         getOption().clear();
         return;
+      case AtsDslPackage.WIDGET_DEF__MIN_CONSTRAINT:
+        setMinConstraint(MIN_CONSTRAINT_EDEFAULT);
+        return;
+      case AtsDslPackage.WIDGET_DEF__MAX_CONSTRAINT:
+        setMaxConstraint(MAX_CONSTRAINT_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -470,6 +574,10 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
         return height != HEIGHT_EDEFAULT;
       case AtsDslPackage.WIDGET_DEF__OPTION:
         return option != null && !option.isEmpty();
+      case AtsDslPackage.WIDGET_DEF__MIN_CONSTRAINT:
+        return MIN_CONSTRAINT_EDEFAULT == null ? minConstraint != null : !MIN_CONSTRAINT_EDEFAULT.equals(minConstraint);
+      case AtsDslPackage.WIDGET_DEF__MAX_CONSTRAINT:
+        return MAX_CONSTRAINT_EDEFAULT == null ? maxConstraint != null : !MAX_CONSTRAINT_EDEFAULT.equals(maxConstraint);
     }
     return super.eIsSet(featureID);
   }
@@ -499,6 +607,10 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
     result.append(height);
     result.append(", option: ");
     result.append(option);
+    result.append(", minConstraint: ");
+    result.append(minConstraint);
+    result.append(", maxConstraint: ");
+    result.append(maxConstraint);
     result.append(')');
     return result.toString();
   }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;

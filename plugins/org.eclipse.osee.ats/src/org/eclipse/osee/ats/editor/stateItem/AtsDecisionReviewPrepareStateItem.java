@@ -16,10 +16,10 @@ import org.eclipse.osee.ats.core.review.XDecisionOptions;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -37,18 +37,17 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    }
 
    @Override
-   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees) throws OseeCoreException {
+   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees) throws OseeCoreException {
       if (sma.isOfType(AtsArtifactTypes.DecisionReview) && fromState.getPageName().equals(
          DecisionReviewState.Prepare.getPageName()) && toState.getPageName().equals(
          DecisionReviewState.Decision.getPageName())) {
          XDecisionOptions decOptions = new XDecisionOptions(sma);
-         return decOptions.validateDecisionOptions();
+         decOptions.validateDecisionOptions(results);
       }
-      return Result.TrueResult;
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees, SkynetTransaction transaction) {
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) {
       // do nothing
    }
 

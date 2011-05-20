@@ -31,6 +31,8 @@ import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
+import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -658,12 +660,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof AbstractReviewArtifact) {
             AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
             try {
-               if (reviewArtifact.getAttributes(AtsAttributeTypes.ReviewDefect).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().isEmpty()) {
+               if (reviewArtifact.getAttributes(AtsAttributeTypes.ReviewDefect).size() > 0 && ReviewDefectManager.getDefectItems(
+                  reviewArtifact).isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
                      "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
                }
-               if (reviewArtifact.getAttributes(AtsAttributeTypes.Role).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().isEmpty()) {
+               if (reviewArtifact.getAttributes(AtsAttributeTypes.Role).size() > 0 && UserRoleManager.getUserRoles(
+                  reviewArtifact).isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
                      "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");

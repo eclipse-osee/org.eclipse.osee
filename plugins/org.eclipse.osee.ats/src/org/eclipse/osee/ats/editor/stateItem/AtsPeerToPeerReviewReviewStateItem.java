@@ -16,13 +16,14 @@ import java.util.Set;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -40,13 +41,13 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       if (sma.isOfType(AtsArtifactTypes.PeerToPeerReview) && toState.getPageName().equals(
          PeerToPeerReviewState.Review.getPageName())) {
          // Set Assignees to all user roles users
          Set<IBasicUser> assignees = new HashSet<IBasicUser>();
          PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) sma;
-         for (UserRole uRole : peerArt.getUserRoleManager().getUserRoles()) {
+         for (UserRole uRole : UserRoleManager.getUserRoles(peerArt)) {
             if (!uRole.isCompleted()) {
                assignees.add(uRole.getUser());
             }
@@ -59,8 +60,8 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
    }
 
    @Override
-   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees) {
-      return Result.TrueResult;
+   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees) {
+      // do nothing
    }
 
 }

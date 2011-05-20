@@ -10,22 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.review.role;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.review.IReviewArtifact;
-import org.eclipse.osee.ats.core.review.defect.DefectItem;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.validator.ArtifactValueProvider;
+import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -34,6 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -42,44 +41,51 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class UserRoleManager {
 
-   private final WeakReference<AbstractReviewArtifact> artifactRef;
-   private boolean enabled = true;
    private final static String ROLE_ITEM_TAG = "Role";
    private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.Role;
 
    private final Matcher roleMatcher = java.util.regex.Pattern.compile(
       "<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private final IValueProvider valueProvider;
+   private List<UserRole> roles;
 
-   public UserRoleManager(AbstractReviewArtifact artifact) {
-      this.artifactRef = new WeakReference<AbstractReviewArtifact>(artifact);
+   public UserRoleManager(Artifact artifact) {
+      this(new ArtifactValueProvider(artifact, ATS_ROLE_STORAGE_TYPE));
    }
 
-   public String getHtml() throws OseeCoreException {
-      if (getUserRoles().isEmpty()) {
+   public UserRoleManager(IValueProvider valueProvider) {
+      this.valueProvider = valueProvider;
+   }
+
+   public static String getHtml(PeerToPeerReviewArtifact peerArt) throws OseeCoreException {
+      if (getUserRoles(peerArt).isEmpty()) {
          return "";
       }
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
-      sb.append(getTable());
+      sb.append(getTable(peerArt));
       return sb.toString();
    }
 
-   public AbstractReviewArtifact getArtifact() throws OseeStateException {
-      if (artifactRef.get() == null) {
-         throw new OseeStateException("Artifact has been garbage collected");
+   public static List<UserRole> getUserRoles(Artifact artifact) throws OseeCoreException {
+      return new UserRoleManager(artifact).getUserRoles();
+   }
+
+   public void ensureLoaded() throws OseeCoreException {
+      if (roles == null) {
+         roles = new ArrayList<UserRole>();
+         for (String xml : valueProvider.getValues()) {
+            roleMatcher.reset(xml);
+            while (roleMatcher.find()) {
+               UserRole item = new UserRole(roleMatcher.group());
+               roles.add(item);
+            }
+         }
       }
-      return artifactRef.get();
    }
 
    public List<UserRole> getUserRoles() throws OseeCoreException {
-      List<UserRole> roles = new ArrayList<UserRole>();
-      for (String xml : getArtifact().getAttributesToStringList(ATS_ROLE_STORAGE_TYPE)) {
-         roleMatcher.reset(xml);
-         while (roleMatcher.find()) {
-            UserRole item = new UserRole(roleMatcher.group());
-            roles.add(item);
-         }
-      }
+      ensureLoaded();
       return roles;
    }
 
@@ -124,45 +130,53 @@ public class UserRoleManager {
       return users;
    }
 
-   private void saveRoleItems(List<UserRole> defectItems, boolean persist, SkynetTransaction transaction) {
+   private List<UserRole> getStoredUserRoles(Artifact artifact) throws OseeCoreException {
+      // Add new ones: items in userRoles that are not in dbuserRoles
+      List<UserRole> storedUserRoles = new ArrayList<UserRole>();
+      for (Attribute<?> attr : artifact.getAttributes(ATS_ROLE_STORAGE_TYPE)) {
+         UserRole storedRole = new UserRole((String) attr.getValue());
+         storedUserRoles.add(storedRole);
+      }
+      return storedUserRoles;
+   }
+
+   public void saveToArtifact(Artifact artifact, SkynetTransaction transaction) {
       try {
+
          // Change existing ones
-         for (Attribute<?> attr : getArtifact().getAttributes(ATS_ROLE_STORAGE_TYPE)) {
-            UserRole dbPromoteItem = new UserRole((String) attr.getValue());
-            for (UserRole pItem : defectItems) {
-               if (pItem.equals(dbPromoteItem)) {
+         for (Attribute<?> attr : artifact.getAttributes(ATS_ROLE_STORAGE_TYPE)) {
+            UserRole storedRole = new UserRole((String) attr.getValue());
+            for (UserRole pItem : getUserRoles()) {
+               if (pItem.equals(storedRole)) {
                   attr.setFromString(AXml.addTagData(ROLE_ITEM_TAG, pItem.toXml()));
                }
             }
          }
          List<UserRole> userRole = getUserRoles();
-         // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
-         for (UserRole delUserRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(userRole,
-            defectItems)) {
-            for (Attribute<?> attr : getArtifact().getAttributes(ATS_ROLE_STORAGE_TYPE)) {
-               UserRole dbPromoteItem = new UserRole((String) attr.getValue());
-               if (dbPromoteItem.equals(delUserRole)) {
+         List<UserRole> storedUserRoles = getStoredUserRoles(artifact);
+         // Remove deleted ones; items in dbuserRoles that are not in userRoles
+         for (UserRole delUserRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
+            storedUserRoles, userRole)) {
+            for (Attribute<?> attr : artifact.getAttributes(ATS_ROLE_STORAGE_TYPE)) {
+               UserRole storedRole = new UserRole((String) attr.getValue());
+               if (storedRole.equals(delUserRole)) {
                   attr.delete();
                }
             }
          }
-         // Add new ones: items in promoteItems that are not in dbPromoteItems
-         for (UserRole newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(defectItems,
-            userRole)) {
-            getArtifact().addAttributeFromString(ATS_ROLE_STORAGE_TYPE,
-               AXml.addTagData(ROLE_ITEM_TAG, newPromoteItem.toXml()));
+         for (UserRole newRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(userRole,
+            storedUserRoles)) {
+            artifact.addAttributeFromString(ATS_ROLE_STORAGE_TYPE, AXml.addTagData(ROLE_ITEM_TAG, newRole.toXml()));
          }
-         updateAssignees();
-         if (persist) {
-            getArtifact().persist(transaction);
-         }
-         rollupHoursSpentToReviewState(persist, transaction);
+         updateAssignees(artifact);
+         rollupHoursSpentToReviewState(artifact);
+         artifact.persist(transaction);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't create ats review role document", ex);
       }
    }
 
-   public void addOrUpdateUserRole(UserRole userRole, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void addOrUpdateUserRole(UserRole userRole) throws OseeCoreException {
       List<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
@@ -174,27 +188,27 @@ public class UserRoleManager {
       if (!found) {
          roleItems.add(userRole);
       }
-      saveRoleItems(roleItems, persist, transaction);
    }
 
-   private void updateAssignees() throws OseeCoreException {
+   private static void updateAssignees(Artifact artifact) throws OseeCoreException {
+      UserRoleManager roleManager = new UserRoleManager(artifact);
       // Set assignees based on roles that are not set as completed
       List<IBasicUser> assignees = new ArrayList<IBasicUser>();
-      for (UserRole uRole : getUserRoles()) {
+      for (UserRole uRole : roleManager.getUserRoles()) {
          if (!uRole.isCompleted() && uRole.getUser() != null && !assignees.contains(uRole.getUser())) {
             assignees.add(uRole.getUser());
          }
       }
       // If roles are all completed, then still need to select a user to assign to SMA
       if (assignees.isEmpty()) {
-         if (getUserRoles(Role.Author).size() > 0) {
-            for (UserRole role : getUserRoles(Role.Author)) {
+         if (roleManager.getUserRoles(Role.Author).size() > 0) {
+            for (UserRole role : roleManager.getUserRoles(Role.Author)) {
                if (!assignees.contains(role.getUser())) {
                   assignees.add(role.getUser());
                }
             }
-         } else if (getUserRoles(Role.Moderator).size() > 0) {
-            for (UserRole role : getUserRoles(Role.Moderator)) {
+         } else if (roleManager.getUserRoles(Role.Moderator).size() > 0) {
+            for (UserRole role : roleManager.getUserRoles(Role.Moderator)) {
                if (!assignees.contains(role.getUser())) {
                   assignees.add(role.getUser());
                }
@@ -206,19 +220,18 @@ public class UserRoleManager {
          }
       }
       // Set assignees based on roles
-      getArtifact().getStateMgr().setAssignees(assignees);
+      ((AbstractWorkflowArtifact) artifact).getStateMgr().setAssignees(assignees);
    }
 
-   public void removeUserRole(UserRole userRole, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void removeUserRole(UserRole userRole) throws OseeCoreException {
       List<UserRole> roleItems = getUserRoles();
       roleItems.remove(userRole);
-      saveRoleItems(roleItems, persist, transaction);
    }
 
-   public String getTable() throws OseeCoreException {
+   public static String getTable(PeerToPeerReviewArtifact peerArt) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
-      for (UserRole item : getUserRoles()) {
+      for (UserRole item : getUserRoles(peerArt)) {
          User user = item.getUser();
          String name = "";
          if (user != null) {
@@ -231,63 +244,24 @@ public class UserRoleManager {
          builder.append("<TD>" + item.getRole().name() + "</TD>");
          builder.append("<TD>" + item.getUser().getName() + "</TD>");
          builder.append("<TD>" + item.getHoursSpentStr() + "</TD>");
-         builder.append("<TD>" + getNumMajor(item.getUser()) + "</TD>");
-         builder.append("<TD>" + getNumMinor(item.getUser()) + "</TD>");
-         builder.append("<TD>" + getNumIssues(item.getUser()) + "</TD>");
+
+         ReviewDefectManager defectMgr = new ReviewDefectManager(peerArt);
+         builder.append("<TD>" + defectMgr.getNumMajor(item.getUser()) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumMinor(item.getUser()) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumIssues(item.getUser()) + "</TD>");
          builder.append("</TR>");
       }
       builder.append("</TABLE>");
       return builder.toString();
    }
 
-   public int getNumMajor(User user) throws OseeCoreException {
-      int x = 0;
-      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Major && dItem.getUser() == user) {
-            x++;
-         }
-      }
-      return x;
-   }
-
-   public int getNumMinor(User user) throws OseeCoreException {
-      int x = 0;
-      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Minor && dItem.getUser() == user) {
-            x++;
-         }
-      }
-      return x;
-   }
-
-   public int getNumIssues(User user) throws OseeCoreException {
-      int x = 0;
-      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Issue && dItem.getUser() == user) {
-            x++;
-         }
-      }
-      return x;
-   }
-
-   public boolean isEnabled() {
-      return enabled;
-   }
-
-   public void setEnabled(boolean enabled) {
-      this.enabled = enabled;
-   }
-
-   public void rollupHoursSpentToReviewState(boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   private void rollupHoursSpentToReviewState(Artifact artifact) throws OseeCoreException {
       double hoursSpent = 0.0;
       for (UserRole role : getUserRoles()) {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
-      AbstractWorkflowArtifact awa = getArtifact();
+      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
       awa.getStateMgr().setMetrics(hoursSpent, awa.getStateMgr().getPercentComplete(), true, UserManager.getUser(),
          new Date());
-      if (persist) {
-         getArtifact().persist(transaction);
-      }
    }
 }

@@ -22,11 +22,11 @@ import org.eclipse.osee.ats.core.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.review.ReviewManager;
-import org.eclipse.osee.ats.core.review.defect.DefectItem;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Disposition;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.InjectionActivity;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.ValidateReviewManager;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Disposition;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.InjectionActivity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.review.role.Role;
 import org.eclipse.osee.ats.core.review.role.UserRole;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -74,7 +74,7 @@ public class DemoDbReviews {
 
       // Create a Decision review and transition to ReWork
       DecisionReviewArtifact reviewArt =
-         ReviewManager.createValidateReview(firstTestArt, true, createdDate, createdBy, transaction);
+         ValidateReviewManager.createValidateReview(firstTestArt, true, createdDate, createdBy, transaction);
       Result result =
          DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Followup, UserManager.getUser(), false,
             transaction);
@@ -84,7 +84,7 @@ public class DemoDbReviews {
       reviewArt.persist(transaction);
 
       // Create a Decision review and transition to Completed
-      reviewArt = ReviewManager.createValidateReview(secondTestArt, true, createdDate, createdBy, transaction);
+      reviewArt = ValidateReviewManager.createValidateReview(secondTestArt, true, createdDate, createdBy, transaction);
       DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Completed, UserManager.getUser(), false,
          transaction);
       if (result.isFalse()) {
@@ -128,13 +128,13 @@ public class DemoDbReviews {
 
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
-         ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
+         PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
             firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
-         ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
+         PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
             firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
@@ -150,7 +150,7 @@ public class DemoDbReviews {
 
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
-         ReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
+         PeerToPeerReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
             secondCodeArt.getStateMgr().getCurrentStateName(), new Date(), DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones),
             transaction);
       roles = new ArrayList<UserRole>();
@@ -158,21 +158,26 @@ public class DemoDbReviews {
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), 4.5, true));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
 
-      List<DefectItem> defects = new ArrayList<DefectItem>();
-      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
+      List<ReviewDefectItem> defects = new ArrayList<ReviewDefectItem>();
+      defects.add(new ReviewDefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
          InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234", new Date()));
-      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
+      defects.add(new ReviewDefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
          InjectionActivity.Code, "Using getInteger instead", "Fixed", "MyWorld.java:Line 33", new Date()));
-      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Major, Disposition.Reject,
+      defects.add(new ReviewDefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Major, Disposition.Reject,
          InjectionActivity.Code, "Spelling incorrect", "Is correct", "MyWorld.java:Line 234", new Date()));
-      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Minor, Disposition.Reject,
+      defects.add(new ReviewDefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Minor, Disposition.Reject,
          InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234", new Date()));
-      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
+      defects.add(new ReviewDefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
          InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
+      for (ReviewDefectItem defect : defects) {
+         defect.setClosed(true);
+      }
       result =
          PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles, defects,
             UserManager.getUser(), false, transaction);
-      reviewArt.persist(transaction);
+      if (result.isTrue()) {
+         reviewArt.persist(transaction);
+      }
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }

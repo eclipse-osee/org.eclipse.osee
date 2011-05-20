@@ -10,19 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.widget;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskStates;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -130,12 +133,14 @@ public class TaskInfoXWidget extends XLabelValueBase {
                               if (taskArt.getStateMgr().isUnAssigned()) {
                                  taskArt.getStateMgr().setAssignee(UserManager.getUser());
                               }
-                              TransitionManager transitionMgr = new TransitionManager(taskArt);
-                              Result result =
-                                 transitionMgr.transitionToCompleted("", transaction,
-                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
-                              if (result.isFalse()) {
-                                 AWorkbench.popup(result);
+                              TransitionHelper helper =
+                                 new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
+                                    TaskStates.Completed.getPageName(), null, null,
+                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                              TransitionManager transitionMgr = new TransitionManager(helper);
+                              TransitionResults results = transitionMgr.handleAll();
+                              if (!results.isEmpty()) {
+                                 AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                                  return;
                               }
                            }

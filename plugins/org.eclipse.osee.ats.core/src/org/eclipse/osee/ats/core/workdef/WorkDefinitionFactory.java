@@ -47,6 +47,15 @@ public class WorkDefinitionFactory {
       workDefIdToWorkDefintion.clear();
    }
 
+   public static void addWorkDefinition(WorkDefinition workDef) {
+      workDefIdToWorkDefintion.put(workDef.getName(), new WorkDefinitionMatch(workDef,
+         "programatically added via WorkDefinitionFactory.addWorkDefinition"));
+   }
+
+   public static void removeWorkDefinition(WorkDefinition workDef) {
+      workDefIdToWorkDefintion.remove(workDef.getName());
+   }
+
    public static WorkDefinitionMatch getWorkDefinition(Artifact artifact) throws OseeCoreException {
       if (!awaHridToWorkDefinitions.containsKey(artifact.getHumanReadableId())) {
          WorkDefinitionMatch match = getWorkDefinitionNew(artifact);

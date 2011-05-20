@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.team.TeamState;
-import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.UserCommunity;
 
@@ -57,44 +58,11 @@ public class DemoDbActionData {
    }
 
    public Collection<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
-      for (String str : actionableItems) {
-         for (ActionableItemArtifact aia : ActionableItemManagerCore.getActionableItemsAll()) {
-            if (str.equals(aia.getName())) {
-               aias.add(aia);
-            }
-         }
-      }
-      return aias;
+      return DemoDbUtil.getActionableItems(actionableItems);
    }
 
-   public static Set<DemoDbActionData> getReqSawActionsData() {
-      Set<DemoDbActionData> actionDatas = new HashSet<DemoDbActionData>();
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW (committed) Reqt Changes for"}, "Diagram View", "1",
-         new String[] {
-            DemoDbAIs.SAW_Requirements.getAIName(),
-            DemoDbAIs.SAW_Code.getAIName(),
-            DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, TeamState.Implement));
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW (uncommitted) More Reqt Changes for"}, "Diagram View",
-         "3", new String[] {
-            DemoDbAIs.SAW_Code.getAIName(),
-            DemoDbAIs.SAW_SW_Design.getAIName(),
-            DemoDbAIs.SAW_Requirements.getAIName(),
-            DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, TeamState.Implement));
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW (no-branch) Even More Requirement Changes for"},
-         "Diagram View", "3", new String[] {
-            DemoDbAIs.SAW_Code.getAIName(),
-            DemoDbAIs.SAW_SW_Design.getAIName(),
-            DemoDbAIs.SAW_Requirements.getAIName(),
-            DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, TeamState.Implement));
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW (uncommitted-conflicted) More Requirement Changes for"},
-         "Diagram View", "3", new String[] {DemoDbAIs.SAW_Requirements.getAIName()}, new Integer[] {1},
-         TeamState.Implement));
-      return actionDatas;
-   }
-
-   public static Set<DemoDbActionData> getNonReqSawActionData() {
-      Set<DemoDbActionData> actionDatas = new HashSet<DemoDbActionData>();
+   public static List<DemoDbActionData> getNonReqSawActionData() {
+      List<DemoDbActionData> actionDatas = new ArrayList<DemoDbActionData>();
       actionDatas.add(new DemoDbActionData(new String[] {"Workaround for"}, "Graph View", "1",
          new String[] {DemoDbAIs.Adapter.getAIName()}, new Integer[] {1}, TeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"Working with"}, "Diagram Tree", "3",
@@ -102,8 +70,8 @@ public class DemoDbActionData {
       return actionDatas;
    }
 
-   public static Set<DemoDbActionData> getGenericActionData() {
-      Set<DemoDbActionData> actionDatas = new HashSet<DemoDbActionData>();
+   public static List<DemoDbActionData> getGenericActionData() {
+      List<DemoDbActionData> actionDatas = new ArrayList<DemoDbActionData>();
       actionDatas.add(new DemoDbActionData(new String[] {"Problem with the", "Can't see the"}, "Graph View", "1",
          new String[] {DemoDbAIs.Adapter.getAIName()}, new Integer[] {1}, TeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"Problem in", "Can't load"}, "Diagram Tree", "3",

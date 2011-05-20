@@ -11,25 +11,42 @@
 
 package org.eclipse.osee.ats.core.review;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
+import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
- * Methods in support of programatically transitioning the Decision Review Workflow through it's states. Only to be used
- * for the DefaultReviewWorkflow of Prepare->Decision->ReWork->Complete
+ * Methods in support of Decision Reviews
  * 
  * @author Donald G. Dunne
  */
-public final class DecisionReviewManager {
+public class DecisionReviewManager {
 
-   private DecisionReviewManager() {
+   protected DecisionReviewManager() {
       // private constructor
    }
 
@@ -86,12 +103,17 @@ public final class DecisionReviewManager {
    }
 
    public static Result transitionToState(WorkPageType workPageType, boolean popup, IWorkPage toState, DecisionReviewArtifact reviewArt, User user, SkynetTransaction transaction) throws OseeCoreException {
-      TransitionManager transitionMgr = new TransitionManager(reviewArt);
-      Result result =
-         transitionMgr.transition(toState,
-            (user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user), transaction,
+      TransitionHelper helper =
+         new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(reviewArt),
+            toState.getPageName(),
+            Arrays.asList((user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user)), null,
             TransitionOption.None);
-      return result;
+      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+      TransitionResults results = transitionMgr.handleAll();
+      if (results.isEmpty()) {
+         return Result.TrueResult;
+      }
+      return new Result("Transition Error %s", results.toString());
    }
 
    public static Result setDecisionStateData(boolean popup, DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
@@ -105,4 +127,80 @@ public final class DecisionReviewManager {
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
+
+   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+      DecisionReviewArtifact decRev =
+         createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description, options, assignees,
+            createdDate, createdBy);
+      decRev.persist(transaction);
+
+      // transition to decision
+      TransitionHelper helper =
+         new TransitionHelper("Transition to Decision", Arrays.asList(decRev),
+            DecisionReviewState.Decision.getPageName(), assignees, null, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+      TransitionResults results = transitionMgr.handleAll();
+
+      if (!results.isEmpty()) {
+         throw new OseeStateException("Error auto-transitioning review %s to Decision state. Results [%s]",
+            decRev.toStringWithId(), results.toString());
+      }
+      // ensure assignees are as requested
+      decRev.getStateMgr().setAssignees(assignees);
+      decRev.persist(transaction);
+      return decRev;
+   }
+
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, User createdBy) throws OseeCoreException {
+      return createNewDecisionReview(teamArt, reviewBlockType,
+         "Should we do this?  Yes will require followup, No will not",
+         againstCurrentState ? teamArt.getStateMgr().getCurrentStateName() : null,
+         "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null, createdDate, createdBy);
+   }
+
+   public static List<DecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
+      List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
+      options.add(new DecisionReviewOption("Yes", true, Arrays.asList(UserManager.getUser().getUserId())));
+      options.add(new DecisionReviewOption("No", false, null));
+      return options;
+   }
+
+   public static String getDecisionReviewOptionsString(Collection<DecisionReviewOption> options) {
+      StringBuffer sb = new StringBuffer();
+      for (DecisionReviewOption opt : options) {
+         sb.append(opt.getName());
+         sb.append(";");
+         sb.append(opt.isFollowupRequired() ? "Followup" : "Completed");
+         sb.append(";");
+         for (String userId : opt.getUserIds()) {
+            sb.append("<" + userId + ">");
+         }
+         sb.append("\n");
+      }
+      return sb.toString();
+   }
+
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
+      DecisionReviewArtifact decRev =
+         (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
+            AtsUtilCore.getAtsBranch(), title);
+
+      // Initialize state machine
+      decRev.initializeNewStateMachine(assignees, createdDate, createdBy);
+
+      teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
+      if (Strings.isValid(relatedToState)) {
+         decRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);
+      }
+      if (Strings.isValid(description)) {
+         decRev.setSoleAttributeValue(AtsAttributeTypes.Description, description);
+      }
+      decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, getDecisionReviewOptionsString(options));
+      if (reviewBlockType != null) {
+         decRev.setSoleAttributeFromString(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
+      }
+
+      return decRev;
+   }
+
 }

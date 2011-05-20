@@ -34,9 +34,6 @@
                name="ATS World Editor">
          </editor>
    </extension>
-   <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
-      <ArtifactFactory classname="org.eclipse.osee.ats.artifact.AtsArtifactFactory"/>
-   </extension>
       <extension
          point="org.eclipse.ui.newWizards">
       <category
@@ -166,9 +163,6 @@
       <AtsStateItem
             classname="org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem">
       </AtsStateItem>
-      <AtsStateItem
-            classname="org.eclipse.osee.ats.editor.stateItem.AtsHandleAddReviewRuleStateItem">
-      </AtsStateItem>
    </extension>
    <extension
          id="OseeTypes_ATS"
@@ -210,12 +204,6 @@
       <ArtifactAnnotation
             classname="org.eclipse.osee.ats.util.AtsArtifactAnnotations">
       </ArtifactAnnotation>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
-      <XWidgetProvider
-            classname="org.eclipse.osee.ats.util.widgets.XWidgetProvider">
-      </XWidgetProvider>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.ArtifactCheck">
@@ -486,14 +474,6 @@
       </actionSet>
    </extension>
       <extension
-            id="AtsOseeXWidgetValidator"
-            name="AtsOseeXWidgetValidator"
-            point="org.eclipse.osee.framework.skynet.core.OseeXWidgetValidator">
-         <OseeXWidgetValidator
-               classname="org.eclipse.osee.ats.core.validate.AtsOseeXWidgetValidator">
-         </OseeXWidgetValidator>
-      </extension>
-      <extension
             id="WorkDefinitionFactoryLegacy"
             name="WorkDefinitionFactoryLegacy"
             point="org.eclipse.osee.ats.core.AtsLegacyWorkDefinitionProvider">
@@ -510,12 +490,6 @@
          </AtsTransitionListener>
          <AtsTransitionListener
                classname="org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem">
-         </AtsTransitionListener>
-         <AtsTransitionListener
-               classname="org.eclipse.osee.ats.editor.stateItem.AtsHandleAddReviewRuleStateItem">
-         </AtsTransitionListener>
-         <AtsTransitionListener
-               classname="org.eclipse.osee.ats.editor.stateItem.AtsHandleAddReviewRuleStateItem">
          </AtsTransitionListener>
          <AtsTransitionListener
                classname="org.eclipse.osee.ats.notify.AtsNotificationTransitionListener">

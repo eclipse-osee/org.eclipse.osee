@@ -7,17 +7,17 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.AfterClass;
@@ -53,7 +53,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(AtsDecisionReviewPrepareStateItemTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(AtsDecisionReviewPrepareStateItemTest.class.getSimpleName());
    }
 
    @Test
@@ -62,7 +62,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
 
       // set valid options
       String decisionOptionStr =
-         ReviewManager.getDecisionReviewOptionsString(ReviewManager.getDefaultDecisionReviewOptions());
+         DecisionReviewManager.getDecisionReviewOptionsString(DecisionReviewManager.getDefaultDecisionReviewOptions());
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist();
 
@@ -71,20 +71,18 @@ public class AtsDecisionReviewPrepareStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsDecisionReviewPrepareStateItem stateItem = new AtsDecisionReviewPrepareStateItem();
-      Result result =
-         stateItem.transitioning(decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
+      TransitionResults results = new TransitionResults();
+      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
 
       // verify no errors
-      Assert.assertTrue(result.getText(), result.isTrue());
+      Assert.assertTrue(results.toString(), results.isEmpty());
 
       // set invalid options; NoState is invalid, should only be Completed or FollowUp
       decisionOptionStr = decisionOptionStr.replaceFirst("Completed", "NoState");
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist();
-      result =
-         stateItem.transitioning(decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
-      Assert.assertFalse(result.getText(), result.isTrue());
+      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
+      Assert.assertTrue(results.contains("Invalid Decision Option"));
 
    }
-
 }

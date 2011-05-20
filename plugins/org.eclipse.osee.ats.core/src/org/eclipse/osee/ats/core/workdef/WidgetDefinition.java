@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.ats.core.workdef;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WidgetDefinition extends StateItem {
 
    private String attributeName;
@@ -14,6 +17,7 @@ public class WidgetDefinition extends StateItem {
    private String xWidgetName;
    private String defaultValue;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
+   private final List<WidgetConstraint> constraints = new ArrayList<WidgetConstraint>();
 
    public WidgetDefinition(String name) {
       super(name);
@@ -84,6 +88,10 @@ public class WidgetDefinition extends StateItem {
 
    public WidgetOptionHandler getOptions() {
       return options;
+   }
+
+   public List<WidgetConstraint> getConstraints() {
+      return constraints;
    }
 
 }

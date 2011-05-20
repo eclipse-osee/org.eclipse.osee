@@ -6,8 +6,6 @@
 package org.eclipse.osee.ats.config.copy;
 
 import junit.framework.Assert;
-import org.eclipse.osee.ats.config.copy.ConfigData;
-import org.eclipse.osee.ats.config.copy.CopyAtsValidation;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.DemoTestUtil;

@@ -17,9 +17,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
@@ -213,8 +214,8 @@ public class AtsDeleteManagerTest {
          createdBy, transaction);
 
       DecisionReviewArtifact decRev =
-         ReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
-            TeamState.Endorse.getPageName(), "Description", ReviewManager.getDefaultDecisionReviewOptions(),
+         DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
+            TeamState.Endorse.getPageName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
             Arrays.asList((IBasicUser) UserManager.getUser()), createdDate, createdBy);
       decRev.persist(transaction);
 
@@ -232,6 +233,6 @@ public class AtsDeleteManagerTest {
       for (TestNames testName : TestNames.values()) {
          names.add(testName.name());
       }
-      DemoTestUtil.cleanupSimpleTest(names);
+      AtsTestUtil.cleanupSimpleTest(names);
    }
 }

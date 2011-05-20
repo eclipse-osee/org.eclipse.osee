@@ -15,11 +15,11 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,7 +46,7 @@ public class ImportActionsViaSpreadsheetTest {
    @BeforeClass
    @AfterClass
    public static void cleanUp() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(ActionTitles);
+      AtsTestUtil.cleanupSimpleTest(ActionTitles);
    }
 
    @Before

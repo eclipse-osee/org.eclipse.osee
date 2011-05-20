@@ -142,7 +142,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public void initializeNewStateMachine(IWorkPage state, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
       getStateMgr().initializeStateMachine(state, assignees);
       setCreatedBy(createdBy, true, createdDate);
-      (new TransitionManager(this)).logStateStartedEvent(state, createdDate, createdBy);
+      TransitionManager.logStateStartedEvent(this, state, createdDate, createdBy);
    }
 
    public boolean isTargetedVersionable() throws OseeCoreException {
@@ -384,7 +384,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * to transition.
     */
    @SuppressWarnings("unused")
-   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<IBasicUser> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       // provided for subclass implementation
    }
 
@@ -738,7 +738,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return stateMgr.getAssignees().contains(UserManager.getUser());
    }
 
-   public Collection<IBasicUser> getTransitionAssignees() throws OseeCoreException {
+   public Collection<? extends IBasicUser> getTransitionAssignees() throws OseeCoreException {
       if (transitionAssignees != null) {
          if (!transitionAssignees.isEmpty() && transitionAssignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
             transitionAssignees.remove(UserManager.getUser(SystemUser.UnAssigned));

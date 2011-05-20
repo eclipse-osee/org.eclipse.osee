@@ -5,14 +5,15 @@
  */
 package org.eclipse.osee.ats.column;
 
+import java.util.Arrays;
 import java.util.Date;
-import org.junit.Assert;
-import org.eclipse.osee.ats.column.AssigneeColumn;
-import org.eclipse.osee.ats.column.CompletedDateColumn;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -32,7 +34,7 @@ public class CompletedDateColumnTest {
    @AfterClass
    @BeforeClass
    public static void cleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(CompletedDateColumnTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(CompletedDateColumnTest.class.getSimpleName());
    }
 
    @org.junit.Test
@@ -50,10 +52,13 @@ public class CompletedDateColumnTest {
       Assert.assertNull(date);
       Assert.assertEquals("", CompletedDateColumn.getDateStr(teamArt));
 
-      TransitionManager transitionMgr = new TransitionManager(teamArt);
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), CompletedDateColumnTest.class.getSimpleName());
-      transitionMgr.transitionToCompleted("reason", transaction, TransitionOption.OverrideTransitionValidityCheck);
-      transaction.execute();
+      TransitionHelper helper =
+         new TransitionHelper("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getPageName(),
+            null, null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionResults results = transitionMgr.handleAll();
+      Assert.assertTrue(results.toString(), results.isEmpty());
+      transitionMgr.getTransaction().execute();
 
       date = CompletedDateColumn.getDate(teamArt);
       Assert.assertNotNull(date);
@@ -61,10 +66,14 @@ public class CompletedDateColumnTest {
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date),
          CompletedDateColumn.getInstance().getColumnText(teamArt, AssigneeColumn.getInstance(), 0));
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), CompletedDateColumnTest.class.getSimpleName());
-      transitionMgr.transition(TeamState.Endorse, UserManager.getUser(), transaction,
-         TransitionOption.OverrideTransitionValidityCheck);
-      transaction.execute();
+      helper =
+         new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getPageName(),
+            Arrays.asList(UserManager.getUser()), null, TransitionOption.OverrideTransitionValidityCheck,
+            TransitionOption.OverrideAssigneeCheck);
+      transitionMgr = new TransitionManager(helper);
+      results = transitionMgr.handleAll();
+      Assert.assertTrue(results.toString(), results.isEmpty());
+      transitionMgr.getTransaction().execute();
 
       Assert.assertEquals("Cancelled date should be blank again", "",
          CompletedDateColumn.getInstance().getColumnText(teamArt, AssigneeColumn.getInstance(), 0));

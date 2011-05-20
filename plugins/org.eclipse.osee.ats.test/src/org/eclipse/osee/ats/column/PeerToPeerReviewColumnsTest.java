@@ -8,14 +8,17 @@ package org.eclipse.osee.ats.column;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.review.ReviewManager;
-import org.eclipse.osee.ats.core.review.defect.DefectItem;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Disposition;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.InjectionActivity;
-import org.eclipse.osee.ats.core.review.defect.DefectItem.Severity;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Disposition;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.InjectionActivity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
+import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.role.Role;
 import org.eclipse.osee.ats.core.review.role.UserRole;
+import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
@@ -37,7 +40,7 @@ public class PeerToPeerReviewColumnsTest {
    @AfterClass
    @BeforeClass
    public static void cleanup() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(PeerToPeerReviewColumnsTest.class.getSimpleName());
+      AtsTestUtil.cleanupSimpleTest(PeerToPeerReviewColumnsTest.class.getSimpleName());
    }
 
    @org.junit.Test
@@ -49,7 +52,7 @@ public class PeerToPeerReviewColumnsTest {
       TeamWorkFlowArtifact teamArt =
          DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(), transaction);
       PeerToPeerReviewArtifact peerArt =
-         ReviewManager.createNewPeerToPeerReview(teamArt, getClass().getSimpleName(),
+         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, getClass().getSimpleName(),
             teamArt.getStateMgr().getCurrentStateName(), transaction);
       peerArt.persist(transaction);
       transaction.execute();
@@ -62,50 +65,53 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
-      DefectItem item =
-         new DefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code, "description",
-            "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      ReviewDefectItem item =
+         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+            "description", "resolution", "location", new Date());
+      ReviewDefectManager defectManager = new ReviewDefectManager(peerArt);
+      defectManager.addOrUpdateDefectItem(item);
       item =
-         new DefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description 2", "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      defectManager.addOrUpdateDefectItem(item);
       item =
-         new DefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description 3", "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      defectManager.addOrUpdateDefectItem(item);
       item =
-         new DefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
             "description 34", "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      defectManager.addOrUpdateDefectItem(item);
       item =
-         new DefectItem(UserManager.getUser(), Severity.Major, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(UserManager.getUser(), Severity.Major, Disposition.None, InjectionActivity.Code,
             "description 4", "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      defectManager.addOrUpdateDefectItem(item);
       item =
-         new DefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
             "description 5", "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      defectManager.addOrUpdateDefectItem(item);
       item =
-         new DefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
             "description 6", "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      defectManager.addOrUpdateDefectItem(item);
       item =
-         new DefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
+         new ReviewDefectItem(UserManager.getUser(), Severity.Minor, Disposition.None, InjectionActivity.Code,
             "description 6", "resolution", "location", new Date());
-      peerArt.getDefectManager().addOrUpdateDefectItem(item, true, transaction);
+      defectManager.addOrUpdateDefectItem(item);
+      defectManager.saveToArtifact(peerArt);
 
       UserRole role = new UserRole(Role.Author, UserManager.getUser(DemoUsers.Alex_Kay));
-      peerArt.getUserRoleManager().addOrUpdateUserRole(role, true, transaction);
+      UserRoleManager roleMgr = new UserRoleManager(peerArt);
+      roleMgr.addOrUpdateUserRole(role);
 
       role = new UserRole(Role.Moderator, UserManager.getUser(DemoUsers.Jason_Michael));
-      peerArt.getUserRoleManager().addOrUpdateUserRole(role, true, transaction);
+      roleMgr.addOrUpdateUserRole(role);
 
       role = new UserRole(Role.Reviewer, UserManager.getUser(DemoUsers.Joe_Smith));
-      peerArt.getUserRoleManager().addOrUpdateUserRole(role, true, transaction);
+      roleMgr.addOrUpdateUserRole(role);
       role = new UserRole(Role.Reviewer, UserManager.getUser(DemoUsers.Kay_Jones));
-      peerArt.getUserRoleManager().addOrUpdateUserRole(role, true, transaction);
-
+      roleMgr.addOrUpdateUserRole(role);
+      roleMgr.saveToArtifact(peerArt, transaction);
       peerArt.persist(transaction);
       transaction.execute();
 

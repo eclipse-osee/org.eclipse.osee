@@ -129,7 +129,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         Collection<IBasicUser> assignees = teamArt.getStateMgr().getAssignees();
+         Collection<IBasicUser> assignees = new HashSet<IBasicUser>();
+         assignees.addAll(teamArt.getStateMgr().getAssignees());
          if (!assignees.contains(UserManager.getUser())) {
             assignees.add(UserManager.getUser());
          }

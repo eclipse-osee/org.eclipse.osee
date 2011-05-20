@@ -7,3 +7,8 @@ Bundle-Vendor: The Boeing Company
 Fragment-Host: org.eclipse.osee.ats.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
+Export-Package: org.eclipse.osee.ats.core,
+ org.eclipse.osee.ats.core.validator
+Import-Package: org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.support.test.util

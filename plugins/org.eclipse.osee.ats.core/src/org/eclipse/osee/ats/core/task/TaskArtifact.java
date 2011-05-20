@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.task;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
@@ -23,17 +22,16 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.StateManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -101,75 +99,18 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       }
    }
 
-   public Result transitionToCompleted(double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      if (isInState(TeamState.Completed)) {
-         return Result.TrueResult;
-      }
-      // Assign current user if unassigned
-      try {
-         if (getStateMgr().isUnAssigned()) {
-            getStateMgr().setAssignee(UserManager.getUser());
-         }
-         getStateMgr().updateMetrics(additionalHours, 100, true);
-         setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      TransitionManager transitionMgr = new TransitionManager(this);
-      Result result = transitionMgr.transition(TaskStates.Completed, (User) null, transaction, transitionOption);
-      return result;
-   }
-
-   public Result transitionToInWork(IBasicUser toUser, int percentComplete, double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
-      if (isInState(TaskStates.InWork)) {
-         return Result.TrueResult;
-      }
-      TransitionManager transitionMgr = new TransitionManager(this);
-      Result result = transitionMgr.transition(TaskStates.InWork, toUser, transaction, transitionOption);
-      if (getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
-         getStateMgr().updateMetrics(additionalHours, percentComplete, true);
-         setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
-      }
-      if (Collections.getAggregate(transitionOption).contains(TransitionOption.Persist)) {
-         saveSMA(transaction);
-      }
-      return result;
-   }
-
-   /**
-    * Tasks must transition in/out of completed when percent changes between 100 and <100. This method will handle these
-    * cases.
-    */
-   public Result statusPercentChanged(double additionalHours, int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
-      if (percentComplete == 100 && !isCompleted()) {
-         Result result = transitionToCompleted(additionalHours, transaction, TransitionOption.None);
-         return result;
-      } else if (percentComplete != 100 && isCompleted()) {
-         Result result =
-            transitionToInWork(UserManager.getUser(), percentComplete, additionalHours, transaction,
-               TransitionOption.Persist);
-         return result;
-      }
-      // Case where already completed and statusing, just add additional hours to InWork state
-      else if (percentComplete == 100 && isCompleted()) {
-         if (additionalHours > 0) {
-            getStateMgr().updateMetrics(TaskStates.InWork, additionalHours, percentComplete, true);
-            setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
-         }
-      } else {
-         getStateMgr().updateMetrics(additionalHours, percentComplete, true);
-         setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
-      }
-      return Result.TrueResult;
-   }
-
-   public Result parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<IBasicUser> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
+   public Result parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       if (toState.getPageName().equals(TeamState.Cancelled.getPageName()) && isInWork()) {
-         TransitionManager transitionMgr = new TransitionManager(this);
-         Result result = transitionMgr.transitionToCancelled("Parent Cancelled", transaction, transitionOption);
-         return result;
+         TransitionHelper helper =
+            new TransitionHelper("Transition to Cancelled", Arrays.asList(this), TaskStates.Cancelled.getPageName(),
+               null, "Parent Cancelled", TransitionOption.None);
+         TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+         TransitionResults results = transitionMgr.handleAll();
+         if (!results.isEmpty()) {
+            return new Result("Transition Error %s", results.toString());
+         }
       } else if (fromState.getPageName().equals(TeamState.Cancelled.getPageName()) && isCancelled()) {
-         Result result = transitionToInWork(UserManager.getUser(), 99, 0, transaction, transitionOption);
+         Result result = TaskManager.transitionToInWork(this, UserManager.getUser(), 99, 0, transaction);
          return result;
       }
       return Result.TrueResult;

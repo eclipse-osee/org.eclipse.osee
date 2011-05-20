@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.workflow.item;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.TaskManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.type.ATSAttributes;
