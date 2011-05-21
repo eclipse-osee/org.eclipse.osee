@@ -1,6 +1,7 @@
 feature@org.eclipse.osee.client.feature.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.client.feature.test
 
 fragment@org.eclipse.osee.ats.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ats.test
+fragment@org.eclipse.osee.ats.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ats.core.test
 fragment@org.eclipse.osee.coverage.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.coverage.test
 fragment@org.eclipse.osee.define.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.define.test
 fragment@org.eclipse.osee.framework.skynet.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.skynet.core.test
