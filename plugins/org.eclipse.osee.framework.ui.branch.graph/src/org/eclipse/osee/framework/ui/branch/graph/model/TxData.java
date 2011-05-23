@@ -32,7 +32,6 @@ public class TxData {
    private final Long txId;
 
    public TxData(Branch branch, int authorId, Date timeStamp, String comment, int txType, int commitArtId, long txId) {
-      super();
       this.authorId = authorId;
       this.timeStamp = timeStamp;
       this.comment = comment;

@@ -131,10 +131,6 @@ public class ImportDataFromDbServiceOperation extends AbstractOperation {
       return connectionsNeeded;
    }
 
-   public boolean canRun() {
-      return true;
-   }
-
    private Map<String, SchemaData> getAvailableSchemasFromImportDb(IProgressMonitor monitor, Set<String> schemas) throws Exception {
       Map<String, SchemaData> schemaMap = new HashMap<String, SchemaData>();
       ExtractDatabaseSchemaOperation schemaExtractor =

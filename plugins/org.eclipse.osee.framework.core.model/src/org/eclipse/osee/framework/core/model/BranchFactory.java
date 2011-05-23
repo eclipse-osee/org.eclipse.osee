@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public class BranchFactory implements IOseeTypeFactory {
 
-   public BranchFactory() {
-   }
-
    public Branch create(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "branch name");
       Conditions.checkNotNull(branchType, "branch type");

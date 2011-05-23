@@ -76,8 +76,4 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          transaction.execute();
       }
    }
-
-   public boolean canRun() {
-      return true;
-   }
 }

@@ -57,11 +57,7 @@ public class TestUtil {
    }
 
    public static void setDemoDb(boolean set) throws OseeCoreException {
-      if (set) {
-         OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, DEMO_DB_TYPE);
-      } else {
-         OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, "");
-      }
+      OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, set ? DEMO_DB_TYPE : "");
    }
 
    public static void sleep(long milliseconds) throws Exception {

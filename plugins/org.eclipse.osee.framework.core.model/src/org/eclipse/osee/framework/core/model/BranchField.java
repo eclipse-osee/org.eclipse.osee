@@ -28,5 +28,6 @@ public final class BranchField {
    public static final String MERGE_BRANCH_DESTINATION = "osee.merge.branch.destination";
 
    private BranchField() {
+      //
    }
 }

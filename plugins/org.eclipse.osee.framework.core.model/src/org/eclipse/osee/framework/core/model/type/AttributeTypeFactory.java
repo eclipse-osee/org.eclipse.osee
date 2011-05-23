@@ -23,9 +23,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeTypeFactory implements IOseeTypeFactory {
 
-   public AttributeTypeFactory() {
-   }
-
    public AttributeType create(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "attribute type name");
       //      checkNameUnique(cache, name);
