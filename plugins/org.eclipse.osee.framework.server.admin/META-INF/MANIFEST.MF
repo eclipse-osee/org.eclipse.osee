@@ -40,3 +40,4 @@ Service-Component: OSGI-INF/server.admin.cmds.xml,
  OSGI-INF/search.tagger.cmds.xml,
  OSGI-INF/branch.cmds.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.osee.framework.core.model

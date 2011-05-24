@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -24,8 +26,8 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.MutexSchedulingRule;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
+import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osee.framework.server.admin.management.SchedulingCommand;
@@ -110,6 +112,28 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(new TxCurrentsAndModTypesCommand(logger, archived), false);
    }
 
+   public Job _purge_relation_type(CommandInterpreter ci) {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+
+      //to be purged
+      final Collection<String> relationTypes = new ArrayList<String>();
+
+      boolean force = false;
+      for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
+         if (arg.equals("-force")) {
+            force = true;
+         } else {
+            relationTypes.add(arg);
+         }
+      }
+
+      IOperation operation =
+         new PurgeRelationType(Activator.getOseeDatabaseService(), Activator.getOseeCachingService(), logger, force,
+            relationTypes.toArray(new String[relationTypes.size()]));
+
+      return Operations.executeAsJob(operation, false);
+   }
+
    public Job _tx_prune(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
       return Operations.executeAsJob(new PurgeUnusedBackingDataAndTransactions(logger), false);
@@ -142,6 +166,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        duplicate_attr - detect and fix duplicate attributes\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
+      sb.append("        purge_relation_type -force excute the operation, relationType1 ...\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n",
          Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " | ")));
       sb.append(String.format("        clear_cache %s? - decaches all objects from the specified caches\n",
