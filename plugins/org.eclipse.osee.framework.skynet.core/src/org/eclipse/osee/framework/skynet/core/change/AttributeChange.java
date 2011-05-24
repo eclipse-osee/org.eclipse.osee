@@ -114,8 +114,9 @@ public final class AttributeChange extends Change {
       Object toReturn = super.getAdapter(adapter);
       if (toReturn == null) {
          try {
-            if (adapter.isInstance(getAttribute())) {
-               toReturn = getAttribute();
+            Attribute<?> attr = getAttribute();
+            if (adapter.isInstance(attr)) {
+               toReturn = attr;
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
