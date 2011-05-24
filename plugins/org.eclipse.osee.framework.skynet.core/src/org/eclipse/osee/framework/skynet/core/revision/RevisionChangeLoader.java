@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -47,28 +48,44 @@ public final class RevisionChangeLoader {
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
    public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      ArrayList<Change> changes = new ArrayList<Change>();
-      Branch branch = artifact.getBranch();
-      ArrayList<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
-      recurseBranches(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch));
+      return getChangesPerArtifact(artifact, monitor, true);
+   }
 
+   /**
+    * @return Returns artifact, relation and attribute changes from a specific artifact made on the current branch only
+    */
+   public Collection<Change> getChangesMadeOnCurrentBranch(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+      return getChangesPerArtifact(artifact, monitor, false);
+   }
+
+   /**
+    * @return Returns artifact, relation and attribute changes from a specific artifact
+    */
+   private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
+      Branch branch = artifact.getBranch();
+      Set<TransactionRecord> transactionIds = new LinkedHashSet<TransactionRecord>();
+      loadBranchTransactions(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch),
+         recurseThroughBranchHierarchy);
+
+      Collection<Change> changes = new ArrayList<Change>();
       for (TransactionRecord transactionId : transactionIds) {
-         changes.addAll(getChanges(null, transactionId, monitor, artifact));
+         loadChanges(null, transactionId, monitor, artifact, changes);
       }
       return changes;
    }
 
-   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionRecord> transactionIds, TransactionRecord transactionId) throws OseeCoreException {
-      transactionIds.addAll(getTransactionsPerArtifact(branch, artifact, transactionId));
+   private void loadBranchTransactions(Branch branch, Artifact artifact, Set<TransactionRecord> transactionIds, TransactionRecord transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
+      loadTransactions(branch, artifact, transactionId, transactionIds);
 
-      if (branch.hasParentBranch() && !branch.getParentBranch().getBranchType().isSystemRootBranch()) {
-         recurseBranches(branch.getParentBranch(), artifact, transactionIds, branch.getBaseTransaction());
+      if (recurseThroughBranchHierarchy) {
+         if (branch.hasParentBranch() && !branch.getParentBranch().getBranchType().isSystemRootBranch()) {
+            loadBranchTransactions(branch.getParentBranch(), artifact, transactionIds, branch.getBaseTransaction(),
+               recurseThroughBranchHierarchy);
+         }
       }
    }
 
-   private Collection<TransactionRecord> getTransactionsPerArtifact(Branch branch, Artifact artifact, TransactionRecord transactionId) throws OseeCoreException {
-      Set<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
-
+   private void loadTransactions(Branch branch, Artifact artifact, TransactionRecord transactionId, Set<TransactionRecord> transactionIds) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
@@ -87,19 +104,16 @@ public final class RevisionChangeLoader {
       } finally {
          chStmt.close();
       }
-
-      return transactionIds;
    }
 
    /**
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     */
-   private Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
+   private void loadChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes) throws OseeCoreException {
       @SuppressWarnings("unused")
       //This is so weak references do not get collected from bulk loading
       Collection<Artifact> bulkLoadedArtifacts;
-      ArrayList<Change> changes = new ArrayList<Change>();
       ArrayList<ChangeBuilder> changeBuilders = new ArrayList<ChangeBuilder>();
 
       Set<Integer> artIds = new HashSet<Integer>();
@@ -144,6 +158,5 @@ public final class RevisionChangeLoader {
       if (monitor != null) {
          monitor.done();
       }
-      return changes;
    }
 }
