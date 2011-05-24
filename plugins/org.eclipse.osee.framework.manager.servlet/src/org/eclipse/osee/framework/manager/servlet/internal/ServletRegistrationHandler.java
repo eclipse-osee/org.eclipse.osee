@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
 import org.eclipse.osee.framework.manager.servlet.AtsServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchManagerServlet;
-import org.eclipse.osee.framework.manager.servlet.ClientInstallInfoServlet;
 import org.eclipse.osee.framework.manager.servlet.ConfigurationServlet;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.OseeCacheServlet;
@@ -124,7 +123,6 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       register(new ServerLookupServlet(serverLookup, appServerManager), OseeServerContext.LOOKUP_CONTEXT);
       register(new SessionManagementServlet(sessionManager, authenticationManager), OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
-      register(new ClientInstallInfoServlet(), "osee/install/info");
       register(new OseeCacheServlet(sessionManager, translationService, caching, factoryService),
          OseeServerContext.CACHE_CONTEXT);
       register(new OseeModelServlet(sessionManager, translationService, modeling), OseeServerContext.OSEE_MODEL_CONTEXT);
