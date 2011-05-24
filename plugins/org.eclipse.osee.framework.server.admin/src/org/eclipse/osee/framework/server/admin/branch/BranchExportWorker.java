@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.server.admin.branch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -46,7 +49,9 @@ public class BranchExportWorker extends BaseServerCommand {
       do {
          arg = getCommandInterpreter().nextArgument();
          if (isValidArg(arg)) {
-            if (arg.equals("-excludeBaselineTxs")) {
+            if (arg.equals("-excludeBranchIds")) {
+               options.put(ExportOptions.EXCLUDE_BRANCH_IDS.name(), true);
+            } else if (arg.equals("-excludeBaselineTxs")) {
                options.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), true);
             } else if (arg.equals("-includeArchivedBranches")) {
                includeArchivedBranches = true;
@@ -79,19 +84,35 @@ public class BranchExportWorker extends BaseServerCommand {
          throw new OseeArgumentException("exportFileName was invalid: [%s]", exportFileName);
       }
 
-      if (branchIds.isEmpty()) {
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
-         try {
-            chStmt.runPreparedQuery(String.format(SELECT_BRANCHES, includeArchivedBranches ? "" : "where archived = 0"));
-            while (chStmt.next()) {
-               branchIds.add(chStmt.getInt("branch_id"));
-            }
-         } finally {
-            chStmt.close();
+      if (options.getBoolean(ExportOptions.EXCLUDE_BRANCH_IDS.name())) {
+         List<Integer> toExclude = branchIds;
+
+         branchIds = new ArrayList<Integer>();
+         loadBranchIds(branchIds, includeArchivedBranches);
+
+         for (Integer item : toExclude) {
+            branchIds.remove(item);
          }
+      } else if (branchIds.isEmpty()) {
+         loadBranchIds(branchIds, includeArchivedBranches);
       }
       println(String.format("Exporting: [%s] branches\n", branchIds.size()));
 
       Activator.getBranchExchange().exportBranch(exportFileName, options, branchIds);
+   }
+
+   private void loadBranchIds(Collection<Integer> branchIds, boolean includeArchivedBranches) throws OseeCoreException {
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         String filter =
+            !includeArchivedBranches ? String.format("where archived = %s", BranchArchivedState.UNARCHIVED.getValue()) : "";
+         String query = String.format(SELECT_BRANCHES, filter);
+         chStmt.runPreparedQuery(query);
+         while (chStmt.next()) {
+            branchIds.add(chStmt.getInt("branch_id"));
+         }
+      } finally {
+         chStmt.close();
+      }
    }
 }
