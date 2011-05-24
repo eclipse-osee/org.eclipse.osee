@@ -11,9 +11,9 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.DemoWorkType;
@@ -37,7 +37,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("6", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
       TaskArtifact taskArt = codeArt.getTaskArtifacts().iterator().next();
-      Collection<User> taskAssignees = taskArt.getStateMgr().getAssignees();
+      Collection<IBasicUser> taskAssignees = taskArt.getStateMgr().getAssignees();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
       Result result = taskArt.transitionToCompleted(2, transaction, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(true, result.isTrue());

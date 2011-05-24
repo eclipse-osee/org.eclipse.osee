@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.client;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.client.internal.InternalClientSessionManager;
-import org.eclipse.osee.framework.core.data.IOseeUser;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -60,8 +60,8 @@ public class ClientSessionManager {
       getSessionGrant().setCreationRequired(false);
    }
 
-   public static IOseeUser getCurrentUserInfo() throws OseeAuthenticationRequiredException {
-      return getSessionGrant().getOseeUserInfo();
+   public static IUserToken getCurrentUserToken() throws OseeAuthenticationRequiredException {
+      return getSessionGrant().getUserToken();
    }
 
    public static String getSessionId() throws OseeAuthenticationRequiredException {

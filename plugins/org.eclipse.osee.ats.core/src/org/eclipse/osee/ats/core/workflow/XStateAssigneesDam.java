@@ -42,13 +42,11 @@ public abstract class XStateAssigneesDam {
       try {
          for (String stateXml : awa.getAttributesToStringList(attributeType)) {
             if (stateXml.startsWith(state.getPageName() + ";")) {
-               SMAState smaState = new SMAState();
-               smaState.setFromXml(stateXml);
-               return smaState;
+               return new SMAState(state, stateXml);
             }
          }
          if (create) {
-            return new SMAState(state.getPageName());
+            return new SMAState(state);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error parsing state data for " + awa.getGuid(), ex);
@@ -86,9 +84,8 @@ public abstract class XStateAssigneesDam {
       Set<SMAState> states = new HashSet<SMAState>();
       try {
          for (String stateXml : awa.getAttributesToStringList(attributeType)) {
-            SMAState state = new SMAState();
-            state.setFromXml(stateXml);
-            states.add(state);
+            SMAState smaState = new SMAState(awa, stateXml);
+            states.add(smaState);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error parsing state data for " + awa.getGuid(), ex);
@@ -102,8 +99,7 @@ public abstract class XStateAssigneesDam {
       try {
          Collection<Attribute<String>> attrs = awa.getAttributes(attributeType);
          for (Attribute<String> attr : attrs) {
-            SMAState storedState = new SMAState();
-            storedState.setFromXml(attr.getValue());
+            SMAState storedState = new SMAState(awa, attr.getValue());
             if (state.getName().equals(storedState.getName())) {
                attr.setValue(state.toXml());
                return;

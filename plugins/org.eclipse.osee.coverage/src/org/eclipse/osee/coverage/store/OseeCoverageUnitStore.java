@@ -31,11 +31,11 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -260,23 +260,23 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       return coverageUnit;
    }
 
-   public static void setAssignees(CoverageUnit coverageUnit, User user) throws OseeCoreException {
+   public static void setAssignees(CoverageUnit coverageUnit, IBasicUser user) throws OseeCoreException {
       setAssignees(coverageUnit, Collections.singleton(user));
    }
 
-   public static void setAssignees(CoverageUnit coverageUnit, Collection<User> users) throws OseeCoreException {
+   public static void setAssignees(CoverageUnit coverageUnit, Collection<IBasicUser> users) throws OseeCoreException {
       coverageUnit.setAssignees(getAssigneesToString(users));
    }
 
-   private static String getAssigneesToString(Collection<User> users) throws OseeCoreException {
+   private static String getAssigneesToString(Collection<IBasicUser> users) throws OseeCoreException {
       return UsersByIds.getStorageString(users);
    }
 
-   public static Collection<User> getAssignees(CoverageUnit coverageUnit) {
+   public static Collection<IBasicUser> getAssignees(CoverageUnit coverageUnit) {
       return getAssigneesFromString(coverageUnit.getAssignees());
    }
 
-   private static Collection<User> getAssigneesFromString(String string) {
+   private static Collection<IBasicUser> getAssigneesFromString(String string) {
       if (!Strings.isValid(string)) {
          return Collections.emptyList();
       }

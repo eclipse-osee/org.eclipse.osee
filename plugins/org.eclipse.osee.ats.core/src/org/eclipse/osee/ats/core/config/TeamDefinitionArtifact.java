@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -243,8 +244,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * 
     * @return users configured as leads for this TeamDefinitionArtifact
     */
-   public Collection<User> getLeads() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class);
+   public Collection<IBasicUser> getLeads() throws OseeCoreException {
+      return Collections.castAll(getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class));
    }
 
    public Collection<User> getPrivilegedMembers() throws OseeCoreException {
@@ -257,8 +258,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * 
     * @return users configured as leads by ActionableItems, then by TeamDefinition
     */
-   public Collection<User> getLeads(Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
-      Set<User> leads = new HashSet<User>();
+   public Collection<IBasicUser> getLeads(Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
+      Set<IBasicUser> leads = new HashSet<IBasicUser>();
       for (ActionableItemArtifact aia : actionableItems) {
          if (aia.getImpactedTeamDefs().contains(this)) {
             // If leads are specified for this aia, add them
@@ -278,12 +279,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    @SuppressWarnings("unchecked")
-   public Collection<User> getMembersAndLeads() throws OseeCoreException {
+   public Collection<IBasicUser> getMembersAndLeads() throws OseeCoreException {
       return Collections.setUnion(getMembers(), getLeads());
    }
 
-   public Collection<User> getMembers() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class);
+   public Collection<IBasicUser> getMembers() throws OseeCoreException {
+      return Collections.castAll(getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class));
    }
 
    public Artifact getVersionArtifact(String name, boolean create) throws OseeCoreException {

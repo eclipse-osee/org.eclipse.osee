@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -117,10 +118,10 @@ public class ConvertAIsAndTeamsToAtsDsl {
       for (String staticId : teamDef.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
          dslTeamDef.getStaticId().add(staticId);
       }
-      for (User user : teamDef.getLeads()) {
+      for (IBasicUser user : teamDef.getLeads()) {
          dslTeamDef.getLead().add(getUserByName(user));
       }
-      for (User user : teamDef.getMembers()) {
+      for (IBasicUser user : teamDef.getMembers()) {
          dslTeamDef.getMember().add(getUserByName(user));
       }
       for (User user : teamDef.getPrivilegedMembers()) {
@@ -167,7 +168,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
       dslTeamDef.getVersion().add(dslVerDef);
    }
 
-   private UserByName getUserByName(User user) {
+   private UserByName getUserByName(IBasicUser user) {
       UserByName userByName = AtsDslFactoryImpl.init().createUserByName();
       userByName.setUserName(user.getName());
       return userByName;

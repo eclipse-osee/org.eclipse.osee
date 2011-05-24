@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IOseeUserInfo;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
@@ -69,7 +69,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    @Override
-   public IOseeUserInfo asOseeUser(OseeCredential credential) throws OseeAuthenticationException {
+   public IUserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException {
       if (isGuestLogin(credential)) {
          return SystemUser.Guest;
       } else if (isBootStrap(credential)) {

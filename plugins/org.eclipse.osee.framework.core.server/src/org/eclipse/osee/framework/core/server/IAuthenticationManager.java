@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
-import org.eclipse.osee.framework.core.data.IOseeUserInfo;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 
@@ -43,7 +43,7 @@ public interface IAuthenticationManager {
     * 
     * @return OSEE user info
     */
-   public IOseeUserInfo asOseeUser(OseeCredential credential) throws OseeAuthenticationException;
+   public IUserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException;
 
    /**
     * Gets an array of available authentication protocols

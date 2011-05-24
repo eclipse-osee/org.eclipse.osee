@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -293,11 +294,11 @@ public class ExcelAtsTaskArtifactExtractor {
       }
 
       private void processAssignees(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
-         Set<User> assignees = new HashSet<User>();
+         Set<IBasicUser> assignees = new HashSet<IBasicUser>();
          for (String userName : row[i].split(";")) {
             userName = userName.replaceAll("^\\s+", "");
             userName = userName.replaceAll("\\+$", "");
-            User user = null;
+            IBasicUser user = null;
             if (!Strings.isValid(userName)) {
                user = UserManager.getUser();
             } else {

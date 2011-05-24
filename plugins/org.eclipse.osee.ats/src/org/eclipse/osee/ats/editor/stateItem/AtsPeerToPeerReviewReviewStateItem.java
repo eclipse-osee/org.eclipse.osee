@@ -20,9 +20,9 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -40,11 +40,11 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       if (sma.isOfType(AtsArtifactTypes.PeerToPeerReview) && toState.getPageName().equals(
          PeerToPeerReviewState.Review.getPageName())) {
          // Set Assignees to all user roles users
-         Set<User> assignees = new HashSet<User>();
+         Set<IBasicUser> assignees = new HashSet<IBasicUser>();
          PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) sma;
          for (UserRole uRole : peerArt.getUserRoleManager().getUserRoles()) {
             if (!uRole.isCompleted()) {
@@ -59,7 +59,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
    }
 
    @Override
-   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) {
+   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees) {
       return Result.TrueResult;
    }
 

@@ -110,7 +110,7 @@ public class InternalClientSessionManager {
             oseeSessionGrant = internalAcquireSession(credential);
             oseeSession =
                new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
-                  oseeSessionGrant.getOseeUserInfo().getUserID(), clientInfo.getClientAddress(), clientInfo.getPort(),
+                  oseeSessionGrant.getUserToken().getUserId(), clientInfo.getClientAddress(), clientInfo.getPort(),
                   clientInfo.getVersion(), credential.getAuthenticationProtocol());
          } catch (Exception ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));

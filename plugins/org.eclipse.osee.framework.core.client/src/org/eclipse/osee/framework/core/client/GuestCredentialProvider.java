@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 
 /**
  * @author Roberto E. Escobar

@@ -16,12 +16,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
@@ -32,11 +32,11 @@ public class LogItem {
    private Date date;
    private String msg;
    private String state;
-   private User user;
+   private IBasicUser user;
    private LogType type = LogType.None;
    private final String userId;
 
-   public LogItem(LogType type, Date date, User user, String state, String msg, String hrid) throws OseeCoreException {
+   public LogItem(LogType type, Date date, IBasicUser user, String state, String msg, String hrid) throws OseeCoreException {
       this(type.name(), String.valueOf(date.getTime()), user.getUserId(), state, msg, hrid);
    }
 
@@ -105,7 +105,7 @@ public class LogItem {
       return msg.isEmpty() ? "" : msg;
    }
 
-   public User getUser() {
+   public IBasicUser getUser() {
       return user;
    }
 
@@ -121,7 +121,7 @@ public class LogItem {
       return "NOTE (" + type + "): " + msg + " (" + user.getName() + ")";
    }
 
-   public void setUser(User user) {
+   public void setUser(IBasicUser user) {
       this.user = user;
    }
 

@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -214,7 +215,7 @@ public class AtsDeleteManagerTest {
       DecisionReviewArtifact decRev =
          ReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
             TeamState.Endorse.getPageName(), "Description", ReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(UserManager.getUser()), createdDate, createdBy);
+            Arrays.asList((IBasicUser) UserManager.getUser()), createdDate, createdBy);
       decRev.persist(transaction);
 
       return teamArt;

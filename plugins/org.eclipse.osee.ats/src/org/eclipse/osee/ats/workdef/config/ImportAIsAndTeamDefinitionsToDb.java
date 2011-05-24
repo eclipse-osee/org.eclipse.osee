@@ -22,11 +22,13 @@ import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.data.IOseeUser;
+import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,31 +73,11 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
    }
 
-   private IOseeUser getOseeUser(final UserDef dslUserDef) {
-      return new IOseeUser() {
-
-         private static final long serialVersionUID = 1L;
-
-         @Override
-         public boolean isActive() {
-            return BooleanDefUtil.get(dslUserDef.getActive(), true);
-         }
-
-         @Override
-         public String getUserID() {
-            return Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName());
-         }
-
-         @Override
-         public String getName() {
-            return Strings.unquote(dslUserDef.getName());
-         }
-
-         @Override
-         public String getEmail() {
-            return Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName());
-         }
-      };
+   private IUserToken getOseeUser(final UserDef dslUserDef) {
+      return TokenFactory.createUserToken(GUID.create(), Strings.unquote(dslUserDef.getName()),
+         Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
+         Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()), BooleanDefUtil.get(dslUserDef.getActive(), true),
+         false, true);
    }
 
    public void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) throws OseeCoreException {

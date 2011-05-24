@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -30,16 +31,16 @@ public class UsersByIds {
 
    public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public static String getStorageString(Collection<User> users) throws OseeCoreException {
+   public static String getStorageString(Collection<IBasicUser> users) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      for (User u : users) {
+      for (IBasicUser u : users) {
          sb.append("<" + u.getUserId() + ">");
       }
       return sb.toString();
    }
 
-   public static Collection<User> getUsers(String sorageString) {
-      Set<User> users = new HashSet<User>();
+   public static List<IBasicUser> getUsers(String sorageString) {
+      List<IBasicUser> users = new ArrayList<IBasicUser>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
@@ -51,7 +51,7 @@ public class ImplementorColumn extends XViewerAtsColumn implements IXViewerValue
          if (element instanceof AbstractWorkflowArtifact) {
             return Artifacts.toString("; ", ((AbstractWorkflowArtifact) element).getImplementers());
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<User> users = new HashSet<User>();
+            Set<IBasicUser> users = new HashSet<IBasicUser>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                users.addAll(team.getImplementers());
             }

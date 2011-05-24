@@ -17,17 +17,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IOseeUser;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,8 +68,8 @@ public final class UserManager {
       ClientUser.releaseUser();
    }
 
-   public static List<User> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
-      List<User> users = new ArrayList<User>();
+   public static List<IBasicUser> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
+      List<IBasicUser> users = new ArrayList<IBasicUser>();
       for (String userId : userIds) {
          try {
             users.add(getUserByUserId(userId));
@@ -183,6 +186,18 @@ public final class UserManager {
       return (User) ArtifactCache.cacheByTextId(CACHE_PREFIX + userToCache.getUserId(), userToCache);
    }
 
+   public static User getUser(IBasicUser user) throws OseeCoreException {
+      return getUserByUserId(user.getUserId());
+   }
+
+   public static User getUser(IUserToken user) throws OseeCoreException {
+      return getUserByUserId(user.getUserId());
+   }
+
+   public static String getEmail(IBasicUser user) throws OseeCoreException {
+      return getUser(user).getEmail();
+   }
+
    public static User getUserByUserId(String userId) throws OseeCoreException {
       if (!Strings.isValid(userId)) {
          throw new OseeArgumentException("UserId can't be null or \"\"");
@@ -200,10 +215,6 @@ public final class UserManager {
          }
       }
       return user;
-   }
-
-   public static User getUser(IOseeUser userEnum) throws OseeCoreException {
-      return getUserByUserId(userEnum.getUserID());
    }
 
    private static synchronized void ensurePopulated() throws OseeCoreException {
@@ -236,29 +247,30 @@ public final class UserManager {
       return duringMainUserCreation;
    }
 
-   public static synchronized User createMainUser(IOseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
+   public static synchronized User createMainUser(IUserToken userEnum, SkynetTransaction transaction) throws OseeCoreException {
       duringMainUserCreation = true;
       User user = createUser(userEnum, transaction);
       duringMainUserCreation = false;
       return user;
    }
 
-   public static synchronized User createUser(IOseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
+   public static synchronized User createUser(IUserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
       ensurePopulated();
       // Determine if user with id has already been created; boot strap issue with dbInit
-      User user = getFromCacheByUserId(userEnum.getUserID());
+      User user = getFromCacheByUserId(userToken.getUserId());
       if (user != null) {
          // Update user with this enum data
-         user.setName(userEnum.getName());
-         user.setEmail(userEnum.getEmail());
-         user.setActive(userEnum.isActive());
+         user.setName(userToken.getName());
+         user.setEmail(userToken.getEmail());
+         user.setActive(userToken.isActive());
       } else {
+         String guid = GUID.isValid(userToken.getGuid()) ? userToken.getGuid() : GUID.create();
          user =
             (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, BranchManager.getCommonBranch(),
-               userEnum.getName());
-         user.setActive(userEnum.isActive());
-         user.setUserID(userEnum.getUserID());
-         user.setEmail(userEnum.getEmail());
+               userToken.getName(), guid, HumanReadableId.generate());
+         user.setActive(userToken.isActive());
+         user.setUserID(userToken.getUserId());
+         user.setEmail(userToken.getEmail());
          addUserToUserGroups(user);
          cacheByUserId(user);
 
@@ -282,8 +294,8 @@ public final class UserManager {
       }
    }
 
-   public static boolean isUserInactive(Collection<User> users) throws OseeCoreException {
-      for (User user : users) {
+   public static boolean isUserInactive(Collection<IBasicUser> users) throws OseeCoreException {
+      for (IBasicUser user : users) {
          if (!user.isActive()) {
             return true;
          }
@@ -291,18 +303,27 @@ public final class UserManager {
       return false;
    }
 
-   public static boolean isUserSystem(Collection<User> users) throws OseeCoreException {
-      for (User user : users) {
-         if (user.isSystemUser()) {
+   public static boolean isUserSystem(Collection<IBasicUser> users) throws OseeCoreException {
+      for (IBasicUser user : users) {
+         if (isSystemUser(user)) {
             return true;
          }
       }
       return false;
    }
 
-   public static boolean isUserCurrentUser(Collection<User> users) throws OseeCoreException {
-      for (User user : users) {
-         if (user.equals(UserManager.getUser())) {
+   public static boolean isSystemUser(IBasicUser user) throws OseeCoreException {
+      if (UserManager.getUser(SystemUser.OseeSystem).equals(user) || UserManager.getUser(SystemUser.UnAssigned).equals(
+         user) || UserManager.getUser(SystemUser.Guest).equals(user)) {
+         return true;
+      }
+
+      return false;
+   }
+
+   public static boolean isUserCurrentUser(Collection<IBasicUser> users) throws OseeCoreException {
+      for (IBasicUser user : users) {
+         if (UserManager.getUser().equals(user)) {
             return true;
          }
       }
@@ -321,4 +342,11 @@ public final class UserManager {
       getUser().setSetting(key, value);
    }
 
+   public static Collection<User> getUsers(Collection<IBasicUser> users) throws OseeCoreException {
+      List<User> arts = new ArrayList<User>();
+      for (IBasicUser user : users) {
+         arts.add(UserManager.getUser(user));
+      }
+      return arts;
+   }
 }

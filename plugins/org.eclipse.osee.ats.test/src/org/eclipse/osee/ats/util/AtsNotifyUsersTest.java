@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,11 +20,9 @@ import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsNotifyUsers.NotifyType;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -73,8 +72,9 @@ public class AtsNotifyUsersTest {
 
       TeamWorkFlowArtifact teamArt = DemoTestUtil.createSimpleAction(AtsNotifyUsersTest.class.getSimpleName(), null);
       teamArt.internalSetCreatedBy(kay_ValidEmail);
-      List<User> assignees =
-         Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail, joeSmith_CurrentUser);
+      List<IBasicUser> assignees = new ArrayList<IBasicUser>();
+      assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
+         joeSmith_CurrentUser));
       teamArt.getStateMgr().setAssignees(assignees);
       teamArt.persist();
 
@@ -103,14 +103,17 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(NotifyType.Assigned.name(), event.getType());
       // joe smith should be removed from list cause it's current user
       // alex should be removed cause not valid email
-      Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(
-         Arrays.asList(jason_ValidEmail, kay_ValidEmail), event.getUsers()));
+      List<IBasicUser> expected = new ArrayList<IBasicUser>();
+      expected.add(jason_ValidEmail);
+      expected.add(kay_ValidEmail);
+      Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expected, event.getUsers()));
       Assert.assertEquals(
          "You have been set as the assignee of [Demo Code Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest]",
          event.getDescription());
 
       notifyManager.clear();
-      AtsNotifyUsers.getInstance().notify(teamArt, Collections.singleton(jason_ValidEmail), NotifyType.Assigned);
+      AtsNotifyUsers.getInstance().notify(teamArt, Collections.singleton((IBasicUser) jason_ValidEmail),
+         NotifyType.Assigned);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(NotifyType.Assigned.name(), event.getType());
@@ -174,5 +177,4 @@ public class AtsNotifyUsersTest {
       Assert.assertTrue(event.getDescription().endsWith(".<br>Reason: [this is the reason]"));
 
    }
-
 }

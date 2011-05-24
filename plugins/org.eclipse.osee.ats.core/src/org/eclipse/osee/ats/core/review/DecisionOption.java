@@ -17,14 +17,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
 public class DecisionOption {
    private String name;
-   private Collection<User> assignees = new HashSet<User>();
+   private Collection<IBasicUser> assignees = new HashSet<IBasicUser>();
    private boolean followupRequired;
 
    @Override
@@ -35,7 +35,7 @@ public class DecisionOption {
       return result;
    }
 
-   public DecisionOption(String name, Collection<User> assignees, boolean followup) {
+   public DecisionOption(String name, Collection<IBasicUser> assignees, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
       if (assignees != null) {
@@ -43,7 +43,7 @@ public class DecisionOption {
       }
    }
 
-   public DecisionOption(String name, User assignee, boolean followup) {
+   public DecisionOption(String name, IBasicUser assignee, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
       if (assignee != null) {
@@ -52,11 +52,11 @@ public class DecisionOption {
    }
 
    public DecisionOption(String name) {
-      this(name, (User) null, false);
+      this(name, (IBasicUser) null, false);
    }
 
    public DecisionOption() {
-      this("", (User) null, false);
+      this("", (IBasicUser) null, false);
    }
 
    @Override
@@ -76,14 +76,14 @@ public class DecisionOption {
       return super.equals(obj);
    }
 
-   public Collection<User> getAssignees() {
+   public Collection<IBasicUser> getAssignees() {
       return assignees;
    }
 
    /**
     * Sets the assigness but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignees(Collection<User> assignees) {
+   public void setAssignees(Collection<IBasicUser> assignees) {
       this.assignees.clear();
       if (assignees != null) {
          this.assignees.addAll(assignees);
@@ -93,14 +93,14 @@ public class DecisionOption {
    /**
     * Sets the assignes but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignee(User assignee) {
+   public void setAssignee(IBasicUser assignee) {
       this.assignees.clear();
       if (assignee != null) {
          this.assignees.add(assignee);
       }
    }
 
-   public void addAssignee(User assignee) {
+   public void addAssignee(IBasicUser assignee) {
       if (assignee != null) {
          this.assignees.add(assignee);
       }
@@ -123,7 +123,7 @@ public class DecisionOption {
    public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer(name);
       sb.append(";");
-      for (User u : assignees) {
+      for (IBasicUser u : assignees) {
          sb.append("<" + u.getUserId() + ">");
       }
       sb.append(";");

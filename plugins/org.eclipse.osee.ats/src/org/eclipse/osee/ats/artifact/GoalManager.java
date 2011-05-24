@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.goal.GoalLabelProvider;
 import org.eclipse.osee.ats.goal.GoalViewerSorter;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -171,7 +172,8 @@ public final class GoalManager {
          (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), title);
 
       // Initialize state machine
-      goalArt.initializeNewStateMachine(Collections.singleton(UserManager.getUser()), new Date(), UserManager.getUser());
+      goalArt.initializeNewStateMachine(Collections.singleton((IBasicUser) UserManager.getUser()), new Date(),
+         UserManager.getUser());
       return goalArt;
    }
 

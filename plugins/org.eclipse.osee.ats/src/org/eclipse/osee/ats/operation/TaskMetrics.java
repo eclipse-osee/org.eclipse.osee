@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -60,7 +60,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class TaskMetrics extends AbstractBlam {
-   private final CountingMap<User> metrics;
+   private final CountingMap<IBasicUser> metrics;
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
 
@@ -68,7 +68,7 @@ public class TaskMetrics extends AbstractBlam {
    private XArtifactMultiChoiceSelect versionsWidget;
 
    public TaskMetrics() {
-      metrics = new CountingMap<User>();
+      metrics = new CountingMap<IBasicUser>();
    }
 
    @Override
@@ -138,7 +138,7 @@ public class TaskMetrics extends AbstractBlam {
          state = currentStateDam.getState(TaskStates.InWork, false);
       }
 
-      for (User user : state.getAssignees()) {
+      for (IBasicUser user : state.getAssignees()) {
          int percentComplete = state.getPercentComplete();
 
          if (percentComplete == 100) {
@@ -160,8 +160,8 @@ public class TaskMetrics extends AbstractBlam {
       excelWriter.startSheet("task metrics", 6);
       excelWriter.writeRow("Engineer", "TaskMetric");
 
-      for (Entry<User, MutableInteger> entry : metrics.getCounts()) {
-         User user = entry.getKey();
+      for (Entry<IBasicUser, MutableInteger> entry : metrics.getCounts()) {
+         IBasicUser user = entry.getKey();
          MutableInteger metric = entry.getValue();
          excelWriter.writeRow(user.getName(), metric.toString());
       }

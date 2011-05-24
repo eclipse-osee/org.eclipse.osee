@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -289,7 +290,7 @@ public class ExcelAtsActionArtifactExtractor {
       protected Set<String> userComms = new HashSet<String>();
       protected String changeType = "";
       protected Set<String> assigneeStrs = new HashSet<String>();
-      protected Set<User> assignees = new HashSet<User>();
+      protected Set<IBasicUser> assignees = new HashSet<IBasicUser>();
       protected Set<String> actionableItems = new HashSet<String>();
       protected String version = "";
       protected Double estimatedHours = null;

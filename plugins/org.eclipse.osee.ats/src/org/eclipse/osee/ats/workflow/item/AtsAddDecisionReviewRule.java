@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.workdef.RuleDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -133,24 +134,24 @@ public class AtsAddDecisionReviewRule {
       return StateEventType.valueOf(value);
    }
 
-   public static Collection<User> getAssigneesOrDefault(RuleDefinition ruleDefinition) throws OseeCoreException {
+   public static Collection<IBasicUser> getAssigneesOrDefault(RuleDefinition ruleDefinition) throws OseeCoreException {
       String value = getDecisionParameterValue(ruleDefinition, DecisionParameter.assignees);
       if (!Strings.isValid(value)) {
-         return Arrays.asList(new User[] {UserManager.getUser()});
+         return Arrays.asList(new IBasicUser[] {UserManager.getUser()});
       }
-      Collection<User> users = UsersByIds.getUsers(value);
+      Collection<IBasicUser> users = UsersByIds.getUsers(value);
       if (users.isEmpty()) {
          users.add(UserManager.getUser());
       }
       return users;
    }
 
-   public static Collection<User> getAssigneesOrDefault(WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
+   public static Collection<IBasicUser> getAssigneesOrDefault(WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.assignees);
       if (!Strings.isValid(value)) {
-         return Arrays.asList(new User[] {UserManager.getUser()});
+         return Arrays.asList(new IBasicUser[] {UserManager.getUser()});
       }
-      Collection<User> users = UsersByIds.getUsers(value);
+      Collection<IBasicUser> users = UsersByIds.getUsers(value);
       if (users.isEmpty()) {
          users.add(UserManager.getUser());
       }

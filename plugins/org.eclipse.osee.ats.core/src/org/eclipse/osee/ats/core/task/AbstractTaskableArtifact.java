@@ -31,10 +31,10 @@ import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -66,7 +66,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    @Override
-   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<IBasicUser> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(fromState, toState, toAssignees, persist, transaction);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
          taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, persist, transaction);
@@ -99,11 +99,11 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
    }
 
-   public TaskArtifact createNewTask(String title, Date createdDate, User createdBy) throws OseeCoreException {
-      return createNewTask(Arrays.asList(UserManager.getUser()), title, createdDate, createdBy);
+   public TaskArtifact createNewTask(String title, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
+      return createNewTask(Arrays.asList((IBasicUser) UserManager.getUser()), title, createdDate, createdBy);
    }
 
-   public TaskArtifact createNewTask(Collection<User> assignees, String title, Date createdDate, User createdBy) throws OseeCoreException {
+   public TaskArtifact createNewTask(Collection<IBasicUser> assignees, String title, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
          (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
@@ -231,13 +231,13 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return spent / taskArts.size();
    }
 
-   public Collection<TaskArtifact> createTasks(List<String> titles, List<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public Collection<TaskArtifact> createTasks(List<String> titles, List<IBasicUser> assignees, Date createdDate, IBasicUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
       for (String title : titles) {
          TaskArtifact taskArt = createNewTask(title, createdDate, createdBy);
          if (assignees != null && !assignees.isEmpty()) {
-            Set<User> users = new HashSet<User>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
-            for (User art : assignees) {
+            Set<IBasicUser> users = new HashSet<IBasicUser>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
+            for (IBasicUser art : assignees) {
                users.add(art);
             }
             taskArt.getStateMgr().setAssignees(users);

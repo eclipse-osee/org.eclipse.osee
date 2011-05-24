@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,7 +58,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       return super.setupImage(artifact);
    }
 
-   public static org.eclipse.swt.graphics.Image getUserImage(Collection<User> users) throws OseeCoreException {
+   public static org.eclipse.swt.graphics.Image getUserImage(Collection<IBasicUser> users) throws OseeCoreException {
       if (users.size() > 0) {
          if (UserManager.isUserSystem(users)) {
             return ImageManager.getImage(FrameworkImage.USER_GREY);

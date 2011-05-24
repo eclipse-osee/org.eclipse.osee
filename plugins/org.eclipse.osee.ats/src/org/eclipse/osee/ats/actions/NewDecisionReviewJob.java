@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 
 /**
  * @author Donald G. Dunne
@@ -37,12 +37,12 @@ public class NewDecisionReviewJob extends Job {
    private final String reviewTitle;
    private final String againstState;
    private final List<DecisionReviewOption> options;
-   private final Collection<User> assignees;
+   private final Collection<IBasicUser> assignees;
    private final String description;
    private final Date createdDate;
-   private final User createdBy;
+   private final IBasicUser createdBy;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
       this.reviewTitle = reviewTitle;

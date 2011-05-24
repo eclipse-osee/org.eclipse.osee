@@ -48,7 +48,7 @@ public class DemoDbReviews {
 
    public static void createReviews(boolean DEBUG) throws Exception {
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config - Create Reviews");
+         new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Reviews");
       createPeerToPeerReviews(DEBUG, transaction);
       createDecisionReviews(DEBUG, transaction);
       transaction.execute();

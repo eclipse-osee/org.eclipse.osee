@@ -31,9 +31,11 @@ import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -46,7 +48,6 @@ import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoTeam;
-import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -88,7 +89,7 @@ public class DemoTestUtil {
       return getTaskTitles(false).size() + getTaskTitles(true).size();
    }
 
-   public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
+   public static User getDemoUser(IUserToken demoUser) throws OseeCoreException {
       return UserManager.getUserByName(demoUser.getName());
    }
 
@@ -124,7 +125,7 @@ public class DemoTestUtil {
       Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManagerCore.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(UserManager.getUser()), transaction, new Date(), UserManager.getUser(), null);
+         Arrays.asList((IBasicUser) UserManager.getUser()), transaction, new Date(), UserManager.getUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -143,8 +144,8 @@ public class DemoTestUtil {
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      return teamArt.createTasks(names, Arrays.asList(UserManager.getUser()), new Date(), UserManager.getUser(),
-         transaction);
+      return teamArt.createTasks(names, Arrays.asList((IBasicUser) UserManager.getUser()), new Date(),
+         UserManager.getUser(), transaction);
    }
 
    /**

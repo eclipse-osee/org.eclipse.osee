@@ -13,7 +13,6 @@ package org.eclipse.osee.coverage;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-import org.junit.Assert;
 import org.eclipse.osee.coverage.editor.params.CoverageParameters;
 import org.eclipse.osee.coverage.import01.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -23,10 +22,11 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

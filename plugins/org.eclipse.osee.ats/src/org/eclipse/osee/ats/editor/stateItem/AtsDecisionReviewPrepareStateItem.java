@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -37,7 +37,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    }
 
    @Override
-   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) throws OseeCoreException {
+   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees) throws OseeCoreException {
       if (sma.isOfType(AtsArtifactTypes.DecisionReview) && fromState.getPageName().equals(
          DecisionReviewState.Prepare.getPageName()) && toState.getPageName().equals(
          DecisionReviewState.Decision.getPageName())) {
@@ -48,7 +48,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) {
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees, SkynetTransaction transaction) {
       // do nothing
    }
 

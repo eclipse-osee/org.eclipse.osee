@@ -8,12 +8,13 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.SMAState;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -92,10 +93,10 @@ public class EventColumn extends XViewerValueColumn {
 
    public String processCurrentStateChange(Change change) {
       try {
-         SMAState was = new SMAState();
-         was.setFromXml(change.getWasValue());
-         SMAState is = new SMAState();
-         is.setFromXml(change.getIsValue());
+         StateDefinition stateDef = new StateDefinition("");
+         stateDef.setWorkPageType(WorkPageType.Working);
+         SMAState was = new SMAState(stateDef, change.getWasValue());
+         SMAState is = new SMAState(stateDef, change.getIsValue());
          if (change.getWasValue().equals("")) {
             return "Created in [" + is.getName() + "] state";
          } else if (!was.getName().equals(is.getName())) {
@@ -105,16 +106,16 @@ public class EventColumn extends XViewerValueColumn {
             is.getHoursSpentStr()))) {
             return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(is) + " hrs";
          }
-         Collection<User> wasAssignees = was.getAssignees();
-         Collection<User> isAssignees = is.getAssignees();
-         Set<User> assigned = new HashSet<User>();
-         Set<User> unAssigned = new HashSet<User>();
-         for (User isAssignee : isAssignees) {
+         Collection<IBasicUser> wasAssignees = was.getAssignees();
+         Collection<IBasicUser> isAssignees = is.getAssignees();
+         Set<IBasicUser> assigned = new HashSet<IBasicUser>();
+         Set<IBasicUser> unAssigned = new HashSet<IBasicUser>();
+         for (IBasicUser isAssignee : isAssignees) {
             if (!wasAssignees.contains(isAssignee)) {
                assigned.add(isAssignee);
             }
          }
-         for (User wasAssignee : wasAssignees) {
+         for (IBasicUser wasAssignee : wasAssignees) {
             if (!isAssignees.contains(wasAssignee)) {
                unAssigned.add(wasAssignee);
             }

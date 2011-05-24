@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -275,7 +275,7 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
    private static DecisionReviewDefinition convertDecisionReviewRule(WorkRuleDefinition workRule) throws OseeCoreException {
       DecisionReviewDefinition revDef = new DecisionReviewDefinition(workRule.getName());
       revDef.setBlockingType(AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(workRule));
-      for (User user : AtsAddDecisionReviewRule.getAssigneesOrDefault(workRule)) {
+      for (IBasicUser user : AtsAddDecisionReviewRule.getAssigneesOrDefault(workRule)) {
          revDef.getAssignees().add(user.getUserId());
       }
       revDef.setReviewTitle(AtsAddDecisionReviewRule.getReviewTitle(workRule));
@@ -286,7 +286,7 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
       for (DecisionOption decOpt : XDecisionOptions.getDecisionOptions(AtsAddDecisionReviewRule.getDecisionOptionString(workRule))) {
          DecisionReviewOption revOpt = new DecisionReviewOption(decOpt.getName());
          revOpt.setFollowupRequired(decOpt.isFollowupRequired());
-         for (User user : decOpt.getAssignees()) {
+         for (IBasicUser user : decOpt.getAssignees()) {
             revOpt.getUserIds().add(user.getUserId());
          }
          revDef.getOptions().add(revOpt);
@@ -297,7 +297,7 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
    private static PeerReviewDefinition convertPeerReviewRule(WorkRuleDefinition workRule) throws OseeCoreException {
       PeerReviewDefinition revDef = new PeerReviewDefinition(workRule.getName());
       revDef.setBlockingType(AtsAddPeerToPeerReviewRule.getReviewBlockTypeOrDefault(workRule));
-      for (User user : AtsAddPeerToPeerReviewRule.getAssigneesOrDefault(workRule)) {
+      for (IBasicUser user : AtsAddPeerToPeerReviewRule.getAssigneesOrDefault(workRule)) {
          revDef.getAssignees().add(user.getUserId());
       }
       revDef.setReviewTitle(AtsAddPeerToPeerReviewRule.getReviewTitle(workRule));

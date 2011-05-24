@@ -14,13 +14,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -39,26 +39,24 @@ public final class UserManagerTest {
    private static final String[] TEST_DEFAULT_GROUPS = {"Alkali Metals", "Metals"};
    private static final String[] NEW_USER_NAMES = {"Lithium", "Sodium", "Potassium"};
 
+   private User createUser(SkynetTransaction transaction, int index) throws OseeCoreException {
+      IUserToken token =
+         TokenFactory.createUserToken(null, NEW_USER_NAMES[index], "this" + index + "@that.com", "9999999" + index,
+            true, index % 2 == 0, true);
+      User user = UserManager.createUser(token, transaction);
+      user.persist(transaction);
+      return user;
+   }
+
    @org.junit.Test
    public void testCreateUser() throws Exception {
 
       SkynetTransaction transaction =
          new SkynetTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
 
-      User lithium =
-         UserManager.createUser(new OseeUser(NEW_USER_NAMES[0], HumanReadableId.generate(), "this1@that.com", true),
-            transaction);
-      lithium.persist(transaction);
-
-      User sodium =
-         UserManager.createUser(new OseeUser(NEW_USER_NAMES[1], HumanReadableId.generate(), "this2@that.com", true),
-            transaction);
-      sodium.persist(transaction);
-
-      User potassium =
-         UserManager.createUser(new OseeUser(NEW_USER_NAMES[2], HumanReadableId.generate(), "this3@that.com", true),
-            transaction);
-      potassium.persist(transaction);
+      User lithium = createUser(transaction, 0);
+      User sodium = createUser(transaction, 1);
+      User potassium = createUser(transaction, 2);
 
       transaction.execute();
 

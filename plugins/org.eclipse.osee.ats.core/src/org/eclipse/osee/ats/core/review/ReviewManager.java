@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -114,14 +115,14 @@ public class ReviewManager {
       return stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview);
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
             options, assignees, createdDate, createdBy);
       return decRev;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
             options, assignees, createdDate, createdBy);
@@ -207,15 +208,16 @@ public class ReviewManager {
       }
    }
 
-   public static Collection<User> getValidateReviewFollowupUsers(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<User> users = teamArt.getStateMgr().getAssignees(TeamState.Implement);
+   public static Collection<IBasicUser> getValidateReviewFollowupUsers(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Collection<IBasicUser> users = new HashSet<IBasicUser>();
+      users.addAll(teamArt.getStateMgr().getAssignees(TeamState.Implement));
       if (users.size() > 0) {
          return users;
       }
 
       // Else if Team Workflow , return it to the leads of this team
-      return teamArt.getTeamDefinition().getLeads();
-
+      users.addAll(teamArt.getTeamDefinition().getLeads());
+      return users;
    }
 
    public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
@@ -316,7 +318,7 @@ public class ReviewManager {
       return sb.toString();
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
             AtsUtilCore.getAtsBranch(), title);

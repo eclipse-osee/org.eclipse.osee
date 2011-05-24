@@ -48,12 +48,13 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.core.util.IGroupExplorerProvider;
@@ -64,7 +65,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -83,7 +83,7 @@ import org.osgi.framework.ServiceReference;
 public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements HasCmAccessControl, IGroupExplorerProvider {
 
    private final Set<IRelationTypeSide> atsWorldRelations = new HashSet<IRelationTypeSide>();
-   private Collection<User> transitionAssignees;
+   private Collection<IBasicUser> transitionAssignees;
    protected AbstractWorkflowArtifact parentAwa;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
@@ -134,12 +134,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   public void initializeNewStateMachine(Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
+   public void initializeNewStateMachine(Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
       StateDefinition startState = getWorkDefinition().getStartState();
       initializeNewStateMachine(startState, assignees, createdDate, createdBy);
    }
 
-   public void initializeNewStateMachine(IWorkPage state, Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
+   public void initializeNewStateMachine(IWorkPage state, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
       getStateMgr().initializeStateMachine(state, assignees);
       setCreatedBy(createdBy, true, createdDate);
       (new TransitionManager(this)).logStateStartedEvent(state, createdDate, createdBy);
@@ -157,7 +157,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @SuppressWarnings("unused")
-   public Collection<User> getImplementers() throws OseeCoreException {
+   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
       return Collections.emptyList();
    }
 
@@ -384,7 +384,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * to transition.
     */
    @SuppressWarnings("unused")
-   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<IBasicUser> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       // provided for subclass implementation
    }
 
@@ -542,7 +542,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return TargetedVersionUtil.getTargetedVersionStr(this);
    }
 
-   public void setCreatedBy(User user, boolean logChange, Date date) throws OseeCoreException {
+   public void setCreatedBy(IBasicUser user, boolean logChange, Date date) throws OseeCoreException {
       if (logChange) {
          if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
             atsLog.addLog(LogType.Originated, "", "", date, user);
@@ -559,7 +559,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   public void internalSetCreatedBy(User user) throws OseeCoreException {
+   public void internalSetCreatedBy(IBasicUser user) throws OseeCoreException {
       atsLog.internalResetOriginator(user);
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
@@ -582,7 +582,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return date;
    }
 
-   public User getCreatedBy() throws OseeCoreException {
+   public IBasicUser getCreatedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
       if (!Strings.isValid(userId)) {
          return getLog().internalGetOriginator();
@@ -604,7 +604,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return date;
    }
 
-   public User getCancelledBy() throws OseeCoreException {
+   public IBasicUser getCancelledBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (!Strings.isValid(userId)) {
          // Keep this for backward compatibility
@@ -656,7 +656,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return date;
    }
 
-   public User getCompletedBy() throws OseeCoreException {
+   public IBasicUser getCompletedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
       if (!Strings.isValid(userId)) {
          // Keep this for backward compatibility
@@ -724,7 +724,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return isCompleted() || isCancelled();
    }
 
-   public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
+   public void setTransitionAssignees(Collection<IBasicUser> assignees) throws OseeCoreException {
       if (assignees.contains(UserManager.getUser(SystemUser.OseeSystem)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
@@ -738,7 +738,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return stateMgr.getAssignees().contains(UserManager.getUser());
    }
 
-   public Collection<User> getTransitionAssignees() throws OseeCoreException {
+   public Collection<IBasicUser> getTransitionAssignees() throws OseeCoreException {
       if (transitionAssignees != null) {
          if (!transitionAssignees.isEmpty() && transitionAssignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
             transitionAssignees.remove(UserManager.getUser(SystemUser.UnAssigned));
@@ -751,7 +751,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public String getTransitionAssigneesStr() throws OseeCoreException {
-      return Artifacts.toTextList(getTransitionAssignees(), ";");
+      return Artifacts.toString(";", getTransitionAssignees());
    }
 
    public boolean isInTransition() {
@@ -778,7 +778,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this instanceof AbstractReviewArtifact;
    }
 
-   protected void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {
+   protected void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IBasicUser> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 

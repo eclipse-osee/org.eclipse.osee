@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -144,7 +145,7 @@ public class AtsLog {
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
     */
-   public void internalResetOriginator(User user) throws OseeCoreException {
+   public void internalResetOriginator(IBasicUser user) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       for (LogItem item : logItems) {
          if (item.getType() == LogType.Originated) {
@@ -228,7 +229,7 @@ public class AtsLog {
    /**
     * Since originator change be changed, return the last originated event's user. Kept for backward compatibility.
     */
-   public User internalGetOriginator() throws OseeCoreException {
+   public IBasicUser internalGetOriginator() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Originated);
       if (logItem == null) {
          return null;
@@ -288,7 +289,7 @@ public class AtsLog {
       addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUser());
    }
 
-   public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
+   public void addLog(LogType type, String state, String msg, Date date, IBasicUser user) throws OseeCoreException {
       if (!enabled) {
          return;
       }
@@ -308,7 +309,7 @@ public class AtsLog {
       builder.append(AHTML.beginMultiColumnTable(100, 1));
       builder.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Event", "State", "Message", "User", "Date")));
       for (LogItem item : logItems) {
-         User user = item.getUser();
+         IBasicUser user = item.getUser();
          String userStr = null;
          if (user == null) {
             userStr = item.getUserId();

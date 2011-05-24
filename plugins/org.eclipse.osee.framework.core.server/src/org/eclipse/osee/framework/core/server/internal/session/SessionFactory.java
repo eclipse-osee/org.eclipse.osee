@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.server.internal.session;
 import java.sql.DatabaseMetaData;
 import java.util.Date;
 import java.util.Properties;
-import org.eclipse.osee.framework.core.data.IOseeUserInfo;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -62,10 +62,10 @@ public final class SessionFactory implements IOseeTypeFactory {
          clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
    }
 
-   public OseeSessionGrant createSessionGrant(Session session, IOseeUserInfo oseeUserInfo) throws OseeCoreException {
+   public OseeSessionGrant createSessionGrant(Session session, IUserToken userToken) throws OseeCoreException {
       OseeSessionGrant sessionGrant = new OseeSessionGrant(session.getGuid());
-      sessionGrant.setCreationRequired(oseeUserInfo.isCreationRequired());
-      sessionGrant.setOseeUserInfo(oseeUserInfo);
+      sessionGrant.setCreationRequired(userToken.isCreationRequired());
+      sessionGrant.setUserToken(userToken);
       sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
 
       Properties properties = getSQLProperties(session.getClientVersion());

@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -124,7 +124,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
       if (uld.open() != 0) {
          return false;
       }
-      Collection<User> users = uld.getUsersSelected();
+      Collection<IBasicUser> users = uld.getUsersSelected();
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return false;
@@ -210,8 +210,8 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
 
    public static String getAssigneeStr(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         Set<User> pocs = new HashSet<User>();
-         Set<User> implementers = new HashSet<User>();
+         Set<IBasicUser> pocs = new HashSet<IBasicUser>();
+         Set<IBasicUser> implementers = new HashSet<IBasicUser>();
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (team.isCompletedOrCancelled()) {
                implementers.addAll(team.getImplementers());

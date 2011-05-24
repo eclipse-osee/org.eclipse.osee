@@ -15,8 +15,8 @@ import org.eclipse.osee.ats.core.review.role.UserRole;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -81,12 +81,12 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsPeerToPeerReviewReviewStateItem stateItem = new AtsPeerToPeerReviewReviewStateItem();
-      stateItem.transitioned(peerRevArt, fromState, toState, Arrays.asList(UserManager.getUser()), null);
+      stateItem.transitioned(peerRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()), null);
 
       // Joe and Alex should have been added to assignees
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());
       boolean joeFound = false, alexFound = false;
-      for (User user : peerRevArt.getStateMgr().getAssignees()) {
+      for (IBasicUser user : peerRevArt.getStateMgr().getAssignees()) {
          if (user.getName().equals("Joe Smith")) {
             joeFound = true;
          }

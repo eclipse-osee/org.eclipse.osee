@@ -15,11 +15,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IOseeUserInfo;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.StorageState;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
@@ -55,12 +55,12 @@ public final class SessionManagerImpl implements ISessionManager {
 
       boolean isAuthenticated = authenticationManager.authenticate(credential);
       if (isAuthenticated) {
-         IOseeUserInfo oseeUserInfo = authenticationManager.asOseeUser(credential);
+         IUserToken userToken = authenticationManager.asUserToken(credential);
 
          String managedByServerId = serverId;
          Date creationDate = GlobalTime.GreenwichMeanTimestamp();
          Session session =
-            sessionFactory.create(GUID.create(), oseeUserInfo.getUserID(), creationDate, managedByServerId,
+            sessionFactory.create(GUID.create(), userToken.getUserId(), creationDate, managedByServerId,
                credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
                credential.getPort(), creationDate, StorageState.CREATED.name().toLowerCase());
 
@@ -70,7 +70,7 @@ public final class SessionManagerImpl implements ISessionManager {
             sessionCache.setIgnoreEnsurePopulateException(false);
          }
          sessionCache.cache(session);
-         sessionGrant = sessionFactory.createSessionGrant(session, oseeUserInfo);
+         sessionGrant = sessionFactory.createSessionGrant(session, userToken);
       }
       return sessionGrant;
    }

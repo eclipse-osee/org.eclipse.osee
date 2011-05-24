@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -119,7 +120,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       return result;
    }
 
-   public Result transitionToInWork(User toUser, int percentComplete, double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
+   public Result transitionToInWork(IBasicUser toUser, int percentComplete, double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }
@@ -162,7 +163,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       return Result.TrueResult;
    }
 
-   public Result parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
+   public Result parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<IBasicUser> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (toState.getPageName().equals(TeamState.Cancelled.getPageName()) && isInWork()) {
          TransitionManager transitionMgr = new TransitionManager(this);
          Result result = transitionMgr.transitionToCancelled("Parent Cancelled", transaction, transitionOption);
@@ -215,7 +216,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    @Override
-   public Collection<User> getImplementers() throws OseeCoreException {
+   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, TaskStates.InWork);
    }
 

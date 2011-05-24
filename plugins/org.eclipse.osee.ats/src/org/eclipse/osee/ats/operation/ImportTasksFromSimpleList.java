@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,7 +63,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
-               final List<User> assignees = Collections.castAll(variableMap.getArtifacts(ASSIGNEES));
+               final List<IBasicUser> assignees = Collections.castAll(variableMap.getArtifacts(ASSIGNEES));
                final List<String> titles = new ArrayList<String>();
                for (String title : variableMap.getString(TASK_IMPORT_TITLES).split("\n")) {
                   title = title.replaceAll("\r", "");

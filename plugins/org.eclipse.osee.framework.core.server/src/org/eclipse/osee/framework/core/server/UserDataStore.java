@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.core.server;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeUserInfo;
-import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.internal.ServerActivator;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -27,17 +27,18 @@ public class UserDataStore {
       "select oa.value as user_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
 
    private UserDataStore() {
+      // private constructor
    }
 
-   public static IOseeUserInfo getOseeUserFromOseeDb(String userId) {
-      IOseeUserInfo toReturn = null;
+   public static IUserToken getUserTokenFromOseeDb(String userId) {
+      IUserToken toReturn = null;
       IOseeStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(LOAD_OSEE_USER, userId);
          if (chStmt.next()) {
             // Only need the userId all other fields will be loaded by the client
-            toReturn = new OseeUserInfo(false, "-", chStmt.getString("user_id"), "-", false);
+            toReturn = TokenFactory.createUserToken(null, "-", "-", chStmt.getString("user_id"), false, false, false);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(ServerActivator.class, Level.SEVERE,
@@ -50,22 +51,8 @@ public class UserDataStore {
       return toReturn;
    }
 
-   public static IOseeUserInfo createUser(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-      return new OseeUserInfo(isCreationRequired, userName, userId, userEmail, isActive);
+   public static IUserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
+      return TokenFactory.createUserToken(null, userName, userEmail, userId, isActive, false, isCreationRequired);
    }
 
-   private final static class OseeUserInfo extends OseeUser implements IOseeUserInfo {
-      private static final long serialVersionUID = 6770020451554391030L;
-      private final boolean isCreationRequired;
-
-      private OseeUserInfo(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-         super(userName, userId, userEmail, isActive);
-         this.isCreationRequired = isCreationRequired;
-      }
-
-      @Override
-      public boolean isCreationRequired() {
-         return isCreationRequired;
-      }
-   }
 }

@@ -59,22 +59,38 @@ public final class Artifacts {
       return guids;
    }
 
-   public static String commaArts(Collection<? extends Artifact> artifacts) {
-      return toTextList(artifacts, ", ");
+   /**
+    * getName() all artifacts, else toString()
+    */
+   public static String commaArts(Collection<? extends Object> objects) {
+      return toTextList(objects, ", ");
    }
 
-   public static String semmicolonArts(Collection<? extends Artifact> artifacts) {
-      return toTextList(artifacts, "; ");
+   /**
+    * getName() all artifacts, else toString()
+    */
+   public static String semmicolonArts(Collection<? extends Object> objects) {
+      return toTextList(objects, "; ");
    }
 
-   public static String toString(String separator, Collection<? extends Artifact> artifacts) {
-      return toTextList(artifacts, separator);
+   /**
+    * getName() all artifacts, else toString()
+    */
+   public static String toString(String separator, Collection<? extends Object> objects) {
+      return toTextList(objects, separator);
    }
 
-   public static String toTextList(Collection<? extends Artifact> artifacts, String separator) {
+   /**
+    * getName() all artifacts, else toString()
+    */
+   public static String toTextList(Collection<? extends Object> objects, String separator) {
       StringBuilder sb = new StringBuilder();
-      for (Artifact art : artifacts) {
-         sb.append(art.getName());
+      for (Object obj : objects) {
+         if (obj instanceof Artifact) {
+            sb.append(((Artifact) obj).getName());
+         } else {
+            sb.append(obj.toString());
+         }
          sb.append(separator);
       }
       if (sb.length() > separator.length()) {

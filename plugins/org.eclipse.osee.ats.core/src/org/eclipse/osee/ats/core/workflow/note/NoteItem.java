@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;

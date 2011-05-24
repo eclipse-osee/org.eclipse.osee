@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -31,6 +32,8 @@ public class DemoDbGroups {
    public static String TEST_GROUP_NAME = "Test Group";
 
    public static List<TeamWorkFlowArtifact> createGroups(boolean DEBUG) throws Exception {
+
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Groups");
 
       // Create group of all resulting objects
       List<TeamWorkFlowArtifact> codeWorkflows = new ArrayList<TeamWorkFlowArtifact>();
@@ -48,15 +51,15 @@ public class DemoDbGroups {
             groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, teamWorkflow);
          }
 
-         codeArt.persist();
+         codeArt.persist(transaction);
       }
 
       // Add all Tasks to Group
       for (Artifact task : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Task, AtsUtil.getAtsBranch())) {
          groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, task);
       }
-      groupArt.persist();
-
+      groupArt.persist(transaction);
+      transaction.execute();
       return codeWorkflows;
    }
 }

@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.core.review.role;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.internal.Activator;
@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -70,8 +71,8 @@ public class UserRoleManager {
       return artifactRef.get();
    }
 
-   public Set<UserRole> getUserRoles() throws OseeCoreException {
-      Set<UserRole> roles = new HashSet<UserRole>();
+   public List<UserRole> getUserRoles() throws OseeCoreException {
+      List<UserRole> roles = new ArrayList<UserRole>();
       for (String xml : getArtifact().getAttributesToStringList(ATS_ROLE_STORAGE_TYPE)) {
          roleMatcher.reset(xml);
          while (roleMatcher.find()) {
@@ -82,8 +83,8 @@ public class UserRoleManager {
       return roles;
    }
 
-   public Set<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
-      Set<UserRole> cRoles = new HashSet<UserRole>();
+   public List<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
+      List<UserRole> cRoles = new ArrayList<UserRole>();
       for (UserRole role : getUserRoles(Role.Reviewer)) {
          if (role.isCompleted()) {
             cRoles.add(role);
@@ -92,18 +93,19 @@ public class UserRoleManager {
       return cRoles;
    }
 
-   public Set<User> getRoleUsersAuthorModerator() throws OseeCoreException {
-      Set<User> roles = getRoleUsers(Role.Author);
-      if (roles.isEmpty()) {
-         roles = getRoleUsers(Role.Moderator);
-         roles.add(UserManager.getUser());
+   public List<IBasicUser> getRoleUsersAuthorModerator() throws OseeCoreException {
+      List<IBasicUser> users = getRoleUsers(Role.Author);
+      if (users.isEmpty()) {
+         users = getRoleUsers(Role.Moderator);
+         if (!users.contains(UserManager.getUser())) {
+            users.add(UserManager.getUser());
+         }
       }
-
-      return roles;
+      return users;
    }
 
-   public Set<UserRole> getUserRoles(Role role) throws OseeCoreException {
-      Set<UserRole> roles = new HashSet<UserRole>();
+   public List<UserRole> getUserRoles(Role role) throws OseeCoreException {
+      List<UserRole> roles = new ArrayList<UserRole>();
       for (UserRole uRole : getUserRoles()) {
          if (uRole.getRole() == role) {
             roles.add(uRole);
@@ -112,17 +114,17 @@ public class UserRoleManager {
       return roles;
    }
 
-   public Set<User> getRoleUsers(Role role) throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
+   public List<IBasicUser> getRoleUsers(Role role) throws OseeCoreException {
+      List<IBasicUser> users = new ArrayList<IBasicUser>();
       for (UserRole uRole : getUserRoles()) {
-         if (uRole.getRole() == role) {
+         if (uRole.getRole() == role && !users.contains(uRole.getUser())) {
             users.add(uRole.getUser());
          }
       }
       return users;
    }
 
-   private void saveRoleItems(Set<UserRole> defectItems, boolean persist, SkynetTransaction transaction) {
+   private void saveRoleItems(List<UserRole> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
          // Change existing ones
          for (Attribute<?> attr : getArtifact().getAttributes(ATS_ROLE_STORAGE_TYPE)) {
@@ -133,20 +135,20 @@ public class UserRoleManager {
                }
             }
          }
-         Set<UserRole> dbPromoteItems = getUserRoles();
+         List<UserRole> userRole = getUserRoles();
          // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
-         for (UserRole delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-            dbPromoteItems, defectItems)) {
+         for (UserRole delUserRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(userRole,
+            defectItems)) {
             for (Attribute<?> attr : getArtifact().getAttributes(ATS_ROLE_STORAGE_TYPE)) {
                UserRole dbPromoteItem = new UserRole((String) attr.getValue());
-               if (dbPromoteItem.equals(delPromoteItem)) {
+               if (dbPromoteItem.equals(delUserRole)) {
                   attr.delete();
                }
             }
          }
          // Add new ones: items in promoteItems that are not in dbPromoteItems
          for (UserRole newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(defectItems,
-            dbPromoteItems)) {
+            userRole)) {
             getArtifact().addAttributeFromString(ATS_ROLE_STORAGE_TYPE,
                AXml.addTagData(ROLE_ITEM_TAG, newPromoteItem.toXml()));
          }
@@ -161,7 +163,7 @@ public class UserRoleManager {
    }
 
    public void addOrUpdateUserRole(UserRole userRole, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
-      Set<UserRole> roleItems = getUserRoles();
+      List<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
          if (userRole.equals(uRole)) {
@@ -177,9 +179,9 @@ public class UserRoleManager {
 
    private void updateAssignees() throws OseeCoreException {
       // Set assignees based on roles that are not set as completed
-      Set<User> assignees = new HashSet<User>();
+      List<IBasicUser> assignees = new ArrayList<IBasicUser>();
       for (UserRole uRole : getUserRoles()) {
-         if (!uRole.isCompleted() && uRole.getUser() != null) {
+         if (!uRole.isCompleted() && uRole.getUser() != null && !assignees.contains(uRole.getUser())) {
             assignees.add(uRole.getUser());
          }
       }
@@ -187,14 +189,20 @@ public class UserRoleManager {
       if (assignees.isEmpty()) {
          if (getUserRoles(Role.Author).size() > 0) {
             for (UserRole role : getUserRoles(Role.Author)) {
-               assignees.add(role.getUser());
+               if (!assignees.contains(role.getUser())) {
+                  assignees.add(role.getUser());
+               }
             }
          } else if (getUserRoles(Role.Moderator).size() > 0) {
             for (UserRole role : getUserRoles(Role.Moderator)) {
-               assignees.add(role.getUser());
+               if (!assignees.contains(role.getUser())) {
+                  assignees.add(role.getUser());
+               }
             }
          } else {
-            assignees.add(UserManager.getUser());
+            if (!assignees.contains(UserManager.getUser())) {
+               assignees.add(UserManager.getUser());
+            }
          }
       }
       // Set assignees based on roles
@@ -202,7 +210,7 @@ public class UserRoleManager {
    }
 
    public void removeUserRole(UserRole userRole, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
-      Set<UserRole> roleItems = getUserRoles();
+      List<UserRole> roleItems = getUserRoles();
       roleItems.remove(userRole);
       saveRoleItems(roleItems, persist, transaction);
    }

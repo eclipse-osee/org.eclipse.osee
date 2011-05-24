@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -128,7 +129,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         Collection<User> assignees = teamArt.getStateMgr().getAssignees();
+         Collection<IBasicUser> assignees = teamArt.getStateMgr().getAssignees();
          if (!assignees.contains(UserManager.getUser())) {
             assignees.add(UserManager.getUser());
          }

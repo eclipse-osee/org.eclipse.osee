@@ -34,10 +34,10 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -202,7 +202,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    }
 
    @Override
-   public Collection<User> getImplementers() throws OseeCoreException {
+   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, TeamState.Implement);
    }
 

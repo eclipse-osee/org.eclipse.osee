@@ -11,34 +11,35 @@
 package org.eclipse.osee.framework.ui.skynet.notify;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
  */
 public class OseeNotificationEvent {
 
-   private Collection<User> users;
+   private Collection<IBasicUser> users;
    private final String id;
    private String type;
    private String description;
    private String url;
 
-   public OseeNotificationEvent(Collection<User> users, String id, String type, String description) {
+   public OseeNotificationEvent(Collection<IBasicUser> users, String id, String type, String description) {
       this.users = users;
       this.id = id;
       this.type = type;
       this.description = description;
    }
 
-   public OseeNotificationEvent(Collection<User> users, String id, String type, String description, String url) {
+   public OseeNotificationEvent(Collection<IBasicUser> users, String id, String type, String description, String url) {
       this(users, id, type, description);
       this.url = url;
    }
 
    @Override
    public String toString() {
-      return type + " - " + id + " - " + users + " - " + description;
+      return type + " - " + id + " - " + Artifacts.toString("; ", users) + " - " + description;
    }
 
    public String getId() {
@@ -53,11 +54,11 @@ public class OseeNotificationEvent {
       return description;
    }
 
-   public Collection<User> getUsers() {
+   public Collection<IBasicUser> getUsers() {
       return users;
    }
 
-   public void setUsers(Collection<User> users) {
+   public void setUsers(Collection<IBasicUser> users) {
       this.users = users;
    }
 

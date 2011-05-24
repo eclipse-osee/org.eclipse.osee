@@ -107,7 +107,7 @@ public class PopulateActionsTest {
       for (TaskArtifact task : codeTeamArt.getTaskArtifacts()) {
          testTaskContents(task, TaskStates.InWork.getPageName(), TeamState.Implement.getPageName());
          taskNames.remove(task.getName());
-         task.getStateMgr().getAssigneesStr().equals("Joe Smith; Kay Jones");
+         Assert.assertEquals("Joe Smith; Kay Jones", task.getStateMgr().getAssigneesStr());
       }
       Assert.assertEquals(
          String.format("Not all tasks exist for [%s]; [%s] remain", codeTeamArt.toStringWithId(), taskNames), 0,
@@ -169,7 +169,7 @@ public class PopulateActionsTest {
       for (TaskArtifact task : codeTeam.getTaskArtifacts()) {
          testTaskContents(task, TaskStates.InWork.getPageName(), TeamState.Implement.getPageName());
          taskNames.remove(task.getName());
-         task.getStateMgr().getAssigneesStr().equals("Joe Smith");
+         Assert.assertEquals("Joe Smith", task.getStateMgr().getAssigneesStr());
       }
       Assert.assertEquals(
          String.format("Not all tasks exist for [%s]; [%s] remain", codeTeam.toStringWithId(), taskNames), 0,

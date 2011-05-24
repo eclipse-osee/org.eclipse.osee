@@ -16,11 +16,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -64,16 +65,16 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class)) {
-               if (!user.getEmail().equals("")) {
-                  emails.add(user.getEmail());
+            for (IBasicUser user : teamDef.getMembers()) {
+               if (!Strings.isValid(UserManager.getEmail(user))) {
+                  emails.add(UserManager.getEmail(user));
                }
             }
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class)) {
-               if (!user.getEmail().equals("")) {
-                  emails.add(user.getEmail());
+            for (IBasicUser user : teamDef.getLeads()) {
+               if (Strings.isValid(UserManager.getEmail(user))) {
+                  emails.add(UserManager.getEmail(user));
                }
             }
          }

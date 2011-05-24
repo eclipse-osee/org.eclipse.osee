@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -54,7 +54,7 @@ public class OseeNotifyUsersJob extends Job {
    @Override
    public IStatus run(IProgressMonitor monitor) {
       try {
-         Set<User> uniqueUusers = new HashSet<User>();
+         Set<IBasicUser> uniqueUusers = new HashSet<IBasicUser>();
          for (OseeNotificationEvent notificationEvent : notificationEvents) {
             uniqueUusers.addAll(notificationEvent.getUsers());
          }
@@ -64,7 +64,7 @@ public class OseeNotifyUsersJob extends Job {
             uniqueUusers.clear();
             uniqueUusers.addAll(Arrays.asList(UserManager.getUser()));
          }
-         for (User user : EmailUtil.getValidEmailUsers(uniqueUusers)) {
+         for (IBasicUser user : EmailUtil.getValidEmailUsers(uniqueUusers)) {
             List<OseeNotificationEvent> notifyEvents = new ArrayList<OseeNotificationEvent>();
             for (OseeNotificationEvent notificationEvent : notificationEvents) {
                if (testing || notificationEvent.getUsers().contains(user)) {
@@ -100,7 +100,7 @@ public class OseeNotifyUsersJob extends Job {
       return Strings.isValid(notificationEvent.getUrl()) ? AHTML.getHyperlink(notificationEvent.getUrl(), "More Info") : "";
    }
 
-   private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws OseeCoreException {
+   private void notifyUser(IBasicUser user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws OseeCoreException {
       if (user == UserManager.getUser(SystemUser.OseeSystem) || user == UserManager.getUser(SystemUser.UnAssigned) || user == UserManager.getUser(SystemUser.Guest)) {
          // do nothing
          return;
@@ -110,12 +110,12 @@ public class OseeNotifyUsersJob extends Job {
          return;
       }
       String html = notificationEventsToHtml(notificationEvents);
-      if (!Strings.isValid(user.getEmail())) {
+      if (!Strings.isValid(UserManager.getEmail(user))) {
          // do nothing
          return;
       } else {
          OseeEmail emailMessage =
-            new OseeEmail(Arrays.asList(user.getEmail()), UserManager.getUser().getEmail(),
+            new OseeEmail(Arrays.asList(UserManager.getEmail(user)), UserManager.getUser().getEmail(),
                UserManager.getUser().getEmail(), getNotificationEmailSubject(notificationEvents), html, BodyType.Html);
          emailMessage.send();
       }

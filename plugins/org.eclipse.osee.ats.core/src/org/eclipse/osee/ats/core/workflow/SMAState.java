@@ -10,26 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 
 public class SMAState {
    private String name;
-   private Collection<User> assignees = new HashSet<User>();
+   private List<IBasicUser> assignees = new ArrayList<IBasicUser>();
    private int percentComplete = 0;
    private double hoursSpent = 0;
+   private WorkPageType workPageType;
 
    @Override
    public int hashCode() {
@@ -40,26 +46,32 @@ public class SMAState {
       return result;
    }
 
-   public SMAState(String name, Collection<User> assignees) {
-      this.name = Strings.intern(name);
+   public SMAState(IWorkPage stateDef, Collection<IBasicUser> assignees) throws OseeCoreException {
+      this(stateDef);
       if (assignees != null) {
-         this.assignees = assignees;
+         setAssignees(assignees);
       }
    }
 
-   public SMAState(String name, User assignee) {
-      this.name = Strings.intern(name);
-      if (assignee != null) {
-         this.assignees.add(assignee);
+   public SMAState(IWorkPage stateDef) {
+      this.name = Strings.intern(stateDef.getPageName());
+      this.workPageType = stateDef.getWorkPageType();
+   }
+
+   public SMAState(IWorkPage stateDef, String xml) throws OseeCoreException {
+      this(stateDef);
+      setFromXml(xml);
+   }
+
+   public SMAState(AbstractWorkflowArtifact awa, String xml) throws OseeCoreException {
+      setFromXml(xml);
+      String pageName = getName();
+      StateDefinition stateDef = awa.getStateDefinitionByName(pageName);
+      if (stateDef != null) {
+         setWorkPageType(stateDef.getWorkPageType());
+      } else {
+         setWorkPageType(WorkPageType.Working);
       }
-   }
-
-   public SMAState(String name) {
-      this(name, (User) null);
-   }
-
-   public SMAState() {
-      this("", (User) null);
    }
 
    @Override
@@ -74,7 +86,7 @@ public class SMAState {
          if (!state.name.equals(name)) {
             return false;
          }
-         if (!state.assignees.equals(this.assignees)) {
+         if (!Collections.isEqual(state.assignees, this.assignees)) {
             return false;
          }
          return true;
@@ -82,14 +94,14 @@ public class SMAState {
       return super.equals(obj);
    }
 
-   public Collection<User> getAssignees() {
+   public Collection<IBasicUser> getAssignees() {
       return assignees;
    }
 
    /**
     * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignees(Collection<User> assignees) throws OseeCoreException {
+   public void setAssignees(Collection<IBasicUser> assignees) throws OseeCoreException {
       if (assignees != null) {
          if (assignees.contains(UserManager.getUser(SystemUser.OseeSystem)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
             throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
@@ -97,14 +109,16 @@ public class SMAState {
          if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
             throw new OseeArgumentException("Can not assign to user and UnAssigned");
          }
-         if (assignees.size() > 0 && (name.equals(TeamState.Completed.getPageName()) || name.equals(TeamState.Cancelled.getPageName()))) {
+         if (assignees.size() > 0 && workPageType.isCompletedOrCancelledPage()) {
             throw new OseeStateException("Can't assign completed/cancelled states.");
          }
       } else {
-         assignees = new HashSet<User>();
+         assignees = new HashSet<IBasicUser>();
       }
       this.assignees.clear();
-      this.assignees.addAll(assignees);
+      for (IBasicUser assignee : assignees) {
+         addAssignee(assignee);
+      }
 
    }
 
@@ -115,29 +129,30 @@ public class SMAState {
    /**
     * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignee(User assignee) throws OseeCoreException {
-      if (assignee != null && (name.equals(TeamState.Completed.getPageName()) || name.equals(TeamState.Cancelled.getPageName()))) {
+   public void setAssignee(IBasicUser assignee) throws OseeCoreException {
+      if (assignee != null && workPageType.isCompletedOrCancelledPage()) {
          throw new OseeStateException("Can't assign completed/cancelled states.");
       }
       if (assignee == UserManager.getUser(SystemUser.OseeSystem) || assignee == UserManager.getUser(SystemUser.Guest)) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
       this.assignees.clear();
-      if (assignee != null) {
-         this.assignees.add(assignee);
-      }
+      addAssignee(assignee);
    }
 
-   public void addAssignee(User assignee) throws OseeCoreException {
+   public void addAssignee(IBasicUser assignee) throws OseeCoreException {
+      if (assignee != null && workPageType.isCompletedOrCancelledPage()) {
+         throw new OseeStateException("Can't assign completed/cancelled states.");
+      }
       if (assignee == UserManager.getUser(SystemUser.OseeSystem) || assignee == UserManager.getUser(SystemUser.Guest)) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
-      if (assignee != null) {
+      if (assignee != null && !this.assignees.contains(assignee)) {
          this.assignees.add(assignee);
       }
    }
 
-   public void removeAssignee(User assignee) {
+   public void removeAssignee(IBasicUser assignee) {
       if (assignee != null) {
          this.assignees.remove(assignee);
       }
@@ -212,6 +227,14 @@ public class SMAState {
 
    public void setPercentComplete(int percentComplete) {
       this.percentComplete = percentComplete;
+   }
+
+   public WorkPageType getWorkPageType() {
+      return workPageType;
+   }
+
+   public void setWorkPageType(WorkPageType workPageType) {
+      this.workPageType = workPageType;
    }
 
 }

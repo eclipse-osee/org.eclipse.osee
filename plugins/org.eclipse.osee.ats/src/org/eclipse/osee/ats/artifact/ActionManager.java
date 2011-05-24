@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.actions.wizard.INewActionListener;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
@@ -35,10 +34,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -49,7 +48,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
  */
 public class ActionManager {
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, Date createdDate, User createdBy, INewActionListener newActionListener, SkynetTransaction transaction) throws OseeCoreException {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, Date createdDate, IBasicUser createdBy, INewActionListener newActionListener, SkynetTransaction transaction) throws OseeCoreException {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
@@ -88,7 +87,7 @@ public class ActionManager {
       return actionArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, Date createdDate, User createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<IBasicUser> assignees, SkynetTransaction transaction, Date createdDate, IBasicUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
       IArtifactType teamWorkflowArtifact = AtsArtifactTypes.TeamWorkflow;
       ITeamWorkflowProvider teamExt = null;
 
@@ -117,7 +116,7 @@ public class ActionManager {
       return teamArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, Date createdDate, User createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist

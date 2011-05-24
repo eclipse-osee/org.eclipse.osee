@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -36,7 +36,7 @@ public class BootStrapUser extends User {
    private static final long serialVersionUID = 1L;
 
    @Override
-   public String getEmail() {
+   public String getEmail() throws OseeCoreException {
       return SystemUser.BootStrap.getEmail();
    }
 
@@ -46,12 +46,12 @@ public class BootStrapUser extends User {
    }
 
    @Override
-   public String getUserId() {
-      return SystemUser.BootStrap.getUserID();
+   public String getUserId() throws OseeCoreException {
+      return SystemUser.BootStrap.getUserId();
    }
 
    @Override
-   public Boolean isActive() {
+   public boolean isActive() throws OseeCoreException {
       return SystemUser.BootStrap.isActive();
    }
 

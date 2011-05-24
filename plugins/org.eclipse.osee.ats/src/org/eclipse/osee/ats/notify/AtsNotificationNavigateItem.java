@@ -86,7 +86,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                   numEvents++;
                   rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(),
                      XResultData.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
-                     Artifacts.semmicolonArts(event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
+                     Artifacts.toString("; ", event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
                   if (sendNotifications) {
                      OseeNotificationManager.getInstance().addNotificationEvent(event);
                   }

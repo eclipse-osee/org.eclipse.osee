@@ -13,11 +13,12 @@ package org.eclipse.osee.ats.util;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.SMAState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.junit.Assert;
 
 /**
@@ -44,20 +45,25 @@ public class SMATestUtil {
          Assert.assertEquals("Hours Spent wrong for " + awa.getHumanReadableId(),
             HoursSpentUtil.getHoursSpentTotal(awa), hoursSpent, 0.0);
 
-         for (String stateValue : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
-            SMAState smaState = new SMAState();
-            smaState.setFromXml(stateValue);
+         for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
+            SMAState smaState = new SMAState(awa, xml);
+            String pageName = smaState.getName();
+            StateDefinition stateDef = awa.getStateDefinitionByName(pageName);
+            if (stateDef != null) {
+               smaState.setWorkPageType(stateDef.getWorkPageType());
+            } else {
+               smaState.setWorkPageType(WorkPageType.Working);
+            }
             boolean isCompletedCancelledState = isCompletedCancelledState(awa, smaState.getName());
             if (isCompletedCancelledState) {
-               Assert.assertTrue(
-                  "completed/cancelled ats.State [" + stateValue + "] wrong " + awa.getHumanReadableId(),
-                  stateValue.endsWith(";;;"));
+               Assert.assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getHumanReadableId(),
+                  xml.endsWith(";;;"));
             }
          }
       }
    }
 
-   public static boolean isCompletedCancelledState(AbstractWorkflowArtifact aba, String stateName) throws OseeCoreException {
+   public static boolean isCompletedCancelledState(AbstractWorkflowArtifact aba, String stateName) {
       return aba.getWorkDefinition().getStateByName(stateName).isCompletedOrCancelledPage();
    }
 }

@@ -28,9 +28,9 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -49,8 +49,9 @@ public class AtsNotification {
 
    private final static Set<IAtsNotification> atsNotificationItems = new HashSet<IAtsNotification>();
    private final static AtsNotification instance = new AtsNotification();
-   private final static Map<String, Collection<User>> preSaveStateAssignees = new HashMap<String, Collection<User>>();
-   private final static Map<String, User> guidToOriginatorMap = new HashMap<String, User>(500);
+   private final static Map<String, Collection<IBasicUser>> preSaveStateAssignees =
+      new HashMap<String, Collection<IBasicUser>>();
+   private final static Map<String, IBasicUser> guidToOriginatorMap = new HashMap<String, IBasicUser>(500);
 
    private AtsNotification() {
 
@@ -136,8 +137,8 @@ public class AtsNotification {
          preSaveStateAssignees.put(workflow.getGuid(), workflow.getStateMgr().getAssignees());
          return;
       }
-      Set<User> newAssignees = new HashSet<User>();
-      for (User user : workflow.getStateMgr().getAssignees()) {
+      Set<IBasicUser> newAssignees = new HashSet<IBasicUser>();
+      for (IBasicUser user : workflow.getStateMgr().getAssignees()) {
          if (!preSaveStateAssignees.get(workflow.getGuid()).contains(user)) {
             newAssignees.add(user);
          }
@@ -155,9 +156,9 @@ public class AtsNotification {
    }
 
    public static void notifyOriginatorAndReset(AbstractWorkflowArtifact workflow, boolean resetOnly) throws OseeCoreException {
-      User preSaveOriginator = guidToOriginatorMap.get(workflow.getGuid());
+      IBasicUser preSaveOriginator = guidToOriginatorMap.get(workflow.getGuid());
       if (preSaveOriginator == null || resetOnly) {
-         User orig = workflow.getCreatedBy();
+         IBasicUser orig = workflow.getCreatedBy();
          if (orig == null) {
             orig = UserManager.getUser();
             guidToOriginatorMap.put(workflow.getGuid(), orig);

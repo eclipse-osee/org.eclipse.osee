@@ -11,10 +11,11 @@
 
 package org.eclipse.osee.framework.database.init;
 
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -60,8 +61,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          everyonGroup.persist(transaction);
 
          // Create Default Users
-         for (SystemUser userEnum : SystemUser.values()) {
-            UserManager.createUser(userEnum, transaction);
+         for (IUserToken userToken : SystemUser.values()) {
+            UserManager.createUser(userToken, transaction);
          }
          // Create Global Preferences artifact that lives on common branch
          OseeSystemArtifacts.createGlobalPreferenceArtifact().persist(transaction);

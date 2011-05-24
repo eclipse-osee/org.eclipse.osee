@@ -40,12 +40,10 @@ public class OseeSessionGrant extends BaseExchangeData {
    private static final String OSEE_CLIENT_BUILD_DESIGNATION = "oseeClientBuildDesignation";
 
    private IDatabaseInfo grantedDatabaseInfo;
-   private IOseeUser grantedOseeUserInfo;
 
    protected OseeSessionGrant() {
       super();
       this.grantedDatabaseInfo = new GrantedDatabaseInfo();
-      this.grantedOseeUserInfo = new GrantedOseeUserInfo();
    }
 
    public OseeSessionGrant(String sessionId) {
@@ -79,10 +77,10 @@ public class OseeSessionGrant extends BaseExchangeData {
       return getPropertyString(SQL_PROPERTIES);
    }
 
-   public void setOseeUserInfo(IOseeUser userInfo) {
+   public void setUserToken(IUserToken userInfo) throws OseeCoreException {
       this.backingData.put(OSEE_USER_EMAIL, userInfo.getEmail());
       this.backingData.put(OSEE_USER_NAME, userInfo.getName());
-      this.backingData.put(OSEE_USER_ID, userInfo.getUserID());
+      this.backingData.put(OSEE_USER_ID, userInfo.getUserId());
       this.backingData.put(OSEE_IS_USER_ACTIVE, userInfo.isActive());
    }
 
@@ -102,8 +100,8 @@ public class OseeSessionGrant extends BaseExchangeData {
       return getString(OSEE_APPLICATION_SERVER_DATA_PATH);
    }
 
-   public IOseeUser getOseeUserInfo() {
-      return grantedOseeUserInfo;
+   public IUserToken getUserToken() {
+      return getGrantedUserToken();
    }
 
    public String getClientBuildDesignation() {
@@ -120,29 +118,9 @@ public class OseeSessionGrant extends BaseExchangeData {
       return session;
    }
 
-   private final class GrantedOseeUserInfo implements IOseeUser {
-
-      private static final long serialVersionUID = 4895789161489202252L;
-
-      @Override
-      public String getEmail() {
-         return getString(OSEE_USER_EMAIL);
-      }
-
-      @Override
-      public String getName() {
-         return getString(OSEE_USER_NAME);
-      }
-
-      @Override
-      public String getUserID() {
-         return getString(OSEE_USER_ID);
-      }
-
-      @Override
-      public boolean isActive() {
-         return backingData.getBoolean(OSEE_IS_USER_ACTIVE);
-      }
+   private IUserToken getGrantedUserToken() {
+      return TokenFactory.createUserToken(null, getString(OSEE_USER_NAME), getString(OSEE_USER_EMAIL),
+         getString(OSEE_USER_ID), backingData.getBoolean(OSEE_IS_USER_ACTIVE), false, false);
    }
 
    private final class GrantedDatabaseInfo implements IDatabaseInfo {

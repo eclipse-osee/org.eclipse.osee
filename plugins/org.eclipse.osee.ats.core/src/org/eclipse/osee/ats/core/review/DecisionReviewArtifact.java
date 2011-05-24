@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 
@@ -32,7 +32,7 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IR
    }
 
    @Override
-   public Collection<User> getImplementers() throws OseeCoreException {
+   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, DecisionReviewState.Decision);
    }
 

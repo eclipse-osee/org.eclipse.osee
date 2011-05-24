@@ -17,13 +17,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 /**
  * @author Donald G. Dunne
  */
-public class User extends Artifact {
+public class User extends Artifact implements IBasicUser {
    private PropertyStore userSettings;
 
    public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
@@ -65,6 +65,7 @@ public class User extends Artifact {
       }
    }
 
+   @Override
    public String getUserId() throws OseeCoreException {
       return getSoleAttributeValue(CoreAttributeTypes.UserId, "");
    }
@@ -89,7 +90,8 @@ public class User extends Artifact {
       setSoleAttributeValue(CoreAttributeTypes.Phone, phone);
    }
 
-   public Boolean isActive() throws OseeCoreException {
+   @Override
+   public boolean isActive() throws OseeCoreException {
       return getSoleAttributeValue(CoreAttributeTypes.Active);
    }
 
@@ -177,11 +179,7 @@ public class User extends Artifact {
    }
 
    public boolean isSystemUser() throws OseeCoreException {
-      if (this.equals(UserManager.getUser(SystemUser.OseeSystem)) || this.equals(UserManager.getUser(SystemUser.UnAssigned)) || this.equals(UserManager.getUser(SystemUser.Guest))) {
-         return true;
-      }
-
-      return false;
+      return UserManager.isSystemUser(this);
    }
 
    public void setBooleanSetting(String key, boolean value) throws OseeCoreException {

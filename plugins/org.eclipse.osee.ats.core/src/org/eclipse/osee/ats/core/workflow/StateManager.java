@@ -11,10 +11,12 @@
 
 package org.eclipse.osee.ats.core.workflow;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
@@ -24,9 +26,10 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -201,11 +204,11 @@ public class StateManager {
       return str;
    }
 
-   public Collection<User> getAssignees() throws OseeCoreException {
+   public Collection<IBasicUser> getAssignees() throws OseeCoreException {
       return getAssignees(getCurrentState());
    }
 
-   public Collection<User> getAssignees(IWorkPage state) throws OseeCoreException {
+   public Collection<IBasicUser> getAssignees(IWorkPage state) throws OseeCoreException {
       SMAState smaState = getSMAState(state, false);
       if (smaState == null) {
          return Collections.emptyList();
@@ -241,7 +244,7 @@ public class StateManager {
    /**
     * Sets the assignees as attributes and relations AND writes to SMA. Does not persist.
     */
-   public void setAssignees(Collection<User> assignees) throws OseeCoreException {
+   public void setAssignees(Collection<IBasicUser> assignees) throws OseeCoreException {
       SMAState state = getSMAState(getCurrentState(), false);
       state.setAssignees(assignees);
       putState(state);
@@ -292,7 +295,7 @@ public class StateManager {
    /**
     * Adds the assignee AND writes to SMA. Does not persist. Will remove UnAssigned user if another assignee exists.
     */
-   public void addAssignee(User assignee) throws OseeCoreException {
+   public void addAssignee(IBasicUser assignee) throws OseeCoreException {
       SMAState smaState = getSMAState(getCurrentState(), false);
       smaState.addAssignee(assignee);
       if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(
@@ -315,14 +318,14 @@ public class StateManager {
       return getVisitedStateNames().contains(state.getPageName());
    }
 
-   public void transitionHelper(Collection<User> toAssignees, StateDefinition fromState, StateDefinition toState, String cancelReason) throws OseeCoreException {
+   public void transitionHelper(Collection<IBasicUser> toAssignees, StateDefinition fromState, StateDefinition toState, String cancelReason) throws OseeCoreException {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 
       // Set XCurrentState; If been to this state, copy state info from prev state; else create new
       SMAState previousState = stateDam.getState(toState, false);
       if (previousState == null) {
-         currentStateDam.setState(new SMAState(toState.getPageName(), toAssignees));
+         currentStateDam.setState(new SMAState(toState, toAssignees));
       } else {
          if (!org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(previousState.getAssignees(), toAssignees)) {
             previousState.setAssignees(toAssignees);
@@ -342,15 +345,19 @@ public class StateManager {
    /**
     * Initializes state machine and sets the current state to stateName
     */
-   public void initializeStateMachine(IWorkPage state, Collection<User> assignees) throws OseeCoreException {
+   public void initializeStateMachine(IWorkPage state, Collection<IBasicUser> assignees) throws OseeCoreException {
       SMAState smaState = null;
       if (getVisitedStateNames().contains(state.getPageName())) {
          smaState = getSMAState(state, false);
       } else {
          if (assignees == null) {
-            smaState = new SMAState(state.getPageName(), UserManager.getUser());
+            List<IBasicUser> assigned = new ArrayList<IBasicUser>();
+            if (state.isWorkingPage()) {
+               assigned.add(UserManager.getUser());
+            }
+            smaState = new SMAState(state, assigned);
          } else {
-            smaState = new SMAState(state.getPageName(), assignees);
+            smaState = new SMAState(state, assignees);
          }
       }
       currentStateDam.setState(smaState);
@@ -424,13 +431,13 @@ public class StateManager {
 
    }
 
-   public static Collection<User> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
+   public static Collection<IBasicUser> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
+      Set<IBasicUser> users = new HashSet<IBasicUser>();
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());
       } else {
          users.addAll(workflow.getStateMgr().getAssignees(state));
-         User user = workflow.getCompletedBy();
+         IBasicUser user = workflow.getCompletedBy();
          if (user != null) {
             users.add(user);
          }

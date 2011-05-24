@@ -32,8 +32,9 @@ import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetOption;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.log.LogType;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.WorkPageType;
@@ -101,9 +102,9 @@ public class TransitionManager {
          }
 
          // Get transition to assignees
-         Collection<User> toAssignees;
+         Collection<IBasicUser> toAssignees;
          if (toStateDefinition.isCancelledPage() || toStateDefinition.isCompletedPage()) {
-            toAssignees = new HashSet<User>();
+            toAssignees = new HashSet<IBasicUser>();
          } else {
             toAssignees = awa.getTransitionAssignees();
             if (toAssignees.isEmpty()) {
@@ -213,7 +214,7 @@ public class TransitionManager {
       return null;
    }
 
-   private Result isStateTransitionable(StateDefinition fromStateDefinition, StateDefinition toStateDefinition, Collection<User> toAssignees) throws OseeCoreException {
+   private Result isStateTransitionable(StateDefinition fromStateDefinition, StateDefinition toStateDefinition, Collection<IBasicUser> toAssignees) throws OseeCoreException {
       // Validate XWidgets for transition
       Collection<ValidResult> stateValid = isStateValid(awa, fromStateDefinition);
       StringBuffer sb = new StringBuffer();
@@ -297,7 +298,7 @@ public class TransitionManager {
       return Result.TrueResult;
    }
 
-   public Result isTransitionValid(final IWorkPage toState, final Collection<User> toAssignees, TransitionOption... transitionOption) throws OseeCoreException {
+   public Result isTransitionValid(final IWorkPage toState, final Collection<IBasicUser> toAssignees, TransitionOption... transitionOption) throws OseeCoreException {
       boolean overrideTransitionCheck =
          org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
             TransitionOption.OverrideTransitionValidityCheck);
@@ -359,19 +360,19 @@ public class TransitionManager {
       return stateDefinition.hasRule(ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId());
    }
 
-   public Result transition(IWorkPage toState, User toAssignee, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      List<User> users = new ArrayList<User>();
+   public Result transition(IWorkPage toState, IBasicUser toAssignee, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      List<IBasicUser> users = new ArrayList<IBasicUser>();
       if (toAssignee != null && !toState.getWorkPageType().isCompletedOrCancelledPage()) {
          users.add(toAssignee);
       }
       return transition(toState, users, transaction, transitionOption);
    }
 
-   public Result transition(IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction, TransitionOption... transitionOption) {
+   public Result transition(IWorkPage toState, Collection<IBasicUser> toAssignees, SkynetTransaction transaction, TransitionOption... transitionOption) {
       return transition(toState, toAssignees, (String) null, transaction, transitionOption);
    }
 
-   private Result transition(final IWorkPage toState, final Collection<User> toAssignees, final String completeOrCancelReason, SkynetTransaction transaction, TransitionOption... transitionOption) {
+   private Result transition(final IWorkPage toState, final Collection<IBasicUser> toAssignees, final String completeOrCancelReason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       try {
          final boolean persist =
             org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
@@ -394,7 +395,7 @@ public class TransitionManager {
       return Result.TrueResult;
    }
 
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, StateDefinition fromState, StateDefinition toState, String completeOrCancelReason, SkynetTransaction transaction) throws OseeCoreException {
+   private void transitionHelper(Collection<IBasicUser> toAssignees, boolean persist, StateDefinition fromState, StateDefinition toState, String completeOrCancelReason, SkynetTransaction transaction) throws OseeCoreException {
       Date transitionDate = new Date();
       User transitionUser = UserManager.getUser();
       // Log transition
@@ -437,17 +438,17 @@ public class TransitionManager {
 
    public Result transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       Result result =
-         transition(TeamState.Cancelled, Arrays.asList(new User[] {}), reason, transaction, transitionOption);
+         transition(TeamState.Cancelled, Arrays.asList(new IBasicUser[] {}), reason, transaction, transitionOption);
       return result;
    }
 
    public Result transitionToCompleted(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       Result result =
-         transition(TeamState.Completed, Arrays.asList(new User[] {}), reason, transaction, transitionOption);
+         transition(TeamState.Completed, Arrays.asList(new IBasicUser[] {}), reason, transaction, transitionOption);
       return result;
    }
 
-   public void logWorkflowCancelledEvent(String fromStateName, String reason, Date cancelDate, User cancelBy) throws OseeCoreException {
+   public void logWorkflowCancelledEvent(String fromStateName, String reason, Date cancelDate, IBasicUser cancelBy) throws OseeCoreException {
       awa.getLog().addLog(LogType.StateCancelled, fromStateName, reason, cancelDate, cancelBy);
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          awa.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, cancelBy.getUserId());
@@ -466,7 +467,7 @@ public class TransitionManager {
       }
    }
 
-   public void logWorkflowCompletedEvent(String fromStateName, String reason, Date cancelDate, User cancelBy) throws OseeCoreException {
+   public void logWorkflowCompletedEvent(String fromStateName, String reason, Date cancelDate, IBasicUser cancelBy) throws OseeCoreException {
       awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", cancelDate,
          cancelBy);
       if (awa.isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
@@ -484,11 +485,11 @@ public class TransitionManager {
       }
    }
 
-   public void logStateCompletedEvent(String fromStateName, String reason, Date date, User user) throws OseeCoreException {
+   public void logStateCompletedEvent(String fromStateName, String reason, Date date, IBasicUser user) throws OseeCoreException {
       awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "");
    }
 
-   public void logStateStartedEvent(IWorkPage state, Date date, User user) throws OseeCoreException {
+   public void logStateStartedEvent(IWorkPage state, Date date, IBasicUser user) throws OseeCoreException {
       awa.getLog().addLog(LogType.StateEntered, state.getPageName(), "");
    }
 

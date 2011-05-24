@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
@@ -68,19 +68,19 @@ final class ClientUser {
       if (ClientSessionManager.isSessionValid()) {
          String userId = ClientSessionManager.getSession().getUserId();
          try {
-            if (userId.equals(SystemUser.BootStrap.getUserID())) {
+            if (userId.equals(SystemUser.BootStrap.getUserId())) {
                setCurrentUser(BootStrapUser.getInstance());
             } else {
                if (ClientSessionManager.isUserCreationRequired()) {
                   SkynetTransaction transaction =
                      new SkynetTransaction(BranchManager.getCommonBranch(), "Populate current user");
-                  UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
-                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
+                  UserManager.createMainUser(ClientSessionManager.getCurrentUserToken(), transaction);
+                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserToken().getUserId()));
                   Operations.executeWorkAndCheckStatus(transaction);
 
                   ClientSessionManager.clearUserCreationRequired();
                } else {
-                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
+                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserToken().getUserId()));
                }
             }
          } catch (UserNotInDatabase ex) {

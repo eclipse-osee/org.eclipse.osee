@@ -29,11 +29,11 @@ import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -262,7 +262,7 @@ public class WETransitionComposite extends Composite {
    }
 
    public void updateTransitionToAssignees() throws OseeCoreException {
-      Collection<User> assignees = null;
+      Collection<IBasicUser> assignees = null;
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          String decisionValueIfApplicable = null;
@@ -344,7 +344,7 @@ public class WETransitionComposite extends Composite {
       if (uld.open() != 0) {
          return;
       }
-      Collection<User> users = uld.getUsersSelected();
+      Collection<IBasicUser> users = uld.getUsersSelected();
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;

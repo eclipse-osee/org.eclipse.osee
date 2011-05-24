@@ -24,10 +24,10 @@ import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -90,18 +90,18 @@ public class AtsNotifyUsers implements IArtifactEventListener {
    /**
     * @param notifyUsers only valid for assignees notifyType. if null or any other type, the users will be computed
     */
-   public void notify(AbstractWorkflowArtifact awa, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
+   public void notify(AbstractWorkflowArtifact awa, Collection<IBasicUser> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
       if (!isInTest() && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || awa.getName().startsWith("tt "))) {
          return;
       }
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
 
       if (types.contains(NotifyType.Originator)) {
-         User originator = awa.getCreatedBy();
+         IBasicUser originator = awa.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
-               OseeLog.log(AtsPlugin.class, Level.INFO,
-                  String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
+               OseeLog.log(AtsPlugin.class, Level.INFO, String.format("Email [%s] invalid for user [%s]",
+                  UserManager.getUser(originator).getEmail(), originator.getName()));
             } else if (!UserManager.getUser().equals(originator)) {
                notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
                   getIdString(awa), NotifyType.Originator.name(), String.format(
@@ -111,7 +111,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Assigned)) {
-         Collection<User> assignees = notifyUsers != null ? notifyUsers : awa.getStateMgr().getAssignees();
+         Collection<IBasicUser> assignees = notifyUsers != null ? notifyUsers : awa.getStateMgr().getAssignees();
          assignees.remove(UserManager.getUser());
          assignees = EmailUtil.getValidEmailUsers(assignees);
          assignees = EmailUtil.getActiveEmailUsers(assignees);
@@ -123,7 +123,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Subscribed)) {
-         Collection<User> subscribed = SubscribeManager.getSubscribed(awa);
+         Collection<IBasicUser> subscribed = SubscribeManager.getSubscribed(awa);
          subscribed = EmailUtil.getValidEmailUsers(subscribed);
          subscribed = EmailUtil.getActiveEmailUsers(subscribed);
          if (subscribed.size() > 0) {
@@ -134,11 +134,11 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed) && (!awa.isTask() && (awa.isCompleted() || awa.isCancelled()))) {
-         User originator = awa.getCreatedBy();
+         IBasicUser originator = awa.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
-               OseeLog.log(AtsPlugin.class, Level.INFO,
-                  String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
+               OseeLog.log(AtsPlugin.class, Level.INFO, String.format("Email [%s] invalid for user [%s]",
+                  UserManager.getUser(originator).getEmail(), originator.getName()));
             } else if (!UserManager.getUser().equals(originator)) {
                if (awa.isCompleted()) {
                   notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
@@ -157,7 +157,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Reviewed) && awa instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) awa).getUserRoleManager() != null) {
-         Collection<User> authorModerator =
+         Collection<IBasicUser> authorModerator =
             ((AbstractReviewArtifact) awa).getUserRoleManager().getRoleUsersAuthorModerator();
          authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
          authorModerator = EmailUtil.getActiveEmailUsers(authorModerator);
@@ -218,7 +218,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
                   TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
 
                   // Handle Team Definitions
-                  Collection<User> subscribedUsers =
+                  Collection<IBasicUser> subscribedUsers =
                      Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(
                         AtsRelationTypes.SubscribedUser_User));
                   if (subscribedUsers.size() > 0) {

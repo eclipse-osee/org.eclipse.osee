@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -99,7 +99,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Collection<User> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException {
+   public Collection<IBasicUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException {
       if (isApplicable(awa)) {
          DecisionReviewArtifact decArt = (DecisionReviewArtifact) awa;
          return getOverrideTransitionToAssignees(decArt, decision);
@@ -107,7 +107,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return null;
    }
 
-   public Collection<User> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision) throws OseeCoreException {
+   public Collection<IBasicUser> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(decArt, decision);
       if (decisionOption == null) {
          return null;

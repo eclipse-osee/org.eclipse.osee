@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
@@ -55,9 +55,9 @@ public class CompletedCancelledByColumn extends XViewerAtsColumn implements IXVi
                return CancelledByColumn.getInstance().getColumnText(element, column, columnIndex);
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<User> users = new HashSet<User>();
+            Set<IBasicUser> users = new HashSet<IBasicUser>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               User user = team.getCompletedBy();
+               IBasicUser user = team.getCompletedBy();
                if (((AbstractWorkflowArtifact) element).isCompleted()) {
                   user = team.getCompletedBy();
                } else if (((AbstractWorkflowArtifact) element).isCancelled()) {

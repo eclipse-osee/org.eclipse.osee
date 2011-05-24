@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.server;
 
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -42,6 +42,6 @@ public class SecureOseeHttpServlet extends OseeHttpServlet {
       String sessionId = request.getParameter("sessionId");
       ISession session = sessionManager.getSessionById(sessionId);
       String userId = session.getUserId();
-      return SystemUser.BootStrap.getUserID().equals(userId);
+      return SystemUser.BootStrap.getUserId().equals(userId);
    }
 }

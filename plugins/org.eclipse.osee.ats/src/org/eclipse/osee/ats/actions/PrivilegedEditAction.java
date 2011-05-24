@@ -23,9 +23,9 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PriviledgedUserManager;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -62,12 +62,12 @@ public class PrivilegedEditAction extends Action {
                editor.setPriviledgedEditMode(false);
             }
          } else {
-            Set<User> users = PriviledgedUserManager.getPrivilegedUsers(sma);
+            Set<IBasicUser> users = PriviledgedUserManager.getPrivilegedUsers(sma);
             if (AtsUtilCore.isAtsAdmin()) {
                users.add(UserManager.getUser());
             }
             StringBuffer stringBuffer = new StringBuffer();
-            for (User user : users) {
+            for (IBasicUser user : users) {
                stringBuffer.append(user.getName());
                stringBuffer.append("\n");
             }

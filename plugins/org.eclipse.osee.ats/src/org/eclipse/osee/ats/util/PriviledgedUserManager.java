@@ -21,15 +21,15 @@ import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
 public class PriviledgedUserManager {
 
-   public static Set<User> getPrivilegedUsers(AbstractWorkflowArtifact workflow) throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
+   public static Set<IBasicUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow) throws OseeCoreException {
+      Set<IBasicUser> users = new HashSet<IBasicUser>();
       if (workflow.getParentTeamWorkflow() != null) {
          users.addAll(getPrivilegedUsers(workflow.getParentTeamWorkflow()));
       } else {
@@ -49,8 +49,8 @@ public class PriviledgedUserManager {
       return users;
    }
 
-   public static Set<User> getPrivilegedUsers(TeamWorkFlowArtifact teamArt) {
-      Set<User> users = new HashSet<User>();
+   public static Set<IBasicUser> getPrivilegedUsers(TeamWorkFlowArtifact teamArt) {
+      Set<IBasicUser> users = new HashSet<IBasicUser>();
       try {
          addPriviledgedUsersUpTeamDefinitionTree(teamArt.getTeamDefinition(), users);
 
@@ -88,7 +88,7 @@ public class PriviledgedUserManager {
       return users;
    }
 
-   protected static void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {
+   protected static void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<IBasicUser> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 

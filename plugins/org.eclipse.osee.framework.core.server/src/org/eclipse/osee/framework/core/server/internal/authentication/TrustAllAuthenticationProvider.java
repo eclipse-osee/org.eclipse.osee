@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.authentication;
 
-import org.eclipse.osee.framework.core.data.IOseeUserInfo;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
 import org.eclipse.osee.framework.core.server.UserDataStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,16 +33,16 @@ public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
    }
 
    @Override
-   public IOseeUserInfo asOseeUserId(OseeCredential credential) {
-      IOseeUserInfo oseeUserId = SystemUser.Guest;
+   public IUserToken asOseeUserId(OseeCredential credential) {
+      IUserToken userToken = SystemUser.Guest;
       String userName = credential.getUserName();
       if (Strings.isValid(userName)) {
-         oseeUserId = UserDataStore.getOseeUserFromOseeDb(userName);
-         if (oseeUserId == null) {
-            oseeUserId = UserDataStore.createUser(true, userName, userName, "", true);
+         userToken = UserDataStore.getUserTokenFromOseeDb(userName);
+         if (userToken == null) {
+            userToken = UserDataStore.createUserToken(true, userName, userName, "", true);
          }
       }
-      return oseeUserId;
+      return userToken;
    }
 
 }

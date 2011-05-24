@@ -10,9 +10,9 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 
@@ -22,12 +22,12 @@ import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 public class AtsNotificationTransitionListener implements ITransitionListener {
 
    @Override
-   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) {
+   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees) {
       return Result.TrueResult;
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact awa, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact awa, IWorkPage fromState, IWorkPage toState, Collection<IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
 
       AtsNotifyUsers.getInstance().notify(awa, AtsNotifyUsers.NotifyType.Subscribed,
          AtsNotifyUsers.NotifyType.Completed, AtsNotifyUsers.NotifyType.Completed);

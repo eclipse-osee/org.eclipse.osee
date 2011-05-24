@@ -18,7 +18,9 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.core.data.FullyNamed;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,11 +31,11 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
+public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
 
-   private Collection<User> teamMembers;
+   private Collection<IBasicUser> teamMembers;
 
-   public UserCheckTreeDialog(Collection<User> artifacts) {
+   public UserCheckTreeDialog(Collection<? extends IBasicUser> artifacts) {
       super(artifacts);
    }
 
@@ -41,10 +43,10 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
       this(UserManager.getUsers());
    }
 
-   public Collection<User> getUsersSelected() {
-      Set<User> selected = new HashSet<User>();
-      for (Artifact art : getSelection()) {
-         selected.add((User) art);
+   public Collection<IBasicUser> getUsersSelected() {
+      Set<IBasicUser> selected = new HashSet<IBasicUser>();
+      for (FullyNamed art : getSelection()) {
+         selected.add((IBasicUser) art);
       }
       return selected;
    }
@@ -97,15 +99,15 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
       return c;
    }
 
-   public Collection<User> getTeamMembers() {
+   public Collection<IBasicUser> getTeamMembers() {
       return teamMembers;
    }
 
    /**
     * If set, team members will be shown prior to rest of un-checked users
     */
-   public void setTeamMembers(Collection<User> teamMembers) {
-      this.teamMembers = teamMembers;
+   public void setTeamMembers(Collection<? extends IBasicUser> teamMembers) {
+      this.teamMembers.addAll(teamMembers);
    }
 
    public class UserCheckTreeLabelProvider implements ILabelProvider {

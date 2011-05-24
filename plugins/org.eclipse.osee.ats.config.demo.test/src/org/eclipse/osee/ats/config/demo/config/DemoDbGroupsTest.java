@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +32,7 @@ public class DemoDbGroupsTest {
     * 
     * @throws OseeCoreException
     */
-   @Test
+   @org.junit.Test
    public void testCreateGroups() throws OseeCoreException {
       Artifact groupArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, DemoDbGroups.TEST_GROUP_NAME,

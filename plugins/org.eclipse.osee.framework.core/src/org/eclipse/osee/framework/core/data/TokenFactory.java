@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 public final class TokenFactory {
@@ -39,6 +40,10 @@ public final class TokenFactory {
 
    public static IArtifactToken createArtifactToken(String guid, String name, IArtifactType artifactType) {
       return new ArtifactToken(guid, name, artifactType);
+   }
+
+   public static IUserToken createUserToken(String guid, String name, String email, String userId, boolean active, boolean admin, boolean creationRequired) {
+      return new UserToken(guid, name, userId, active, admin, email, creationRequired);
    }
 
    public static IOseeBranch createBranch(String guid, String name) {
@@ -87,6 +92,55 @@ public final class TokenFactory {
       }
    }
 
+   private static class UserToken extends NamedIdentity implements IUserToken {
+
+      private final String userId;
+      private final boolean active;
+      private final boolean admin;
+      private final String email;
+      private final boolean creationRequired;
+
+      public UserToken(String guid, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
+         super(guid, name);
+         this.userId = userId;
+         this.active = active;
+         this.admin = admin;
+         this.email = email;
+         this.creationRequired = creationRequired;
+      }
+
+      @Override
+      public IArtifactType getArtifactType() {
+         return CoreArtifactTypes.User;
+      }
+
+      @Override
+      public String getUserId() {
+         return userId;
+      }
+
+      @Override
+      public boolean isActive() {
+         return active;
+      }
+
+      @Override
+      public boolean isAdmin() {
+         return admin;
+      }
+
+      @Override
+      public String getEmail() {
+         return email;
+      }
+
+      @Override
+      public boolean isCreationRequired() {
+         return creationRequired;
+      }
+
+   }
+
    private final static class AccessContextIdToken extends NamedIdentity implements IAccessContextId {
       public AccessContextIdToken(String guid, String name) {
          super(guid, name);
@@ -111,4 +165,5 @@ public final class TokenFactory {
          return relationSide;
       }
    }
+
 }

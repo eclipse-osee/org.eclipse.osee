@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
-import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
  * @author Donald G. Dunne
@@ -137,7 +137,7 @@ public class DemoDbUtil {
          branch);
    }
 
-   public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
+   public static User getDemoUser(IUserToken demoUser) throws OseeCoreException {
       return UserManager.getUserByName(demoUser.getName());
    }
 

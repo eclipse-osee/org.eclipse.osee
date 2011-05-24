@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.core.workdef.RuleDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -55,12 +56,12 @@ public class AtsAddPeerToPeerReviewRule {
       return ruleDefinition.getWorkDataValue(decisionParameter.name());
    }
 
-   public static Collection<User> getAssigneesOrDefault(WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
+   public static Collection<IBasicUser> getAssigneesOrDefault(WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
       String value = getPeerToPeerParameterValue(workRuleDefinition, PeerToPeerParameter.assignees);
       if (!Strings.isValid(value)) {
-         return Arrays.asList(new User[] {UserManager.getUser()});
+         return Arrays.asList(new IBasicUser[] {UserManager.getUser()});
       }
-      Collection<User> users = UsersByIds.getUsers(value);
+      Collection<IBasicUser> users = UsersByIds.getUsers(value);
       if (users.isEmpty()) {
          users.add(UserManager.getUser());
       }
@@ -124,7 +125,7 @@ public class AtsAddPeerToPeerReviewRule {
       if (Strings.isValid(peerRevDef.getLocation())) {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Location, peerRevDef.getLocation());
       }
-      Collection<User> assignees = UserManager.getUsersByUserId(peerRevDef.getAssignees());
+      Collection<IBasicUser> assignees = UserManager.getUsersByUserId(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
          peerArt.getStateMgr().setAssignees(assignees);
       }

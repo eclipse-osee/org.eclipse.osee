@@ -15,7 +15,8 @@ import java.util.List;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 
@@ -33,12 +34,12 @@ public class ArtifactEmailWizard extends EmailWizard {
    private static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
       ArrayList<String> emails = new ArrayList<String>();
-      emails.add(workflow.getCreatedBy().getEmail());
+      emails.add(UserManager.getEmail(workflow.getCreatedBy()));
       groupNames.add(new EmailGroup("Originator", emails));
       if (workflow.getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<String>();
-         for (User u : workflow.getStateMgr().getAssignees()) {
-            emails.add(u.getEmail());
+         for (IBasicUser u : workflow.getStateMgr().getAssignees()) {
+            emails.add(UserManager.getEmail(u));
          }
          groupNames.add(new EmailGroup("Assignees", emails));
       }

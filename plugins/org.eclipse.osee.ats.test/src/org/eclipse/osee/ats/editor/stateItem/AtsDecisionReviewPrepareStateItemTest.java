@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -70,7 +71,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsDecisionReviewPrepareStateItem stateItem = new AtsDecisionReviewPrepareStateItem();
-      Result result = stateItem.transitioning(decRevArt, fromState, toState, Arrays.asList(UserManager.getUser()));
+      Result result =
+         stateItem.transitioning(decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
 
       // verify no errors
       Assert.assertTrue(result.getText(), result.isTrue());
@@ -79,7 +81,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
       decisionOptionStr = decisionOptionStr.replaceFirst("Completed", "NoState");
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist();
-      result = stateItem.transitioning(decRevArt, fromState, toState, Arrays.asList(UserManager.getUser()));
+      result =
+         stateItem.transitioning(decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
       Assert.assertFalse(result.getText(), result.isTrue());
 
    }
