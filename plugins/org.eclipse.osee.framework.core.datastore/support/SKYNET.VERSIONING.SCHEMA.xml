@@ -1,6 +1,188 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TableConfig>
 
+
+	<!-- __________________________________________________________ -->
+	<!--              Type Tables 					                   -->
+	<!-- __________________________________________________________ -->
+
+	<Table name="OSEE_ENUM_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ENUM_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="ENUM_TYPE_NAME" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_G_IDX" type="UNIQUE" appliesTo="ENUM_TYPE_GUID" />
+	</Table>
+
+	<TableDescription referenceTable="OSEE_ENUM_TYPE">
+		<Note purpose="Core descriptions for OSEE enum constants."/>
+		<Column id="ENUM_TYPE_GUID" description="" />
+		<Column id="ENUM_TYPE_ID" description="" />
+		<Column id="ENUM_TYPE_NAME" description="" />
+	</TableDescription>
+
+	<Table name="OSEE_ENUM_TYPE_DEF" schema="OSEE" tablespace="osee_data">
+		<Column id="ENUM_ENTRY_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Column id="ORDINAL" defaultValue="not null" type="smallint" />
+		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_EO_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID, ORDINAL" />
+		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_G_IDX" type="UNIQUE" appliesTo="ENUM_ENTRY_GUID" />
+		<Constraint schema="OSEE" id="ENUM_TYPE_ID_FK1" type="FOREIGN KEY" appliesTo="ENUM_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_ENUM_TYPE" column="ENUM_TYPE_ID" />
+		</Constraint>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_ENUM_TYPE_DEF">
+		<Note purpose="Core descriptions for OSEE enum constants."/>
+		<Column id="ENUM_ENTRY_GUID" description=""/>
+		<Column id="ENUM_TYPE_ID" description="" />
+		<Column id="NAME" description="" />
+		<Column id="ORDINAL" description="" />
+	</TableDescription>
+
+	<Table name="OSEE_ATTRIBUTE_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ATTR_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="FILE_TYPE_EXTENSION" limits="20" type="VARCHAR" />
+		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Column id="DEFAULT_VALUE" limits="2000" type="VARCHAR" />
+		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="MIN_OCCURENCE" defaultValue="not null" type="INTEGER" />
+		<Column id="MAX_OCCURENCE" defaultValue="not null" type="INTEGER" />
+		<Column id="TIP_TEXT" limits="4000" type="VARCHAR" />
+		<Column id="TAGGER_ID" limits="500" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_G_IDX" type="UNIQUE" appliesTo="ATTR_TYPE_GUID" />
+		<Constraint schema="OSEE" id="ATTR_BASE_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_BASE_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_ATTRIBUTE_BASE_TYPE" column="ATTR_BASE_TYPE_ID"  />
+		</Constraint>
+		<Constraint schema="OSEE" id="ATTR_PROVIDER_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_ATTRIBUTE_PROVIDER_TYPE" column="ATTR_PROVIDER_TYPE_ID"  />
+		</Constraint>
+		<Index id="OSEE_ATTRIBUTE_TYPE_N_IDX" tablespace="osee_data">
+			<AppliesTo id="NAME"/>
+		</Index>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_ATTRIBUTE_TYPE">
+		<Note purpose="Core descriptions for attribute types."/>
+		<Column id="ATTR_TYPE_GUID" description="" />
+		<Column id="ATTR_TYPE_ID" description="" />
+		<Column id="ATTR_BASE_TYPE_ID" description="" />
+		<Column id="ATTR_PROVIDER_TYPE_ID" description="" />
+		<Column id="FILE_TYPE_EXTENSION" description="" />
+		<Column id="NAME" description="" />
+		<Column id="DEFAULT_VALUE" description="" />
+		<Column id="ENUM_TYPE_ID" description="" />
+		<Column id="MIN_OCCURENCE" description="" />
+		<Column id="MAX_OCCURENCE" description="" />
+		<Column id="TIP_TEXT" description="" />
+		<Column id="TAGGER_ID" description="" />
+	</TableDescription>
+
+	<Table name="OSEE_ATTRIBUTE_BASE_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="ATTRIBUTE_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ATTR_BASE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_BASE_TYPE_ID" />
+	</Table>
+	
+	<TableDescription referenceTable="OSEE_ATTRIBUTE_BASE_TYPE">
+		<Note purpose="Core descriptions for attibute base types. These are the most basic types of attributes OSEE operates on."/>
+		<Column id="ATTR_BASE_TYPE_ID" description="" example="1" />
+		<Column id="ATTRIBUTE_CLASS" description="" example="org.eclipse.osee.framework.skynet.core.BooleanAttribute" />
+	</TableDescription>
+
+	<Table name="OSEE_ATTRIBUTE_PROVIDER_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="ATTRIBUTE_PROVIDER_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ATTR_PROVIDER_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" />
+	</Table>
+	
+	<TableDescription referenceTable="OSEE_ATTRIBUTE_PROVIDER_TYPE">
+		<Note purpose="Attibute provider types are used to create factory objects specializing in implmenting basic CRUD operations for various attributes."/>
+		<Column id="ATTR_PROVIDER_TYPE_ID" description="" example="org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider" />
+		<Column id="ATTRIBUTE_PROVIDER_CLASS" description="" example="1" />
+	</TableDescription>
+
+
+	<Table name="OSEE_RELATION_LINK_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="REL_LINK_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="A_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="B_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="A_ART_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="B_ART_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="MULTIPLICITY" defaultValue="not null" type="smallint" />
+		<Column id="DEFAULT_ORDER_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_G_IDX" type="UNIQUE" appliesTo="REL_LINK_TYPE_GUID" />
+	</Table>
+
+
+	<Table name="OSEE_ARTIFACT_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ART_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="IS_ABSTRACT" defaultValue="not null" type="smallint" />
+		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
+	    <Column id="IMAGE" type="BLOB" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_G_IDX" type="UNIQUE" appliesTo="ART_TYPE_GUID" />
+		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_data">
+			<AppliesTo id="NAME"/>
+		</Index>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_ARTIFACT_TYPE">
+		<Note purpose="Core description of different artifact types"/>
+		<Column id="ART_TYPE_GUID" 		description=""/>
+		<Column id="ART_TYPE_ID" 			description=""/>
+		<Column id="IS_ABSTRACT" 			description="As in OOP, you cannot have an instance of Abstract Artifacts"/>
+		<Column id="NAME" 					description="Simple name." />
+		<Column id="IMAGE" 					description="BLOB" />
+	</TableDescription>
+
+	<Table name="OSEE_ARTIFACT_TYPE_INHERITANCE" schema="OSEE" tablespace="osee_data">
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="SUPER_ART_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Constraint schema="OSEE" id="OSEE_ART_TYPE_INHERIT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, SUPER_ART_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ART_TYPE_ITEM_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID">
+			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OSEE_ART_SUPER_TYPE_FK" type="FOREIGN KEY" appliesTo="SUPER_ART_TYPE_ID">
+			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
+		</Constraint>
+	</Table>
+	
+	<TableDescription referenceTable="OSEE_ARTIFACT_TYPE_INHERITANCE">
+		<Note purpose="Core descriptions of inheritance associated with artifact type."/>
+		<Column id="ART_TYPE_ID" description="" />
+		<Column id="SUPER_ART_TYPE_ID" description="" />
+	</TableDescription>
+
+	<Table name="OSEE_ARTIFACT_TYPE_ATTRIBUTES" schema="OSEE" tablespace="osee_data">
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="BRANCH_GUID"  defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, ATTR_TYPE_ID, BRANCH_GUID" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_FK1" type="FOREIGN KEY" appliesTo="ATTR_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_ATTRIBUTE_TYPE" column="ATTR_TYPE_ID" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_FK2" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
+		</Constraint>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_ARTIFACT_TYPE_ATTRIBUTES">
+		<Note purpose="Core descriptions of inheritance associated with artifact type."/>
+		<Column id="ART_TYPE_ID" description="" />
+		<Column id="ATTR_TYPE_ID" description="" />
+		<Column id="BRANCH_ID" description="" />
+	</TableDescription>
+
 	<!-- _____________________________________________________ -->
 	<!--                                                       -->
 	<!--              MAIN ARTIFACT TABLES                     -->
@@ -28,84 +210,14 @@
 		</Index>
 	</Table>
 
-	<Table name="OSEE_JOIN_ARTIFACT" schema="OSEE" tablespace="osee_data">
-		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="TRANSACTION_ID" type="INTEGER" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Index id="OSEE_JOIN_ART__Q_A_B_T_IDX" type="UNIQUE" tablespace="osee_data">
-			<AppliesTo id="QUERY_ID"/>
-			<AppliesTo id="ART_ID"/>
-			<AppliesTo id="BRANCH_ID"/>
-			<AppliesTo id="TRANSACTION_ID"/>
-		</Index>
-	</Table>
-
-	<Table name="OSEE_JOIN_ID" schema="OSEE" tablespace="osee_data">
-		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ID" type="INTEGER" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Index id="OSEE_JOIN_ID__Q_I_IDX" type="UNIQUE" tablespace="osee_data">
-			<AppliesTo id="QUERY_ID"/>
-			<AppliesTo id="ID"/>
-		</Index>
-	</Table>
-	
-	<Table name="OSEE_JOIN_CLEANUP" schema="OSEE" tablespace="osee_data">
-		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
-		<Column id="TABLE_NAME" defaultValue="not null" type="VARCHAR" limits="28"/>		
-		<Index id="OSEE_JOIN_CLEANUP__Q_IDX" type="UNIQUE" tablespace="osee_data">
-			<AppliesTo id="QUERY_ID"/>		
-		</Index>		
-	</Table>
-	
-	<Table name="OSEE_JOIN_CHAR_ID" schema="OSEE" tablespace="osee_data">
-		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ID" defaultValue="not null" type="VARCHAR" limits="4000"/>			
-		<Index id="OSEE_JOIN_CHAR__Q_IDX" tablespace="osee_data">
-			<AppliesTo id="QUERY_ID"/>		
-		</Index>			
-	</Table>
-
-	<Table name="OSEE_ARTIFACT_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="IS_ABSTRACT" defaultValue="not null" type="smallint" />
-		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
-	    <Column id="IMAGE" type="BLOB" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_G_IDX" type="UNIQUE" appliesTo="ART_TYPE_GUID" />
-		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_data">
-			<AppliesTo id="NAME"/>
-		</Index>
-	</Table>
-
-	<Table name="OSEE_ARTIFACT_TYPE_INHERITANCE" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="SUPER_ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Constraint schema="OSEE" id="OSEE_ART_TYPE_INHERIT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, SUPER_ART_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ART_TYPE_ITEM_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
-		</Constraint>
-		<Constraint schema="OSEE" id="OSEE_ART_SUPER_TYPE_FK" type="FOREIGN KEY" appliesTo="SUPER_ART_TYPE_ID">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
-		</Constraint>
-	</Table>
-	
-	<Table name="OSEE_ARTIFACT_TYPE_ATTRIBUTES" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="BRANCH_GUID"  defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, ATTR_TYPE_ID, BRANCH_GUID" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_FK1" type="FOREIGN KEY" appliesTo="ATTR_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ATTRIBUTE_TYPE" column="ATTR_TYPE_ID" />
-		</Constraint>
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_FK2" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
-		</Constraint>
-	</Table>
+	<TableDescription referenceTable="OSEE_ARTIFACT">
+		<Note purpose="Core definition for artifact instances."/>
+		<Column id="GAMMA_ID" description="unique identifier for a version of this artifact"/>
+		<Column id="ART_ID" description="unique identifier of this artifact" />
+		<Column id="ART_TYPE_ID" description="this artifact&apos;s type - foreign key to osee_artifact_type.art_type_id " />
+		<Column id="GUID" description="Global Unique IDentifier of this artifact" />
+		<Column id="HUMAN_READABLE_ID" description="a human understandble unique identifier of this artifact" />
+	</TableDescription>
 
 	<Table name="OSEE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
@@ -144,63 +256,15 @@
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_ENUM_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ENUM_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ENUM_TYPE_NAME" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_G_IDX" type="UNIQUE" appliesTo="ENUM_TYPE_GUID" />
-	</Table>
-	
-	<Table name="OSEE_ENUM_TYPE_DEF" schema="OSEE" tablespace="osee_data">
-		<Column id="ENUM_ENTRY_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />		
-		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Column id="ORDINAL" defaultValue="not null" type="smallint" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_EO_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID, ORDINAL" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_G_IDX" type="UNIQUE" appliesTo="ENUM_ENTRY_GUID" />
-		<Constraint schema="OSEE" id="ENUM_TYPE_ID_FK1" type="FOREIGN KEY" appliesTo="ENUM_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ENUM_TYPE" column="ENUM_TYPE_ID" />
-		</Constraint>
-	</Table>
-	
-	<Table name="OSEE_ATTRIBUTE_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ATTR_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="FILE_TYPE_EXTENSION" limits="20" type="VARCHAR" />
-		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Column id="DEFAULT_VALUE" limits="2000" type="VARCHAR" />
-		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="MIN_OCCURENCE" defaultValue="not null" type="INTEGER" />
-		<Column id="MAX_OCCURENCE" defaultValue="not null" type="INTEGER" />
-		<Column id="TIP_TEXT" limits="4000" type="VARCHAR" />
-		<Column id="TAGGER_ID" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_G_IDX" type="UNIQUE" appliesTo="ATTR_TYPE_GUID" />
-		<Constraint schema="OSEE" id="ATTR_BASE_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_BASE_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ATTRIBUTE_BASE_TYPE" column="ATTR_BASE_TYPE_ID"  />
-		</Constraint>
-		<Constraint schema="OSEE" id="ATTR_PROVIDER_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ATTRIBUTE_PROVIDER_TYPE" column="ATTR_PROVIDER_TYPE_ID"  />
-		</Constraint>
-		<Index id="OSEE_ATTRIBUTE_TYPE_N_IDX" tablespace="osee_data">
-			<AppliesTo id="NAME"/>
-		</Index>
-	</Table>
-
-	<Table name="OSEE_ATTRIBUTE_BASE_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTRIBUTE_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ATTR_BASE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_BASE_TYPE_ID" />
-	</Table>
-	
-	<Table name="OSEE_ATTRIBUTE_PROVIDER_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTRIBUTE_PROVIDER_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ATTR_PROVIDER_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" />
-	</Table>
+	<TableDescription referenceTable="OSEE_ATTRIBUTE">
+		<Note purpose="Core descriptions for types of attributes."/>
+		<Column id="GAMMA_ID" description="" />
+		<Column id="ART_ID" description="" />
+		<Column id="ATTR_ID" description="" />
+		<Column id="ATTR_TYPE_ID" description="" />
+		<Column id="VALUE" description="" />
+		<Column id="URI" description="" />
+	</TableDescription>
 	
 	<Table name="OSEE_RELATION_LINK" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
@@ -225,20 +289,11 @@
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_RELATION_LINK_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="REL_LINK_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="A_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="B_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="A_ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="B_ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="MULTIPLICITY" defaultValue="not null" type="smallint" />
-		<Column id="DEFAULT_ORDER_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_G_IDX" type="UNIQUE" appliesTo="REL_LINK_TYPE_GUID" />
-	</Table>
-	
+	<TableDescription referenceTable="OSEE_RELATION_LINK">
+		<Note purpose="Relation instances which relate exactly 2 (different) artifacts."/>
+		<Column id="RATIONALE" description="Provides an explantion/justification for the existance of this relation" />
+	</TableDescription>
+
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
 	<!--  MAIN VERSIONING TABLES - CHANGE, TX, AND BRANCH SUPPORT   -->
@@ -270,6 +325,20 @@
 		</Index>
 	</Table>
 
+	<TableDescription referenceTable="OSEE_BRANCH">
+		<Note purpose="Core table describing instances of OSEE Branches."/>
+		<Column id="BRANCH_GUID" 					description="self-explanatory" />
+		<Column id="BRANCH_ID" 						description="self-explanatory" />
+		<Column id="BRANCH_NAME" 					description="Simple string name" />
+		<Column id="PARENT_BRANCH_ID" 			description="self-explanatory" />
+		<Column id="PARENT_TRANSACTION_ID" 		description="self-explanatory" />
+		<Column id="ARCHIVED" 						description="Indicates whether transaction information (tx) related to this branch have been kept in the main OSEE_TXS transaction table or moved to the OSEE_TXS_ARCHIVED. " />
+		<Column id="BRANCH_STATE" 					description="????" />
+		<Column id="ASSOCIATED_ART_ID" 			description="-1 Unknown, 0 Created, 1 Modified, 2 Committed, 3 Rebaselined as referenced in enum BranchState.java" />
+		<Column id="BRANCH_TYPE" 					description="0 Working, 2 Baseline, 3 Merge, 4 System Root as referenced in BranchType.java" />
+		<Column id="BASELINE_TRANSACTION_ID" 	description="??? what did this mean" />
+	</TableDescription>
+
 	<Table name="OSEE_TXS" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_ID" type="INTEGER" defaultValue="not null" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
@@ -291,6 +360,11 @@
 		</Index>
 	</Table>
 	
+	<TableDescription referenceTable="OSEE_TXS">
+		<Note purpose="Addressing table"/>
+		<Column id="GAMMA_ID" description="A given gamma may be referenced by many branches" />
+	</TableDescription>
+
 	<Table name="OSEE_TXS_ARCHIVED" schema="OSEE" tablespace="osee_archive">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
@@ -311,6 +385,15 @@
 			<AppliesTo id="TRANSACTION_ID" />
 		</Index>
 	</Table>
+
+	<TableDescription referenceTable="OSEE_TXS_ARCHIVED">
+		<Note purpose="Transactions (tx) removed (archived in OSEE domain) are simply transactions removed from OSEE_TXS. Details of these can be found in OSEE_TXS_DETAILS."/>
+		<Column id="BRANCH_ID" description="" />
+		<Column id="GAMMA_ID" description="" />
+		<Column id="TX_CURRENT" description="" />
+		<Column id="MOD_TYPE" description="" />
+		<Column id="TRANSACTION_ID" description="" />
+	</TableDescription>
 
 	<Table name="OSEE_TX_DETAILS" schema="OSEE" tablespace="osee_data">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
@@ -334,6 +417,19 @@
 		</Index>
 	</Table>
 	
+	<TableDescription referenceTable="OSEE_TX_DETAILS">
+		<Note purpose="Core table describing individual transactions from both OSEE_TXS and OSEE_TXS_ARCHIVED in larger context. Unique? transaction id."/>
+		<Column id="TRANSACTION_ID" description="Transaction ID sequence derrived from OSEE_SEQUENCE.SKYNET_TRANSACTION_ID_SEQ" example="241"/>
+		<Column id="TX_TYPE" description="??? 1 - Baseline, 0 - Non Baseline tx, meaning tx beginning tx on a branch derived from parent branch" />
+		<Column id="BRANCH_ID" description="simple, integer based id" example="1" />
+		<Column id="OSEE_COMMENT" description="Optional comment user gets to enter before certain transactions." />
+		<Column id="TIME" description="self-explanatory"/>
+	   <Column id="AUTHOR" description="self-explanatory"/>
+		<Column id="COMMIT_ART_ID" description="if NOT NULL, identifies committed branches (all types of commits of a branch).
+		You can trace this Artifact ID back to a particular instance of an artifact performing the commit.
+		Usually this references an Action (type-of-artifact)" example="370"/>
+	</TableDescription>
+
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
 	<!--                        ACCESS CONTROL LIST TABLES    -->
@@ -388,6 +484,19 @@
 		</Index>
 	</Table>
 	
+	<TableDescription referenceTable="OSEE_SEARCH_TAGS">
+		<Note purpose="Core table describing individual transactions from both OSEE_TXS and OSEE_TXS_ARCHIVED in larger context. Unique? transaction id."/>
+		<Column id="TRANSACTION_ID" description="Transaction ID sequence derrived from OSEE_SEQUENCE.SKYNET_TRANSACTION_ID_SEQ" example="241"/>
+		<Column id="TX_TYPE" description="??? 1 - Baseline, 0 - Non Baseline tx, meaning tx beginning tx on a branch derived from parent branch" />
+		<Column id="BRANCH_ID" description="simple, integer based id" example="1" />
+		<Column id="OSEE_COMMENT" description="Optional comment user gets to enter before certain transactions." />
+		<Column id="TIME" description="self-explanatory"/>
+	   <Column id="AUTHOR" description="self-explanatory"/>
+		<Column id="COMMIT_ART_ID" description="if NOT NULL, identifies committed branches (all types of commits of a branch).
+		You can trace this Artifact ID back to a particular instance of an artifact performing the commit.
+		Usually this references an Action (type-of-artifact)" example="370"/>
+	</TableDescription>
+
 	<Table name="OSEE_JOIN_SEARCH_TAGS" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="CODED_TAG_ID" defaultValue="not null" type="BIGINT" />
@@ -398,6 +507,13 @@
 		</Index>
 	</Table>
 	   
+	<TableDescription referenceTable="OSEE_JOIN_SEARCH_TAGS">
+		<Note purpose="Core table describing ?"/>
+		<Column id="QUERY_ID" description="randomly generated identifier for this short-lived join" />
+		<Column id="CODED_TAG_ID" description="" />
+		<Column id="INSERT_TIME" description="" />
+	</TableDescription>
+
 	<Table name="OSEE_TAG_GAMMA_QUEUE" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
@@ -405,6 +521,13 @@
 		<Constraint schema="OSEE" id="OSEE_JOIN_GAMMA_Q_G_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, GAMMA_ID" />
 	</Table>   
    
+   <TableDescription referenceTable="OSEE_TAG_GAMMA_QUEUE">
+		<Note purpose="Core table describing ?"/>
+		<Column id="QUERY_ID" description="randomly generated identifier for this short-lived join" />
+		<Column id="GAMMA_ID" description="" />
+		<Column id="INSERT_TIME" description="" />
+	</TableDescription>
+
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
 	<!--                                  OSEE SEQUENCES and INFO   -->
@@ -417,12 +540,21 @@
 		<Constraint schema="OSEE" id="SEQUENCE_ID_UN" type="UNIQUE" appliesTo="SEQUENCE_NAME" />
 	</Table>
 
+	<TableDescription referenceTable="OSEE_SEQUENCE">
+		<Note purpose="Keeps track of last generated value of a sequence of given name - SEQUENCE_NAME."/>
+	</TableDescription>
 
   <Table name="OSEE_INFO" schema="OSEE" tablespace="osee_data">
-    <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="1000" />
-    <Column defaultValue="not null" id="OSEE_KEY" type="VARCHAR" limits="50" />
+    <Column id="OSEE_VALUE" defaultValue="not null"  type="VARCHAR" limits="1000" />
+    <Column id="OSEE_KEY" defaultValue="not null"  type="VARCHAR" limits="50" />
     <Constraint schema="OSEE" id="OSEE_INFO_KEY_UN_IDX" type="UNIQUE" appliesTo="OSEE_KEY" />
   </Table>
+
+  <TableDescription referenceTable="OSEE_INFO">
+		<Note purpose="Core table describing ?"/>
+		<Column id="OSEE_VALUE" description="" />
+		<Column id="OSEE_KEY" description="" />
+	</TableDescription>
 
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
@@ -444,6 +576,14 @@
 		</Constraint>
    </Table>
    
+   <TableDescription referenceTable="OSEE_MERGE">
+		<Note purpose="Core table describing merge branches"/>
+		<Column id="SOURCE_BRANCH_ID" description="" />
+		<Column id="DEST_BRANCH_ID" description="" />
+		<Column id="MERGE_BRANCH_ID" description="" />
+		<Column id="COMMIT_TRANSACTION_ID" description="" />
+	</TableDescription>
+
    <Table name="OSEE_CONFLICT" schema="OSEE" tablespace="osee_data">
 		<Column id="CONFLICT_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
@@ -457,16 +597,15 @@
 		</Constraint>
    </Table>
    
-   	
-	<Table name="OSEE_JOIN_TRANSACTION" schema="OSEE" tablespace="osee_data">
-		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX" tablespace="osee_data">
-			<AppliesTo id="QUERY_ID"/>
-		</Index>
-	</Table>
+   <TableDescription referenceTable="OSEE_CONFLICT">
+		<Note purpose="Core table describing individual conflicts per merge branch."/>
+		<Column id="CONFLICT_ID" description="" />
+		<Column id="MERGE_BRANCH_ID" description="" />
+		<Column id="CONFLICT_TYPE" description="" />
+		<Column id="SOURCE_GAMMA_ID" description="" />
+		<Column id="DEST_GAMMA_ID" description="" />
+		<Column id="STATUS" description="" />
+	</TableDescription>
 	
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
@@ -482,6 +621,11 @@
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
 	</Table>
+
+	<TableDescription referenceTable="OSEE_JOIN_EXPORT_IMPORT">
+		<Note purpose="Core table describing ?"/>
+	</TableDescription>
+
 	<Table name="OSEE_IMPORT_SOURCE" schema="OSEE" tablespace="osee_data">
 		<Column id="IMPORT_ID" defaultValue="not null" type="INTEGER" />
 	  	<Column id="DB_SOURCE_GUID" defaultValue="not null" type="VARCHAR" limits="28"/>
@@ -489,6 +633,11 @@
 	  	<Column id="DATE_IMPORTED" defaultValue="not null" type="TIMESTAMP" />
 	  	<Constraint schema="OSEE" id="OSEE_IMPORT_MAP_PK" type="PRIMARY KEY" appliesTo="IMPORT_ID" />
 	</Table>
+
+	<TableDescription referenceTable="OSEE_IMPORT_SOURCE">
+		<Note purpose="Core table describing ?"/>
+	</TableDescription>
+
 	<Table name="OSEE_IMPORT_SAVE_POINT" schema="OSEE" tablespace="osee_data">
 		<Column id="IMPORT_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="SAVE_POINT_NAME" defaultValue="not null" type="VARCHAR" limits="128"/>
@@ -499,6 +648,11 @@
 			<References schema="OSEE" table="OSEE_IMPORT_SOURCE" column="IMPORT_ID" />
 		</Constraint>
 	</Table>
+
+	<TableDescription referenceTable="OSEE_IMPORT_SAVE_POINT">
+		<Note purpose="Core table describing ?"/>
+	</TableDescription>
+
 	<Table name="OSEE_IMPORT_MAP" schema="OSEE" tablespace="osee_data">
 		<Column id="IMPORT_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="SEQUENCE_ID" defaultValue="not null" type="INTEGER" />
@@ -508,6 +662,11 @@
 			<References schema="OSEE" table="OSEE_IMPORT_SOURCE" column="IMPORT_ID" />
 		</Constraint>
 	</Table>
+
+	<TableDescription referenceTable="OSEE_IMPORT_MAP">
+		<Note purpose="Core table describing ?"/>
+	</TableDescription>
+
 	<Table name="OSEE_IMPORT_INDEX_MAP" schema="OSEE" tablespace="osee_data">
 		<Column id="SEQUENCE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ORIGINAL_ID" defaultValue="not null" type="BIGINT"/>
@@ -526,6 +685,10 @@
 		</Index>
 	</Table>
 	
+	<TableDescription referenceTable="OSEE_IMPORT_INDEX_MAP">
+		<Note purpose="Core table describing ?"/>
+	</TableDescription>
+
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
 	<!--              Application Server     						       -->
@@ -542,6 +705,10 @@
 		<Constraint schema="OSEE" id="OSEE_SERVER_LOOKUP_PK" type="PRIMARY KEY" appliesTo="SERVER_ADDRESS, PORT, VERSION_ID" />
 	</Table>
 	
+	<TableDescription referenceTable="OSEE_SERVER_LOOKUP">
+		<Note purpose="Core table used in arbitration of current OSEE servers"/>
+	</TableDescription>
+
 	<Table name="OSEE_SESSION" schema="OSEE" tablespace="osee_data">
 		<Column id="MANAGED_BY_SERVER_ID" defaultValue="not null" type="VARCHAR" limits="40" />
 		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
@@ -556,4 +723,103 @@
 		<Constraint schema="OSEE" id="OSEE_SESSION_PK" type="PRIMARY KEY" appliesTo="SESSION_ID" />
 	</Table>
 	
+	<TableDescription referenceTable="OSEE_SESSION">
+		<Note purpose="Core table describing ?"/>
+	</TableDescription>
+
+
+	<!-- __________________________________________________________ -->
+	<!--              Join Tables  					                   -->
+	<!-- __________________________________________________________ -->
+
+	<Table name="OSEE_JOIN_ARTIFACT" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TRANSACTION_ID" type="INTEGER" />
+		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Index id="OSEE_JOIN_ART__Q_A_B_T_IDX" type="UNIQUE" tablespace="osee_data">
+			<AppliesTo id="QUERY_ID"/>
+			<AppliesTo id="ART_ID"/>
+			<AppliesTo id="BRANCH_ID"/>
+			<AppliesTo id="TRANSACTION_ID"/>
+		</Index>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_JOIN_ARTIFACT">
+		<Note purpose="Temporary working table to improve performance of joins"/>
+		<Column id="QUERY_ID" 			description="randomly generated identifier for this short-lived join" />
+		<Column id="ART_ID" 				description="application specific INTEGER identifier" />
+		<Column id="BRANCH_ID" 			description="application specific INTEGER identifier" />
+		<Column id="TRANSACTION_ID"	description="application specific INTEGER identifier" />
+		<Column id="INSERT_TIME" 		description="time this join query was started" />
+	</TableDescription>
+
+	<Table name="OSEE_JOIN_ID" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ID" type="INTEGER" />
+		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Index id="OSEE_JOIN_ID__Q_I_IDX" type="UNIQUE" tablespace="osee_data">
+			<AppliesTo id="QUERY_ID"/>
+			<AppliesTo id="ID"/>
+		</Index>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_JOIN_ID">
+		<Note purpose="Temporary working table to improve performance of joins"/>
+		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
+		<Column id="ID" 				description="application specific INTEGER identifier"/>
+		<Column id="INSERT_TIME" 	description="time this join query was started"/>
+	</TableDescription>
+
+	<Table name="OSEE_JOIN_CLEANUP" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
+		<Column id="TABLE_NAME" defaultValue="not null" type="VARCHAR" limits="28"/>
+		<Index id="OSEE_JOIN_CLEANUP__Q_IDX" type="UNIQUE" tablespace="osee_data">
+			<AppliesTo id="QUERY_ID"/>
+		</Index>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_JOIN_CLEANUP">
+		<Note purpose="Temporary working table that tracks query joins that are used in the other join tables for later clean-up.
+		This cleanup is only needed if the application/server fails to do the expected delete
+		based on the corresponding query id.  Cleanup is performed when the corresponding session has been closed."/>
+		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
+		<Column id="SESSION_ID" 	description="unique identifier of the session that issued the query"/>
+		<Column id="TABLE_NAME" 	description="name of the join table that stores the join with this query_id"/>
+	</TableDescription>
+
+	<Table name="OSEE_JOIN_CHAR_ID" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ID" defaultValue="not null" type="VARCHAR" limits="4000"/>
+		<Index id="OSEE_JOIN_CHAR__Q_IDX" tablespace="osee_data">
+			<AppliesTo id="QUERY_ID"/>
+		</Index>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_JOIN_CHAR_ID">
+		<Note purpose="Temporary working table to improve performance of joins of type VARCHAR"/>
+		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
+		<Column id="ID" 	description="application specific VARCHAR identifier"/>
+	</TableDescription>
+
+
+	<Table name="OSEE_JOIN_TRANSACTION" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX" tablespace="osee_data">
+			<AppliesTo id="QUERY_ID"/>
+		</Index>
+	</Table>
+	
+	<TableDescription referenceTable="OSEE_JOIN_TRANSACTION">
+		<Note purpose="Temporary working table to improve performance of joins"/>
+		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
+		<Column id="TRANSACTION_ID" 		description="application specific INTEGER identifier"/>
+		<Column id="GAMMA_ID" 		description="application specific INTEGER identifier"/>
+		<Column id="INSERT_TIME" 	description="time this join query was started"/>
+	</TableDescription>
 </TableConfig>
