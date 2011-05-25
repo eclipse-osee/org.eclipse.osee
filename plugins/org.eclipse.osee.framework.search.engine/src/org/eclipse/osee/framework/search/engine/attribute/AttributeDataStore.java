@@ -130,9 +130,4 @@ public final class AttributeDataStore {
       }
       return builder.toString();
    }
-
-   public static int getTotalTaggableItems(OseeConnection connection, final int branchId) throws OseeCoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(connection, -1, getBranchTaggingQueries(branchId, true),
-         getAllTaggableGammasByBranchQueryData(branchId));
-   }
 }
