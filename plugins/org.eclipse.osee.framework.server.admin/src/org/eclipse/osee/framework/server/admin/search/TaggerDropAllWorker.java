@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
+import java.sql.DatabaseMetaData;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.server.admin.BaseServerCommand;
  * @author Roberto E. Escobar
  */
 class TaggerDropAllWorker extends BaseServerCommand {
-   private static final String TRUNCATE_SQL = "TRUNCATE osee_search_tags";
+   private static final String TRUNCATE_SQL = "TRUNCATE TABLE osee_search_tags";
    private static final String DELETE_TABLE_SQL = "DELETE FROM osee_search_tags";
 
    protected TaggerDropAllWorker() {
@@ -29,7 +30,8 @@ class TaggerDropAllWorker extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String deleteSql = null;
-      if (SupportedDatabase.isDatabaseType(ConnectionHandler.getMetaData(), SupportedDatabase.derby)) {
+      DatabaseMetaData metaData = ConnectionHandler.getMetaData();
+      if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.derby)) {
          deleteSql = DELETE_TABLE_SQL;
       } else {
          deleteSql = TRUNCATE_SQL;
