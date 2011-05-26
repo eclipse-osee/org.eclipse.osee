@@ -16,15 +16,26 @@ import java.util.logging.Level;
 
 public class SevereLoggingMonitor implements ILoggerListener {
 
+   private boolean ignore;
    private final List<IHealthStatus> status = new ArrayList<IHealthStatus>();
 
    @Override
    public void log(String loggerName, Level level, String message, Throwable th) {
-      status.add(new BaseStatus(loggerName, level, message, th));
+      if (!ignore) {
+         status.add(new BaseStatus(loggerName, level, message, th));
+      }
    }
 
    public List<IHealthStatus> getAllLogs() {
       return status;
+   }
+
+   public void pause() {
+      this.ignore = true;
+   }
+
+   public void resume() {
+      this.ignore = false;
    }
 
    public List<IHealthStatus> getSevereLogs() {

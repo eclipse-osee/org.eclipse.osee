@@ -129,14 +129,24 @@ public class RelationCacheTest {
       Assert.assertEquals(0, relCache.getAll(artfact2).size());
    }
 
+   /**
+    * <p>
+    * When RelationCache.cache() is changed to throw an exception for a duplicate relation, <br/>
+    * then this test should fail and severeLoggingMonitor should not be paused.
+    * </p>
+    * 
+    * @throws Exception
+    */
    @Test
-   public void testCanAddCacheSameRelTwice() {
+   public void testCanAddCacheSameRelTwice() throws Exception {
       RelationCache relCache = new RelationCache();
 
       RelationLink link1 = sourceLinksRelType1.iterator().next();
 
+      severeLoggingMonitor.pause();
       relCache.cache(artfact1, link1);
       relCache.cache(artfact1, link1);
+      severeLoggingMonitor.resume();
 
       Assert.assertEquals(2, relCache.getAll(artfact1).size());
    }
