@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<component name="server.task.scheduler">
+<component name="server.task.scheduler" immediate="true">
 	<implementation class="org.eclipse.osee.framework.core.server.internal.ServerTaskScheduler"/>
 	<service>
 		<provide interface="org.eclipse.osee.framework.core.server.IServerTaskScheduler"/>
