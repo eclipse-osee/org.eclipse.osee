@@ -107,15 +107,14 @@ public class TestUtil {
                      break;
                   }
                }
-               if (ignoreIt) {
-                  continue;
+               if (!ignoreIt) {
+                  if (status.getException() != null) {
+                     System.err.println("SevereLogging Exception: " + Lib.exceptionToString(status.getException()));
+                  } else {
+                     System.err.println("SevereLogging Exception: " + status.getMessage());
+                  }
+                  numExceptions++;
                }
-               if (status.getException() != null) {
-                  System.err.println("SevereLogging Exception: " + Lib.exceptionToString(status.getException()));
-               } else {
-                  System.err.println("SevereLogging Exception: " + status.getMessage());
-               }
-               numExceptions++;
             }
          }
          if (numExceptions > 0) {
