@@ -8,6 +8,6 @@ Fragment-Host: org.eclipse.osee.framework.core.dsl.integration;bundle-version="0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.core.dsl.integration,
- org.eclipse.osee.framework.core.model.test.mocks,
+ org.eclipse.osee.framework.core.model.mocks,
  org.eclipse.osee.framework.jdk.core.type
 Export-Package: org.eclipse.osee.framework.core.dsl.integration

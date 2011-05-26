@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.test.mocks.MockOseeDataAccessor;
+import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.junit.Test;
 
 /**

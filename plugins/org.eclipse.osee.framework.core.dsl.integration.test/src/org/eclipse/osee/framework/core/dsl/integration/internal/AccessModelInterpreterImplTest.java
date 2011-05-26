@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.model.test.mocks.MockAccessDetailCollector;
+import org.eclipse.osee.framework.core.model.mocks.MockAccessDetailCollector;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Before;
 import org.junit.Test;

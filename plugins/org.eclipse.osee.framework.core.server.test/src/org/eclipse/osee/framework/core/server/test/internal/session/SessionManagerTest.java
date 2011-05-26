@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.test.internal.session;
 
-import org.eclipse.osee.framework.core.model.test.mocks.MockOseeDataAccessor;
+import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.internal.session.ISessionQuery;
 import org.eclipse.osee.framework.core.server.internal.session.Session;

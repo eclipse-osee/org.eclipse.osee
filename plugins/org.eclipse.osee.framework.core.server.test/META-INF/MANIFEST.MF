@@ -9,6 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.core.server.test,
  org.eclipse.osee.framework.core.server.test.mocks
-Import-Package: org.eclipse.osee.framework.core.model.test.cache,
- org.eclipse.osee.framework.core.model.test.mocks,
- org.eclipse.osee.framework.core.model.test.type
+Import-Package: org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.framework.core.model.mocks,
+ org.eclipse.osee.framework.core.model.type

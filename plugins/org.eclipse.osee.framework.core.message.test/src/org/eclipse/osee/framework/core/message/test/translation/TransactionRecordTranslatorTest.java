@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.message.internal.translation.TransactionR
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
+import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.Assert;
 import org.junit.runner.RunWith;

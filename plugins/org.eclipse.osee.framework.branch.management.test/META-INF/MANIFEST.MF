@@ -9,5 +9,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.branch.management.test
 Import-Package: org.eclipse.osee.framework.core.message.test.mocks,
- org.eclipse.osee.framework.core.model.test.mocks,
+ org.eclipse.osee.framework.core.model.mocks,
  org.eclipse.osee.framework.core.test.mocks

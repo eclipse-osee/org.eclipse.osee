@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.test.mocks.MockArtifact;
+import org.eclipse.osee.framework.core.model.mocks.MockArtifact;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.BeforeClass;
 import org.junit.Test;

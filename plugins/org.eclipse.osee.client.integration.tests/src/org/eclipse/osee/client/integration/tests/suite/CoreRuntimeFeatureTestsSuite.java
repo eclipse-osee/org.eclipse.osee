@@ -11,7 +11,7 @@
 package org.eclipse.osee.client.integration.tests.suite;
 
 import org.eclipse.osee.framework.core.message.test.AllCoreMessageTestSuite;
-import org.eclipse.osee.framework.core.model.test.AllCoreModelTestSuite;
+import org.eclipse.osee.framework.core.model.AllCoreModelTestSuite;
 import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
 import org.eclipse.osee.framework.database.test.DatabaseTestSuite;
 import org.eclipse.osee.framework.jdk.core.JdkCoreTestSuite;

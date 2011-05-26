@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.branch.management.test.BranchManagementTestSui
 import org.eclipse.osee.framework.core.datastore.test.AllCoreDatastoreTestSuite;
 import org.eclipse.osee.framework.core.dsl.integration.AllDslIntegrationTestSuite;
 import org.eclipse.osee.framework.core.message.test.AllCoreMessageTestSuite;
-import org.eclipse.osee.framework.core.model.test.AllCoreModelTestSuite;
+import org.eclipse.osee.framework.core.model.AllCoreModelTestSuite;
 import org.eclipse.osee.framework.core.server.test.CoreServerTestSuite;
 import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
 import org.eclipse.osee.framework.database.test.DatabaseTestSuite;
