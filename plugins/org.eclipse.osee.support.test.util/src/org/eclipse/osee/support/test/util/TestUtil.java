@@ -37,6 +37,20 @@ public class TestUtil {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
+   public static void checkDbInitSuccess() throws OseeCoreException {
+      if (!isDbInitSuccessful()) {
+         throw new OseeStateException("DbInit must be successful to continue");
+      }
+   }
+
+   public static boolean isDbInitSuccessful() throws OseeCoreException {
+      return OseeInfo.isBoolean("DbInitSuccess");
+   }
+
+   public static void setDbInitSuccessful(boolean success) throws OseeCoreException {
+      OseeInfo.setBoolean("DbInitSuccess", success);
+   }
+
    /**
     * Need to match methods in OseeProperties
     */
