@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Demo Plug-in
 Bundle-SymbolicName: org.eclipse.osee.ats.config.demo;singleton:=true
 Bundle-Version: 0.9.9.qualifier
+Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
@@ -25,6 +26,7 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.osee.ats.core.task,
  org.eclipse.osee.ats.core.team,
  org.eclipse.osee.ats.core.type,
+ org.eclipse.osee.ats.core.util,
  org.eclipse.osee.ats.core.version,
  org.eclipse.osee.ats.core.workdef,
  org.eclipse.osee.ats.core.workflow,

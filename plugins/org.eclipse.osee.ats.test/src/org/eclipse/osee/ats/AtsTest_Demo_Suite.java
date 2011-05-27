@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats;
 
 import static org.junit.Assert.assertTrue;
-import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.log.AtsLogTest;
 import org.eclipse.osee.ats.artifact.log.LogItemTest;
 import org.eclipse.osee.ats.artifact.note.AtsNoteTest;
@@ -72,12 +71,18 @@ public class AtsTest_Demo_Suite {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       System.out.println("\n\nBegin " + AtsTest_Demo_Suite.class.getSimpleName());
-      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
+      if (!OseeData.isProjectOpen()) {
+         System.err.println("osee.data project should be open");
+         OseeData.ensureProjectOpen();
+      }
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
+      if (!OseeData.isProjectOpen()) {
+         System.err.println("osee.data project should be open");
+         OseeData.ensureProjectOpen();
+      }
       System.out.println("End " + AtsTest_Demo_Suite.class.getSimpleName());
    }
 }

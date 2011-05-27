@@ -10,85 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.suite;
 
-import static org.junit.Assert.assertTrue;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.client.OseeClientSession;
-import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.support.test.util.DemoUsers;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.eclipse.osee.ats.config.demo.PopulateActionsTest;
+import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfigTest;
+import org.eclipse.osee.ats.config.demo.config.DemoDbGroupsTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+   DemoDbInitTest.class,
+   PopulateDemoDatabaseTest.class,
+   DemoDatabaseConfigTest.class,
+   DemoDbGroupsTest.class,
+   PopulateActionsTest.class})
 /**
+ * DbInit, DbPopulate and Tests to ensure that all went as expected.
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_DemoDbInit {
-   private static boolean wasDbInitSuccessful = false;
+   // tests listed above
 
-   @BeforeClass
-   public static void setup() throws Exception {
-      OseeProperties.setIsInTest(true);
-      assertTrue("Demo Application Server must be running",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-      RenderingUtil.setPopupsAllowed(false);
-   }
-
-   @org.junit.Test
-   public void testDemoDbInit() throws Exception {
-      System.out.println("\nBegin database initialization...");
-
-      String lastAuthenticationProtocol = OseeClientProperties.getAuthenticationProtocol();
-      try {
-         SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-         OseeLog.registerLoggerListener(monitorLog);
-         OseeClientProperties.setAuthenticationProtocol("trustAll");
-         DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
-
-         TestUtil.severeLoggingEnd(monitorLog);
-         OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Completed database initialization");
-         wasDbInitSuccessful = true;
-      } finally {
-         OseeClientProperties.setAuthenticationProtocol(lastAuthenticationProtocol);
-      }
-
-      if (wasDbInitSuccessful) {
-         ClientSessionManager.releaseSession();
-         // Re-authenticate so we can continue
-         ClientSessionManager.getSession();
-      }
-      OseeClientProperties.setInDbInit(false);
-      System.out.println("End database initialization...");
-
-   }
-
-   @org.junit.Test
-   public void testPopulateDemoDb() {
-      System.out.println("\nBegin Populate Demo DB...");
-      Assert.assertTrue("DbInit must be successful to continue", wasDbInitSuccessful);
-      try {
-         ClientSessionManager.releaseSession();
-         // Re-authenticate so we can continue
-         OseeClientSession session = ClientSessionManager.getSession();
-         UserManager.releaseUser();
-
-         Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserID(), session.getUserId());
-         Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserID(),
-            UserManager.getUser().getUserId());
-
-         PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
-         populateDemoActions.run(false);
-         System.out.println("End Populate Demo DB...\n");
-      } catch (Exception ex) {
-         Assert.fail(Lib.exceptionToString(ex));
-      }
-   }
 }

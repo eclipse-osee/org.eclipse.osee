@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats;
+package org.eclipse.osee.ats.config.demo;
 
-import org.eclipse.osee.ats.review.ReviewNavigateItemsToWorldViewTest;
-import org.eclipse.osee.ats.review.ReviewWorldSearchItemDemoTest;
+import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.ats.config.demo.config.DemoDbGroupsTest;
+import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
@@ -20,17 +22,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ReviewWorldSearchItemDemoTest.class, ReviewNavigateItemsToWorldViewTest.class})
+@Suite.SuiteClasses({DemoDbGroupsTest.class, PopulateActionsTest.class})
 /**
- * This test suite contains tests that must be run against demo database
+ * Tests related to validating the population of demo data.  Note the above 2 classes
+ * are also done at end of DemoDbInit, but need to remain here to ensure that db hasn't been
+ * corrupted on multiple runs of DemoDbTests
  * 
  * @author Donald G. Dunne
  */
-public class Review_Demo_Suite {
+public class Populate_DemoDb_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
+      DemoDbUtil.checkDbInitAndPopulateSuccess();
       OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + Review_Demo_Suite.class.getSimpleName());
+      assertTrue("Demo Application Server must be running.",
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      assertTrue("Client must authenticate using demo protocol",
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+      System.out.println("\n\nBegin " + Populate_DemoDb_Suite.class.getSimpleName());
       if (!OseeData.isProjectOpen()) {
          System.err.println("osee.data project should be open");
          OseeData.ensureProjectOpen();
@@ -43,6 +52,6 @@ public class Review_Demo_Suite {
          System.err.println("osee.data project should be open");
          OseeData.ensureProjectOpen();
       }
-      System.out.println("End " + Review_Demo_Suite.class.getSimpleName());
+      System.out.println("End " + Populate_DemoDb_Suite.class.getSimpleName());
    }
 }

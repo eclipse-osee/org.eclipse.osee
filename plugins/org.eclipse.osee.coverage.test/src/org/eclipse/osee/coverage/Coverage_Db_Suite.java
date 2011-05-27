@@ -11,7 +11,6 @@
 package org.eclipse.osee.coverage;
 
 import static org.junit.Assert.assertTrue;
-import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItemPersistTest;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerStoreTest;
 import org.eclipse.osee.coverage.model.CoveragePreferencesTest;
@@ -58,12 +57,18 @@ public class Coverage_Db_Suite {
             "demo"));
       RenderingUtil.setPopupsAllowed(false);
       System.out.println("\n\nBegin " + Coverage_Db_Suite.class.getSimpleName());
-      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
+      if (!OseeData.isProjectOpen()) {
+         System.err.println("osee.data project should be open");
+         OseeData.ensureProjectOpen();
+      }
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
+      if (!OseeData.isProjectOpen()) {
+         System.err.println("osee.data project should be open");
+         OseeData.ensureProjectOpen();
+      }
       System.out.println("End " + Coverage_Db_Suite.class.getSimpleName());
    }
 

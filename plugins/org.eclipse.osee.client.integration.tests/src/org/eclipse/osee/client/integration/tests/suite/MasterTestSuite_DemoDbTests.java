@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_StateItem_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_Suite;
 import org.eclipse.osee.ats.Review_Demo_Suite;
+import org.eclipse.osee.ats.config.demo.Populate_DemoDb_Suite;
 import org.eclipse.osee.coverage.Coverage_Db_Suite;
 import org.eclipse.osee.define.AllDefineTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -32,6 +33,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   Populate_DemoDb_Suite.class,
    Review_Demo_Suite.class,
    AtsTest_Demo_StateItem_Suite.class,
    CoreRuntimeFeatureTestsSuite.class,

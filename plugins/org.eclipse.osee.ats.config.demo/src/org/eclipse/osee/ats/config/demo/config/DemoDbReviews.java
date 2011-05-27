@@ -151,7 +151,7 @@ public class DemoDbReviews {
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
          ReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
-            firstCodeArt.getStateMgr().getCurrentStateName(), new Date(), DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones),
+            secondCodeArt.getStateMgr().getCurrentStateName(), new Date(), DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones),
             transaction);
       roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), 2.3, true));

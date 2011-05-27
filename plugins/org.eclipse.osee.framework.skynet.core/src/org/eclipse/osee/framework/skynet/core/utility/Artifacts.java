@@ -211,6 +211,16 @@ public final class Artifacts {
       return branchMap;
    }
 
+   public static Collection<Artifact> getOfType(IArtifactType artifactType, Collection<? extends Artifact> artifacts) {
+      List<Artifact> results = new ArrayList<Artifact>();
+      for (Artifact art : artifacts) {
+         if (art.isOfType(artifactType)) {
+            results.add(art);
+         }
+      }
+      return results;
+   }
+
    public static boolean isOfType(Object object, IArtifactType artifactType) {
       if (object instanceof Artifact) {
          return ((Artifact) object).isOfType(artifactType);

@@ -54,11 +54,7 @@ public class OseeInfo {
     * isCacheEnabled that will cache the value
     */
    public static boolean isEnabled(String key) throws OseeCoreException {
-      String dbProperty = OseeInfo.getValue(key);
-      if (Strings.isValid(dbProperty)) {
-         return dbProperty.equals("true");
-      }
-      return false;
+      return isBoolean(key);
    }
 
    /**
@@ -76,7 +72,27 @@ public class OseeInfo {
    }
 
    public static void setEnabled(String key, boolean enabled) throws OseeCoreException {
-      putValue(key, String.valueOf(enabled));
+      setBoolean(key, enabled);
+   }
+
+   public static void setBoolean(String key, boolean value) throws OseeCoreException {
+      putValue(key, String.valueOf(value));
+
+   }
+
+   /**
+    * Return true if key is set in osee_info table and value = "true". Return false if key is either not in osee_info
+    * table OR value != "true".<br>
+    * <br>
+    * Note: This call will hit the database every time, so shouldn't be used for often repeated calls. use
+    * isCacheEnabled that will cache the value
+    */
+   public static boolean isBoolean(String key) throws OseeCoreException {
+      String dbProperty = OseeInfo.getValue(key);
+      if (Strings.isValid(dbProperty)) {
+         return dbProperty.equals("true");
+      }
+      return false;
    }
 
    public static void putValue(String key, String value) throws OseeCoreException {

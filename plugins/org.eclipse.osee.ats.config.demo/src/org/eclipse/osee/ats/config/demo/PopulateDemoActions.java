@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
@@ -35,6 +36,8 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionArtifact;
+import org.eclipse.osee.ats.core.workflow.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -55,6 +58,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -448,22 +452,45 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (DEBUG) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       }
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_3.toString(), null, transaction);
+      List<ActionArtifact> actions =
+         Collections.castAll(createActions(DemoDbActionData.getNonReqSawActionData(),
+            DemoSawBuilds.SAW_Bld_3.toString(), null, transaction));
+      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_3.getName(), transaction);
+
       if (DEBUG) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
       }
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_2.toString(), null, transaction);
+      actions =
+         Collections.castAll(createActions(DemoDbActionData.getNonReqSawActionData(),
+            DemoSawBuilds.SAW_Bld_2.toString(), null, transaction));
+      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_2.getName(), transaction);
+
       if (DEBUG) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_1");
       }
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_1.toString(), TeamState.Completed,
-         transaction);
+
+      actions =
+         Collections.castAll(createActions(DemoDbActionData.getNonReqSawActionData(),
+            DemoSawBuilds.SAW_Bld_1.toString(), TeamState.Completed, transaction));
+      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_1.getName(), transaction);
+
       if (DEBUG) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "createNonReqChangeDemoActions - getGenericActionData");
       }
       createActions(DemoDbActionData.getGenericActionData(), null, null, transaction);
       transaction.execute();
+   }
+
+   private void appendBuildNameToTitles(List<ActionArtifact> actions, String buildName, SkynetTransaction transaction) throws OseeCoreException {
+      for (ActionArtifact action : actions) {
+         for (TeamWorkFlowArtifact team : action.getTeams()) {
+            team.setName(team.getName() + " for " + buildName);
+            team.persist(transaction);
+         }
+         ActionArtifactRollup rollup = new ActionArtifactRollup(action, transaction);
+         rollup.resetAttributesOffChildren();
+      }
    }
 
    private Set<Artifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
@@ -481,7 +508,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          for (String prefixTitle : aData.prefixTitles) {
             Artifact actionArt =
                ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
-                  TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], "1", false, null,
+                  TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], aData.priority, false, null,
                   aData.getActionableItems(), createdDate, createdBy, null, transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {

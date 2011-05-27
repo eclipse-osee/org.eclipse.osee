@@ -19,8 +19,13 @@ public enum DemoTeam {
    Process_Team,
    Tools_Team,
    SAW_HW,
+   SAW_Code,
+   SAW_Test,
+   SAW_SW_Design,
+   SAW_Requirements,
    SAW_SW,
    CIS_SW,
    CIS_Code,
+   CIS_Test,
    Facilities_Team
 }

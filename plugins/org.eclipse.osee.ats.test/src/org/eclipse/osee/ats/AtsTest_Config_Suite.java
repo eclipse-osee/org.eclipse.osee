@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
-import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.AtsTeamDefintionToWorkflowTest;
 import org.eclipse.osee.ats.config.AtsActionableItemToTeamDefinitionTest;
 import org.eclipse.osee.ats.config.copy.ConfigDataTest;
@@ -44,12 +43,18 @@ public class AtsTest_Config_Suite {
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Demo_Access_Suite.class.getSimpleName());
-      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
+      if (!OseeData.isProjectOpen()) {
+         System.err.println("osee.data project should be open");
+         OseeData.ensureProjectOpen();
+      }
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      Assert.assertTrue("osee.data project should be open", OseeData.isProjectOpen());
+      if (!OseeData.isProjectOpen()) {
+         System.err.println("osee.data project should be open");
+         OseeData.ensureProjectOpen();
+      }
       System.out.println("End " + AtsTest_Demo_Access_Suite.class.getSimpleName());
    }
 }

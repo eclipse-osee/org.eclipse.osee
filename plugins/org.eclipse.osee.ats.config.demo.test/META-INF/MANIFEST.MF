@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ATS Config Demo Test
+Bundle-SymbolicName: org.eclipse.osee.ats.config.demo.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The Boeing Company
+Fragment-Host: org.eclipse.osee.ats.config.demo
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.ats.config.demo,
+ org.eclipse.osee.ats.config.demo.config
+Require-Bundle: org.junit4;bundle-version="4.8.1"
