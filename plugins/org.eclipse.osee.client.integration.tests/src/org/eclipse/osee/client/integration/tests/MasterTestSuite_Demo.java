@@ -30,12 +30,12 @@ import org.junit.runners.Suite;
 /**
  * @author Donald G. Dunne
  */
-public class MasterTestSuite_DemoIntegrationSuite {
+public class MasterTestSuite_Demo {
 
    @BeforeClass
    public static void setup() throws Exception {
       OseeProperties.setIsInTest(true);
-      OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO,
+      OseeLog.log(MasterTestSuite_Demo.class, Level.INFO,
          "Starting osee client integration test suite...");
    }
 }

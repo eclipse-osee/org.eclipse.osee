@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_StateItem_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_Suite;
 import org.eclipse.osee.ats.Review_Demo_Suite;
+import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.coverage.Coverage_Db_Suite;
 import org.eclipse.osee.define.AllDefineTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -53,6 +54,7 @@ import org.junit.runners.Suite;
 public class MasterTestSuite_DemoDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
+      DemoDbUtil.checkDbInitAndPopulateSuccess();
       System.out.println("\nBegin " + MasterTestSuite_DemoDbTests.class.getSimpleName());
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
