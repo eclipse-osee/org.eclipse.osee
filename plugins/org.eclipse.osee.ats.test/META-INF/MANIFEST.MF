@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Text Fragment
+Bundle-Name: ATS Test Fragment
 Bundle-SymbolicName: org.eclipse.osee.ats.test;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
