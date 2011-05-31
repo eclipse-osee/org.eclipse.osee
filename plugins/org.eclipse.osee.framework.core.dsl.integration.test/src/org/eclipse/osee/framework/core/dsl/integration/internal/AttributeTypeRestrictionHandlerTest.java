@@ -76,7 +76,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
       ArtifactProxy artifactProxy = createArtifactProxy(null, attributeType, wasIsAttributeTypeValidCalled, true);
-      Scope expectedScope = new Scope().add("fail");
+      Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, attributeType,
          PermissionEnum.WRITE, expectedScope);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
@@ -128,7 +128,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
       ArtifactProxy artifactProxy =
          createArtifactProxy(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
-      Scope expectedScope = new Scope().add("fail");
+      Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, attributeType,
          PermissionEnum.WRITE, expectedScope);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
@@ -160,7 +160,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
       ArtifactProxy artifactProxy =
          createArtifactProxy(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
-      Scope expectedScope = new Scope().add("fail");
+      Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, attributeType,
          PermissionEnum.WRITE, expectedScope);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());

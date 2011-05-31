@@ -110,15 +110,16 @@ public class AccessDetail<T> { //implements Comparable<AccessDetail<?>> {
    private static AccessDetail<?> getMostRestrictive(AccessDetail<?> original, AccessDetail<?> data) {
       PermissionEnum origPermission = original.getPermission();
       PermissionEnum newPermission = data.getPermission();
-      PermissionEnum netPermission = PermissionEnum.getMostRestrictive(origPermission, newPermission);
 
-      AccessDetail<?> toReturn;
-      if (netPermission.equals(origPermission)) {
-         toReturn = original;
+      AccessDetail<?> toReturn = original;
+      if (!origPermission.equals(newPermission)) {
+         PermissionEnum netPermission = PermissionEnum.getMostRestrictive(origPermission, newPermission);
+         if (netPermission.equals(newPermission)) {
+            toReturn = data;
+         }
+      } else {
          String netReason = merge(toReturn.getReason(), data.getReason());
          toReturn.setReason(netReason);
-      } else {
-         toReturn = data;
       }
       return toReturn;
    }

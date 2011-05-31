@@ -69,7 +69,7 @@ public class ArtifactMatchRestrictionHandlerTest extends BaseRestrictionHandlerT
       DefaultBasicArtifact expectedAccessObject = new DefaultBasicArtifact(1, GUID.create(), "Another Artifact");
       MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject);
 
-      Scope expectedScope = new Scope().add("fail");
+      Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,
          PermissionEnum.WRITE, expectedScope);
 

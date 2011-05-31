@@ -66,7 +66,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactType expectedAccessObject = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
       MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), expectedAccessObject);
 
-      Scope expectedScope = new Scope().add("fail");
+      Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,
          PermissionEnum.WRITE, expectedScope);
    }
@@ -84,7 +84,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          new ArtifactType(CoreArtifactTypes.Requirement.getGuid(), CoreArtifactTypes.Requirement.getName(), false);
 
       MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), expectedAccessObject);
-      Scope expectedScope = new Scope().add("fail");
+      Scope expectedScope = new Scope();
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
 
       // Make expectedAccessObject inherit from ArtifactType

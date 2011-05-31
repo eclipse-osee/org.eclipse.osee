@@ -27,11 +27,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
-import org.eclipse.osee.framework.core.model.access.AccessData;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
-import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -149,7 +146,7 @@ public class AccessDataTest {
       Assert.assertEquals(detail2.getAccessObject(), actualDetail.getAccessObject());
 
       Assert.assertEquals(PermissionEnum.DENY, actualDetail.getPermission());
-      Assert.assertEquals("item 1 - deny, item 2 - write", actualDetail.getReason());
+      Assert.assertEquals("item 1 - deny", actualDetail.getReason());
       Assert.assertEquals("/same_scope", actualDetail.getScope().getPath());
    }
 
