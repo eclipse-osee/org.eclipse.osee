@@ -94,11 +94,11 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
       String addressAsString = getAddress();
       int port = getServerPort();
       String strUri = String.format("tcp://%s:%d", addressAsString, port);
-      if (propertyParameter.isLocalConnector()) {
-         strUri = "vm://localhost?broker.persistent=false";
-      } else {
+//      if (propertyParameter.isLocalConnector()) {
+//         strUri = "vm://localhost?broker.persistent=false";
+//      } else {
          brokerService.addConnector(strUri);
-      }
+//      }
       brokerService.setEnableStatistics(false);
       brokerService.setBrokerName("OTEServer");
       brokerService.setPersistent(false);
