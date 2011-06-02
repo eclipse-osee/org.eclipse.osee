@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -509,5 +510,22 @@ public class ArtifactQuery {
       Collection<Artifact> reloadedArts = query.reloadArtifacts(artifacts.size());
       OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
       return reloadedArts;
+   }
+
+   public static Artifact getOrCreate(String guid, String hrid, IArtifactType type, IOseeBranch branch) throws OseeCoreException {
+      Artifact artifact = null;
+      try {
+         artifact = ArtifactQuery.getArtifactFromId(guid, branch);
+      } catch (ArtifactDoesNotExist ex) {
+         //do nothing since this is expected if the artifact does not exist
+      }
+      if (artifact == null) {
+         Branch fullBranch = BranchManager.getBranch(branch);
+         artifact = ArtifactTypeManager.addArtifact(type, fullBranch, guid, hrid);
+      }
+      if (artifact == null) {
+         throw new ArtifactDoesNotExist("Artifact of type [%s] does not exist on branch [%s]", type, branch);
+      }
+      return artifact;
    }
 }
