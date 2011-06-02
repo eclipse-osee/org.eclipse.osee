@@ -87,7 +87,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
             variableMap.getBoolean("Update Paragraph Numbers"),
             ITemplateRenderer.TRANSACTION_OPTION,
-            transaction};
+            transaction,
+            IRenderer.SKIP_ERRORS,
+            true};
       renderer.publish(master, slave, artifacts, options);
 
       transaction.execute();

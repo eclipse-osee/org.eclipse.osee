@@ -52,7 +52,7 @@ public final class WordUiUtil {
       }
    }
 
-   public static IVbaDiffGenerator createScriptGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript) {
-      return new VbaWordDiffGenerator(merge, show, detectFormatChanges, executeVbScript);
+   public static IVbaDiffGenerator createScriptGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors) {
+      return new VbaWordDiffGenerator(merge, show, detectFormatChanges, executeVbScript, skipErrors);
    }
 }

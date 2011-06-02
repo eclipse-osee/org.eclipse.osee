@@ -52,9 +52,11 @@ public abstract class AbstractWordCompare implements IComparator {
    protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
+      boolean skipErrors = !getRenderer().getBooleanOption(IRenderer.SKIP_ERRORS);
+
       IVbaDiffGenerator diffGenerator =
          WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE, show,
-            presentationType == PresentationType.MERGE, executeVbScript);
+            presentationType == PresentationType.MERGE, executeVbScript, skipErrors);
       return diffGenerator;
    }
 

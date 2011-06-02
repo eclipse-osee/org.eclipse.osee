@@ -33,8 +33,16 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
  */
 public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
-   private final static String header =
-      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
+   //   private final static String header =
+   //      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
+
+   private final static String header_begin =
+      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n ";
+
+   private final static String header_end =
+      "wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
+
+   private static final String Skip_Errors = "On error resume next\n ";
 
    private final static String comparisonCommand =
       "    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    set compareDoc = oWord.ActiveDocument\n\n";
@@ -51,12 +59,14 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final boolean show;
    private final boolean detectFormatChanges;
    private final boolean executeVbScript;
+   private final boolean skipErrors;
 
-   public VbaWordDiffGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript) {
+   public VbaWordDiffGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors) {
       this.merge = merge;
       this.show = show;
       this.detectFormatChanges = detectFormatChanges;
       this.executeVbScript = executeVbScript;
+      this.skipErrors = skipErrors;
    }
 
    @Override
@@ -65,7 +75,12 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       try {
          writer = new BufferedWriter(new FileWriter(compareData.getGeneratorScriptPath()));
 
-         writer.append(header);
+         writer.append(header_begin);
+
+         if (skipErrors) {
+            writer.append(Skip_Errors);
+         }
+         writer.append(header_end);
 
          writer.append("");
          writer.append(Boolean.toString(detectFormatChanges));

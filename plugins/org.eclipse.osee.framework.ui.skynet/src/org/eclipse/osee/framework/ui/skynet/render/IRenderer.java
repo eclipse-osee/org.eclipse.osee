@@ -40,6 +40,7 @@ public interface IRenderer {
 
    public static final String RESULT_PATH_RETURN = "resultPath";
    public static final String NO_DISPLAY = "noDisplay";
+   public static final String SKIP_ERRORS = "skipErrors";
    public static final String SKIP_DIALOGS = "skipDialogs";
 
    public static final String OPEN_IN_TABLE_EDITOR = "open.with.mass.artifact.editor";
