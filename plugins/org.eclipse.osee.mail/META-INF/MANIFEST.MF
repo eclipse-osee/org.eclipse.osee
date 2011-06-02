@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee Mail
+Bundle-SymbolicName: org.eclipse.osee.mail
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: javax.activation,
+ javax.mail;version="1.4.1",
+ javax.mail.event;version="1.4.1",
+ javax.mail.internet;version="1.4.1",
+ javax.xml.bind.annotation,
+ org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.windows,
+ org.osgi.framework;version="1.3.0"
+Export-Package: org.eclipse.osee.mail
