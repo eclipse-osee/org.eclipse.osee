@@ -10,23 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeAttribute;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.program.Program;
 
 /**
- * @author Jeff C> Phillips
+ * @author Jeff C. Phillips
  */
 public class PurgeAttributesBlam extends AbstractBlam {
    @Override
@@ -42,21 +45,27 @@ public class PurgeAttributesBlam extends AbstractBlam {
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
 
       StringBuilder strB = new StringBuilder();
+      List<Attribute<?>> attributesToPurge = new ArrayList<Attribute<?>>();
 
       for (Artifact artifact : artifacts) {
-         for (AttributeType attributeType : purgeAttributeTypes) {
-            for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted(attributeType)) {
+         for (IAttributeType attributeType : purgeAttributeTypes) {
+            //if attribute type is invalid purge them
+            if (!artifact.isAttributeTypeValid(attributeType)) {
+               for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted(attributeType)) {
+                  strB.append(attribute.getAttributeType());
+                  strB.append(";");
+                  strB.append(artifact.getArtId());
+                  strB.append(";");
+                  strB.append(attribute.getDisplayableString());
+                  strB.append("\n");
 
-               strB.append(attribute.getAttributeType());
-               strB.append(";");
-               strB.append(artifact.getArtId());
-               strB.append(";");
-               strB.append(attribute.getDisplayableString());
-               strB.append("\n");
-               attribute.purge();
-
+                  attribute.purge();
+                  attributesToPurge.add(attribute);
+               }
             }
          }
+         artifact.persist();
+         new PurgeAttribute(attributesToPurge).execute();
       }
 
       IFile iFile = OseeData.getIFile("Purge Attributes" + Lib.getDateTimeString() + ".txt");

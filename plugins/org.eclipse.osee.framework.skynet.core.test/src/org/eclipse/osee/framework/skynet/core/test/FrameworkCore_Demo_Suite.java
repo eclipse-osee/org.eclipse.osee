@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.skynet.core.test.artifact.AttributePurgeTest;
 import org.eclipse.osee.framework.skynet.core.test.branch.BranchTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactPurgeTest;
@@ -56,6 +57,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    ReplaceWithAttributeTest.class,
+   AttributePurgeTest.class,
    CrossBranchLinkTest.class,
    UpdateBookmarkIdTest.class,
    ArtifactEventFiltersTest.class,
