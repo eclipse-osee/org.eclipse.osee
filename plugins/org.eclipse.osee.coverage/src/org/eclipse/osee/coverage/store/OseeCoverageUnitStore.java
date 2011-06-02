@@ -13,7 +13,9 @@ package org.eclipse.osee.coverage.store;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.event.CoverageChange;
 import org.eclipse.osee.coverage.event.CoverageEventType;
@@ -24,6 +26,8 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.ITestUnitProvider;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -44,6 +48,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class OseeCoverageUnitStore extends OseeCoverageStore {
 
    private final CoverageUnit coverageUnit;
+   private static final Map<IOseeBranch, ITestUnitProvider> testUnitProviderCache =
+      new HashMap<IOseeBranch, ITestUnitProvider>();
 
    public OseeCoverageUnitStore(ICoverage parent, Artifact artifact, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       super(null, artifact.getArtifactType(), artifact.getBranch());
@@ -91,8 +97,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (artifact != null) {
          for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
             CoverageItem item =
-               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager,
-                  DbTestUnitProvider.instance());
+               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager, getTestUnitProvider());
             coverageUnit.addCoverageItem(item);
          }
          // Don't load file contents until needed
@@ -113,6 +118,13 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
    }
 
+   private ITestUnitProvider getTestUnitProvider() {
+      if (!testUnitProviderCache.containsKey(branch)) {
+         testUnitProviderCache.put(branch, new TestUnitCache(new ArtifactTestUnitStore(branch)));
+      }
+      return testUnitProviderCache.get(branch);
+   }
+
    public void reloadItem(CoverageEventType eventType, CoverageItem currentCoverageItem, CoverageChange change, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       Artifact artifact = getArtifact(false);
 
@@ -122,8 +134,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (eventType == CoverageEventType.Modified) {
          for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
             CoverageItem dbChangedItem =
-               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager,
-                  DbTestUnitProvider.instance());
+               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager, getTestUnitProvider());
             if (currentCoverageItem.getGuid().equals(dbChangedItem.getGuid())) {
                currentCoverageItem.copy(currentCoverageItem, dbChangedItem);
             }
@@ -142,14 +153,12 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
 
       List<String> items = new ArrayList<String>();
       for (CoverageItem coverageItem : coverageUnit.getCoverageItems()) {
-         if (!(coverageItem.getTestUnitProvider() instanceof DbTestUnitProvider)) {
-            // Get test names from coverageItem
-            Collection<String> testUnitNames = coverageItem.getTestUnits();
-            // Set provider to db provider
-            coverageItem.setTestUnitProvider(DbTestUnitProvider.instance());
-            // store off testUnitNames; this will add to db and replace names with db nameId
-            coverageItem.setTestUnits(testUnitNames);
-         }
+         // Get test names from coverageItem
+         Collection<String> testUnitNames = coverageItem.getTestUnits();
+         // Set provider to db provider
+         coverageItem.setTestUnitProvider(getTestUnitProvider());
+         // store off testUnitNames; this will add to db and replace names with db nameId
+         coverageItem.setTestUnits(testUnitNames);
          items.add(coverageItem.toXml());
       }
       artifact.setAttributeValues(CoverageAttributeTypes.Item, items);

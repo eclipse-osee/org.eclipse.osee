@@ -84,7 +84,7 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
 
             store.save();
          }
-      } catch (Exception ex) {
+      } catch (Throwable ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 

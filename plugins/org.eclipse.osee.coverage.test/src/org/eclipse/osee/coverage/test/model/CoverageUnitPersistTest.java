@@ -15,27 +15,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.coverage.event.CoverageEventType;
-import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
-import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
-import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
-import org.eclipse.osee.coverage.store.TestUnitStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
@@ -44,8 +37,6 @@ import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -184,46 +175,4 @@ public class CoverageUnitPersistTest {
       }
    }
 
-   /**
-    * Test that a coverage item that has a simpletestunitprovider, as imports will, will covert over and use the
-    * DbTestUnitProvider when the item is persisted. Then, when re-loaded, will load back properly using
-    * DbTestUnitProvider
-    */
-   @Test
-   public void testSimpleToDbTestUnitProvider() throws OseeCoreException {
-      TestUnitStore.clearStore();
-      String cuName = DbTestUnitProviderTest.class.getSimpleName() + "-" + GUID.create();
-      CoverageUnit unit = new CoverageUnit(null, cuName, "location", new SimpleCoverageUnitFileContentsProvider());
-      unit.setWorkProductTaskGuid(GUID.create());
-      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
-      item.setTestUnitProvider(new SimpleTestUnitProvider());
-      for (int x = 0; x < 10; x++) {
-         item.addTestUnitName("Test Unit " + x);
-      }
-      Assert.assertEquals(10, item.getTestUnits().size());
-      OseeCoverageUnitStore store = new OseeCoverageUnitStore(unit, CoverageTestUtil.getTestBranch());
-      CoveragePackageEvent coverageEvent =
-         new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Deleted, GUID.create());
-      SkynetTransaction transaction = new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Unit Commit");
-      Result result = store.save(transaction, coverageEvent);
-      transaction.execute();
-      Assert.assertTrue(result.isTrue());
-
-      Artifact artifact =
-         ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoverageUnit, cuName,
-            CoverageTestUtil.getTestBranch());
-      Assert.assertNotNull(artifact);
-      OseeCoverageUnitStore dbStore =
-         new OseeCoverageUnitStore(null, artifact, CoverageOptionManagerDefault.instance());
-      CoverageUnit dbUnit = dbStore.getCoverageUnit();
-      Assert.assertEquals(1, dbUnit.getCoverageItems().size());
-      CoverageItem dbItem = dbUnit.getCoverageItems().iterator().next();
-      Assert.assertTrue(dbItem.getTestUnitProvider() instanceof DbTestUnitProvider);
-      Assert.assertEquals(10, dbItem.getTestUnits().size());
-      Assert.assertTrue(dbItem.getTestUnits().iterator().next().startsWith("Test Unit "));
-      Assert.assertEquals(10, TestUnitStore.getTestUnitCount());
-      Assert.assertTrue(Strings.isValid(dbUnit.getWorkProductTaskGuid()));
-      Assert.assertEquals(unit.getWorkProductTaskGuid(), dbUnit.getWorkProductTaskGuid());
-      TestUnitStore.clearStore();
-   }
 }

@@ -15,8 +15,8 @@ import org.eclipse.osee.coverage.test.model.CoverageItemPersistTest;
 import org.eclipse.osee.coverage.test.model.CoverageOptionManagerStoreTest;
 import org.eclipse.osee.coverage.test.model.CoveragePreferencesTest;
 import org.eclipse.osee.coverage.test.model.CoverageUnitPersistTest;
-import org.eclipse.osee.coverage.test.model.DbTestUnitProviderTest;
-import org.eclipse.osee.coverage.test.model.TestUnitStoreTest;
+import org.eclipse.osee.coverage.test.store.ArtifactTestUnitStoreTest;
+import org.eclipse.osee.coverage.test.store.TestUnitCacheTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -28,8 +28,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    CoveragePreferencesTest.class,
    CoverageOptionManagerStoreTest.class,
-   TestUnitStoreTest.class,
-   DbTestUnitProviderTest.class,
+   TestUnitCacheTest.class,
+   ArtifactTestUnitStoreTest.class,
    Coverage_Suite.class,
    CoverageParametersTest.class,
    CoverageItemPersistTest.class,

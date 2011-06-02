@@ -16,8 +16,9 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
+import org.eclipse.osee.coverage.store.TestUnitCache;
+import org.eclipse.osee.coverage.test.store.MockTestUnitStore;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -40,6 +41,7 @@ public class CoverageItemPersistTest {
    public static CoverageItem ci = null;
    public static String parentGuid = null;
    public static String guid = null;
+   public static TestUnitCache testUnitCache;
 
    @AfterClass
    public static void testCleanup() throws OseeCoreException {
@@ -55,8 +57,9 @@ public class CoverageItemPersistTest {
 
       parentCu = new CoverageUnit(null, "Top", "C:/UserData/", null);
       parentGuid = parentCu.getGuid();
+      testUnitCache = new TestUnitCache(new MockTestUnitStore());
       ci = new CoverageItem(parentCu, CoverageOptionManager.Deactivated_Code, "1");
-      ci.setTestUnitProvider(DbTestUnitProvider.instance());
+      ci.setTestUnitProvider(testUnitCache);
       for (int x = 0; x < 10; x++) {
          ci.addTestUnitName("Test Unit " + x);
       }
@@ -122,7 +125,7 @@ public class CoverageItemPersistTest {
       OseeCoverageUnitStore.get(parentCu, CoverageTestUtil.getTestBranch()).load(
          CoverageOptionManagerDefault.instance());
       CoverageItem ci = parentCu.getCoverageItems().iterator().next();
-      ci.setTestUnitProvider(DbTestUnitProvider.instance());
+      ci.setTestUnitProvider(testUnitCache);
       Assert.assertEquals(guid, ci.getGuid());
       Assert.assertEquals("1", ci.getOrderNumber());
       Assert.assertEquals(CoverageOptionManager.Deactivated_Code, ci.getCoverageMethod());

@@ -31,4 +31,5 @@ public interface ITestUnitProvider {
    public String toXml(CoverageItem coverageItem) throws OseeCoreException;
 
    public void fromXml(CoverageItem coverageItem, String xml) throws OseeCoreException;
+
 }

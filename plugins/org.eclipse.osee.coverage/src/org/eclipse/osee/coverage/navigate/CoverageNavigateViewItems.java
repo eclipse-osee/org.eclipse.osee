@@ -63,6 +63,7 @@ public class CoverageNavigateViewItems implements XNavigateViewItems {
 
       try {
          if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+            items.add(new CreateCoverageTestUnitArtifact(null));
             for (ICoverageNavigateItem navigateItem : getExtensionPointNavigateItems()) {
                try {
                   items.addAll(navigateItem.getNavigateItems());
