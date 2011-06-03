@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core.framework.saxparse;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Actual;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.AdditionalInfo;
@@ -42,6 +43,8 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.ObjectName;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.OfpErrorEntry;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.OfpLoggingInfo;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.OteLog;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.PropertyElementHandler;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.PropertyStoreElementHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Qualification;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Requirement;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Result;
@@ -116,6 +119,8 @@ public class OteSaxHandler extends AbstractSaxHandler {
       addHandlers(new OfpErrorEntry());
       addHandlers(new OfpLoggingInfo());
       addHandlers(new OteLog());
+      addHandlers(new PropertyStoreElementHandler());
+      addHandlers(new PropertyElementHandler());
       addHandlers(new Qualification());
       addHandlers(new Requirement());
       addHandlers(new Result());
