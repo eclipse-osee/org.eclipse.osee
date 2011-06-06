@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -101,11 +100,13 @@ public class CoverageEditor extends FormEditor implements IActionable {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
+         monitor.beginTask("Load Coverage", 3);
+         monitor.worked(1);
          @SuppressWarnings("unused")
          Collection<Artifact> artifactLoadCache = null;
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
             try {
-               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
+               //               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
                artifactLoadCache =
                   RelationManager.getRelatedArtifacts(
                      Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
@@ -113,17 +114,26 @@ public class CoverageEditor extends FormEditor implements IActionable {
                // TODO Need to bulk load binary attributes also; Some Coverage Items are binary attributes
                // that are not bulk loaded with attributes.  This was mitigated by moving test units to seperate table
                // and only referencing their ids in Coverage Items.
-               elapsedTime.end();
+               //               elapsedTime.end();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
-            ElapsedTime elapsedTime = new ElapsedTime("Coverage - load model");
+            //            ElapsedTime elapsedTime = new ElapsedTime("Coverage - load model");
             CoveragePackage coveragePackage =
                OseeCoveragePackageStore.get(getCoverageEditorInput().getCoveragePackageArtifact());
+            if (monitor.isCanceled()) {
+               return;
+            }
+            monitor.worked(1);
             getCoverageEditorInput().setCoveragePackageBase(coveragePackage);
-            elapsedTime.end();
+            if (monitor.isCanceled()) {
+               return;
+            }
+            monitor.worked(1);
+
+            //            elapsedTime.end();
          }
 
          if (getCoverageEditorInput().isInTest()) {

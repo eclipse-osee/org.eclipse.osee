@@ -98,6 +98,10 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
 
    public void loadWorkProductTaskNames(Collection<? extends ICoverage> coverages) {
       this.coveragePackage.getWorkProductTaskProvider().reload();
+      loadWorkProductTaskNamesHelper(coverages);
+   }
+
+   private void loadWorkProductTaskNamesHelper(Collection<? extends ICoverage> coverages) {
       for (ICoverage coverage : coverages) {
          if (coverage instanceof IWorkProductRelatable) {
             if (Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid())) {
@@ -106,10 +110,10 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
             }
          }
          if (coverage instanceof ICoverageUnitProvider) {
-            loadWorkProductTaskNames(((ICoverageUnitProvider) coverage).getCoverageUnits());
+            loadWorkProductTaskNamesHelper(((ICoverageUnitProvider) coverage).getCoverageUnits());
          }
          if (coverage instanceof ICoverageItemProvider) {
-            loadWorkProductTaskNames(((ICoverageItemProvider) coverage).getCoverageItems());
+            loadWorkProductTaskNamesHelper(((ICoverageItemProvider) coverage).getCoverageItems());
          }
       }
    }

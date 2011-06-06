@@ -12,9 +12,7 @@ package org.eclipse.osee.coverage.store;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -36,7 +34,6 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
    private CoveragePackage coveragePackage;
    private final Branch branch;
    List<WorkProductAction> actions = new ArrayList<WorkProductAction>();
-   Map<String, WorkProductTask> guidToTasks = new HashMap<String, WorkProductTask>();
 
    public DbWorkProductTaskProvider(Branch branch) {
       this.branch = branch;
@@ -50,7 +47,6 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
    @Override
    public void reload() {
       actions.clear();
-      guidToTasks.clear();
       try {
          OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, branch);
          IOseeCmService cm = SkynetGuiPlugin.getInstance().getOseeCmService();
