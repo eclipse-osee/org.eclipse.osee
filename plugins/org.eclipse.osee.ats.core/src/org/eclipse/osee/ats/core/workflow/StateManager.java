@@ -50,7 +50,6 @@ public class StateManager {
    private static final Set<String> notValidAttributeType = new HashSet<String>();
 
    public StateManager(AbstractWorkflowArtifact sma) {
-      super();
       this.sma = sma;
       currentStateDam = new XCurrentStateDam(sma);
       stateDam = new XStateDam(sma);

@@ -54,12 +54,14 @@ public class PopulateDemoActionsTest {
 
    @org.junit.Test
    public void testSawBuild2Action1() throws OseeCoreException {
+
       // {@link DemoDbActionData.getReqSawActionsData()} - 1
       String title = "SAW (committed) Reqt Changes for Diagram View";
       ActionArtifact action =
          (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
             AtsUtil.getAtsBranchToken());
       Assert.assertNotNull(action);
+
       // test teams
       Assert.assertEquals(3, action.getTeams().size());
       TeamWorkFlowArtifact codeTeamArt = null;
@@ -86,6 +88,7 @@ public class PopulateDemoActionsTest {
       }
       Assert.assertEquals(3, numTested);
       Assert.assertNotNull(codeTeamArt);
+
       // test reviews
       Assert.assertEquals("Should only be two reviews", 2, ReviewManager.getReviews(codeTeamArt).size());
       PeerToPeerReviewArtifact rev1 = null;
@@ -103,6 +106,7 @@ public class PopulateDemoActionsTest {
          "Joe Smith; Kay Jones");
       testReviewContents(rev2, "Peer Review first set of code changes", PeerToPeerReviewState.Prepare.getPageName(),
          "Joe Smith");
+
       // test tasks
       List<String> taskNames = new ArrayList<String>();
       taskNames.addAll(DemoTestUtil.getTaskTitles(true));

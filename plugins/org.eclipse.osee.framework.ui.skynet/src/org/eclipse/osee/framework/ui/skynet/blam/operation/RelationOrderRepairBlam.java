@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -34,17 +32,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.xml.sax.SAXException;
 
 public class RelationOrderRepairBlam extends AbstractBlam {
-   SkynetTransaction transaction;
-   boolean recurse;
-
-   @Override
-   public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
-      return super.getLayoutDatas();
-   }
+   private SkynetTransaction transaction;
+   private boolean recurse;
 
    @Override
    public String getName() {
@@ -68,11 +59,11 @@ public class RelationOrderRepairBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      recurse = variableMap.getBoolean("Recurse Over Hierarchy");
       List<Artifact> inputArtifacts = variableMap.getArtifacts("Artifacts");
       if (inputArtifacts.isEmpty()) {
          return;
       }
+      recurse = variableMap.getBoolean("Recurse Over Hierarchy");
       Branch branch = getBranch(inputArtifacts);
       transaction = new SkynetTransaction(branch, getName());
       for (Artifact art : inputArtifacts) {
