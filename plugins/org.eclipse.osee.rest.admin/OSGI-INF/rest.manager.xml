@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" enabled="true" name="org.eclipse.osee.rest.admin.internal.RestServletManager">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" enabled="true" immediate="true" name="org.eclipse.osee.rest.admin.internal.RestServletManager">
    <implementation class="org.eclipse.osee.rest.admin.internal.RestServletManager"/>
 
    <reference interface="org.osgi.service.http.HttpService" name="HttpService"  
