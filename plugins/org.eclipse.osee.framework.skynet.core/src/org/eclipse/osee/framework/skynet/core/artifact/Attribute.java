@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -103,7 +104,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    }
 
    public boolean setFromString(String value) throws OseeCoreException {
-      if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
+      if (attributeType.equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
             IStatus result = check.isRenamable(Arrays.asList(getArtifact()));

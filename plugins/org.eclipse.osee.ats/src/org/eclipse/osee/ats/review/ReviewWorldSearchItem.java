@@ -106,7 +106,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       if (aiNames != null) {
          return aiNames;
       } else if (aias != null) {
-         return Artifacts.artNames(aias);
+         return Artifacts.getNames(aias);
       }
       return new ArrayList<String>();
    }

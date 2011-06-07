@@ -198,7 +198,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names = Artifacts.artNames(versions);
+                     Collection<String> names = Artifacts.getNames(versions);
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;

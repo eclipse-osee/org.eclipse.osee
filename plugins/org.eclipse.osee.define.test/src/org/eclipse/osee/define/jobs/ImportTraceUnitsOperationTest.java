@@ -111,7 +111,7 @@ public final class ImportTraceUnitsOperationTest {
          List<Artifact> reqArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.CodeRequirement_Requirement);
          Assert.assertEquals(5, reqArtifacts.size());
 
-         Collection<String> actual = Artifacts.artNames(reqArtifacts);
+         Collection<String> actual = Artifacts.getNames(reqArtifacts);
          List<String> expected =
             Arrays.asList("Robot Object", "Haptic Constraints", "Robot Interfaces", "Individual robot events",
                "Collaborative Robot");

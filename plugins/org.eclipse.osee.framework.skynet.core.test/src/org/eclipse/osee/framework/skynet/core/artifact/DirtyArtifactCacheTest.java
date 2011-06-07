@@ -19,6 +19,6 @@ public class DirtyArtifactCacheTest {
    public void testArtifactCacheNotDirty() {
       Assert.assertTrue(String.format(
          "After all tests are run, there should be no dirty artifacts in Artifact Cache; Found [%s]",
-         Artifacts.artNames(ArtifactCache.getDirtyArtifacts())), ArtifactCache.getDirtyArtifacts().isEmpty());
+         Artifacts.getNames(ArtifactCache.getDirtyArtifacts())), ArtifactCache.getDirtyArtifacts().isEmpty());
    }
 }

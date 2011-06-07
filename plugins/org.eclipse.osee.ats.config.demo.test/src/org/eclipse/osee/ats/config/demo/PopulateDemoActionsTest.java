@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoTeam;
@@ -103,7 +104,7 @@ public class PopulateDemoActionsTest {
       Assert.assertNotNull(rev1);
       Assert.assertNotNull(rev2);
       testReviewContents(rev1, "Peer Review algorithm used in code", PeerToPeerReviewState.Review.getPageName(),
-         "Joe Smith; Kay Jones");
+         new String[] {"Joe Smith", "Kay Jones"});
       testReviewContents(rev2, "Peer Review first set of code changes", PeerToPeerReviewState.Prepare.getPageName(),
          "Joe Smith");
 
@@ -450,11 +451,12 @@ public class PopulateDemoActionsTest {
 
    }
 
-   private static void testReviewContents(AbstractReviewArtifact revArt, String title, String currentStateName, String assigneeStr) throws OseeCoreException {
+   private static void testReviewContents(AbstractReviewArtifact revArt, String title, String currentStateName, String... assigneeStrs) throws OseeCoreException {
       Assert.assertEquals(title, revArt.getName());
       Assert.assertEquals(currentStateName, revArt.getCurrentStateName());
-      Assert.assertEquals(assigneeStr, revArt.getStateMgr().getAssigneesStr());
+
       Collection<String> assigneeNames = Artifacts.getNames(revArt.getStateMgr().getAssignees());
+
       Assert.assertEquals(assigneeNames.size(), assigneeStrs.length);
       for (String assignee : assigneeStrs) {
          if (!assigneeNames.contains(assignee)) {

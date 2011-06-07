@@ -324,7 +324,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                         return;
                      }
                      Collection<String> names =
-                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+                        Artifacts.getNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
                            VersionLockedType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});

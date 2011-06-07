@@ -80,9 +80,9 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       if (actionItemNames != null) {
          return actionItemNames;
       } else if (actionItems != null) {
-         return Artifacts.artNames(actionItems);
+         return Artifacts.getNames(actionItems);
       } else if (selectedActionItems != null) {
-         return Artifacts.artNames(selectedActionItems);
+         return Artifacts.getNames(selectedActionItems);
       }
       return new ArrayList<String>();
    }

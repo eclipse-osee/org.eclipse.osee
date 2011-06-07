@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -101,10 +102,10 @@ public final class Artifacts {
       return "";
    }
 
-   public static Collection<String> artNames(Collection<? extends Artifact> arts) {
+   public static Collection<String> getNames(Collection<? extends Named> artifacts) {
       ArrayList<String> names = new ArrayList<String>();
-      for (Artifact art : arts) {
-         names.add(art.getName());
+      for (Named namedArtifact : artifacts) {
+         names.add(namedArtifact.getName());
       }
       return names;
    }

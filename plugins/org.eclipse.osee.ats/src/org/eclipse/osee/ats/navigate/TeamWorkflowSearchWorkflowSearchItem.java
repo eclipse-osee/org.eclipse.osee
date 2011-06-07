@@ -213,7 +213,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names = Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts());
+                     Collection<String> names = Artifacts.getNames(teamDefHoldingVersions.getVersionsArtifacts());
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;

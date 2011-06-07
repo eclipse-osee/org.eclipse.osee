@@ -70,7 +70,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       if (teamDefNames != null && teamDefNames.size() > 0) {
          return String.valueOf(teamDefNames);
       } else if (teamDefs != null && teamDefs.size() > 0) {
-         return String.valueOf(Artifacts.artNames(teamDefs));
+         return String.valueOf(Artifacts.getNames(teamDefs));
       }
       return "";
    }

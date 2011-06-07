@@ -115,7 +115,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       if (teamDefNames != null) {
          return teamDefNames;
       } else if (teamDefs != null) {
-         return Artifacts.artNames(teamDefs);
+         return Artifacts.getNames(teamDefs);
       }
       return new ArrayList<String>();
    }
