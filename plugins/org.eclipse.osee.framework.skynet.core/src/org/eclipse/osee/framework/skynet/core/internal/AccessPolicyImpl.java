@@ -39,10 +39,6 @@ public class AccessPolicyImpl implements AccessPolicy {
 
    public IAccessControlService service;
 
-   public AccessPolicyImpl() {
-      super();
-   }
-
    public void setAccessControlService(IAccessControlService service) {
       this.service = service;
    }
