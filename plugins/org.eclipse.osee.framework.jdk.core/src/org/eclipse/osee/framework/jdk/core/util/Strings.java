@@ -62,14 +62,14 @@ public class Strings {
    /**
     * Will truncate string if necessary and add "..." to end if addDots and truncated
     */
-   public static String truncate(String value, int length, boolean addDots) {
+   public static String truncate(String value, int length, boolean ellipsis) {
       if (value == null) {
          return emptyString();
       }
       String toReturn = value;
       if (Strings.isValid(value) && value.length() > length) {
-         int len = addDots && length - 3 > 0 ? length - 3 : length;
-         toReturn = value.substring(0, Math.min(length, len)) + (addDots ? "..." : emptyString());
+         int len = ellipsis && length - 3 > 0 ? length - 3 : length;
+         toReturn = value.substring(0, Math.min(length, len)) + (ellipsis ? "..." : emptyString());
       }
       return toReturn;
    }
@@ -95,6 +95,18 @@ public class Strings {
          toReturn = String.format("\"%s\"", nameReference);
       }
       return toReturn;
+   }
+
+   /**
+    * <p>
+    * Remove all <code>\n</code> and <code>\t</code>.
+    * </p>
+    * 
+    * @param value
+    * @return
+    */
+   public static String minimize(String value) {
+      return isValid(value) ? value.replaceAll("\n|\t", "") : value;
    }
 
    /**
