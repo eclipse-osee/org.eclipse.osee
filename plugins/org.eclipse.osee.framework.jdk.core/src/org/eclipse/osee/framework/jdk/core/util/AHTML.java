@@ -62,6 +62,19 @@ public class AHTML {
       return html;
    }
 
+   /**
+    * <p>
+    * Remove (X|HT)ML like comments of form:<br/>
+    * <code>&lt;!--\\s*.*\\s*--&gt;</code><br/>
+    * </p>
+    * 
+    * @param value &lt;tagA&gt;&lt;!-- Comment -->aValue&lt;/tagA&gt;
+    * @return &lt;tagA&gt;aValue&lt;/tagA&gt;
+    */
+   public static String removeComments(String value) {
+      return Strings.isValid(value) ? value.replaceAll("<!--\\s*.*\\s*-->", "") : value;
+   }
+
    public static String getUrlPageHtml(String urlStr, InetSocketAddress addr) {
       StringBuffer buffer = new StringBuffer();
       try {
