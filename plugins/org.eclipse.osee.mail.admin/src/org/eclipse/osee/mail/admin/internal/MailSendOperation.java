@@ -21,6 +21,7 @@ import javax.mail.internet.MimeMessage;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.mail.MailMessage;
+import org.eclipse.osee.mail.MailUtils;
 import org.eclipse.osee.mail.SendMailOperation;
 
 /**
@@ -53,12 +54,7 @@ public final class MailSendOperation extends AbstractOperation implements SendMa
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-      mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-      mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-      mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-      mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-      mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+      MailcapCommandMap mc = MailUtils.getMailcapCommandMap();
       CommandMap.setDefaultCommandMap(mc);
 
       //ClassLoader original = Thread.currentThread().getContextClassLoader();

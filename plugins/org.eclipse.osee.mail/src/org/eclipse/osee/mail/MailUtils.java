@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import javax.activation.CommandMap;
 import javax.activation.DataSource;
+import javax.activation.MailcapCommandMap;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.MultipartDataSource;
@@ -33,6 +35,17 @@ public final class MailUtils {
       // Utility Class
    }
 
+   public static MailcapCommandMap getMailcapCommandMap() {
+      MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+      mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+      mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+      mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+      mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+      mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+      return mc;
+   }
+
+   //The String.format can handle the '%' character.
    public static DataSource createFromString(String name, String message, Object... args) {
       String data = String.format(message, args);
       StringDataSource dataSource = new StringDataSource(name, data);
