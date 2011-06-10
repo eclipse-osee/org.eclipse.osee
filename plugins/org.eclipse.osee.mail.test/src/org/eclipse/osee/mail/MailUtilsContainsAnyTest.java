@@ -7,6 +7,7 @@ package org.eclipse.osee.mail;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -26,6 +27,12 @@ public class MailUtilsContainsAnyTest {
       this.testStr = testStr;
       this.chars = chars;
       this.indexOfFirstInstance = indexOfFirstInstance;
+   }
+
+   @org.junit.Test
+   public void testContainsAny() {
+      int ret = MailUtils.containsAny(testStr, chars);
+      Assert.assertEquals(indexOfFirstInstance, ret);
    }
 
    @Parameters
