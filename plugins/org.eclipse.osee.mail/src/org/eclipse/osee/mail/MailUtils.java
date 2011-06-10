@@ -121,7 +121,7 @@ public final class MailUtils {
 
       @Override
       public OutputStream getOutputStream() {
-         return null;
+         throw new UnsupportedOperationException("OutputStream is not available for this source");
       }
 
       @Override
