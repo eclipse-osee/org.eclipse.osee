@@ -13,11 +13,25 @@ package org.eclipse.osee.mail;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({MailUtilsTest.class})
 /**
  * @author Roberto E. Escobar
  */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ 
+//@formatter:off   
+   MailEventUtilTest.class,
+   MailMessageSingleParamTest.class,
+   MailMessageMultiParamTest.class,
+   MailServiceConfigSingleParamStringTest.class,
+   MailServiceConfigSingleParamIntTest.class,
+   MailServiceConfigSingleParamBoolTest.class,
+   MailServiceConfigSetToTest.class,
+   MailUtilsContainsAnyTest.class,
+   MailUtilsCreateFromHtmlTest.class,
+   MailUtilsCreateFromStringTest.class,
+   MailUtilsCreateOutlookEventTest.class,
+//@formatter:on   
+})
 public class AllMailTestSuite {
-   //Test Suite Class
+   // Test Suite
 }
