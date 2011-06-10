@@ -70,6 +70,10 @@ public abstract class AbstractInteractivePrompt<T> extends AbstractRemotePrompt 
 
    protected abstract void doPrompt() throws Exception;
 
+   protected void terminatePrompt() throws Exception {
+      getScript().getUserSession().cancelPrompts();
+   }
+
    protected T waitForResponse(TestScript script, boolean executionUnitPause) throws InterruptedException, Exception {
       synchronized (script) {
          script.getTestEnvironment().getScriptCtrl().setScriptPause(true);
@@ -77,6 +81,9 @@ public abstract class AbstractInteractivePrompt<T> extends AbstractRemotePrompt 
          script.getTestEnvironment().getScriptCtrl().unlock();
          try {
             script.wait();
+         } catch (InterruptedException e) {
+            terminatePrompt();
+            throw new InterruptedException();
          } finally {
             script.getTestEnvironment().getScriptCtrl().lock();
          }

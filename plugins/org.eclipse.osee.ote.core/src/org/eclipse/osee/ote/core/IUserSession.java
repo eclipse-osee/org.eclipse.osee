@@ -34,7 +34,7 @@ public interface IUserSession {
    public void initiateInformationalPrompt(String message) throws Exception;
 
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws Exception;
-   
+
    public void initiateYesNoPrompt(IYesNoPromptResponse prompt) throws Exception;
 
    public void initiateUserInputPrompt(IUserInputPromptResponse prompt) throws Exception;
@@ -42,6 +42,8 @@ public interface IUserSession {
    public void initiateResumePrompt(IResumeResponse prompt) throws Exception;
 
    public void sendMessageToClient(Message message) throws Exception;
+
+   public void cancelPrompts() throws Exception;
 
    public boolean isAlive() throws Exception;
 

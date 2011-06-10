@@ -402,8 +402,10 @@ public abstract class TestScript implements ITimeout {
                getLogger().log(testRecord);
             }
             return returnValue;
+         } catch (InterruptedException e) {
+            throw new InterruptedException();
          } catch (Exception e) {
-
+            // what
          }
          return "";
       }

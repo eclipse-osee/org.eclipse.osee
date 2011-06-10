@@ -25,7 +25,7 @@ public interface SessionDelegate {
    void handlePassFail(IPassFailPromptResponse prompt) throws Exception;
 
    void handleYesNo(IYesNoPromptResponse prompt) throws Exception;
-   
+
    void handlePause(IResumeResponse prompt) throws Exception;
 
    void handleInformationPrompt(String message) throws Exception;
@@ -42,5 +42,7 @@ public interface SessionDelegate {
    byte[] getFile(String path) throws Exception;
 
    long getFileDate(String path) throws Exception;
+
+   void cancelPrompts() throws Exception;
 
 }

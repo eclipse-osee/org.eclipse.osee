@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -129,6 +128,16 @@ public class ClientSession extends AbstractRemoteSession {
    }
 
    @Override
+   public void cancelPrompts() throws RemoteException {
+      assert sessionDelegate != null : "delegate is null";
+      try {
+         sessionDelegate.cancelPrompts();
+      } catch (Exception ex) {
+         throw new RemoteException("exception canceling prompt", ex);
+      }
+   }
+
+   @Override
    public void initiateUserInputPrompt(IUserInputPromptResponse prompt) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -193,13 +202,13 @@ public class ClientSession extends AbstractRemoteSession {
       receive.receivedMessage(message);
    }
 
-	@Override
-	public void initiateYesNoPrompt(IYesNoPromptResponse prompt) throws Exception {
-		assert sessionDelegate != null : "delegate is null";
-		try {
-			sessionDelegate.handleYesNo(prompt);
-		} catch (Exception ex) {
-			throw new RemoteException("exception initiating prompt", ex);
-		}
-	}
+   @Override
+   public void initiateYesNoPrompt(IYesNoPromptResponse prompt) throws Exception {
+      assert sessionDelegate != null : "delegate is null";
+      try {
+         sessionDelegate.handleYesNo(prompt);
+      } catch (Exception ex) {
+         throw new RemoteException("exception initiating prompt", ex);
+      }
+   }
 }
