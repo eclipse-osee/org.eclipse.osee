@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.util.widgets.defect;
 
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -21,6 +22,8 @@ public class DefectSeverityToImage {
          return ImageManager.getImage(FrameworkImage.SEVERITY_MINOR);
       } else if (sev == Severity.Issue) {
          return ImageManager.getImage(FrameworkImage.SEVERITY_ISSUE);
+      } else if (sev == Severity.None) {
+         return ImageManager.getImage(AtsImage.CENTER);
       }
       return null;
    }

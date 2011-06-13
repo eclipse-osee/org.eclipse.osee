@@ -296,7 +296,7 @@ public class DefectXViewer extends XViewer {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      if (xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Severity_Col)) {
+      if (xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Disposition_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Severity_Col)) {
          return handleAltLeftClick(treeColumn, treeItem);
       }
       return false;
