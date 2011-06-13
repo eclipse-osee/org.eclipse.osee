@@ -32,7 +32,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       "select transaction_id from osee_tx_details txd where tx_type = 0 and not exists (select 1 from osee_txs txs1 where txd.transaction_id = txs1.transaction_id) and not exists (select 1 from osee_txs_archived txs3 where txd.transaction_id = txs3.transaction_id)";
    
    private static final String NONEXISTENT_GAMMAS =
-      "SELECT gamma_id FROM osee_txs txs WHERE NOT EXISTS " +
+      "SELECT gamma_id FROM %s txs WHERE NOT EXISTS " +
       "(SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id) AND NOT EXISTS " +
       "(SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id) AND NOT EXISTS " +
       "(SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
@@ -62,12 +62,12 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       ConnectionHandler.runBatchUpdate(sql, notAddressedGammas);
    }
 
-   private void processAddressedButNonexistentGammas() throws OseeCoreException {
+   private void processAddressedButNonexistentGammas(String tableName) throws OseeCoreException {
       List<Object[]> nonexistentGammas = new LinkedList<Object[]>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
-         chStmt.runPreparedQuery(NONEXISTENT_GAMMAS);
+         chStmt.runPreparedQuery(String.format(NONEXISTENT_GAMMAS, tableName));
          while (chStmt.next()) {
             nonexistentGammas.add(new Object[] {chStmt.getInt("gamma_id")});
             log(String.valueOf(chStmt.getInt("gamma_id")));
@@ -76,7 +76,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
          chStmt.close();
       }
 
-      ConnectionHandler.runBatchUpdate(String.format(DELETE_GAMMAS, "osee_txs"), nonexistentGammas);
+      ConnectionHandler.runBatchUpdate(String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
    }
 
    private void processEmptyTransactions() throws OseeCoreException {
@@ -101,7 +101,8 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       processNotAddressedGammas("osee_attribute");
       processNotAddressedGammas("osee_artifact");
       processNotAddressedGammas("osee_relation_link");
-      processAddressedButNonexistentGammas();
+      processAddressedButNonexistentGammas("osee_txs");
+      processAddressedButNonexistentGammas("osee_txs_archived");
       processEmptyTransactions();
    }
 }
