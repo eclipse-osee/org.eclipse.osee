@@ -151,14 +151,16 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         Collection<String> enteredValues = new ArrayList<String>();//getSelected();
-         Collection<String> storedValues = getStored();
-         if (!Collections.isEqual(enteredValues, storedValues)) {
-            return new Result(true, getAttributeType() + " is dirty");
+      if (isEditable()) {
+         try {
+            Collection<String> enteredValues = new ArrayList<String>();//getSelected();
+            Collection<String> storedValues = getStored();
+            if (!Collections.isEqual(enteredValues, storedValues)) {
+               return new Result(true, getAttributeType() + " is dirty");
+            }
+         } catch (NumberFormatException ex) {
+            // do nothing
          }
-      } catch (NumberFormatException ex) {
-         // do nothing
       }
       return Result.FalseResult;
    }

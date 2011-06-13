@@ -96,18 +96,20 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         String enteredValue = getSelectedStringValue();
-         String storedValue = artifact.getSoleAttributeValue(attributeType);
-         if (!enteredValue.equals(storedValue)) {
-            return new Result(true, attributeType + " is dirty");
+      if (isEditable()) {
+         try {
+            String enteredValue = getSelectedStringValue();
+            String storedValue = artifact.getSoleAttributeValue(attributeType);
+            if (!enteredValue.equals(storedValue)) {
+               return new Result(true, attributeType + " is dirty");
+            }
+         } catch (AttributeDoesNotExist ex) {
+            if (!artifact.getSoleAttributeValue(attributeType, "").equals("")) {
+               return new Result(true, attributeType + " is dirty");
+            }
+         } catch (NumberFormatException ex) {
+            // do nothing
          }
-      } catch (AttributeDoesNotExist ex) {
-         if (!artifact.getSoleAttributeValue(attributeType, "").equals("")) {
-            return new Result(true, attributeType + " is dirty");
-         }
-      } catch (NumberFormatException ex) {
-         // do nothing
       }
       return Result.FalseResult;
    }

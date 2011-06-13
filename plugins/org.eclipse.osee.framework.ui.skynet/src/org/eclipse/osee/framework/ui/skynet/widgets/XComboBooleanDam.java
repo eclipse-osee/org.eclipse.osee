@@ -70,15 +70,17 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         String enteredValue = get();
-         boolean storedValue = artifact.getSoleAttributeValue(attributeType);
-         if (enteredValue.equals("yes") != storedValue) {
-            return new Result(true, attributeType + " is dirty");
-         }
-      } catch (AttributeDoesNotExist ex) {
-         if (!get().equals("")) {
-            return new Result(true, attributeType + " is dirty");
+      if (isEditable()) {
+         try {
+            String enteredValue = get();
+            boolean storedValue = artifact.getSoleAttributeValue(attributeType);
+            if (enteredValue.equals("yes") != storedValue) {
+               return new Result(true, attributeType + " is dirty");
+            }
+         } catch (AttributeDoesNotExist ex) {
+            if (!get().equals("")) {
+               return new Result(true, attributeType + " is dirty");
+            }
          }
       }
       return Result.FalseResult;

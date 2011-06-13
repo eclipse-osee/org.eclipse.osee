@@ -67,19 +67,21 @@ public class XDateDam extends XDate implements IAttributeWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      Date enteredValue = getDate();
-      Date storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), null);
-      if (enteredValue == null && storedValue == null) {
-         return Result.FalseResult;
-      }
-      if (enteredValue == null && storedValue != null) {
-         return new Result(true, getAttributeType() + " is dirty");
-      }
-      if (enteredValue != null && storedValue == null) {
-         return new Result(true, getAttributeType() + " is dirty");
-      }
-      if (enteredValue.getTime() != storedValue.getTime()) {
-         return new Result(true, getAttributeType() + " is dirty");
+      if (isEditable()) {
+         Date enteredValue = getDate();
+         Date storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), null);
+         if (enteredValue == null && storedValue == null) {
+            return Result.FalseResult;
+         }
+         if (enteredValue == null && storedValue != null) {
+            return new Result(true, getAttributeType() + " is dirty");
+         }
+         if (enteredValue != null && storedValue == null) {
+            return new Result(true, getAttributeType() + " is dirty");
+         }
+         if (enteredValue.getTime() != storedValue.getTime()) {
+            return new Result(true, getAttributeType() + " is dirty");
+         }
       }
       return Result.FalseResult;
    }

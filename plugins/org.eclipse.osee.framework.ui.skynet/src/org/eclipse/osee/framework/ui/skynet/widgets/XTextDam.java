@@ -89,10 +89,12 @@ public class XTextDam extends XText implements IAttributeWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      String enteredValue = get();
-      String storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), "");
-      if (!enteredValue.equals(storedValue)) {
-         return new Result(true, attributeType + " is dirty");
+      if (isEditable()) {
+         String enteredValue = get();
+         String storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), "");
+         if (!enteredValue.equals(storedValue)) {
+            return new Result(true, attributeType + " is dirty");
+         }
       }
       return Result.FalseResult;
    }

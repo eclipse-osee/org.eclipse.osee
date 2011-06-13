@@ -69,18 +69,20 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         Double enteredValue = getFloat();
-         Double storedValue = getArtifact().getSoleAttributeValue(getAttributeType());
-         if (enteredValue.doubleValue() != storedValue.doubleValue()) {
-            return new Result(true, getAttributeType() + " is dirty");
+      if (isEditable()) {
+         try {
+            Double enteredValue = getFloat();
+            Double storedValue = getArtifact().getSoleAttributeValue(getAttributeType());
+            if (enteredValue.doubleValue() != storedValue.doubleValue()) {
+               return new Result(true, getAttributeType() + " is dirty");
+            }
+         } catch (AttributeDoesNotExist ex) {
+            if (!get().equals("")) {
+               return new Result(true, getAttributeType() + " is dirty");
+            }
+         } catch (NumberFormatException ex) {
+            // do nothing
          }
-      } catch (AttributeDoesNotExist ex) {
-         if (!get().equals("")) {
-            return new Result(true, getAttributeType() + " is dirty");
-         }
-      } catch (NumberFormatException ex) {
-         // do nothing
       }
       return Result.FalseResult;
    }

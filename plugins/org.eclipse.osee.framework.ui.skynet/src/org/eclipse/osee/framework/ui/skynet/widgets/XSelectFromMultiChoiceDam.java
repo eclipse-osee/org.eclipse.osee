@@ -76,14 +76,16 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         Collection<String> enteredValues = getSelected();
-         Collection<String> storedValues = getStored();
-         if (!Collections.isEqual(enteredValues, storedValues)) {
-            return new Result(true, getAttributeType() + " is dirty");
+      if (isEditable()) {
+         try {
+            Collection<String> enteredValues = getSelected();
+            Collection<String> storedValues = getStored();
+            if (!Collections.isEqual(enteredValues, storedValues)) {
+               return new Result(true, getAttributeType() + " is dirty");
+            }
+         } catch (NumberFormatException ex) {
+            // do nothing
          }
-      } catch (NumberFormatException ex) {
-         // do nothing
       }
       return Result.FalseResult;
    }

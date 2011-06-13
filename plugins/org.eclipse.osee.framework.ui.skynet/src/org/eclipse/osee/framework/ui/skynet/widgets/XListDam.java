@@ -57,14 +57,16 @@ public class XListDam extends XList implements IAttributeWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         Collection<String> enteredValues = getSelectedStrs();
-         Collection<String> storedValues = getStoredStrs();
-         if (!Collections.isEqual(enteredValues, storedValues)) {
-            return new Result(true, getAttributeType() + " is dirty");
+      if (isEditable()) {
+         try {
+            Collection<String> enteredValues = getSelectedStrs();
+            Collection<String> storedValues = getStoredStrs();
+            if (!Collections.isEqual(enteredValues, storedValues)) {
+               return new Result(true, getAttributeType() + " is dirty");
+            }
+         } catch (NumberFormatException ex) {
+            // do nothing
          }
-      } catch (NumberFormatException ex) {
-         // do nothing
       }
       return Result.FalseResult;
    }
