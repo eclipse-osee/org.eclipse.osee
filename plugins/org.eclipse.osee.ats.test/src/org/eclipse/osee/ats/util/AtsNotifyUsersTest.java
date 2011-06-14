@@ -72,13 +72,16 @@ public class AtsNotifyUsersTest {
       atsNotifyUsers.setNotificationManager(notifyManager);
       atsNotifyUsers.setInTest(true);
 
-      TeamWorkFlowArtifact teamArt = DemoTestUtil.createSimpleAction(AtsNotifyUsersTest.class.getSimpleName(), null);
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+      TeamWorkFlowArtifact teamArt =
+         DemoTestUtil.createSimpleAction(AtsNotifyUsersTest.class.getSimpleName(), transaction);
       teamArt.internalSetCreatedBy(kay_ValidEmail);
       List<IBasicUser> assignees = new ArrayList<IBasicUser>();
       assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
          joeSmith_CurrentUser));
       teamArt.getStateMgr().setAssignees(assignees);
-      teamArt.persist();
+      teamArt.persist(transaction);
+      transaction.execute();
 
       notifyManager.clear();
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Originator);
@@ -92,11 +95,11 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       teamArt.internalSetCreatedBy(inactiveSteve);
-      teamArt.persist();
+      teamArt.persist(getClass().getSimpleName());
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Originator);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
       teamArt.internalSetCreatedBy(kay_ValidEmail);
-      teamArt.persist();
+      teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Assigned);
@@ -129,8 +132,7 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       new SubscribeManager(teamArt).toggleSubscribe(false);
-      SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
       SubscribeManager.addSubscribed(teamArt, inactiveSteve, transaction);
       transaction.execute();
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Subscribed);
@@ -158,12 +160,12 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       teamArt.internalSetCreatedBy(inactiveSteve);
-      teamArt.persist();
+      teamArt.persist(getClass().getSimpleName());
       teamArt.getStateMgr().initializeStateMachine(TeamState.Completed);
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Completed);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
       teamArt.internalSetCreatedBy(kay_ValidEmail);
-      teamArt.persist();
+      teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
       teamArt.getStateMgr().initializeStateMachine(TeamState.Endorse);

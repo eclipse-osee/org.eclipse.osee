@@ -116,7 +116,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
                if (object instanceof Artifact) {
                   ((Artifact) object).setSoleAttributeFromString(attributeType, editor.getEntry());
                   if (persist) {
-                     ((Artifact) object).persist();
+                     ((Artifact) object).persist(getClass().getSimpleName());
                   }
                }
                if (object instanceof AttributeConflict) {

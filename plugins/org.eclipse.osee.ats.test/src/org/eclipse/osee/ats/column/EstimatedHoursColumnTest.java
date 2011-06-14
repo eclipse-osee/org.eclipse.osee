@@ -68,7 +68,7 @@ public class EstimatedHoursColumnTest {
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(peerArt), 0);
 
       teamArt1.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 1.4);
-      teamArt1.persist();
+      teamArt1.persist(getClass().getSimpleName());
       Assert.assertEquals(1.4, EstimatedHoursUtil.getEstimatedHours(actionArt), 0);
       Assert.assertEquals(1.4, EstimatedHoursUtil.getEstimatedHours(teamArt1), 0);
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(teamArt2), 0);
@@ -77,7 +77,7 @@ public class EstimatedHoursColumnTest {
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(peerArt), 0);
 
       taskArt1.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 1.4);
-      taskArt1.persist();
+      taskArt1.persist(getClass().getSimpleName());
       Assert.assertEquals(2.8, EstimatedHoursUtil.getEstimatedHours(actionArt), 0);
       Assert.assertEquals(2.8, EstimatedHoursUtil.getEstimatedHours(teamArt1), 0);
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(teamArt2), 0);
@@ -86,7 +86,7 @@ public class EstimatedHoursColumnTest {
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(peerArt), 0);
 
       peerArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 4.0);
-      peerArt.persist();
+      peerArt.persist(getClass().getSimpleName());
       Assert.assertEquals(6.8, EstimatedHoursUtil.getEstimatedHours(actionArt), 0);
       Assert.assertEquals(6.8, EstimatedHoursUtil.getEstimatedHours(teamArt1), 0);
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(teamArt2), 0);
@@ -95,7 +95,7 @@ public class EstimatedHoursColumnTest {
       Assert.assertEquals(4.0, EstimatedHoursUtil.getEstimatedHours(peerArt), 0);
 
       teamArt2.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 2.1);
-      teamArt2.persist();
+      teamArt2.persist(getClass().getSimpleName());
       Assert.assertEquals(8.9, EstimatedHoursUtil.getEstimatedHours(actionArt), 0);
       Assert.assertEquals(6.8, EstimatedHoursUtil.getEstimatedHours(teamArt1), 0);
       Assert.assertEquals(2.1, EstimatedHoursUtil.getEstimatedHours(teamArt2), 0);
@@ -104,7 +104,7 @@ public class EstimatedHoursColumnTest {
       Assert.assertEquals(4.0, EstimatedHoursUtil.getEstimatedHours(peerArt), 0);
 
       taskArt2.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.1);
-      taskArt2.persist();
+      taskArt2.persist(getClass().getSimpleName());
       Assert.assertEquals(9.0, EstimatedHoursUtil.getEstimatedHours(actionArt), 0);
       Assert.assertEquals(6.9, EstimatedHoursUtil.getEstimatedHours(teamArt1), 0);
       Assert.assertEquals(2.1, EstimatedHoursUtil.getEstimatedHours(teamArt2), 0);

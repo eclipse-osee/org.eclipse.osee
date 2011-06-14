@@ -235,7 +235,7 @@ public class CoveragePackageImportTest {
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
          OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch()).addChild(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -346,7 +346,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -377,7 +377,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -458,7 +458,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -495,7 +495,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -577,7 +577,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -615,7 +615,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -696,7 +696,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -726,7 +726,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -828,7 +828,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -883,7 +883,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -986,7 +986,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -1039,7 +1039,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -1139,7 +1139,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -1189,7 +1189,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -1263,7 +1263,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -1294,7 +1294,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -1310,7 +1310,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          coveragePackage = packageStore.getCoveragePackage();
@@ -1401,7 +1401,7 @@ public class CoveragePackageImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));

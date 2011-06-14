@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -66,19 +66,15 @@ public class BranchPurgeTest {
       TestUtil.sleep(4000);
 
       // create some software artifacts
-      SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge branch");
       Collection<Artifact> softArts =
          FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
             branch);
-      for (Artifact softArt : softArts) {
-         softArt.persist(transaction);
-      }
-      transaction.execute();
+      Artifacts.persistInTransaction("Test purge branch", softArts);
 
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
-         softArt.persist();
+         softArt.persist(getClass().getSimpleName());
       }
 
       // Count rows and check that increased

@@ -42,8 +42,8 @@ public class LoadDeletedRelationTest {
       branch = BranchManager.getBranch("SAW_Bld_2");
       left = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch);
       right = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch);
-      left.persist();
-      right.persist();
+      left.persist(getClass().getSimpleName());
+      right.persist(getClass().getSimpleName());
       type = CoreRelationTypes.Requirement_Trace__Higher_Level;
    }
 
@@ -52,13 +52,13 @@ public class LoadDeletedRelationTest {
    @Test
    public void loadDeletedRelationTest() throws OseeCoreException {
       RelationManager.addRelation(type, left, right, "");
-      left.persist();
+      left.persist(getClass().getSimpleName());
       RelationLink loaded = RelationManager.getLoadedRelation(type, left.getArtId(), right.getArtId(), branch);
       int oldGammaId = loaded.getGammaId();
       RelationManager.deleteRelation(type, left, right);
-      left.persist();
+      left.persist(getClass().getSimpleName());
       RelationManager.addRelation(type, left, right, "");
-      left.persist();
+      left.persist(getClass().getSimpleName());
 
       List<RelationLink> links = RelationManager.getRelationsAll(left, DeletionFlag.INCLUDE_DELETED);
       int linkCount = 0;

@@ -95,7 +95,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             verArt.setSoleAttributeValue(AtsAttributeTypes.Released, true);
             verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, new Date());
             verArt.setNextVersion(false);
-            verArt.persist();
+            verArt.persist(getClass().getSimpleName());
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
@@ -106,7 +106,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                if (result == 0) {
                   verArt = (VersionArtifact) ld.getResult()[0];
                   verArt.setNextVersion(true);
-                  verArt.persist();
+                  verArt.persist(getClass().getSimpleName());
                }
             }
          }

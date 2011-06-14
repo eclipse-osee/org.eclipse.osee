@@ -176,7 +176,7 @@ public class ConflictTestManager {
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeType, stringToObject(value.clas, value.sourceValue));
          }
-         destArtifacts[i].persist();
+         destArtifacts[i].persist(ConflictTestManager.class.getSimpleName());
       }
       // Create the source branch
       sourceBranch = BranchManager.createWorkingBranch(destBranch, SOURCE_BRANCH, null);
@@ -210,8 +210,8 @@ public class ConflictTestManager {
                destArtifacts[i].setSoleAttributeValue(value.attributeType, stringToObject(value.clas, value.destValue));
             }
          }
-         sourceArtifacts[i].persist();
-         destArtifacts[i].persist();
+         sourceArtifacts[i].persist(ConflictTestManager.class.getSimpleName());
+         destArtifacts[i].persist(ConflictTestManager.class.getSimpleName());
 
       }
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
@@ -239,7 +239,7 @@ public class ConflictTestManager {
             System.out.println(" ");
          }
       }
-      rootArtifact.persist();
+      rootArtifact.persist(ConflictTestManager.class.getSimpleName());
       performModifications();
    }
 
@@ -276,13 +276,13 @@ public class ConflictTestManager {
                      createAttribute((Artifact) modification.object, AttributeTypeManager.getType(modification.name),
                         modification.clas, modification.value);
                      ((Artifact) modification.object).deleteSoleAttribute(AttributeTypeManager.getType(modification.name));
-                     ((Artifact) modification.object).persist();
+                     ((Artifact) modification.object).persist(ConflictTestManager.class.getSimpleName());
                      break;
                   case RELATION:
                      createRelation((Artifact) modification.object, (Artifact) modification.object2);
                      ((Artifact) modification.object).deleteRelation(CoreRelationTypes.Dependency__Dependency,
                         (Artifact) modification.object2);
-                     ((Artifact) modification.object).persist();
+                     ((Artifact) modification.object).persist(ConflictTestManager.class.getSimpleName());
                      break;
                }
 
@@ -306,20 +306,20 @@ public class ConflictTestManager {
          }
       }
       Artifact child = rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, type, name);
-      child.persist();
-      rootArtifact.persist();
+      child.persist(ConflictTestManager.class.getSimpleName());
+      rootArtifact.persist(ConflictTestManager.class.getSimpleName());
       return child;
    }
 
    protected static Attribute<?> createAttribute(Artifact artifact, IAttributeType attributeType, Class<?> clas, String value) throws OseeCoreException {
       artifact.addAttribute(attributeType, stringToObject(clas, value));
-      artifact.persist();
+      artifact.persist(ConflictTestManager.class.getSimpleName());
       return artifact.getSoleAttribute(attributeType);
    }
 
    protected static RelationLink createRelation(Artifact artifact, Artifact artifactB) throws OseeCoreException {
       artifact.addRelation(CoreRelationTypes.Dependency__Dependency, artifactB);
-      artifact.persist();
+      artifact.persist(ConflictTestManager.class.getSimpleName());
       return artifact.getRelations(CoreRelationTypes.Dependency__Dependency).get(0);
    }
 

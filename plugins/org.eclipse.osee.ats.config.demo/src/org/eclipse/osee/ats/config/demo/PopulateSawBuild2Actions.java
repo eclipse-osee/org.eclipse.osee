@@ -327,7 +327,7 @@ public class PopulateSawBuild2Actions {
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Navigation.name(),
                reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
-         art.persist();
+         art.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Event,
@@ -342,7 +342,7 @@ public class PopulateSawBuild2Actions {
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
                reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
-         art.persist();
+         art.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
 
       // Delete two artifacts
@@ -365,9 +365,9 @@ public class PopulateSawBuild2Actions {
          Artifact newArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-         newArt.persist();
+         newArt.persist(PopulateSawBuild2Actions.class.getSimpleName());
          parentArt.addChild(newArt);
-         parentArt.persist();
+         parentArt.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
 
       DemoDbUtil.sleep(2000L);
@@ -422,7 +422,7 @@ public class PopulateSawBuild2Actions {
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
             reqTeam.getWorkingBranch());
       branchArtifact.addRelation(CoreRelationTypes.Allocation__Component, comArt);
-      branchArtifact.persist();
+      branchArtifact.persist(PopulateSawBuild2Actions.class.getSimpleName());
 
       Artifact parentArtifact =
          DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
@@ -434,7 +434,7 @@ public class PopulateSawBuild2Actions {
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem,
          DemoSubsystems.Cognitive_Decision_Aiding.name());
-      parentArtifact.persist();
+      parentArtifact.persist(PopulateSawBuild2Actions.class.getSimpleName());
 
    }
 
@@ -473,7 +473,7 @@ public class PopulateSawBuild2Actions {
                reqTeam.getWorkingBranch());
 
          art.addRelation(CoreRelationTypes.Allocation__Component, comArt);
-         art.persist();
+         art.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
 
       // Delete one artifacts
@@ -498,7 +498,7 @@ public class PopulateSawBuild2Actions {
          newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          parentArt.addChild(newArt);
 
-         newArt.persist();
+         newArt.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
 
    }

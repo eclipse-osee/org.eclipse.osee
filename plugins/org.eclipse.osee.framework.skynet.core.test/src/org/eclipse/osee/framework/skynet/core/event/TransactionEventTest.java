@@ -85,7 +85,7 @@ public abstract class TransactionEventTest {
       // Create and persist new artifact
       Artifact newArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(), START_NAME);
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
       Assert.assertEquals(START_NAME, newArt.getName());
       Assert.assertFalse(newArt.isDirty());
 

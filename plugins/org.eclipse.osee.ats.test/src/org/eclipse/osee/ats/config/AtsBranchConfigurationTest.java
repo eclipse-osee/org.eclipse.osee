@@ -140,7 +140,7 @@ public class AtsBranchConfigurationTest {
       // setup team def to allow create/commit of branch
       verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
       verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
-      verArtToTarget.persist();
+      verArtToTarget.persist(getClass().getSimpleName());
 
       TestUtil.sleep(2000);
 
@@ -171,10 +171,8 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
       }
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       dtwm.transitionTo(TeamState.Implement, null, false, transaction);
-      teamWf.persist(transaction);
-      transaction.execute();
+      teamWf.persist("Branch Configuration Test");
 
       SMAEditor.editArtifact(teamWf);
 
@@ -190,7 +188,7 @@ public class AtsBranchConfigurationTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
             BRANCH_VIA_VERSIONS.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
-      blk3MainArt.persist();
+      blk3MainArt.persist(getClass().getSimpleName());
 
       // commit branch
       commitBranch(teamWf);
@@ -251,7 +249,7 @@ public class AtsBranchConfigurationTest {
       teamDef.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, false);
-      teamDef.persist();
+      teamDef.persist(getClass().getSimpleName());
 
       TestUtil.sleep(2000);
 
@@ -278,11 +276,8 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
       }
-      transaction =
-         new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: Transition to desired state");
       dtwm.transitionTo(TeamState.Implement, null, false, transaction);
-      teamWf.persist(transaction);
-      transaction.execute();
+      teamWf.persist("Test branch via team definition: Transition to desired state");
 
       // create branch
       createBranch(namespace, teamWf);
@@ -296,7 +291,7 @@ public class AtsBranchConfigurationTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
             BRANCH_VIA_TEAM_DEFINITION.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
-      blk3MainArt.persist();
+      blk3MainArt.persist(getClass().getSimpleName());
 
       // commit branch
       commitBranch(teamWf);

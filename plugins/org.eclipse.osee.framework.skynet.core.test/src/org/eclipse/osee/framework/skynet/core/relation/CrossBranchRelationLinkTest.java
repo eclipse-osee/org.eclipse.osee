@@ -38,8 +38,8 @@ public class CrossBranchRelationLinkTest {
       branch2 = BranchManager.getBranch("SAW_Bld_2");
       left = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch1);
       right = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch2);
-      left.persist();
-      right.persist();
+      left.persist(getClass().getSimpleName());
+      right.persist(getClass().getSimpleName());
    }
 
    @Test(expected = OseeArgumentException.class)

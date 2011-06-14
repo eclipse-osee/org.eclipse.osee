@@ -346,7 +346,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             @Override
             public void widgetSelected(SelectionEvent e) {
                try {
-                  awa.persist();
+                  awa.persist(getClass().getSimpleName());
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

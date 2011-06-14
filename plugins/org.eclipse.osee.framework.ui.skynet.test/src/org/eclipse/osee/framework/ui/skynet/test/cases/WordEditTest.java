@@ -79,7 +79,7 @@ public class WordEditTest {
    public void testEditUsingWordTemplateRender() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       Artifact artifact = createArtifact(branch, ARTIFACT_NAME_1);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       String testData = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
       Assert.assertNotNull(testData);

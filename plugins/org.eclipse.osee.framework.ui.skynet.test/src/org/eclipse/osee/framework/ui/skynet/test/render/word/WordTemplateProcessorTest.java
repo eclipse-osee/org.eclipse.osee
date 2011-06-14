@@ -55,7 +55,7 @@ public class WordTemplateProcessorTest {
       Artifact artifact_C = myRootArtifact.getDescendant("A").getDescendant("C");
       artifact_C.setSoleAttributeValue(CoreAttributeTypes.PublishInline, true);
       artifact_C.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, C_WITH_PUBLISH_INLINE);
-      artifact_C.persist();
+      artifact_C.persist(getClass().getSimpleName());
 
       checkPreviewContents(artifact_C, C_WITH_PUBLISH_INLINE, C_WITHOUT_PUBLISH_INLINE);
    }
@@ -65,7 +65,7 @@ public class WordTemplateProcessorTest {
       Artifact artifact_A = myRootArtifact.getDescendant("A");
       artifact_A.setSoleAttributeValue(CoreAttributeTypes.PublishInline, true);
       artifact_A.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, A_WITH_PUBLISH_INLINE);
-      artifact_A.persist();
+      artifact_A.persist(getClass().getSimpleName());
 
       checkPreviewContents(artifact_A, A_WITH_PUBLISH_INLINE, A_WITHOUT_PUBLISH_INLINE);
    }
@@ -79,7 +79,7 @@ public class WordTemplateProcessorTest {
       Artifact artifact_F = myRootArtifact.getDescendant("F");
       artifact_F.setSoleAttributeValue(CoreAttributeTypes.PublishInline, true);
       artifact_F.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData, F_STRING_TO_WRAP_IN_WORDML);
-      artifact_F.persist();
+      artifact_F.persist(getClass().getSimpleName());
 
       checkPreviewContents(artifact_F, F_WITH_PUBLISH_INLINE, F_WITHOUT_PUBLISH_INLINE);
    }
@@ -148,7 +148,7 @@ public class WordTemplateProcessorTest {
 
       myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, SAW_Bld_1, "F"));
 
-      myRootArtifact.persist();
+      myRootArtifact.persist(WordTemplateProcessorTest.class.getSimpleName());
    }
 
    @AfterClass

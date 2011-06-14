@@ -55,7 +55,9 @@ public class SMAPrintTest {
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(XResultDataUI.getReport(resultData,"report").getManipulatedHtml().length() > 3500);
+      Assert.assertTrue(
+         "Expected > 3500 chars, was " + XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length(),
+         XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 3500);
 
       TaskArtifact taskArt = null;
       for (TaskArtifact taskArtifact : teamArt.getTaskArtifacts()) {
@@ -68,7 +70,7 @@ public class SMAPrintTest {
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(XResultDataUI.getReport(resultData,"report").getManipulatedHtml().length() > 2700);
+      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2700);
 
       teamArt =
          (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
@@ -79,7 +81,7 @@ public class SMAPrintTest {
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(XResultDataUI.getReport(resultData,"report").getManipulatedHtml().length() > 2900);
+      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2900);
 
       TestUtil.severeLoggingEnd(monitorLog);
    }

@@ -95,7 +95,7 @@ public final class UserManagerTest {
       for (String name : names) {
          //Create artifact
          Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, name);
-         groupArt.persist();
+         groupArt.persist("Create user group");
 
          //Default Group Attribute
          groupArt.addAttribute(CoreAttributeTypes.DefaultGroup, true);
@@ -103,7 +103,7 @@ public final class UserManagerTest {
          //Create relation between containing folder and new UserGroup
          Artifact groupRoot = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "User Groups", branch);
          groupRoot.addRelation(CoreRelationTypes.Default_Hierarchical__Child, groupArt);
-         groupRoot.persist();
+         groupRoot.persist("Create user group");
       }
    }
 

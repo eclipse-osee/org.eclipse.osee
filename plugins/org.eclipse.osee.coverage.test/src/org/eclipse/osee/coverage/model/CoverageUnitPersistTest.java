@@ -113,7 +113,7 @@ public class CoverageUnitPersistTest {
             store.save();
             Artifact artifact = store.getArtifact(false);
             CoverageTestUtil.registerAsTestArtifact(artifact, true);
-            artifact.persist();
+            artifact.persist(getClass().getSimpleName());
             return Result.TrueResult;
          }
 

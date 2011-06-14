@@ -42,9 +42,11 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       if (peerRevArt == null) {
          // setup fake review artifact with decision options set
-         peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(null, getClass().getName(), "", null);
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+         peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(null, getClass().getName(), "", transaction);
          peerRevArt.setName(getClass().getSimpleName());
-         peerRevArt.persist();
+         peerRevArt.persist(transaction);
+         transaction.execute();
       }
    }
 
@@ -77,7 +79,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // change assignees back to single user so can test transition
       peerRevArt.getStateMgr().setAssignee(UserManager.getUser());
-      peerRevArt.persist();
+      peerRevArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, peerRevArt.getStateMgr().getAssignees().size());
       Assert.assertEquals(UserManager.getUser(), peerRevArt.getStateMgr().getAssignees().iterator().next());
 
@@ -86,7 +88,10 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsPeerToPeerReviewReviewStateItem stateItem = new AtsPeerToPeerReviewReviewStateItem();
-      stateItem.transitioned(peerRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()), null);
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "test transition");
+      stateItem.transitioned(peerRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()),
+         transaction);
+      transaction.execute();
 
       // Joe and Alex should have been added to assignees
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());

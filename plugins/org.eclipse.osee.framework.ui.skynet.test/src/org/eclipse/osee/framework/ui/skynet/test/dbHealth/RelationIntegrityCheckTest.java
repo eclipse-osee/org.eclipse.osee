@@ -117,7 +117,7 @@ public class RelationIntegrityCheckTest {
       parentBranch = BranchManager.createTopLevelBranch("1");
 
       Artifact art_A = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, parentBranch, "A");
-      art_A.persist();
+      art_A.persist(getClass().getSimpleName());
       BranchManager.persist(parentBranch);
 
       workingBranch =
@@ -131,11 +131,11 @@ public class RelationIntegrityCheckTest {
       Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, workingBranch, "Child");
 
       //cause a change on the branch
-      art_A_prime.persist();
+      art_A_prime.persist(getClass().getSimpleName());
 
       //create a new relation on A' to child
       art_A_prime.addChild(child);
-      art_A_prime.persist();
+      art_A_prime.persist(getClass().getSimpleName());
 
       //commit branch 2 into 1
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(parentBranch, workingBranch);

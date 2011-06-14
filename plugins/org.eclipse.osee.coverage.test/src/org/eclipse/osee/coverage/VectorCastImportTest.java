@@ -212,7 +212,7 @@ public class VectorCastImportTest {
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
@@ -270,7 +270,7 @@ public class VectorCastImportTest {
          if (artifact.getName().equals(OseeCoveragePackageStore.IMPORT_RECORD_NAME)) {
             foundRecordArt = artifact;
             CoverageTestUtil.registerAsTestArtifact(foundRecordArt);
-            foundRecordArt.persist();
+            foundRecordArt.persist(getClass().getSimpleName());
          }
       }
       Assert.assertNotNull(foundRecordArt);

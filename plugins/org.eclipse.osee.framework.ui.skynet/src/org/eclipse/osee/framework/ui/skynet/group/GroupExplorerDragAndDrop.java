@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -215,7 +214,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                         // Add items to new group
                         targetArtifact.addRelation(CoreRelationTypes.Universal_Grouping__Members, artifact);
                      }
-                     Artifacts.persistInTransaction(parentArtifact, targetArtifact);
+                     Artifacts.persistInTransaction("Group Explorer - Drag/Drop", parentArtifact, targetArtifact);
                   }
                }
             }
@@ -247,7 +246,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                            isFeedbackAfter, art);
                         targetArtifact = art;
                      }
-                     parentArtifact.persist();
+                     parentArtifact.persist(getClass().getSimpleName());
                   }
                   // Drag item came from outside Group Explorer
                   else {
@@ -262,7 +261,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                         parentArtifact.addRelation(RelationOrderBaseTypes.USER_DEFINED,
                            CoreRelationTypes.Universal_Grouping__Members, targetArtifact, isFeedbackAfter, art, "");
                      }
-                     parentArtifact.persist();
+                     parentArtifact.persist(getClass().getSimpleName());
                   }
                }
             }
@@ -297,16 +296,12 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          return;
       }
       try {
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Drag and drop: copy artifacts to group");
-
          for (Artifact art : artsToRelate) {
             if (!dragOverExplorerItem.contains(art)) {
                dragOverExplorerItem.getArtifact().addRelation(CoreRelationTypes.Universal_Grouping__Members, art);
             }
          }
-         dragOverExplorerItem.getArtifact().persist(transaction);
-
-         transaction.execute();
+         dragOverExplorerItem.getArtifact().persist("Drag and drop: copy artifacts to group");
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

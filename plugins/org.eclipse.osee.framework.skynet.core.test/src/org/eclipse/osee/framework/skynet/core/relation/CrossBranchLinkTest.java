@@ -65,7 +65,7 @@ public class CrossBranchLinkTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName() + "-1");
       artifact1.addAttribute(CoreAttributeTypes.StaticId, CrossBranchLinkTest.class.getSimpleName());
-      artifact1.persist();
+      artifact1.persist(getClass().getSimpleName());
 
       // test equals
       CrossBranchLink linkA = new CrossBranchLink(CoreRelationTypes.SupportingInfo_SupportingInfo, artifact1);
@@ -87,7 +87,7 @@ public class CrossBranchLinkTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName() + "-2");
       artifact2.addAttribute(CoreAttributeTypes.StaticId, CrossBranchLinkTest.class.getSimpleName());
-      artifact2.persist();
+      artifact2.persist(getClass().getSimpleName());
 
       CrossBranchLinkManager.addRelation(folderArt, CoreRelationTypes.SupportingInfo_SupportingInfo, artifact2);
 
@@ -95,7 +95,7 @@ public class CrossBranchLinkTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName() + "-3");
       artifact3.addAttribute(CoreAttributeTypes.StaticId, CrossBranchLinkTest.class.getSimpleName());
-      artifact3.persist();
+      artifact3.persist(getClass().getSimpleName());
 
       CrossBranchLinkManager.addRelation(folderArt, CoreRelationTypes.Supercedes_Supercedes, artifact3);
 

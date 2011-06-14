@@ -67,7 +67,7 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
          for (Artifact artifact : artifacts) {
             artifact.setSoleAttributeValue(attributeType, dialog.getToggleState());
             if (persist) {
-               artifact.persist();
+               artifact.persist(getClass().getSimpleName());
             }
          }
          if (persist) {

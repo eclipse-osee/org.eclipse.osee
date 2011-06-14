@@ -87,7 +87,7 @@ public class SkynetUserArtifactCustomizeDefaults {
          } else {
             user.setSoleAttributeValue(CoreAttributeTypes.XViewerDefaults, getDefaultCustomizationXml());
          }
-         user.persist();
+         user.persist(getClass().getSimpleName());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

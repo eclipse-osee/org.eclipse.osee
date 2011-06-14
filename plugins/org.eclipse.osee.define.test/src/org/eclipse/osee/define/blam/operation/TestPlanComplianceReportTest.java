@@ -131,7 +131,7 @@ public final class TestPlanComplianceReportTest {
    private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) throws OseeCoreException {
       Artifact testPlan =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElement, DemoSawBuilds.SAW_Bld_1, "Sample_Test_Plan");
-      testPlan.persist();
+      testPlan.persist(getClass().getSimpleName());
 
       dummyArtifactList = new ArrayList<Artifact>();
       dummyArtifactList.add(testPlan);
@@ -144,14 +144,14 @@ public final class TestPlanComplianceReportTest {
          testProcedure.setSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, testProcedureStatus.testStatus);
 
          testPlan.addRelation(CoreRelationTypes.Executes__Test_Procedure, testProcedure);
-         testPlan.persist();
+         testPlan.persist(getClass().getSimpleName());
 
          for (int j = 0; j < testResultsAmount; j++) {
             Artifact testResult =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWML, DemoSawBuilds.SAW_Bld_1,
                   "Sample_Test_Result_" + j);
             testProcedure.addRelation(CoreRelationTypes.Test_Unit_Result__Test_Result, testResult);
-            testProcedure.persist();
+            testProcedure.persist(getClass().getSimpleName());
          }
       }
       return new VariableMap(TestPlanComplianceReport.TEST_PLANS, dummyArtifactList);

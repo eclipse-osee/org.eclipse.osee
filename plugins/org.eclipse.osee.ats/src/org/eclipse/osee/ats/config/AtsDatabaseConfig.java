@@ -38,7 +38,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAi.persist("Set Top AI to Non Actionable");
 
-      AtsUtilCore.getAtsAdminGroup().getGroupArtifact().persist();
+      AtsUtilCore.getAtsAdminGroup().getGroupArtifact().persist(getClass().getSimpleName());
    }
 
    public static void createAtsFolders() throws OseeCoreException {

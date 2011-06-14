@@ -75,7 +75,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         Artifacts.persistInTransaction(xViewer.getArtifacts());
+         Artifacts.persistInTransaction("Mass Artifact Editor - Save", xViewer.getArtifacts());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

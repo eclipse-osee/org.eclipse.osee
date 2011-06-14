@@ -293,7 +293,7 @@ public class RelationExplorerWindow {
                      artifact.setName(model.getName());
                      artifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl,
                         urls.get(names.indexOf(model.getName())));
-                     artifact.persist();
+                     artifact.persist(getClass().getSimpleName());
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
@@ -313,7 +313,7 @@ public class RelationExplorerWindow {
       }
       if (persistOnOk) {
          try {
-            relationGroup.getArtifact().persist();
+            relationGroup.getArtifact().persist(getClass().getSimpleName());
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

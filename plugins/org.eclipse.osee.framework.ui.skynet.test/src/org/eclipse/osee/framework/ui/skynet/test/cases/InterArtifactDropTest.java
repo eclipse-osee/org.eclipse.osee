@@ -56,7 +56,7 @@ public class InterArtifactDropTest {
       sleep(5000);
 
       sourceArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
-      sourceArtifact.persist();
+      sourceArtifact.persist(getClass().getSimpleName());
 
       destinationBranch =
          BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName,
@@ -96,7 +96,7 @@ public class InterArtifactDropTest {
 
       Artifact updateTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact.getArtId(), updateTestSourceBranch);
       updateTestArtifact.setName("I am an update branch test");
-      updateTestArtifact.persist();
+      updateTestArtifact.persist(getClass().getSimpleName());
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
       dropHandler.dropArtifactIntoDifferentBranch(sourceArtifact, new Artifact[] {updateTestArtifact}, false);

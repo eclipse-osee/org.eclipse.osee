@@ -61,7 +61,7 @@ public class NewDecisionReviewJob extends Job {
          DecisionReviewArtifact decArt =
             DecisionReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState,
                description, options, assignees, createdDate, createdBy);
-         decArt.persist();
+         decArt.persist(getClass().getSimpleName());
          AtsUtil.openATSAction(decArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();

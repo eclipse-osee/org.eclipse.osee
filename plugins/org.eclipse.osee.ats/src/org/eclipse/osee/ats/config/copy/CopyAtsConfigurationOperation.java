@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 public class CopyAtsConfigurationOperation extends AbstractOperation {
@@ -86,7 +86,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          }
 
          persistOrUndoChanges();
-         XResultDataUI.report(resultData,getName());
+         XResultDataUI.report(resultData, getName());
       } finally {
          monitor.subTask("Done");
       }
@@ -186,11 +186,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
 
    private void persistOrUndoChanges() throws OseeCoreException {
       if (data.isPersistChanges()) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Copy ATS Configuration");
-         for (Artifact art : newArtifacts) {
-            art.persist(transaction);
-         }
-         transaction.execute();
+         Artifacts.persistInTransaction("Copy ATS Configuration", newArtifacts);
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");
          for (Artifact artifact : newArtifacts) {

@@ -64,7 +64,7 @@ public class PurgeAttributesBlam extends AbstractBlam {
                }
             }
          }
-         artifact.persist();
+         artifact.persist(getName());
          new PurgeAttribute(attributesToPurge).execute();
       }
 

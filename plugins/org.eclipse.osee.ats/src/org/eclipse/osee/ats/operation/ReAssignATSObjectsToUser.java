@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -86,16 +86,13 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                final Collection<Artifact> artsToReAssign = dialog.getSelection();
 
                // Make the changes and persist
-               SkynetTransaction transaction =
-                  new SkynetTransaction(AtsUtil.getAtsBranch(), "Re-Assign ATS Objects to User");
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof AbstractWorkflowArtifact) {
                      ((AbstractWorkflowArtifact) artifact).getStateMgr().removeAssignee(fromUser);
                      ((AbstractWorkflowArtifact) artifact).getStateMgr().addAssignee(toUser);
                   }
-                  artifact.persist(transaction);
                }
-               transaction.execute();
+               Artifacts.persistInTransaction("Re-Assign ATS Objects to User", artsToReAssign);
                OseeNotificationManager.getInstance().sendNotifications();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

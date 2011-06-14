@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.MatchingStrategy;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -166,8 +165,6 @@ public final class ArtifactImportWizardTest {
        */
       //@formatter:on
 
-      SkynetTransaction transaction = new SkynetTransaction(DemoSawBuilds.SAW_Bld_1, "ArtifactImportWizardTest");
-
       myRootArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1,
             "ArtifactImportWizardTest_Root", "ArtifatImpWizaTestGUID", "12345");
@@ -188,8 +185,7 @@ public final class ArtifactImportWizardTest {
       myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
          DemoSawBuilds.SAW_Bld_1, "B", "BBBBBBBBBBBBBBBBBBBBBB", "B2345"));
 
-      myRootArtifact.persist(transaction);
-      transaction.execute();
+      myRootArtifact.persist("ArtifactImportWizardTest");
    }
 
    @After

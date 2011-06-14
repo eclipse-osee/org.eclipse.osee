@@ -68,7 +68,7 @@ public class RelationOrderMergeUtilityTest {
       for (int i = 0; i < 5; i++) {
          setAsChild(parent, children[i], ascOrder);
       }
-      parent.persist();
+      parent.persist(getClass().getSimpleName());
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(parent, parent);
       Assert.assertNotNull(mergedOrder);
 
@@ -85,13 +85,13 @@ public class RelationOrderMergeUtilityTest {
       for (int i = 0; i <= 3; i++) {
          setAsChild(destParent, destChildren[i], USER_DEFINED);
       }
-      destParent.persist();
+      destParent.persist(getClass().getSimpleName());
 
       Branch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch", null);
       Artifact srcParent = ArtifactQuery.getArtifactFromId(destParent.getGuid(), sourceBranch);
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4].getGuid(), sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);
-      srcParent.persist();
+      srcParent.persist(getClass().getSimpleName());
       RelationManager.deleteRelationsAll(destChildren[0], true);
 
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(destParent, srcParent);
@@ -121,8 +121,8 @@ public class RelationOrderMergeUtilityTest {
          setAsChild(descParent, descRelatives[i], descOrder);
       }
 
-      ascParent.persist();
-      descParent.persist();
+      ascParent.persist(getClass().getSimpleName());
+      descParent.persist(getClass().getSimpleName());
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(ascParent, descParent);
       Assert.assertNull(mergedOrder);
    }

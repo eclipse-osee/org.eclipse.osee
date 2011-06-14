@@ -146,7 +146,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
                   content = WordMlLinkHandler.unlink(linkType, artifact, content);
                   artifact.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, content);
                }
-               artifact.persist();
+               artifact.persist(getClass().getSimpleName());
             }
          }
       } finally {

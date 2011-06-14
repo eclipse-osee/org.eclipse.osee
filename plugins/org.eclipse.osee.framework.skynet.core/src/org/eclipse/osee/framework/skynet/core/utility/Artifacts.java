@@ -110,17 +110,8 @@ public final class Artifacts {
       return names;
    }
 
-   public static void persistInTransaction(final Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      persistInTransaction(artifacts.toArray(new Artifact[artifacts.size()]));
-   }
-
-   public static void persistInTransaction(Artifact... artifacts) throws OseeCoreException {
-      SkynetTransaction transaction =
-         new SkynetTransaction(artifacts[0].getBranch(), "Artifacts.persistInTransaction(Artifact... artifacts)");
-      for (Artifact art : artifacts) {
-         art.persist(transaction);
-      }
-      transaction.execute();
+   public static void persistInTransaction(String comment, final Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      persistInTransaction(comment, artifacts.toArray(new Artifact[artifacts.size()]));
    }
 
    public static void persistInTransaction(String comment, Artifact... artifacts) throws OseeCoreException {

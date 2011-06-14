@@ -48,7 +48,7 @@ public class Artifact_setAttributeValues {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, firstSet);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
    }
@@ -57,7 +57,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesAddOne() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, addOneSet);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
    }
@@ -66,7 +66,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesAddOneRemoveOne() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, addOneRemoveOneSet);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       assertTrue(Collections.isEqual(addOneRemoveOneSet,
          artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
@@ -76,7 +76,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesRemoveAll() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, emptySet);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       assertTrue(artifact.getAttributesToStringList(CoreAttributeTypes.StaticId).isEmpty());
    }
@@ -85,7 +85,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesWithDuplicates() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, addDuplicates_set);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       assertTrue(Collections.isEqual(addDuplicates_result,
          artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));

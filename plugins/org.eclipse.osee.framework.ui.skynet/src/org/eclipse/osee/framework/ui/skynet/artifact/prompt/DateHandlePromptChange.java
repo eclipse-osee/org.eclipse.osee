@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 
@@ -61,14 +61,8 @@ public class DateHandlePromptChange implements IHandlePromptChange {
             artifact.setSoleAttributeValue(attributeType, diag.getSelectedDate());
          }
       }
-
       if (persist) {
-         SkynetTransaction transaction =
-            new SkynetTransaction(artifacts.iterator().next().getBranch(), "Persist artifact date change");
-         for (Artifact artifact : artifacts) {
-            artifact.persist(transaction);
-         }
-         transaction.execute();
+         Artifacts.persistInTransaction("Persist artifact date change", artifacts);
       }
       return true;
    }

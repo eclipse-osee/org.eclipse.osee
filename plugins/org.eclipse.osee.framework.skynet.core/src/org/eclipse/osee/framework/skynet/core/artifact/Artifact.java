@@ -1018,10 +1018,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
       RelationManager.prepareRelationsForReload(this);
    }
 
-   public final void persist() throws OseeCoreException {
-      persist("artifact.persist() default transaction");
-   }
-
    public final void persist(String comment) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(branch, comment);
       persist(transaction);
@@ -1029,11 +1025,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    }
 
    public final void persist(SkynetTransaction transaction) throws OseeCoreException {
-      if (transaction == null) {
-         persist();
-      } else {
-         transaction.addArtifact(this);
-      }
+      transaction.addArtifact(this);
    }
 
    /**

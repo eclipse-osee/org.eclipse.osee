@@ -66,7 +66,7 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
 
       String storage = asStorage(entriesList);
       artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, storage);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
    }
 
    protected String asStorage(List<Entry<Integer, String>> entries) {

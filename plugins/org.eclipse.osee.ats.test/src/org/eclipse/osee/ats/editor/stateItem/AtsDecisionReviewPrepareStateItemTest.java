@@ -46,7 +46,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
                AtsUtil.getAtsBranch());
          decRevArt.setName(getClass().getSimpleName());
-         decRevArt.persist();
+         decRevArt.persist(getClass().getSimpleName());
       }
    }
 
@@ -64,7 +64,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
       String decisionOptionStr =
          DecisionReviewManager.getDecisionReviewOptionsString(DecisionReviewManager.getDefaultDecisionReviewOptions());
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
-      decRevArt.persist();
+      decRevArt.persist(getClass().getSimpleName());
 
       IWorkPage fromState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Prepare.getPageName());
       IWorkPage toState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Decision.getPageName());
@@ -80,7 +80,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
       // set invalid options; NoState is invalid, should only be Completed or FollowUp
       decisionOptionStr = decisionOptionStr.replaceFirst("Completed", "NoState");
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
-      decRevArt.persist();
+      decRevArt.persist(getClass().getSimpleName());
       stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()));
       Assert.assertTrue(results.contains("Invalid Decision Option"));
 

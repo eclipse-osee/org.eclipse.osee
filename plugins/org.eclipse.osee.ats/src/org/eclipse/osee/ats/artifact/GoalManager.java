@@ -129,7 +129,7 @@ public final class GoalManager {
             goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertLast ? true : false,
                artifact);
          }
-         goalArtifact.persist();
+         goalArtifact.persist(GoalManager.class.getSimpleName());
          return goalArtifact;
       }
       return null;

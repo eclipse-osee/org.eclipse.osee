@@ -125,7 +125,7 @@ public class BranchEventTest {
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, workingBranch);
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(topLevel, workingBranch);
       BranchManager.commitBranch(null, conflictManager, true, true);
 

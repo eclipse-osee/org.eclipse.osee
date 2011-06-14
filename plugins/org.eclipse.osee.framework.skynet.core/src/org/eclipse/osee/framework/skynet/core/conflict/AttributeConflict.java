@@ -282,7 +282,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
       getArtifact().setSoleAttributeFromString(getAttributeType(), value);
-      getArtifact().persist();
+      getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
    }
@@ -299,7 +299,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType(), value);
-      getArtifact().persist();
+      getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
    }
@@ -318,7 +318,7 @@ public class AttributeConflict extends Conflict {
             getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType(), getSourceObject());
-      getArtifact().persist();
+      getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
    }
@@ -337,7 +337,7 @@ public class AttributeConflict extends Conflict {
             getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
-      getArtifact().persist();
+      getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
    }
@@ -357,10 +357,10 @@ public class AttributeConflict extends Conflict {
       setStatus(ConflictStatus.UNTOUCHED);
       if (isWordAttribute) {
          getAttribute().resetToDefaultValue();
-         getArtifact().persist();
+         getArtifact().persist(getClass().getSimpleName());
       } else {
          getArtifact().setSoleAttributeFromString(getAttributeType(), NO_VALUE);
-         getArtifact().persist();
+         getArtifact().persist(getClass().getSimpleName());
       }
       computeEqualsValues();
       return true;

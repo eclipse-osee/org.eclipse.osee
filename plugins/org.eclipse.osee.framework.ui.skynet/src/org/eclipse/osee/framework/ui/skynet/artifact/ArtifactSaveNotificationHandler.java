@@ -86,7 +86,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
                         Collection<Artifact> arts = entry.getValue();
                         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
                            String.format("Persisting [%d] unsaved artifacts for branch [%s]", arts.size(), branch));
-                        Artifacts.persistInTransaction(arts);
+                        Artifacts.persistInTransaction("Artifact Save Notification", arts);
                      }
                   } catch (OseeCoreException ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

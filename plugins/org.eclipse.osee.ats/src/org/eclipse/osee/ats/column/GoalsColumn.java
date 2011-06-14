@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalCheckTreeDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
@@ -32,7 +31,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -108,12 +106,10 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       GoalCheckTreeDialog dialog = new GoalCheckTreeDialog(allGoals);
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Goals");
          for (Artifact awa : awas) {
             awa.setRelations(AtsRelationTypes.Goal_Goal, dialog.getSelection());
-            awa.persist(transaction);
          }
-         transaction.execute();
+         Artifacts.persistInTransaction("Set Goals", awas);
          return true;
       }
       return false;

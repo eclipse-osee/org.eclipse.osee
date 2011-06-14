@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -106,19 +104,11 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          User selectedUser = ld.getSelection();
          Date createdDate = new Date();
 
-         SkynetTransaction transaction = null;
-         if (persist) {
-            transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Originator");
-         }
-
          for (AbstractWorkflowArtifact awa : awas) {
             awa.setCreatedBy(selectedUser, true, createdDate);
-            if (persist) {
-               awa.persist(transaction);
-            }
          }
          if (persist) {
-            transaction.execute();
+            Artifacts.persistInTransaction("ATS Prompt Change Originator", awas);
          }
          return true;
       }

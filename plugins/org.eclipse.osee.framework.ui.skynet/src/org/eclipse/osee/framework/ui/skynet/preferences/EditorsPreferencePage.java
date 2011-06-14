@@ -119,7 +119,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             UserManager.setSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR, String.valueOf(result));
          }
 
-         UserManager.getUser().persist();
+         UserManager.getUser().persist(getClass().getSimpleName());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

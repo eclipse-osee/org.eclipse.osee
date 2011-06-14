@@ -79,7 +79,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // set assignee to Alex Kay
       teamArt.getStateMgr().setAssignee(UserManager.getUserByName("Alex Kay"));
-      teamArt.persist();
+      teamArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
       Assert.assertEquals(UserManager.getUserByName("Alex Kay"), teamArt.getStateMgr().getAssignees().iterator().next());
 
@@ -91,7 +91,10 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
-      stateItem.transitioned(teamArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()), null);
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+      stateItem.transitioned(teamArt, fromState, toState, Arrays.asList((IBasicUser) UserManager.getUser()),
+         transaction);
+      transaction.execute();
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());

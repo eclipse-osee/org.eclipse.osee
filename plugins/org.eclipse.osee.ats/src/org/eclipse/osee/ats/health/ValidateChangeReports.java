@@ -109,7 +109,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          try {
             final XResultData rd = new XResultData();
             runIt(monitor, rd);
-            XResultDataUI.report(rd,getName());
+            XResultDataUI.report(rd, getName());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -243,7 +243,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          }
          artifactForStore.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData,
             getReport(currentDbGuid, currentChangeData));
-         artifactForStore.persist();
+         artifactForStore.persist(ValidateChangeReports.class.getSimpleName());
          resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
       }

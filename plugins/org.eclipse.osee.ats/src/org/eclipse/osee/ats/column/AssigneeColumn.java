@@ -137,7 +137,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          awa.getStateMgr().setAssignees(users);
       }
       if (persist) {
-         Artifacts.persistInTransaction(awas);
+         Artifacts.persistInTransaction("Assignee - Prompt Change", awas);
       }
       return true;
    }

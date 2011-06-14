@@ -330,7 +330,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       setDirtyFlag(true);
 
       //this could be in the calling object
-      getArtifact().persist();
+      getArtifact().persist("Replace With Version");
       getArtifact().reloadAttributesAndRelations();
    }
 

@@ -51,7 +51,7 @@ final class ClientUser {
          instance.populateCurrentUser();
          if (!instance.currentUser.isActive()) {
             instance.currentUser.setActive(true);
-            instance.currentUser.persist();
+            instance.currentUser.persist(ClientUser.class.getSimpleName());
          }
       }
       return instance.currentUser;

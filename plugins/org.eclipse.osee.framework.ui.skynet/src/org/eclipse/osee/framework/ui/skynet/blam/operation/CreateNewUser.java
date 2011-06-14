@@ -115,7 +115,7 @@ public class CreateNewUser extends AbstractBlam {
          }
       }
 
-      user.persist();
+      user.persist(getClass().getSimpleName());
       RendererManager.open(user, PresentationType.DEFAULT_OPEN);
       monitor.done();
    }

@@ -70,7 +70,7 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
          ModelUtil.saveModel(dsl, "ats:/xtext/cm.access.osee", outputStream, false);
          Artifact artifact = getStorageArtifact();
          artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, outputStream.toString("UTF-8"));
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          loadDsl();
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);

@@ -358,7 +358,14 @@ public class WordTemplateProcessor {
                   if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
                      if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
                         artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
-                        artifact.persist((SkynetTransaction) renderer.getOption(ITemplateRenderer.TRANSACTION_OPTION));
+
+                     SkynetTransaction transaction =
+                        (SkynetTransaction) renderer.getOption(ITemplateRenderer.TRANSACTION_OPTION);
+                     if (transaction != null) {
+                        artifact.persist(transaction);
+                     } else {
+                        artifact.persist(getClass().getSimpleName());
+                     }
                      }
                   }
                }

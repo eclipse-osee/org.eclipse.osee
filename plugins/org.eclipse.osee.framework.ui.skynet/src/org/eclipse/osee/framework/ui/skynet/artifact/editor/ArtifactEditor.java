@@ -100,7 +100,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       try {
          getFormPage().doSave(monitor);
          Artifact artifact = getEditorInput().getArtifact();
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
          firePropertyChange(PROP_DIRTY);
       } catch (OseeCoreException ex) {
          onDirtied();

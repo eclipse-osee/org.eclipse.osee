@@ -62,7 +62,7 @@ public class NativeArtifactTest {
    public void testSetAndGetValueAsString() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
       nativeArtifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent, "hello world");
-      nativeArtifact.persist();
+      nativeArtifact.persist(getClass().getSimpleName());
       String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent, "");
       assertEquals("hello world", content);
    }
@@ -73,7 +73,7 @@ public class NativeArtifactTest {
       Lib.writeStringToFile("hello world", file);
       Artifact nativeArtifact = getNativeArtifact();
       nativeArtifact.setSoleAttributeFromStream(CoreAttributeTypes.NativeContent, new FileInputStream(file));
-      nativeArtifact.persist();
+      nativeArtifact.persist(getClass().getSimpleName());
       InputStream inputStream = null;
       try {
          inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent, null);

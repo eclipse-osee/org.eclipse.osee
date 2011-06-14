@@ -15,7 +15,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -160,7 +159,7 @@ public class User extends Artifact implements IBasicUser {
             OseeExceptions.wrapAndThrow(ex);
          }
          setSoleAttributeFromString(CoreAttributeTypes.UserSettings, stringWriter.toString());
-         persist();
+         persist("User - Save Settings");
       }
    }
 

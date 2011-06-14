@@ -111,13 +111,13 @@ public class ExtractTestRelations {
       //
       //      link.setArtifactA(reqArtifact);
       //      link.setArtifactB(getTestArtifact(testArtifactName, reqArtifact.getTag()));
-      //      link.persist();
+      //      link.persist(getClass().getSimpleName());
 
       //      testRelation.addArtifact("test", getTestArtifact(testArtifactName, reqArtifact.getTag()));
       //      testRelation.addArtifact("requirement", reqArtifact);
 
       // Save the relation
-      //      link.persist();
+      //      link.persist(getClass().getSimpleName());
    }
 
    private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws OseeCoreException {
@@ -130,7 +130,7 @@ public class ExtractTestRelations {
          Artifact testArtifact =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, testArtifactFile.getName());
          testArtifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl, testArtifactFile.getFullPath().toString());
-         testArtifact.persist();
+         testArtifact.persist(getClass().getSimpleName());
          return testArtifact;
       }
    }

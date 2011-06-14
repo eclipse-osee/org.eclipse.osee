@@ -89,7 +89,7 @@ public class TransitionManager {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), "Transition Preparation");
          for (AbstractWorkflowArtifact awa : helper.getAwas()) {
-            awa.persist();
+            awa.persist(getClass().getSimpleName());
          }
          transaction.execute();
       } catch (OseeCoreException ex) {

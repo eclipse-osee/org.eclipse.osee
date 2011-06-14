@@ -556,7 +556,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
                   }
                   tempParentAction.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, artifact);
-                  tempParentAction.persist();
+                  tempParentAction.persist(getClass().getSimpleName());
                }
             }
          } catch (OseeCoreException ex) {
@@ -789,7 +789,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
                      awa.getStateMgr().clearAssignees();
-                     awa.persist();
+                     awa.persist(getClass().getSimpleName());
                      testNameToResultsMap.put("testStateMachineAssignees", "Fixed");
                   }
                }

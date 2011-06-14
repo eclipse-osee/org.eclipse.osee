@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -41,19 +41,15 @@ public class ArtifactPurgeTest extends AbstractPurgeTest {
 
       // Create some software artifacts
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.getName());
-      SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge artifacts");
       Collection<Artifact> softArts =
          FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
             branch);
-      for (Artifact softArt : softArts) {
-         softArt.persist(transaction);
-      }
-      transaction.execute();
+      Artifacts.persistInTransaction("Test purge artifacts", softArts);
 
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
-         softArt.persist();
+         softArt.persist(getClass().getSimpleName());
       }
 
       // Count rows and check that increased

@@ -88,7 +88,7 @@ public class ArtifactCacheQueryTest {
             CoreAttributeTypes.StaticId, staticId, BranchManager.getCommonBranch());
       assertNotNull(artifact);
       artifact.addAttribute(CoreAttributeTypes.StaticId, staticId);
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       Collection<Artifact> artifacts = ArtifactCache.getListByTextId(staticId, BranchManager.getCommonBranch());
       assertTrue("Should be 1; Returned " + artifacts.size(), artifacts.size() == 1);
@@ -125,7 +125,7 @@ public class ArtifactCacheQueryTest {
       // create artifact with two of same static id values
       Artifact artifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
       artifact.addAttribute(CoreAttributeTypes.StaticId, STATIC_ID_BBB);
       artifact.addAttribute(CoreAttributeTypes.StaticId, STATIC_ID_BBB);
       ArtifactCache.cacheByTextId(STATIC_ID_BBB, artifact);
@@ -227,14 +227,11 @@ public class ArtifactCacheQueryTest {
       List<Artifact> itemsCreated = new ArrayList<Artifact>();
 
       // create single artifact with eee staticId
-      SkynetTransaction transaction =
-         new SkynetTransaction(BranchManager.getCommonBranch(), "create single artifact with eee staticId");
       Artifact artifact =
          ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.GeneralData,
             CoreAttributeTypes.StaticId, STATIC_ID_EEE, BranchManager.getCommonBranch());
-      artifact.persist(transaction);
+      artifact.persist("create single artifact with eee staticId");
       assertNotNull(artifact);
-      transaction.execute();
 
       itemsCreated.add(artifact);
 
@@ -245,12 +242,10 @@ public class ArtifactCacheQueryTest {
       assertNotNull(artifact);
 
       // create another artifact with eee staticId
-      transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "create another artifact with eee staticId");
       artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_EEE);
-      artifact.persist(transaction);
+      artifact.persist("create another artifact with eee staticId");
       assertNotNull(artifact);
-      transaction.execute();
       itemsCreated.add(artifact);
 
       // test that there are now two artifacts with eee

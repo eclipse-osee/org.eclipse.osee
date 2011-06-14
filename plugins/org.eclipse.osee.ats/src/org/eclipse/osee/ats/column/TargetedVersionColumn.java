@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.core.version.VersionLockedType;
 import org.eclipse.osee.ats.core.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -40,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -174,11 +172,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
             java.util.Collections.singleton(newVersion));
       }
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Version");
-      for (TeamWorkFlowArtifact teamArt : awas) {
-         teamArt.persist(transaction);
-      }
-      transaction.execute();
+      Artifacts.persistInTransaction("ATS Prompt Change Version", awas);
       return true;
    }
 

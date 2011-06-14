@@ -85,7 +85,7 @@ public class AtsPurgeTest {
          TaskArtifact taskArt =
             ActionManager.getFirstTeam(actionArt).createNewTask(getClass().getSimpleName() + x, new Date(),
                UserManager.getUser());
-         taskArt.persist();
+         taskArt.persist(getClass().getSimpleName());
          artsToPurge.add(taskArt);
       }
 

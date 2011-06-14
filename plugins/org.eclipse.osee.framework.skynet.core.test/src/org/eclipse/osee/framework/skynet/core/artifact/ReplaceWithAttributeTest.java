@@ -31,14 +31,14 @@ public class ReplaceWithAttributeTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Name"));
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       Attribute<?> nameAttribute = artifact.getAttributes(CoreAttributeTypes.Name).iterator().next();
       int previousGamma = nameAttribute.getGammaId();
       String previousName = nameAttribute.getDisplayableString();
 
       nameAttribute.setFromString("New Name");
-      nameAttribute.getArtifact().persist();
+      nameAttribute.getArtifact().persist(getClass().getSimpleName());
 
       nameAttribute.replaceWithVersion(previousGamma);
       assertTrue(nameAttribute.getGammaId() == previousGamma);

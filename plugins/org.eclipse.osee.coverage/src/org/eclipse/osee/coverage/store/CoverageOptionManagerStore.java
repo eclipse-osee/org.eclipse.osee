@@ -112,7 +112,7 @@ public class CoverageOptionManagerStore {
       if (storeLocation == StoreLocation.Local) {
          oseeCoveragePackageStore.getArtifact(true).setSoleAttributeFromString(CoverageAttributeTypes.Options,
             coverageOptions);
-         oseeCoveragePackageStore.getArtifact(true).persist();
+         oseeCoveragePackageStore.getArtifact(true).persist(getClass().getSimpleName());
       } else if (storeLocation == StoreLocation.Global) {
          new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).setCoverageOptions(coverageOptions);
       } else {

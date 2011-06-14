@@ -42,7 +42,7 @@ public class WholeAttributeUpdateOperation extends AbstractOperation {
       try {
          stream = new BufferedInputStream(new FileInputStream(file));
          artifact.setSoleAttributeFromStream(attributeType, stream);
-         artifact.persist();
+         artifact.persist(getClass().getSimpleName());
       } finally {
          Lib.close(stream);
       }

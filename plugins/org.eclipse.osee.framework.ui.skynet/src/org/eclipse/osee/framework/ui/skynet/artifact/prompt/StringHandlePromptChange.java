@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
@@ -56,7 +56,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    public boolean store() throws OseeCoreException {
       updateSmaAttributes(artifacts, attributeType, format, entryDialog);
       if (persist) {
-         persistSmaAttributes(artifacts);
+         Artifacts.persistInTransaction("Persist SMA attributes", artifacts);
       }
       return true;
    }
@@ -93,15 +93,6 @@ public class StringHandlePromptChange implements IHandlePromptChange {
          }
       }
       return toReturn;
-   }
-
-   private static void persistSmaAttributes(final Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      SkynetTransaction transaction =
-         new SkynetTransaction(artifacts.iterator().next().getBranch(), "Persist SMA attributes");
-      for (Artifact artifact : artifacts) {
-         artifact.persist(transaction);
-      }
-      transaction.execute();
    }
 
    private static String formatObject(Object src, NumberFormat format) {

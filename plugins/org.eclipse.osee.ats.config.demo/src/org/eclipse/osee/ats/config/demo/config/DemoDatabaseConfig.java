@@ -68,8 +68,8 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          programRoot.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, programBranch, name));
       }
 
-      sawProduct.persist();
-      programRoot.persist();
+      sawProduct.persist(getClass().getSimpleName());
+      programRoot.persist(getClass().getSimpleName());
 
    }
 

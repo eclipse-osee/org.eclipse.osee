@@ -11,9 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.junit.Assert.assertFalse;
-
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -40,10 +38,8 @@ public class TransactionManagerTest {
       // Create new transaction
       String guid = GUID.create();
       String comment = "TransactionManagerTest-" + guid;
-      SkynetTransaction newTransaction = new SkynetTransaction(BranchManager.getCommonBranch(), comment);
       Artifact art = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch());
-      art.persist(newTransaction);
-      newTransaction.execute();
+      art.persist(comment);
 
       // Find transaction
       List<TransactionRecord> transactions = TransactionManager.getTransaction(comment);

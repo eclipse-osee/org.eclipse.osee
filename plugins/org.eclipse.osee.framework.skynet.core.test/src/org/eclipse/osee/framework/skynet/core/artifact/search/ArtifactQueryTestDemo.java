@@ -35,7 +35,7 @@ public class ArtifactQueryTestDemo {
    public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
       Artifact newArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      newArtifact.persist();
+      newArtifact.persist(getClass().getSimpleName());
 
       // Should exist
       Artifact searchedArtifact =

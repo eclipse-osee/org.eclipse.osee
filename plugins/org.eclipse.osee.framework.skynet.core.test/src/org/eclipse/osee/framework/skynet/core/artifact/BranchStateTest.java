@@ -79,7 +79,7 @@ public class BranchStateTest {
          Artifact change =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
                "Test Object on Working Branch");
-         change.persist();
+         change.persist(getClass().getSimpleName());
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
@@ -128,7 +128,7 @@ public class BranchStateTest {
 
          change =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch, "A commit change");
-         change.persist();
+         change.persist(getClass().getSimpleName());
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
@@ -196,7 +196,7 @@ public class BranchStateTest {
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, DemoSawBuilds.SAW_Bld_1,
                "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
-         baseArtifact.persist();
+         baseArtifact.persist(getClass().getSimpleName());
 
          User user = UserManager.getUser(SystemUser.OseeSystem);
          workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
@@ -205,11 +205,11 @@ public class BranchStateTest {
          change =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
                "Test Object on Working Branch");
-         change.persist();
+         change.persist(getClass().getSimpleName());
 
          // Make a change on the parent
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the updated annotation");
-         baseArtifact.persist();
+         baseArtifact.persist(getClass().getSimpleName());
 
          // Update the branch
          ConflictResolverOperation resolverOperation =
@@ -253,7 +253,7 @@ public class BranchStateTest {
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, DemoSawBuilds.SAW_Bld_1,
                "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
-         baseArtifact.persist();
+         baseArtifact.persist(getClass().getSimpleName());
 
          User user = UserManager.getUser(SystemUser.OseeSystem);
          workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
@@ -262,11 +262,11 @@ public class BranchStateTest {
          sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
          sameArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation,
             "This is the working branch update annotation");
-         sameArtifact.persist();
+         sameArtifact.persist(getClass().getSimpleName());
 
          // Make a change on the parent
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the updated annotation");
-         baseArtifact.persist();
+         baseArtifact.persist(getClass().getSimpleName());
 
          ConflictResolverOperation resolverOperation =
             new ConflictResolverOperation("Test 2 Resolver", BranchStateTest.class.getCanonicalName()) {

@@ -78,7 +78,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
                pasteArtifact(monitor, workAmount, config, destination, item);
             }
          }
-         destination.persist();
+         destination.persist(getClass().getSimpleName());
          monitor.worked(calculateWork(0.20));
       } else {
          monitor.worked(calculateWork(1.0));

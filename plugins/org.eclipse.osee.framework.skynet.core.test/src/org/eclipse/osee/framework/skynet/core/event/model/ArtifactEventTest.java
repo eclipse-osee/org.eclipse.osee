@@ -186,7 +186,7 @@ public class ArtifactEventTest {
 
    private Artifact testArtifactRelationEvents__addArtifact() throws Exception {
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
 
       Assert.assertEquals(2, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -217,7 +217,7 @@ public class ArtifactEventTest {
       clearEventCollections();
       Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
       rootArt.addChild(newArt);
-      rootArt.persist();
+      rootArt.persist(getClass().getSimpleName());
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
@@ -241,7 +241,7 @@ public class ArtifactEventTest {
    private void testArtifactRelationEvents__modifyArtifact(Artifact newArt) throws Exception {
       clearEventCollections();
       newArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "this");
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -265,7 +265,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(1, newArt.internalGetRelations(rootArt).size());
       RelationLink relLink = newArt.internalGetRelations(rootArt).iterator().next();
       relLink.setRationale(NEW_RATIONALE_STR);
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
@@ -515,7 +515,7 @@ public class ArtifactEventTest {
       Artifact injectArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       injectArt.setName(ORIG_NAME);
-      injectArt.persist();
+      injectArt.persist(getClass().getSimpleName());
 
       clearEventCollections();
 
@@ -704,7 +704,7 @@ public class ArtifactEventTest {
       artifactsInNewOrder.add(orderedChildren.get(2));
       artifactsInNewOrder.add(orderedChildren.get(4));
       newArt.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, artifactsInNewOrder);
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
 
       Assert.assertEquals("newArt will change cause attribute modified", 1, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -784,7 +784,7 @@ public class ArtifactEventTest {
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       newArt.setName(getClass().getSimpleName() + " - testPurgeArtifactEvents");
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
 
       OseeEventManager.addListener(artifactEventListener);
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
@@ -820,7 +820,7 @@ public class ArtifactEventTest {
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       newArt.setName(getClass().getSimpleName() + " - testReloadArtifactEvents");
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
 
       OseeEventManager.addListener(artifactEventListener);
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
@@ -856,7 +856,7 @@ public class ArtifactEventTest {
       // Add new Artifact for Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       newArt.setName(getClass().getSimpleName() + " - testChangeTypeArtifactEvents");
-      newArt.persist();
+      newArt.persist(getClass().getSimpleName());
 
       OseeEventManager.addListener(artifactEventListener);
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());

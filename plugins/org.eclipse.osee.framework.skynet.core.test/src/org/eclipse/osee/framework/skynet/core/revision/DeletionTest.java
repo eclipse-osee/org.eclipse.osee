@@ -270,7 +270,7 @@ public class DeletionTest {
                   artifactForDeletionCheck.getRelations(CoreRelationTypes.Default_Hierarchical__Child).get(0);
                attribute.delete();
                relation.delete(true);
-               artifactForDeletionCheck.persist();
+               artifactForDeletionCheck.persist(getClass().getSimpleName());
                //check for internal deletions and then check the database
 
                assertTrue("Attribute " + attribute.getId() + " should be deleted but isn't", attribute.isDeleted());

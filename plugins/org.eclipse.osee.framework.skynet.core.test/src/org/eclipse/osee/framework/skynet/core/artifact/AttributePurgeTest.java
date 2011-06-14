@@ -56,7 +56,7 @@ public class AttributePurgeTest extends AbstractPurgeTest {
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
-         softArt.persist();
+         softArt.persist(getClass().getName());
       }
 
       // Count rows and check that increased

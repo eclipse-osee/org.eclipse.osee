@@ -47,7 +47,7 @@ public class RelationDeletionTest {
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
-      parent.persist();
+      parent.persist(getClass().getSimpleName());
 
       assertTrue("Failed to add all three children",
          parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child).size() == 3);
@@ -57,7 +57,7 @@ public class RelationDeletionTest {
       assertTrue("We removed a relation so it should still be dirty.", child1.isDirty());
       assertTrue("Parent artifact should be marked as dirty since it's relation has changed.", parent.isDirty());
 
-      child1.persist();
+      child1.persist(getClass().getSimpleName());
 
       assertFalse("Parent artifact should be clean now.", parent.isDirty());
       assertFalse("Child artifact should also be clean.", child1.isDirty());

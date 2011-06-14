@@ -62,7 +62,7 @@ public class UserRoleManager {
          return "";
       }
       StringBuffer sb = new StringBuffer();
-      sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
+      sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Roles"));
       sb.append(getTable(peerArt));
       return sb.toString();
    }

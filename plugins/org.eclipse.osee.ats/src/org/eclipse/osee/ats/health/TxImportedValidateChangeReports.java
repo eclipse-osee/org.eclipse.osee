@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -146,7 +146,6 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          databaseTargetId = databaseTargetId.trim();
          setup(databaseTargetId);
 
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Import Validate Change Reports");
          List<Artifact> artifacts =
             ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, "VCR_%", branch);
          for (Artifact artifact : artifacts) {
@@ -158,13 +157,12 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
                   String modified = translateImportedData(data);
                   modified = updateSourceGuid(currentDbGuid, modified);
                   artifact.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData, modified);
-                  artifact.persist(transaction);
                }
             } catch (Exception ex) {
                throw new OseeCoreException(String.format("Error processing [%s]", name), ex);
             }
          }
-         transaction.execute();
+         Artifacts.persistInTransaction("Import Validate Change Reports", artifacts);
       } finally {
          cleanUp();
       }

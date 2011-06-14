@@ -51,7 +51,7 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          }
          UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
             diag.getChecked(), TeamDefinitionArtifact.class);
-         UserManager.getUser().persist();
+         UserManager.getUser().persist(getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

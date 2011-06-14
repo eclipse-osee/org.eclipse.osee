@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
 import org.eclipse.swt.SWT;
@@ -106,12 +105,10 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       dialog.setTitle("Select Groups");
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Groups");
          for (AbstractWorkflowArtifact awa : awas) {
             awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getSelection());
-            awa.persist(transaction);
          }
-         transaction.execute();
+         Artifacts.persistInTransaction("Set Groups", awas);
          return true;
       }
       return false;

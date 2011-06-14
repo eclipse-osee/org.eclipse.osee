@@ -51,7 +51,7 @@ public class ChangeManagerTest {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
       modArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, CoreBranches.SYSTEM_ROOT);
-      modArtifact.persist();
+      modArtifact.persist(getClass().getSimpleName());
 
       sleep(5000);
 
@@ -63,7 +63,7 @@ public class ChangeManagerTest {
       sleep(5000);
 
       newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch);
-      newArtifact.persist();
+      newArtifact.persist(getClass().getSimpleName());
       sleep(5000);
       BranchManager.refreshBranches();
    }
@@ -81,7 +81,7 @@ public class ChangeManagerTest {
       newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "new content");
       assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
       modArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "changed content");
-      modArtifact.persist();
+      modArtifact.persist(getClass().getSimpleName());
       assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.NEW));
    }
 
@@ -93,7 +93,7 @@ public class ChangeManagerTest {
 
    @After
    public void tearDown() throws Exception {
-      modArtifact.persist();
+      modArtifact.persist(getClass().getSimpleName());
       BranchManager.purgeBranch(branch);
       sleep(5000);
    }

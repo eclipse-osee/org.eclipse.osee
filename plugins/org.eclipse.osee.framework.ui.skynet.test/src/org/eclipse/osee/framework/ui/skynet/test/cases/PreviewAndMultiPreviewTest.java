@@ -90,7 +90,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1a"));
             parentArtifact.addChild(childArt);
 
-            parentArtifact.persist();
+            parentArtifact.persist(getClass().getSimpleName());
 
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.open(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
@@ -112,7 +112,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, BRANCH, addPrefix("1b"));
             parentArtifact.addChild(childArt);
 
-            parentArtifact.persist();
+            parentArtifact.persist(getClass().getSimpleName());
 
             RendererManager.openInJob(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
          }
@@ -136,7 +136,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1c"));
             parentArtifact.addChild(childArt);
 
-            parentArtifact.persist();
+            parentArtifact.persist(getClass().getSimpleName());
 
             RendererManager.open(parentArtifact, PresentationType.PREVIEW,
                ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
@@ -158,7 +158,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1d"));
             parentArtifact.addChild(childArt);
 
-            parentArtifact.persist();
+            parentArtifact.persist(getClass().getSimpleName());
 
             RendererManager.openInJob(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
          }
@@ -178,7 +178,7 @@ public class PreviewAndMultiPreviewTest {
             PreviewAndMultiPreviewTest.class.getSimpleName() + ".1e");
       parentArtifact.addChild(childArt);
 
-      parentArtifact.persist();
+      parentArtifact.persist(getClass().getSimpleName());
 
       RendererManager.open(parentArtifact, PresentationType.PREVIEW, ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
 
@@ -208,7 +208,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, BRANCH, addPrefix("1f"));
             parentArtifact.addChild(childArt);
 
-            parentArtifact.persist();
+            parentArtifact.persist(getClass().getSimpleName());
 
             RendererManager.openInJob(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
          }
@@ -226,11 +226,11 @@ public class PreviewAndMultiPreviewTest {
          @Override
          protected void testBody() throws OseeCoreException {
             Artifact multiArt1 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("3z"));
-            multiArt1.persist();
+            multiArt1.persist(getClass().getSimpleName());
             Artifact multiArt2 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("2y"));
-            multiArt2.persist();
+            multiArt2.persist(getClass().getSimpleName());
             Artifact multiArt3 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1x"));
-            multiArt3.persist();
+            multiArt3.persist(getClass().getSimpleName());
 
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             List<Artifact> newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
@@ -259,7 +259,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact multiArt3 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1m"));
             parentArtifact.addChild(multiArt3);
 
-            parentArtifact.persist();
+            parentArtifact.persist(getClass().getSimpleName());
 
             RendererManager.open(parentArtifact, PresentationType.PREVIEW);
          }
@@ -277,7 +277,7 @@ public class PreviewAndMultiPreviewTest {
          @Override
          protected void testBody() throws OseeCoreException {
             Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, BRANCH, addPrefix("4g"));
-            art.persist();
+            art.persist(getClass().getSimpleName());
             WholeWordRenderer renderer = new WholeWordRenderer();
             renderer.open(Arrays.asList(art), PresentationType.PREVIEW);
          }
@@ -293,7 +293,7 @@ public class PreviewAndMultiPreviewTest {
          @Override
          protected void testBody() throws OseeCoreException {
             Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, BRANCH, addPrefix("4h"));
-            art.persist();
+            art.persist(getClass().getSimpleName());
 
             RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
          }

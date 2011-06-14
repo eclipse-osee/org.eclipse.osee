@@ -116,7 +116,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
                   ((Artifact) object).setSoleAttributeValue(attributeType, selected.getTime() + "");
                }
                if (persist) {
-                  ((Artifact) object).persist();
+                  ((Artifact) object).persist(getClass().getSimpleName());
                }
             }
             if (object instanceof AttributeConflict) {

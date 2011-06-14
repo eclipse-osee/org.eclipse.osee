@@ -50,7 +50,7 @@ public class Artifact_getLastModified {
       Date previousModifyDate = artifact.getLastModified();
 
       Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       assertBefore(previousModifyDate, artifact);
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
@@ -59,7 +59,7 @@ public class Artifact_getLastModified {
       // Test post-modified
       artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "this");
       Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
-      artifact.persist();
+      artifact.persist(getClass().getSimpleName());
 
       assertBefore(previousModifyDate, artifact);
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());

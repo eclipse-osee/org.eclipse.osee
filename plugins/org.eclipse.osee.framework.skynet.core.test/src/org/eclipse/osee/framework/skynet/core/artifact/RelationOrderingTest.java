@@ -112,7 +112,7 @@ public class RelationOrderingTest {
       parent.addRelation(CoreRelationTypes.Users_User, child4);
       parent.addRelation(CoreRelationTypes.Users_User, child5);
       parent.addRelation(CoreRelationTypes.Users_User, child6);
-      parent.persist();
+      parent.persist(getClass().getSimpleName());
 
       parent.setRelationOrder(CoreRelationTypes.Users_User, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
 
@@ -209,7 +209,7 @@ public class RelationOrderingTest {
             "New Artifact " + guid);
       mainFolder.addChild(newArtifact);
       newArtifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE);
-      newArtifact.persist();
+      newArtifact.persist(getClass().getSimpleName());
 
       for (Artifact child : children) {
          Assert.assertFalse(child.isDirty());

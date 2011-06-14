@@ -50,7 +50,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
          decRevArt.setSoleAttributeValue(
             AtsAttributeTypes.DecisionReviewOptions,
             DecisionReviewManager.getDecisionReviewOptionsString(DecisionReviewManager.getDefaultDecisionReviewOptions()));
-         decRevArt.persist();
+         decRevArt.persist(getClass().getSimpleName());
       }
    }
 

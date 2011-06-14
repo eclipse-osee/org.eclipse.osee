@@ -78,7 +78,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       setUserBooleanSetting(IDENTFY_IMAGE_CHANGES, identifyImageChangesInWord);
       setUserBooleanSetting(MUTI_EDIT_SAVE_ALL_CHANGES, saveAllChanges);
       try {
-         UserManager.getUser().persist();
+         UserManager.getUser().persist(getClass().getSimpleName());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

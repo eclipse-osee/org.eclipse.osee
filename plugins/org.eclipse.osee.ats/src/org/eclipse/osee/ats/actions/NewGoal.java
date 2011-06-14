@@ -42,7 +42,7 @@ public class NewGoal extends Action {
          if (dialog.open() == 0) {
             String title = dialog.getEntry();
             GoalArtifact goalArt = GoalManager.createGoal(title);
-            goalArt.persist();
+            goalArt.persist(getClass().getSimpleName());
             SMAEditor.editArtifact(goalArt);
          }
       } catch (Exception ex) {

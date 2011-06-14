@@ -118,7 +118,7 @@ public class AtsBranchAccessManagerTest {
       String teamDefContextId2 = "teamDef.context.2";
       teamArt.getTeamDefinition().setAttributeValues(CoreAttributeTypes.AccessContextId,
          Arrays.asList(teamDefContextId1, teamDefContextId2));
-      teamArt.getTeamDefinition().persist();
+      teamArt.getTeamDefinition().persist(getClass().getSimpleName());
 
       try {
          TestUtil.sleep(1000);
@@ -132,7 +132,7 @@ public class AtsBranchAccessManagerTest {
       Artifact aiArt =
          ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next();
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
-      aiArt.persist();
+      aiArt.persist(getClass().getSimpleName());
 
       try {
          TestUtil.sleep(1000);
@@ -147,7 +147,7 @@ public class AtsBranchAccessManagerTest {
       String teamContextId3 = "team.context.3";
       teamArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
          Arrays.asList(teamContextId1, teamContextId2, teamContextId3));
-      teamArt.persist();
+      teamArt.persist(getClass().getSimpleName());
 
       try {
          TestUtil.sleep(1000);
@@ -175,7 +175,7 @@ public class AtsBranchAccessManagerTest {
       String teamDefContextId1 = "teamDef.context.1, this is the name";
       teamArt.getTeamDefinition().setAttributeValues(CoreAttributeTypes.AccessContextId,
          Arrays.asList(teamDefContextId1));
-      teamArt.getTeamDefinition().persist();
+      teamArt.getTeamDefinition().persist(getClass().getSimpleName());
 
       try {
          TestUtil.sleep(2000);

@@ -92,7 +92,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       if (!found) {
          saveArt.addAttribute(CoreAttributeTypes.XViewerCustomization, custData.getXml(true));
       }
-      saveArt.persist();
+      saveArt.persist(SkynetCustomizations.class.getSimpleName());
    }
 
    @Override
@@ -166,7 +166,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
          Matcher m = pattern.matcher(str);
          if (m.find() && m.group(1).equals(custData.getName())) {
             attribute.delete();
-            deleteArt.persist();
+            deleteArt.persist(getClass().getSimpleName());
             break;
          }
       }

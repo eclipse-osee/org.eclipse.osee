@@ -64,7 +64,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
             }
             words.add(word);
             art.setSoleAttributeValue(CoreAttributeTypes.Dictionary, Collections.toString(";", words));
-            art.persist();
+            art.persist(getClass().getSimpleName());
             loadDictionary(true);
             return true;
          } catch (Exception ex) {
