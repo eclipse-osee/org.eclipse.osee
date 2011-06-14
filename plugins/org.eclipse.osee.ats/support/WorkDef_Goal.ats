@@ -28,8 +28,6 @@ workDefinition "WorkDef_Goal" {
       layout {
          widget "Title" 
          widget "Description"
-         attributeWidget "ats.Estimated Hours"
-         attributeWidget "ats.Goal Order Vote"
       }
    }
 

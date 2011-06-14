@@ -37,10 +37,10 @@ public class WorkDefinitionFactory {
    // This grows as WorkDefinitions are requested/loaded
    private static final Map<String, WorkDefinitionMatch> workDefIdToWorkDefintion =
       new HashMap<String, WorkDefinitionMatch>();
-   public static final String TaskWorkflowDefinitionId = "osee.ats.taskWorkflow";
-   public static final String GoalWorkflowDefinitionId = "osee.ats.goalWorkflow";
-   public static final String PeerToPeerWorkflowDefinitionId = "osee.ats.peerToPeerReview";
-   public static final String DecisionWorkflowDefinitionId = "osee.ats.decisionReview";
+   public static final String TaskWorkflowDefinitionId = "WorkDef_Task_Default";
+   public static final String GoalWorkflowDefinitionId = "WorkDef_Goal";
+   public static final String PeerToPeerWorkflowDefinitionId = "WorkDef_Review_PeerToPeer";
+   public static final String DecisionWorkflowDefinitionId = "WorkDef_Review_Decision";
 
    public static void clearCaches() {
       awaHridToWorkDefinitions.clear();
@@ -176,13 +176,8 @@ public class WorkDefinitionFactory {
          match = getTaskWorkDefinitionFromArtifactsAttributeValue(WorkflowManagerCore.getTeamDefinition(taskArt));
       }
       if (!match.isMatched()) {
-         // Else, use default Task workflow
-         String translatedId = getOverrideWorkDefId(TaskWorkflowDefinitionId);
-         match = getWorkDefinition(translatedId);
-         if (match.isMatched()) {
-            match.addTrace(String.format("default TaskWorkflowDefinition ID [%s] and override translated Id [%s]",
-               TaskWorkflowDefinitionId, translatedId));
-         }
+         match = getWorkDefinition(TaskWorkflowDefinitionId);
+         match.addTrace("WorkDefinitionFactory - Default Task");
       }
       return match;
    }
@@ -215,14 +210,14 @@ public class WorkDefinitionFactory {
                      match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
                   }
                } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-                  match = getWorkDefinition(getOverrideWorkDefId(GoalWorkflowDefinitionId));
-                  match.addTrace(String.format("Override translated from id [%s]", GoalWorkflowDefinitionId));
+                  match = getWorkDefinition(GoalWorkflowDefinitionId);
+                  match.addTrace("WorkDefinitionFactory - GoalWorkflowDefinitionId");
                } else if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
-                  match = getWorkDefinition(getOverrideWorkDefId(PeerToPeerWorkflowDefinitionId));
-                  match.addTrace(String.format("Override translated from id [%s]", PeerToPeerWorkflowDefinitionId));
+                  match = getWorkDefinition(PeerToPeerWorkflowDefinitionId);
+                  match.addTrace("WorkDefinitionFactory - PeerToPeerWorkflowDefinitionId");
                } else if (artifact.isOfType(AtsArtifactTypes.DecisionReview)) {
-                  match = getWorkDefinition(getOverrideWorkDefId(DecisionWorkflowDefinitionId));
-                  match.addTrace(String.format("Override translated from id [%s]", DecisionWorkflowDefinitionId));
+                  match = getWorkDefinition(DecisionWorkflowDefinitionId);
+                  match.addTrace("WorkDefinitionFactory - DecisionWorkflowDefinitionId");
                }
             }
          }

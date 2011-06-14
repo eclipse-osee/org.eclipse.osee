@@ -372,7 +372,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          } else {
             items.add("Recommended Percent Complete: " + stateDef.getRecommendedPercentComplete());
          }
-         items.add("Color: " + stateDef.getColor().toString());
+         items.add("Color: " + (stateDef.getColor() == null ? "not set" : stateDef.getColor().toString()));
          if (editor.getAwa().isOfType(AtsArtifactTypes.TeamWorkflow)) {
             items.add(new WrappedDecisionReviews(stateDef.getDecisionReviews()));
             items.add(new WrappedPeerReviews(stateDef.getPeerReviews()));
