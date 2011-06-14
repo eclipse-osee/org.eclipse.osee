@@ -473,9 +473,6 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    @Override
    public String toHTML(String labelFont) {
-      if (getXViewer().getTree().getItemCount() == 0) {
-         return "";
-      }
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));

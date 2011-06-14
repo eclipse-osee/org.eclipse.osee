@@ -175,7 +175,7 @@ public class SMAPrint extends Action {
                   notesSb.append(AHTML.newline());
                }
             }
-            if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage) && sma.isTeamWorkflow()) {
+            if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
                statePage.generateLayoutDatas(sma);
                rd.addRaw(statePage.getHtml(sma.isInState(statePage) ? AtsUtil.activeColor : AtsUtil.normalColor,
                   notesSb.toString(), getStateHoursSpentHtml(statePage) + getReviewData(sma, statePage)));
