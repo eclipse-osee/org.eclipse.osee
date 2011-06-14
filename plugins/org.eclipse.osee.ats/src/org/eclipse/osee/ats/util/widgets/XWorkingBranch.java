@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -291,7 +292,14 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    public void refreshLabel() {
       if (!getLabel().equals("")) {
          try {
-            labelWidget.setText(getLabel() + ": " + (enablement.getWorkingBranch() != null ? enablement.getWorkingBranch().getShortName() : "") + " " + enablement.getStatus().name());
+            Branch workBranch = enablement.getWorkingBranch();
+            if (workBranch != null && workBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS) {
+               labelWidget.setText("Creation In Progress");
+            } else if (workBranch != null && workBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS) {
+               labelWidget.setText("Commit In Progress");
+            } else {
+               labelWidget.setText(getLabel() + ": " + (workBranch != null ? workBranch.getShortName() : "") + " " + enablement.getStatus().name());
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
