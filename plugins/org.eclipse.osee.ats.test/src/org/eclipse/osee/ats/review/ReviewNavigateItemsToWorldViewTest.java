@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.review;
 import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.DemoTestUtil;
@@ -119,7 +118,7 @@ public class ReviewNavigateItemsToWorldViewTest {
          }
       }
       // Simulate double-click of navigate item
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
 
       WorldEditor worldEditor = WorldEditorUtil.getSingleEditorOrFail();
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();

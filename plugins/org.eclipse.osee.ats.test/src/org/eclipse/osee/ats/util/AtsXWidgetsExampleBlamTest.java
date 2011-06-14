@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -49,7 +48,7 @@ public class AtsXWidgetsExampleBlamTest {
       }
 
       Assert.assertTrue(String.format("%s not found from list of provided Blams.", NAME_OF_ATS_ITEM), foundBlam);
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
 
       Assert.assertTrue(
          "Exceptions were thrown during AtsXWidgetsExampleBlamTest (gui test of XWidgetExampleBlam) should be none.",

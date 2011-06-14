@@ -100,7 +100,7 @@ public class AtsNavigateItemsToWorldViewTest {
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserSearchWorkflowSearchItem);
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
       return item;
    }
 
@@ -330,7 +330,7 @@ public class AtsNavigateItemsToWorldViewTest {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
       ((GroupWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedGroup(groupArt);
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
       WorldEditor worldEditor = WorldEditorUtil.getSingleEditorOrFail();
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
 
@@ -346,7 +346,7 @@ public class AtsNavigateItemsToWorldViewTest {
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 1);
       runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, true, 2);
       runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, false, 1);
@@ -468,7 +468,7 @@ public class AtsNavigateItemsToWorldViewTest {
          }
       }
       // Simulate double-click of navigate item
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
 
       WorldEditor worldEditor = WorldEditorUtil.getSingleEditorOrFail();
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();

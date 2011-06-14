@@ -15,13 +15,11 @@ import java.util.Collections;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.NavigateTestUtil;
 import org.eclipse.osee.ats.version.MassEditTeamVersionItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -60,8 +58,8 @@ public class AtsNavigateItemsToMassEditorTest {
       handleGeneralDoubleClickAndTestResults(item, AtsArtifactTypes.Version, 3);
    }
 
-   private void handleGeneralDoubleClickAndTestResults(XNavigateItem item, IArtifactType artifactType, int numOfType) throws OseeCoreException {
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+   private void handleGeneralDoubleClickAndTestResults(XNavigateItem item, IArtifactType artifactType, int numOfType) throws Exception {
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
       MassArtifactEditor massEditor = getMassArtifactEditor();
       Assert.assertNotNull(massEditor);
       Collection<Artifact> arts = massEditor.getLoadedArtifacts();

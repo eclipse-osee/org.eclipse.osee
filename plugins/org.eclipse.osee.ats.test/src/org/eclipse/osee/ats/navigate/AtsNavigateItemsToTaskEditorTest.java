@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
-import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -30,7 +28,6 @@ import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -128,8 +125,8 @@ public class AtsNavigateItemsToTaskEditorTest {
       runGeneralTaskSearchTest(item, expectedNum);
    }
 
-   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, IArtifactType artifactType, int numOfType, TableLoadOption tableLoadOption) throws OseeCoreException {
-      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
+   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, IArtifactType artifactType, int numOfType, TableLoadOption tableLoadOption) throws Exception {
+      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
       TaskEditor taskEditor = getSingleEditorOrFail();
       assertTrue(taskEditor != null);
       Collection<Artifact> arts = taskEditor.getLoadedArtifacts();

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
@@ -52,7 +53,11 @@ public class AtsNavigateComposite extends XNavigateComposite {
       if (item.getChildren().size() > 0) {
          filteredTree.getViewer().setExpandedState(item, true);
       }
-      AtsXNavigateItemLauncher.handleDoubleClick(item, tableLoadOptions);
+      try {
+         item.run(tableLoadOptions);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
    @Override
