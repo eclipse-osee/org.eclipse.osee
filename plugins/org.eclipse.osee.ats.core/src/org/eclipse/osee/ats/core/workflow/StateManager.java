@@ -25,13 +25,17 @@ import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
+import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -48,6 +52,7 @@ public class StateManager {
    private final XStateDam stateDam;
    private final AbstractWorkflowArtifact sma;
    private static final Set<String> notValidAttributeType = new HashSet<String>();
+   private static List<String> stateNames = null;
 
    public StateManager(AbstractWorkflowArtifact sma) {
       this.sma = sma;
@@ -454,5 +459,41 @@ public class StateManager {
          state.setName(stateName);
       }
       currentStateDam.setState(state);
+   }
+
+   public static Collection<? extends IBasicUser> getAssigneesByState(AbstractWorkflowArtifact workflow, StateDefinition state) throws OseeCoreException {
+      Set<IBasicUser> users = new HashSet<IBasicUser>();
+      SMAState smaState = workflow.getStateMgr().getSMAState(state, false);
+      if (smaState != null) {
+         users.addAll(smaState.getAssignees());
+      }
+      return users;
+   }
+
+   public synchronized static Collection<? extends String> getStateNames() {
+      if (stateNames == null) {
+         stateNames = new ArrayList<String>();
+         try {
+            for (WorkDefinition workDef : WorkDefinitionFactory.loadAllDefinitions()) {
+               for (StateDefinition state : workDef.getStates()) {
+                  if (!stateNames.contains(state.getName())) {
+                     stateNames.add(state.getName());
+                  }
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+         Collections.sort(stateNames);
+      }
+      return stateNames;
+   }
+
+   public static String getCompletedDateByState(AbstractWorkflowArtifact awa, StateDefinition state) throws OseeCoreException {
+      LogItem stateEvent = awa.getLog().getStateEvent(LogType.StateComplete, state.getPageName());
+      if (stateEvent != null && stateEvent.getDate() != null) {
+         return DateUtil.getMMDDYYHHMM(stateEvent.getDate());
+      }
+      return "";
    }
 }

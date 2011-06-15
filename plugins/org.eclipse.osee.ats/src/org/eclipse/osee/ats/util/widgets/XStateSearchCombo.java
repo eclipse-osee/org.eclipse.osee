@@ -8,19 +8,10 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.core.workdef.StateDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -43,24 +34,7 @@ public class XStateSearchCombo extends XComboViewer {
    protected synchronized void ensurePopulated() {
       if (validStates.isEmpty()) {
          validStates.add("--select--");
-         try {
-            for (WorkItemDefinition wid : WorkItemDefinitionFactory.getWorkItemDefinitions()) {
-               if (wid instanceof WorkPageDefinition) {
-                  if (!validStates.contains(((WorkPageDefinition) wid).getPageName())) {
-                     validStates.add(((WorkPageDefinition) wid).getPageName());
-                  }
-               }
-            }
-            for (WorkDefinition workDef : WorkDefinitionFactory.loadAllDefinitions()) {
-               for (StateDefinition state : workDef.getStates()) {
-                  if (!validStates.contains(state.getName())) {
-                     validStates.add(state.getName());
-                  }
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
+         validStates.addAll(StateManager.getStateNames());
          Collections.sort(validStates);
       }
    }

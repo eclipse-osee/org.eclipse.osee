@@ -83,7 +83,9 @@ import org.eclipse.osee.ats.column.ReviewNumIssuesColumn;
 import org.eclipse.osee.ats.column.ReviewNumMajorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewNumMinorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewReviewerColumn;
+import org.eclipse.osee.ats.column.StateAssigneesColumn;
 import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.column.StateCompletedColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
@@ -94,6 +96,7 @@ import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.column.WorkPackageColumn;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -226,6 +229,12 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      for (String stateName : StateManager.getStateNames()) {
+         registerColumns(new StateAssigneesColumn(stateName));
+      }
+      for (String stateName : StateManager.getStateNames()) {
+         registerColumns(new StateCompletedColumn(stateName));
       }
    }
 
