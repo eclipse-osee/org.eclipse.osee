@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.osee.ats.actions.AtsLogHistoryAction;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -166,6 +167,9 @@ public class XHistoryViewer extends GenericXWidget {
       toolBar = new ToolBar(actionComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
+
+      ActionContributionItem item = new ActionContributionItem(new AtsLogHistoryAction(awa));
+      item.fill(toolBar, 0);
    }
 
    /**
