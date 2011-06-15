@@ -34,22 +34,17 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class DbTableExportItem extends AbstractDbExportItem {
    private final String query;
-   private final StringBuffer binaryContentBuffer;
-   private final StringBuffer stringContentBuffer;
-   private final StringBuffer oseeCommentBuffer;
-   private final StringBuffer branchNameBuffer;
-   private final StringBuffer rationaleBuffer;
+   private final StringBuffer binaryContentBuffer = new StringBuffer();
+   private final StringBuffer stringContentBuffer = new StringBuffer();
+   private final StringBuffer oseeCommentBuffer = new StringBuffer();
+   private final StringBuffer branchNameBuffer = new StringBuffer();
+   private final StringBuffer rationaleBuffer = new StringBuffer();
    private final OseeServices services;
 
    public DbTableExportItem(OseeServices services, ExportItem id, String query) {
       super(id);
       this.services = services;
       this.query = query;
-      this.binaryContentBuffer = new StringBuffer();
-      this.stringContentBuffer = new StringBuffer();
-      this.oseeCommentBuffer = new StringBuffer();
-      this.branchNameBuffer = new StringBuffer();
-      this.rationaleBuffer = new StringBuffer();
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws Exception {
@@ -73,18 +68,8 @@ public class DbTableExportItem extends AbstractDbExportItem {
          outputStream = new FileOutputStream(target);
          Lib.inputStreamToOutputStream(sourceStream, outputStream);
       } finally {
-         if (sourceStream != null) {
-            try {
-               sourceStream.close();
-            } catch (Exception ex) {
-            }
-         }
-         if (outputStream != null) {
-            try {
-               outputStream.close();
-            } catch (Exception ex) {
-            }
-         }
+         Lib.close(sourceStream);
+         Lib.close(outputStream);
       }
       return locator.getRawPath().replace('/', '\\');
    }
@@ -94,7 +79,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
       IOseeStatement chStmt = services.getDatabaseService().getStatement(getConnection());
       try {
          Pair<String, Object[]> sqlData = ExchangeDb.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
-         chStmt.runPreparedQuery(sqlData.getFirst(), sqlData.getSecond());
+         chStmt.runPreparedQuery(10000, sqlData.getFirst(), sqlData.getSecond());
          while (chStmt.next()) {
             processData(appendable, chStmt);
          }
@@ -198,10 +183,5 @@ public class DbTableExportItem extends AbstractDbExportItem {
          Xml.writeAsCdata(appendable, stringValue);
          ExportImportXml.closeXmlNode(appendable, tag);
       }
-   }
-
-   @Override
-   public void cleanUp() {
-      super.cleanUp();
    }
 }
