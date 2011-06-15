@@ -100,6 +100,8 @@ import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHel
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
@@ -629,10 +631,10 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      SkynetTransaction transaction =
                         new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
                            type.getName(), name));
-                     parent.addNewChild(null, type, name);
+                     Artifact newChildArt = parent.addNewChild(null, type, name);
                      parent.persist(transaction);
                      transaction.execute();
-
+                     RendererManager.open(newChildArt, PresentationType.DEFAULT_OPEN);
                      treeViewer.refresh();
                      treeViewer.refresh(false);
                   }
