@@ -4,7 +4,10 @@ exec wish "$0" -- "$@"
  
 package require Tk
 
-wm title . "Git Password"
+set ::_inputTitle [lindex $argv 0]
+set ::_promptText [lindex $argv 1]
+
+wm title . $::_inputTitle
 #wm geometry . 200x100
 
 # change the following to 'wm resizable . 0 0' to prevent resizing
@@ -16,8 +19,13 @@ grid columnconfigure . 0 -weight 1;
 grid rowconfigure . 0 -weight 1
 
 
-grid [ttk::label .c.message -text "Enter Password"] -row 0 -column 1 
-grid [ttk::entry .c.textField  -show * -textvar _password] -row 0 -column 2 
+grid [ttk::label .c.message -textvar _promptText] -row 0 -column 1 
+
+if { [string equal $_promptText "Enter Password"] } {
+   grid [ttk::entry .c.textField  -show * -textvar _password] -row 0 -column 2
+} else {
+   grid [ttk::entry .c.textField  -textvar _password] -row 0 -column 2
+}
 grid [ttk::button .c.ok -text "OK" -command onOk] -row 1 -column 1 
 grid [ttk::button .c.cancel -text "Cancel" -command onCancel] -row 1 -column 2 
 
