@@ -17,21 +17,21 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
-public class CompletedCancelledByColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class CompletedCancelledDateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
-   public static CompletedCancelledByColumn instance = new CompletedCancelledByColumn();
+   public static CompletedCancelledDateColumn instance = new CompletedCancelledDateColumn();
 
-   public static CompletedCancelledByColumn getInstance() {
+   public static CompletedCancelledDateColumn getInstance() {
       return instance;
    }
 
-   private CompletedCancelledByColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".cmpCnclBy", "Completed or Cancelled By", 80, SWT.LEFT, false,
-         SortDataType.String, false, "User transitioning action to completed or cancelled state.");
+   private CompletedCancelledDateColumn() {
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".cmpCnclDate", "Completed or Cancelled Date", 80, SWT.LEFT, false,
+         SortDataType.Date, false, "Date action to completed or cancelled.");
    }
 
    /**
@@ -39,8 +39,8 @@ public class CompletedCancelledByColumn extends XViewerAtsColumn implements IXVi
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public CompletedCancelledByColumn copy() {
-      CompletedCancelledByColumn newXCol = new CompletedCancelledByColumn();
+   public CompletedCancelledDateColumn copy() {
+      CompletedCancelledDateColumn newXCol = new CompletedCancelledDateColumn();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -49,26 +49,21 @@ public class CompletedCancelledByColumn extends XViewerAtsColumn implements IXVi
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            if (((AbstractWorkflowArtifact) element).isCompleted()) {
-               return CompletedByColumn.getInstance().getColumnText(element, column, columnIndex);
-            } else if (((AbstractWorkflowArtifact) element).isCancelled()) {
-               return CancelledByColumn.getInstance().getColumnText(element, column, columnIndex);
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
+            if (awa.isCompleted()) {
+               return CompletedDateColumn.getDateStr(element);
+            } else if (awa.isCancelled()) {
+               return CancelledDateColumn.getDateStr(element);
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IBasicUser> users = new HashSet<IBasicUser>();
+            Set<String> dates = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               IBasicUser user = team.getCompletedBy();
-               if (((AbstractWorkflowArtifact) element).isCompleted()) {
-                  user = team.getCompletedBy();
-               } else if (((AbstractWorkflowArtifact) element).isCancelled()) {
-                  user = team.getCancelledBy();
-               }
-               if (user != null) {
-                  users.add(user);
+               String date = getColumnText(team, column, columnIndex);
+               if (Strings.isValid(date)) {
+                  dates.add(date);
                }
             }
-            return Artifacts.toString(";", users);
-
+            return Artifacts.toString(";", dates);
          }
       } catch (OseeCoreException ex) {
          XViewerCells.getCellExceptionString(ex);
