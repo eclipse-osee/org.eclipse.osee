@@ -41,6 +41,17 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class ActionableItemManager {
 
+   public static Set<ActionableItemArtifact> getAIsFromItemAndChildren(ActionableItemArtifact aia) throws OseeCoreException {
+      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      aias.add(aia);
+      for (Artifact art : aia.getChildren()) {
+         if (art instanceof ActionableItemArtifact) {
+            aias.addAll(getAIsFromItemAndChildren((ActionableItemArtifact) art));
+         }
+      }
+      return aias;
+   }
+
    public static Result editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
       final AICheckTreeDialog diag =
          new AICheckTreeDialog(
