@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.OriginatorColumn;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
@@ -17,6 +18,9 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -33,12 +37,13 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class SMAOriginatorHeader extends Composite {
 
    private final static String ORIGINATOR = "Originator:";
+   private Label userIconLabel;
    private Label origLabel;
 
    public SMAOriginatorHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final SMAEditor editor) {
       super(parent, style);
       setLayoutData(new GridData());
-      setLayout(ALayout.getZeroMarginLayout(2, false));
+      setLayout(ALayout.getZeroMarginLayout(3, false));
       editor.getToolkit().adapt(this);
 
       try {
@@ -73,6 +78,9 @@ public class SMAOriginatorHeader extends Composite {
                Label errorLabel = editor.getToolkit().createLabel(this, "Error: No originator identified.");
                errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             } else {
+               User origUser = UserManager.getUser(sma.getCreatedBy());
+               userIconLabel = editor.getToolkit().createLabel(this, "");
+               userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
                origLabel = editor.getToolkit().createLabel(this, sma.getCreatedBy().getName());
                origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             }
@@ -81,7 +89,13 @@ public class SMAOriginatorHeader extends Composite {
                Label errorLabel = editor.getToolkit().createLabel(this, "Error: No originator identified.");
                errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             } else {
-               Label origLabel = editor.getToolkit().createLabel(this, ORIGINATOR + sma.getCreatedBy().getName());
+               Label origLabel = editor.getToolkit().createLabel(this, ORIGINATOR);
+               origLabel.setLayoutData(new GridData());
+
+               User origUser = UserManager.getUser(sma.getCreatedBy());
+               userIconLabel = editor.getToolkit().createLabel(this, "");
+               userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
+               origLabel = editor.getToolkit().createLabel(this, sma.getCreatedBy().getName());
                origLabel.setLayoutData(new GridData());
             }
          }
@@ -92,5 +106,4 @@ public class SMAOriginatorHeader extends Composite {
       }
 
    }
-
 }

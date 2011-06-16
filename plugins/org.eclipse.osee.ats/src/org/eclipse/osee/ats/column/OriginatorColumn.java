@@ -29,11 +29,14 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -132,6 +135,28 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
+   }
+
+   @Override
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
+      try {
+         if (element instanceof AbstractWorkflowArtifact) {
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
+            User origUser = UserManager.getUser(awa.getCreatedBy());
+            return FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser));
+         }
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+            Set<User> users = new HashSet<User>();
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
+               users.add(UserManager.getUser(team.getCreatedBy()));
+            }
+            return FrameworkArtifactImageProvider.getUserImage(users);
+         }
+
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return null;
    }
 
    @Override
