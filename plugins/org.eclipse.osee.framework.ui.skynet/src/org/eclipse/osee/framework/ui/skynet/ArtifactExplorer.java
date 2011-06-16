@@ -1361,6 +1361,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                @Override
                public void run() {
                   treeViewer.refresh();
+                  refreshBranchWarning();
                }
             });
          }
@@ -1472,9 +1473,12 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
-      if (branchEvent.getEventType() == BranchEventType.Committed && branch != null && branch.getGuid().equals(
-         branchEvent.getBranchGuid())) {
-         SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
+      if (branch.getGuid().equals(branchEvent.getBranchGuid())) {
+         if (branchEvent.getEventType() == BranchEventType.Committed && branch != null) {
+            SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
+         } else {
+            refreshBranchWarning();
+         }
       }
    }
 
