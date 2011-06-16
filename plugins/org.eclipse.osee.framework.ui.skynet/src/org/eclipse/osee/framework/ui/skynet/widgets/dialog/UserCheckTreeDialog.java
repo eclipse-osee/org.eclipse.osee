@@ -107,6 +107,9 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
     * If set, team members will be shown prior to rest of un-checked users
     */
    public void setTeamMembers(Collection<? extends IBasicUser> teamMembers) {
+      if (this.teamMembers == null) {
+         this.teamMembers = new HashSet<IBasicUser>();
+      }
       this.teamMembers.addAll(teamMembers);
    }
 
