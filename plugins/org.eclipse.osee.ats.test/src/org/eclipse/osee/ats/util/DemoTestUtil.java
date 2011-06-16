@@ -35,17 +35,14 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -60,18 +57,6 @@ public class DemoTestUtil {
    public static Map<DemoWorkType, Artifact> unCommittedWorkflows;
    public static Map<DemoWorkType, Artifact> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
-
-   public static void validateArtifactCache() throws OseeStateException {
-      if (ArtifactCache.getDirtyArtifacts().size() > 0) {
-         for (Artifact artifact : ArtifactCache.getDirtyArtifacts()) {
-            System.err.println(String.format("Artifact [%s] is dirty [%s]", artifact.toStringWithId(),
-               Artifacts.getDirtyReport(artifact)));
-         }
-         throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
-            ArtifactCache.getDirtyArtifacts().size());
-      }
-
-   }
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Collection<Artifact> robotArtifacts =

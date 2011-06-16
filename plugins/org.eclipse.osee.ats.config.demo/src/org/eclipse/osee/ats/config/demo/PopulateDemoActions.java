@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.core.workflow.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -53,6 +52,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -74,6 +75,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtra
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -123,6 +125,18 @@ public class PopulateDemoActions extends XNavigateItemAction {
       run(true);
    }
 
+   private static void validateArtifactCache() throws OseeStateException {
+      if (ArtifactCache.getDirtyArtifacts().size() > 0) {
+         for (Artifact artifact : ArtifactCache.getDirtyArtifacts()) {
+            System.err.println(String.format("Artifact [%s] is dirty [%s]", artifact.toStringWithId(),
+               Artifacts.getDirtyReport(artifact)));
+         }
+         throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
+            ArtifactCache.getDirtyArtifacts().size());
+      }
+
+   }
+
    public void run(boolean prompt) throws Exception {
       AtsUtil.setEmailEnabled(false);
       if (AtsUtil.isProductionDb()) {
@@ -131,7 +145,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (DbUtil.isDbInit() || !prompt || prompt && MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
          getName())) {
 
-         DemoTestUtil.validateArtifactCache();
+         validateArtifactCache();
 
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Populate Demo Database");
 
@@ -190,7 +204,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create and transition reviews off sample workflows
          DemoDbReviews.createReviews(DEBUG);
 
-         DemoTestUtil.validateArtifactCache();
+         validateArtifactCache();
          TestUtil.severeLoggingEnd(monitorLog);
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Populate Complete");
       }
