@@ -39,10 +39,6 @@ import org.junit.Test;
 
 /**
  * {@link RelationIntegrityCheck}
- * <p>
- * Tests data integrity case where a new relation is persisted on a deleted artifact. Checks that if the situation
- * exists and runs <code>applyFix()</code> to resolve the issue.
- * </p>
  * 
  * @author Karol M. Wilk
  */
@@ -52,6 +48,12 @@ public class RelationIntegrityCheckTest {
    private Branch parentBranch;
    private Branch workingBranch;
 
+   /**
+    * <p>
+    * Tests data integrity case where a new relation is persisted on a deleted artifact. Checks that if the situation
+    * exists and runs <code>applyFix()</code> to resolve the issue.
+    * </p>
+    */
    @Test
    public void testNewRelationOnDeletedArtifact() throws Exception {
       runQuery(RelationIntegrityCheck.DELETED_A_ARTIFACTS);

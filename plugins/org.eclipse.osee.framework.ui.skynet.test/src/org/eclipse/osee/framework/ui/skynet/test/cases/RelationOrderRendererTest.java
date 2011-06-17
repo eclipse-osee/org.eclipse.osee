@@ -71,7 +71,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testRenderingAllValid() {
+   public void testRenderingAllValid() throws OseeCoreException {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
 
@@ -87,8 +87,8 @@ public class RelationOrderRendererTest {
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   @Test
-   public void testRenderingOrderTypeNotFoud() {
+   @Test(expected = OseeCoreException.class)
+   public void testRenderingOrderTypeNotFound() throws OseeCoreException {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, GUID.create(), "0", "1", "2");
@@ -96,7 +96,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testRenderingEmptyGuids() {
+   public void testRenderingEmptyGuids() throws OseeCoreException {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
@@ -111,7 +111,7 @@ public class RelationOrderRendererTest {
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, String relationType, String relationSideName, RelationSide side, String relationOrderIdGuid, String... guids) {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, String relationType, String relationSideName, RelationSide side, String relationOrderIdGuid, String... guids) throws OseeCoreException {
       List<String> artGuids = new ArrayList<String>();
       if (guids != null && guids.length > 0) {
          artGuids.addAll(Arrays.asList(guids));
@@ -119,12 +119,9 @@ public class RelationOrderRendererTest {
       orderData.addOrderList(relationType, side.name(), relationOrderIdGuid, artGuids);
 
       String expectedOrderId = relationOrderIdGuid;
-      try {
-         IRelationSorter sorter = sorterProvider.getRelationOrder(relationOrderIdGuid);
-         expectedOrderId = sorter.getSorterId().getName();
-      } catch (Exception ex) {
-         // Do Nothing
-      }
+      IRelationSorter sorter = sorterProvider.getRelationOrder(relationOrderIdGuid);
+      expectedOrderId = sorter.getSorterId().getName();
+
       expectedData.add(new Object[] {
          relationType,
          relationSideName,

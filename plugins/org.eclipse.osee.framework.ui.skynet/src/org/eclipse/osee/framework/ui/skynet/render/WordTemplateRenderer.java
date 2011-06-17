@@ -67,7 +67,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private final IComparator comparator;
 
    public WordTemplateRenderer() {
-      super();
       this.comparator = new WordTemplateCompare(this);
    }
 

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 import org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.Import.MatchingStrategy;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -50,7 +51,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @link ArtifactImportWizard
+ * @see ArtifactImportWizard
  * @author Karol M. Wilk
  */
 public final class ArtifactImportWizardTest {
@@ -155,13 +156,15 @@ public final class ArtifactImportWizardTest {
       //@formatter:off
       /*
        setup artifact tree of this form:
-         ArtifactImportWizardTest_Root
-                                     |
-                                     `--A
-                                        |\.__ C
-                                        | |
-                                        | `._ D
-                                        B
+         myRootArtifact
+                      |
+                      `--A
+                      |   \._ C
+                      |   |
+                      |   `._ D
+                      |
+                      `--B
+         Where myRootArtifact real name is "ArtifactImportWizardTest_Root"
        */
       //@formatter:on
 

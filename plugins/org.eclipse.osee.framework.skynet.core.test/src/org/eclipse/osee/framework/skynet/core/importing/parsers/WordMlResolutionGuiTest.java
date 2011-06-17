@@ -22,18 +22,18 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @formatter:off
- * Tests by inputing the whole requirements sample ICD file.
- * Tests:
- * 	- if user answers store as content vs store as an outline number,
- *      depending on what user selects.
- * 
- *      THESE TESTS MUST RUN AS PART OF THE SUITE, RoughArtifact* classes need
- *      the osee caching service.
+ * <p>
+ * Tests by inputing the whole requirements sample ICD file.<br/>
+ * Tests:<br/>
+ * <li>if user answers store as content vs store as an outline number, depending on what user selects.</li>
+ * </p>
+ * <p>
+ * <br/>
+ * THESE TESTS MUST RUN AS PART OF THE SUITE, RoughArtifact* classes need the osee caching service.<br/>
+ * </p>
  * 
  * @author Karol M. Wilk
  */
-//@formatter:on
 public class WordMlResolutionGuiTest {
 
    private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
