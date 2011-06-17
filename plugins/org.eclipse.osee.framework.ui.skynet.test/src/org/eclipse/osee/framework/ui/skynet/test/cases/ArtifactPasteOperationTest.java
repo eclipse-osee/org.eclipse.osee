@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -88,6 +89,7 @@ public class ArtifactPasteOperationTest {
 
    private static void delete(Artifact artifact) throws OseeCoreException {
       if (artifact != null) {
+         ArtifactCache.deCache(artifact);
          artifact.deleteAndPersist();
       }
    }

@@ -36,7 +36,7 @@ import org.junit.Test;
 public class ArtifactTestUnitStoreTest {
 
    private static final String testInputData = "1|test1\n2|test2\n3|test3";
-   Branch testBranch;
+   private Branch testBranch;
    private static final String testArtifactGuid = "AEas7qndRl+k+g6YpkwA";
 
    private CoverageItem createCoverageItem(TestUnitCache tc) throws OseeCoreException {
@@ -93,7 +93,5 @@ public class ArtifactTestUnitStoreTest {
       String actual = testArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");
       String expected = testInputData + "\n4|test10";
       Assert.assertEquals(expected, actual);
-
    }
-
 }

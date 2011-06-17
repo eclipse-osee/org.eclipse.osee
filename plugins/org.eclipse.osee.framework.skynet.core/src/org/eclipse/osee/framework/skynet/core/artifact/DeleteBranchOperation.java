@@ -36,6 +36,9 @@ public class DeleteBranchOperation extends AbstractOperation {
       Branch branch = BranchManager.getBranch(this.branch);
       BranchState originalState = branch.getBranchState();
       BranchArchivedState originalArchivedState = branch.getArchiveState();
+
+      ArtifactCache.deCache(this.branch);
+
       try {
          branch.setBranchState(BranchState.DELETED);
          branch.setArchived(true);

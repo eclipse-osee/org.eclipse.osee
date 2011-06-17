@@ -1,18 +1,29 @@
-/*
- * Created on Nov 23, 2010
+/*******************************************************************************
+ * Copyright (c) 2011 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.widgets.workflow;
 
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
- * @Tests WorkPageAdapter
+ * @link WorkPageAdapter
  * @author Donald G. Dunne
  */
 public class WorkPageAdapterTest {
+
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    @Test
    public void ordered() {

@@ -27,16 +27,23 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * @author Ryan Schmitt
  */
 public class RelationOrderMergeUtilityTest {
+
+   @Rule
+   public final MethodRule oseeHousekeeping = new OseeHousekeepingRule();
+
    private final IRelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
    private final IRelationSorterId ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
    private final IRelationSorterId descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
@@ -48,8 +55,7 @@ public class RelationOrderMergeUtilityTest {
 
    @Before
    public void createBranch() throws OseeCoreException {
-      String branchName = GUID.create();
-      destBranch = BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), branchName, null);
+      destBranch = BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), GUID.create(), null);
       hierType = RelationTypeManager.getType(defaultHierarchy);
       hierSide = defaultHierarchy.getSide();
    }

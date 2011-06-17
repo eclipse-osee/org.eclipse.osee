@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -50,6 +51,8 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
       PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getId(), recursive);
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.PURGE_BRANCH.name());
+
+      ArtifactCache.deCache(branch);
 
       AcquireResult response =
          HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.PURGE_BRANCH_REQUEST,

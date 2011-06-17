@@ -25,7 +25,9 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,17 +40,19 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
 
 /**
  * @author Donald G. Dunne
  */
 public class BranchEventTest {
 
-   private BranchEvent resultBranchEvent = null;
-   private Sender resultSender = null;
    public static List<String> ignoreLogging = Arrays.asList("");
    private static String BRANCH_NAME_PREFIX = "BranchEventManagerTest";
+   private static String TOP_LEVEL_BRANCH_NAME = String.format("%s - top level branch", BRANCH_NAME_PREFIX);
    private static Branch topLevel;
+
+   private final BranchEventListener branchEventListener = new BranchEventListener();
 
    @org.junit.Test
    public void testRegistration() throws Exception {
@@ -66,7 +70,10 @@ public class BranchEventTest {
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
-   @org.junit.Test
+   /**
+    * If all branch tests take longer than 10seconds, fail test, something went wrong.
+    */
+   @org.junit.Test(timeout = 10000)
    public void testEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeEventManager.removeAllListeners();
@@ -89,12 +96,12 @@ public class BranchEventTest {
          TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
       } finally {
          OseeEventManager.getPreferences().setPendRunning(false);
+         OseeEventManager.removeListener(branchEventListener);
       }
-
    }
 
    private Branch testEvents__changeArchiveState(Branch committedBranch) throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
 
       Assert.assertNotNull(committedBranch);
       final String guid = committedBranch.getGuid();
@@ -102,21 +109,16 @@ public class BranchEventTest {
       BranchManager.updateBranchArchivedState(null, committedBranch.getId(), committedBranch.getGuid(),
          BranchArchivedState.UNARCHIVED);
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.ArchiveStateUpdated, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      verifyReceivedBranchStates(BranchEventType.ArchiveStateUpdated, guid);
+
       Assert.assertEquals(BranchArchivedState.UNARCHIVED, committedBranch.getArchiveState());
       Assert.assertFalse(committedBranch.isEditable());
       return committedBranch;
    }
 
    private Branch testEvents__committed() throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
+
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
 
@@ -129,21 +131,16 @@ public class BranchEventTest {
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(topLevel, workingBranch);
       BranchManager.commitBranch(null, conflictManager, true, true);
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Committed, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      verifyReceivedBranchStates(BranchEventType.Committed, guid);
+
       Assert.assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
       Assert.assertFalse(workingBranch.isEditable());
       return workingBranch;
    }
 
    private Branch testEvents__purged() throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
+
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge", UserManager.getUser());
 
@@ -154,14 +151,8 @@ public class BranchEventTest {
 
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(workingBranch, false));
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Purged, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      verifyReceivedBranchStates(BranchEventType.Purged, guid);
+
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
       Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
       Assert.assertFalse(workingBranch.isEditable());
@@ -175,150 +166,143 @@ public class BranchEventTest {
    }
 
    private Branch testEvents__deleted(Branch workingBranch) throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
+
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, workingBranch.getBranchState());
 
       Operations.executeWork(new DeleteBranchOperation(workingBranch));
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Deleted, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      verifyReceivedBranchStates(BranchEventType.Deleted, guid);
+
       Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
       return workingBranch;
    }
 
    private Branch testEvents__stateChange(Branch workingBranch) throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
+
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
       BranchManager.updateBranchState(null, workingBranch.getId(), workingBranch.getGuid(), BranchState.MODIFIED);
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.StateUpdated, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      verifyReceivedBranchStates(BranchEventType.StateUpdated, guid);
+
       Assert.assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
       return workingBranch;
    }
 
    private Branch testEvents__typeChange(Branch workingBranch) throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchType.WORKING, workingBranch.getBranchType());
       BranchManager.updateBranchType(null, workingBranch.getId(), workingBranch.getGuid(), BranchType.BASELINE);
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.TypeUpdated, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      verifyReceivedBranchStates(BranchEventType.TypeUpdated, guid);
+
       Assert.assertEquals(BranchType.BASELINE, workingBranch.getBranchType());
       return workingBranch;
    }
 
    private Branch testEvents__workingRenamed(Branch workingBranch) throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
+
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       String newName = BRANCH_NAME_PREFIX + " - working renamed";
       workingBranch.setName(newName);
       BranchManager.persist(workingBranch);
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Renamed, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      verifyReceivedBranchStates(BranchEventType.Renamed, guid);
+
       Assert.assertEquals(newName, workingBranch.getName());
       Assert.assertNotNull(BranchManager.getBranchesByName(newName));
       return workingBranch;
    }
 
    private Branch testEvents__workingAdded() throws Exception {
-      clearEventCollections();
+      branchEventListener.reset();
+
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working", UserManager.getUser());
       Assert.assertNotNull(workingBranch);
 
-      Thread.sleep(4000);
+      verifyReceivedBranchStates(BranchEventType.Added, null);
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Added, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
       return workingBranch;
    }
 
    private Branch testEvents__topLevelAdded() throws Exception {
-      clearEventCollections();
-      final String guid = GUID.create();
-      final String branchName = String.format("%s - top level branch", BRANCH_NAME_PREFIX);
+      branchEventListener.reset();
+
+      String guid = GUID.create();
+      String branchName = TOP_LEVEL_BRANCH_NAME;
       IOseeBranch branchToken = TokenFactory.createBranch(guid, branchName);
       topLevel = BranchManager.createTopLevelBranch(branchToken);
       Assert.assertNotNull(topLevel);
 
-      Thread.sleep(2000);
+      verifyReceivedBranchStates(BranchEventType.Added, guid);
 
-      Assert.assertNotNull(resultBranchEvent);
-      Assert.assertEquals(BranchEventType.Added, resultBranchEvent.getEventType());
-      if (isRemoteTest()) {
-         Assert.assertTrue(resultSender.isRemote());
-      } else {
-         Assert.assertTrue(resultSender.isLocal());
-      }
-      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
       return topLevel;
+   }
+
+   private void verifyReceivedBranchStates(BranchEventType expectedEnumState, String expectedBranchGuid) throws InterruptedException {
+      Pair<Sender, BranchEvent> update = branchEventListener.getResults();
+      Sender receivedSender = update.getFirst();
+      BranchEvent receivedBranchEvent = update.getSecond();
+
+      Assert.assertEquals(expectedEnumState, receivedBranchEvent.getEventType());
+      if (isRemoteTest()) {
+         Assert.assertTrue(receivedSender.isRemote());
+      } else {
+         Assert.assertTrue(receivedSender.isLocal());
+      }
+
+      if (Strings.isValid(expectedBranchGuid)) {
+         Assert.assertEquals(expectedBranchGuid, receivedBranchEvent.getBranchGuid());
+      }
    }
 
    protected boolean isRemoteTest() {
       return false;
    }
 
-   public class BranchEventListener implements IBranchEventListener {
+   @AfterClass
+   public static void cleanUp() throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(topLevel, true));
+   }
 
-      @Override
-      public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-         resultBranchEvent = branchEvent;
-         resultSender = sender;
+   private class BranchEventListener implements IBranchEventListener {
+      private BranchEvent branchEvent;
+      private Sender sender;
+      private boolean receivedUpdate = false;
+
+      public synchronized void reset() {
+         receivedUpdate = false;
       }
 
       @Override
       public List<? extends IEventFilter> getEventFilters() {
          return null;
       }
-   }
 
-   @org.junit.AfterClass
-   public static void cleanUpAfter() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(topLevel, true));
-   }
+      @Override
+      public synchronized void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+         this.branchEvent = branchEvent;
+         this.sender = sender;
+         receivedUpdate = true;
+         notify();
+      }
 
-   // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private final BranchEventListener branchEventListener = new BranchEventListener();
-
-   public void clearEventCollections() {
-      resultBranchEvent = null;
-   }
+      public synchronized Pair<Sender, BranchEvent> getResults() throws InterruptedException {
+         while (!receivedUpdate) {
+            wait();
+         }
+         receivedUpdate = false;
+         return new Pair<Sender, BranchEvent>(sender, branchEvent);
+      }
+   };
 }

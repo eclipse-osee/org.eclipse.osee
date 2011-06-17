@@ -59,6 +59,24 @@ public final class ArtifactCache {
       cache.deCache(artifact);
    }
 
+   /**
+    * <p>
+    * De-caches all artifacts from <code>HISTORICAL_CACHE</code> and <code>ACTIVE_CACHE</code> for a specific branch.
+    * This method is usually called by a purge operation or at the end of a unit test/suite.
+    * </p>
+    *
+    * @param branch of which artifacts (all) will be de-cache'ed.
+    */
+   public static void deCache(IOseeBranch branch) {
+      for (AbstractArtifactCache cache : new AbstractArtifactCache[] {HISTORICAL_CACHE, ACTIVE_CACHE}) {
+         for (Artifact artifact : cache.getAll()) {
+            if (artifact.getBranch().equals(branch)) {
+               cache.deCache(artifact);
+            }
+         }
+      }
+   }
+
    public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact artifact : getArtifactsByType(artifactType)) {

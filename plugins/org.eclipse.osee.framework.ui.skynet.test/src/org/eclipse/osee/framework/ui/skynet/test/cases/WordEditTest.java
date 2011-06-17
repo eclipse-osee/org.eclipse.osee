@@ -124,7 +124,7 @@ public class WordEditTest {
          OseeEventManager.setDisableEvents(eventBoolean);
          OseeEventManager.removeListener(listener);
       }
-      Assert.assertTrue("Update Event was not received", listener.wasUpdateReceived());
+      Assert.assertTrue("Intermittent test failure, Update Event was not received", listener.wasUpdateReceived());
    }
 
    private static String getRenderedStoredContent(FileSystemRenderer renderer, Artifact artifact) throws CoreException, IOException {
@@ -156,13 +156,13 @@ public class WordEditTest {
       private volatile boolean wasUpdateReceived;
 
       public UpdateArtifactListener(EventModType modType, Artifact artifact) {
-         super();
          this.artToLookFor = new EventBasicGuidArtifact(modType, artifact);
       }
 
       @Override
       public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
          List<EventBasicGuidArtifact> changes = artifactEvent.getArtifacts();
+
          if (changes.contains(artToLookFor)) {
             synchronized (this) {
                wasUpdateReceived = true;

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -21,12 +22,22 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class RelationDeletionTest {
+
+   private final List<Artifact> artifacts = new ArrayList<Artifact>();
+
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    @Before
    public void setUp() throws Exception {
@@ -34,7 +45,12 @@ public class RelationDeletionTest {
       assertFalse(ClientSessionManager.isProductionDataStore());
    }
 
-   @org.junit.Test
+   @After
+   public void cleanUp() throws OseeCoreException {
+      new PurgeArtifacts(artifacts).execute();
+   }
+
+   @Test
    public void testDeleteRelationPersistsBothSides() throws Exception {
       SevereLoggingMonitor monitor = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitor);
@@ -72,6 +88,8 @@ public class RelationDeletionTest {
    }
 
    private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact(artifactType, branch);
+      Artifact newArtifact = ArtifactTypeManager.addArtifact(artifactType, branch);
+      artifacts.add(newArtifact);
+      return newArtifact;
    }
 }

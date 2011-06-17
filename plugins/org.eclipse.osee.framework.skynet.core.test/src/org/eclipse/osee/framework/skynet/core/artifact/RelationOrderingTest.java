@@ -81,10 +81,10 @@ public class RelationOrderingTest {
 
    @After
    public void cleanupArtifacts() throws Exception {
-      //      parent.deleteAndPersist();
-      //      child1.deleteAndPersist();
-      //      child2.deleteAndPersist();
-      //      child3.deleteAndPersist();
+      for (Artifact artifact : new Artifact[] {parent, child1, child2, child3}) {
+         ArtifactCache.deCache(artifact);
+         artifact.deleteAndPersist();
+      }
    }
 
    @org.junit.Test

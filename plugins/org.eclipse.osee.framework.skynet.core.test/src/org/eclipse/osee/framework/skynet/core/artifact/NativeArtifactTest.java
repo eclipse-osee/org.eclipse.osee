@@ -11,19 +11,19 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.AfterClass;
@@ -34,28 +34,28 @@ import org.junit.BeforeClass;
  */
 public class NativeArtifactTest {
 
+   private final static String ARTIFACT_NAME = NativeArtifactTest.class.getSimpleName();
+   private final static Set<Artifact> testArtifacts = new HashSet<Artifact>();
+
    @BeforeClass
    @AfterClass
    public static void cleanup() throws Exception {
-      Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(NativeArtifactTest.class.getSimpleName(), DemoSawBuilds.SAW_Bld_2,
-            EXCLUDE_DELETED);
-      new PurgeArtifacts(arts).execute();
-   }
-
-   @org.junit.Test
-   public void testNativeArtifact() throws Exception {
-      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_2, true);
-      assertNotNull(csvArtifact);
-      Artifact artifact = csvArtifact.getArtifact();
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent));
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.Extension));
+      new PurgeArtifacts(testArtifacts).execute();
    }
 
    @org.junit.Test
    public void testGetFileExtension() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
       assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("csv"));
+   }
+
+   @org.junit.Test
+   public void testNativeArtifact() throws Exception {
+      CsvArtifact csvArtifact = getCsvArtifact(true);
+      assertNotNull(csvArtifact);
+      Artifact artifact = csvArtifact.getArtifact();
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.Extension));
    }
 
    @org.junit.Test
@@ -84,8 +84,13 @@ public class NativeArtifactTest {
       }
    }
 
-   private Artifact getNativeArtifact() throws Exception {
-      return CsvArtifact.getCsvArtifact(getClass().getSimpleName(), DemoSawBuilds.SAW_Bld_2, false).getArtifact();
+   private Artifact getNativeArtifact() throws OseeCoreException {
+      return getCsvArtifact(false).getArtifact();
    }
 
+   private CsvArtifact getCsvArtifact(boolean create) throws OseeCoreException {
+      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(ARTIFACT_NAME, DemoSawBuilds.SAW_Bld_2, create);
+      testArtifacts.add(csvArtifact.getArtifact());
+      return csvArtifact;
+   }
 }

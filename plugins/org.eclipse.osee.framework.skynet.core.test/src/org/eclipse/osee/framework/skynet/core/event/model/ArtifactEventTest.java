@@ -189,7 +189,7 @@ public class ArtifactEventTest {
       newArt.persist(getClass().getSimpleName());
 
       Assert.assertEquals(2, resultEventArtifacts.size());
-      Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
+      Assert.assertTrue("No relations events should be sent", resultEventRelations.isEmpty());
       if (isRemoteTest()) {
          Assert.assertTrue(resultSender.isRemote());
       } else {
