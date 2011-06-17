@@ -31,6 +31,7 @@ public class OseeProperties {
    private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
    private static final String OSEE_EMBEDDED_DB_SERVER = "osee.db.embedded.server";
    private static final String OSEE_DEFAULT_BROKER_URI = "osee.default.broker.uri";
+   private static final String OSEE_PROXY_BYPASS_ENABLED = "osee.proxy.bypass.enabled";
 
    protected OseeProperties() {
       // Utility Class
@@ -163,6 +164,13 @@ public class OseeProperties {
       if (superClazz != null) {
          toStringHelper(list, superClazz);
       }
+   }
+
+   /**
+    * @return whether proxy settings should be ignored for HttpRequests
+    */
+   public static boolean getOseeProxyBypassEnabled() {
+      return Boolean.valueOf(System.getProperty(OSEE_PROXY_BYPASS_ENABLED, "false"));
    }
 
    @Override

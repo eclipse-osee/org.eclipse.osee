@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.BundleContext;
@@ -78,27 +79,30 @@ public class HttpProcessor {
    }
 
    private static void configureProxyData(URI uri, HostConfiguration config) {
-      if (proxyService == null) {
-         BundleContext context = Activator.getBundleContext();
-         ServiceReference reference = context.getServiceReference(IProxyService.class.getName());
-         proxyService = (IProxyService) context.getService(reference);
-         proxyService.addProxyChangeListener(new IProxyChangeListener() {
+      boolean proxyBypass = OseeProperties.getOseeProxyBypassEnabled();
+      if (!proxyBypass) {
+         if (proxyService == null) {
+            BundleContext context = Activator.getBundleContext();
+            ServiceReference reference = context.getServiceReference(IProxyService.class.getName());
+            proxyService = (IProxyService) context.getService(reference);
+            proxyService.addProxyChangeListener(new IProxyChangeListener() {
 
-            @Override
-            public void proxyInfoChanged(IProxyChangeEvent event) {
-               proxiedData.clear();
-            }
-         });
-      }
+               @Override
+               public void proxyInfoChanged(IProxyChangeEvent event) {
+                  proxiedData.clear();
+               }
+            });
+         }
 
-      String key = String.format("%s_%s", uri.getScheme(), uri.getHost());
-      IProxyData[] datas = proxiedData.get(key);
-      if (datas == null) {
-         datas = proxyService.select(uri);
-         proxiedData.put(key, datas);
-      }
-      for (IProxyData data : datas) {
-         config.setProxy(data.getHost(), data.getPort());
+         String key = String.format("%s_%s", uri.getScheme(), uri.getHost());
+         IProxyData[] datas = proxiedData.get(key);
+         if (datas == null) {
+            datas = proxyService.select(uri);
+            proxiedData.put(key, datas);
+         }
+         for (IProxyData data : datas) {
+            config.setProxy(data.getHost(), data.getPort());
+         }
       }
       OseeLog.format(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
    }
