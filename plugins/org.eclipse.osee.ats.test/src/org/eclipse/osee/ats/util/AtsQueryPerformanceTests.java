@@ -43,7 +43,7 @@ public class AtsQueryPerformanceTests {
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testUserWorldSearch took %dms for %d artifacts", elapsedTime, artifacts.size()));
       assertTrue("No artifacts found", artifacts.size() > 0);
-      assertTrue("testUserWorldSearch should take less than 2500ms", elapsedTime < 2500);
+      assertTrue("testUserWorldSearch should take less than 2500ms currently " + elapsedTime + "ms", elapsedTime < 2500);
    }
 
    @org.junit.Test
