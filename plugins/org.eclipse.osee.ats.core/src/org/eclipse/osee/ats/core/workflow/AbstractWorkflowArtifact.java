@@ -157,7 +157,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @SuppressWarnings("unused")
-   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
+   public List<IBasicUser> getImplementers() throws OseeCoreException {
       return Collections.emptyList();
    }
 

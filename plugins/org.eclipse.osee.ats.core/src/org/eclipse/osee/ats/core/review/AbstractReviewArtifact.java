@@ -66,11 +66,11 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    }
 
    @Override
-   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
+   public List<IBasicUser> getImplementers() throws OseeCoreException {
       if (this.isOfType(AtsArtifactTypes.DecisionReview)) {
          return StateManager.getImplementersByState(this, DecisionReviewState.Decision);
       } else {
-         Collection<IBasicUser> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
+         List<IBasicUser> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
          for (UserRole role : UserRoleManager.getUserRoles(this)) {
             users.add(role.getUser());
          }

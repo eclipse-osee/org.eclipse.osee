@@ -439,14 +439,18 @@ public class StateManager {
 
    }
 
-   public static Collection<IBasicUser> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
-      Set<IBasicUser> users = new HashSet<IBasicUser>();
+   public static List<IBasicUser> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
+      List<IBasicUser> users = new ArrayList<IBasicUser>();
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());
       } else {
-         users.addAll(workflow.getStateMgr().getAssignees(state));
+         for (IBasicUser user : workflow.getStateMgr().getAssignees(state)) {
+            if (!users.contains(user)) {
+               users.add(user);
+            }
+         }
          IBasicUser user = workflow.getCompletedBy();
-         if (user != null) {
+         if (user != null && !users.contains(user)) {
             users.add(user);
          }
       }
@@ -467,6 +471,7 @@ public class StateManager {
       if (smaState != null) {
          users.addAll(smaState.getAssignees());
       }
+      users.remove(UserManager.getUser(SystemUser.UnAssigned));
       return users;
    }
 

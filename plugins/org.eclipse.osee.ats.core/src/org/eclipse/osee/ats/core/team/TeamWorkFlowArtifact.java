@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.core.team;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -202,7 +203,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    }
 
    @Override
-   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
+   public List<IBasicUser> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, TeamState.Implement);
    }
 

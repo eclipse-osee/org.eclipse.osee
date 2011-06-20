@@ -157,7 +157,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    @Override
-   public Collection<IBasicUser> getImplementers() throws OseeCoreException {
+   public List<IBasicUser> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, TaskStates.InWork);
    }
 

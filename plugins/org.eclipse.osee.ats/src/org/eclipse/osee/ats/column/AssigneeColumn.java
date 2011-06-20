@@ -5,9 +5,12 @@
  */
 package org.eclipse.osee.ats.column;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -210,22 +213,35 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
 
    public static String getAssigneeStr(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         Set<IBasicUser> pocs = new HashSet<IBasicUser>();
-         Set<IBasicUser> implementers = new HashSet<IBasicUser>();
+         // ensure consistent order by using lists
+         List<IBasicUser> pocs = new ArrayList<IBasicUser>();
+         List<IBasicUser> implementers = new ArrayList<IBasicUser>();
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (team.isCompletedOrCancelled()) {
-               implementers.addAll(team.getImplementers());
+               for (IBasicUser user : team.getImplementers()) {
+                  if (!implementers.contains(user)) {
+                     implementers.add(user);
+                  }
+               }
             } else {
-               pocs.addAll(team.getStateMgr().getAssignees());
+               for (IBasicUser user : team.getStateMgr().getAssignees()) {
+                  if (!pocs.contains(user)) {
+                     pocs.add(user);
+                  }
+               }
             }
          }
+         Collections.sort(pocs);
+         Collections.sort(implementers);
          return Artifacts.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + Artifacts.toString("; ",
             implementers) + ")");
       } else if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          AbstractWorkflowArtifact awa = WorkflowManager.cast(artifact);
          if (awa.isCompletedOrCancelled()) {
             if (awa.implementersStr == null && !awa.getImplementers().isEmpty()) {
-               awa.implementersStr = "(" + Artifacts.toString("; ", awa.getImplementers()) + ")";
+               List<IBasicUser> implementers = awa.getImplementers();
+               Collections.sort(implementers);
+               awa.implementersStr = "(" + Artifacts.toString("; ", implementers) + ")";
             }
             return awa.implementersStr;
          }
