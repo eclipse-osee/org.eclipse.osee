@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.server.admin;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
@@ -20,8 +22,8 @@ import org.eclipse.osee.framework.branch.management.purge.BranchOperation;
 import org.eclipse.osee.framework.branch.management.purge.DeletedBranchProvider;
 import org.eclipse.osee.framework.branch.management.purge.IBranchOperationFactory;
 import org.eclipse.osee.framework.branch.management.purge.IBranchesProvider;
+import org.eclipse.osee.framework.branch.management.purge.MultiBranchProvider;
 import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperationFactory;
-import org.eclipse.osee.framework.branch.management.purge.RecursiveBranchProvider;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -157,16 +159,31 @@ public class BranchManagementCommandProvider implements CommandProvider {
       return internalPurgeBranch(logger, branchCache, provider);
    }
 
-   public Job _purge_branch_recursive(CommandInterpreter ci) throws OseeCoreException {
+   public Job _purge_branch(CommandInterpreter ci) throws OseeCoreException {
       OperationLogger logger = new CommandInterpreterLogger(ci);
-      String branchGuid = ci.nextArgument();
+      String arg = ci.nextArgument();
+      boolean recursive = false;
+      Set<String> guids = new HashSet<String>();
+
+      while (Strings.isValid(arg)) {
+         if (arg.equals("-recursive")) {
+            recursive = true;
+         } else {
+            guids.add(arg);
+         }
+         arg = ci.nextArgument();
+      }
+
+      Set<Branch> branches = new HashSet<Branch>();
       BranchCache branchCache = Activator.getOseeCachingService().getBranchCache();
-      Branch seed = branchCache.getByGuid(branchGuid);
+      for (String guid : guids) {
+         branches.add(branchCache.getByGuid(guid));
+      }
 
       BranchFilter filter = new BranchFilter();
       filter.setNegatedBranchTypes(BranchType.BASELINE);
 
-      IBranchesProvider provider = new RecursiveBranchProvider(seed, filter);
+      IBranchesProvider provider = new MultiBranchProvider(recursive, branches, filter);
       return internalPurgeBranch(logger, branchCache, provider);
    }
 
@@ -186,7 +203,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
       sb.append("\timport_branch <exchangeFileName> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
       sb.append("\tcheck_exchange <exchangeFileName> - checks an exchange file to ensure data integrity\n");
       sb.append("\tpurge_deleted_branches - permenatly remove all branches that are both archived and deleted \n");
-      sb.append("\tpurge_branch_recursive <guid> - removes the branch defined by guid and all its children excluding baseline branches\n");
+      sb.append("\tpurge_branch <guids...> [-recursive] - removes branches defined by guids, if recursive all its children excluding baseline branches are removed\n");
       return sb.toString();
    }
 }

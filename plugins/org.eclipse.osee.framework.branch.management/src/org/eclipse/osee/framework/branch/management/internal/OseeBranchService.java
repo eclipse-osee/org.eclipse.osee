@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IOseeBranchService;
@@ -22,8 +23,8 @@ import org.eclipse.osee.framework.branch.management.creation.CreateBranchOperati
 import org.eclipse.osee.framework.branch.management.purge.BranchOperation;
 import org.eclipse.osee.framework.branch.management.purge.IBranchOperationFactory;
 import org.eclipse.osee.framework.branch.management.purge.IBranchesProvider;
+import org.eclipse.osee.framework.branch.management.purge.MultiBranchProvider;
 import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperationFactory;
-import org.eclipse.osee.framework.branch.management.purge.RecursiveBranchProvider;
 import org.eclipse.osee.framework.branch.management.purge.SingleBranchProvider;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -158,7 +159,7 @@ public class OseeBranchService implements IOseeBranchService {
 
       IBranchesProvider provider;
       if (request.isRecursive()) {
-         provider = new RecursiveBranchProvider(branch, new BranchFilter());
+         provider = new MultiBranchProvider(true, Collections.singleton(branch), new BranchFilter());
       } else {
          provider = new SingleBranchProvider(branch);
       }

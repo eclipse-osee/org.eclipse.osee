@@ -21,24 +21,39 @@ import org.eclipse.osee.framework.core.util.Conditions;
 /**
  * @author John Misinco
  */
-public final class RecursiveBranchProvider implements IBranchesProvider {
-   private final Branch parentBranch;
+public class MultiBranchProvider implements IBranchesProvider {
+
+   private final boolean recursive;
+   private final Set<Branch> branches;
    private final BranchFilter filter;
 
-   public RecursiveBranchProvider(Branch parentBranch, BranchFilter filter) {
-      this.parentBranch = parentBranch;
+   public MultiBranchProvider(boolean recursive, Set<Branch> branches, BranchFilter filter) {
+      this.recursive = recursive;
+      this.branches = branches;
       this.filter = filter;
+   }
+
+   private Collection<Branch> getChildBranches(Branch branch) throws OseeCoreException {
+      Set<Branch> children = new HashSet<Branch>();
+
+      branch.getChildBranches(children, true, filter);
+      if (filter.matches(branch)) {
+         children.add(branch);
+      }
+      return children;
    }
 
    @Override
    public Collection<Branch> getBranches() throws OseeCoreException {
-      Conditions.checkNotNull(parentBranch, "seed");
-      Set<Branch> children = new HashSet<Branch>();
-
-      parentBranch.getChildBranches(children, true, filter);
-      if (filter.matches(parentBranch)) {
-         children.add(parentBranch);
+      Conditions.checkNotNull(branches, "seeds");
+      Set<Branch> result = branches;
+      if (recursive) {
+         result = new HashSet<Branch>(branches);
+         for (Branch b : branches) {
+            result.addAll(getChildBranches(b));
+         }
       }
-      return children;
+      return result;
    }
+
 }
