@@ -11,7 +11,7 @@
 package org.eclipse.osee.client.integration.tests.suite;
 
 import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.ats.AtsTest_Config_Suite;
+import org.eclipse.osee.ats.AtsTest_Demo_Config_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_StateItem_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_Suite;
 import org.eclipse.osee.ats.Review_Demo_Suite;
@@ -39,7 +39,7 @@ import org.junit.runners.Suite;
    Coverage_Db_Suite.class,
    FrameworkCore_Demo_Suite.class,
    AllEventResTestSuite.class,
-   AtsTest_Config_Suite.class,
+   AtsTest_Demo_Config_Suite.class,
    AtsTest_Demo_Suite.class,
    FrameworkUi_Demo_Suite.class,
    AllDefineTestSuite.class,

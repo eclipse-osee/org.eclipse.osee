@@ -8,6 +8,9 @@ package org.eclipse.osee.mail;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class MailUtilsTest {
 
    @Test

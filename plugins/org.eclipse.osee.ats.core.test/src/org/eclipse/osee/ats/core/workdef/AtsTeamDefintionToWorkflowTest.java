@@ -8,13 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.artifact;
+package org.eclipse.osee.ats.core.workdef;
 
 import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactoryLegacyMgr;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -26,12 +25,15 @@ public class AtsTeamDefintionToWorkflowTest {
    @org.junit.Test
    public void testTeamDefinitionToWorkflow() throws Exception {
       boolean error = false;
-      StringBuffer sb = new StringBuffer();
+      StringBuffer sb = new StringBuffer("Actionable Team Definitions with no Work Definition:\n");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.TeamDefinition,
-         AtsUtil.getAtsBranch())) {
+         AtsUtilCore.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-         if (teamDef.isActionable() && WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromTeamDefinition(teamDef) == null) {
-            sb.append("Team Definition \"" + teamDef + "\" has no Work Flow associated and is Actionable.");
+         if (teamDef.isActionable()) {
+            WorkDefinitionMatch match = teamDef.getWorkDefinition();
+            if (!match.isMatched()) {
+               sb.append("[" + teamDef + "]");
+            }
             error = true;
          }
       }

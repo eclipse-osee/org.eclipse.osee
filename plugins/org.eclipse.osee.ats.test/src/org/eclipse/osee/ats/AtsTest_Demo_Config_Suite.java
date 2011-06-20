@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
-import org.eclipse.osee.ats.artifact.AtsTeamDefintionToWorkflowTest;
-import org.eclipse.osee.ats.config.AtsActionableItemToTeamDefinitionTest;
 import org.eclipse.osee.ats.config.copy.ConfigDataTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperationTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsUtilTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidationTest;
+import org.eclipse.osee.ats.core.config.AtsCore_Config_Demo_PT_Suite;
+import org.eclipse.osee.ats.core.workdef.AtsCore_WorkDef_Demo_PT_Suite;
 import org.eclipse.osee.ats.workflow.AtsWorkItemDefinitionTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -31,14 +31,14 @@ import org.junit.runners.Suite;
    CopyAtsValidationTest.class,
    CopyAtsConfigurationOperationTest.class,
    AtsWorkItemDefinitionTest.class,
-   AtsActionableItemToTeamDefinitionTest.class,
-   AtsTeamDefintionToWorkflowTest.class})
+   AtsCore_Config_Demo_PT_Suite.class,
+   AtsCore_WorkDef_Demo_PT_Suite.class})
 /**
  * This test suite contains test that can be run against any production db
  * 
  * @author Donald G. Dunne
  */
-public class AtsTest_Config_Suite {
+public class AtsTest_Demo_Config_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);

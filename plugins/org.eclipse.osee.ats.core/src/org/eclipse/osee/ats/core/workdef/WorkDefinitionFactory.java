@@ -134,7 +134,7 @@ public class WorkDefinitionFactory {
    /**
     * Look at team def's attribute for Work Definition setting, otherwise, walk up team tree for setting
     */
-   private static WorkDefinitionMatch getWorkDefinitionFromTeamDefinitionAttributeInherited(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   protected static WorkDefinitionMatch getWorkDefinitionFromTeamDefinitionAttributeInherited(TeamDefinitionArtifact teamDef) throws OseeCoreException {
       WorkDefinitionMatch match = getWorkDefinitionFromArtifactsAttributeValue(teamDef);
       if (match.isMatched()) {
          return match;

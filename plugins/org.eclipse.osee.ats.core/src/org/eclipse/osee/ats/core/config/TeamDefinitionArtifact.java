@@ -203,11 +203,11 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public WorkDefinitionMatch getWorkDefinition() throws OseeCoreException {
       Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
       if (teamDef == null) {
-         return null;
+         return new WorkDefinitionMatch();
       }
       Artifact workFlowArt = getWorkflowArtifact(teamDef);
       if (workFlowArt == null) {
-         return null;
+         return new WorkDefinitionMatch();
       }
       WorkDefinitionMatch match = WorkDefinitionFactory.getWorkDefinition(workFlowArt.getName());
       if (match.isMatched()) {

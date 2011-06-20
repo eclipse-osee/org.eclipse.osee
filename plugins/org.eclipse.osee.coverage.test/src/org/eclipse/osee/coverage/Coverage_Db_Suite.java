@@ -29,6 +29,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   CoverageManagerTest.class,
    CoveragePreferencesTest.class,
    CoverageOptionManagerStoreTest.class,
    TestUnitCacheTest.class,

@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * NOT_FOR_SUITE: This test is a long running test that should not be in normal test suites
+ * 
  * @author Ryan D. Brooks
  */
 public class TestStringFormatMessages {

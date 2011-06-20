@@ -8,14 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.config;
+package org.eclipse.osee.ats.core.config;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
-import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -27,13 +25,13 @@ public class AtsActionableItemToTeamDefinitionTest {
    @org.junit.Test
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
-      StringBuffer sb = new StringBuffer();
+      StringBuffer sb = new StringBuffer("Actionable Actionable Items with no Team Def associated:\n");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.ActionableItem,
-         AtsUtil.getAtsBranch())) {
+         AtsUtilCore.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {
             if (TeamDefinitionManagerCore.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
-               sb.append("Actionable Item \"" + aia + "\" has no Team Def associated and is Actionable.");
+               sb.append("[" + aia + "]");
                error = true;
             }
          }
