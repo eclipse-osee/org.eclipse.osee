@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
@@ -21,14 +20,17 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.junit.Before;
+import org.junit.Ignore;
 
 /**
+ * Test ignored cause it sends email to current user. Un-ignore to debug email issues.
+ * 
  * @author Donald G. Dunne
  */
+@Ignore
 public class OseeEmailTest {
 
    public static String emailAddress = null;
-   public static final StringBuffer results = new StringBuffer();
    private static String infoStr =
       "\n\nOseeEmailTest: This test will send 3 emails. If you do not receive 3, the test failed.";
 
@@ -81,16 +83,4 @@ public class OseeEmailTest {
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
    }
 
-   /**
-    * This test only exists to report the results of the email tests above
-    */
-   @org.junit.Test
-   public void testReportResults() throws Exception {
-      if (!results.toString().equals("")) {
-         System.err.println(results.toString());
-         assertTrue(false);
-      } else {
-         assertTrue(true);
-      }
-   }
 }
