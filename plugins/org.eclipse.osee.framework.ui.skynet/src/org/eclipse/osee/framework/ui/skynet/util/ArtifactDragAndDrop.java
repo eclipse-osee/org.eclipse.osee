@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -30,10 +29,4 @@ public class ArtifactDragAndDrop extends SkynetDragAndDrop {
    public Artifact[] getArtifacts() {
       return new Artifact[] {artifact};
    }
-
-   @Override
-   public void artifactTransferDragSetData(DragSourceEvent event) {
-      super.artifactTransferDragSetData(event);
-   }
-
 }

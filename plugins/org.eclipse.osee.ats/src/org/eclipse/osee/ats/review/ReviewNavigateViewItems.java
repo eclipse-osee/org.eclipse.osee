@@ -33,10 +33,6 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
    private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
    private boolean ensurePopulatedRanOnce = false;
 
-   public ReviewNavigateViewItems() {
-      super();
-   }
-
    public static ReviewNavigateViewItems getInstance() {
       return instance;
    }

@@ -24,10 +24,6 @@ import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
  */
 public class XNavigateContentProvider implements ITreeContentProvider {
 
-   public XNavigateContentProvider() {
-      super();
-   }
-
    @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) {

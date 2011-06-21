@@ -27,7 +27,6 @@ public class SearchOptions {
    private boolean isFindAllLocationsEnabled;
 
    public SearchOptions() {
-      super();
       deletionFlag = DeletionFlag.EXCLUDE_DELETED;
    }
 

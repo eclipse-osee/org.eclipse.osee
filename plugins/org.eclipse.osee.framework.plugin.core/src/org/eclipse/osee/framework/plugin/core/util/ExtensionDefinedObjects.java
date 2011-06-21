@@ -96,7 +96,7 @@ public class ExtensionDefinedObjects<T> {
          String className = element.getAttribute(classNameAttribute);
          String bundleName = element.getContributor().getName();
 
-         if (Strings.isValid(bundleName) && Strings.isValid(className)) {
+         if (Strings.isValid(bundleName, className)) {
             try {
                Bundle bundle = Platform.getBundle(bundleName);
                Class<?> taskClass = bundle.loadClass(className);

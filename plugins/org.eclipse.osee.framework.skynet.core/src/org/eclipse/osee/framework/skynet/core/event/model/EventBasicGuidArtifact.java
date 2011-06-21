@@ -28,13 +28,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    private final EventModType eventModType;
 
    public EventBasicGuidArtifact(EventModType eventModType, DefaultBasicGuidArtifact guidArt) {
-      super(guidArt.getBranchGuid(), guidArt.getArtTypeGuid(), guidArt.getGuid());
-      this.eventModType = eventModType;
-   }
-
-   public EventBasicGuidArtifact(EventModType eventModType, String branchGuid, String artTypeGuid, String guid) {
-      super(branchGuid, artTypeGuid, guid);
-      this.eventModType = eventModType;
+      this(eventModType, guidArt.getBranchGuid(), guidArt.getArtTypeGuid(), guidArt.getGuid());
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) {
@@ -44,6 +38,11 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) {
       this(eventModType, basicGuidArtifact.getBranchGuid(), basicGuidArtifact.getArtTypeGuid(),
          basicGuidArtifact.getGuid());
+   }
+
+   public EventBasicGuidArtifact(EventModType eventModType, String branchGuid, String artTypeGuid, String guid) {
+      super(branchGuid, artTypeGuid, guid);
+      this.eventModType = eventModType;
    }
 
    public EventModType getModType() {
@@ -75,12 +74,6 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
 
    public DefaultBasicGuidArtifact getBasicGuidArtifact() {
       return new DefaultBasicGuidArtifact(getBranchGuid(), getArtTypeGuid(), getGuid());
-   }
-
-   @Override
-   public int hashCode() {
-      int result = super.hashCode();
-      return result;
    }
 
    @Override

@@ -53,10 +53,7 @@ public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
 
    @Override
    public boolean equals(Object obj) {
-      boolean equals = false;
-      if (this == obj) {
-         equals = true;
-      }
+      boolean equals = super.equals(obj);
       if (!equals && obj instanceof IBasicGuidArtifact) {
          IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
 

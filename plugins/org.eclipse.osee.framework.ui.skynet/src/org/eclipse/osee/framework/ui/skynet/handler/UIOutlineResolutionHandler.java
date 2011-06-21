@@ -34,8 +34,6 @@ public class UIOutlineResolutionHandler implements IStatusHandler {
    public Object handleStatus(IStatus status, Object source) throws CoreException {
       if (source instanceof ArrayList<?>) {
          final List<String> list = (ArrayList<String>) source;
-         // Preferences get the last should ask?
-         // Use the last preference ?
          final MutableBoolean mutableBoolean = new MutableBoolean(false);
          Runnable runnable = new Runnable() {
             @Override

@@ -19,13 +19,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ArtifactNameSorter extends ViewerSorter {
 
-   /**
-    * Default sorter for artifacts. Sorts on descriptive name
-    */
-   public ArtifactNameSorter() {
-      super();
-   }
-
    @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {

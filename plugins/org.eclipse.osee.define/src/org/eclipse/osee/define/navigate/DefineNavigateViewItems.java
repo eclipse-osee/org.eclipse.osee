@@ -39,10 +39,6 @@ import org.osgi.framework.Bundle;
 public class DefineNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
    private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
 
-   public DefineNavigateViewItems() {
-      super();
-   }
-
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {
       addDefineSectionChildren(null);

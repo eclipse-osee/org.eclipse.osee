@@ -101,9 +101,6 @@ public class Strings {
     * <p>
     * Remove all <code>\n</code> and <code>\t</code>.
     * </p>
-    * 
-    * @param value
-    * @return
     */
    public static String minimize(String value) {
       return isValid(value) ? value.replaceAll("\n|\t", "") : value;

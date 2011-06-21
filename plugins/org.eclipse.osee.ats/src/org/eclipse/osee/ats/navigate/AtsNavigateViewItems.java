@@ -115,10 +115,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
    private final static AtsNavigateViewItems instance = new AtsNavigateViewItems();
 
-   public AtsNavigateViewItems() {
-      super();
-   }
-
    public static AtsNavigateViewItems getInstance() {
       return instance;
    }
