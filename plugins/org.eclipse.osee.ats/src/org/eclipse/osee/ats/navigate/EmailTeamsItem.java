@@ -66,7 +66,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
             for (IBasicUser user : teamDef.getMembers()) {
-               if (!Strings.isValid(UserManager.getEmail(user))) {
+               if (Strings.isValid(UserManager.getEmail(user))) {
                   emails.add(UserManager.getEmail(user));
                }
             }
