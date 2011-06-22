@@ -559,13 +559,4 @@
 		<Constraint schema="OSEE" id="OSEE_SESSION_PK" type="PRIMARY KEY" appliesTo="SESSION_ID" />
 	</Table>
 	
-	<!-- __________________________________________________________ -->
-	<!--              Coverage Temp					                   -->
-	<!-- __________________________________________________________ -->
-	<Table name="OSEE_CVG_TESTUNITS" schema="OSEE" tablespace="osee_data">
-		<Column id="NAME_ID" limits="8,0" type="DECIMAL" />
-		<Column id="NAME" limits="255" type="VARCHAR" />
-                <Constraint schema="OSEE" id="CVG_NAME_ID_PK" type="UNIQUE" appliesTo="NAME_ID" />
-	</Table>
-	
 </TableConfig>
