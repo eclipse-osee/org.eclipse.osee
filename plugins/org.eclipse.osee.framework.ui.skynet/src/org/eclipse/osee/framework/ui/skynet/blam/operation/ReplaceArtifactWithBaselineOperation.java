@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -23,13 +24,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.RelationChange;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
+/**
+ * @author Jeff C. Phillips
+ */
 public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
 
    private final Collection<Artifact> artifacts;
@@ -70,12 +71,10 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
             for (Change change : changes) {
                if (change instanceof AttributeChange) {
                   processAttribute(artifact, baseTx, (AttributeChange) change);
-               } else if (change instanceof RelationChange) {
-                  processRelation(artifact, baseTx, (RelationChange) change);
                }
+               SkynetTransaction transaction = getTransaction(branch);
+               artifact.persist(transaction);
             }
-            SkynetTransaction transaction = getTransaction(branch);
-            artifact.persist(transaction);
          }
 
          for (SkynetTransaction transaction : getTransactions()) {
@@ -101,33 +100,16 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
             if (attribute.getGammaId() != change.getGamma()) {
                attribute.replaceWithVersion((int) change.getGamma());
             }
-         } else {
+         } else if (!attribute.getModificationType().equals(ModificationType.REPLACED_WITH_VERSION)) {
             attribute.delete();
          }
       } else {
          //Do something's
-      }
-   }
-
-   private void processRelation(Artifact artifact, TransactionRecord baseTx, RelationChange change) {
-      RelationLink link =
-         RelationManager.getLoadedRelationById(change.getItemId(), change.getArtId(), change.getBArtId(),
-            artifact.getBranch());
-      if (link != null) {
-         if (isBaselineTransaction(change, baseTx)) {
-            if (link.getGammaId() != change.getGamma()) {
-               link.replaceWithVersion((int) change.getGamma());
-            }
-         } else {
-            link.delete(false);
-         }
-      } else {
-         //Do something's
+         //like an error
       }
    }
 
    private boolean isBaselineTransaction(Change change, TransactionRecord baseTx) {
       return change.getTxDelta().getEndTx().getId() == baseTx.getId();
    }
-
 }

@@ -366,6 +366,9 @@
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
        </command>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertRelation.command">
+       </command>
        <separator
              name="xChngSeparator5"
              visible="true">
@@ -794,6 +797,18 @@
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.AccessControlHandler"
         commandId="org.eclipse.osee.framework.ui.skynet.accessControl">
+  </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceRelationsWithBaselineHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertRelation.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
   </handler>
 	</extension>
 <extension
@@ -1347,6 +1362,10 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command"
         name="Single Native Diff">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertRelation.command"
+        name="Revert Relations...">
   </command>
 	</extension>
 	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">
