@@ -142,7 +142,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    @Override
    public void handleEvent(Event arg0) {
-      updateWidgetEnablements();
       updateExtractedElements();
       updatePageCompletion();
    }

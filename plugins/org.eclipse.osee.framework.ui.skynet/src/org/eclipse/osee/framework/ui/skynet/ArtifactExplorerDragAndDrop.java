@@ -16,12 +16,14 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -45,6 +47,13 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    private final IViewPart viewPart;
    private final InterArtifactExplorerDropHandler interArtifactExplorerHandler;
 
+   private IOseeBranch selectedBranch;
+
+   public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart, IOseeBranch selectedBranch) {
+      this(treeViewer, viewId, viewPart);
+      this.selectedBranch = selectedBranch;
+   }
+
    public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart) {
       super(treeViewer.getTree(), treeViewer.getTree(), viewId);
 
@@ -52,6 +61,10 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       this.viewId = viewId;
       this.viewPart = viewPart;
       this.interArtifactExplorerHandler = new InterArtifactExplorerDropHandler();
+   }
+
+   public void updateBranch(IOseeBranch branch) {
+      selectedBranch = branch;
    }
 
    @Override
@@ -124,7 +137,16 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
    @Override
    public void performDrop(final DropTargetEvent event) {
-      final Artifact parentArtifact = getSelectedArtifact(event);
+      Artifact parentArtifact = getSelectedArtifact(event);
+
+      if (parentArtifact == null && selectedBranch != null) {
+         //try Default Root Hierarchy
+         try {
+            parentArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(selectedBranch);
+         } catch (Exception ex) {
+            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
 
       if (parentArtifact != null) {
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
@@ -175,5 +197,4 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          }
       }
    }
-
 }

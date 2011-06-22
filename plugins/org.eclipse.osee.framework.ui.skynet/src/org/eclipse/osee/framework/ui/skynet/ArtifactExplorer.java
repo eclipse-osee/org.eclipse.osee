@@ -191,6 +191,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private Branch branch;
    private IGlobalMenuHelper globalMenuHelper;
 
+   private ArtifactExplorerDragAndDrop dragAndDropWorker;
+
    private Composite stackComposite;
    private Control branchWarningComposite;
    private StackLayout stackLayout;
@@ -298,6 +300,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   IOseeBranch selectedBranch = branchSelect.getData();
                   if (selectedBranch != null) {
                      branch = BranchManager.getBranch(selectedBranch);
+                     dragAndDropWorker.updateBranch(selectedBranch);
                      explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
@@ -362,7 +365,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          myTreeEditor.grabHorizontal = true;
          myTreeEditor.minimumWidth = 50;
 
-         new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this);
+         dragAndDropWorker = new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this, branch);
 
          OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.PLUGIN_ID, VIEW_ID, "Artifact Explorer");
 
@@ -1109,6 +1112,10 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       explorerRoot = artifact;
       branch = artifact.getBranch();
+
+      if (dragAndDropWorker != null) {
+         dragAndDropWorker.updateBranch(branch);
+      }
 
       refreshBranchWarning();
       initializeSelectionBox();
