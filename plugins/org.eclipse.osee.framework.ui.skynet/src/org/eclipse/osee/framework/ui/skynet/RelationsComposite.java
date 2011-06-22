@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -93,6 +94,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
    public static final String[] columnNames = new String[] {" ", "Rationale"};
    public static final Integer[] columnLengths = new Integer[] {500, 50};
+   private final ToolTip errorToolTip;
 
    // the index of column order
    private static int COLUMN_ORDER = 1;
@@ -121,6 +123,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       this.toolBar = toolBar;
 
       createPartControl();
+      errorToolTip = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
    }
 
    public TreeViewer getTreeViewer() {
@@ -674,20 +677,26 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
                Artifact[] selectedArtifacts = artData.getArtifacts();
                String toolTipText = "";
+               Artifact relationArtifact = data.getArtifact();
 
                boolean canRelate = false;
                for (Artifact i : selectedArtifacts) {
-                  canRelate = ensureRelationCanBeAdded(data.getRelationType(), data.getArtifact(), i);
+                  Artifact sideA = i;
+                  Artifact sideB = relationArtifact;
+                  if (data.getSide() == RelationSide.SIDE_B) {
+                     sideA = relationArtifact;
+                     sideB = i;
+                  }
+                  canRelate = ensureRelationCanBeAdded(data.getRelationType(), sideA, sideB);
                   if (!canRelate) {
                      toolTipText +=
-                        String.format("Relation: Relation [%s] cannot be added between [%s] and [%s]\n",
-                           data.getRelationType().getName(), data.getArtifact().getName(), i.getName());
+                        String.format("Relation: [%s] cannot be added to [%s] of [%s]\n", i.getName(),
+                           data.getSide().name(), data.getRelationType().getName());
 
                   }
                }
 
-               AccessPolicy policyHandlerService =
-                  SkynetGuiPlugin.getInstance().getAccessPolicy();
+               AccessPolicy policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
 
                boolean matched =
                   policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts), data,
@@ -702,10 +711,11 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
                }
                if (!matched || !canRelate) {
-                  ToolTip tt = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
-                  tt.setText("RELATION ERROR");
-                  tt.setMessage(toolTipText);
-                  tt.setVisible(true);
+                  errorToolTip.setText("RELATION ERROR");
+                  errorToolTip.setMessage(toolTipText);
+                  errorToolTip.setVisible(true);
+               } else {
+                  errorToolTip.setVisible(false);
                }
 
             } catch (OseeCoreException ex) {
@@ -720,8 +730,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
                boolean matched = false;
                try {
-                  AccessPolicy policyHandlerService =
-                     SkynetGuiPlugin.getInstance().getAccessPolicy();
+                  AccessPolicy policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
                   RelationTypeSide rts =
                      new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
 
