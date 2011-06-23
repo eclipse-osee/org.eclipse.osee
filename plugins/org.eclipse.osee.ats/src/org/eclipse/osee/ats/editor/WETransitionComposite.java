@@ -190,6 +190,7 @@ public class WETransitionComposite extends Composite {
       editor.doSave(null);
       final List<AbstractWorkflowArtifact> awas = Arrays.asList(awa);
       final StateDefinition toStateDef = (StateDefinition) transitionToStateCombo.getSelected();
+      final StateDefinition fromStateDef = awa.getStateDefinition();
       ITransitionHelper helper = new TransitionHelperAdapter() {
 
          @Override
@@ -221,7 +222,7 @@ public class WETransitionComposite extends Composite {
                public void run() {
                   boolean resultBool = false;
                   try {
-                     resultBool = handlePopulateStateMetrics(toStateDef);
+                     resultBool = handlePopulateStateMetrics(fromStateDef, toStateDef);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                      result.set(false);
@@ -292,14 +293,14 @@ public class WETransitionComposite extends Composite {
       return min.intValue();
    }
 
-   private boolean handlePopulateStateMetrics(StateDefinition toStateDefinition) throws OseeCoreException {
-      // Don't log metrics for completed / cancelled states
-      if (toStateDefinition.isCompletedOrCancelledPage()) {
+   private boolean handlePopulateStateMetrics(StateDefinition fromStateDefinition, StateDefinition toStateDefinition) throws OseeCoreException {
+      // Don't log metrics for transition to cancelled states
+      if (toStateDefinition.isCancelledPage()) {
          return true;
       }
 
       // Page has the ability to override the autofill of the metrics
-      if (!isRequireStateHoursSpentPrompt(toStateDefinition) && awa.getStateMgr().getHoursSpent() == 0) {
+      if (!isRequireStateHoursSpentPrompt(fromStateDefinition) && awa.getStateMgr().getHoursSpent() == 0) {
          // First, try to autofill if it's only been < 5 min since creation
          double minSinceCreation = getCreationToNowDateDeltaMinutes();
          // System.out.println("minSinceCreation *" + minSinceCreation + "*");
@@ -314,7 +315,7 @@ public class WETransitionComposite extends Composite {
          }
       }
 
-      if (isRequireStateHoursSpentPrompt(toStateDefinition)) {
+      if (isRequireStateHoursSpentPrompt(fromStateDefinition)) {
          // Otherwise, open dialog to ask for hours complete
          String msg =
             awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(awa.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
