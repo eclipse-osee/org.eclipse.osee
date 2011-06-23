@@ -52,7 +52,12 @@ public final class MailEventUtil {
          subject = ex.getMessage();
       }
       data.put(MailConstants.MAIL_SUBJECT, subject);
-      addAddress(data, MailConstants.MAIL_FROM_ADDRESS, event.getInvalidAddresses());
+
+      try {
+         addAddress(data, MailConstants.MAIL_FROM_ADDRESS, message.getFrom());
+      } catch (MessagingException ex) {
+         data.put(MailConstants.MAIL_FROM_ADDRESS, ex.getMessage());
+      }
       addAddress(data, MailConstants.MAIL_INVALID_ADDRESS, event.getInvalidAddresses());
       addAddress(data, MailConstants.MAIL_VALID_SENT_ADDRESS, event.getValidSentAddresses());
       addAddress(data, MailConstants.MAIL_VALID_UNSENT_ADDRESS, event.getValidUnsentAddresses());
