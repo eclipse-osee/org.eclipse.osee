@@ -17,11 +17,9 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ 
-//@formatter:off   
+@Suite.SuiteClasses({
    MailEventUtilTest.class,
-   MailMessageSingleParamTest.class,
-   MailMessageMultiParamTest.class,
+   MailMessageTest.class,
    MailServiceConfigSingleParamStringTest.class,
    MailServiceConfigSingleParamIntTest.class,
    MailServiceConfigSingleParamBoolTest.class,
@@ -29,9 +27,7 @@ import org.junit.runners.Suite;
    MailUtilsContainsAnyTest.class,
    MailUtilsCreateFromHtmlTest.class,
    MailUtilsCreateFromStringTest.class,
-   MailUtilsCreateOutlookEventTest.class,
-//@formatter:on   
-})
+   MailUtilsCreateOutlookEventTest.class})
 public class AllMailTestSuite {
    // Test Suite
 }
