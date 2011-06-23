@@ -73,8 +73,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
       // Create all hyperlinks from this artifact to others of interest
       createArtifactRelationHyperlinks("This", sma, "is reviewed by", AtsRelationTypes.TeamWorkflowToReview_Review);
       createArtifactRelationHyperlinks("This", sma, "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
-      createArtifactRelationHyperlinks("This", sma, "supercedes", CoreRelationTypes.Supercedes_Superceded);
-      createArtifactRelationHyperlinks("This", sma, "is superceded by", CoreRelationTypes.Supercedes_Supercedes);
+      createArtifactRelationHyperlinks("This", sma, "is superceded by", CoreRelationTypes.Supercedes_Superceded);
+      createArtifactRelationHyperlinks("This", sma, "supercedes", CoreRelationTypes.Supercedes_Supercedes);
       createArtifactRelationHyperlinks("This", sma, "depends on", CoreRelationTypes.Dependency__Dependency);
       createArtifactRelationHyperlinks("This", sma, "is dependency of", CoreRelationTypes.Dependency__Artifact);
       createArtifactRelationHyperlinks("This", sma, "is supported info for",
