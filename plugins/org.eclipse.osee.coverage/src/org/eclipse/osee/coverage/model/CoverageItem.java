@@ -49,7 +49,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
       super(guid, "");
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
-      this.orderNumber = orderNumber;
+      this.orderNumber = Strings.intern(orderNumber);
       if (coverageUnit != null) {
          ((ICoverageItemProvider) coverageUnit).addCoverageItem(this);
       }
@@ -168,7 +168,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    public String getTestUnitNames(Collection<CoverageTestUnit> testUnits) {
       List<String> guids = new ArrayList<String>();
       for (CoverageTestUnit testUnit : testUnits) {
-         guids.add(testUnit.getGuid());
+         guids.add(Strings.intern(testUnit.getGuid()));
       }
       return Collections.toString(",", guids);
    }
@@ -178,7 +178,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    }
 
    public void setRationale(String rationale) {
-      this.rationale = rationale;
+      this.rationale = Strings.intern(rationale);
    }
 
    @Override
@@ -267,7 +267,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
          setOrderNumber(store.get("order"));
       }
       if (Strings.isValid(store.get("name"))) {
-         setName(store.get("name"));
+         setName(Strings.intern(store.get("name")));
       }
       if (Strings.isValid(store.get("rationale"))) {
          setRationale(store.get("rationale"));
@@ -340,7 +340,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
 
    @Override
    public void setWorkProductTaskGuid(String workProductGuid) {
-      this.workProductGuid = workProductGuid;
+      this.workProductGuid = Strings.intern(workProductGuid);
    }
 
    @Override

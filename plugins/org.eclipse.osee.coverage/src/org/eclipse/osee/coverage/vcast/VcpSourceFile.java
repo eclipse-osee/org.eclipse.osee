@@ -12,8 +12,6 @@ package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,45 +27,24 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class VcpSourceFile {
 
-   private final Map<SourceValue, String> sourceValues = new HashMap<SourceValue, String>(20);
-   Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
+   private static final Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
    private VcpSourceLisFile vcpSourceLisFile = null;
    private CoverageDataFile coverageDataFile = null;
-   private final String vcastDirectory;
+   private String filename;
+   private String unitNumber;
+   private final VCastVcp vCastVcp;
 
-   public static enum SourceValue {
-      SOURCE_FILENAME,
-      SOURCE_DIRECTORY,
-      DEST_FILENAME,
-      DEST_DIRECTORY,
-      DISPLAY_NAME,
-      UNIT_NUMBER,
-      FILE_TYPE,
-      IS_BACKUP,
-      COVERAGE,
-      COVERAGE_IO_TYPE,
-      ADDITION_TIME,
-      MODIFIED_TIME,
-      CHECKSUM,
-      UNINSTR_CHECKSUM
-   };
-
-   public VcpSourceFile(String vcastDirectory) {
-      this.vcastDirectory = vcastDirectory;
-   }
-
-   public String getValue(SourceValue sourceValue) {
-      return sourceValues.get(sourceValue);
+   public VcpSourceFile(VCastVcp vCastVcp) {
+      this.vCastVcp = vCastVcp;
    }
 
    public void addLine(String line) {
       Matcher m = valuePattern.matcher(line);
       if (m.find()) {
-         SourceValue sourceValue = SourceValue.valueOf(m.group(1));
-         if (sourceValue == null) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpSourceFile value [%s]", m.group(1)));
-         } else {
-            sourceValues.put(sourceValue, m.group(2));
+         if ("SOURCE_FILENAME".equals(m.group(1))) {
+            filename = m.group(2);
+         } else if ("UNIT_NUMBER".equals(m.group(1))) {
+            unitNumber = m.group(2);
          }
       } else {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpSourceFile line [%s]", line));
@@ -76,7 +53,7 @@ public class VcpSourceFile {
 
    public VcpSourceLisFile getVcpSourceLisFile() throws OseeCoreException, IOException {
       if (vcpSourceLisFile == null) {
-         vcpSourceLisFile = new VcpSourceLisFile(vcastDirectory, this);
+         vcpSourceLisFile = new VcpSourceLisFile(vCastVcp, this);
       }
       return vcpSourceLisFile;
    }
@@ -84,14 +61,34 @@ public class VcpSourceFile {
    public CoverageDataFile getCoverageDataFile(CoverageImport coverageImport) throws OseeCoreException {
       if (coverageDataFile == null) {
          coverageDataFile =
-            new CoverageDataFile(coverageImport, vcastDirectory + File.separator + "vcast" + File.separator + getValue(
-               SourceValue.SOURCE_FILENAME).replaceAll("\\.(ada|adb|c)$", "\\.xml"));
+            new CoverageDataFile(coverageImport,
+               vCastVcp.getVCastDirectory() + File.separator + "vcast" + File.separator + filename.replaceAll(
+                  "\\.(ada|adb|c)$", "\\.xml"));
       }
       return coverageDataFile;
    }
 
    @Override
    public String toString() {
-      return getValue(SourceValue.SOURCE_FILENAME);
+      return filename;
+   }
+
+   public String getFilename() {
+      return filename;
+   }
+
+   public String getUnitNumber() {
+      return unitNumber;
+   }
+
+   public void cleanup() {
+      filename = null;
+      unitNumber = null;
+      if (coverageDataFile != null) {
+         coverageDataFile.cleanup();
+      }
+      if (vcpSourceLisFile != null) {
+         vcpSourceLisFile.cleanup();
+      }
    }
 }

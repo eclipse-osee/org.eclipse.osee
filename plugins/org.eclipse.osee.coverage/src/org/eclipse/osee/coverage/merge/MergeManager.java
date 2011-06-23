@@ -96,7 +96,7 @@ public class MergeManager {
          boolean moreImportChildrenThanPackageChildren = importItemChildren.size() > packageItemChildren.size();
          boolean morePackageChildrenThanImportChildren = packageItemChildren.size() > importItemChildren.size();
          boolean sameNumberChildren = importItemChildren.size() == packageItemChildren.size();
-         if (resultData != null) {
+         if (debug && resultData != null) {
             resultData.log(String.format("Num Import Items: %d - Num Package Items: %d", importItemChildren.size(),
                packageItemChildren.size()));
             resultData.log(AHTML.getLabelValueStr("moreImportChildrenThanPackageChildren",
@@ -131,7 +131,7 @@ public class MergeManager {
          // Determine match for all import item children
          for (ICoverage childCoverage : importItemChildren) {
             // only display top item
-            if (importCoverage.getName().equals("cnd")) {
+            if (debug && importCoverage.getName().equals("cnd")) {
                System.out.println(String.format("Get merge items from %d/%d - [%s]", count, importItemChildren.size(),
                   childCoverage));
                count++;
@@ -158,7 +158,7 @@ public class MergeManager {
          // Action: process them separately
          if (CoverageUtil.isAllCoverageItems(importItemChildren)) {
             handleChildrenCoverageItems(mergeItems, packageItemChildren, importCoverage, importItemChildren,
-               importItemToMatchItem, resultData);
+               importItemToMatchItem);
          }
 
          // Case: All match and package # children == import # children
@@ -240,7 +240,7 @@ public class MergeManager {
       return matchedPackageCoverageItems;
    }
 
-   private void handleChildrenCoverageItems(List<IMergeItem> mergeItems, Collection<? extends ICoverage> packageItemChildren, ICoverage importCoverage, Collection<? extends ICoverage> importItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem, XResultData resultData) throws OseeCoreException {
+   private void handleChildrenCoverageItems(List<IMergeItem> mergeItems, Collection<? extends ICoverage> packageItemChildren, ICoverage importCoverage, Collection<? extends ICoverage> importItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
       List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
       boolean unMergeableExists = false;
       Entry<List<ICoverage>, List<ICoverage>> matchedUnMatchedEntry =

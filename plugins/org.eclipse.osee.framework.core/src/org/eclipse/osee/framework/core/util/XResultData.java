@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
  * 
  * @author Donald G. Dunne
  */
-public final class XResultData {
+public class XResultData {
 
    public static final Pattern ErrorPattern = Pattern.compile("Error: ");
    public static final Pattern WarningPattern = Pattern.compile("Warning: ");
@@ -40,7 +40,7 @@ public final class XResultData {
       Info;
    }
 
-   private StringBuffer sb;
+   private StringBuilder sb;
    private CountingMap<Type> count;
 
    private boolean enableOseeLog;
@@ -65,7 +65,7 @@ public final class XResultData {
    }
 
    public void clear() {
-      sb = new StringBuffer();
+      sb = new StringBuilder();
       count = new CountingMap<Type>();
    }
 
@@ -127,12 +127,16 @@ public final class XResultData {
       } else {
          resultStr = str;
       }
-      sb.append(resultStr);
+      addRaw(resultStr);
       if (listeners != null) {
          for (IResultDataListener listener : listeners) {
             listener.log(type, resultStr);
          }
       }
+   }
+
+   public void dispose() {
+      // provided for subclass implementation
    }
 
    @Override
@@ -153,7 +157,7 @@ public final class XResultData {
     * produce errors. This counts based on these occurences.
     */
    public int getNumErrorsViaSearch() {
-      return Lib.getMatcherCount(ErrorPattern, sb.toString());
+      return Lib.getMatcherCount(ErrorPattern, toString());
    }
 
    /**
@@ -161,7 +165,7 @@ public final class XResultData {
     * to produce errors. This counts based on these occurences.
     */
    public int getNumWarningsViaSearch() {
-      return Lib.getMatcherCount(WarningPattern, sb.toString());
+      return Lib.getMatcherCount(WarningPattern, toString());
    }
 
    public int getNumWarnings() {

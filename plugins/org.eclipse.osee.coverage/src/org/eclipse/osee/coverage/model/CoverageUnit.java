@@ -50,7 +50,7 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    }
 
    public CoverageUnit(String guid, ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
-      super(guid, name);
+      super(guid, Strings.intern(name));
       this.parent = parent;
       this.location = location;
       this.fileContentsProvider = coverageUnitFileContentsProvider;
@@ -128,7 +128,7 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    }
 
    public void setLocation(String location) {
-      this.location = location;
+      this.location = Strings.intern(location);
    }
 
    @Override

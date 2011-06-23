@@ -12,11 +12,9 @@ package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,8 +26,6 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
-import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
-import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -52,70 +48,149 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
    }
 
    @Override
-   public CoverageImport run(IProgressMonitor progressMonitor) {
+   public CoverageImport run(IProgressMonitor progressMonitor) throws OseeCoreException {
       coverageImport = new CoverageImport("VectorCast Import");
       coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
 
-      if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
-         coverageImport.getLog().logError("VectorCast directory must be specified");
+      if (!validateImportParameters()) {
+         return null;
+      }
+      importRecord__AddConfigFiles();
+
+      VCastVcp vCastVcp = createVCastVcp();
+      if (vCastVcp == null) {
          return coverageImport;
       }
 
-      File file = new File(vectorCastCoverageImportProvider.getVCastDirectory());
-      if (!file.exists()) {
-         coverageImport.getLog().logError(
-            String.format("VectorCast directory doesn't exist [%s]",
-               vectorCastCoverageImportProvider.getVCastDirectory()));
-         return coverageImport;
-      }
-
-      coverageImport.setImportDirectory(vectorCastCoverageImportProvider.getVCastDirectory());
-      // Add config files to import record
-      try {
-         coverageImport.addImportRecordFile(new File(
-            vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "CCAST_.CFG"));
-      } catch (Exception ex) {
-         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
-      }
-      try {
-         coverageImport.addImportRecordFile(new File(
-            vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "vcast" + File.separator + "build_info.xml"));
-      } catch (Exception ex) {
-         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
-      }
-
-      VCastVcp vCastVcp = null;
-      try {
-         vCastVcp = new VCastVcp(vectorCastCoverageImportProvider.getVCastDirectory());
-      } catch (Exception ex) {
-         coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
-         return coverageImport;
-      }
-      try {
-         coverageImport.addImportRecordFile(vCastVcp.getFile());
-      } catch (Exception ex) {
-         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
-      }
+      importRecord_addVCastVcpFile(vCastVcp);
       coverageImport.setLocation(vectorCastCoverageImportProvider.getVCastDirectory());
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
-      Map<String, CoverageUnit> coverageNameToCoverageUnit = new HashMap<String, CoverageUnit>();
       Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram =
          new HashMap<CoverageUnit, CoverageDataSubProgram>();
-      List<VcpSourceFile> vcpSourceFiles = vCastVcp.sourceFiles;
+
+      processVcpSourceFiles(progressMonitor, vCastVcp, fileNumToCoverageUnit,
+         methodCoverageUnitToCoverageDataSubProgram);
+      // garbage collect
+      System.gc();
+
+      processVcpResultsFiles(progressMonitor, vCastVcp, fileNumToCoverageUnit);
+      fileNumToCoverageUnit.clear();
+      fileNumToCoverageUnit = null;
+      // garbage collect
+      System.gc();
+
+      verifyCoveredTotalFromXmlWithVCastVcpAndResultsDir(progressMonitor, methodCoverageUnitToCoverageDataSubProgram);
+      methodCoverageUnitToCoverageDataSubProgram.clear();
+      methodCoverageUnitToCoverageDataSubProgram = null;
+      // garbage collect
+      System.gc();
+
+      VCastAggregateReportValidator report = new VCastAggregateReportValidator();
+      report.run(progressMonitor, this);
+      // garbage collect
+      System.gc();
+
+      verifyNumberOfVcpResultsFilesAndDatFiles(progressMonitor, vCastVcp);
+
+      vCastVcp = null;
+      // garbage collect
+      System.gc();
+
+      return coverageImport;
+   }
+
+   public void verifyCoveredTotalFromXmlWithVCastVcpAndResultsDir(IProgressMonitor progressMonitor, Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram) {
       if (progressMonitor != null) {
-         progressMonitor.beginTask("Importing Source File Data", vcpSourceFiles.size());
+         progressMonitor.beginTask("Verifing Covered Total From .xml with VCastVcp and Results Files", 1);
+      }
+      // Verifying VectorCast covered/total items from vcast/<unit>.xml with data imported from results read from vcast.vcp and results dir
+      coverageImport.getLog().log(
+         "\nVerifying VectorCast covered/total items from vcast/<unit>.xml with data imported from results read from vcast.vcp and results dir");
+      boolean error = false;
+      for (Entry<CoverageUnit, CoverageDataSubProgram> entry : methodCoverageUnitToCoverageDataSubProgram.entrySet()) {
+         CoverageUnit methodCoverageUnit = entry.getKey();
+         CoverageDataSubProgram coverageDataSubProgram = entry.getValue();
+         int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
+         int coveredCoverageItems =
+            methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size();
+         if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
+            coverageImport.getLog().logError(
+               String.format(
+                  "Imported covered/total items [%d/%d] doesn't match VectorCast [%d/%d] reported in .xml file for coverage unit [%s]",
+                  coveredCoverageItems, totalCoverageItems, coverageDataSubProgram.getCovered(),
+                  coverageDataSubProgram.getTotal(), methodCoverageUnit));
+            error = true;
+         }
+      }
+      if (!error) {
+         coverageImport.getLog().log("Ok");
+      }
+      if (progressMonitor != null) {
+         progressMonitor.worked(1);
+      }
+   }
+
+   public void verifyNumberOfVcpResultsFilesAndDatFiles(IProgressMonitor progressMonitor, VCastVcp vCastVcp) {
+      if (progressMonitor != null) {
+         progressMonitor.beginTask("Verifing Number of vcast.vcp results files and .dat files", 1);
+      }
+      // Verifying number results files reported in vcast.vcp with vcast/results/*.dat files
+      coverageImport.getLog().log(
+         "\nVerifying number results files reported in vcast.vcp with vcast/results/*.dat files");
+      int numVcastVcpDatFiles = vCastVcp.getResultsFiles().size();
+      List<String> filenames =
+         Lib.readListFromDir(
+            new File(
+               vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "vcast" + File.separator + "results" + File.separator),
+            new MatchFilter(".*\\.DAT"), false);
+      if (numVcastVcpDatFiles != filenames.size()) {
+         coverageImport.getLog().logError(
+            String.format(
+               "Number of results files in Vcast.vcp [%d] doesn't match number of vcast/results/*.dat files [%d]",
+               numVcastVcpDatFiles, filenames.size()));
+      } else {
+         coverageImport.getLog().log("Ok");
+      }
+      if (progressMonitor != null) {
+         progressMonitor.worked(1);
+      }
+   }
+
+   public void processVcpResultsFiles(IProgressMonitor progressMonitor, VCastVcp vCastVcp, Map<String, CoverageUnit> fileNumToCoverageUnit) throws OseeCoreException {
+      // Process all results files and map to coverage units
+      if (progressMonitor != null) {
+         progressMonitor.beginTask("Importing Test Unit Data", vCastVcp.resultsFiles.size());
+      }
+      int x = 1;
+      for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
+         //         System.out.println(str);
+         if (progressMonitor != null) {
+            progressMonitor.worked(1);
+            String str =
+               String.format("Processing VcpResultsFile %d/%d [%s]...", x++, vCastVcp.resultsFiles.size(),
+                  vcpResultsFile);
+            progressMonitor.subTask(str);
+         }
+
+         vcpResultsFile.processResultsFiles(coverageImport, fileNumToCoverageUnit);
+      }
+   }
+
+   public void processVcpSourceFiles(IProgressMonitor progressMonitor, VCastVcp vCastVcp, Map<String, CoverageUnit> fileNumToCoverageUnit, Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram) {
+      if (progressMonitor != null) {
+         progressMonitor.beginTask("Importing Source File Data", vCastVcp.sourceFiles.size());
       }
       int x = 1;
       // Loop through all the source blocks found in <dir>.wrk/vcast.vcp file and create
       // CoverageDataFile for each item
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
-         String str =
-            String.format("Processing VcpSourceFile %d/%d [%s]...", x++, vcpSourceFiles.size(), vcpSourceFile);
          // System.out.println(str);
          if (progressMonitor != null) {
             progressMonitor.worked(1);
+            String str =
+               String.format("Processing VcpSourceFile %d/%d [%s]...", x++, vCastVcp.sourceFiles.size(), vcpSourceFile);
             progressMonitor.subTask(str);
          }
          try {
@@ -126,7 +201,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                String errorStr =
                   String.format(
                      "Can't process vcast/<code file>.xml file for source file [%s] exception [%s] (see Error Log)",
-                     vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), ex.getLocalizedMessage());
+                     vcpSourceFile.getFilename(), ex.getLocalizedMessage());
                coverageImport.getLog().logError(AHTML.textToHtml(errorStr));
                OseeLog.log(Activator.class, Level.SEVERE, errorStr, ex);
                continue;
@@ -140,8 +215,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
             }
             for (CoverageDataUnit coverageDataUnit : coverageDataFile.getCoverageDataUnits()) {
                // Create CoverageUnit object to represent single <code file>.xml
-               CoverageUnit fileCoverageUnit =
-                  coverageImport.createCoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), "");
+               CoverageUnit fileCoverageUnit = coverageImport.createCoverageUnit(null, vcpSourceFile.getFilename(), "");
                String fileNamespace = vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName());
                fileCoverageUnit.setNamespace(fileNamespace);
                CoverageUnit parent = coverageImport.getOrCreateParent(fileCoverageUnit.getNamespace());
@@ -193,165 +267,88 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   }
                }
                fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), fileCoverageUnit);
-               coverageNameToCoverageUnit.put(fileCoverageUnit.getName(), fileCoverageUnit);
             }
          } catch (Exception ex) {
             coverageImport.getLog().logError(
                String.format("Error processing coverage for [%s].  " + ex.getLocalizedMessage(), vcpSourceFile));
             continue;
          }
+         vcpSourceFile.cleanup();
       }
+   }
 
-      // Process all results files and map to coverage units
-      List<VcpResultsFile> vcpResultsFiles = vCastVcp.resultsFiles;
-      if (progressMonitor != null) {
-         progressMonitor.beginTask("Importing Test Unit Data", vcpResultsFiles.size());
-      }
-      x = 1;
-      for (VcpResultsFile vcpResultsFile : vcpResultsFiles) {
-         String str =
-            String.format("Processing VcpResultsFile %d/%d [%s]...", x++, vcpResultsFiles.size(), vcpResultsFile);
-         //         System.out.println(str);
-         if (progressMonitor != null) {
-            progressMonitor.worked(1);
-            progressMonitor.subTask(str);
-         }
-         String testUnitName = vcpResultsFile.getValue(ResultsValue.FILENAME);
-         try {
-            coverageImport.addImportRecordFile(vcpResultsFile.getVcpResultsDatFile().getFile());
-         } catch (Exception ex) {
-            coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
-         }
-
-         try {
-            for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
-               CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
-               if (coverageUnit == null) {
-                  coverageImport.getLog().logError(
-                     String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
-                  continue;
-               }
-               for (Pair<String, HashSet<String>> methodExecutionPair : vcpResultsFile.getVcpResultsDatFile().getMethodExecutionPairs(
-                  fileNum)) {
-                  String methodNum = methodExecutionPair.getFirst();
-                  Set<String> executeNums = methodExecutionPair.getSecond();
-                  for (String executeNum : executeNums) {
-                     // Find or create new coverage item for method num /execution line
-                     CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
-                     if (coverageItem == null) {
-                        coverageImport.getLog().logError(
-                           String.format(
-                              "Method [%s] doesn't exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
-                              methodNum, coverageUnit, testUnitName));
-                     } else {
-                        coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
-                        try {
-                           coverageItem.addTestUnitName(testUnitName);
-                        } catch (OseeCoreException ex) {
-                           coverageImport.getLog().logError(
-                              String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
-                                 testUnitName, coverageUnit, ex.getLocalizedMessage()));
-
-                        }
-                     }
-                  }
-               }
-            }
-         } catch (Exception ex) {
-            coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
-         }
-      }
-
-      // Validate VectorCast covered/total from <unit>.xml files with imported results files above
-      coverageImport.getLog().log(
-         "\nVerifying number results files reported in vcast.vcp with vcast/results/*.dat files");
-      int numVcastVcpDatFiles = vCastVcp.getResultsFiles().size();
-      List<String> filenames =
-         Lib.readListFromDir(
-            new File(
-               vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "vcast" + File.separator + "results" + File.separator),
-            new MatchFilter(".*\\.DAT"), false);
-      if (numVcastVcpDatFiles != filenames.size()) {
-         coverageImport.getLog().logError(
-            String.format(
-               "Number of results files in Vcast.vcp [%d] doesn't match number of vcast/results/*.dat files [%d]",
-               numVcastVcpDatFiles, filenames.size()));
-      } else {
-         coverageImport.getLog().log("Ok");
-      }
-
-      // Validate VectorCast covered/total from <unit>.xml files with imported results files above
-      coverageImport.getLog().log(
-         "\nVerifying VectorCast covered/total items from vcast/<unit>.xml with data imported from results read from vcast.vcp and results dir");
-      boolean error = false;
-      for (Entry<CoverageUnit, CoverageDataSubProgram> entry : methodCoverageUnitToCoverageDataSubProgram.entrySet()) {
-         CoverageUnit methodCoverageUnit = entry.getKey();
-         CoverageDataSubProgram coverageDataSubProgram = entry.getValue();
-         int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
-         int coveredCoverageItems =
-            methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size();
-         if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
-            coverageImport.getLog().logError(
-               String.format(
-                  "Imported covered/total items [%d/%d] doesn't match VectorCast [%d/%d] reported in .xml file for coverage unit [%s]",
-                  coveredCoverageItems, totalCoverageItems, coverageDataSubProgram.getCovered(),
-                  coverageDataSubProgram.getTotal(), methodCoverageUnit));
-            error = true;
-         }
-      }
-      if (!error) {
-         coverageImport.getLog().log("Ok");
-      }
-
+   public VCastVcp createVCastVcp() {
+      VCastVcp vCastVcp = null;
       try {
-         coverageImport.getLog().log("\nVerifying aggregate.html report with Imported results");
-         // Retrieve and process Aggregate file compared with import results
-         VCastAggregateReport report = new VCastAggregateReport(vectorCastCoverageImportProvider.getVCastDirectory());
-         error = false;
-         for (AggregateCoverageUnitResult result : report.getResults()) {
-            //            System.out.println(result);
-            CoverageUnit coverageUnit = coverageNameToCoverageUnit.get(result.getName());
-            if (coverageUnit == null) {
-               coverageImport.getLog().logError(
-                  String.format("Aggregate Check: Can't locate Coverage Unit for Aggregate unit [%s]", result.getName()));
-               error = true;
-            } else {
-               int importCuItems = coverageUnit.getCoverageItems(true).size();
-               int importCuCovered = coverageUnit.getCoverageItemsCovered(true, CoverageOptionManager.Test_Unit).size();
-               if (result.getNumLines() == null || result.getNumLines() != importCuItems || result.getNumCovered() == null || result.getNumCovered() != importCuCovered) {
-                  // Don't display error if this is the known ignore case
-                  if (!isVectorCastIgnoreCase(result.getNotes(), importCuCovered, result.getNumCovered())) {
-                     coverageImport.getLog().logError(
-                        String.format(
-                           "Aggregate Check: Unit [%s] Import [%d] of [%d] doesn't match Aggregate [%d] of [%d] [%s]",
-                           result.getName(), importCuCovered, importCuItems, result.getNumCovered(),
-                           result.getNumLines(), Strings.isValid(result.getNotes()) ? " - " + result.getNotes() : ""));
-                     error = true;
-                  }
-               }
-            }
-         }
-         if (!error) {
-            coverageImport.getLog().log("Ok");
-         }
+         vCastVcp = new VCastVcp(vectorCastCoverageImportProvider.getVCastDirectory());
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         coverageImport.getLog().logError("\nError Processing Aggregate File: " + ex.getLocalizedMessage());
+         coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
+         return null;
       }
-      return coverageImport;
+      return vCastVcp;
+   }
+
+   public void importRecord_addVCastVcpFile(VCastVcp vCastVcp) {
+      try {
+         coverageImport.addImportRecordFile(vCastVcp.getFile());
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+      }
+   }
+
+   public void importRecord__AddConfigFiles() {
+      // Add config files to import record
+      try {
+         coverageImport.addImportRecordFile(new File(
+            vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "CCAST_.CFG"));
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+      }
+      try {
+         coverageImport.addImportRecordFile(new File(
+            vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "vcast" + File.separator + "build_info.xml"));
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+      }
+   }
+
+   public boolean validateImportParameters() {
+      if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
+         coverageImport.getLog().logError("VectorCast directory must be specified");
+         return false;
+      }
+
+      File file = new File(vectorCastCoverageImportProvider.getVCastDirectory());
+      if (!file.exists()) {
+         coverageImport.getLog().logError(
+            String.format("VectorCast directory doesn't exist [%s]",
+               vectorCastCoverageImportProvider.getVCastDirectory()));
+         return false;
+      }
+
+      coverageImport.setImportDirectory(vectorCastCoverageImportProvider.getVCastDirectory());
+      return true;
    }
 
    /**
     * VectorCast does not put breakout information for coverage units that have no coverage. Check for this case so we
     * don't show lots of errors.
     */
-   private boolean isVectorCastIgnoreCase(String notes, Integer importCuCovered, Integer aggregateNumCovered) {
+   protected boolean isVectorCastIgnoreCase(String notes, Integer importCuCovered, Integer aggregateNumCovered) {
       return notes.equals("No Coverage Data Exists") && importCuCovered == 0 && aggregateNumCovered == null;
    }
 
    @Override
    public String getName() {
       return "VectorCast Import";
+   }
+
+   public CoverageImport getCoverageImport() {
+      return coverageImport;
+   }
+
+   public String getVcastDirectory() {
+      return vectorCastCoverageImportProvider.getVCastDirectory();
    }
 
 }

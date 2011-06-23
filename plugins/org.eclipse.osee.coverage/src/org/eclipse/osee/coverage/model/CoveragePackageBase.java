@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.XResultDataFile;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public abstract class CoveragePackageBase extends NamedIdentity implements ICoverage, ICoverageUnitProvider {
    List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   final XResultData logResultData = new XResultData(false);
+   final XResultDataFile logResultData = new XResultDataFile(false);
    boolean editable = true;
    protected final CoverageOptionManager coverageOptionManager;
    protected ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider;
@@ -185,7 +186,7 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
       this.coverageUnits = coverageUnits;
    }
 
-   public XResultData getLog() {
+   public XResultDataFile getLog() {
       return logResultData;
    }
 

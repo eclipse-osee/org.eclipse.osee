@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.vcast;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * Represents the <dir>.wrk/vcast.vcp file which lists all the source files and results files specified in this
@@ -39,16 +41,22 @@ public class VCastVcp {
       }
       VcpSourceFile vcpSourceFile = null;
       VcpResultsFile vcpResultsFile = null;
-      for (String line : Lib.fileToString(vCastVcpFile).split("\n")) {
+      FileInputStream fstream = new FileInputStream(vCastVcpFile);
+      // Get the object of DataInputStream
+      DataInputStream in = new DataInputStream(fstream);
+      BufferedReader br = new BufferedReader(new InputStreamReader(in));
+      String line;
+      // Loop through results file and log coverageItem as Test_Unit for each entry
+      while ((line = br.readLine()) != null) {
          if (line.startsWith("SOURCE_FILE_BEGIN")) {
-            vcpSourceFile = new VcpSourceFile(vcastDirectory);
+            vcpSourceFile = new VcpSourceFile(this);
          } else if (line.startsWith("SOURCE_FILE_END")) {
             sourceFiles.add(vcpSourceFile);
             vcpSourceFile = null;
          } else if (vcpSourceFile != null) {
             vcpSourceFile.addLine(line);
          } else if (line.startsWith("RESULT_FILE_BEGIN")) {
-            vcpResultsFile = new VcpResultsFile(vcastDirectory);
+            vcpResultsFile = new VcpResultsFile(this);
          } else if (line.startsWith("RESULT_FILE_END")) {
             resultsFiles.add(vcpResultsFile);
             vcpResultsFile = null;
@@ -56,6 +64,9 @@ public class VCastVcp {
             vcpResultsFile.addLine(line);
          }
       }
+      in.close();
+      fstream.close();
+      br.close();
    }
 
    public File getFile() {
@@ -64,7 +75,7 @@ public class VCastVcp {
 
    public VcpSourceFile getSourceFile(int index) {
       for (VcpSourceFile vcpSourceFile : sourceFiles) {
-         if (vcpSourceFile.getValue(SourceValue.UNIT_NUMBER).equals(String.valueOf(index))) {
+         if (vcpSourceFile.getUnitNumber().equals(String.valueOf(index))) {
             return vcpSourceFile;
          }
       }
@@ -77,6 +88,10 @@ public class VCastVcp {
 
    public List<VcpResultsFile> getResultsFiles() {
       return resultsFiles;
+   }
+
+   public String getVCastDirectory() {
+      return vcastDirectory;
    }
 
 }

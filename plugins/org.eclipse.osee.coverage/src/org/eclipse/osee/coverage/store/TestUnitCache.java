@@ -23,6 +23,7 @@ import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import com.google.common.collect.HashBiMap;
 
@@ -98,7 +99,7 @@ public class TestUnitCache implements ITestUnitProvider {
          for (Integer entry : entries) {
             if (idToNameCache.containsKey(entry)) {
                String name = idToNameCache.get(entry);
-               names.add(name);
+               names.add(Strings.intern(name));
                if (searchName != null && searchName.equals(name)) {
                   break;
                }

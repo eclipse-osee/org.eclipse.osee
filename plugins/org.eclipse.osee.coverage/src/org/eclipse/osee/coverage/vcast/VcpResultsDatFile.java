@@ -10,24 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.vcast;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.logging.Level;
+import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
+import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Reads results.dat file that contains <file num> <procedure num> <execution line num>
@@ -35,62 +34,73 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Donald G. Dunne
  */
 public class VcpResultsDatFile {
+   private final static Pattern valuePattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
+   private File resultsFile;
+   private final String testUnitName;
+   private final VCastVcp vCastVcp;
 
-   private final CompositeKeyHashMap<String, String, HashSet<String>> resultsValues =
-      new CompositeKeyHashMap<String, String, HashSet<String>>(1000, true);
-   Pattern valuePattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
-   String resultFilename = null;
+   public VcpResultsDatFile(VCastVcp vCastVcp, VcpResultsFile vcpResultsFile, String testUnitName) {
+      this.vCastVcp = vCastVcp;
+      this.testUnitName = testUnitName;
+   }
 
-   public VcpResultsDatFile(String vcastDirectory, VcpResultsFile vcpResultsFile) throws OseeCoreException, IOException {
-      resultFilename = vcastDirectory + "/vcast/results/" + vcpResultsFile.getValue(ResultsValue.FILENAME);
-      File resultsFile = getFile();
+   public void process(CoverageImport coverageImport, Map<String, CoverageUnit> fileNumToCoverageUnit) throws OseeCoreException {
+      String resultFilename = vCastVcp.getVCastDirectory() + "/vcast/results/" + testUnitName;
+      resultsFile = new File(resultFilename);
       if (!resultsFile.exists()) {
          throw new OseeArgumentException(
             String.format("VectorCast resultsFile file doesn't exist [%s]", resultFilename));
       }
-      for (String resultsLine : Lib.fileToString(resultsFile).split("\n")) {
-         if (Strings.isValid(resultsLine)) {
-            addLine(resultsLine);
-         }
-      }
-   }
 
-   public File getFile() {
-      return new File(resultFilename);
-   }
+      // Add file to import record
+      coverageImport.getImportRecordFiles().add(resultsFile);
 
-   public void addLine(String line) {
-      Matcher m = valuePattern.matcher(line);
-      if (m.find()) {
-         HashSet<String> values = resultsValues.get(m.group(1), m.group(2));
-         if (values == null) {
-            values = new HashSet<String>();
-            resultsValues.put(m.group(1), m.group(2), values);
-         }
-         values.add(m.group(3));
-      } else {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsDatFile line [%s]", line));
-      }
-   }
+      try {
+         FileInputStream fstream = new FileInputStream(resultsFile);
+         // Get the object of DataInputStream
+         DataInputStream in = new DataInputStream(fstream);
+         BufferedReader br = new BufferedReader(new InputStreamReader(in));
+         String resultsLine;
+         // Loop through results file and log coverageItem as Test_Unit for each entry
+         while ((resultsLine = br.readLine()) != null) {
+            if (Strings.isValid(resultsLine)) {
+               Matcher m = valuePattern.matcher(resultsLine);
+               if (m.find()) {
+                  String fileNum = m.group(1);
+                  String methodNum = m.group(2);
+                  String executeNum = m.group(3);
 
-   public Collection<String> getFileNumbers() {
-      List<String> fileNumbers = new ArrayList<String>();
-      for (Pair<String, String> pair : resultsValues.keySet()) {
-         if (!fileNumbers.contains(pair.getFirst())) {
-            fileNumbers.add(pair.getFirst());
+                  CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
+                  if (coverageUnit == null) {
+                     coverageImport.getLog().logError(
+                        String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
+                     continue;
+                  }
+                  // Find or create new coverage item for method num /execution line
+                  CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
+                  if (coverageItem == null) {
+                     coverageImport.getLog().logError(
+                        String.format(
+                           "Method [%s] doesn't exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
+                           methodNum, coverageUnit, testUnitName));
+                  } else {
+                     coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
+                     try {
+                        coverageItem.addTestUnitName(testUnitName);
+                     } catch (OseeCoreException ex) {
+                        coverageImport.getLog().logError(
+                           String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
+                              testUnitName, coverageUnit, ex.getLocalizedMessage()));
+                     }
+                  }
+               }
+            }
          }
+         in.close();
+         fstream.close();
+         br.close();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
       }
-      return fileNumbers;
-   }
-
-   public Collection<Pair<String, HashSet<String>>> getMethodExecutionPairs(String fileNumber) {
-      List<Pair<String, HashSet<String>>> methodExecutionPairs = new ArrayList<Pair<String, HashSet<String>>>();
-      for (Pair<String, String> pair : resultsValues.keySet()) {
-         if (fileNumber.equals(pair.getFirst())) {
-            methodExecutionPairs.add(new Pair<String, HashSet<String>>(pair.getSecond(), resultsValues.get(fileNumber,
-               pair.getSecond())));
-         }
-      }
-      return methodExecutionPairs;
    }
 }

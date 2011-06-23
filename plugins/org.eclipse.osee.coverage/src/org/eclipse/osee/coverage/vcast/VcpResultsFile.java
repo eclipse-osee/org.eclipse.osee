@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.vcast;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -27,52 +27,36 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class VcpResultsFile {
 
-   private final Map<ResultsValue, String> resultsValues = new HashMap<ResultsValue, String>(20);
-   Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
-   private VcpResultsDatFile vcpResultsDatFile;
-   private final String vcastDirectory;
+   private String filename;
+   private final static Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
+   private final VCastVcp vCastVcp;
 
-   public static enum ResultsValue {
-      FILENAME,
-      DIRECTORY,
-      DISPLAY_NAME,
-      RESULT_TYPE,
-      ADDITION_TIME,
-      IS_SELECTED,
-      HAD_COVERAGE_REMOVED
-   };
-
-   public VcpResultsFile(String vcastDirectory) {
-      this.vcastDirectory = vcastDirectory;
-   }
-
-   public String getValue(ResultsValue resultsValue) {
-      return resultsValues.get(resultsValue);
+   public VcpResultsFile(VCastVcp vCastVcp) {
+      this.vCastVcp = vCastVcp;
    }
 
    public void addLine(String line) {
       Matcher m = valuePattern.matcher(line);
       if (m.find()) {
-         ResultsValue resultsValue = ResultsValue.valueOf(m.group(1));
-         if (resultsValue == null) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsFile value [%s]", m.group(1)));
-         } else {
-            resultsValues.put(resultsValue, m.group(2));
+         if ("FILENAME".equals(m.group(1))) {
+            filename = m.group(2);
          }
       } else {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsFile line [%s]", line));
       }
    }
 
-   public VcpResultsDatFile getVcpResultsDatFile() throws OseeCoreException, IOException {
-      if (vcpResultsDatFile == null) {
-         vcpResultsDatFile = new VcpResultsDatFile(vcastDirectory, this);
-      }
-      return vcpResultsDatFile;
-   }
-
    @Override
    public String toString() {
-      return getValue(ResultsValue.FILENAME);
+      return filename;
+   }
+
+   public String getFilename() {
+      return filename;
+   }
+
+   public void processResultsFiles(CoverageImport coverageImport, Map<String, CoverageUnit> fileNumToCoverageUnit) throws OseeCoreException {
+      VcpResultsDatFile vcpResultsDatFile = new VcpResultsDatFile(vCastVcp, this, filename);
+      vcpResultsDatFile.process(coverageImport, fileNumToCoverageUnit);
    }
 }

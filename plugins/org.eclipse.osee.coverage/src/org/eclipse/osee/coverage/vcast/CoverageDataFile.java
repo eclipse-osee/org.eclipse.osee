@@ -40,12 +40,10 @@ public class CoverageDataFile {
 
    public List<CoverageDataUnit> coverageDataUnits = new ArrayList<CoverageDataUnit>();
    private static final Pattern lineNumToBranchesPattern = Pattern.compile("\\{([0-9]+);\\s*([0-9]+)\\}");
-   private final String coverageDataFilename;
+   private File coverageDataFile;
 
    public CoverageDataFile(CoverageImport coverageImport, String coverageDataFilename) throws OseeCoreException {
-
-      this.coverageDataFilename = coverageDataFilename;
-      File coverageDataFile = getFile();
+      coverageDataFile = new File(coverageDataFilename);
       if (!coverageDataFile.exists()) {
          String errStr =
             String.format("VectorCast vcast/<code file>.xml file doesn't exist [%s]", coverageDataFilename);
@@ -120,11 +118,15 @@ public class CoverageDataFile {
       }
    }
 
-   public File getFile() {
-      return new File(coverageDataFilename);
-   }
-
    public List<CoverageDataUnit> getCoverageDataUnits() {
       return coverageDataUnits;
+   }
+
+   public void cleanup() {
+      coverageDataUnits = null;
+   }
+
+   public File getFile() {
+      return coverageDataFile;
    }
 }
