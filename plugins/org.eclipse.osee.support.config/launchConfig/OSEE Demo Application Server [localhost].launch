@@ -52,7 +52,6 @@
 <listEntry value="/org.eclipse.osee.framework.types.bridge/bin"/>
 <listEntry value="/org.eclipse.osee.framework.ui.service.control/bin"/>
 <listEntry value="/lba.framework.ui.skynet/bin"/>
-<listEntry value="/org.eclipse.osee.framework.oracle/bin"/>
 <listEntry value="/org.postgresql.driver/bin"/>
 <listEntry value="/org.eclipse.osee.support.build/bin"/>
 <listEntry value="/org.eclipse.osee.framework.branch.management/bin"/>
@@ -81,7 +80,6 @@
 <listEntry value="/org.eclipse.osee.ote.messaging.dds/bin"/>
 <listEntry value="/org.eclipse.osee.framework.server.admin/bin"/>
 <listEntry value="/org.eclipse.osee.framework.core.server/bin"/>
-<listEntry value="/org.eclipse.osee.framework.postgresql/bin"/>
 <listEntry value="/lba.ats.config.cte/bin"/>
 <listEntry value="/org.eclipse.osee.framework.messaging/bin"/>
 <listEntry value="/org.eclipse.osee.framework.jdk.core/bin"/>
@@ -128,7 +126,6 @@
 <listEntry value="/org.eclipse.osee.framework.core.client/bin"/>
 <listEntry value="/lba.tte/bin"/>
 <listEntry value="/org.eclipse.osee.framework.ui.plugin/bin"/>
-<listEntry value="/org.eclipse.osee.framework.jdbcodbc/bin"/>
 <listEntry value="/net.jini/bin"/>
 <listEntry value="/lba.ote.msg.gen/bin"/>
 <listEntry value="/lba.ote.client/bin"/>
@@ -174,5 +171,5 @@
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<stringAttribute key="workspace_bundles" value="org.postgresql.driver@default:default,org.eclipse.osee.framework.resource.management.test@default:false,org.eclipse.osee.framework.core.model.test@default:false,org.eclipse.osee.framework.database.test@default:false,org.eclipse.osee.framework.jdk.core.test@default:false,org.eclipse.osee.demo.db.connection@default:default,org.eclipse.osee.framework.database@default:default,org.eclipse.osee.framework.core.server.test@default:false,org.eclipse.osee.framework.search.engine@default:default,org.eclipse.osee.framework.postgresql@default:default,org.eclipse.osee.framework.lifecycle.test@default:false,org.eclipse.osee.framework.logging@default:default,org.eclipse.osee.framework.lifecycle@default:default,org.eclipse.osee.framework.core@default:default,org.eclipse.osee.framework.branch.management.test@default:false,org.eclipse.osee.framework.core.model@default:default,org.eclipse.osee.framework.branch.management@default:default,org.eclipse.osee.framework.core.message@default:default,org.eclipse.osee.framework.core.dsl.integration.test@default:false,org.eclipse.osee.framework.core.test@default:false,org.eclipse.osee.framework.manager.servlet@default:default,org.eclipse.osee.framework.resource.locator.attribute.test@default:false,org.eclipse.osee.framework.core.message.test@default:false,org.eclipse.osee.framework.resource.provider.attribute@default:default,org.eclipse.osee.framework.search.engine.test@default:false,org.eclipse.osee.framework.core.dsl@default:default,org.eclipse.osee.framework.resource.locator.attribute@default:default,org.eclipse.osee.framework.core.datastore@default:default,org.eclipse.osee.framework.core.dsl.integration@default:default,org.eclipse.osee.framework.server.admin@default:default,org.eclipse.osee.framework.manager.servlet.test@default:false,org.eclipse.osee.framework.core.server@default:default,org.eclipse.osee.framework.core.datastore.test@default:false,org.eclipse.osee.framework.jdk.core@default:default,org.eclipse.osee.framework.resource.management@default:default,org.eclipse.osee.framework.resource.provider.attribute.test@default:false"/>
+<stringAttribute key="workspace_bundles" value="org.postgresql.driver@default:default,org.eclipse.osee.framework.resource.management.test@default:false,org.eclipse.osee.framework.core.model.test@default:false,org.eclipse.osee.framework.database.test@default:false,org.eclipse.osee.framework.jdk.core.test@default:false,org.eclipse.osee.demo.db.connection@default:default,org.eclipse.osee.framework.database@default:default,org.eclipse.osee.framework.core.server.test@default:false,org.eclipse.osee.framework.search.engine@default:default,org.eclipse.osee.framework.lifecycle.test@default:false,org.eclipse.osee.framework.logging@default:default,org.eclipse.osee.framework.lifecycle@default:default,org.eclipse.osee.framework.core@default:default,org.eclipse.osee.framework.branch.management.test@default:false,org.eclipse.osee.framework.core.model@default:default,org.eclipse.osee.framework.branch.management@default:default,org.eclipse.osee.framework.core.message@default:default,org.eclipse.osee.framework.core.dsl.integration.test@default:false,org.eclipse.osee.framework.core.test@default:false,org.eclipse.osee.framework.manager.servlet@default:default,org.eclipse.osee.framework.resource.locator.attribute.test@default:false,org.eclipse.osee.framework.core.message.test@default:false,org.eclipse.osee.framework.resource.provider.attribute@default:default,org.eclipse.osee.framework.search.engine.test@default:false,org.eclipse.osee.framework.core.dsl@default:default,org.eclipse.osee.framework.resource.locator.attribute@default:default,org.eclipse.osee.framework.core.datastore@default:default,org.eclipse.osee.framework.core.dsl.integration@default:default,org.eclipse.osee.framework.server.admin@default:default,org.eclipse.osee.framework.manager.servlet.test@default:false,org.eclipse.osee.framework.core.server@default:default,org.eclipse.osee.framework.core.datastore.test@default:false,org.eclipse.osee.framework.jdk.core@default:default,org.eclipse.osee.framework.resource.management@default:default,org.eclipse.osee.framework.resource.provider.attribute.test@default:false"/>
 </launchConfiguration>

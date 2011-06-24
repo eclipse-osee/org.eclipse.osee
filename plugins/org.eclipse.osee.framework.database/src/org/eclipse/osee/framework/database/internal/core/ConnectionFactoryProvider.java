@@ -11,6 +11,11 @@
 
 package org.eclipse.osee.framework.database.internal.core;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -24,6 +29,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class ConnectionFactoryProvider {
 
    private final BundleContext bundleContext;
+   private final Map<String, IConnectionFactory> factoryMap = new HashMap<String, IConnectionFactory>();
 
    public ConnectionFactoryProvider(BundleContext bundleContext) {
       this.bundleContext = bundleContext;
@@ -35,17 +41,49 @@ public class ConnectionFactoryProvider {
       serviceTracker.open(true);
       try {
          Object[] services = serviceTracker.getServices();
-         for (Object object : services) {
-            if (object instanceof IConnectionFactory) {
-               IConnectionFactory factory = (IConnectionFactory) object;
-               if (driver.equals(factory.getDriver())) {
-                  return factory;
+         if (services != null) {
+            for (Object object : services) {
+               if (object instanceof IConnectionFactory) {
+                  IConnectionFactory factory = (IConnectionFactory) object;
+                  if (driver.equals(factory.getDriver())) {
+                     return factory;
+                  }
                }
             }
          }
+
+         IConnectionFactory factory = factoryMap.get(driver);
+         if (factory == null) {
+            factory = new DefaultConnectionFactory(driver);
+            factoryMap.put(driver, factory);
+         }
+         return factory;
+
       } finally {
          serviceTracker.close();
       }
-      throw new OseeNotFoundException("Unable to find connection factory with driver [%s]", driver);
+   }
+   private static final class DefaultConnectionFactory implements IConnectionFactory {
+
+      private final String driver;
+
+      public DefaultConnectionFactory(String driver) {
+         this.driver = driver;
+      }
+
+      @Override
+      public Connection getConnection(Properties properties, String connectionURL) throws Exception {
+         try {
+            Class.forName(driver);
+         } catch (Exception ex) {
+            throw new OseeNotFoundException("Unable to find connection factory with driver [%s]", driver);
+         }
+         return DriverManager.getConnection(connectionURL, properties);
+      }
+
+      @Override
+      public String getDriver() {
+         return driver;
+      }
    }
 }

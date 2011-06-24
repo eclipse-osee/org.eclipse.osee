@@ -52,7 +52,6 @@
 <listEntry value="/org.eclipse.osee.framework.types.bridge/bin"/>
 <listEntry value="/org.eclipse.osee.framework.ui.service.control/bin"/>
 <listEntry value="/lba.framework.ui.skynet/bin"/>
-<listEntry value="/org.eclipse.osee.framework.oracle/bin"/>
 <listEntry value="/org.postgresql.driver/bin"/>
 <listEntry value="/org.eclipse.osee.support.build/bin"/>
 <listEntry value="/org.eclipse.osee.framework.branch.management/bin"/>
@@ -81,7 +80,6 @@
 <listEntry value="/org.eclipse.osee.ote.messaging.dds/bin"/>
 <listEntry value="/org.eclipse.osee.framework.server.admin/bin"/>
 <listEntry value="/org.eclipse.osee.framework.core.server/bin"/>
-<listEntry value="/org.eclipse.osee.framework.postgresql/bin"/>
 <listEntry value="/lba.ats.config.cte/bin"/>
 <listEntry value="/org.eclipse.osee.framework.messaging/bin"/>
 <listEntry value="/org.eclipse.osee.framework.jdk.core/bin"/>
@@ -128,7 +126,6 @@
 <listEntry value="/org.eclipse.osee.framework.core.client/bin"/>
 <listEntry value="/lba.tte/bin"/>
 <listEntry value="/org.eclipse.osee.framework.ui.plugin/bin"/>
-<listEntry value="/org.eclipse.osee.framework.jdbcodbc/bin"/>
 <listEntry value="/net.jini/bin"/>
 <listEntry value="/lba.ote.msg.gen/bin"/>
 <listEntry value="/lba.ote.client/bin"/>

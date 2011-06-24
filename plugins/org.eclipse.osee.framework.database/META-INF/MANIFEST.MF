@@ -30,3 +30,4 @@ Import-Package: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/uri.connection.contributor.xml
 Require-Bundle: org.eclipse.equinox.ds
+DynamicImport-Package: *
