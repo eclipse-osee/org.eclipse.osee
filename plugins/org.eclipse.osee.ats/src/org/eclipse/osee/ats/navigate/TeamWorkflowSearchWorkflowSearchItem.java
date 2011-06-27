@@ -241,7 +241,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   private String getSelectedState() {
+   protected String getSelectedState() {
       if (stateCombo == null) {
          return null;
       }
