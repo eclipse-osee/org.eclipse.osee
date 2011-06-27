@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactoryLegacyMgr;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.SMAState;
 import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
@@ -51,7 +51,6 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -177,7 +176,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       try {
 
          testNameToResultsMap = new HashCollection<String, String>();
-         int artSetNum = 1;
+         //         int artSetNum = 1;
          for (Collection<Integer> artIdList : artIdLists) {
             // Don't process all lists if just trying to test this report
             //            elapsedTime =
@@ -338,17 +337,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "testAtsBranchManagerA",
                      "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
                }
-               if (workingBranch != null && workingBranch.getBranchState() == BranchState.COMMITTED && workingBranch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
-                  String fixStr = "";
-                  if (teamArt.isCompleted()) {
-                     fixStr = " - Fix: Workflow Completed, Branch can be Archived";
-                  } else {
-                     fixStr = " - Workflow not completed, verify manually";
-                  }
-                  testNameToResultsMap.put(
-                     "testAtsBranchManagerB",
-                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed working branch [" + workingBranch.getGuid() + "] but not archived" + fixStr);
-               }
+               // Check if working branch can be archived
+               //               if (workingBranch != null && workingBranch.getBranchState() == BranchState.COMMITTED && workingBranch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
+               //                  String fixStr = "";
+               //                  if (teamArt.isCompleted()) {
+               //                     fixStr = " - Fix: Workflow Completed, Branch can be Archived";
+               //                  } else {
+               //                     fixStr = " - Workflow not completed, verify manually";
+               //                  }
+               //                  testNameToResultsMap.put(
+               //                     "testAtsBranchManagerB",
+               //                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed working branch [" + workingBranch.getGuid() + "] but not archived" + fixStr);
+               //               }
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testAtsBranchManager",
@@ -644,10 +644,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact instanceof TeamDefinitionArtifact) {
                TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-               if (teamDef.isActionable() && WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromTeamDefinition(teamDef) == null) {
-                  testNameToResultsMap.put(
-                     "testTeamDefinitionHasWorkflow",
-                     "Error: TeamDefintion " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has no related workflow and is set to Actionable");
+               if (teamDef.isActionable()) {
+                  WorkDefinitionMatch match = teamDef.getWorkDefinition();
+                  if (!match.isMatched()) {
+                     testNameToResultsMap.put(
+                        "testTeamDefinitionHasWorkflow",
+                        "Error: TeamDefintion " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has defined WorkDefinition and is set to Actionable");
+                  }
                }
             }
          } catch (OseeCoreException ex) {
