@@ -330,12 +330,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             try {
-               Collection<Branch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
                Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
-               if (workingBranch != null && branchesCommittedTo.size() > 0 && workingBranch.getBranchState() != BranchState.COMMITTED && workingBranch.getBranchType() != BranchType.BASELINE) {
-                  testNameToResultsMap.put(
-                     "testAtsBranchManagerA",
-                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
+               if (workingBranch != null && workingBranch.getBranchState() != BranchState.COMMITTED && workingBranch.getBranchType() != BranchType.BASELINE) {
+                  Collection<Branch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
+                  if (branchesCommittedTo.size() > 0) {
+                     testNameToResultsMap.put(
+                        "testAtsBranchManagerA",
+                        "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
+                  }
                }
                // Check if working branch can be archived
                //               if (workingBranch != null && workingBranch.getBranchState() == BranchState.COMMITTED && workingBranch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
@@ -649,7 +651,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if (!match.isMatched()) {
                      testNameToResultsMap.put(
                         "testTeamDefinitionHasWorkflow",
-                        "Error: TeamDefintion " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has defined WorkDefinition and is set to Actionable");
+                        "Error: TeamDefintion " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has NO defined WorkDefinition and is set to Actionable");
                   }
                }
             }
