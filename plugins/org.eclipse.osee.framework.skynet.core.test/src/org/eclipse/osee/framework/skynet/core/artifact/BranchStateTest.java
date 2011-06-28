@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -339,7 +340,7 @@ public class BranchStateTest {
             purgeBranchAndChildren(branch);
          }
          if (toDelete != null && toDelete.length > 0) {
-            new PurgeArtifacts(Arrays.asList(toDelete)).execute();
+            Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(toDelete)));
          }
       } catch (Exception ex) {
          // Do Nothing;

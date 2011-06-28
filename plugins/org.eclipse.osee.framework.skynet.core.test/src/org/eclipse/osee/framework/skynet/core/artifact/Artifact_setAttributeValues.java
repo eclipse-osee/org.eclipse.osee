@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -104,6 +105,6 @@ public class Artifact_setAttributeValues {
       Collection<Artifact> arts =
          ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(),
             DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED);
-      new PurgeArtifacts(arts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(arts));
    }
 }

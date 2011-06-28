@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -175,10 +177,14 @@ public class GlobalMenu {
       public void run() {
          final Collection<Artifact> artifactsToBePurged = globalMenuHelper.getArtifacts();
 
-         if (MessageDialog.openConfirm(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Confirm Artifact Purge ",
-            " Are you sure you want to purge this artifact, all of " + "its children and all history associated with these artifacts from the database ?")) {
+         final MessageDialogWithToggle dialog =
+            MessageDialogWithToggle.openOkCancelConfirm(
+               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Confirm Artifact Purge ",
+               " Are you sure you want to purge this artifact and all history associated from the database? (cannot be undone)",
+               "Purge selected artifact's children?", false, null, null);
+
+         if (dialog.getReturnCode() == Window.OK) {
             Job job = new Job("Purge artifact") {
 
                @Override
@@ -203,7 +209,7 @@ public class GlobalMenu {
                      for (Artifact artifactToPurge : artifactsToBePurged) {
                         if (!artifactToPurge.isDeleted()) {
                            monitor.setTaskName("Purge: " + artifactToPurge.getName());
-                           artifactToPurge.purgeFromBranch();
+                           artifactToPurge.purgeFromBranch(dialog.getToggleState());
                         }
                         monitor.worked(1);
                      }

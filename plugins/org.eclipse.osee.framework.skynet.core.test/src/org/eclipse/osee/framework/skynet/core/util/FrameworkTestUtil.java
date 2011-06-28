@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -97,7 +98,7 @@ public class FrameworkTestUtil {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, EXCLUDE_DELETED));
       }
       if (artifacts.size() > 0) {
-         new PurgeArtifacts(artifacts).execute();
+         Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
          TestUtil.sleep(4000);
       }
    }

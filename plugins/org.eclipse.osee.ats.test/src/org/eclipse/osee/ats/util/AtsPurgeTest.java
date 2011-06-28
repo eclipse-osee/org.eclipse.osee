@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
@@ -94,7 +95,7 @@ public class AtsPurgeTest {
       TestUtil.checkThatIncreased(preCreateActionCount, postCreateActionCount);
 
       // Purge Action, Workflow and Tasks
-      new PurgeArtifacts(artsToPurge).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToPurge));
 
       // Count rows and check that same as when began
       DbTestUtil.getTableRowCounts(postPurgeCount, tables);

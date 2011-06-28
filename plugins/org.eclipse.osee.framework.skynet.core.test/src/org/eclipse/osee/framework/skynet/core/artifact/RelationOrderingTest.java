@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -54,7 +55,7 @@ public class RelationOrderingTest {
       artsToDel.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.Folder,
          CoreAttributeTypes.StaticId, STATIC_ID_TO_DELETE, BranchManager.getCommonBranch()));
       if (artsToDel.size() > 0) {
-         new PurgeArtifacts(artsToDel).execute();
+         Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToDel));
          Thread.sleep(5000);
       }
    }

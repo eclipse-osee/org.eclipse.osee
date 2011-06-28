@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -40,7 +41,7 @@ public class CsvArtifactTest {
          csv = CsvArtifact.getCsvArtifact(id, DemoSawBuilds.SAW_Bld_2, true);
       }
       Collection<Artifact> arts = ArtifactQuery.getArtifactListFromName(id, DemoSawBuilds.SAW_Bld_2, EXCLUDE_DELETED);
-      new PurgeArtifacts(arts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(arts));
    }
 
    @org.junit.Test

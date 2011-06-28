@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,7 +50,7 @@ public class PurgeArtifactHandler extends CommandHandler {
                IStatus toReturn = Status.CANCEL_STATUS;
                monitor.beginTask("Purge artifact", artifacts.size());
                try {
-                  new PurgeArtifacts(artifacts).execute();
+                  Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
                   toReturn = Status.OK_STATUS;
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

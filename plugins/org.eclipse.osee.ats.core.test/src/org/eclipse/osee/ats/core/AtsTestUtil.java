@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -371,7 +372,7 @@ public class AtsTestUtil {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", AtsUtilCore.getAtsBranch(),
             EXCLUDE_DELETED));
       }
-      new PurgeArtifacts(artifacts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
       TestUtil.sleep(4000);
    }
 

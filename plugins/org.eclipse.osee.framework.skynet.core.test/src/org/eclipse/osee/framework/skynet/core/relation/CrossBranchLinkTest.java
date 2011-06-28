@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -55,7 +56,7 @@ public class CrossBranchLinkTest {
          BranchManager.getCommonBranch(), EXCLUDE_DELETED));
       artifacts.addAll(ArtifactQuery.getArtifactListFromName(CrossBranchLinkTest.class.getSimpleName() + "%",
          DemoSawBuilds.SAW_Bld_1, EXCLUDE_DELETED));
-      new PurgeArtifacts(artifacts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
       TestUtil.sleep(4000);
    }
 

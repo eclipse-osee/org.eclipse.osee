@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -198,7 +199,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             taskArts.removeAll(items);
 
             if (tasksNotInDb.size() > 0) {
-               new PurgeArtifacts(tasksNotInDb).execute();
+               Operations.executeWorkAndCheckStatus(new PurgeArtifacts(tasksNotInDb));
                refreshActionHandler();
             }
             iXTaskViewer.getEditor().onDirtied();

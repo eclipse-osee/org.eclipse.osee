@@ -14,12 +14,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.define.blam.operation.TestPlanComplianceReport;
-import org.eclipse.osee.define.blam.operation.TestStatusEnum;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -57,7 +56,7 @@ public final class TestPlanComplianceReportTest {
       buildTest(1, TestStatusEnum.NOT_PERFORMED_CODE, 0);
       Assert.assertTrue("No \"Not Performed\" string found.",
          resultBuffer.toString().contains(EXPECTED_NOT_PERFORMED_DATA));
-      new PurgeArtifacts(dummyArtifactList).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
    }
 
    //@formatter:off
@@ -71,7 +70,7 @@ public final class TestPlanComplianceReportTest {
       buildTest(1, TestStatusEnum.NOT_PERFORMED_CODE, 1);
       Assert.assertTrue("No \"OseeErrorStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
-      new PurgeArtifacts(dummyArtifactList).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
    }
 
    //@formatter:off
@@ -87,21 +86,21 @@ public final class TestPlanComplianceReportTest {
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
       Assert.assertTrue("No \"OseeBoldStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
-      new PurgeArtifacts(dummyArtifactList).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
 
       buildTest(1, TestStatusEnum.COMPLETED_WITH_ISSUES_CODE, 0);
       Assert.assertTrue("No \"OseeErrorStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
       Assert.assertTrue("No \"OseeBoldStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
-      new PurgeArtifacts(dummyArtifactList).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
 
       buildTest(1, TestStatusEnum.COMPLETED_WITH_ISSUES_RESOLVED_CODE, 0);
       Assert.assertTrue("No \"OseeErrorStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
       Assert.assertTrue("No \"OseeBoldStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
-      new PurgeArtifacts(dummyArtifactList).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
    }
 
    @Test
@@ -109,7 +108,7 @@ public final class TestPlanComplianceReportTest {
       buildTest(1, TestStatusEnum.COMPLETED_PASSED_CODE, 2);
       Assert.assertTrue("All test result files should be in 1 cell",
          resultBuffer.toString().contains(EXPECTED_MULTIPLE_RESULTS_IN_1_CELL));
-      new PurgeArtifacts(dummyArtifactList).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
    }
 
    @BeforeClass

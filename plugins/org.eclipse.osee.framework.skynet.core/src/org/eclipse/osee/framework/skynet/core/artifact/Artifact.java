@@ -15,10 +15,10 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hi
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -1095,8 +1095,17 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    /**
     * Remove artifact from a specific branch in the database
     */
+   public final void purgeFromBranch(boolean purgeChildren) throws OseeCoreException {
+      Collection<Artifact> artifacts = new LinkedHashSet<Artifact>();
+      artifacts.add(this);
+      if (purgeChildren) {
+         artifacts.addAll(getDescendants());
+      }
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
+   }
+
    public final void purgeFromBranch() throws OseeCoreException {
-      new PurgeArtifacts(Arrays.asList(this)).execute();
+      purgeFromBranch(false);
    }
 
    public final boolean isDeleted() {

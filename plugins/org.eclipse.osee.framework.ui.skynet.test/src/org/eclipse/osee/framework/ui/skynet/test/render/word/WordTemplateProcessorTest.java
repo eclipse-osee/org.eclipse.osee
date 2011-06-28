@@ -19,6 +19,7 @@ import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -154,8 +155,8 @@ public class WordTemplateProcessorTest {
    @AfterClass
    public static void tearDownOnce() throws Exception {
       TestUtil.severeLoggingEnd(monitorLog);
-      new PurgeArtifacts(myRootArtifact.getChildren()).execute();
-      new PurgeArtifacts(Collections.singletonList(myRootArtifact)).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(myRootArtifact.getChildren()));
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singletonList(myRootArtifact)));
    }
 
    private static String getResourceData(String relativePath) throws IOException {

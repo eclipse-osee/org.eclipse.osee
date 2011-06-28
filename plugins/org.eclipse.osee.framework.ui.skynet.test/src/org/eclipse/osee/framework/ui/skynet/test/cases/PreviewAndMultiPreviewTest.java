@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -70,7 +71,7 @@ public class PreviewAndMultiPreviewTest {
       Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).isEmpty());
       Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).isEmpty());
       TestUtil.severeLoggingEnd(monitorLog);
-      new PurgeArtifacts(testArtifacts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(testArtifacts));
       testArtifacts.clear();
    }
 

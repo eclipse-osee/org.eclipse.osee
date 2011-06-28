@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.AfterClass;
@@ -82,6 +83,6 @@ public class Artifact_getLastModified {
       Collection<Artifact> arts =
          ArtifactQuery.getArtifactListFromName(Artifact_getLastModified.class.getSimpleName(),
             BranchManager.getCommonBranch(), EXCLUDE_DELETED);
-      new PurgeArtifacts(arts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(arts));
    }
 }

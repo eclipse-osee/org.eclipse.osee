@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -56,7 +57,7 @@ public class ArtifactPurgeTest extends AbstractPurgeTest {
       DbTestUtil.getTableRowCounts(postCreateArtifactsCount, getTables());
       TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
 
-      new PurgeArtifacts(softArts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(softArts));
 
       // Count rows and check that same as when began
       getPostTableCount();

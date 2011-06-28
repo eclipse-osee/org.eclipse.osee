@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
@@ -47,7 +48,7 @@ public class RelationDeletionTest {
 
    @After
    public void cleanUp() throws OseeCoreException {
-      new PurgeArtifacts(artifacts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
    }
 
    @Test

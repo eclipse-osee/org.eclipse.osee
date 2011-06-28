@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -39,7 +40,7 @@ public class CoverageTestUtil {
 
    public static void cleanupCoverageTests() throws OseeCoreException {
       try {
-         new PurgeArtifacts(getAllCoverageArtifacts()).execute();
+         Operations.executeWorkAndCheckStatus(new PurgeArtifacts(getAllCoverageArtifacts()));
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }

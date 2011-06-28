@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -40,7 +41,7 @@ public class NativeArtifactTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws Exception {
-      new PurgeArtifacts(testArtifacts).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(testArtifacts));
    }
 
    @org.junit.Test

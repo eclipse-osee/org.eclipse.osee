@@ -193,8 +193,8 @@ public final class ArtifactImportWizardTest {
 
    @After
    public void tearDown() throws Exception {
-      new PurgeArtifacts(myRootArtifact.getDescendants()).execute();
-      new PurgeArtifacts(Collections.singletonList(myRootArtifact)).execute();
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(myRootArtifact.getDescendants()));
+      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singletonList(myRootArtifact)));
    }
 
    @BeforeClass

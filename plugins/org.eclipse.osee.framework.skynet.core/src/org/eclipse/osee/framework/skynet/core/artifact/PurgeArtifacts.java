@@ -17,12 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -38,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 /**
  * @author Ryan D. Brooks
  */
-public class PurgeArtifacts extends DbTransaction {
+public class PurgeArtifacts extends AbstractDbTxOperation {
 
    private static final String INSERT_SELECT_ITEM =
       "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT /*+ ordered FIRST_ROWS */ ?, ?, txs.gamma_id, txs.transaction_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
@@ -59,12 +60,13 @@ public class PurgeArtifacts extends DbTransaction {
    private boolean success;
 
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
+      super(Activator.getInstance().getOseeDatabaseService(), "Purge Artifact", Activator.PLUGIN_ID);
       this.artifactsToPurge = artifactsToPurge;
       this.success = false;
    }
 
    @Override
-   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       if (artifactsToPurge == null || artifactsToPurge.size() == 0) {
          return;
       }
@@ -178,7 +180,7 @@ public class PurgeArtifacts extends DbTransaction {
    }
 
    @Override
-   protected void handleTxFinally() throws OseeCoreException {
+   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (success) {
          Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
          for (Artifact artifact : artifactsToPurge) {
@@ -199,4 +201,5 @@ public class PurgeArtifacts extends DbTransaction {
       String sql = String.format(INSERT_SELECT_ITEM, tableName, artifactJoinSql);
       databaseService.runPreparedUpdate(connection, sql, transactionJoinId, insertTime, queryId);
    }
+
 }
