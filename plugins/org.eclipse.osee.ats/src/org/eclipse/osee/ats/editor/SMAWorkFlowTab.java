@@ -165,10 +165,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void updateTitleBar() throws OseeCoreException {
-      String titleString = editor.getTitleStr();
-      String displayableTitle = Strings.escapeAmpersands(titleString);
-      managedForm.getForm().setText(displayableTitle);
-      managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
+      if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+         String titleString = editor.getTitleStr();
+         String displayableTitle = Strings.escapeAmpersands(titleString);
+         managedForm.getForm().setText(displayableTitle);
+         managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
+      }
    }
 
    @Override
