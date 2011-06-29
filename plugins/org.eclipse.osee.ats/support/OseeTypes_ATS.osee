@@ -924,46 +924,6 @@ relationType "TeamDefinitionToVersion" {
    multiplicity ONE_TO_MANY
 }
 
-relationType "TeamDefinitionToWorkflowDiagram" {
-   guid "AAMFE+BpKTGewbN8c3gA"
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "General Document"
-   sideBArtifactType "General Document"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_ONE
-}
-
-relationType "TeamDefinitionToTaskWorkflowDiagram" {
-   guid "AAMFE+DkeQ9mRBPca0QA"
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "General Document"
-   sideBArtifactType "General Document"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_ONE
-}
-
-relationType "TeamDefinitionToDecisionReviewWorkflowDiagram" {
-   guid "AAMFE+Fg4RmKrda_jJQA"
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "General Document"
-   sideBArtifactType "General Document"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_ONE
-}
-
-relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
-   guid "AAMFE+HqYUG262IxMFwA"
-   sideAName "Team Definition"
-   sideAArtifactType "Team Definition"
-   sideBName "General Document"
-   sideBArtifactType "General Document"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_ONE
-}
-
 relationType "TeamWorkflowToReview" {
    guid "AAMFE+JqDz+8tuRDdIwA"
    sideAName "Team Workflow"
