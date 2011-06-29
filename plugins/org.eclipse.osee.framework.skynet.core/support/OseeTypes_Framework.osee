@@ -585,6 +585,7 @@ artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
    attribute "Req Type"
    attribute "Verification Level"
    attribute "Effectivity"
+   attribute "Verification Acceptance Criteria"
 }
 
 attributeType "Req Type" extends EnumeratedAttribute {
@@ -921,6 +922,13 @@ attributeType "TIS Test Number" extends StringAttribute {
    min 0
    max 1
    description "Test Number"
+}
+
+attributeType "Verification Acceptance Criteria" extends StringAttribute {
+   guid "Ae5xBFpvDnWRi8nloxgA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
 }
 
 oseeEnumType "enum.test.tis.type" {
