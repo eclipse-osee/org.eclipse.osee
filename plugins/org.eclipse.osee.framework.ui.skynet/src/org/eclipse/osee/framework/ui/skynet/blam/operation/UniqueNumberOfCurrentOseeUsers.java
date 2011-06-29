@@ -30,7 +30,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Unique Number Of Current Osee Users";
+      return "Admin - Unique Number Of Current Osee Users";
    }
 
    @Override

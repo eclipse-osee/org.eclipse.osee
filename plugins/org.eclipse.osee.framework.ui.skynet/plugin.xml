@@ -15,6 +15,7 @@
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
+  <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="schema/UserNavigateItem.exsd"/>
  
    <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -166,6 +167,15 @@
         id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
         name="Branch Manager">
   </view>
+  <view
+        allowMultiple="false"
+        category="osee.jdk.core.category"
+        class="org.eclipse.osee.framework.ui.skynet.user.perspective.UserNavigateView"
+        icon="images/userPurple.gif"
+        id="org.eclipse.osee.framework.ui.skynet.UserNavigateView"
+        name="User Navigator"
+        restorable="true">
+  </view>
 	</extension>
 	<extension point="org.eclipse.search.searchPages">
 		<page canSearchEnclosingProjects="true" class="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" enabled="true" extensions="&quot;*:1&quot;" icon="images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" label="Artifact Search" showScopeSection="false" sizeHint="&quot;250,250&quot;" tabPosition="1"/>
@@ -175,9 +185,6 @@
 	</extension>
 	<extension id="PruneWorkspace" name="PruneWorkspace" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PruneWorkspace"/>
-	</extension>
-	<extension id="UniqueNumberOfCurrentOseeUsers" name="Unique Number Of Current Osee Users" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UniqueNumberOfCurrentOseeUsers"/>
 	</extension>
 	<extension id="PurgeTransaction" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeTransactionBlam"/>
@@ -283,12 +290,6 @@
              match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE_EDIT">
        </MatchCriteria>
     </Template>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser">
-    </Operation>
  </extension>
 	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.search.ui.views.SearchView">
@@ -1678,12 +1679,6 @@
    </extension>
 
    <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam">
-      </Operation>
-   </extension>
-   <extension
          id="CountArtifactsOfTypeBlam"
          name="CountArtifactsOfTypeBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -1749,5 +1744,17 @@
       <XCommonNavigateItem
             classname="org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager">
       </XCommonNavigateItem>
+      <XCommonNavigateItem
+            classname="org.eclipse.osee.framework.ui.skynet.user.perspective.UserNavigateViewItems">
+      </XCommonNavigateItem>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.osee.framework.ui.skynet.user.perspective.UserPerspective"
+            icon="images/userPurple.gif"
+            id="org.eclipse.framework.ui.skynet.UserPerspective"
+            name="User Management">
+      </perspective>
    </extension>
 </plugin>

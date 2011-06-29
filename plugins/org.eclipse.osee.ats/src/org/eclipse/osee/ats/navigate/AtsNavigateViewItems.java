@@ -72,7 +72,6 @@ import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
-import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -204,11 +203,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new DisplayCurrentOseeEventListeners(adminItems);
          new AtsRemoteEventTestItem(adminItems);
 
-         new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch("User's All Related Objects - Admin Only",
-            null, false, LoadView.WorldEditor));
-         new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
-            "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldEditor));
-
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review",
             AtsArtifactTypes.DecisionReview));
@@ -218,7 +212,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             AtsArtifactTypes.TeamWorkflow));
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
          new CreateGoalTestArtifacts(adminItems);
-         new CreateNewUsersByNameItem(adminItems);
 
          new DoesNotWorkItemAts(adminItems);
 

@@ -42,7 +42,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Populate User Group";
+      return "Admin - Populate User Group";
    }
 
    @Override

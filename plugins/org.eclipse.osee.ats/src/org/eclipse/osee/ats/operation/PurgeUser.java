@@ -57,7 +57,7 @@ public class PurgeUser extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Purge User";
+      return "Admin - Purge User";
    }
 
    @Override
@@ -182,7 +182,7 @@ public class PurgeUser extends AbstractBlam {
             Integer.toString(numOfUpdatedBSideRelations)}));
          rd.addRaw(AHTML.endMultiColumnTable());
       } finally {
-         XResultDataUI.report(rd,getName());
+         XResultDataUI.report(rd, getName());
       }
    }
 

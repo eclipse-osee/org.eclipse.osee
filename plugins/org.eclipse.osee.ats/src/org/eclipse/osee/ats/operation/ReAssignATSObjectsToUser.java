@@ -41,7 +41,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Re-Assign ATS Objects To User";
+      return "Admin - Re-Assign ATS Objects To User";
    }
 
    @Override

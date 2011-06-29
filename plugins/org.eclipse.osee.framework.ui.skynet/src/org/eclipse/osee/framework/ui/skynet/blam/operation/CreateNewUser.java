@@ -49,7 +49,7 @@ public class CreateNewUser extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Create New User";
+      return "Admin - Create New User";
    }
 
    @Override

@@ -236,14 +236,6 @@
       </WorkDefinitionProvider>
    </extension>
    <extension
-         id="ReAssignATSObjectsToUser"
-         name="ReAssignATSObjectsToUser"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.operation.ReAssignATSObjectsToUser">
-      </Operation>
-   </extension>
-   <extension
          id="AtsWidgetProvider"
          name="AtsWidgetProvider"
          point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
@@ -417,14 +409,6 @@
       </ArtifactImageProvider>
    </extension>
    <extension
-         id="DeleteDuplicateUsers"
-         name="DeleteDuplicateUsers"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.operation.PurgeUser">
-      </Operation>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.AttributeXWidgetProvider">
       <AttributeXWidgetProvider
             classname="org.eclipse.osee.ats.util.widgets.AtsAttributeXWidgetProvider">
@@ -497,6 +481,14 @@
          <AtsTransitionListener
                classname="org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItem">
          </AtsTransitionListener>
+      </extension>
+      <extension
+            id="AtsUserNavigateItems"
+            name="AtsUserNavigateItems"
+            point="org.eclipse.osee.framework.ui.skynet.UserNavigateItem">
+         <UserNavigateItem
+               classname="org.eclipse.osee.ats.util.AtsUserNavigateItems">
+         </UserNavigateItem>
       </extension>
    
 </plugin>

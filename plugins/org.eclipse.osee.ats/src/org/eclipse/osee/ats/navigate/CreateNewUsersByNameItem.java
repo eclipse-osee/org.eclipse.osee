@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class CreateNewUsersByNameItem extends XNavigateItemAction {
 
    public CreateNewUsersByNameItem(XNavigateItem parent) {
-      super(parent, "Create New Users by Name", FrameworkImage.USER);
+      super(parent, "Admin - Create New Users by Name (Testing Only)", FrameworkImage.USER);
    }
 
    @Override
