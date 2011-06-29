@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,6 +64,9 @@ public class NewActionJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
+         if (actionableItems.isEmpty()) {
+            throw new OseeArgumentException("Actionable Items can not be empty for New Action");
+         }
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create New Action");
          if ("tt".equals(title)) {
             title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
@@ -75,7 +79,9 @@ public class NewActionJob extends Job {
             wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
          }
 
-         monitor.subTask("Persisting");
+         if (monitor != null) {
+            monitor.subTask("Persisting");
+         }
          transaction.execute();
 
          // Because this is a job, it will automatically kill any popups that are created during.
@@ -87,7 +93,9 @@ public class NewActionJob extends Job {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
-         monitor.done();
+         if (monitor != null) {
+            monitor.done();
+         }
       }
       return Status.OK_STATUS;
    }
