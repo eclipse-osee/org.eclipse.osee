@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +25,11 @@ public class XNavigateItemBlam extends XNavigateItem {
    private final AbstractBlam blamOperation;
 
    public XNavigateItemBlam(XNavigateItem parent, AbstractBlam blamOperation) {
-      super(parent, blamOperation.getName(), FrameworkImage.BLAM);
+      this(parent, blamOperation, FrameworkImage.BLAM);
+   }
+
+   public XNavigateItemBlam(XNavigateItem parent, AbstractBlam blamOperation, KeyedImage keyedImage) {
+      super(parent, blamOperation.getName(), keyedImage);
       this.blamOperation = blamOperation;
    }
 
