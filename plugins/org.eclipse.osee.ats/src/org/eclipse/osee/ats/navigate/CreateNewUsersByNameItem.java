@@ -54,7 +54,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       EntryDialog ed =
-         new EntryDialog(Displays.getActiveShell(), "Create New Version", null, "Enter Version name(s) one per line",
+         new EntryDialog(Displays.getActiveShell(), "Create New User(s)", null, "Enter User name(s) one per line",
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
       if (ed.open() == 0) {
@@ -77,7 +77,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
          }
          if (!resultData.isEmpty()) {
             resultData.log("\nErrors found while creating users.\nPlease resolve and try again.");
-            XResultDataUI.report(resultData,"Create New User(s) Error");
+            XResultDataUI.report(resultData, "Create New User(s) Error");
             return;
          }
          try {
