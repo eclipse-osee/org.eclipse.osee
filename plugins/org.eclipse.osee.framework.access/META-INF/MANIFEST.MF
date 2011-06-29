@@ -30,5 +30,5 @@ Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.access.internal.data
-Require-Bundle: org.eclipse.osee.framework.skynet.core;bundle-version="0.9.5",
+Require-Bundle: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.core.model

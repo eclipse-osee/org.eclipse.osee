@@ -13,5 +13,5 @@ Import-Package: javax.activation,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.windows,
- org.osgi.framework;version="1.3.0"
+ org.osgi.framework
 Export-Package: org.eclipse.osee.mail

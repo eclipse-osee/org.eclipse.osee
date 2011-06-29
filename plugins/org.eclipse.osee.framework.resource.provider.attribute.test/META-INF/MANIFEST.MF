@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Attribute Provider Test
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.provider.attribute.test;singleton:=true
 Bundle-Version: 0.9.9.qualifier
-Fragment-Host: org.eclipse.osee.framework.resource.provider.attribute;bundle-version="0.4.0"
+Fragment-Host: org.eclipse.osee.framework.resource.provider.attribute
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,

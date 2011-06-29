@@ -4,7 +4,7 @@ Bundle-Name: Osee Core DSL Integration Test
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.integration.test;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Fragment-Host: org.eclipse.osee.framework.core.dsl.integration;bundle-version="0.9.5"
+Fragment-Host: org.eclipse.osee.framework.core.dsl.integration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.core.dsl.integration,

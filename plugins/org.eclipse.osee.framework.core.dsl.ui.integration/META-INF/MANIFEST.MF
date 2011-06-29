@@ -71,5 +71,5 @@ Require-Bundle: org.eclipse.osee.framework.core.dsl,
  org.eclipse.ui.views,
  org.eclipse.jface,
  org.eclipse.xtext,
- org.eclipse.ui.editors;bundle-version="3.6.0"
+ org.eclipse.ui.editors
 Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration.operations

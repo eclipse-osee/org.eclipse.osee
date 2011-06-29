@@ -4,7 +4,7 @@ Bundle-Name: Osee Lifecycle Tests
 Bundle-SymbolicName: org.eclipse.osee.framework.lifecycle.test;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclispe.org
-Fragment-Host: org.eclipse.osee.framework.lifecycle;bundle-version="0.9.5"
+Fragment-Host: org.eclipse.osee.framework.lifecycle
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.lifecycle.test

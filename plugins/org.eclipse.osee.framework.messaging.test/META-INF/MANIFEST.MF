@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Messaging Test Fragment
 Bundle-SymbolicName: org.eclipse.osee.framework.messaging.test;singleton:=true
 Bundle-Version: 0.9.9.qualifier
-Fragment-Host: org.eclipse.osee.framework.messaging;bundle-version="0.9.0.qualifier"
+Fragment-Host: org.eclipse.osee.framework.messaging
 Require-Bundle: org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

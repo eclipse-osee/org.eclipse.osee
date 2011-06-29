@@ -21,13 +21,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.jini,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.osee.framework.ui.skynet,
- org.eclipse.ui.workbench.texteditor;bundle-version="3.5.0",
+ org.eclipse.ui.workbench.texteditor,
  org.eclipse.osee.framework.skynet.core,
- org.eclipse.osee.framework.core;bundle-version="0.9.1",
- org.eclipse.osee.framework.messaging;bundle-version="0.9.4",
+ org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.messaging,
  org.apache.commons.lang;bundle-version="2.4.0",
- org.eclipse.osee.coverage.help.ui;bundle-version="0.9.8",
- org.eclipse.osee.framework.help.ui;bundle-version="0.9.8"
+ org.eclipse.osee.coverage.help.ui,
+ org.eclipse.osee.framework.help.ui
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.collect,
  com.lowagie.text;version="2.1.7",

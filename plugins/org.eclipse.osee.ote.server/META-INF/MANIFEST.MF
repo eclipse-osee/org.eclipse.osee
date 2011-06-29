@@ -89,7 +89,7 @@ Import-Package: net.jini.core.lookup,
  org.apache.activemq.util,
  org.apache.activemq.wireformat,
  org.apache.activemq.xbean,
- org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.core.runtime,
  org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,
@@ -114,9 +114,9 @@ Import-Package: net.jini.core.lookup,
  org.eclipse.osee.ote.message,
  org.eclipse.osee.ote.message.instrumentation,
  org.eclipse.osee.ote.message.interfaces,
- org.osgi.framework;version="1.5.0",
- org.osgi.service.packageadmin;version="1.2.0",
- org.osgi.util.tracker;version="1.4.0"
+ org.osgi.framework,
+ org.osgi.service.packageadmin,
+ org.osgi.util.tracker
 Bundle-Activator: org.eclipse.osee.ote.server.internal.Activator
 Export-Package: org.eclipse.osee.ote.server
 Bundle-Vendor: Eclipse Open System Engineering Environment

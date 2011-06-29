@@ -4,7 +4,7 @@ Bundle-Name: Attribute Locator Tests
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.locator.attribute.test;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Fragment-Host: org.eclipse.osee.framework.resource.locator.attribute;bundle-version="0.4.0"
+Fragment-Host: org.eclipse.osee.framework.resource.locator.attribute
 Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.resource.locator.attribute,
  org.eclipse.osee.framework.resource.management,
