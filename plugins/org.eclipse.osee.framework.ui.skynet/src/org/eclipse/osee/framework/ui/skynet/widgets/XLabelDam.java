@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class XLabelDam extends GenericXWidget implements IAttributeWidget {
 
-   private Artifact artifact;
-   private IAttributeType attributeType;
-   private Text valueTextWidget;
+   protected Artifact artifact;
+   protected IAttributeType attributeType;
+   protected Text valueTextWidget;
    private Composite parent;
 
    public XLabelDam(String displayLabel) {
