@@ -31,7 +31,7 @@ public abstract class WorldSearchItem {
    protected static final Set<Artifact> EMPTY_SET = new HashSet<Artifact>();
    protected boolean cancelled = false;
    private LoadView loadView;
-   private final Image image;
+   private KeyedImage oseeImage;
    public static enum LoadView {
       TaskEditor,
       WorldEditor,
@@ -55,7 +55,7 @@ public abstract class WorldSearchItem {
       this.name = name;
       this.loadView = loadView;
       this.cancelled = cancelled;
-      this.image = oseeImage == null ? null : ImageManager.getImage(oseeImage);
+      this.oseeImage = oseeImage;
    }
 
    public WorldSearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
@@ -80,8 +80,6 @@ public abstract class WorldSearchItem {
    /**
     * Method called to display the current search in the view. Override to provide more information about selected
     * values (eg MyWorld)
-    * 
-    * @return selected name
     */
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return getName();
@@ -95,16 +93,10 @@ public abstract class WorldSearchItem {
       this.cancelled = cancelled;
    }
 
-   /**
-    * @return the loadView
-    */
    public LoadView getLoadView() {
       return loadView;
    }
 
-   /**
-    * @param loadView the loadView to set
-    */
    public void setLoadView(LoadView loadView) {
       this.loadView = loadView;
    }
@@ -119,11 +111,16 @@ public abstract class WorldSearchItem {
       }
    }
 
-   /**
-    * @return the image
-    */
    public Image getImage() {
-      return image;
+      return oseeImage == null ? null : ImageManager.getImage(oseeImage);
+   }
+
+   public KeyedImage getOseeImage() {
+      return oseeImage;
+   }
+
+   public void setOseeImage(KeyedImage oseeImage) {
+      this.oseeImage = oseeImage;
    }
 
 }
