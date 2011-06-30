@@ -17,6 +17,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
@@ -75,7 +76,11 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       for (Artifact artifact : artifacts) {
          String value = entryDialog.getEntry();
          String safeValue = getSafeValue(value, format, attributeType);
-         artifact.setSoleAttributeFromString(attributeType, safeValue);
+         if (Strings.isValid(safeValue)) {
+            artifact.setSoleAttributeFromString(attributeType, safeValue);
+         } else {
+            artifact.deleteAttributes(attributeType);
+         }
       }
    }
 
