@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -34,14 +33,11 @@ import org.eclipse.osee.framework.jdk.core.util.io.IFileWatcherListener;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchListener;
-import org.eclipse.ui.PlatformUI;
 
 final class ArtifactFileMonitor implements IFileWatcherListener {
    private final ResourceAttributes readonlyfileAttributes;
    private final FileWatcher watcher;
-   private boolean firstTime;
+   private final boolean firstTime;
    private final Map<File, IOperation> fileMap = new ConcurrentHashMap<File, IOperation>(128);
 
    public ArtifactFileMonitor() {
@@ -92,36 +88,5 @@ final class ArtifactFileMonitor implements IFileWatcherListener {
    @Override
    public void handleException(Exception ex) {
       OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-   }
-
-   private void monitorFile(File file) {
-      watcher.addFile(file);
-      if (firstTime) {
-         firstTime = false;
-
-         PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
-
-            @Override
-            public void postShutdown(IWorkbench workbench) {
-               // do nothing
-            }
-
-            @Override
-            public boolean preShutdown(IWorkbench workbench, boolean forced) {
-               boolean wasConfirmed = true;
-               if (RenderingUtil.arePopupsAllowed()) {
-                  wasConfirmed =
-                     MessageDialog.openConfirm(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "OSEE Edit",
-                        "OSEE artifacts were opened for edit. Please save all external work before continuing. Click OK to continue shutdown process or Cancel to abort.");
-               } else {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-                     "Test - OSEE artifacts were opened for edit - Default to saving edited artifacts");
-               }
-               return forced || wasConfirmed;
-            }
-         });
-      }
    }
 }
