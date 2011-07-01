@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.util.WorkPageType;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -66,6 +68,9 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private final ReleasedOption releasedOption;
    private final boolean includeCancelled;
    private final String stateName;
+   // If set attributeType will be searched for value
+   private IAttributeType attrValueSearchType;
+   private final List<String> attrValueSearchOrValues = new ArrayList<String>();
 
    public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, Artifact versionArt, User userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
@@ -156,6 +161,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          }
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+
       if (teamDefinitionGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition));
       } else {
@@ -163,6 +169,11 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       }
 
       addIncludeCompletedCancelledCriteria(criteria, includeCompleted, includeCancelled);
+
+      // If set, add attrType and attrValue to search criteria
+      if (getAttrValueSearchType() != null && !attrValueSearchOrValues.isEmpty()) {
+         criteria.add(new AttributeCriteria(getAttrValueSearchType(), attrValueSearchOrValues, Operator.EQUAL));
+      }
 
       if (changeType != null) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.ChangeType, changeType.name()));
@@ -247,16 +258,10 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       }
    }
 
-   /**
-    * @param showAction The showAction to set.
-    */
    public void setShowAction(boolean showAction) {
       this.showAction = showAction;
    }
 
-   /**
-    * @param showFinished The showFinished to set.
-    */
    public void setShowFinished(boolean showFinished) {
       this.includeCompleted = showFinished;
    }
@@ -264,6 +269,18 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    @Override
    public WorldUISearchItem copy() {
       return new TeamWorldSearchItem(this);
+   }
+
+   public IAttributeType getAttrValueSearchType() {
+      return attrValueSearchType;
+   }
+
+   public List<String> getAttrValueSearchOrValues() {
+      return attrValueSearchOrValues;
+   }
+
+   public void setAttrValueSearchType(IAttributeType attrValueSearchType) {
+      this.attrValueSearchType = attrValueSearchType;
    }
 
 }
