@@ -83,8 +83,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             variableMap.getValue("Publish As Diff"),
             "linkType",
             linkType,
-            IRenderer.NO_DISPLAY,
-            !variableMap.getBoolean("Open Document in Word"),
             WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
             variableMap.getBoolean("Update Paragraph Numbers"),
             ITemplateRenderer.TRANSACTION_OPTION,
@@ -111,8 +109,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    public String getXWidgetsXml() {
       populateTemplateList();
       StringBuilder builder = new StringBuilder();
-      builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Open Document in Word\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
+      builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Artifact Names\" />");
