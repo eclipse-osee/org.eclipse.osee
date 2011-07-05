@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
  */
 public class BlamContributionManager implements IXNavigateCommonItem {
 
+   private static Collection<AbstractBlam> blams;
+
    public static Collection<AbstractBlam> getBlamOperationsNameSort() {
       ArrayList<AbstractBlam> blamsSortedByName = new ArrayList<AbstractBlam>();
       Map<String, AbstractBlam> blamMap = new HashMap<String, AbstractBlam>();
@@ -49,10 +51,13 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    }
 
    public static Collection<AbstractBlam> getBlamOperations() {
-      ExtensionDefinedObjects<AbstractBlam> definedObjects =
-         new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation", "Operation",
-            "className");
-      return definedObjects.getObjects();
+      if (blams == null) {
+         ExtensionDefinedObjects<AbstractBlam> definedObjects =
+            new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
+               "Operation", "className");
+         blams = definedObjects.getObjects();
+      }
+      return blams;
    }
 
    private static void createCategories(String[] categoryElements, int index, XNavigateItem parentItem, Map<String, XNavigateItem> nameToParent) throws OseeCoreException {
