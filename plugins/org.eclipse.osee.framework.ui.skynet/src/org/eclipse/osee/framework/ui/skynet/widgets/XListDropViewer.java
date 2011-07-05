@@ -38,6 +38,8 @@ public class XListDropViewer extends XListViewer {
    private ArrayContentProvider myArrayContentProvider = null;
    private ArtifactLabelProvider myArtifactLabelProvider = null;
 
+   private Menu popupMenu;
+
    public XListDropViewer(String displayLabel) {
       super(displayLabel);
       this.myArrayContentProvider = new ArrayContentProvider();
@@ -48,7 +50,7 @@ public class XListDropViewer extends XListViewer {
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
-      Menu popupMenu = new Menu(parent);
+      popupMenu = new Menu(parent);
       setMultiSelect(true);
       super.setListMenu(popupMenu);
       super.createControls(parent, horizontalSpan);
@@ -59,7 +61,7 @@ public class XListDropViewer extends XListViewer {
       myTableViewer.getTable().setMenu(popupMenu);
    }
 
-   private void createRemoveFromMenuItem(Menu popupMenu) {
+   private void createRemoveFromMenuItem(final Menu popupMenu) {
       removeFromMenuItem = new MenuItem(popupMenu, SWT.PUSH);
       removeFromMenuItem.setText("Remove From This Blam's Parameters ");
       removeFromMenuItem.addSelectionListener(new SelectionAdapter() {
@@ -81,6 +83,10 @@ public class XListDropViewer extends XListViewer {
          }
 
       });
+   }
+
+   public Menu popupMenu() {
+      return popupMenu;
    }
 
    /**
@@ -117,6 +123,11 @@ public class XListDropViewer extends XListViewer {
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
             event.detail = DND.DROP_COPY;
          }
+      }
+
+      @Override
+      public void performTextDrop(String text) {
+         System.out.println("You dragged: " + text);
       }
 
       @Override

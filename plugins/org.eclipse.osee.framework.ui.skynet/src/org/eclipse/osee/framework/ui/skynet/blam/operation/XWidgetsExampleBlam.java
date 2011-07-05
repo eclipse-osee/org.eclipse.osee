@@ -40,7 +40,7 @@ public class XWidgetsExampleBlam extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() throws OseeCoreException {
-      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), SkynetGuiPlugin.PLUGIN_ID);
+      return getXWidgetsXmlFromUiFile(getName(), SkynetGuiPlugin.PLUGIN_ID);
    }
 
    @Override

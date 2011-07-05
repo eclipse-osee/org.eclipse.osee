@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,6 +31,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,11 +50,51 @@ import org.xml.sax.SAXException;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
+
+   private static final String DEFAULT_DESCRIPTION =
+      "Select parameters below and click the play button at the top right.";
+
+   private final Pattern capitalLetter = Pattern.compile("[A-Z]{1}?[a-z]+");
+
+   public enum BlamUiSource {
+      DEFAULT,
+      FILE
+   }
+
    public static final String branchXWidgetXml =
       "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    public static final String emptyXWidgetsXml = "<xWidgets/>";
    protected IOseeDatabaseService databaseService;
    private OperationLogger logger;
+
+   private final String description;
+   private final BlamUiSource source;
+   private final String name;
+
+   public AbstractBlam() {
+      this(null, DEFAULT_DESCRIPTION, BlamUiSource.DEFAULT);
+   }
+
+   public AbstractBlam(String name, String usageDescription, BlamUiSource source) {
+      this.name = Strings.isValid(name) ? name : generateNameFromClass();
+      this.description = Strings.isValid(usageDescription) ? usageDescription : DEFAULT_DESCRIPTION;
+      this.source = source != null ? source : BlamUiSource.DEFAULT;
+   }
+
+   private String generateNameFromClass() {
+      String className = getName();
+      if (Strings.isValid(className) && className.indexOf(" ") == -1) {
+         StringBuilder generatedName = new StringBuilder(className.length() + 7);
+
+         Matcher capMatch = capitalLetter.matcher(className);
+         for (boolean found = capMatch.find(); found || !capMatch.hitEnd(); found = capMatch.find()) {
+            generatedName.append(capMatch.start() > 0 ? " " + capMatch.group() : capMatch.group());
+         }
+         return generatedName.toString();
+      } else {
+         return className;
+      }
+   }
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       throw new OseeStateException(
@@ -68,9 +111,14 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public abstract Collection<String> getCategories();
 
-   @SuppressWarnings("unused")
    public String getXWidgetsXml() throws OseeCoreException {
-      return AbstractBlam.branchXWidgetXml;
+      switch (source) {
+         case FILE:
+            return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), SkynetGuiPlugin.PLUGIN_ID);
+         case DEFAULT:
+         default:
+            return AbstractBlam.branchXWidgetXml;
+      }
    }
 
    /**
@@ -101,11 +149,11 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
+      return this.description;
    }
 
    public String getName() {
-      return getClass().getSimpleName();
+      return Strings.isValid(this.name) ? this.name : getClass().getSimpleName();
    }
 
    public void setOseeDatabaseService(IOseeDatabaseService service) {

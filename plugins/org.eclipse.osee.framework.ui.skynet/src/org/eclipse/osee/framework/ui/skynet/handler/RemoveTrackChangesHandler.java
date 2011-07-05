@@ -13,31 +13,51 @@ package org.eclipse.osee.framework.ui.skynet.handler;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.IStatusHandler;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
  */
 public class RemoveTrackChangesHandler implements IStatusHandler {
+
+   private final int YES = 0;
+   private final int YES_TO_ALL = 1;
+   private final int NO = 2;
+
    @Override
    public Object handleStatus(IStatus status, Object source) {
       final MutableBoolean isOkToRemove = new MutableBoolean(false);
       final String message = (String) source;
 
+      final Pair<MutableBoolean, Integer> answer = new Pair<MutableBoolean, Integer>(isOkToRemove, NO);
+
       if (RenderingUtil.arePopupsAllowed()) {
          Displays.pendInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               boolean doesUserConfirm =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Confirm Removal Of Track Changes ", message);
+
+               MoreChangesHandlingDialog dialog =
+                  new MoreChangesHandlingDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                     "Confirm Removal Of Track Changes ", null, message, MessageDialog.QUESTION, new String[] {
+                        IDialogConstants.YES_LABEL,
+                        IDialogConstants.YES_TO_ALL_LABEL,
+                        IDialogConstants.NO_LABEL}, 0);
+               dialog.updateStyle();
+
+               boolean doesUserConfirm = dialog.open() == YES || dialog.open() == YES_TO_ALL;
                isOkToRemove.setValue(doesUserConfirm);
+               answer.setSecond(dialog.open());
             }
          });
       } else {
@@ -45,6 +65,19 @@ public class RemoveTrackChangesHandler implements IStatusHandler {
          isOkToRemove.setValue(true);
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Test - accept track change removal.");
       }
-      return isOkToRemove.getValue();
+      return answer;
    }
+   private class MoreChangesHandlingDialog extends MessageDialog {
+      public MoreChangesHandlingDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+         super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
+            defaultIndex);
+      }
+
+      public void updateStyle() {
+         int newStyle = getShellStyle();
+         newStyle &= SWT.SHEET;
+         setShellStyle(getShellStyle() | newStyle);
+      }
+   }
+
 }

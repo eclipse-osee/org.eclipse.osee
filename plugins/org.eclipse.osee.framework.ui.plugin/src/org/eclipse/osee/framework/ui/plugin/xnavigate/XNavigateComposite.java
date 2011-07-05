@@ -71,18 +71,14 @@ public class XNavigateComposite extends Composite {
       this.navigateViewItems = navigateViewItems;
 
       setLayout(new GridLayout());
-      setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      createControl(this);
+      createControl();
    }
 
-   private void createControl(Composite parent) {
-      filteredTree = new OSEEFilteredTree(parent, SWT.SINGLE | SWT.BORDER, patternFilter);
+   private void createControl() {
+      filteredTree = new OSEEFilteredTree(this, SWT.SINGLE | SWT.BORDER, patternFilter);
       filteredTree.getViewer().setContentProvider(new XNavigateContentProvider());
-      filteredTree.setInitialText("");
       filteredTree.getViewer().setLabelProvider(new XNavigateLabelProvider());
       filteredTree.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
       // Disable native tree tooltip
       filteredTree.getViewer().getTree().setToolTipText("");
       filteredTree.getViewer().getTree().addListener(SWT.Dispose, tableListener);

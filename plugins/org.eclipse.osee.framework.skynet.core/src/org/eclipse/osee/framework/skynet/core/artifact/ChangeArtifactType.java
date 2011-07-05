@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -50,6 +52,7 @@ public class ChangeArtifactType {
    private static List<Attribute<?>> attributesToPurge;
    private static List<RelationLink> relationsToDelete;
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 256, "", null);
+   private static boolean userAnsweredYesToAll = false;
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
@@ -66,7 +69,7 @@ public class ChangeArtifactType {
          processAttributes(artifact, artifactType);
          processRelations(artifact, artifactType);
          artifactsUserAccepted.add(artifact);
-         if (doesUserAcceptArtifactChange(artifact, artifactType)) {
+         if (userAnsweredYesToAll || doesUserAcceptArtifactChange(artifact, artifactType)) {
             ArtifactType originalType = artifact.getArtifactType();
             boolean success = changeArtifactTypeThroughHistory(artifact, artifactType);
             if (success) {
@@ -162,13 +165,24 @@ public class ChangeArtifactType {
     * artifact type else false.
     */
    private static boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType artifactType) {
-      if (!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) {
+      if ((!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) && !userAnsweredYesToAll) {
 
          StringBuffer sb = new StringBuffer(50);
          getConflictString(sb, artifact, artifactType);
          try {
-            return (Boolean) DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(promptStatus,
-               sb.toString());
+            Object result =
+               DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(promptStatus, sb.toString());
+
+            MutableBoolean answer = null;
+
+            if (result instanceof Pair<?, ?>) {
+               Pair<?, ?> value = (Pair<?, ?>) result;
+               answer = (MutableBoolean) value.getFirst();
+               Integer kindOfAnswer = (Integer) value.getSecond();
+
+               userAnsweredYesToAll = kindOfAnswer == 1 && answer;
+            }
+            return answer == null ? false : answer.getValue();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             return false;

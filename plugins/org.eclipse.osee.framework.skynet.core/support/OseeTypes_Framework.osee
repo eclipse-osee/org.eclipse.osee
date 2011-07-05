@@ -586,6 +586,7 @@ artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
    attribute "Verification Level"
    attribute "Effectivity"
    attribute "Verification Acceptance Criteria"
+   attribute "Verification Event"
 }
 
 attributeType "Req Type" extends EnumeratedAttribute {
