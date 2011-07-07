@@ -29,7 +29,15 @@ public class SchedulingCommand extends AbstractOperation {
       super("Schedule", Activator.PLUGIN_ID, logger);
       delayMiliseconds = Integer.parseInt(ci.nextArgument()) * 1000;
       iterations = Integer.parseInt(ci.nextArgument());
-      command = ci.nextArgument();
+
+      StringBuilder strB = new StringBuilder(200);
+      String argument;
+      while ((argument = ci.nextArgument()) != null) {
+         strB.append(argument);
+         strB.append(" ");
+      }
+
+      command = strB.toString();
       this.ci = ci;
    }
 
