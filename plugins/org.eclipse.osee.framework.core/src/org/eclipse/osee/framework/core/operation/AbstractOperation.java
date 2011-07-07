@@ -85,9 +85,9 @@ public abstract class AbstractOperation implements IOperation {
     * All the operations work should be executed directly or indirectly by this method. The operation runs until its
     * doWork() method terminates normally or by throwing an exception (including OperationCanceledException)
     * 
-    * @param subMonitor the progress monitor to use for reporting progress to the user. It is the caller's
-    * responsibility to call done() on the given monitor. Accepts null, indicating that no progress should be reported
-    * and that the operation cannot be cancelled.
+    * @param monitor the progress monitor to use for reporting progress to the user. It is the caller's responsibility
+    * to call done() on the given monitor. Accepts null, indicating that no progress should be reported and that the
+    * operation cannot be cancelled.
     * @throws Exception the exception will be caught by the calling method and turned into a status
     */
    protected abstract void doWork(IProgressMonitor monitor) throws Exception;

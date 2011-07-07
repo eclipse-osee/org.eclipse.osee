@@ -103,7 +103,6 @@ public class BlamContributionManager implements IXNavigateCommonItem {
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               ;
             }
          }
       }

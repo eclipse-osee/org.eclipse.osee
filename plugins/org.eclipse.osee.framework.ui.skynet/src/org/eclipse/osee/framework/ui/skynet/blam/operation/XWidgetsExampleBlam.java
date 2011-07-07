@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -23,9 +21,12 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Karol M Wilk
  */
 public class XWidgetsExampleBlam extends AbstractBlam {
-   @Override
-   public String getName() {
-      return "XWidgets Example";
+
+   private static final String description =
+      "This BLAM provides an example of all available XWidgets for use by developers of BLAMs and other UIs";
+
+   public XWidgetsExampleBlam() {
+      super(null, description, BlamUiSource.FILE);
    }
 
    @Override
@@ -36,15 +37,5 @@ public class XWidgetsExampleBlam extends AbstractBlam {
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
-   }
-
-   @Override
-   public String getXWidgetsXml() throws OseeCoreException {
-      return getXWidgetsXmlFromUiFile(getName(), SkynetGuiPlugin.PLUGIN_ID);
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      return "This BLAM provides an example of all available XWidgets for use by developers of BLAMs and other UIs";
    }
 }

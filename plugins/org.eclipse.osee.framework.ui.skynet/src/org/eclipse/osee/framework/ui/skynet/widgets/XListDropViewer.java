@@ -16,13 +16,22 @@ import java.util.Iterator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.ClientLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.StringGuidsToArtifactListOperation;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -32,7 +41,7 @@ import org.eclipse.swt.widgets.MenuItem;
 /**
  * @author Ryan D. Brooks
  */
-public class XListDropViewer extends XListViewer {
+public class XListDropViewer extends XListViewer implements IXWidgetInputAddable {
    private MenuItem removeFromMenuItem;
    private TableViewer myTableViewer;
    private ArrayContentProvider myArrayContentProvider = null;
@@ -56,7 +65,6 @@ public class XListDropViewer extends XListViewer {
       super.createControls(parent, horizontalSpan);
       new XDragAndDrop();
       this.myTableViewer = super.getTableViewer();
-      //      popupMenu.addMenuListener(new MenuEnablingListener());
       createRemoveFromMenuItem(popupMenu);
       myTableViewer.getTable().setMenu(popupMenu);
    }
@@ -83,10 +91,32 @@ public class XListDropViewer extends XListViewer {
          }
 
       });
-   }
 
-   public Menu popupMenu() {
-      return popupMenu;
+      MenuItem paste = new MenuItem(popupMenu, SWT.NONE);
+      paste.setText("Paste GUIDs from Clipboard");
+      paste.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  Clipboard cb = new Clipboard(popupMenu.getDisplay());
+                  try {
+                     TextTransfer transfer = TextTransfer.getInstance();
+                     String data = (String) cb.getContents(transfer);
+                     Branch branch = BranchSelectionDialog.getBranchFromUser();
+                     Operations.executeAsJob(new StringGuidsToArtifactListOperation(new ClientLogger(
+                        SkynetGuiPlugin.class), data, branch, XListDropViewer.this), true);
+                  } finally {
+                     cb.dispose();
+                  }
+               }
+            });
+
+         }
+      });
    }
 
    /**
@@ -99,13 +129,25 @@ public class XListDropViewer extends XListViewer {
          objects.add(artifact);
       }
 
-      if (getInput() == null) {
-         setInput(objects);
-      } else {
-         add(objects);
-         updateListWidget();
+      addToInput(objects);
+   }
+
+   @Override
+   public void addToInput(final Collection<Object> objects) {
+      if (!objects.isEmpty()) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               if (getInput() == null) {
+                  setInput(objects);
+               } else {
+                  add(objects);
+                  updateListWidget();
+               }
+               notifyXModifiedListeners();
+            }
+         });
       }
-      notifyXModifiedListeners();
    }
 
    @Override
@@ -123,11 +165,6 @@ public class XListDropViewer extends XListViewer {
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
             event.detail = DND.DROP_COPY;
          }
-      }
-
-      @Override
-      public void performTextDrop(String text) {
-         System.out.println("You dragged: " + text);
       }
 
       @Override

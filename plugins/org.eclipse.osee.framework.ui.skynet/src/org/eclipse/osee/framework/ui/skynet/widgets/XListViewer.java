@@ -275,12 +275,8 @@ public class XListViewer extends GenericXWidget {
    }
 
    public void add(Collection<Object> objects) {
-      // to ensure no duplicates
       input.removeAll(objects);
-
-      if (!input.containsAll(objects)) {
-         input.addAll(objects);
-      }
+      input.addAll(objects);
    }
 
    public void setSelected(ArrayList<Object> selected) {

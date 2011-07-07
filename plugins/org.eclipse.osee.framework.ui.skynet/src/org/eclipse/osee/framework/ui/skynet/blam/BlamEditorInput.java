@@ -22,6 +22,8 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class BlamEditorInput implements IEditorInput {
 
+   private final static String titleEnd = " BLAM";
+
    private final AbstractBlam blamOperation;
 
    public BlamEditorInput(AbstractBlam blamOperation) {
@@ -38,7 +40,7 @@ public class BlamEditorInput implements IEditorInput {
 
    @Override
    public String getName() {
-      return blamOperation.getName() + " BLAM";
+      return blamOperation.getName().toLowerCase().contains(titleEnd.toLowerCase().trim()) ? blamOperation.getName() : blamOperation.getName() + titleEnd;
    }
 
    public Image getImage() {

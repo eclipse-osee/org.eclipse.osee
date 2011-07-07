@@ -180,7 +180,7 @@ public class ChangeArtifactType {
                answer = (MutableBoolean) value.getFirst();
                Integer kindOfAnswer = (Integer) value.getSecond();
 
-               userAnsweredYesToAll = kindOfAnswer == 1 && answer;
+               userAnsweredYesToAll = kindOfAnswer == 1 && answer.getValue();
             }
             return answer == null ? false : answer.getValue();
          } catch (Exception ex) {

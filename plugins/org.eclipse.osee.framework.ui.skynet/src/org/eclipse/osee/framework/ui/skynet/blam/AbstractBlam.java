@@ -54,7 +54,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    private static final String DEFAULT_DESCRIPTION =
       "Select parameters below and click the play button at the top right.";
 
-   private final Pattern capitalLetter = Pattern.compile("[A-Z]{1}?[a-z]+");
+   private final Pattern capitalLetter = Pattern.compile("[A-Z]+[a-z]*");
 
    public enum BlamUiSource {
       DEFAULT,
@@ -82,18 +82,14 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    private String generateNameFromClass() {
-      String className = getName();
-      if (Strings.isValid(className) && className.indexOf(" ") == -1) {
-         StringBuilder generatedName = new StringBuilder(className.length() + 7);
+      String className = getClass().getSimpleName();
+      StringBuilder generatedName = new StringBuilder(className.length() + 7);
 
-         Matcher capMatch = capitalLetter.matcher(className);
-         for (boolean found = capMatch.find(); found || !capMatch.hitEnd(); found = capMatch.find()) {
-            generatedName.append(capMatch.start() > 0 ? " " + capMatch.group() : capMatch.group());
-         }
-         return generatedName.toString();
-      } else {
-         return className;
+      Matcher capMatch = capitalLetter.matcher(className);
+      for (boolean found = capMatch.find(); found || !capMatch.hitEnd(); found = capMatch.find()) {
+         generatedName.append(capMatch.start() > 0 ? " " + capMatch.group() : capMatch.group());
       }
+      return generatedName.toString();
    }
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -153,7 +149,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public String getName() {
-      return Strings.isValid(this.name) ? this.name : getClass().getSimpleName();
+      return name;
    }
 
    public void setOseeDatabaseService(IOseeDatabaseService service) {

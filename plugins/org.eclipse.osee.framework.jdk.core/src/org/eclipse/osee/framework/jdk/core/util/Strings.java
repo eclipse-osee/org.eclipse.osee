@@ -107,19 +107,28 @@ public class Strings {
    }
 
    /**
+    * @param items items to be joined in a sentence, i.e. <code>{A, B, C, D}</code>
+    * @param joiningWord default joining word <code>" and "</code>
+    * @return <code>A, B, C joiningWord D</code>
+    */
+   public static String buildStatment(List<?> items) {
+      return buildStatment(items, " and ");
+   }
+
+   /**
     * Provides a nicer list of items with an 'and' at the end. This could be done using iterator().
     * 
     * @param items Lists of form { apple, banana, orange } or { apple, banana }
     * @return string of form "apple, banana and orange" or "apple and banana" depending on size of list
     */
-   public static String buildStatment(List<?> items) {
+   public static String buildStatment(List<?> items, String joiningWord) {
       StringBuilder niceList = new StringBuilder();
       if (items.size() >= 2) {
          int andIndex = items.size() - 2;
          for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
             niceList.append(items.get(itemIndex));
             if (itemIndex == andIndex) {
-               niceList.append(" and ");
+               niceList.append(joiningWord);
             } else if (itemIndex < andIndex) {
                niceList.append(", ");
             }
