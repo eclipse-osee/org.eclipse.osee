@@ -55,7 +55,9 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       } else {
          List<IBasicUser> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
          for (UserRole role : UserRoleManager.getUserRoles(this)) {
-            users.add(role.getUser());
+            if (!users.contains(role.getUser())) {
+               users.add(role.getUser());
+            }
          }
          return users;
       }
