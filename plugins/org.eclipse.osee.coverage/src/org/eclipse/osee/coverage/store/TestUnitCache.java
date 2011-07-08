@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -70,10 +71,8 @@ public class TestUnitCache implements ITestUnitProvider {
 
    public void put(Integer key, String testUnitName) throws OseeCoreException {
       ensurePopulated();
-      if (idToNameCache.containsKey(key)) {
-         OseeLog.format(Activator.class, Level.WARNING, "TestUnit key: [%s] has already been used", key);
-      } else if (idToNameCache.containsValue(testUnitName)) {
-         OseeLog.format(Activator.class, Level.WARNING, "TestUnit: [%s] has already been cached", testUnitName);
+      if (idToNameCache.containsKey(key) && !idToNameCache.get(key).equalsIgnoreCase(testUnitName)) {
+         throw new OseeArgumentException("TestUnit key: [%s] has already been used", key);
       } else {
          idToNameCache.put(key, testUnitName);
          cacheIsDirty = true;

@@ -24,6 +24,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.store.ITestUnitStore;
 import org.eclipse.osee.coverage.store.TestUnitCache;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.junit.Test;
@@ -48,7 +49,15 @@ public class TestUnitCacheTest {
       tc.put("test2");
       Assert.assertEquals(2, tc.getAllCachedTestUnitNames().size());
 
-      tc.put(1, "test3");
+      boolean exceptioned = false;
+      try {
+         tc.put(1, "test3");
+      } catch (OseeArgumentException ex) {
+         exceptioned = true;
+         Assert.assertEquals("TestUnit key: [1] has already been used", ex.getLocalizedMessage());
+      }
+      Assert.assertTrue(exceptioned);
+
       tc.put("test1");
       Assert.assertEquals(2, tc.getAllCachedTestUnitNames().size());
 
@@ -131,7 +140,6 @@ public class TestUnitCacheTest {
       Assert.assertTrue(Collections.setComplement(expected, actual).size() == 0);
 
       tc.removeTestUnit(ci, "test1");
-      tc.removeTestUnit(ci, "test11");
       tc.removeTestUnit(ci, "test5");
 
       expected.remove("test1");
