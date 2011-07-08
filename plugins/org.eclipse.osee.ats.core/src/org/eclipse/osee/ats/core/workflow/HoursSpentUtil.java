@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
@@ -34,7 +35,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentTotal(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double hours = 0;
-         for (TeamWorkFlowArtifact team : ActionManagerCore.getTeams(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
                hours += getHoursSpentTotal(team);
             }
@@ -68,7 +69,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateTotal(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double hours = 0;
-         for (TeamWorkFlowArtifact team : ActionManagerCore.getTeams(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
                hours += getHoursSpentStateTotal(team);
             }
@@ -99,7 +100,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateReview(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double hours = 0;
-         for (TeamWorkFlowArtifact team : ActionManagerCore.getTeams(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
                hours += getHoursSpentStateReview(team);
             }
@@ -128,7 +129,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentSMAState(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double hours = 0;
-         for (TeamWorkFlowArtifact team : ActionManagerCore.getTeams(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
                hours += getHoursSpentSMAState(team);
             }
@@ -157,7 +158,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentFromStateTasks(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double hours = 0;
-         for (TeamWorkFlowArtifact team : ActionManagerCore.getTeams(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
                hours += getHoursSpentFromStateTasks(team);
             }

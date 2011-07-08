@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.core.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -205,7 +205,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAr
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return AtsUtil.getAtsObjectEventFilters();
+      return AtsUtilCore.getAtsObjectEventFilters();
    }
 
    @Override

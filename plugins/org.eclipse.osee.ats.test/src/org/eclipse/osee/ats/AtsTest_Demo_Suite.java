@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.navigate.AtsNavigateItemsToWorldViewTest;
 import org.eclipse.osee.ats.render.RendererManagerTest;
 import org.eclipse.osee.ats.util.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.util.AtsImageTest;
-import org.eclipse.osee.ats.util.AtsNotifyUsersTest;
 import org.eclipse.osee.ats.util.AtsPurgeTest;
 import org.eclipse.osee.ats.util.AtsXWidgetsExampleBlamTest;
 import org.eclipse.osee.ats.util.ImportActionsViaSpreadsheetTest;
@@ -55,7 +54,6 @@ import org.junit.runners.Suite;
    SMAPromptChangeStatusTest.class,
    AtsDeleteManagerTest.class,
    AtsPurgeTest.class,
-   AtsNotifyUsersTest.class,
    AtsBranchConfigurationTest.class,
    AtsValidateAtsDatabaseTest.class,
    AtsXWidgetsExampleBlamTest.class})

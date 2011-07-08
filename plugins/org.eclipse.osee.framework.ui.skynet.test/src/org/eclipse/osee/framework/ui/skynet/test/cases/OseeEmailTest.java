@@ -15,10 +15,10 @@ import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.junit.Before;
 import org.junit.Ignore;
 

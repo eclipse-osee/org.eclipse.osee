@@ -17,6 +17,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.notify.IAtsNotification;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -44,7 +46,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
       setTitle("Select ATS Notifications");
       setMessage("Select Desired ATS Notifications");
       try {
-         setInput(AtsNotification.getAtsNotificationItems());
+         setInput(AtsNotificationManager.getAtsNotificationItems());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

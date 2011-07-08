@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;

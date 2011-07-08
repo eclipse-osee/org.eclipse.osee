@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util;
+package org.eclipse.osee.ats.core.notify;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.notify.INotificationManager;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
+import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 
 /**
  * @author Donald G. Dunne

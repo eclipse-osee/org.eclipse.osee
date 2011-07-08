@@ -15,10 +15,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -28,6 +30,10 @@ import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Donald G. Dunne
@@ -35,6 +41,32 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class AtsUtilCore {
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    private static OseeGroup atsAdminGroup = new OseeGroup("AtsAdmin");
+   private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
+      AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
+      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+   private static ArtifactTypeEventFilter reviewArtifactTypesFilter = new ArtifactTypeEventFilter(
+      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+   private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(
+      AtsArtifactTypes.TeamWorkflow);
+   private static ArtifactTypeEventFilter workItemArtifactTypesFilter = new ArtifactTypeEventFilter(
+      CoreArtifactTypes.WorkItemDefinition);
+   private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
+   private static boolean emailEnabled = true;
+
+   public static boolean isEmailEnabled() {
+      return emailEnabled;
+   }
+
+   public static boolean isInTest() {
+      return Boolean.valueOf(System.getProperty("osee.isInTest"));
+   }
+
+   public static void setEmailEnabled(boolean enabled) {
+      if (!DbUtil.isDbInit() && !AtsUtilCore.isInTest()) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Email " + (enabled ? "Enabled" : "Disabled"));
+      }
+      emailEnabled = enabled;
+   }
 
    /**
     * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
@@ -111,6 +143,34 @@ public class AtsUtilCore {
          // Do Nothing;
       }
       return toReturn;
+   }
+
+   public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
+      try {
+         if (atsObjectEventFilter.size() == 0) {
+            atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
+            atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return atsObjectEventFilter;
+   }
+
+   public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
+      return atsObjectArtifactTypesFilter;
+   }
+
+   public static ArtifactTypeEventFilter getTeamWorkflowArtifactTypeEventFilter() {
+      return teamWorkflowArtifactTypesFilter;
+   }
+
+   public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
+      return reviewArtifactTypesFilter;
+   }
+
+   public static ArtifactTypeEventFilter getWorkItemArtifactTypeEventFilter() {
+      return workItemArtifactTypesFilter;
    }
 
 }

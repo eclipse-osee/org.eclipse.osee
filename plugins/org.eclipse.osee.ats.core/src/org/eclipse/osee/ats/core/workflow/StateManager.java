@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
@@ -246,33 +249,74 @@ public class StateManager {
    }
 
    /**
-    * Sets the assignees as attributes and relations AND writes to SMA. Does not persist.
+    * Adds the assignee AND writes to artifact. Does not persist. Will remove UnAssigned user if another assignee
+    * exists.
     */
-   public void setAssignees(Collection<IBasicUser> assignees) throws OseeCoreException {
-      SMAState state = getSMAState(getCurrentState(), false);
-      state.setAssignees(assignees);
-      putState(state);
+   public void addAssignee(IBasicUser assignee) throws OseeCoreException {
+      addAssignee(getSMAState(getCurrentState(), false), assignee);
+   }
+
+   public void addAssignee(SMAState smaState, IBasicUser assignee) throws OseeCoreException {
+      addAssignees(smaState, Arrays.asList(assignee));
+   }
+
+   public void addAssignees(Collection<IBasicUser> assignees) throws OseeCoreException {
+      addAssignees(getSMAState(getCurrentState(), false), assignees);
+   }
+
+   public void addAssignees(SMAState smaState, Collection<IBasicUser> assignees) throws OseeCoreException {
+      List<IBasicUser> notifyAssignees = new ArrayList<IBasicUser>();
+      for (IBasicUser assignee : assignees) {
+         if (!smaState.getAssignees().contains(assignee)) {
+            notifyAssignees.add(assignee);
+            smaState.addAssignee(assignee);
+         }
+      }
+      AtsNotificationManager.notify(sma, notifyAssignees, AtsNotifyType.Assigned);
+      if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(
+         UserManager.getUser(SystemUser.UnAssigned))) {
+         smaState.removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+      }
+      putState(smaState);
+   }
+
+   public void setAssignee(IBasicUser assignee) throws OseeCoreException {
+      setAssignees(Arrays.asList(assignee));
+   }
+
+   public void setAssignees(Collection<IBasicUser> newAssignees) throws OseeCoreException {
+      setAssignees(getSMAState(getCurrentState(), false), newAssignees);
    }
 
    /**
-    * Sets the assignee AND writes to SMA. Does not persist.
+    * Sets the assignees as attributes and relations AND writes to artifact. Does not persist.
     */
-   public void setAssignee(IWorkPage state, User assignee) throws OseeCoreException {
+   public void setAssignees(SMAState smaState, Collection<IBasicUser> newAssignees) throws OseeCoreException {
+      Collection<? extends IBasicUser> currentAssignees = smaState.getAssignees();
+      List<IBasicUser> notifyAssignees = new ArrayList<IBasicUser>();
+      for (IBasicUser user : newAssignees) {
+         if (!currentAssignees.contains(user)) {
+            notifyAssignees.add(user);
+         }
+      }
+      AtsNotificationManager.notify(sma, notifyAssignees, AtsNotifyType.Assigned);
+      if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(
+         UserManager.getUser(SystemUser.UnAssigned))) {
+         smaState.removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+      }
+      smaState.setAssignees(newAssignees);
+      putState(smaState);
+   }
+
+   /**
+    * Sets the assignee AND writes to artifact. Does not persist.
+    */
+   public void setAssignee(IWorkPage state, IBasicUser assignee) throws OseeCoreException {
+      SMAState smaState = getSMAState(state, false);
       if (!isStateVisited(state)) {
          throw new OseeArgumentException("State [%s] does not exist.", state);
       }
-      SMAState smaState = getSMAState(state, false);
-      smaState.setAssignee(assignee);
-      putState(smaState);
-   }
-
-   /**
-    * Sets the assignee AND writes to SMA. Does not persist.
-    */
-   public void setAssignee(User assignee) throws OseeCoreException {
-      SMAState smaState = getSMAState(getCurrentState(), false);
-      smaState.setAssignee(assignee);
-      putState(smaState);
+      setAssignees(smaState, Arrays.asList(assignee));
    }
 
    /**
@@ -293,19 +337,6 @@ public class StateManager {
    public void removeAssignee(User assignee) throws OseeCoreException {
       SMAState smaState = getSMAState(getCurrentState(), false);
       smaState.removeAssignee(assignee);
-      putState(smaState);
-   }
-
-   /**
-    * Adds the assignee AND writes to SMA. Does not persist. Will remove UnAssigned user if another assignee exists.
-    */
-   public void addAssignee(IBasicUser assignee) throws OseeCoreException {
-      SMAState smaState = getSMAState(getCurrentState(), false);
-      smaState.addAssignee(assignee);
-      if (smaState.getAssignees().size() > 1 && smaState.getAssignees().contains(
-         UserManager.getUser(SystemUser.UnAssigned))) {
-         smaState.removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
-      }
       putState(smaState);
    }
 
@@ -338,6 +369,12 @@ public class StateManager {
          if (!org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(previousAssignees, nextAssignees)) {
             previousState.setAssignees(nextAssignees);
          }
+         for (IBasicUser user : previousAssignees) {
+            if (!previousAssignees.contains(user)) {
+               AtsNotificationManager.notify(sma, Arrays.asList(user), AtsNotifyType.Assigned);
+            }
+         }
+
          currentStateDam.setState(previousState);
       }
       sma.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, toState.getWorkPageType().name());

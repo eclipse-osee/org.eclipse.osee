@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.WorkflowManagerCore;
@@ -27,12 +28,12 @@ public class PercentCompleteSMAStateUtil {
     */
    public static int getPercentCompleteSMAState(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         if (ActionManagerCore.getTeams(artifact).size() == 1) {
-            return getPercentCompleteSMAState(ActionManagerCore.getFirstTeam(artifact));
+         if (ActionManager.getTeams(artifact).size() == 1) {
+            return getPercentCompleteSMAState(ActionManager.getFirstTeam(artifact));
          } else {
             double percent = 0;
             int items = 0;
-            for (TeamWorkFlowArtifact team : ActionManagerCore.getTeams(artifact)) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
                if (!team.isCancelled()) {
                   percent += getPercentCompleteSMAState(team);
                   items++;

@@ -116,7 +116,7 @@ public class PeerToPeerReviewColumnsTest {
       roleMgr.addOrUpdateUserRole(role);
       role = new UserRole(Role.Reviewer, UserManager.getUser(DemoUsers.Kay_Jones));
       roleMgr.addOrUpdateUserRole(role);
-      roleMgr.saveToArtifact(peerArt, transaction);
+      roleMgr.saveToArtifact(transaction);
       peerArt.persist(transaction);
       transaction.execute();
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.notify;
+package org.eclipse.osee.ats.core.notify;
 
-import java.util.List;
+import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 
 /**
  * @author Donald G. Dunne
  */
-public interface INotificationManager {
+public interface IAtsNotification {
 
-   public void addNotificationEvent(OseeNotificationEvent notificationEvent);
+   /**
+    * Descriptive name that admin can identify the group/notification that will get sent
+    */
+   public String getNotificationName();
 
-   public void clear();
-
-   public List<OseeNotificationEvent> getNotificationEvents();
-
-   public void sendNotifications() throws OseeCoreException;
+   public Collection<OseeNotificationEvent> getNotificationEvents(IProgressMonitor monitor) throws OseeCoreException;
 
 }

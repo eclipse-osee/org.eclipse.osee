@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**

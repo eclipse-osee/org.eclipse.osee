@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.review.defect.ReviewDefectError;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectValidator;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.Result;
@@ -564,7 +565,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtilCore.getReviewArtifactTypeEventFilter());
    }
 
    @Override

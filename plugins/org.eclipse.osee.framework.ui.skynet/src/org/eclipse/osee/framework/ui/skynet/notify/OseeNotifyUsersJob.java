@@ -30,10 +30,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
+import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
-import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
 
 /**
  * @author Donald G. Dunne

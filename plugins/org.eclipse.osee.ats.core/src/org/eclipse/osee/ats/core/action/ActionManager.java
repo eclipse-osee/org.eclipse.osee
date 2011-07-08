@@ -8,28 +8,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.artifact;
+package org.eclipse.osee.ats.core.action;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.actions.wizard.INewActionListener;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.workflow.ActionArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
-import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam.CreateTeamOption;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -41,7 +40,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +54,7 @@ public class ActionManager {
          monitor.subTask("Creating Action");
       }
       ActionArtifact actionArt =
-         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
+         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilCore.getAtsBranch());
       setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
@@ -97,7 +95,7 @@ public class ActionManager {
          try {
             isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.WARNING, ex);
+            OseeLog.log(Activator.class, Level.WARNING, ex);
          }
          if (isResponsible) {
             teamWorkflowArtifact = teamExtension.getTeamWorkflowArtifactType(teamDef, actionableItems);
@@ -122,7 +120,6 @@ public class ActionManager {
          // Make sure team doesn't already exist
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
-               AWorkbench.popup("ERROR", "Team already exist");
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
                   actionArt.getHumanReadableId());
             }
@@ -131,10 +128,10 @@ public class ActionManager {
 
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null) {
-         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch());
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch());
       } else {
          teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch(), guid, hrid);
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), guid, hrid);
       }
 
       setArtifactIdentifyData(actionArt, teamArt);
@@ -170,6 +167,7 @@ public class ActionManager {
       actionArt.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
 
       teamArt.persist(transaction);
+      AtsNotificationManager.notifySubscribedByTeamOrActionableItem(teamArt);
 
       return teamArt;
    }

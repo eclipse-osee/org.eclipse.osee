@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData.CreateReview;
 import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
@@ -26,6 +25,9 @@ import org.eclipse.osee.ats.config.demo.config.DemoDbReviews;
 import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
+import org.eclipse.osee.ats.core.action.ActionArtifactRollup;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.ReviewManager;
@@ -35,15 +37,14 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.ActionArtifact;
-import org.eclipse.osee.ats.core.workflow.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
-import org.eclipse.osee.ats.util.SubscribeManager;
+import org.eclipse.osee.ats.util.SubscribeManagerUI;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -138,7 +139,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    public void run(boolean prompt) throws Exception {
-      AtsUtil.setEmailEnabled(false);
+      AtsUtilCore.setEmailEnabled(false);
       if (AtsUtil.isProductionDb()) {
          throw new IllegalStateException("PopulateDemoActions should not be run on production DB");
       }
@@ -192,7 +193,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
             "%Even%", AtsUtil.getAtsBranch())) {
-            new SubscribeManager((AbstractWorkflowArtifact) art).toggleSubscribe(false);
+            new SubscribeManagerUI((AbstractWorkflowArtifact) art).toggleSubscribe(false);
          }
 
          // Create some tasks off sample workflows

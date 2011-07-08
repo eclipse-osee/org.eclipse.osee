@@ -40,8 +40,8 @@ public class SMAStatusDialog extends MessageDialog {
    protected Label statusLabel;
    protected XPercent percent = new XPercent("Percent Complete");
    protected XFloat hours = new XFloat("Additional Hours Spent");
-   protected XRadioButton splitRadio = new XRadioButton("Split Hours Spent between Tasks");
-   protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Task");
+   protected XRadioButton splitRadio = new XRadioButton("Split Hours Spent between Items");
+   protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Item");
    private Button okButton;
    private final boolean showPercent;
    protected final Collection<? extends AbstractWorkflowArtifact> awas;
@@ -76,7 +76,7 @@ public class SMAStatusDialog extends MessageDialog {
 
       if (awas.size() > 1) {
          Label label = new Label(parent, SWT.NONE);
-         label.setText("Mulitple objects being statused.  All objects will be " + "set to percent\ncomplete and hours spent will be split or added into each task.");
+         label.setText("Mulitple objects being statused.  All objects will be " + "set to percent\ncomplete and hours spent will be split or added into each item.");
       }
 
       createPreCustomArea(parent);

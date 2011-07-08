@@ -16,12 +16,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -36,13 +40,21 @@ import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.core.workflow.ActionArtifact;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.IWorkPage;
+import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.WorkPageAdapter;
 import org.eclipse.osee.framework.core.util.WorkPageType;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -62,6 +74,7 @@ public class AtsTestUtil {
    private static TeamDefinitionArtifact teamDef = null;
    private static VersionArtifact verArt1 = null, verArt2 = null;
    private static DecisionReviewArtifact decRevArt = null;
+   private static PeerToPeerReviewArtifact peerRevArt = null;
    private static TaskArtifact taskArt = null;
    private static ActionableItemArtifact testAi = null;
    private static ActionArtifact actionArt = null;
@@ -219,6 +232,7 @@ public class AtsTestUtil {
       teamDef.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
       teamDef.setSoleAttributeValue(CoreAttributeTypes.Active, true);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
+      teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
 
       testAi.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
 
@@ -232,18 +246,11 @@ public class AtsTestUtil {
             getTitle("ver 2.0", postFixName));
       verArt2.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
 
-      teamArt =
-         (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow,
-            AtsUtilCore.getAtsBranchToken(), getTitle("Team WF", postFixName));
-      teamArt.setTeamDefinition(teamDef);
-      teamArt.getActionableItemsDam().addActionableItem(testAi);
-      teamArt.initializeNewStateMachine(getAnalyzeStateDef(), Arrays.asList((IBasicUser) UserManager.getUser()),
-         new Date(), UserManager.getUser());
-
       actionArt =
-         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilCore.getAtsBranchToken(),
-            "Test Action");
-      actionArt.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
+         ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
+            false, null, Arrays.asList(testAi), new Date(), UserManager.getUser(), null, transaction);
+
+      teamArt = actionArt.getFirstTeam();
 
       testAi.persist(transaction);
       teamDef.persist(transaction);
@@ -313,6 +320,9 @@ public class AtsTestUtil {
    public static void cleanup() throws OseeCoreException {
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup");
+      if (peerRevArt != null) {
+         peerRevArt.deleteAndPersist(transaction);
+      }
       if (decRevArt != null) {
          decRevArt.deleteAndPersist(transaction);
       }
@@ -381,4 +391,77 @@ public class AtsTestUtil {
       TestUtil.sleep(4000);
    }
 
+   public static Result transitionTo(AtsTestUtilState atsTestUtilState, User user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
+      if (atsTestUtilState == AtsTestUtilState.Analyze && teamArt.isInState(AtsTestUtilState.Analyze)) {
+         return Result.TrueResult;
+      }
+
+      if (atsTestUtilState == AtsTestUtilState.Cancelled) {
+         Result result = transitionToState(teamArt, AtsTestUtilState.Cancelled, user, transaction, transitionOptions);
+         if (result.isFalse()) {
+            return result;
+         }
+         return Result.TrueResult;
+      }
+
+      Result result = transitionToState(teamArt, AtsTestUtilState.Implement, user, transaction, transitionOptions);
+      if (result.isFalse()) {
+         return result;
+      }
+
+      if (atsTestUtilState == AtsTestUtilState.Implement) {
+         return Result.TrueResult;
+      }
+
+      if (atsTestUtilState == AtsTestUtilState.Completed) {
+         result = transitionToState(teamArt, AtsTestUtilState.Completed, user, transaction, transitionOptions);
+         if (result.isFalse()) {
+            return result;
+         }
+
+      }
+      return Result.TrueResult;
+
+   }
+
+   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IWorkPage toState, User user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
+      TransitionHelper helper =
+         new TransitionHelper("Transition to " + toState.getPageName(), Arrays.asList(teamArt), toState.getPageName(),
+            Arrays.asList(user), null, transitionOptions);
+      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+      TransitionResults results = transitionMgr.handleAll();
+      if (results.isEmpty()) {
+         return Result.TrueResult;
+      }
+      return new Result("Transition Error %s", results.toString());
+   }
+
+   public static class AtsTestUtilState extends WorkPageAdapter {
+      public static AtsTestUtilState Analyze = new AtsTestUtilState("Analyze", WorkPageType.Working);
+      public static AtsTestUtilState Implement = new AtsTestUtilState("Implement", WorkPageType.Working);
+      public static AtsTestUtilState Completed = new AtsTestUtilState("Completed", WorkPageType.Completed);
+      public static AtsTestUtilState Cancelled = new AtsTestUtilState("Cancelled", WorkPageType.Cancelled);
+
+      private AtsTestUtilState(String pageName, WorkPageType workPageType) {
+         super(AtsTestUtilState.class, pageName, workPageType);
+      }
+
+      public static AtsTestUtilState valueOf(String pageName) {
+         return WorkPageAdapter.valueOfPage(AtsTestUtilState.class, pageName);
+      }
+
+      public static List<AtsTestUtilState> values() {
+         return WorkPageAdapter.pages(AtsTestUtilState.class);
+      }
+   }
+
+   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType none, AtsTestUtilState relatedToState, SkynetTransaction transaction) throws OseeCoreException {
+      ensureLoaded();
+      if (peerRevArt == null) {
+         peerRevArt =
+            PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt,
+               AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getPageName(), transaction);
+      }
+      return peerRevArt;
+   }
 }

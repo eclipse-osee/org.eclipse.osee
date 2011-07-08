@@ -20,9 +20,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
@@ -118,20 +121,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @SuppressWarnings("unused")
    protected void initializeSMA() throws OseeCoreException {
-      initalizePreSaveCache();
-   }
-
-   public void initalizePreSaveCache() {
-      try {
-         stateMgr = new StateManager(this);
-         atsLog = new AtsLog(new ArtifactLog(this));
-         atsNote = new AtsNote(new ArtifactNote(this));
-         // TODO Add this back in
-         //         AtsNotification.notifyNewAssigneesAndReset(this, true);
-         //         AtsNotification.notifyOriginatorAndReset(this, true);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+      stateMgr = new StateManager(this);
+      atsLog = new AtsLog(new ArtifactLog(this));
+      atsNote = new AtsNote(new ArtifactNote(this));
    }
 
    public void initializeNewStateMachine(Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
@@ -557,6 +549,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
          setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
       }
+      AtsNotificationManager.notify(this, AtsNotifyType.Originator);
    }
 
    public void internalSetCreatedBy(IBasicUser user) throws OseeCoreException {

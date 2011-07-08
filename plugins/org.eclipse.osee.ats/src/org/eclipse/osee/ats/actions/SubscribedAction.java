@@ -16,9 +16,10 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.core.util.SubscribeManager;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.SubscribeManager;
+import org.eclipse.osee.ats.util.SubscribeManagerUI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -67,7 +68,7 @@ public class SubscribedAction extends Action {
    @Override
    public void run() {
       try {
-         new SubscribeManager(getSelectedSubscribableArts()).toggleSubscribe();
+         new SubscribeManagerUI(getSelectedSubscribableArts()).toggleSubscribe();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

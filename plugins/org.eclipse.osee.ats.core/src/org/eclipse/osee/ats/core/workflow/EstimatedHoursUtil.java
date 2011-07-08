@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,7 +26,7 @@ public class EstimatedHoursUtil {
          return ((AbstractWorkflowArtifact) object).getEstimatedHoursTotal();
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double total = 0;
-         for (Artifact team : ActionManagerCore.getTeams(object)) {
+         for (Artifact team : ActionManager.getTeams(object)) {
             total += getEstimatedHours(team);
          }
          return total;

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workflow.TransitionToMenu;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -154,6 +155,10 @@ public class TaskXViewer extends WorldXViewer {
       // EDIT MENU BLOCK
       MenuManager editMenuManager = updateEditMenu(mm);
       mm.insertBefore(MENU_GROUP_ATS_WORLD_EDIT, editMenuManager);
+
+      final Collection<TreeItem> selectedTreeItems = Arrays.asList(thisXViewer.getTree().getSelection());
+      mm.insertBefore(MENU_GROUP_PRE,
+         TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", selectedTreeItems));
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editStatusAction);
       editStatusAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);

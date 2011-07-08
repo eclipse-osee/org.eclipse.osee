@@ -20,15 +20,16 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.task.TaskManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -158,7 +159,7 @@ public class ExcelAtsTaskArtifactExtractor {
          if (!valid) {
             return;
          }
-         AtsUtil.setEmailEnabled(false);
+         AtsUtilCore.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
@@ -186,7 +187,7 @@ public class ExcelAtsTaskArtifactExtractor {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
             }
          }
-         AtsUtil.setEmailEnabled(true);
+         AtsUtilCore.setEmailEnabled(true);
          if (taskArt.isCompleted()) {
             Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 0, transaction);
             if (result.isFalse()) {
@@ -196,7 +197,7 @@ public class ExcelAtsTaskArtifactExtractor {
          // always persist
          taskArt.persist(transaction);
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-            AtsNotifyUsers.getInstance().notify(sma, AtsNotifyUsers.NotifyType.Assigned);
+            AtsNotificationManager.notify(sma, AtsNotifyType.Assigned);
          }
       }
 

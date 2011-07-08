@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
@@ -81,8 +81,8 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -137,7 +137,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             XResultDataUI.report(rd, getName());
             if (Strings.isValid(emailOnComplete)) {
                String html = XResultDataUI.getReport(rd, getName()).getManipulatedHtml();
-               EmailUtil.emailHtml(java.util.Collections.singleton(emailOnComplete),
+               OseeEmail.emailHtml(java.util.Collections.singleton(emailOnComplete),
                   String.format("Sync - %s [%s]", DateUtil.getDateNow(), getName()), html);
             }
          } catch (Exception ex) {

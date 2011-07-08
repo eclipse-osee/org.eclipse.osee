@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core;
 
+import org.eclipse.osee.ats.core.notify.AtsCore_Notify_PT_Suite;
 import org.eclipse.osee.ats.core.review.AtsCore_Review_PT_Suite;
 import org.eclipse.osee.ats.core.task.AtsCore_Task_PT_Suite;
 import org.eclipse.osee.ats.core.workflow.transition.AtsCore_Transition_PT_Suite;
@@ -22,6 +23,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsTestUtilTest.class,
+   AtsCore_Notify_PT_Suite.class,
    AtsCore_Task_PT_Suite.class,
    AtsCore_Review_PT_Suite.class,
    AtsCore_Transition_PT_Suite.class})

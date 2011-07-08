@@ -116,7 +116,7 @@ public class PeerToPeerReviewManager {
          for (UserRole role : roles) {
             roleMgr.addOrUpdateUserRole(role);
          }
-         roleMgr.saveToArtifact(reviewArt, transaction);
+         roleMgr.saveToArtifact(transaction);
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
@@ -129,7 +129,7 @@ public class PeerToPeerReviewManager {
          for (UserRole role : roles) {
             roleMgr.addOrUpdateUserRole(role);
          }
-         roleMgr.saveToArtifact(reviewArt, transaction);
+         roleMgr.saveToArtifact(transaction);
       }
       if (defects != null) {
          ReviewDefectManager defectManager = new ReviewDefectManager(reviewArt);

@@ -11,13 +11,17 @@
 
 package org.eclipse.osee.ats.internal;
 
+import java.util.logging.Level;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
-import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -36,9 +40,13 @@ public class AtsPlugin implements BundleActivator {
 
    public AtsPlugin() {
       super();
-      AtsPreSaveCacheRemoteEventHandler.start();
       AtsCacheManager.start();
-      AtsNotifyUsers.start();
+      try {
+         AtsNotificationManager.start(OseeNotificationManager.getInstance(),
+            ClientSessionManager.isProductionDataStore());
+      } catch (OseeAuthenticationRequiredException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    @Override

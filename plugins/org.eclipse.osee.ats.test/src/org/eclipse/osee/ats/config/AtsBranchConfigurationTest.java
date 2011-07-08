@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;

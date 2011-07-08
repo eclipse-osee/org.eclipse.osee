@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -308,7 +309,7 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return AtsUtil.getAtsObjectEventFilters();
+      return AtsUtilCore.getAtsObjectEventFilters();
    }
 
    @Override

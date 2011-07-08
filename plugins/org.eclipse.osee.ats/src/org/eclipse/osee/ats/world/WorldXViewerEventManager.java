@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -87,7 +88,7 @@ public class WorldXViewerEventManager {
 
       @Override
       public List<? extends IEventFilter> getEventFilters() {
-         return AtsUtil.getAtsObjectEventFilters();
+         return AtsUtilCore.getAtsObjectEventFilters();
       }
 
       private Runnable createDisplayRunnable(ArtifactEvent artifactEvent, Collection<IWorldViewerEventHandler> handlers) {

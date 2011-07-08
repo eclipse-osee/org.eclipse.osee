@@ -19,8 +19,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
 
 /**
  * @author Donald G. Dunne

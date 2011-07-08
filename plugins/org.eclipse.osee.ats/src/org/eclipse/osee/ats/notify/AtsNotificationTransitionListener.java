@@ -11,10 +11,11 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
@@ -34,8 +35,7 @@ public class AtsNotificationTransitionListener implements ITransitionListener {
    @Override
    public void transitioned(AbstractWorkflowArtifact awa, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
 
-      AtsNotifyUsers.getInstance().notify(awa, AtsNotifyUsers.NotifyType.Subscribed,
-         AtsNotifyUsers.NotifyType.Completed, AtsNotifyUsers.NotifyType.Completed);
+      AtsNotificationManager.notify(awa, AtsNotifyType.Subscribed, AtsNotifyType.Completed, AtsNotifyType.Cancelled);
 
       OseeNotificationManager.getInstance().sendNotifications();
    }

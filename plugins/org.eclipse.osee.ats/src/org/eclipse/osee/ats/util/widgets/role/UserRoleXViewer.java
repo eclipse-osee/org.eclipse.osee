@@ -266,7 +266,7 @@ public class UserRoleXViewer extends XViewer {
          xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);
          update(userRole, null);
       }
-      xUserRoleViewer.getUserRoleMgr().saveToArtifact(xUserRoleViewer.getReviewArt(), transaction);
+      xUserRoleViewer.getUserRoleMgr().saveToArtifact(transaction);
       transaction.execute();
       xUserRoleViewer.refresh();
       xUserRoleViewer.notifyXModifiedListeners();

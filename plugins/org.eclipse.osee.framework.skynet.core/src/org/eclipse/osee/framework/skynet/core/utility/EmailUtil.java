@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util.email;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,9 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +44,7 @@ public class EmailUtil {
                validUsers.add(user);
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return validUsers;
@@ -60,17 +58,10 @@ public class EmailUtil {
                activeUsers.add(user);
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return activeUsers;
-   }
-
-   public static void emailHtml(Collection<String> emails, String subject, String htmlBody) throws OseeCoreException {
-      OseeEmail emailMessage =
-         new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, htmlBody,
-            BodyType.Html);
-      emailMessage.send();
    }
 
 }

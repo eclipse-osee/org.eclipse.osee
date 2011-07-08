@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.notify;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.IBasicUser;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne

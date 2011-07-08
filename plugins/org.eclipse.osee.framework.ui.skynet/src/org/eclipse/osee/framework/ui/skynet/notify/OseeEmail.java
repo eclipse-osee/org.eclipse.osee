@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util;
+package org.eclipse.osee.framework.ui.skynet.notify;
 
 import java.io.File;
 import java.util.Arrays;
@@ -343,6 +343,13 @@ public class OseeEmail extends MimeMessage {
 
    public void addAttachment(String contents, String attachmentName) throws MessagingException {
       addAttachment(new StringDataSource(contents, attachmentName), attachmentName);
+   }
+
+   public static void emailHtml(Collection<String> emails, String subject, String htmlBody) throws OseeCoreException {
+      OseeEmail emailMessage =
+         new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, htmlBody,
+            BodyType.Html);
+      emailMessage.send();
    }
 
 }

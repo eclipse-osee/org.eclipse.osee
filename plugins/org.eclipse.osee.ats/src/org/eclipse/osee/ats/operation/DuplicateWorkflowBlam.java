@@ -17,13 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -63,9 +65,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    private final static String DUPLICATE_METHOD = "Duplicate Method";
    private final static String TITLE = "New Title (blank for same title)";
    private Collection<? extends TeamWorkFlowArtifact> defaultTeamWorkflows;
-   public static enum CreateTeamOption {
-      Duplicate_If_Exists; // If option exists, then duplication of workflow of same team definition is allowed
-   };
 
    public DuplicateWorkflowBlam() {
       // do nothing
@@ -102,7 +101,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                   return;
                }
                try {
-                  AtsUtil.setEmailEnabled(false);
+                  AtsUtilCore.setEmailEnabled(false);
                   Collection<TeamWorkFlowArtifact> teamArts = Collections.castAll(artifacts);
                   if (createNewWorkflow) {
                      handleCreateNewWorkflow(teamArts, title);
@@ -113,7 +112,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   return;
                } finally {
-                  AtsUtil.setEmailEnabled(true);
+                  AtsUtilCore.setEmailEnabled(true);
                }
 
             } catch (Exception ex) {

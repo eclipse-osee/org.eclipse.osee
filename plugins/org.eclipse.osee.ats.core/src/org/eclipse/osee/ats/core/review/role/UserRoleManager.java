@@ -13,9 +13,12 @@ package org.eclipse.osee.ats.core.review.role;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
@@ -23,6 +26,7 @@ import org.eclipse.osee.ats.core.validator.ArtifactValueProvider;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -99,17 +103,6 @@ public class UserRoleManager {
       return cRoles;
    }
 
-   public List<IBasicUser> getRoleUsersAuthorModerator() throws OseeCoreException {
-      List<IBasicUser> users = getRoleUsers(Role.Author);
-      if (users.isEmpty()) {
-         users = getRoleUsers(Role.Moderator);
-         if (!users.contains(UserManager.getUser())) {
-            users.add(UserManager.getUser());
-         }
-      }
-      return users;
-   }
-
    public List<UserRole> getUserRoles(Role role) throws OseeCoreException {
       List<UserRole> roles = new ArrayList<UserRole>();
       for (UserRole uRole : getUserRoles()) {
@@ -140,8 +133,18 @@ public class UserRoleManager {
       return storedUserRoles;
    }
 
+   public void saveToArtifact(SkynetTransaction transaction) throws OseeCoreException {
+      if (valueProvider instanceof ArtifactValueProvider) {
+         saveToArtifact(((ArtifactValueProvider) valueProvider).getArtifact(), transaction);
+      } else {
+         throw new OseeArgumentException(
+            "Can't saveToArtifact unless provider is ArtifactValueProvider, use saveToArtifact(Artifact artifact, SkynetTransaction transaction)");
+      }
+   }
+
    public void saveToArtifact(Artifact artifact, SkynetTransaction transaction) {
       try {
+         List<UserRole> storedUserRoles = getStoredUserRoles(artifact);
 
          // Change existing ones
          for (Attribute<?> attr : artifact.getAttributes(ATS_ROLE_STORAGE_TYPE)) {
@@ -152,11 +155,11 @@ public class UserRoleManager {
                }
             }
          }
-         List<UserRole> userRole = getUserRoles();
-         List<UserRole> storedUserRoles = getStoredUserRoles(artifact);
+         List<UserRole> userRoles = getUserRoles();
+         List<UserRole> updatedStoredUserRoles = getStoredUserRoles(artifact);
          // Remove deleted ones; items in dbuserRoles that are not in userRoles
          for (UserRole delUserRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-            storedUserRoles, userRole)) {
+            updatedStoredUserRoles, userRoles)) {
             for (Attribute<?> attr : artifact.getAttributes(ATS_ROLE_STORAGE_TYPE)) {
                UserRole storedRole = new UserRole((String) attr.getValue());
                if (storedRole.equals(delUserRole)) {
@@ -164,15 +167,44 @@ public class UserRoleManager {
                }
             }
          }
-         for (UserRole newRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(userRole,
-            storedUserRoles)) {
+         for (UserRole newRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(userRoles,
+            updatedStoredUserRoles)) {
             artifact.addAttributeFromString(ATS_ROLE_STORAGE_TYPE, AXml.addTagData(ROLE_ITEM_TAG, newRole.toXml()));
          }
          updateAssignees(artifact);
          rollupHoursSpentToReviewState(artifact);
+         validateUserRolesCompleted(artifact, storedUserRoles, userRoles);
          artifact.persist(transaction);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't create ats review role document", ex);
+      }
+   }
+
+   private void validateUserRolesCompleted(Artifact artifact, List<UserRole> currentUserRoles, List<UserRole> newUserRoles) {
+      //all reviewers are complete; send notification to author/moderator
+      int numCurrentCompleted = 0, numNewCompleted = 0;
+      for (UserRole role : newUserRoles) {
+         if (role.getRole() == Role.Reviewer) {
+            if (!role.isCompleted()) {
+               return;
+            } else {
+               numNewCompleted++;
+            }
+         }
+      }
+      for (UserRole role : currentUserRoles) {
+         if (role.getRole() == Role.Reviewer) {
+            if (role.isCompleted()) {
+               numCurrentCompleted++;
+            }
+         }
+      }
+      if (numNewCompleted != numCurrentCompleted) {
+         try {
+            AtsNotificationManager.notify((AbstractWorkflowArtifact) artifact, AtsNotifyType.Peer_Reviewers_Completed);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
    }
 

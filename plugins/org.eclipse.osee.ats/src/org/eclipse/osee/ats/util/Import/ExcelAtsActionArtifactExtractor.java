@@ -25,21 +25,22 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.core.notify.AtsNotifyType;
+import org.eclipse.osee.ats.core.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam.CreateTeamOption;
-import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -155,7 +156,7 @@ public class ExcelAtsActionArtifactExtractor {
    }
 
    public void createArtifactsAndNotify(SkynetTransaction transaction) {
-      AtsUtil.setEmailEnabled(false);
+      AtsUtilCore.setEmailEnabled(false);
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       Date createdDate = new Date();
       try {
@@ -215,16 +216,16 @@ public class ExcelAtsActionArtifactExtractor {
             }
             teamWfs.addAll(newTeamArts);
          }
-         AtsUtil.setEmailEnabled(true);
+         AtsUtilCore.setEmailEnabled(true);
          if (emailPOCs) {
             for (TeamWorkFlowArtifact team : teamWfs) {
-               AtsNotifyUsers.getInstance().notify(team, AtsNotifyUsers.NotifyType.Assigned);
+               AtsNotificationManager.notify(team, AtsNotifyType.Assigned);
             }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
-         AtsUtil.setEmailEnabled(true);
+         AtsUtilCore.setEmailEnabled(true);
       }
    }
 

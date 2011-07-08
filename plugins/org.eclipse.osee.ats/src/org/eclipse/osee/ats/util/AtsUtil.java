@@ -11,27 +11,25 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.ActionArtifact;
 import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -54,10 +52,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -87,37 +81,22 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public final class AtsUtil {
 
-   private static boolean emailEnabled = true;
    public final static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
    private static final Date today = new Date();
    public final static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
    public final static String normalColor = "#FFFFFF";
    public final static String activeColor = "#EEEEEE";
-   private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
-      AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
-      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
-   private static ArtifactTypeEventFilter reviewArtifactTypesFilter = new ArtifactTypeEventFilter(
-      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
-   private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(
-      AtsArtifactTypes.TeamWorkflow);
-   private static ArtifactTypeEventFilter workItemArtifactTypesFilter = new ArtifactTypeEventFilter(
-      CoreArtifactTypes.WorkItemDefinition);
-   private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
 
    private AtsUtil() {
       super();
    }
 
-   public static boolean isInTest() {
-      return TestUtil.isInTest();
+   public static boolean isProductionDb() throws OseeCoreException {
+      return ClientSessionManager.isProductionDataStore();
    }
 
    public static long daysTillToday(Date date) {
       return (date.getTime() - today.getTime()) / MILLISECS_PER_DAY;
-   }
-
-   public static boolean isProductionDb() throws OseeCoreException {
-      return ClientSessionManager.isProductionDataStore();
    }
 
    public static Branch getAtsBranch() throws OseeCoreException {
@@ -128,15 +107,8 @@ public final class AtsUtil {
       return CoreBranches.COMMON;
    }
 
-   public static boolean isEmailEnabled() {
-      return emailEnabled;
-   }
-
-   public static void setEmailEnabled(boolean enabled) {
-      if (!DbUtil.isDbInit() && !AtsUtil.isInTest()) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Email " + (enabled ? "Enabled" : "Disabled"));
-      }
-      emailEnabled = enabled;
+   public static boolean isInTest() {
+      return TestUtil.isInTest();
    }
 
    public static Composite createCommonPageComposite(Composite parent) {
@@ -379,34 +351,6 @@ public final class AtsUtil {
          }
       });
       return item;
-   }
-
-   public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
-      try {
-         if (atsObjectEventFilter.size() == 0) {
-            atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
-            atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      return atsObjectEventFilter;
-   }
-
-   public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
-      return atsObjectArtifactTypesFilter;
-   }
-
-   public static ArtifactTypeEventFilter getTeamWorkflowArtifactTypeEventFilter() {
-      return teamWorkflowArtifactTypesFilter;
-   }
-
-   public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
-      return reviewArtifactTypesFilter;
-   }
-
-   public static ArtifactTypeEventFilter getWorkItemArtifactTypeEventFilter() {
-      return workItemArtifactTypesFilter;
    }
 
    public static Set<Artifact> getAssigned(User user) throws OseeCoreException {

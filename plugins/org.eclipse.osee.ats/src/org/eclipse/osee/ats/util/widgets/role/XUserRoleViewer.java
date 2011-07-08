@@ -31,8 +31,8 @@ import org.eclipse.osee.ats.core.review.role.UserRole;
 import org.eclipse.osee.ats.core.review.role.UserRoleError;
 import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.review.role.UserRoleValidator;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -306,7 +306,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    private void removeUserRoleHelper(List<UserRole> items, SkynetTransaction transaction) throws OseeCoreException {
       for (UserRole userRole : items) {
          roleMgr.removeUserRole(userRole);
-         roleMgr.saveToArtifact(reviewArt, transaction);
+         roleMgr.saveToArtifact(transaction);
          xViewer.remove(userRole);
       }
       loadTable();
@@ -317,7 +317,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       try {
          SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
          roleMgr.addOrUpdateUserRole(new UserRole());
-         roleMgr.saveToArtifact(reviewArt, transaction);
+         roleMgr.saveToArtifact(transaction);
          transaction.execute();
          notifyXModifiedListeners();
          loadTable();
@@ -485,7 +485,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtilCore.getReviewArtifactTypeEventFilter());
    }
 
    @Override

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.review;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
 
    private ActionableItemManagerCore actionableItemsDam;
-   private Collection<UserRole> preSaveReviewRoleComplete;
    private Boolean standAlone = null;
 
    public AbstractReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
@@ -56,16 +54,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    };
 
    @Override
-   public void initalizePreSaveCache() {
-      super.initalizePreSaveCache();
-      try {
-         preSaveReviewRoleComplete = getRoleUsersReviewComplete();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
    public List<IBasicUser> getImplementers() throws OseeCoreException {
       if (this.isOfType(AtsArtifactTypes.DecisionReview)) {
          return StateManager.getImplementersByState(this, DecisionReviewState.Decision);
@@ -76,21 +64,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
          }
          return users;
       }
-   }
-
-   private Collection<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
-      return new UserRoleManager(this).getRoleUsersReviewComplete();
-   }
-
-   public void notifyReviewersComplete() throws OseeCoreException {
-      UserRoleManager userRoleManager = new UserRoleManager(this);
-      //all reviewers are complete; send notification to author/moderator
-      // TODO Add this back in once move to ats.core
-      //      if (!preSaveReviewRoleComplete.equals(userRoleManager.getRoleUsersReviewComplete()) && userRoleManager.getUserRoles(
-      //         Role.Reviewer).equals(userRoleManager.getRoleUsersReviewComplete())) {
-      //         AtsNotifyUsers.getInstance().notify(this, AtsNotifyUsers.NotifyType.Reviewed);
-      //      }
-      preSaveReviewRoleComplete = userRoleManager.getRoleUsersReviewComplete();
    }
 
    /**
@@ -136,10 +109,7 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       return teamDefs;
    }
 
-   /**
-    * @return the actionableItemsDam
-    */
-   public ActionableItemManagerCore getActionableItemsDam() throws OseeCoreException {
+   public ActionableItemManagerCore getActionableItemsDam() {
       if (actionableItemsDam == null) {
          actionableItemsDam = new ActionableItemManagerCore(this);
       }

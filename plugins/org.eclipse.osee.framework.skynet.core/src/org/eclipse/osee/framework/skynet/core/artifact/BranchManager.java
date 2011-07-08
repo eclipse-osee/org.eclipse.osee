@@ -55,7 +55,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBra
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
-import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpRequestOperation;
@@ -293,12 +292,12 @@ public class BranchManager {
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) throws OseeCoreException {
-      ExtensionDefinedObjects<CommitAction> extensions =
-         new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
-            "CommitActions", "className");
-      for (CommitAction commitAction : extensions.getObjects()) {
-         commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
-      }
+      //      ExtensionDefinedObjects<CommitAction> extensions =
+      //         new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
+      //            "CommitActions", "className");
+      //      for (CommitAction commitAction : extensions.getObjects()) {
+      //         commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
+      //      }
    }
 
    /**

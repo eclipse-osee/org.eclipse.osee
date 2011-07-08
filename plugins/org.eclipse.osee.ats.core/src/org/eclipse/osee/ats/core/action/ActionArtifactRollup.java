@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.workflow;
+package org.eclipse.osee.ats.core.action;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,6 +16,9 @@ import java.util.Set;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.PriorityUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -50,7 +53,7 @@ public class ActionArtifactRollup {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
       }
       ChangeType changeType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = ActionManagerCore.getTeams(actionArt);
+      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeams(actionArt);
       if (teamArts.size() == 1) {
          changeType = ChangeTypeUtil.getChangeType(teamArts.iterator().next());
       } else {

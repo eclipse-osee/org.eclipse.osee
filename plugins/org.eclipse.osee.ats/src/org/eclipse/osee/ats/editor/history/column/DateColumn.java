@@ -25,7 +25,7 @@ public class DateColumn extends XViewerValueColumn {
    }
 
    public DateColumn() {
-      super("ats.history.Date", "Date", 120, SWT.LEFT, true, SortDataType.String, false, "");
+      super("ats.history.Date", "Date", 120, SWT.LEFT, true, SortDataType.Date, false, "");
    }
 
    /**

@@ -76,7 +76,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       userRole = new UserRole(Role.Reviewer, UserManager.getUserByName("Alex Kay"));
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "test transition");
       roleMgr.addOrUpdateUserRole(userRole);
-      roleMgr.saveToArtifact(peerRevArt, transaction);
+      roleMgr.saveToArtifact(transaction);
       transaction.execute();
 
       // assignee should be user roles
