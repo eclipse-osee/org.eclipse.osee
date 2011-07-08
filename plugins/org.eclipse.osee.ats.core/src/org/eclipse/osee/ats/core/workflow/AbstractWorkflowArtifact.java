@@ -90,37 +90,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected AbstractWorkflowArtifact parentAwa;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
-   private StateManager stateMgr;
-   private AtsLog atsLog;
-   private AtsNote atsNote;
+   private final StateManager stateMgr;
+   private final AtsLog atsLog;
+   private final AtsNote atsNote;
    private boolean inTransition = false;
    private boolean targetedErrorLogged = false;
 
    public AbstractWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-   }
-
-   @Override
-   public void onBirth() throws OseeCoreException {
-      super.onBirth();
-      if (getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, null) == null) {
-         if (getSoleAttributeValue(AtsAttributeTypes.CurrentState, null) == null) {
-            setSoleAttributeValue(AtsAttributeTypes.CurrentState, "");
-         }
-         if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
-            setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name());
-         }
-      }
-   }
-
-   @Override
-   public void onInitializationComplete() throws OseeCoreException {
-      super.onInitializationComplete();
-      initializeSMA();
-   }
-
-   @SuppressWarnings("unused")
-   protected void initializeSMA() throws OseeCoreException {
       stateMgr = new StateManager(this);
       atsLog = new AtsLog(new ArtifactLog(this));
       atsNote = new AtsNote(new ArtifactNote(this));

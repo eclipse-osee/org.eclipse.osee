@@ -76,9 +76,6 @@ public abstract class ArtifactFactory {
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded(true);
 
-      artifact.onBirth();
-
-      artifact.onInitializationComplete();
 
       if (Strings.isValid(artifactName)) {
          artifact.setName(artifactName);

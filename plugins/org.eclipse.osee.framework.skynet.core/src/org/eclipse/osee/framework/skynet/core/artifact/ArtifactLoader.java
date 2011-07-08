@@ -352,13 +352,8 @@ public final class ArtifactLoader {
             artifact.prepareForReload();
          }
       }
-
       AttributeLoader.loadAttributeData(queryId, artifacts, historical, allowDeleted, loadLevel);
       RelationLoader.loadRelationData(queryId, artifacts, historical, loadLevel);
-
-      for (Artifact artifact : artifacts) {
-         artifact.onInitializationComplete();
-      }
    }
 
    public static int getNewQueryId() {

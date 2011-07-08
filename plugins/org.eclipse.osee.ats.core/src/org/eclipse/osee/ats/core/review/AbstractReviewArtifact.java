@@ -45,13 +45,8 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
 
    public AbstractReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
+      actionableItemsDam = new ActionableItemManagerCore(this);
    }
-
-   @Override
-   public void onInitializationComplete() throws OseeCoreException {
-      super.onInitializationComplete();
-      initializeSMA();
-   };
 
    @Override
    public List<IBasicUser> getImplementers() throws OseeCoreException {
@@ -64,17 +59,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
          }
          return users;
       }
-   }
-
-   /**
-    * Reset managers for case where artifact is re-loaded/initialized
-    * 
-    * @see org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact#initialize()
-    */
-   @Override
-   protected void initializeSMA() throws OseeCoreException {
-      super.initializeSMA();
-      actionableItemsDam = new ActionableItemManagerCore(this);
    }
 
    @Override

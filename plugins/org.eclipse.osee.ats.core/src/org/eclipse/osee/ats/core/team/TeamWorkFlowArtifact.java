@@ -49,11 +49,12 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IATSStateMachineArtifact {
 
-   private ActionableItemManagerCore actionableItemsDam;
+   private final ActionableItemManagerCore actionableItemsDam;
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerAtsWorldRelation(AtsRelationTypes.TeamWorkflowToReview_Review);
+      actionableItemsDam = new ActionableItemManagerCore(this);
    }
 
    @Override
@@ -109,18 +110,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return super.getEditorTitle();
-   }
-
-   @Override
-   public void onInitializationComplete() throws OseeCoreException {
-      super.onInitializationComplete();
-      initializeSMA();
-   }
-
-   @Override
-   protected void initializeSMA() throws OseeCoreException {
-      super.initializeSMA();
-      actionableItemsDam = new ActionableItemManagerCore(this);
    }
 
    public ActionableItemManagerCore getActionableItemsDam() {
