@@ -57,9 +57,8 @@ public class SMAPromptChangeStatus {
                "Can not status a cancelled " + awa.getArtifactTypeName() + ".\n\nTransition out of cancelled first.";
             return new Result(error);
          }
-      }
-      // If task status is being changed, make sure tasks belong to current state
-      for (AbstractWorkflowArtifact awa : awas) {
+
+         // If task status is being changed, make sure tasks belong to current state
          if (awa.isOfType(AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) awa;
             if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
@@ -75,6 +74,7 @@ public class SMAPromptChangeStatus {
                      taskArt.getParentAWA().getStateMgr().getCurrentStateName()));
             }
          }
+
       }
       return Result.TrueResult;
    }

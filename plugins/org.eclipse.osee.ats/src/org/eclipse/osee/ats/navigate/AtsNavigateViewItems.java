@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -310,7 +310,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          return;
       }
       IExtension[] extensions = point.getExtensions();
-      Map<String, XNavigateItem> nameToNavItem = new HashMap<String, XNavigateItem>();
+      Map<String, XNavigateItem> nameToNavItem = new TreeMap<String, XNavigateItem>();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
          String classname = null;
@@ -334,12 +334,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             }
          }
       }
-      // Put in alpha order
-      String[] names = nameToNavItem.keySet().toArray(new String[nameToNavItem.size()]);
-      Arrays.sort(names);
-      for (String name : names) {
-         items.add(nameToNavItem.get(name));
-      }
+      items.addAll(nameToNavItem.values());
    }
 
    private static final class MultipleHridSearchOperationFactory implements IOperationFactory {

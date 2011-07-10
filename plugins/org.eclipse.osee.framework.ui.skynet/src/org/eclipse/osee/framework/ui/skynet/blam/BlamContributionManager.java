@@ -11,12 +11,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,20 +33,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
  */
 public class BlamContributionManager implements IXNavigateCommonItem {
 
-   private static Collection<AbstractBlam> blams;
+   private static TreeMap<String, AbstractBlam> blams;
 
-   public static Collection<AbstractBlam> getBlamOperationsNameSort() {
-      ArrayList<AbstractBlam> blamsSortedByName = new ArrayList<AbstractBlam>();
-      Map<String, AbstractBlam> blamMap = new HashMap<String, AbstractBlam>();
-      for (AbstractBlam blam : getBlamOperations()) {
-         blamMap.put(blam.getName(), blam);
-      }
-      String names[] = blamMap.keySet().toArray(new String[blamMap.keySet().size()]);
-      Arrays.sort(names);
-      for (String name : names) {
-         blamsSortedByName.add(blamMap.get(name));
-      }
-      return blamsSortedByName;
+   public static Map<String, AbstractBlam> getBlamMap() {
+      return blams;
    }
 
    public static Collection<AbstractBlam> getBlamOperations() {
@@ -55,9 +44,12 @@ public class BlamContributionManager implements IXNavigateCommonItem {
          ExtensionDefinedObjects<AbstractBlam> definedObjects =
             new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
                "Operation", "className");
-         blams = definedObjects.getObjects();
+         blams = new TreeMap<String, AbstractBlam>();
+         for (AbstractBlam blam : definedObjects.getObjects()) {
+            blams.put(blam.getName(), blam);
+         }
       }
-      return blams;
+      return blams.values();
    }
 
    private static void createCategories(String[] categoryElements, int index, XNavigateItem parentItem, Map<String, XNavigateItem> nameToParent) throws OseeCoreException {
@@ -93,7 +85,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
-      for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
+      for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
 
          // Create categories first (so can have them up top)
          for (String category : blamOperation.getCategories()) {
@@ -107,7 +99,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
          }
       }
       // Add blams to categories
-      for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
+      for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
          // If categories not specified, add to top level
          if (blamOperation.getCategories().isEmpty()) {
             new XNavigateItemBlam(blamOperationItems, blamOperation);

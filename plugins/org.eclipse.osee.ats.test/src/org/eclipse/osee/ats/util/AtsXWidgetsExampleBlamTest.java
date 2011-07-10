@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -40,16 +38,13 @@ public class AtsXWidgetsExampleBlamTest {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       XNavigateItemBlam item = null;
-      Collection<AbstractBlam> blams = BlamContributionManager.getBlamOperations();
-      List<String> namesIveSeenSoFar = new ArrayList<String>(blams.size());
-      boolean foundBlam = false;
-      for (AbstractBlam blam : blams) {
-         namesIveSeenSoFar.add(blam.getName());
-         if (blam.getName().equals(NAME_OF_ATS_ITEM)) {
-            item = new XNavigateItemBlam(new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM), blam);
-            foundBlam = true;
-            break;
-         }
+      Map<String, AbstractBlam> blams = BlamContributionManager.getBlamMap();
+
+      boolean foundBlam = blams.containsKey(NAME_OF_ATS_ITEM);
+      if (foundBlam) {
+         item =
+            new XNavigateItemBlam(new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM),
+               blams.get(NAME_OF_ATS_ITEM));
       }
 
       Assert.assertTrue(String.format("%s not found from list of provided Blams.", NAME_OF_ATS_ITEM), foundBlam);
