@@ -11,15 +11,16 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.junit.Assert.assertFalse;
-import java.util.Arrays;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
@@ -29,47 +30,45 @@ public class BranchManagerTest {
    public static String branchName = "BranchManagerTest";
    public static String branchReNamed = "BranchManagerTest-Renamed";
 
-   @Before
-   public void setUp() throws Exception {
+   private static Branch testBranch;
+
+   @BeforeClass
+   public static void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
-      cleanup();
-   }
 
-   @org.junit.Test
-   public void testRenameBranch() throws Exception {
-
-      Assert.assertEquals("Branch should not exist", 0, BranchManager.getBranchesByName(branchName).size());
-      Assert.assertEquals("Branch should not exist", 0, BranchManager.getBranchesByName(branchReNamed).size());
-
-      // create a new working branch
-      Branch branch =
+      testBranch =
          BranchManager.createWorkingBranch(BranchManager.getCommonBranch(), branchName,
             UserManager.getUser(SystemUser.OseeSystem));
-
-      Assert.assertNotNull(BranchManager.getBranch(branchName));
-      Assert.assertEquals("Branch should not exist", 0, BranchManager.getBranchesByName(branchReNamed).size());
-
-      branch.setName(branchReNamed);
-      BranchManager.persist(branch);
-
-      Assert.assertEquals("Branch should not exist", 0, BranchManager.getBranchesByName(branchName).size());
-      Assert.assertNotNull(BranchManager.getBranch(branchReNamed));
-
    }
 
-   @After
-   public void testCleanupPost() throws Exception {
+   @Test
+   public void testBranchRetrieval() throws Exception {
+      testBranch.equals(BranchManager.getBranch(branchName));
+   }
+
+   @Test
+   public void testRenameBranch() throws Exception {
+      Assert.assertEquals(branchName, testBranch.getName());
+
+      testBranch.setName(branchReNamed);
+      BranchManager.persist(testBranch);
+
+      testBranch = BranchManager.getBranch(branchReNamed);
+      Assert.assertEquals(branchReNamed, testBranch.getName());
+   }
+
+   @Test(expected = BranchDoesNotExist.class)
+   public void testLookForOldBranch() throws OseeCoreException {
+      Assert.assertNull("Old branch is found and should be renamed...", BranchManager.getBranch(branchName));
+   }
+
+   @AfterClass
+   public static void testCleanupPost() throws Exception {
       cleanup();
    }
 
    private static void cleanup() throws Exception {
-      if (BranchManager.getBranchesByName(branchName).size() > 0) {
-         FrameworkTestUtil.purgeWorkingBranches(Arrays.asList(branchName));
-      }
-      if (BranchManager.getBranchesByName(branchReNamed).size() > 0) {
-         FrameworkTestUtil.purgeWorkingBranches(Arrays.asList(branchReNamed));
-      }
+      BranchManager.purgeBranch(BranchManager.getBranch(branchReNamed));
    }
-
 }
