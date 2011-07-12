@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -29,21 +31,16 @@ public abstract class CommandHandler extends AbstractHandler {
 
    @Override
    public boolean isEnabled() {
-      if (AWorkbench.getActivePage() != null && !PlatformUI.getWorkbench().isClosing()) {
-         ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-         if (selectionProvider != null) {
-            ISelection selection = selectionProvider.getSelection();
-            try {
-               if (selection instanceof IStructuredSelection) {
-                  return isEnabledWithException((IStructuredSelection) selection);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
-            }
+      boolean result = false;
+      try {
+         IStructuredSelection selection = getCurrentSelection();
+         if (selection != null) {
+            result = isEnabledWithException(selection);
          }
+      } catch (Exception ex) {
+         OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
       }
-      return false;
+      return result;
    }
 
    public abstract boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException;
@@ -60,4 +57,22 @@ public abstract class CommandHandler extends AbstractHandler {
 
    public abstract Object executeWithException(ExecutionEvent event) throws OseeCoreException;
 
+   public static IStructuredSelection getCurrentSelection() throws Exception {
+      IStructuredSelection structuredSelection = null;
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      if (!workbench.isClosing() || !workbench.isStarting()) {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         if (page != null) {
+            ISelectionProvider selectionProvider = page.getActivePart().getSite().getSelectionProvider();
+
+            if (selectionProvider != null) {
+               ISelection selection = selectionProvider.getSelection();
+               if (selection instanceof IStructuredSelection) {
+                  structuredSelection = (IStructuredSelection) selection;
+               }
+            }
+         }
+      }
+      return structuredSelection;
+   }
 }
