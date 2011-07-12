@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.test.artifact.ArtifactPromptChangeTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.BlamXWidgetTest;
+import org.eclipse.osee.framework.ui.skynet.test.blam.ReplaceArtifactWithTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.operation.EmailGroupsBlamTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.operation.StringGuidsToArtifactListOperationTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ArtifactPasteConfigurationTest;
@@ -44,6 +45,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    WordImageCompareTest.class,
+   ReplaceArtifactWithTest.class,
    BlamXWidgetTest.class,
    EmailGroupsBlamTest.class,
    StringGuidsToArtifactListOperationTest.class,

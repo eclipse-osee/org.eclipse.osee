@@ -81,16 +81,14 @@ public class RelationLink {
       return getSide(artifact).oppositeSide();
    }
 
-   public void repplaceWithVersion(int gammaId) throws OseeCoreException {
+   /**
+    * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
+    * data in memory
+    */
+   public void replaceWithVersion(int gammaId) {
       modificationType = ModificationType.REPLACED_WITH_VERSION;
       this.gammaId = gammaId;
       setDirtyFlag(true);
-
-      //this could be in the calling object
-
-      Artifact artifact = getArtifactA() != null ? getArtifactA() : getArtifactB();
-      artifact.persist();
-      artifact.reloadAttributesAndRelations();
    }
 
    public int getAArtifactId() {

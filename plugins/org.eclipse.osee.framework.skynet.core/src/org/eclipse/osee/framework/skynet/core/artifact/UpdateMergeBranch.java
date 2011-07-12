@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -33,9 +32,7 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.skynet.core.artifact.revert.ArtifactRevert;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Theron Virgin
@@ -53,9 +50,9 @@ public class UpdateMergeBranch extends DbTransaction {
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", txs1.branch_id FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
 
    private static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
-      "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND attr.art_id = ?)";
+      "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.art_id = ?)";
    private static final String PURGE_BASELINE_RELATION_TRANS =
-      "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND (rel.a_art_id = ? or rel.b_art_id = ?))";
+      "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.branch_id = ? AND (rel.a_art_id = ? or rel.b_art_id = ?))";
    private static final String PURGE_BASELINE_ARTIFACT_TRANS =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND art.art_id = ?)";
 
@@ -246,16 +243,10 @@ public class UpdateMergeBranch extends DbTransaction {
       int baseTxId = branch.getBaseTransaction().getId();
       int branchId = branch.getId();
 
-      ArtifactRevert artifactRevert = new ArtifactRevert(branch, artId);
-      RevertOperation revertOperation =
-         new RevertOperation(artifactRevert, Activator.getInstance().getOseeDatabaseService(), "Revert Artifact",
-            Activator.PLUGIN_ID);
-      Operations.executeAsJob(revertOperation, false);
-
       //Remove from Baseline
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, baseTxId, branchId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_RELATION_TRANS, baseTxId, branchId, artId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, baseTxId, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
    }
 
 }

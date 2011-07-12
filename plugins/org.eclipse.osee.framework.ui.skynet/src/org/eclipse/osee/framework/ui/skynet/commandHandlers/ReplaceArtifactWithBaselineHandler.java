@@ -10,56 +10,56 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**
+ * @author Paul K. Waldfogel
  * @author Jeff C. Phillips
- * @author Theron Virgin
  */
-public class ReplaceWithBaseline extends AbstractHandler {
-   @SuppressWarnings("rawtypes")
-   private List<Attribute> attributes;
+public class ReplaceArtifactWithBaselineHandler extends AbstractHandler {
+   private List<Change> changes;
 
    @Override
    public Object execute(ExecutionEvent event) {
-      if (MessageDialog.openConfirm(Displays.getActiveShell(),
-         "Confirm Replace with baseline version of " + attributes.size() + " attributes.",
-         "All attribute changes selected will be replaced with thier baseline version.")) {
-         for (Attribute<?> attribute : attributes) {
-            try {
-               TransactionRecord baselineTransactionRecord = attribute.getArtifact().getBranch().getBaseTransaction();
-               for (Change change : ChangeManager.getChangesPerArtifact(attribute.getArtifact(),
-                  new NullProgressMonitor())) {
-                  if (change.getTxDelta().getEndTx().getId() == baselineTransactionRecord.getId()) {
-                     if (change.getItemKind().equals("Attribute") && change.getItemId() == attribute.getId()) {
-                        attribute.replaceWithVersion((int) change.getGamma());
-                     }
-                  }
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-            }
+      Set<Artifact> duplicateCheck = new HashSet<Artifact>();
+
+      for (Change change : changes) {
+         Artifact changeArtifact = change.getChangeArtifact();
+         if (!duplicateCheck.contains(changeArtifact)) {
+            duplicateCheck.add(changeArtifact);
          }
+
       }
+      replaceWithBaseline(duplicateCheck);
       return null;
+   }
+
+   private void replaceWithBaseline(Collection<Artifact> artifacts) {
+      if (MessageDialog.openConfirm(Displays.getActiveShell(),
+         "Confirm Replace with baseline version of " + artifacts.size() + " attributes.",
+         "All attribute and relation changes will be replaced with thier baseline version.")) {
+
+         Operations.executeAsJob(new ReplaceArtifactWithBaselineOperation(artifacts), true);
+      }
    }
 
    @Override
@@ -75,21 +75,21 @@ public class ReplaceWithBaseline extends AbstractHandler {
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            this.attributes = Handlers.processSelectionObjects(Attribute.class, structuredSelection);
+            changes = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
-            if (attributes.isEmpty()) {
+            if (changes.isEmpty()) {
                return false;
             }
 
-            for (Attribute<?> attribute : attributes) {
-               isEnabled = AccessControlManager.hasPermission(attribute.getArtifact(), PermissionEnum.WRITE);
+            for (Change change : changes) {
+               isEnabled = AccessControlManager.hasPermission(change.getChangeArtifact(), PermissionEnum.WRITE);
                if (!isEnabled) {
                   break;
                }
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
          return false;
       }
       return isEnabled;

@@ -27,6 +27,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -207,6 +208,11 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    private void createReplaceAttributeWithVersionMenuItem(Menu popupMenu) {
       final MenuItem replaceWithMenu = new MenuItem(popupMenu, SWT.CASCADE);
       replaceWithMenu.setText("&Replace Attribute with Version");
+      try {
+         replaceWithMenu.setEnabled(AccessControlManager.isOseeAdmin());
+      } catch (Exception ex) {
+         replaceWithMenu.setEnabled(false);
+      }
       popupMenu.addMenuListener(new MenuAdapter() {
 
          @Override
@@ -236,6 +242,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                         break;
                      }
                   }
+
+                  artifact.persist("Replace attribute with version");
+                  artifact.reloadAttributesAndRelations();
 
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

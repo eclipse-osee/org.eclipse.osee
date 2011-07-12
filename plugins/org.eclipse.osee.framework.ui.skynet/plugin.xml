@@ -647,7 +647,7 @@
         </with>
      </enabledWhen>
       </handler>
-				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
+				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceArtifactWithBaselineHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -706,7 +706,7 @@
      </enabledWhen>
   </handler>
   <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceWithBaseline"
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceAttributeWithBaseline"
         commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
      <enabledWhen>
         <with

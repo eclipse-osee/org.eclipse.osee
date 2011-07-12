@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifactTest;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.artifact.RelationOrderingTest;
-import org.eclipse.osee.framework.skynet.core.artifact.ReplaceWithAttributeTest;
+import org.eclipse.osee.framework.skynet.core.artifact.ReplaceAttributeWithTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryTestDemo;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFiltersTest;
@@ -58,7 +58,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    UserManagerTest.class,
-   ReplaceWithAttributeTest.class,
+   ReplaceAttributeWithTest.class,
    AttributePurgeTest.class,
    CrossBranchLinkTest.class,
    UpdateBookmarkIdTest.class,

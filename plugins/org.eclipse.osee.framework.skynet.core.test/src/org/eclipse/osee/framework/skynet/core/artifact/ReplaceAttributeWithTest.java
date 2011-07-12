@@ -15,15 +15,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ReplaceWithAttributeTest {
+public class ReplaceAttributeWithTest {
 
    @org.junit.Test
    public void testReplaceAttributeVersion() throws Exception {
@@ -31,16 +28,19 @@ public class ReplaceWithAttributeTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoSawBuilds.SAW_Bld_1,
             getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Name"));
-      artifact.persist(getClass().getSimpleName());
+      artifact.persist("Replace attribute test");
 
       Attribute<?> nameAttribute = artifact.getAttributes(CoreAttributeTypes.Name).iterator().next();
       int previousGamma = nameAttribute.getGammaId();
       String previousName = nameAttribute.getDisplayableString();
 
       nameAttribute.setFromString("New Name");
-      nameAttribute.getArtifact().persist(getClass().getSimpleName());
+      nameAttribute.getArtifact().persist("Replace attribute test");
 
       nameAttribute.replaceWithVersion(previousGamma);
+      artifact.persist("Replace attribute test");
+      artifact.reloadAttributesAndRelations();
+
       assertTrue(nameAttribute.getGammaId() == previousGamma);
       assertTrue(artifact.getAttributes(CoreAttributeTypes.Name).iterator().next().getValue().equals(previousName));
    }
