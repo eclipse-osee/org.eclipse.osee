@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -63,12 +65,17 @@ public abstract class CommandHandler extends AbstractHandler {
       if (!workbench.isClosing() || !workbench.isStarting()) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          if (page != null) {
-            ISelectionProvider selectionProvider = page.getActivePart().getSite().getSelectionProvider();
-
-            if (selectionProvider != null) {
-               ISelection selection = selectionProvider.getSelection();
-               if (selection instanceof IStructuredSelection) {
-                  structuredSelection = (IStructuredSelection) selection;
+            IWorkbenchPart part = page.getActivePart();
+            if (part != null) {
+               IWorkbenchSite site = part.getSite();
+               if (site != null) {
+                  ISelectionProvider selectionProvider = site.getSelectionProvider();
+                  if (selectionProvider != null) {
+                     ISelection selection = selectionProvider.getSelection();
+                     if (selection instanceof IStructuredSelection) {
+                        structuredSelection = (IStructuredSelection) selection;
+                     }
+                  }
                }
             }
          }

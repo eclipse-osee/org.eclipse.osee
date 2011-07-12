@@ -14,83 +14,80 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
-import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * @author Paul K. Waldfogel
  * @author Jeff C. Phillips
  */
-public class ReplaceArtifactWithBaselineHandler extends AbstractHandler {
+public class ReplaceArtifactWithBaselineHandler extends CommandHandler {
    private List<Change> changes;
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) {
       Set<Artifact> duplicateCheck = new HashSet<Artifact>();
 
       for (Change change : changes) {
          Artifact changeArtifact = change.getChangeArtifact();
-         if (!duplicateCheck.contains(changeArtifact)) {
-            duplicateCheck.add(changeArtifact);
-         }
-
+         duplicateCheck.add(changeArtifact);
       }
-      replaceWithBaseline(duplicateCheck);
+
+      Shell shell = HandlerUtil.getActiveShell(event);
+      boolean confirmed =
+         MessageDialog.openConfirm(shell,
+            "Confirm Replace with baseline version of " + duplicateCheck.size() + " attributes.",
+            "All attribute and relation changes will be replaced with thier baseline version.");
+
+      if (confirmed) {
+         scheduelReplaceWithBaseline(duplicateCheck);
+      }
       return null;
    }
 
-   private void replaceWithBaseline(Collection<Artifact> artifacts) {
-      if (MessageDialog.openConfirm(Displays.getActiveShell(),
-         "Confirm Replace with baseline version of " + artifacts.size() + " attributes.",
-         "All attribute and relation changes will be replaced with thier baseline version.")) {
+   private void scheduelReplaceWithBaseline(final Collection<Artifact> artifacts) {
+      IOperation operation = new ReplaceArtifactWithBaselineOperation(artifacts);
+      Operations.executeAsJob(operation, true, Job.LONG, new JobChangeAdapter() {
 
-         Operations.executeAsJob(new ReplaceArtifactWithBaselineOperation(artifacts), true);
-      }
+         @Override
+         public void done(IJobChangeEvent event) {
+            super.done(event);
+            IStatus status = event.getResult();
+            if (status.getSeverity() == IStatus.ERROR) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, status.getException());
+            }
+         }
+      });
    }
 
    @Override
-   public boolean isEnabled() {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-
+   public boolean isEnabledWithException(IStructuredSelection selection) throws OseeCoreException {
       boolean isEnabled = false;
-      try {
-         ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            changes = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
-
-            if (changes.isEmpty()) {
-               return false;
-            }
-
-            for (Change change : changes) {
-               isEnabled = AccessControlManager.hasPermission(change.getChangeArtifact(), PermissionEnum.WRITE);
-               if (!isEnabled) {
-                  break;
-               }
-            }
+      changes = Handlers.getArtifactChangesFromStructuredSelection(selection);
+      for (Change change : changes) {
+         isEnabled = AccessControlManager.hasPermission(change.getChangeArtifact(), PermissionEnum.WRITE);
+         if (!isEnabled) {
+            break;
          }
-      } catch (Exception ex) {
-         OseeLog.log(getClass(), Level.SEVERE, ex);
-         return false;
       }
       return isEnabled;
    }
