@@ -81,6 +81,18 @@ public class RelationLink {
       return getSide(artifact).oppositeSide();
    }
 
+   public void repplaceWithVersion(int gammaId) throws OseeCoreException {
+      modificationType = ModificationType.REPLACED_WITH_VERSION;
+      this.gammaId = gammaId;
+      setDirtyFlag(true);
+
+      //this could be in the calling object
+
+      Artifact artifact = getArtifactA() != null ? getArtifactA() : getArtifactB();
+      artifact.persist();
+      artifact.reloadAttributesAndRelations();
+   }
+
    public int getAArtifactId() {
       return aArtifactId;
    }

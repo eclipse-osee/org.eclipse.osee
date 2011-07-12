@@ -314,7 +314,11 @@ public final class SkynetTransaction extends AbstractOperation {
                relationEventType = RelationEventType.Deleted;
             }
          } else {
-            modificationType = ModificationType.MODIFIED;
+            if (link.getModificationType() == ModificationType.REPLACED_WITH_VERSION) {
+               modificationType = link.getModificationType();
+            } else {
+               modificationType = ModificationType.MODIFIED;
+            }
             relationEventType = RelationEventType.ModifiedRationale;
          }
       } else {
