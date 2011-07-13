@@ -41,6 +41,8 @@ public interface IOseeCache<T> {
 
    T getById(int typeId) throws OseeCoreException;
 
+   T getByGuid(String guid) throws OseeCoreException;
+
    Collection<T> getAllDirty() throws OseeCoreException;
 
    void storeAllModified() throws OseeCoreException;

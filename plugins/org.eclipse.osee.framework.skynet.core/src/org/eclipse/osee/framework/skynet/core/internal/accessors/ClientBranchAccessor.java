@@ -45,7 +45,6 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
    private final BranchFactory branchFactory;
 
    public ClientBranchAccessor(BranchFactory branchFactory, TransactionCache transactionCache) {
-      super();
       this.branchFactory = branchFactory;
       this.transactionCache = transactionCache;
    }

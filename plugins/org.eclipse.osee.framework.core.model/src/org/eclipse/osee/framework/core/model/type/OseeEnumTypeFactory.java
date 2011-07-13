@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public class OseeEnumTypeFactory implements IOseeTypeFactory {
 
-   public OseeEnumTypeFactory() {
-   }
-
    public OseeEnumType createEnumType(String guid, String name) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "osee enum type name");
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);

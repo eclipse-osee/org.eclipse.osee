@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -30,9 +30,9 @@ public class ArtifactTypeCacheUpdateResponse {
 
    private final List<ArtifactTypeRow> rows;
    private final Map<Integer, Integer[]> baseToSuper;
-   private final List<Triplet<Integer, Integer, Integer>> artAttrs;
+   private final List<Triplet<String, String, String>> artAttrs;
 
-   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer[]> baseToSuper, List<Triplet<Integer, Integer, Integer>> artAttrs) {
+   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer[]> baseToSuper, List<Triplet<String, String, String>> artAttrs) {
       this.rows = rows;
       this.baseToSuper = baseToSuper;
       this.artAttrs = artAttrs;
@@ -46,7 +46,7 @@ public class ArtifactTypeCacheUpdateResponse {
       return baseToSuper;
    }
 
-   public List<Triplet<Integer, Integer, Integer>> getAttributeTypes() {
+   public List<Triplet<String, String, String>> getAttributeTypes() {
       return artAttrs;
    }
 
@@ -58,7 +58,6 @@ public class ArtifactTypeCacheUpdateResponse {
       private StorageState storageState;
 
       protected ArtifactTypeRow(int id, String guid, String name, boolean isAbstract, StorageState storageState) {
-         super();
          this.id = id;
          this.guid = guid;
          this.name = name;
@@ -117,13 +116,14 @@ public class ArtifactTypeCacheUpdateResponse {
    public static ArtifactTypeCacheUpdateResponse fromCache(Collection<ArtifactType> types) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
-      List<Triplet<Integer, Integer, Integer>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer>>();
-      for (ArtifactType art : types) {
-         rows.add(new ArtifactTypeRow(art.getId(), art.getGuid(), art.getName(), art.isAbstract(),
-            art.getStorageState()));
+      List<Triplet<String, String, String>> artAttrs = new ArrayList<Triplet<String, String, String>>();
+      for (ArtifactType artType : types) {
+         rows.add(new ArtifactTypeRow(artType.getId(), artType.getGuid(), artType.getName(), artType.isAbstract(),
+            artType.getStorageState()));
 
-         Integer artId = art.getId();
-         Collection<ArtifactType> superTypes = art.getSuperArtifactTypes();
+         Integer artId = artType.getId();
+
+         Collection<ArtifactType> superTypes = artType.getSuperArtifactTypes();
          if (!superTypes.isEmpty()) {
             Integer[] intSuperTypes = new Integer[superTypes.size()];
             int index = 0;
@@ -133,11 +133,11 @@ public class ArtifactTypeCacheUpdateResponse {
             baseToSuper.put(artId, intSuperTypes);
          }
 
-         for (Entry<Branch, Collection<AttributeType>> entry : art.getLocalAttributeTypes().entrySet()) {
-            Integer branchId = entry.getKey().getId();
+         for (Entry<IOseeBranch, Collection<AttributeType>> entry : artType.getLocalAttributeTypes().entrySet()) {
+            IOseeBranch branch = entry.getKey();
             Collection<AttributeType> attrTypes = entry.getValue();
             for (AttributeType type : attrTypes) {
-               artAttrs.add(new Triplet<Integer, Integer, Integer>(artId, branchId, type.getId()));
+               artAttrs.add(new Triplet<String, String, String>(artType.getGuid(), branch.getGuid(), type.getGuid()));
             }
 
          }

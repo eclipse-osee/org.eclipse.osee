@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.message.internal.translation;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
@@ -98,12 +99,6 @@ public class SearchRequestTranslator implements ITranslator<SearchRequest> {
          }
       }
       return store;
-   }
-
-   private static final class BranchToken extends NamedIdentity implements IOseeBranch {
-      public BranchToken(String guid, String name) {
-         super(guid, name);
-      }
    }
 
    private static final class AttributeTypeFilter extends NamedIdentity implements IAttributeType {

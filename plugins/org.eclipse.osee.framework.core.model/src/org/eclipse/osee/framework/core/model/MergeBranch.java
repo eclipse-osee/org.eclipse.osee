@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.core.model;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -39,11 +40,11 @@ public final class MergeBranch extends Branch {
       return getFieldValue(BranchField.MERGE_BRANCH_DESTINATION);
    }
 
-   public void setSourceBranch(Branch branch) throws OseeCoreException {
+   public void setSourceBranch(IOseeBranch branch) throws OseeCoreException {
       setField(BranchField.MERGE_BRANCH_SOURCE, branch);
    }
 
-   public void setDestinationBranch(Branch branch) throws OseeCoreException {
+   public void setDestinationBranch(IOseeBranch branch) throws OseeCoreException {
       setField(BranchField.MERGE_BRANCH_DESTINATION, branch);
    }
 }

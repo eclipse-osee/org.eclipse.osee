@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -28,8 +29,8 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -195,11 +196,11 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
          XArtifactType modelArtifactType = getArtifactType(model, artifactType.getGuid());
 
-         Map<Branch, Collection<AttributeType>> types = artifactType.getLocalAttributeTypes();
+         Map<IOseeBranch, Collection<AttributeType>> types = artifactType.getLocalAttributeTypes();
          if (types != null) {
             List<XAttributeTypeRef> references = new ArrayList<XAttributeTypeRef>();
-            for (Entry<Branch, Collection<AttributeType>> entry : types.entrySet()) {
-               Branch branch = entry.getKey();
+            for (Entry<IOseeBranch, Collection<AttributeType>> entry : types.entrySet()) {
+               IOseeBranch branch = entry.getKey();
                Collection<AttributeType> attributeTypes = entry.getValue();
                if (attributeTypes != null) {
                   for (AttributeType attributeType : attributeTypes) {
@@ -209,7 +210,7 @@ public class OseeToXtextOperation extends AbstractOperation {
                      XAttributeType modelType = getAttributeType(model, attributeType.getGuid());
                      if (modelType != null) {
                         ref.setValidAttributeType(modelType);
-                        if (branch != null && !branch.getBranchType().isSystemRootBranch()) {
+                        if (branch != null && !branch.equals(CoreBranches.SYSTEM_ROOT)) {
                            ref.setBranchGuid(branch.getGuid());
                         }
                         references.add(ref);

@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum;
@@ -33,10 +35,10 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -114,7 +116,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private void handleXArtifactTypeCrossRef(XArtifactType xArtifactType) throws OseeCoreException {
       ArtifactType targetArtifactType = typeCache.getArtifactTypeCache().getByGuid(xArtifactType.getTypeGuid());
       translateSuperTypes(targetArtifactType, xArtifactType);
-      Map<Branch, Collection<AttributeType>> validAttributesPerBranch = getOseeAttributes(xArtifactType);
+      Map<IOseeBranch, Collection<AttributeType>> validAttributesPerBranch = getOseeAttributes(xArtifactType);
       targetArtifactType.setAllAttributeTypes(validAttributesPerBranch);
    }
 
@@ -131,17 +133,20 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
    }
 
-   private Map<Branch, Collection<AttributeType>> getOseeAttributes(XArtifactType xArtifactType) throws OseeCoreException {
-      Map<Branch, Collection<AttributeType>> validAttributes = new HashMap<Branch, Collection<AttributeType>>();
+   private Map<IOseeBranch, Collection<AttributeType>> getOseeAttributes(XArtifactType xArtifactType) throws OseeCoreException {
+      Map<IOseeBranch, Collection<AttributeType>> validAttributes =
+         new HashMap<IOseeBranch, Collection<AttributeType>>();
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
-         Branch branch = getAttributeBranch(xAttributeTypeRef);
+         IOseeBranch branch = getAttributeBranch(xAttributeTypeRef);
          AttributeType oseeAttributeType = typeCache.getAttributeTypeCache().getByGuid(xAttributeType.getTypeGuid());
          if (oseeAttributeType != null) {
-            if (validAttributes.get(branch) == null) {
-               validAttributes.put(branch, new HashSet<AttributeType>());
+            Collection<AttributeType> listOfAllowedAttributes = validAttributes.get(branch);
+            if (listOfAllowedAttributes == null) {
+               listOfAllowedAttributes = new HashSet<AttributeType>();
+               validAttributes.put(branch, listOfAllowedAttributes);
             }
-            validAttributes.get(branch).add(oseeAttributeType);
+            listOfAllowedAttributes.add(oseeAttributeType);
          } else {
             System.out.println(String.format("Type was null for \"%s\"", xArtifactType.getName()));
          }
@@ -149,12 +154,16 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       return validAttributes;
    }
 
-   private Branch getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) throws OseeCoreException {
+   private IOseeBranch getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) throws OseeCoreException {
       String branchGuid = xAttributeTypeRef.getBranchGuid();
-      if (branchGuid == null || branchCache.getByGuid(branchGuid) == null) {
-         return branchCache.getSystemRootBranch();
+      if (branchGuid == null) {
+         return CoreBranches.SYSTEM_ROOT;
       } else {
-         return branchCache.getByGuid(branchGuid);
+         IOseeBranch branch = branchCache.getByGuid(branchGuid);
+         if (branch == null) {
+            branch = new BranchToken(branchGuid, branchGuid);
+         }
+         return branch;
       }
    }
 

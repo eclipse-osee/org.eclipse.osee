@@ -118,7 +118,6 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    /**
     * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
     * the views because it is not a copy. This method exists to improve performance for subclasses
-    * 
     */
    protected synchronized Collection<T> getRawValues() throws OseeCoreException {
       ensurePopulated();
@@ -229,6 +228,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       return types.iterator().next();
    }
 
+   @Override
    public T getByGuid(String guid) throws OseeCoreException {
       ensurePopulated();
       if (!GUID.isValid(guid)) {

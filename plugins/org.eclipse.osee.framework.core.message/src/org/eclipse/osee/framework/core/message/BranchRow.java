@@ -31,7 +31,6 @@ public final class BranchRow {
    }
 
    public BranchRow(int branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
-      super();
       this.branchId = branchId;
       this.branchGuid = branchGuid;
       this.branchName = branchName;

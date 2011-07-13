@@ -41,11 +41,11 @@ public final class TranslationUtil {
       store.put(key.name(), arrayMapToStore(map));
    }
 
-   public static void loadTripletList(List<Triplet<Integer, Integer, Integer>> data, PropertyStore store, Enum<?> key) {
+   public static void loadTripletList(List<Triplet<String, String, String>> data, PropertyStore store, Enum<?> key) {
       storeToTripletList(data, store.getPropertyStore(key.name()));
    }
 
-   public static void putTripletList(PropertyStore store, Enum<?> key, List<Triplet<Integer, Integer, Integer>> list) {
+   public static void putTripletList(PropertyStore store, Enum<?> key, List<Triplet<String, String, String>> list) {
       store.put(key.name(), tripletListToStore(list));
    }
 
@@ -106,25 +106,18 @@ public final class TranslationUtil {
       }
    }
 
-   private static void storeToTripletList(List<Triplet<Integer, Integer, Integer>> data, PropertyStore innerStore) {
+   private static void storeToTripletList(List<Triplet<String, String, String>> data, PropertyStore innerStore) {
       for (String strKey : innerStore.arrayKeySet()) {
          String[] value = innerStore.getArray(strKey);
-         Integer first = Integer.valueOf(value[0]);
-         Integer second = Integer.valueOf(value[1]);
-         Integer third = Integer.valueOf(value[2]);
-         data.add(new Triplet<Integer, Integer, Integer>(first, second, third));
+         data.add(new Triplet<String, String, String>(value[0], value[1], value[2]));
       }
    }
 
-   private static PropertyStore tripletListToStore(List<Triplet<Integer, Integer, Integer>> list) {
+   private static PropertyStore tripletListToStore(List<Triplet<String, String, String>> list) {
       PropertyStore innerStore = new PropertyStore();
       int index = 0;
-      for (Triplet<Integer, Integer, Integer> entry : list) {
-         String[] data = new String[3];
-         data[0] = String.valueOf(entry.getFirst());
-         data[1] = String.valueOf(entry.getSecond());
-         data[2] = String.valueOf(entry.getThird());
-         innerStore.put(String.valueOf(index), data);
+      for (Triplet<String, String, String> entry : list) {
+         innerStore.put(String.valueOf(index), new String[] {entry.getFirst(), entry.getSecond(), entry.getThird()});
          index++;
       }
       return innerStore;

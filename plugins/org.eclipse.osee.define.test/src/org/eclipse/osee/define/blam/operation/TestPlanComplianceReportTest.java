@@ -44,7 +44,7 @@ public final class TestPlanComplianceReportTest {
    private static final String EXPECTED_OSEE_ERROR_STYLE = "    <Cell ss:StyleID=\"OseeErrorStyle\">";
    private static final String EXPECTED_OSEE_BOLD_STYLE = "    <Cell ss:StyleID=\"OseeBoldStyle\">";
    private static final String EXPECTED_MULTIPLE_RESULTS_IN_1_CELL = //
-      "    <Cell><Data ss:Type=\"String\">Sample_Test_Result_0.pdf&#10;Sample_Test_Result_1.pdf</Data></Cell>";
+      "    <Cell><Data ss:Type=\"String\">Sample_Test_Result_0&#10;Sample_Test_Result_1</Data></Cell>";
 
    private static SevereLoggingMonitor monitorLog;
    private final TestPlanComplianceReport testCompReport = new TestPlanComplianceReport();
@@ -109,6 +109,7 @@ public final class TestPlanComplianceReportTest {
       buildTest(1, TestStatusEnum.COMPLETED_PASSED_CODE, 2);
       Assert.assertTrue("All test result files should be in 1 cell",
          resultBuffer.toString().contains(EXPECTED_MULTIPLE_RESULTS_IN_1_CELL));
+      new PurgeArtifacts(dummyArtifactList).execute();
    }
 
    @BeforeClass
@@ -149,7 +150,6 @@ public final class TestPlanComplianceReportTest {
             Artifact testResult =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWML, DemoSawBuilds.SAW_Bld_1,
                   "Sample_Test_Result_" + j);
-            testResult.setSoleAttributeValue(CoreAttributeTypes.Extension, "pdf");
             testProcedure.addRelation(CoreRelationTypes.Test_Unit_Result__Test_Result, testResult);
             testProcedure.persist();
          }

@@ -599,6 +599,10 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+      if (!isAttributeTypeValid(attributeType)) {
+         throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
+            attributeType, getArtifactTypeName());
+      }
       Attribute<T> attribute = getSoleAttribute(attributeType);
       if (attribute == null) {
          attribute = initializeAttribute(attributeType, ModificationType.NEW, true, true);
@@ -1331,7 +1335,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
 
    private void copyAttributes(Artifact artifact, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (!excudeAttributeTypes.contains(attribute) && isCopyAllowed(attribute)) {
+         if (!excudeAttributeTypes.contains(attribute) && isCopyAllowed(attribute) && artifact.isAttributeTypeValid(attribute.getAttributeType())) {
             artifact.addAttribute(attribute.getAttributeType(), attribute.getValue());
          }
       }

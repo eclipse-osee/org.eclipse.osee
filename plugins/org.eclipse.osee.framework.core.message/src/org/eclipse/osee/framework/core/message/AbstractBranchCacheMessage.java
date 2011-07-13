@@ -27,7 +27,7 @@ public abstract class AbstractBranchCacheMessage {
    private final Map<Integer, Integer> branchToSourceTx;
    private final Map<Integer, Integer> branchToAssocArt;
    private final Map<Integer, String[]> branchToAliases;
-   private final List<Triplet<Integer, Integer, Integer>> srcDestMerge;
+   private final List<Triplet<String, String, String>> srcDestMerge;
 
    protected AbstractBranchCacheMessage() {
       this.rows = new ArrayList<BranchRow>();
@@ -36,7 +36,7 @@ public abstract class AbstractBranchCacheMessage {
       this.branchToSourceTx = new HashMap<Integer, Integer>();
       this.branchToAssocArt = new HashMap<Integer, Integer>();
       this.branchToAliases = new HashMap<Integer, String[]>();
-      this.srcDestMerge = new ArrayList<Triplet<Integer, Integer, Integer>>();
+      this.srcDestMerge = new ArrayList<Triplet<String, String, String>>();
    }
 
    public List<BranchRow> getBranchRows() {
@@ -63,7 +63,7 @@ public abstract class AbstractBranchCacheMessage {
       return branchToAliases;
    }
 
-   public List<Triplet<Integer, Integer, Integer>> getMergeBranches() {
+   public List<Triplet<String, String, String>> getMergeBranches() {
       return srcDestMerge;
    }
 

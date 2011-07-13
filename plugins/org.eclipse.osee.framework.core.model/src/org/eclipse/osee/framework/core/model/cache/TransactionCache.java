@@ -114,6 +114,11 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    }
 
    @Override
+   public TransactionRecord getByGuid(String guid) throws OseeCoreException {
+      throw new OseeStateException("TransactionCache.getByGuid() is not implemented...");
+   }
+
+   @Override
    public OseeCacheEnum getCacheId() {
       return cacheId;
    }

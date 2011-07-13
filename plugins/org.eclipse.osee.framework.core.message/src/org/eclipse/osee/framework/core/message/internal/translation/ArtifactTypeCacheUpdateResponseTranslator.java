@@ -38,7 +38,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
    public ArtifactTypeCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
-      List<Triplet<Integer, Integer, Integer>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer>>();
+      List<Triplet<String, String, String>> artAttrs = new ArrayList<Triplet<String, String, String>>();
 
       int rowCount = store.getInt(Fields.ITEM_COUNT.name());
       for (int index = 0; index < rowCount; index++) {

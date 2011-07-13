@@ -22,7 +22,6 @@ public class BranchCacheStoreRequest extends AbstractBranchCacheMessage {
    private boolean isServerUpdateMessage;
 
    public BranchCacheStoreRequest() {
-      super();
       this.isServerUpdateMessage = false;
    }
 

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
@@ -41,7 +42,6 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
    private final ArtifactTypeFactory artifactTypeFactory;
 
    public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
-      super();
       this.artifactTypeFactory = artifactTypeFactory;
       this.attrCache = attrCache;
       this.branchCache = branchCache;
@@ -85,21 +85,21 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
          baseType.setSuperTypes(superTypes);
       }
 
-      CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> attrs =
-         new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
+      CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>> attrs =
+         new CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>>();
 
-      for (Triplet<Integer, Integer, Integer> entry : response.getAttributeTypes()) {
-         ArtifactType key1 = cache.getById(entry.getFirst());
-         Branch key2 = branchCache.getById(entry.getSecond());
+      for (Triplet<String, String, String> entry : response.getAttributeTypes()) {
+         ArtifactType key1 = cache.getByGuid(entry.getFirst());
+         IOseeBranch key2 = branchCache.getByGuid(entry.getSecond());
          Collection<AttributeType> types = attrs.get(key1, key2);
          if (types == null) {
             types = new HashSet<AttributeType>();
             attrs.put(key1, key2, types);
          }
-         types.add(attrCache.getById(entry.getThird()));
+         types.add(attrCache.getByGuid(entry.getThird()));
       }
 
-      for (Entry<Pair<ArtifactType, Branch>, Collection<AttributeType>> entry : attrs.entrySet()) {
+      for (Entry<Pair<ArtifactType, IOseeBranch>, Collection<AttributeType>> entry : attrs.entrySet()) {
          entry.getKey().getFirst().setAttributeTypes(entry.getValue(), entry.getKey().getSecond());
       }
       return updatedItems;

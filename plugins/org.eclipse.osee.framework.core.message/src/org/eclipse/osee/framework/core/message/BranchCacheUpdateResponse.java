@@ -20,10 +20,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
  */
 public class BranchCacheUpdateResponse extends AbstractBranchCacheMessage {
 
-   public BranchCacheUpdateResponse() {
-      super();
-   }
-
    public static BranchCacheUpdateResponse fromCache(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
       BranchCacheUpdateResponse response = new BranchCacheUpdateResponse();
       BranchCacheUpdateUtil.loadFromCache(response, types);

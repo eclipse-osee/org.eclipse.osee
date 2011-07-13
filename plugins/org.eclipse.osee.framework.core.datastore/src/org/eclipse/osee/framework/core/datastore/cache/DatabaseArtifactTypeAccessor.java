@@ -18,13 +18,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -61,9 +62,9 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       "delete from osee_artifact_type_inheritance where art_type_id = ?";
 
    private static final String SELECT_ARTIFACT_TYPE_ATTRIBUTES =
-      "select * from osee_artifact_type_attributes order by art_type_id, branch_id, attr_type_id";
+      "select * from osee_artifact_type_attributes order by art_type_id, branch_guid, attr_type_id";
    private static final String INSERT_ARTIFACT_TYPE_ATTRIBUTES =
-      "insert into osee_artifact_type_attributes (art_type_id, attr_type_id, branch_id) VALUES (?, ?, ?)";
+      "insert into osee_artifact_type_attributes (art_type_id, attr_type_id, branch_guid) VALUES (?, ?, ?)";
    private static final String DELETE_ARTIFACT_TYPE_ATTRIBUTES =
       "delete from osee_artifact_type_attributes where art_type_id = ?";
 
@@ -156,20 +157,24 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
    }
 
    private void loadAllTypeValidity(ArtifactTypeCache cache) throws OseeCoreException {
-      CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> typeValidity =
-         new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
+      CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>> typeValidity =
+         new CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>>();
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_ARTIFACT_TYPE_ATTRIBUTES);
          while (chStmt.next()) {
             try {
                ArtifactType artifactType = cache.getById(chStmt.getInt("art_type_id"));
-               Branch branch = branchCache.getById(chStmt.getInt("branch_id"));
+               String branchGuid = chStmt.getString("branch_guid");
+               IOseeBranch branchToken = branchCache.getByGuid(branchGuid);
+               if (branchToken == null) {
+                  branchToken = new BranchToken(branchGuid, branchGuid);
+               }
                AttributeType attributeType = attributeCache.getById(chStmt.getInt("attr_type_id"));
-               Collection<AttributeType> attributes = typeValidity.get(artifactType, branch);
+               Collection<AttributeType> attributes = typeValidity.get(artifactType, branchToken);
                if (attributes == null) {
                   attributes = new HashSet<AttributeType>();
-                  typeValidity.put(artifactType, branch, attributes);
+                  typeValidity.put(artifactType, branchToken, attributes);
                }
                attributes.add(attributeType);
             } catch (OseeCoreException ex) {
@@ -179,9 +184,9 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       } finally {
          chStmt.close();
       }
-      for (Entry<Pair<ArtifactType, Branch>, Collection<AttributeType>> entry : typeValidity.entrySet()) {
+      for (Entry<Pair<ArtifactType, IOseeBranch>, Collection<AttributeType>> entry : typeValidity.entrySet()) {
          try {
-            Pair<ArtifactType, Branch> key = entry.getKey();
+            Pair<ArtifactType, IOseeBranch> key = entry.getKey();
             key.getFirst().setAttributeTypes(entry.getValue(), key.getSecond());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -253,12 +258,12 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (ArtifactType artifactType : types) {
          deleteData.add(new Object[] {artifactType.getId()});
-         Map<Branch, Collection<AttributeType>> entries = artifactType.getLocalAttributeTypes();
+         Map<IOseeBranch, Collection<AttributeType>> entries = artifactType.getLocalAttributeTypes();
          if (entries != null) {
-            for (Entry<Branch, Collection<AttributeType>> entry : entries.entrySet()) {
-               Branch branch = entry.getKey();
+            for (Entry<IOseeBranch, Collection<AttributeType>> entry : entries.entrySet()) {
+               IOseeBranch branch = entry.getKey();
                for (AttributeType attributeType : entry.getValue()) {
-                  insertData.add(new Object[] {artifactType.getId(), attributeType.getId(), branch.getId()});
+                  insertData.add(new Object[] {artifactType.getId(), attributeType.getId(), branch.getGuid()});
                }
             }
          }
