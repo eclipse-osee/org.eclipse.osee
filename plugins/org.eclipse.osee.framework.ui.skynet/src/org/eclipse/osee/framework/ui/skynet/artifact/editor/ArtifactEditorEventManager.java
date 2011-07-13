@@ -137,7 +137,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
          public void run() {
             for (IArtifactEditorEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
-                  if (branchEvent.getEventType() == BranchEventType.Committed) {
+                  if (branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed) {
                      if (handler.getArtifactFromEditorInput().getBranch().getGuid() == branchEvent.getBranchGuid()) {
                         handler.closeEditor();
                      }

@@ -28,7 +28,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
       SortDataType.String, false, null);
    public static XViewerColumn Merge_Col = new XViewerColumn("osee.commit.merge", "Merge Branch Exists", 30, SWT.LEFT,
       true, SortDataType.String, false, "Will show merge icon if merge branch exists");
-   public static XViewerColumn Dest_Branch_Col = new XViewerColumn("osee.commit.name", "Destination Branch", 450,
+   public static XViewerColumn Dest_Branch_Col = new XViewerColumn("osee.commit.name", "Destination Branch", 200,
       SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Version_Col = new XViewerColumn("osee.commit.shortName", "Destination Version", 200,
       SWT.LEFT, true, SortDataType.String, false, null);

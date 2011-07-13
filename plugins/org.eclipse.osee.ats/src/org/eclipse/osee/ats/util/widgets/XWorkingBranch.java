@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -83,12 +82,30 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private Button lockBranchButton;
    private XWorkingBranchEnablement enablement;
 
-   private Composite bComp;
+   private Composite buttonComp;
 
    public static enum BranchStatus {
-      Not_Started,
-      Changes_InProgress,
-      Changes_NotPermitted
+      Not_Started("No Working Branch", false),
+      Changes_InProgress("Changes In Progress", true),
+      Changes_NotPermitted__BranchCommitted("Branch Committed - No Changes Permitted", false),
+      Changes_NotPermitted__CreationInProgress("Branch Being Created - No Changes Permitted", false),
+      Changes_NotPermitted__CommitInProgress("Branch Being Committed - No Changes Permitted", false);
+
+      private final String displayName;
+      private final boolean changesPermitted;
+
+      private BranchStatus(String displayName, boolean changesPermitted) {
+         this.displayName = displayName;
+         this.changesPermitted = changesPermitted;
+      }
+
+      public String getDisplayName() {
+         return displayName;
+      }
+
+      public boolean isChangesPermitted() {
+         return changesPermitted;
+      }
    }
    public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId();
 
@@ -107,27 +124,38 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       if (horizontalSpan < 2) {
          horizontalSpan = 2;
       }
-      if (!getLabel().equals("")) {
-         labelWidget = new Label(parent, SWT.NONE);
-      }
-
-      bComp = new Composite(parent, SWT.NONE);
-      bComp.setLayout(new GridLayout(6, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      Composite mainComp = new Composite(parent, SWT.NONE);
+      mainComp.setLayout(new GridLayout(1, false));
+      mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
-         toolkit.adapt(bComp);
+         toolkit.adapt(mainComp);
+      }
+      if (!getLabel().equals("")) {
+         labelWidget = new Label(mainComp, SWT.NONE);
+         labelWidget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       }
 
-      createBranchButton = createNewButton(bComp);
+      buttonComp = new Composite(mainComp, SWT.NONE);
+      buttonComp.setLayout(new GridLayout(6, false));
+      buttonComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (toolkit != null) {
+         toolkit.adapt(buttonComp);
+      }
+
+      createBranchButton = createNewButton(buttonComp);
       createBranchButton.setToolTipText("Create Working Branch");
       createBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
+            enablement.disableAll();
+            refreshEnablement();
             AtsBranchManager.createWorkingBranch(teamArt, null, true);
+            enablement.refresh();
+            refreshEnablement();
          }
       });
 
-      showArtifactExplorer = createNewButton(bComp);
+      showArtifactExplorer = createNewButton(buttonComp);
       showArtifactExplorer.setToolTipText("Show Artifact Explorer");
       showArtifactExplorer.addListener(SWT.Selection, new Listener() {
          @Override
@@ -140,7 +168,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          }
       });
 
-      showChangeReport = createNewButton(bComp);
+      showChangeReport = createNewButton(buttonComp);
       showChangeReport.setToolTipText("Show Change Report");
       showChangeReport.addListener(SWT.Selection, new Listener() {
          @Override
@@ -149,17 +177,20 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          }
       });
 
-      deleteBranchButton = createNewButton(bComp);
+      deleteBranchButton = createNewButton(buttonComp);
       deleteBranchButton.setToolTipText("Delete Working Branch");
       deleteBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
+            enablement.disableAll();
+            refreshEnablement();
             AtsBranchManager.deleteWorkingBranch(teamArt, true);
-            refresh();
+            enablement.refresh();
+            refreshEnablement();
          }
       });
 
-      favoriteBranchButton = createNewButton(bComp);
+      favoriteBranchButton = createNewButton(buttonComp);
       favoriteBranchButton.setToolTipText("Toggle Working Branch as Favorite");
       favoriteBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
@@ -168,7 +199,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          }
       });
 
-      lockBranchButton = createNewButton(bComp);
+      lockBranchButton = createNewButton(buttonComp);
       lockBranchButton.setToolTipText("Toggle Working Branch Access Control");
       lockBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
@@ -290,21 +321,21 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    }
 
    public void refreshLabel() {
-      if (!getLabel().equals("")) {
+      if (labelWidget != null && Widgets.isAccessible(labelWidget) && !getLabel().equals("")) {
          try {
             Branch workBranch = enablement.getWorkingBranch();
-            if (workBranch != null && workBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS) {
-               labelWidget.setText("Creation In Progress");
-            } else if (workBranch != null && workBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS) {
-               labelWidget.setText("Commit In Progress");
-            } else {
-               labelWidget.setText(getLabel() + ": " + (workBranch != null ? workBranch.getShortName() : "") + " " + enablement.getStatus().name());
-            }
+            String labelStr =
+               getLabel() + ": " + enablement.getStatus().getDisplayName() + (workBranch != null ? " - " + workBranch.getShortName() : "");
+            labelWidget.setText(labelStr);
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
          if (getToolTip() != null) {
             labelWidget.setToolTipText(getToolTip());
+         }
+         labelWidget.getParent().redraw();
+         if (getManagedForm() != null) {
+            getManagedForm().reflow(true);
          }
       }
    }
@@ -345,13 +376,18 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
-            enablement.refresh();
+            try {
+               enablement.refresh();
+               enablement.getStatus();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
                   if (Widgets.isAccessible(createBranchButton)) {
-                     refreshLabel();
                      refreshEnablement();
+                     refreshLabel();
                      refreshLockImage();
                   }
                }

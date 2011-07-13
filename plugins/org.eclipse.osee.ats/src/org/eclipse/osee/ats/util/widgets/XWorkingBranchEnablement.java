@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -21,8 +22,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 public class XWorkingBranchEnablement {
    boolean populated = false;
+   boolean workingBranchCreationInProgress = false;
+   boolean workingBranchCommitInProgress = false;
    boolean workingBranchInWork = false;
    boolean committedBranchExists = false;
+   boolean disableAll = false;
    Branch workingBranch = null;
    private final TeamWorkFlowArtifact teamArt;
 
@@ -31,9 +35,12 @@ public class XWorkingBranchEnablement {
    }
 
    public boolean isCreateBranchButtonEnabled() {
+      if (disableAll) {
+         return false;
+      }
       try {
          ensurePopulated();
-         return !workingBranchInWork && !committedBranchExists;
+         return !workingBranchCommitInProgress && !workingBranchCreationInProgress && !workingBranchInWork && !committedBranchExists;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -42,9 +49,12 @@ public class XWorkingBranchEnablement {
    }
 
    public boolean isShowArtifactExplorerButtonEnabled() {
+      if (disableAll) {
+         return false;
+      }
       try {
          ensurePopulated();
-         return workingBranch != null && !getStatus().equals(BranchStatus.Changes_NotPermitted);
+         return workingBranch != null && getStatus().isChangesPermitted();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -52,6 +62,9 @@ public class XWorkingBranchEnablement {
    }
 
    public boolean isShowChangeReportButtonEnabled() {
+      if (disableAll) {
+         return false;
+      }
       try {
          ensurePopulated();
          return workingBranchInWork || committedBranchExists;
@@ -62,6 +75,9 @@ public class XWorkingBranchEnablement {
    }
 
    public boolean isDeleteBranchButtonEnabled() {
+      if (disableAll) {
+         return false;
+      }
       try {
          ensurePopulated();
          return workingBranchInWork && !committedBranchExists;
@@ -72,6 +88,9 @@ public class XWorkingBranchEnablement {
    }
 
    public boolean isFavoriteBranchButtonEnabled() {
+      if (disableAll) {
+         return false;
+      }
       try {
          ensurePopulated();
          return workingBranchInWork;
@@ -83,26 +102,37 @@ public class XWorkingBranchEnablement {
 
    public synchronized void refresh() {
       populated = false;
+      disableAll = false;
    }
 
    public BranchStatus getStatus() throws OseeCoreException {
       ensurePopulated();
-      if (teamArt != null && committedBranchExists) {
-         return BranchStatus.Changes_NotPermitted;
-      } else if (teamArt != null && workingBranchInWork) {
-         return BranchStatus.Changes_InProgress;
-      } else {
-         return BranchStatus.Not_Started;
+      if (teamArt != null) {
+         if (workingBranchCreationInProgress) {
+            return BranchStatus.Changes_NotPermitted__CreationInProgress;
+         } else if (workingBranchCommitInProgress) {
+            return BranchStatus.Changes_NotPermitted__CommitInProgress;
+         } else if (committedBranchExists) {
+            return BranchStatus.Changes_NotPermitted__BranchCommitted;
+         } else if (workingBranchInWork) {
+            return BranchStatus.Changes_InProgress;
+         }
       }
+      return BranchStatus.Not_Started;
    }
 
    private synchronized void ensurePopulated() throws OseeCoreException {
       if (populated) {
          return;
       }
+      workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt, true);
+      workingBranchCreationInProgress =
+         teamArt.isWorkingBranchCreationInProgress() || (workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS);
+      workingBranchCommitInProgress =
+         teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
       workingBranchInWork = AtsBranchManagerCore.isWorkingBranchInWork(teamArt);
       committedBranchExists = AtsBranchManagerCore.isCommittedBranchExists(teamArt);
-      workingBranch = teamArt.getWorkingBranch();
+      disableAll = workingBranchCommitInProgress;
       populated = true;
    }
 
@@ -110,4 +140,15 @@ public class XWorkingBranchEnablement {
       return workingBranch;
    }
 
+   public void disableAll() {
+      disableAll = true;
+   }
+
+   @Override
+   public String toString() {
+      return String.format(
+         "disableAll [%s] CreateInProgress [%s] CommitInProgress [%s] InWorkBranch [%s] CommittedBranch [%s] Branch [%s]",
+         disableAll, workingBranchCreationInProgress, workingBranchCommitInProgress, workingBranchInWork,
+         committedBranchExists, workingBranch);
+   }
 }

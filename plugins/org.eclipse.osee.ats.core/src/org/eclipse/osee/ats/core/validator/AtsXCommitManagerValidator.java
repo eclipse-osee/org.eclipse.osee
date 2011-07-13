@@ -29,8 +29,8 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
       WidgetResult result = WidgetResult.Valid;
       if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
          try {
-            if (provider instanceof TeamWorkFlowArtifact) {
-               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) provider;
+            if (provider instanceof ArtifactValueProvider && ((ArtifactValueProvider) provider).getArtifact() instanceof TeamWorkFlowArtifact) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ((ArtifactValueProvider) provider).getArtifact();
                if (!AtsBranchManagerCore.isAllObjectsToCommitToConfigured(teamArt)) {
                   return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
                      "All branches must be configured and committed.");

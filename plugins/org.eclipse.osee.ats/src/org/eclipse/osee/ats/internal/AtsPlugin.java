@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.internal;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -41,6 +42,7 @@ public class AtsPlugin implements BundleActivator {
    public AtsPlugin() {
       super();
       AtsCacheManager.start();
+      AtsBranchManager.start();
       try {
          AtsNotificationManager.start(OseeNotificationManager.getInstance(),
             ClientSessionManager.isProductionDataStore());
@@ -61,6 +63,7 @@ public class AtsPlugin implements BundleActivator {
 
    @Override
    public void stop(BundleContext context) throws Exception {
+      AtsBranchManager.stop();
       OsgiUtil.close(tracker);
       OsgiUtil.close(service1);
       OsgiUtil.close(service2);

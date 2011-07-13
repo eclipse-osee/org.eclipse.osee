@@ -28,8 +28,8 @@ public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException {
       WidgetResult result = WidgetResult.Valid;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
-         if (provider instanceof TeamWorkFlowArtifact) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) provider;
+         if (provider instanceof ArtifactValueProvider && ((ArtifactValueProvider) provider).getArtifact() instanceof TeamWorkFlowArtifact) {
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ((ArtifactValueProvider) provider).getArtifact();
             boolean checked = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, false);
             if (checked) {
                String desc = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, "");

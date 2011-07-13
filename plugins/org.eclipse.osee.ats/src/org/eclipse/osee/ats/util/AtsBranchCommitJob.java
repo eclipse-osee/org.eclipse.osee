@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Date;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,12 +26,11 @@ import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -107,35 +105,32 @@ public class AtsBranchCommitJob extends Job {
             }
          }
 
-         commit(commitPopup, workflowWorkingBranch, destinationBranch, archiveWorkingBranch);
+         boolean branchCommitted = false;
+         ConflictManagerExternal conflictManager =
+            new ConflictManagerExternal(destinationBranch, workflowWorkingBranch);
+
+         if (commitPopup) {
+            branchCommitted = CommitHandler.commitBranch(conflictManager, archiveWorkingBranch);
+         } else {
+            BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, true);
+            branchCommitted = true;
+         }
+         if (branchCommitted) {
+            // Create reviews as necessary
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
+            AtsBranchManager.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
+               UserManager.getUser(SystemUser.OseeSystem), transaction);
+            transaction.execute();
+         }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, Strings.truncate(ex.getLocalizedMessage(), 250, true),
+            ex);
       } finally {
          if (workflowWorkingBranch != null) {
             AtsBranchManagerCore.branchesInCommit.remove(workflowWorkingBranch);
          }
       }
       return Status.OK_STATUS;
-   }
-
-   private void commit(boolean commitPopup, IOseeBranch sourceBranch, IOseeBranch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
-      boolean branchCommitted = false;
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
-
-      if (commitPopup) {
-         branchCommitted = CommitHandler.commitBranch(conflictManager, archiveWorkingBranch);
-      } else {
-         BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, true);
-         branchCommitted = true;
-      }
-      if (branchCommitted) {
-         // Create reviews as necessary
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-         AtsBranchManager.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
-            UserManager.getUser(SystemUser.OseeSystem), transaction);
-         transaction.execute();
-      }
    }
 
 }

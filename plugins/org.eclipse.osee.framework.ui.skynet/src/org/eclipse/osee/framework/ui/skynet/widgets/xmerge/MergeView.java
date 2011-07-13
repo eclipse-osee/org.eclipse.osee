@@ -850,6 +850,9 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          @Override
          public void run() {
             switch (branchEvent.getEventType()) {
+               case Deleting:
+               case Purging:
+               case Committing:
                case Deleted:
                case Purged:
                case Committed:

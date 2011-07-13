@@ -50,6 +50,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IATSStateMachineArtifact {
 
    private final ActionableItemManagerCore actionableItemsDam;
+   private boolean creatingWorkingBranch = false;
+   private boolean committingWorkingBranch = false;
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -223,6 +225,22 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       } else {
          return String.format("%s - %s", getHumanReadableId(), smaTitle);
       }
+   }
+
+   public boolean isWorkingBranchCreationInProgress() {
+      return creatingWorkingBranch;
+   }
+
+   public void setWorkingBranchCreationInProgress(boolean inProgress) {
+      this.creatingWorkingBranch = inProgress;
+   }
+
+   public boolean isWorkingBranchCommitInProgress() {
+      return committingWorkingBranch;
+   }
+
+   public void setWorkingBranchCommitInProgress(boolean inProgress) {
+      this.committingWorkingBranch = inProgress;
    }
 
 }

@@ -74,19 +74,26 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
       store(branchCache, types);
    }
 
-   public void store(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
+   public void store(IOseeCache<Branch> cache, Collection<Branch> branches) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.STORE.name());
 
-      BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache(types);
+      for (Branch branch : branches) {
+         if (branch.getBranchState().isDeleted()) {
+            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch.getGuid()),
+               branch.getId());
+         }
+      }
+
+      BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache(branches);
       AcquireResult updateResponse =
          HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
             CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, request, null);
 
       if (updateResponse.wasSuccessful()) {
-         sendChangeEvents(types);
-         for (Branch type : types) {
-            type.clearDirty();
+         sendChangeEvents(branches);
+         for (Branch branch : branches) {
+            branch.clearDirty();
          }
       }
    }

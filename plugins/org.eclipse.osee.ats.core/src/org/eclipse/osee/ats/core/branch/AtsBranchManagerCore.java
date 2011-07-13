@@ -48,9 +48,19 @@ public class AtsBranchManagerCore {
     * with the cache being updated by local and remote events.
     */
    public static Branch getWorkingBranch(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      return getWorkingBranch(teamArt, false);
+   }
+
+   /**
+    * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
+    * with the cache being updated by local and remote events.
+    * 
+    * @param force == true does not used cached value
+    */
+   public static Branch getWorkingBranch(TeamWorkFlowArtifact teamArt, boolean force) throws OseeCoreException {
       long now = new Date().getTime();
       boolean notSet = hridToWorkingBranchCacheUpdated.get(teamArt.getHumanReadableId()) == null;
-      if (notSet || (now - hridToWorkingBranchCacheUpdated.get(teamArt.getHumanReadableId()) > 1000)) {
+      if (notSet || force || (now - hridToWorkingBranchCacheUpdated.get(teamArt.getHumanReadableId()) > 1000)) {
          hridToWorkingBranchCache.put(teamArt.getHumanReadableId(),
             getWorkingBranchExcludeStates(teamArt, BranchState.REBASELINED, BranchState.DELETED));
          hridToWorkingBranchCacheUpdated.put(teamArt.getHumanReadableId(), now);

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -51,8 +52,16 @@ import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -71,7 +80,9 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Donald G. Dunne
  */
-public class AtsBranchManager {
+public class AtsBranchManager implements IBranchEventListener {
+
+   private static AtsBranchManager instance;
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt) {
       try {
@@ -332,7 +343,9 @@ public class AtsBranchManager {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          @Override
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
+            teamArt.setWorkingBranchCreationInProgress(true);
             BranchManager.createWorkingBranch(parentBranch, branchName, teamArt);
+            teamArt.setWorkingBranchCreationInProgress(false);
             // Create reviews as necessary
             SkynetTransaction transaction =
                new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
@@ -423,5 +436,45 @@ public class AtsBranchManager {
          }
       }
       return new ChangeData(changes);
+   }
+
+   public static void start() {
+      instance = new AtsBranchManager();
+   }
+
+   public static void stop() {
+      OseeEventManager.removeListener(instance);
+   }
+
+   public AtsBranchManager() {
+      OseeEventManager.addListener(this);
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return null;
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      try {
+         Branch branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
+         if (branch != null) {
+            Artifact assocArtInCache =
+               ArtifactCache.getActive(branch.getAssociatedArtifactId(), BranchManager.getCommonBranch());
+            if (assocArtInCache != null && assocArtInCache instanceof TeamWorkFlowArtifact) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) assocArtInCache;
+               if (branchEvent.getEventType() == BranchEventType.Added) {
+                  teamArt.setWorkingBranchCreationInProgress(false);
+               } else if (branchEvent.getEventType() == BranchEventType.Committing) {
+                  teamArt.setWorkingBranchCommitInProgress(true);
+               } else if (branchEvent.getEventType() == BranchEventType.Committed || branchEvent.getEventType() == BranchEventType.CommitFailed) {
+                  teamArt.setWorkingBranchCommitInProgress(false);
+               }
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 }

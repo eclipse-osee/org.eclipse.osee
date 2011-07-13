@@ -89,24 +89,31 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
             if (awa.isInTransition()) {
                return;
             }
-            if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged || branchModType == BranchEventType.Committed) {
-               if (branch.getAssociatedArtifactId() != awa.getArtId()) {
-                  return;
-               }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     if (handler.isDisposed()) {
-                        return;
-                     }
-                     try {
-                        handler.getSMAEditor().refreshPages();
-                        handler.getSMAEditor().onDirtied();
-                     } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                     }
+            switch (branchModType) {
+               case Added:
+               case Deleting:
+               case Deleted:
+               case Purging:
+               case Purged:
+               case Committing:
+               case Committed:
+                  if (branch.getAssociatedArtifactId() != awa.getArtId()) {
+                     return;
                   }
-               });
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        if (handler.isDisposed()) {
+                           return;
+                        }
+                        try {
+                           handler.getSMAEditor().refreshPages();
+                           handler.getSMAEditor().onDirtied();
+                        } catch (Exception ex) {
+                           OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                        }
+                     }
+                  });
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

@@ -326,7 +326,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    }
 
    private void handleBranchEvent(BranchEventType branchModType) {
-      if (branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged) {
+      if (branchModType == BranchEventType.Deleting || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purging || branchModType == BranchEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

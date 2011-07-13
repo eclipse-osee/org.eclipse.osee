@@ -179,8 +179,11 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
          for (Branch branch : branches) {
             if (branch != null && branch.getGuid().equals(branchEvent.getBranchGuid())) {
                switch (branchEvent.getEventType()) {
+                  case Deleting:
                   case Deleted:
+                  case Purging:
                   case Purged:
+                  case Committing:
                   case Committed:
                      close(false);
                      break;

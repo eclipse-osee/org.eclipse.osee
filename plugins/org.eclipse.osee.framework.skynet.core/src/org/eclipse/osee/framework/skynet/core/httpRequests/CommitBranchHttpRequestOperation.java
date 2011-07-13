@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -64,12 +65,26 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.BRANCH_COMMIT.name());
 
+      BranchState currentState = sourceBranch.getBranchState();
+      sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
+
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committing, sourceBranch.getGuid()),
+         sourceBranch.getId());
+
       BranchCommitRequest requestData =
          new BranchCommitRequest(user.getArtId(), sourceBranch.getId(), destinationBranch.getId(), isArchiveAllowed);
 
-      BranchCommitResponse response =
-         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_COMMIT_REQUEST,
-            requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
+      BranchCommitResponse response = null;
+      try {
+         response =
+            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
+               CoreTranslatorId.BRANCH_COMMIT_REQUEST, requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
+      } catch (OseeCoreException ex) {
+         sourceBranch.setBranchState(currentState);
+         OseeEventManager.kickBranchEvent(getClass(),
+            new BranchEvent(BranchEventType.CommitFailed, sourceBranch.getGuid()), sourceBranch.getId());
+         throw ex;
+      }
 
       if (response != null) {
          handleResponse(response, sourceBranch);

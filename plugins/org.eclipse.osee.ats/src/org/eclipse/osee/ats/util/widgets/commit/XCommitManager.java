@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.ATSAttributes;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -41,13 +42,13 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -77,6 +78,9 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
    private static final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
    public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId();
+   private int lastDefectListSize = 0;
+   private Composite mainComp;
+   private Composite parentComp;
 
    public XCommitManager() {
       super("Commit Manager");
@@ -90,29 +94,50 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
+      // parentComp needs to be created and remain intact; mainComp will be disposed and re-created as necessary
+      parentComp = new Composite(parent, SWT.FLAT);
+      parentComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      parentComp.setLayout(ALayout.getZeroMarginLayout());
 
-      // Create Text Widgets
-      if (isDisplayLabel() && !getLabel().equals("")) {
-         labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(getLabel() + ":");
-         if (getToolTip() != null) {
-            labelWidget.setToolTipText(getToolTip());
-         }
+      redrawComposite();
+   }
+
+   private void redrawComposite() {
+      if (parentComp == null || !Widgets.isAccessible(parentComp)) {
+         return;
+      }
+      if (mainComp != null && Widgets.isAccessible(mainComp)) {
+         mainComp.dispose();
+         xCommitManager = null;
+      }
+      mainComp = new Composite(parentComp, SWT.FLAT);
+      mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      mainComp.setLayout(new GridLayout(1, true));
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
+
+      labelWidget = new Label(mainComp, SWT.NONE);
+      labelWidget.setText(getLabel() + ":");
+      if (getToolTip() != null) {
+         labelWidget.setToolTipText(getToolTip());
       }
 
       try {
-         if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
-            labelWidget.setText(getLabel() + ": No working or committed branches available.");
+         if (teamArt.isWorkingBranchCreationInProgress()) {
+            labelWidget.setText(getLabel() + ": Branch Creation in Progress");
+         } else if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
+            labelWidget.setText(getLabel() + ": No Working Branch or Committed changes available.");
          } else {
 
-            Composite mainComp = new Composite(parent, SWT.BORDER);
-            mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            mainComp.setLayout(ALayout.getZeroMarginLayout());
+            Composite tableComp = new Composite(mainComp, SWT.BORDER);
+            tableComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            tableComp.setLayout(ALayout.getZeroMarginLayout());
             if (toolkit != null) {
-               toolkit.paintBordersFor(mainComp);
+               toolkit.paintBordersFor(tableComp);
             }
 
-            createTaskActionBar(mainComp);
+            createTaskActionBar(tableComp);
 
             labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
             if (AtsUtilCore.isAtsAdmin() && !AtsUtil.isProductionDb()) {
@@ -137,7 +162,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                });
             }
 
-            xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+            xCommitManager = new CommitXManager(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             xCommitManager.setContentProvider(new XCommitContentProvider());
@@ -153,9 +178,11 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-   }
+      // reset bold for label
+      SMAEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
 
-   int lastDefectListSize = 0;
+      parentComp.layout();
+   }
 
    public void setXviewerTree() {
       Tree tree = xCommitManager.getTree();
@@ -263,7 +290,6 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) {
          return;
       }
-      validate();
       setXviewerTree();
    }
 
@@ -311,9 +337,6 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       return returnStatus;
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
    public CommitXManager getXViewer() {
       return xCommitManager;
    }
@@ -377,15 +400,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (xCommitManager == null || !Widgets.isAccessible(xCommitManager.getTree())) {
-               return;
-            }
-            if (branchEvent.getEventType() == BranchEventType.MergeConflictResolved) {
-               xCommitManager.refresh();
-               refresh();
-            } else {
-               loadTable();
-            }
+            redrawComposite();
          }
       });
 

@@ -16,10 +16,14 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 public enum BranchEventType {
 
    // Local and Remote events
+   Purging(EventType.LocalAndRemote, "ATPHeMoAFyL543vrAyQA"),
    Purged(EventType.LocalAndRemote, "AAn_QG7jRGZAqPE0UewA"),
+   Deleting(EventType.LocalAndRemote, "ATPHeNujxAkPZEkWUtQA"),
    Deleted(EventType.LocalAndRemote, "AAn_QHBDvwtT5jjKaHgA"),
    Added(EventType.LocalAndRemote, "AAn_QHDohywDoSTxwcQA"),
    Renamed(EventType.LocalAndRemote, "AAn_QHGLIUsH2BdX2gwA"),
+   Committing(EventType.LocalAndRemote, "ATPHeN1du2GAbS3SQsAA"),
+   CommitFailed(EventType.LocalAndRemote, "ATPHeN3RaBnDmpoYXkQA"),
    Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA"),
    TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA"),
    StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA"),

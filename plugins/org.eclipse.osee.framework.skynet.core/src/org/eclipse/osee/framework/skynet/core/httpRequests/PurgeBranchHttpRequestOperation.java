@@ -48,6 +48,9 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getGuid()),
+         branch.getId());
+
       PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getId(), recursive);
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.PURGE_BRANCH.name());
