@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -41,7 +44,10 @@ public class DeleteBranchOperation extends AbstractOperation {
 
       try {
          branch.setBranchState(BranchState.DELETED);
+
          branch.setArchived(true);
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch.getGuid()),
+            branch.getId());
          BranchManager.persist(branch);
       } catch (Exception ex) {
          branch.setBranchState(originalState);

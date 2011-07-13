@@ -185,9 +185,17 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
    private void updateBranches(Sender sender, BranchEvent branchEvent) {
       BranchEventType eventType = branchEvent.getEventType();
       try {
-         if (eventType == BranchEventType.Committed) {
-            TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(BranchManager.getAssociatedArtifact(BranchManager.getBranchByGuid(branchEvent.getBranchGuid())));
+         switch (eventType) {
+            case Committing:
+            case CommitFailed:
+            case Deleting:
+            case Purging:
+               return;
+            case Committed:
+               TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(BranchManager.getAssociatedArtifact(BranchManager.getBranchByGuid(branchEvent.getBranchGuid())));
          }
+         // TODO Need to update only branch(s) that changed, not refresh all branches cause it will
+         // clear any local flags that have not yet been persisted to the database like DELETED or COMMIT_IN_PROGRESS
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          EventUtil.eventLog("REM: updateBranches", ex);

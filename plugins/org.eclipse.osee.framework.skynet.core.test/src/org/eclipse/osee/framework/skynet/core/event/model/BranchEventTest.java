@@ -54,6 +54,11 @@ public class BranchEventTest {
 
    private final BranchEventListener branchEventListener = new BranchEventListener();
 
+   @AfterClass
+   public static void cleanUp() throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(topLevel, true));
+   }
+
    @org.junit.Test
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
@@ -73,7 +78,7 @@ public class BranchEventTest {
    /**
     * If all branch tests take longer than 10seconds, fail test, something went wrong.
     */
-   @org.junit.Test(timeout = 10000)
+   @org.junit.Test(timeout = 20000)
    public void testEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeEventManager.removeAllListeners();
@@ -109,7 +114,7 @@ public class BranchEventTest {
       BranchManager.updateBranchArchivedState(null, committedBranch.getId(), committedBranch.getGuid(),
          BranchArchivedState.UNARCHIVED);
 
-      verifyReceivedBranchStates(BranchEventType.ArchiveStateUpdated, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.ArchiveStateUpdated, guid);
 
       Assert.assertEquals(BranchArchivedState.UNARCHIVED, committedBranch.getArchiveState());
       Assert.assertFalse(committedBranch.isEditable());
@@ -117,8 +122,6 @@ public class BranchEventTest {
    }
 
    private Branch testEvents__committed() throws Exception {
-      branchEventListener.reset();
-
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
 
@@ -129,9 +132,11 @@ public class BranchEventTest {
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, workingBranch);
       newArt.persist(getClass().getSimpleName());
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(topLevel, workingBranch);
+      branchEventListener.reset();
       BranchManager.commitBranch(null, conflictManager, true, true);
 
-      verifyReceivedBranchStates(BranchEventType.Committed, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Committing, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Committed, guid);
 
       Assert.assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
       Assert.assertFalse(workingBranch.isEditable());
@@ -139,8 +144,6 @@ public class BranchEventTest {
    }
 
    private Branch testEvents__purged() throws Exception {
-      branchEventListener.reset();
-
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge", UserManager.getUser());
 
@@ -149,9 +152,11 @@ public class BranchEventTest {
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
 
+      branchEventListener.reset();
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(workingBranch, false));
 
-      verifyReceivedBranchStates(BranchEventType.Purged, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Purging, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Purged, guid);
 
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
       Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
@@ -166,15 +171,15 @@ public class BranchEventTest {
    }
 
    private Branch testEvents__deleted(Branch workingBranch) throws Exception {
-      branchEventListener.reset();
-
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, workingBranch.getBranchState());
 
-      Operations.executeWork(new DeleteBranchOperation(workingBranch));
+      branchEventListener.reset();
+      Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
 
-      verifyReceivedBranchStates(BranchEventType.Deleted, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Deleting, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Deleted, guid);
 
       Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
       return workingBranch;
@@ -188,7 +193,7 @@ public class BranchEventTest {
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
       BranchManager.updateBranchState(null, workingBranch.getId(), workingBranch.getGuid(), BranchState.MODIFIED);
 
-      verifyReceivedBranchStates(BranchEventType.StateUpdated, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.StateUpdated, guid);
 
       Assert.assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
       return workingBranch;
@@ -201,7 +206,7 @@ public class BranchEventTest {
       Assert.assertEquals(BranchType.WORKING, workingBranch.getBranchType());
       BranchManager.updateBranchType(null, workingBranch.getId(), workingBranch.getGuid(), BranchType.BASELINE);
 
-      verifyReceivedBranchStates(BranchEventType.TypeUpdated, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.TypeUpdated, guid);
 
       Assert.assertEquals(BranchType.BASELINE, workingBranch.getBranchType());
       return workingBranch;
@@ -216,7 +221,7 @@ public class BranchEventTest {
       workingBranch.setName(newName);
       BranchManager.persist(workingBranch);
 
-      verifyReceivedBranchStates(BranchEventType.Renamed, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Renamed, guid);
 
       Assert.assertEquals(newName, workingBranch.getName());
       Assert.assertNotNull(BranchManager.getBranchesByName(newName));
@@ -230,29 +235,27 @@ public class BranchEventTest {
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working", UserManager.getUser());
       Assert.assertNotNull(workingBranch);
 
-      verifyReceivedBranchStates(BranchEventType.Added, null);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Added, null);
 
       return workingBranch;
    }
 
    private Branch testEvents__topLevelAdded() throws Exception {
-      branchEventListener.reset();
-
       String guid = GUID.create();
       String branchName = TOP_LEVEL_BRANCH_NAME;
       IOseeBranch branchToken = TokenFactory.createBranch(guid, branchName);
+      branchEventListener.reset();
       topLevel = BranchManager.createTopLevelBranch(branchToken);
       Assert.assertNotNull(topLevel);
 
-      verifyReceivedBranchStates(BranchEventType.Added, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Added, guid);
 
       return topLevel;
    }
 
-   private void verifyReceivedBranchStates(BranchEventType expectedEnumState, String expectedBranchGuid) throws InterruptedException {
-      Pair<Sender, BranchEvent> update = branchEventListener.getResults();
-      Sender receivedSender = update.getFirst();
-      BranchEvent receivedBranchEvent = update.getSecond();
+   private void verifyReceivedBranchStatesEvent(Pair<Sender, BranchEvent> eventPair, BranchEventType expectedEnumState, String expectedBranchGuid) {
+      Sender receivedSender = eventPair.getFirst();
+      BranchEvent receivedBranchEvent = eventPair.getSecond();
 
       Assert.assertEquals(expectedEnumState, receivedBranchEvent.getEventType());
       if (isRemoteTest()) {
@@ -270,18 +273,16 @@ public class BranchEventTest {
       return false;
    }
 
-   @AfterClass
-   public static void cleanUp() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(topLevel, true));
-   }
-
    private class BranchEventListener implements IBranchEventListener {
-      private BranchEvent branchEvent;
-      private Sender sender;
-      private boolean receivedUpdate = false;
+      private BranchEvent firstBranchEvent, secondBranchEvent;
+      private Sender firstSender, secondSender;
+      private boolean receivedFirstUpdate = false, receivedSecondUpdate = false;
 
       public synchronized void reset() {
-         receivedUpdate = false;
+         firstBranchEvent = null;
+         secondBranchEvent = null;
+         receivedFirstUpdate = false;
+         receivedSecondUpdate = false;
       }
 
       @Override
@@ -291,18 +292,32 @@ public class BranchEventTest {
 
       @Override
       public synchronized void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-         this.branchEvent = branchEvent;
-         this.sender = sender;
-         receivedUpdate = true;
+         if (this.firstBranchEvent == null) {
+            this.firstBranchEvent = branchEvent;
+            this.firstSender = sender;
+            receivedFirstUpdate = true;
+         } else if (this.secondBranchEvent == null) {
+            this.secondBranchEvent = branchEvent;
+            this.secondSender = sender;
+            receivedSecondUpdate = true;
+         }
          notify();
       }
 
-      public synchronized Pair<Sender, BranchEvent> getResults() throws InterruptedException {
-         while (!receivedUpdate) {
+      public synchronized Pair<Sender, BranchEvent> getFirstResults() throws InterruptedException {
+         while (!receivedFirstUpdate) {
             wait();
          }
-         receivedUpdate = false;
-         return new Pair<Sender, BranchEvent>(sender, branchEvent);
+         receivedFirstUpdate = false;
+         return new Pair<Sender, BranchEvent>(firstSender, firstBranchEvent);
+      }
+
+      public synchronized Pair<Sender, BranchEvent> getSecondResults() throws InterruptedException {
+         while (!receivedSecondUpdate) {
+            wait();
+         }
+         receivedSecondUpdate = false;
+         return new Pair<Sender, BranchEvent>(secondSender, secondBranchEvent);
       }
    };
 }

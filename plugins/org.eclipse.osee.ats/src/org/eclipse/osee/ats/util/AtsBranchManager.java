@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -455,10 +457,21 @@ public class AtsBranchManager implements IBranchEventListener {
       return null;
    }
 
+   public static List<BranchEventType> ApplicableEventTypes = Arrays.asList(BranchEventType.Added,
+      BranchEventType.CommitFailed, BranchEventType.Committed, BranchEventType.Committing);
+
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      if (!ApplicableEventTypes.contains(branchEvent.getEventType())) {
+         return;
+      }
       try {
-         Branch branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
+         Branch branch = null;
+         try {
+            branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
+         } catch (BranchDoesNotExist ex) {
+            return;
+         }
          if (branch != null) {
             Artifact assocArtInCache =
                ArtifactCache.getActive(branch.getAssociatedArtifactId(), BranchManager.getCommonBranch());
