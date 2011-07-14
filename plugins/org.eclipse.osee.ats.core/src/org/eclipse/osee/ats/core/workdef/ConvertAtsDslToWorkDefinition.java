@@ -205,7 +205,7 @@ public class ConvertAtsDslToWorkDefinition {
       revDef.setAutoTransitionToDecision(BooleanDefUtil.get(dslRevDef.getAutoTransitionToDecision(), false));
 
       for (DecisionReviewOpt dslOpt : dslRevDef.getOptions()) {
-         DecisionReviewOption revOpt = new DecisionReviewOption(dslOpt.getName());
+         DecisionReviewOption revOpt = new DecisionReviewOption(Strings.unquote(dslOpt.getName()));
          FollowupRef followupRef = dslOpt.getFollowup();
          if (followupRef == null) {
             revOpt.setFollowupRequired(false);
