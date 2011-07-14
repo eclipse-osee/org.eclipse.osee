@@ -175,13 +175,24 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private IGlobalMenuHelper globalMenuHelper;
 
    private Composite stackComposite;
-   private Control branchUnreadableWarning;
+   private Control branchWarningComposite;
    private StackLayout stackLayout;
    private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
       SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
+   private Label branchWarningLabel;
 
    public static void explore(Collection<Artifact> artifacts) {
       explore(artifacts, AWorkbench.getActivePage());
+   }
+
+   private void setErrorString(String str) {
+      Control control = branchWarningComposite;
+      branchWarningLabel.setText(str);
+      branchWarningLabel.update();
+      branchWarningComposite.update();
+      stackLayout.topControl = control;
+      stackComposite.layout();
+      stackComposite.getParent().layout();
    }
 
    public static void explore(Collection<Artifact> artifacts, IWorkbenchPage page) {
@@ -222,7 +233,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
    }
 
-   private Control createDefaultWarning(Composite parent) {
+   private Control createBranchWarningComposite(Composite parent) {
       Composite composite = new Composite(parent, SWT.BORDER);
       composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -233,27 +244,14 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       image.setImage(ImageManager.getImage(FrameworkImage.LOCKED_KEY));
       image.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
-      Label label = new Label(composite, SWT.NONE);
-      label.setFont(FontManager.getFont("Courier New", 10, SWT.BOLD));
-      label.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
-      label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-      label.setText("Branch Read Access Denied.\nContact your administrator.");
-      label.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+      branchWarningLabel = new Label(composite, SWT.NONE);
+      branchWarningLabel.setFont(FontManager.getFont("Courier New", 10, SWT.BOLD));
+      branchWarningLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
+      branchWarningLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+      branchWarningLabel.setText("None");
+      branchWarningLabel.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       return composite;
-   }
-
-   private void checkBranchReadable() throws OseeCoreException {
-      if (treeViewer == null) {
-         return;
-      }
-      Control control = branchUnreadableWarning;
-      if (branch == null || new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
-         control = treeViewer.getTree();
-      }
-      stackLayout.topControl = control;
-      stackComposite.layout();
-      stackComposite.getParent().layout();
    }
 
    @Override
@@ -286,6 +284,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
+                  setErrorString("Error loading branch (see error log for details): " + ex.getLocalizedMessage());
                   OseeLog.log(getClass(), Level.SEVERE, ex);
                }
             }
@@ -297,7 +296,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          stackComposite.setLayout(stackLayout);
          stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-         branchUnreadableWarning = createDefaultWarning(stackComposite);
+         branchWarningComposite = createBranchWarningComposite(stackComposite);
 
          treeViewer = new TreeViewer(stackComposite);
          myTree = treeViewer.getTree();
@@ -356,7 +355,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          trees.add(tree);
          HelpUtil.setHelp(treeViewer.getControl(), OseeHelpContext.ARTIFACT_EXPLORER);
 
-         checkBranchReadable();
+         refreshBranchWarning();
          getViewSite().getActionBars().updateActionBars();
 
       } catch (Exception ex) {
@@ -365,6 +364,63 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       OseeEventManager.addListener(this);
       ArtifactExplorerEventManager.add(this);
+   }
+
+   private void refreshBranchWarning() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               if (treeViewer == null) {
+                  return;
+               }
+
+               Control control = treeViewer.getTree();
+               if (branch != null) {
+                  String warningStr = null;
+                  if (!new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
+                     warningStr = "Branch Read Access Denied.\nContact your administrator.";
+                  } else {
+                     switch (branch.getBranchState()) {
+                        case CREATION_IN_PROGRESS:
+                           warningStr = "Branch Creation in Progress, Please Wait.";
+                           break;
+                        case COMMIT_IN_PROGRESS:
+                           warningStr = "Branch Commit in Progress, Please Close Artifact Explorer.";
+                           break;
+                        case COMMITTED:
+                           warningStr = "Branch Committed, Please Close Artifact Explorer.";
+                           break;
+                        case DELETED:
+                           warningStr = "Branch Deleted, Please Close Artifact Explorer.";
+                           break;
+                        case REBASELINE_IN_PROGRESS:
+                           warningStr = "Branch Rebaseline in Progress, Please Wait.";
+                           break;
+                        case REBASELINED:
+                           warningStr = "Branch Rebaselined, Please Close Artifact Explorer.";
+                           break;
+                        default:
+                           break;
+                     }
+                  }
+
+                  if (warningStr != null) {
+                     control = branchWarningComposite;
+                     branchWarningLabel.setText(warningStr);
+                     branchWarningLabel.update();
+                     branchWarningComposite.update();
+                  }
+               }
+
+               stackLayout.topControl = control;
+               stackComposite.layout();
+               stackComposite.getParent().layout();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      });
    }
 
    /**
@@ -788,7 +844,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                if (selectedArtifact != null) {
                   PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), selectedArtifact);
                   pd.open();
-                  checkBranchReadable();
+                  refreshBranchWarning();
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -960,12 +1016,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       explorerRoot = artifact;
       branch = artifact.getBranch();
-      try {
-         checkBranchReadable();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
 
+      refreshBranchWarning();
       initializeSelectionBox();
 
       if (treeViewer != null) {
@@ -1225,11 +1277,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    public void initializeSelectionBox() {
       if (branch != null && branchSelect != null && !branch.equals(branchSelect.getData())) {
          branchSelect.setSelection(branch);
-         try {
-            checkBranchReadable();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
+         refreshBranchWarning();
       }
    }
 
