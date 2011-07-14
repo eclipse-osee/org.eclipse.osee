@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
+import org.eclipse.osee.ats.hyper.action.OpenActionViewAction;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -464,6 +465,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new EmailActionAction(editor));
       toolBarMgr.add(new AddNoteAction(awa, editor));
       toolBarMgr.add(new OpenInAtsWorldAction(awa));
+      toolBarMgr.add(new OpenActionViewAction());
       if (AtsUtilCore.isAtsAdmin()) {
          toolBarMgr.add(new OpenInArtifactEditorAction(editor));
       }
