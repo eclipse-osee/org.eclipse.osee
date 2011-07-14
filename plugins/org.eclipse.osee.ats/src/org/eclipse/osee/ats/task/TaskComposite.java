@@ -141,7 +141,6 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          getTaskXViewer().setInput(this.taskArts);
       }
       taskXViewer.refresh();
-      taskXViewer.getTree().setFocus();
    }
 
    public void loadTable() throws OseeCoreException {
