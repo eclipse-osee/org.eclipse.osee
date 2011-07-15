@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
@@ -44,7 +44,7 @@ public class XTextSpellCheckListener implements ModifyListener {
 
    private final IDictionary dict;
    private final XText xText;
-   private final Set<ASpellWord> errors = new HashSet<ASpellWord>();
+   private final Set<ASpellWord> errors = new LinkedHashSet<ASpellWord>();
    private XTextSpellModifyDictionary modDict;
    private Integer maxLength = 50000;
 
@@ -158,7 +158,9 @@ public class XTextSpellCheckListener implements ModifyListener {
 
       // Get spelling errors
       getErrors(text);
-      xText.getStyledText().setStyleRanges(new StyleRange[] {});
+
+      StyleRange[] styles = new StyleRange[errors.size()];
+      int index = 0;
       for (ASpellWord sw : errors) {
          StyleRange styleRange = new StyleRange();
          styleRange.underline = true;
@@ -166,9 +168,9 @@ public class XTextSpellCheckListener implements ModifyListener {
          styleRange.start = sw.start;
          styleRange.length = sw.word.length();
          styleRange.underlineColor = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
-         xText.getStyledText().setStyleRange(styleRange);
+         styles[index++] = styleRange;
       }
-
+      xText.getStyledText().setStyleRanges(styles);
    }
 
    private void getErrors(String str) {
