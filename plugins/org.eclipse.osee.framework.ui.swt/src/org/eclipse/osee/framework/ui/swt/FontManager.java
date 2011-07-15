@@ -27,6 +27,7 @@ public final class FontManager {
    public static Map<String, Font> fontMap = new HashMap<String, Font>();
 
    private FontManager() {
+      // Utility Class
    }
 
    public static Font getDefaultLabelFont() {
