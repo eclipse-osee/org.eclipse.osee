@@ -18,11 +18,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -40,12 +38,10 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Roberto E. Escobar
  */
 public class BlamInputSection extends BaseBlamSection {
-
-   private final Collection<DynamicXWidgetLayoutData> dynamicInputLayouts;
+   private final Collection<DynamicXWidgetLayoutData> dynamicInputLayouts = new ArrayList<DynamicXWidgetLayoutData>();
 
    public BlamInputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(editor, abstractBlam, parent, toolkit, style);
-      this.dynamicInputLayouts = new ArrayList<DynamicXWidgetLayoutData>();
    }
 
    @Override
@@ -54,7 +50,9 @@ public class BlamInputSection extends BaseBlamSection {
       Section section = getSection();
       section.setText("Parameters");
       section.setLayout(new GridLayout());
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      section.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+      updateDataPart();
    }
 
    public VariableMap getData() {
@@ -77,7 +75,7 @@ public class BlamInputSection extends BaseBlamSection {
       }
       Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
       sectionBody.setLayout(new GridLayout());
-      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       createWidgets(sectionBody);
 
@@ -86,21 +84,13 @@ public class BlamInputSection extends BaseBlamSection {
 
       section.layout(true);
       form.getForm().getBody().layout(true);
-
    }
 
    private void createWidgets(Composite parent) {
       try {
          List<DynamicXWidgetLayoutData> layoutDatas = getDynamicXWidgetLayouts();
          WorkPage workPage = new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver(), getAbstractBlam());
-         workPage.createBody(getManagedForm(), parent, null, new XModifiedListener() {
-
-            @Override
-            public void widgetModified(XWidget widget) {
-               getManagedForm().reflow(true);
-            }
-
-         }, true);
+         workPage.createBody(getManagedForm(), parent, null, null, true);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -116,16 +106,5 @@ public class BlamInputSection extends BaseBlamSection {
    @Override
    public void refresh() {
       super.refresh();
-      updateDataPart();
-   }
-
-   public void setDynamicXWidgetLayouts(Collection<DynamicXWidgetLayout> layouts) {
-      if (layouts != null) {
-         this.dynamicInputLayouts.clear();
-         for (DynamicXWidgetLayout layout : layouts) {
-            this.dynamicInputLayouts.addAll(layout.getLayoutDatas());
-         }
-         refresh();
-      }
    }
 }

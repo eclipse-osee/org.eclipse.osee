@@ -48,18 +48,21 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Ryan D. Brooks
  */
-public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
+public class EmailGroupsBlam extends AbstractBlam {
    private XArtifactList templateList, groupsList;
    private XText bodyTextBox;
    private XText subjectTextBox;
    private XCheckBox isBodyHtmlCheckbox;
    private ExecutorService emailTheadPool;
    private final Collection<Future<String>> futures = new ArrayList<Future<String>>(300);
+   private final XModifiedListener listener = new ModificationListerner();
 
    @Override
    public String getName() {
@@ -135,10 +138,10 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
             ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch());
          Collections.sort(groups);
          listViewer.setInputArtifacts(groups);
-         listViewer.addXModifiedListener(this);
+         listViewer.addXModifiedListener(listener);
       } else if (xWidget.getLabel().equals("Template")) {
          templateList = (XArtifactList) xWidget;
-         templateList.addXModifiedListener(this);
+         templateList.addXModifiedListener(listener);
       } else if (xWidget.getLabel().equals("Body")) {
          bodyTextBox = (XText) xWidget;
       } else if (xWidget.getLabel().equals("Body is html")) {
@@ -163,6 +166,13 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
                handlePreviewMessage();
             }
          });
+      }
+      if (xWidget.getLabel().equals("Body")) {
+         XText xText = ((XText) xWidget);
+         GridData data1 = new GridData(SWT.FILL, SWT.FILL, true, true);
+         data1.heightHint = 300;
+         data1.widthHint = 300;
+         xText.getStyledText().setLayoutData(data1);
       }
    }
 
@@ -209,24 +219,27 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       return Arrays.asList("Util");
    }
 
-   @Override
-   public void widgetModified(XWidget xWidget) {
-      try {
-         if (xWidget == templateList) {
-            Artifact template = (Artifact) templateList.getSelected().iterator().next();
-            subjectTextBox.set(template.getName());
-            String body = template.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
-            bodyTextBox.set(body);
-         } else {
-            XArtifactList groupList = (XArtifactList) xWidget;
-            Collection<Artifact> templates = new ArrayList<Artifact>();
-            for (Object group : groupList.getSelected()) {
-               templates.addAll(((Artifact) group).getChildren());
+   private class ModificationListerner implements XModifiedListener {
+
+      @Override
+      public void widgetModified(XWidget xWidget) {
+         try {
+            if (xWidget == templateList) {
+               Artifact template = (Artifact) templateList.getSelected().iterator().next();
+               subjectTextBox.set(template.getName());
+               String body = template.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
+               bodyTextBox.set(body);
+            } else {
+               XArtifactList groupList = (XArtifactList) xWidget;
+               Collection<Artifact> templates = new ArrayList<Artifact>();
+               for (Object group : groupList.getSelected()) {
+                  templates.addAll(((Artifact) group).getChildren());
+               }
+               templateList.setInputArtifacts(templates);
             }
-            templateList.setInputArtifacts(templates);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
