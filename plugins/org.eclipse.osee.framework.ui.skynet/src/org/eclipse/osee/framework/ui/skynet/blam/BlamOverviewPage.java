@@ -10,20 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamUsageSection;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -118,16 +114,6 @@ public class BlamOverviewPage extends FormPage {
       return (BlamEditorInput) super.getEditorInput();
    }
 
-   public void refresh() {
-      final ScrolledForm sForm = getManagedForm().getForm();
-      for (IFormPart part : getManagedForm().getParts()) {
-         part.refresh();
-      }
-      sForm.getBody().layout(true);
-      sForm.reflow(true);
-      getManagedForm().refresh();
-   }
-
    public void appendOutput(final String additionalOutput) {
       outputSection.appendText(additionalOutput);
    }
@@ -140,11 +126,7 @@ public class BlamOverviewPage extends FormPage {
       return outputSection.getOutput();
    }
 
-   public VariableMap getInput() throws OseeArgumentException {
+   public VariableMap getInput() {
       return inputSection.getData();
-   }
-
-   public void setDynamicXWidgetLayouts(Collection<DynamicXWidgetLayout> layouts) {
-      inputSection.setDynamicXWidgetLayouts(layouts);
    }
 }
