@@ -96,6 +96,7 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeEntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
@@ -112,7 +113,6 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -234,8 +234,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       image.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(composite, SWT.NONE);
-      Font font = new Font(AWorkbench.getDisplay(), "Courier New", 10, SWT.BOLD);
-      label.setFont(font);
+      label.setFont(FontManager.getFont("Courier New", 10, SWT.BOLD));
       label.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
       label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
       label.setText("Branch Read Access Denied.\nContact your administrator.");

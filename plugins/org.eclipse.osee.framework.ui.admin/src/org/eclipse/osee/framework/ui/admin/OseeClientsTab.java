@@ -34,12 +34,12 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -139,8 +139,7 @@ public class OseeClientsTab {
       image.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(composite, SWT.NONE);
-      Font font = new Font(AWorkbench.getDisplay(), "Courier New", 10, SWT.BOLD);
-      label.setFont(font);
+      label.setFont(FontManager.getFont("Courier New", 10, SWT.BOLD));
       label.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
       label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, true));
       label.setText("Access Denied.\nContact your administrator.");

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -87,7 +88,7 @@ public class DetailsBox implements IRegistryEventListener {
 
    public DetailsBox(Composite parent) {
       hexImg = ImageManager.getImage(OteMessageImage.HEX);
-      courier = new Font(parent.getDisplay(), "Courier", 10, SWT.NORMAL);
+      courier = FontManager.getFont("Courier New", 10, SWT.NORMAL);
       /* Create Text box to display values of selected messages */
       infoFolder = new TabFolder(parent, SWT.BORDER);
 
