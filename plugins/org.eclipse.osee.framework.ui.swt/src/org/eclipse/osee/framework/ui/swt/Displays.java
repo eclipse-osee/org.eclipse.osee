@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 public final class Displays {
 
    private Displays() {
+      // Utility Class
    }
 
    public static void ensureInDisplayThread(Runnable runnable) {
@@ -60,6 +61,15 @@ public final class Displays {
    public static Color getSystemColor(int colorId) {
       return Display.getDefault().getSystemColor(colorId);
    }
+
+   /**
+    * Creates a new Color resource. Remember to dispose the resource when done
+    * 
+    * @param red
+    * @param green
+    * @param blue
+    * @return
+    */
 
    public static Color getColor(int red, int green, int blue) {
       return new Color(Display.getDefault(), red, green, blue);
