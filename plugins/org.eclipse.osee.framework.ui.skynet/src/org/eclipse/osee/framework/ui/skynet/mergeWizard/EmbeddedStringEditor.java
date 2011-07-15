@@ -13,23 +13,25 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 public class EmbeddedStringEditor {
 
-   XText text;
-   String entryText = "";
-   String validationRegularExpression = null;
-   String validationErrorString = "";
-   Button ok;
-   Label errorLabel;
-   String dialogMessage;
+   private Color colorResource = null;
+   private XText text;
+   private String entryText = "";
+   private String validationRegularExpression = null;
+   private String validationErrorString = "";
+   private Label errorLabel;
+   private final String dialogMessage;
    private Composite composite;
    boolean fillVertically = false;
 
@@ -43,8 +45,22 @@ public class EmbeddedStringEditor {
       // Create error label
       errorLabel = new Label(composite, SWT.NONE);
       errorLabel.setSize(errorLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-      errorLabel.setForeground(new Color(null, 255, 0, 0));
+
+      if (colorResource == null) {
+         colorResource = Displays.getColor(255, 0, 0);
+      }
+      errorLabel.setForeground(colorResource);
       errorLabel.setText("");
+      errorLabel.addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            if (colorResource == null) {
+               colorResource.dispose();
+            }
+         }
+
+      });
 
       new Label(composite, SWT.NONE).setText(dialogMessage);
       text = new XText();
