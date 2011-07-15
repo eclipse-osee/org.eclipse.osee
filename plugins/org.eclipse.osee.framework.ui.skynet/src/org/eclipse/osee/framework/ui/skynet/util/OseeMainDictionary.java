@@ -11,46 +11,49 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
  */
 public class OseeMainDictionary implements IOseeDictionary {
-   Set<String> dictionary;
+   private final Set<String> dictionary = new HashSet<String>();
+   private volatile boolean wasLoaded = false;
 
    @Override
    public boolean isWord(String word) {
-      if (dictionary == null) {
-         loadDictionary();
-      }
-      boolean contains = dictionary.contains(word);
-      return contains;
+      ensureDictionaryLoaded();
+      return dictionary.contains(word);
    }
 
-   private void loadDictionary() {
-      dictionary = new HashSet<String>();
-      String line;
-      InputStream is = null;
-      BufferedReader br = null;
+   private synchronized void ensureDictionaryLoaded() {
+      if (!wasLoaded) {
+         // open OSEE english dictionary
+         BufferedReader br = null;
+         try {
+            Bundle bundle = SkynetGuiPlugin.getInstance().getBundle();
+            URL url = bundle.getEntry("support/spellCheck/AllWords.txt");
 
-      // open OSEE english dictionary
-      try {
-         is = SkynetGuiPlugin.getInstance().getBundle().getEntry("support/spellCheck/AllWords.txt").openStream();
-         br = new BufferedReader(new InputStreamReader(is));
-         while ((line = br.readLine()) != null) {
-            line.replaceAll("[\t\r\n ]+$", "");
-            dictionary.add(line);
+            br = new BufferedReader(new InputStreamReader(url.openStream()));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+               line.replaceAll("[\t\r\n ]+$", "");
+               dictionary.add(line);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         } finally {
+            wasLoaded = true;
+            Lib.close(br);
          }
-         is.close();
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

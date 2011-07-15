@@ -10,74 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
-import org.osgi.framework.Bundle;
 
 /**
  * Dictionary provided by OSEE that includes all dictionarys through the OseeDictionary extension point.
  * 
  * @author Donald G. Dunne
  */
-public class OseeDictionary extends AbstractOperation implements IDictionary {
+public class OseeDictionary implements IDictionary {
 
-   private static Set<IOseeDictionary> dictionaries = new HashSet<IOseeDictionary>();
-   private static OseeDictionary instance = new OseeDictionary();
-   private static boolean isLoadingDictionary = false;
-   private static boolean loaded = false;
+   private static final OseeDictionary instance = new OseeDictionary();
 
-   public static OseeDictionary getInstance() {
-      return instance;
-   }
-
-   public static void load() {
-      if (loaded || isLoadingDictionary) {
-         return;
-      }
-      Operations.executeAsJob(new OseeDictionary(), false);
-   }
-
-   public OseeDictionary() {
-      super("Loading Osee Dictionary", SkynetGuiPlugin.PLUGIN_ID);
-   }
-
-   @Override
-   public boolean isWord(String word) {
-      // Just return true till dictionary loaded
-      if (!loaded && isLoadingDictionary) {
-         return true;
-      }
-      // If not loaded, kickoff operation to load and return true
-      if (!loaded) {
-         Operations.executeAsJob(new OseeDictionary(), false);
-         return true;
-      }
-      //       System.out.println("Lookup => \""+word+"\"");
-      String cleanWord = getCleanWord(word);
-      if (cleanWord.equals("") || cleanWord.length() == 1) {
-         return true;
-      }
-      for (IOseeDictionary dict : dictionaries) {
-         if (dict.isWord(cleanWord)) {
-            return true;
-         }
-      }
-      return false;
-   }
    // Remove any junky characters and check for acronyms and other known
    // non-word type stuff. Return valid word to check in dictionary OR
    // "" if there is no word in this string
@@ -85,7 +46,63 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
    // a..b = ""
    // SQA = ""
    // NEon = ""
-   private static Pattern pattern = Pattern.compile("^[a-zA-Z]{1}[a-z]+$");
+   private static final Pattern pattern = Pattern.compile("^[a-zA-Z]{1}[a-z]+$");
+
+   private final Set<IOseeDictionary> dictionaries = new HashSet<IOseeDictionary>();
+
+   private volatile boolean isLoadInProgress = false;
+   private volatile boolean wasLoaded = false;
+
+   public static OseeDictionary getInstance() {
+      return instance;
+   }
+
+   public synchronized static void load() {
+      // only load once
+      getInstance().ensureLoaded();
+   }
+
+   @Override
+   public boolean isWord(String word) {
+      ensureLoaded();
+      // Just return true till dictionary loaded
+      if (!wasLoaded || isLoadInProgress) {
+         return true;
+      }
+
+      //       System.out.println("Lookup => \""+word+"\"");
+      String cleanWord = getCleanWord(word);
+      if (cleanWord.equals("") || cleanWord.length() == 1) {
+         return true;
+      }
+
+      for (IOseeDictionary dict : dictionaries) {
+         if (dict.isWord(cleanWord)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   private synchronized void ensureLoaded() {
+      if (!wasLoaded && !isLoadInProgress) {
+         if (!Platform.isRunning()) {
+            return;
+         }
+         IOperation op = new LoadDictionaryOperation(dictionaries);
+         Operations.executeAsJob(op, false, Job.LONG, new JobChangeAdapter() {
+
+            @Override
+            public void done(IJobChangeEvent event) {
+               super.done(event);
+               wasLoaded = true;
+               isLoadInProgress = false;
+            }
+         });
+         isLoadInProgress = true;
+      }
+   }
 
    public String getCleanWord(String word) {
       String cleanWord = word;
@@ -110,62 +127,24 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
       return cleanWord.toLowerCase();
    }
 
-   private synchronized void ensureLoaded() {
-      if (!loaded && !isLoadingDictionary) {
-         getIDictionaries();
+   private static class LoadDictionaryOperation extends AbstractOperation {
+      private final Collection<IOseeDictionary> toLoad;
+
+      public LoadDictionaryOperation(Collection<IOseeDictionary> toLoad) {
+         super("Loading Osee Dictionary", SkynetGuiPlugin.PLUGIN_ID);
+         this.toLoad = toLoad;
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading Osee Dictionary");
+         ExtensionDefinedObjects<IOseeDictionary> contributions =
+            new ExtensionDefinedObjects<IOseeDictionary>("org.eclipse.osee.framework.ui.skynet.OseeDictionary",
+               "OseeDictionary", "classname");
+         List<IOseeDictionary> dictionaries = contributions.getObjects();
+         toLoad.addAll(dictionaries);
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loaded Osee Dictionary");
       }
    }
 
-   private static void getIDictionaries() {
-      if (loaded) {
-         return;
-      }
-      isLoadingDictionary = true;
-      if (!Platform.isRunning()) {
-         return;
-      }
-      IExtensionPoint point = null;
-      try {
-         point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.OseeDictionary");
-      } catch (NullPointerException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Can't access OseeDictionary extension point", ex);
-         return;
-      }
-      if (point == null) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access OseeDictionary extension point");
-         return;
-      }
-      IExtension[] extensions = point.getExtensions();
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         String classname = null;
-         String bundleName = null;
-         for (IConfigurationElement el : elements) {
-            if (el.getName().equals("OseeDictionary")) {
-               classname = el.getAttribute("classname");
-               bundleName = el.getContributor().getName();
-               if (classname != null && bundleName != null) {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  try {
-                     Class<?> taskClass = bundle.loadClass(classname);
-                     Object obj = taskClass.newInstance();
-                     dictionaries.add((IOseeDictionary) obj);
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                        "Error loading OseeDictionary extension", ex);
-                  }
-               }
-
-            }
-         }
-      }
-      loaded = true;
-   }
-
-   @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      ensureLoaded();
-   }
 }
