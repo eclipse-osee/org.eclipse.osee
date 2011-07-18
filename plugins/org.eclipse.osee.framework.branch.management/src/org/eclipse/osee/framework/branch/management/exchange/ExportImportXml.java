@@ -54,23 +54,34 @@ public class ExportImportXml {
    }
 
    public static void closeXmlNode(Appendable appendable, String nodeName) throws IOException {
-      appendable.append(String.format("</%s>\n", nodeName));
+      appendable.append("</");
+      appendable.append(nodeName);
+      appendable.append(">\n");
    }
 
    public static void openXmlNode(Appendable appendable, String nodeName) throws IOException {
-      appendable.append(String.format("<%s>\n", nodeName));
+      appendable.append("<");
+      appendable.append(nodeName);
+      appendable.append(">\n");
    }
 
    public static void openXmlNodeNoNewline(Appendable appendable, String nodeName) throws IOException {
-      appendable.append(String.format("<%s>", nodeName));
+      appendable.append("<");
+      appendable.append(nodeName);
+      appendable.append(">");
    }
 
    public static void openPartialXmlNode(Appendable appendable, String nodeName) throws IOException {
-      appendable.append(String.format("<%s ", nodeName));
+      appendable.append("<");
+      appendable.append(nodeName);
+      appendable.append(" ");
    }
 
    public static void addXmlAttribute(Appendable appendable, String name, Object value) throws IOException {
-      appendable.append(String.format("%s=\"%s\" ", name, value));
+      appendable.append(name);
+      appendable.append("=\"");
+      appendable.append(value.toString());
+      appendable.append("\" ");
    }
 
    public static void closePartialXmlNode(Appendable appendable) throws IOException {
