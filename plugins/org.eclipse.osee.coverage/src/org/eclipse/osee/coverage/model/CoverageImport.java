@@ -11,9 +11,9 @@
 package org.eclipse.osee.coverage.model;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -26,12 +26,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport extends CoveragePackageBase {
 
+public class CoverageImport extends CoveragePackageBase {
    private Date runDate;
    private String location = "";
    private String blamName = "";
-   private final List<File> importRecordFiles = new ArrayList<File>();
+   private final List<File> importRecordFiles = new CopyOnWriteArrayList<File>();
    private String importDirectory = null;
 
    public CoverageImport(String name) {

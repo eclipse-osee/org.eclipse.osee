@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
@@ -36,12 +37,12 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    boolean folder;
    String notes;
    String assignees;
-   final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
+   final List<CoverageItem> coverageItems = new CopyOnWriteArrayList<CoverageItem>();
    String location;
    String orderNumber = "";
    String workProductTaskGuid;
    WorkProductTask workProductTask;
-   final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
+   final List<CoverageUnit> coverageUnits = new CopyOnWriteArrayList<CoverageUnit>();
    ICoverage parent;
    ICoverageUnitFileContentsProvider fileContentsProvider;
 
