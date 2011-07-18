@@ -11,32 +11,21 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractDbExportItem extends AbstractExportItem {
 
-   private OseeConnection connection;
    private int joinQueryId;
 
    public AbstractDbExportItem(ExportItem id) {
       super(id);
       this.joinQueryId = -1;
-      this.connection = null;
    }
 
    public void setJoinQueryId(int joinQueryId) {
       this.joinQueryId = joinQueryId;
-   }
-
-   public void setConnection(OseeConnection connection) {
-      this.connection = connection;
-   }
-
-   protected OseeConnection getConnection() {
-      return this.connection;
    }
 
    protected int getJoinQueryId() {
@@ -46,7 +35,6 @@ public abstract class AbstractDbExportItem extends AbstractExportItem {
    @Override
    public void cleanUp() {
       this.joinQueryId = -1;
-      this.connection = null;
       super.cleanUp();
    }
 }

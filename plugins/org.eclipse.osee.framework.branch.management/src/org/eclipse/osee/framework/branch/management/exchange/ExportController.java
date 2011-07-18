@@ -29,10 +29,8 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.ServerThreads;
-import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,7 +39,7 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-final class ExportController extends DbTransaction implements IExchangeTaskListener {
+final class ExportController implements IExchangeTaskListener {
    private static final String ZIP_EXTENSION = ".zip";
 
    private String exportName;
@@ -75,13 +73,13 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       return joinQuery != null ? joinQuery.getQueryId() : -1;
    }
 
-   private void cleanUp(OseeConnection connection, List<AbstractExportItem> taskList) {
+   private void cleanUp(List<AbstractExportItem> taskList) {
       for (AbstractExportItem exportItem : taskList) {
          exportItem.cleanUp();
       }
       try {
          if (joinQuery != null) {
-            joinQuery.delete(connection);
+            joinQuery.delete();
             joinQuery = null;
          }
       } catch (OseeCoreException ex) {
@@ -99,15 +97,14 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       return rootDirectory;
    }
 
-   private void setUp(OseeConnection connection, List<AbstractExportItem> taskList, File tempFolder) throws OseeCoreException {
+   private void setUp(List<AbstractExportItem> taskList, File tempFolder) throws OseeCoreException {
       joinQuery = JoinUtility.createExportImportJoinQuery();
       for (int branchId : branchIds) {
          joinQuery.add((long) branchId, -1L);
       }
-      joinQuery.store(connection);
+      joinQuery.store();
 
-      long maxTx =
-         oseeServices.getDatabaseService().runPreparedQueryFetchObject(connection, -1L, ExchangeDb.GET_MAX_TX);
+      long maxTx = oseeServices.getDatabaseService().runPreparedQueryFetchObject(-1L, ExchangeDb.GET_MAX_TX);
       long userMaxTx = ExchangeDb.getMaxTransaction(options);
       if (userMaxTx == Long.MIN_VALUE || userMaxTx > maxTx) {
          options.put(ExportOptions.MAX_TXS.name(), Long.toString(maxTx));
@@ -119,7 +116,6 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          if (exportItem instanceof AbstractDbExportItem) {
             AbstractDbExportItem exportItem2 = (AbstractDbExportItem) exportItem;
             exportItem2.setJoinQueryId(joinQuery.getQueryId());
-            exportItem2.setConnection(connection);
          }
          exportItem.addExportListener(this);
       }
@@ -129,13 +125,12 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
             ServerThreads.createNewThreadFactory("branch.export.worker"));
    }
 
-   @Override
-   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected void handleTxWork() throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       List<AbstractExportItem> taskList = ExchangeDb.createTaskList(oseeServices);
       try {
          File tempFolder = createTempFolder();
-         setUp(connection, taskList, tempFolder);
+         setUp(taskList, tempFolder);
 
          sendTasksToExecutor(taskList, tempFolder);
 
@@ -160,7 +155,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       } finally {
-         cleanUp(connection, taskList);
+         cleanUp(taskList);
       }
       OseeLog.log(
          this.getClass(),
@@ -203,9 +198,5 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    @Override
    synchronized public void onExportItemCompleted(String name, long timeToProcess) {
       System.out.println(String.format("Exported: [%s] in [%s] ms", name, timeToProcess));
-   }
-
-   @Override
-   public void onExportItemStarted(String name) {
    }
 }

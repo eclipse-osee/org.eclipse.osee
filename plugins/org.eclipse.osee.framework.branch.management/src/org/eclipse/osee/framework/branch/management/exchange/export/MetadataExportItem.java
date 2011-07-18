@@ -29,17 +29,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class MetadataExportItem extends AbstractDbExportItem {
    private final List<AbstractExportItem> exportItems;
+   private final DatabaseMetaData metaData;
 
-   public MetadataExportItem(List<AbstractExportItem> exportItems) {
+   public MetadataExportItem(List<AbstractExportItem> exportItems, DatabaseMetaData metaData) {
       super(ExportItem.EXPORT_DB_SCHEMA);
       this.exportItems = exportItems;
+      this.metaData = metaData;
    }
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openXmlNode(appendable, ExportImportXml.METADATA);
       try {
-         DatabaseMetaData metaData = getConnection().getMetaData();
          String[] tableTypes = getTypes(metaData);
          String schema = getSchema(metaData);
          for (AbstractExportItem item : exportItems) {

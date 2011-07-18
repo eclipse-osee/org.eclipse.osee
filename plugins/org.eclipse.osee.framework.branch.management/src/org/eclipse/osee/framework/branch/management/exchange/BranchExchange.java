@@ -36,7 +36,7 @@ public class BranchExchange implements IBranchExchange {
    @Override
    public IResourceLocator exportBranch(String exportName, Options options, List<Integer> branchIds) throws OseeCoreException {
       ExportController controller = new ExportController(oseeServices, exportName, options, branchIds);
-      controller.execute();
+      controller.handleTxWork();
       return oseeServices.getResourceLocatorManager().generateResourceLocator(ExchangeLocatorProvider.PROTOCOL, "",
          controller.getExchangeFileName());
    }

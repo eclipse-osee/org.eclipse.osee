@@ -15,8 +15,6 @@ package org.eclipse.osee.framework.branch.management;
  */
 public interface IExchangeTaskListener {
 
-   public void onExportItemStarted(String name);
-
    public void onExportItemCompleted(String name, long timeToProcess);
 
    public void onException(String name, Throwable ex);

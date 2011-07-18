@@ -100,7 +100,6 @@ public abstract class AbstractExportItem implements Runnable {
 
    @Override
    public final void run() {
-      notifyOnExportItemStarted();
       long startTime = System.currentTimeMillis();
       Writer writer = null;
       try {
@@ -131,12 +130,6 @@ public abstract class AbstractExportItem implements Runnable {
    protected void notifyOnExportException(Throwable ex) {
       for (IExchangeTaskListener listener : this.exportListeners) {
          listener.onException(getName(), ex);
-      }
-   }
-
-   protected void notifyOnExportItemStarted() {
-      for (IExchangeTaskListener listener : this.exportListeners) {
-         listener.onExportItemStarted(getName());
       }
    }
 

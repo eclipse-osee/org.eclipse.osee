@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class ExchangeDb {
+public final class ExchangeDb {
 
    public static final String GAMMA_ID = "gamma_id";
    public static final String TRANSACTION_ID = "transaction_id";
@@ -128,10 +129,10 @@ public class ExchangeDb {
    private static final String BRANCH_ACL_QUERY =
       "SELECT oba1.* FROM osee_branch_acl oba1, osee_join_export_import jex1 WHERE oba1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY oba1.branch_id";
 
-   static List<AbstractExportItem> createTaskList(OseeServices services) {
+   static List<AbstractExportItem> createTaskList(OseeServices services) throws OseeCoreException {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(items));
-      items.add(new MetadataExportItem(items));
+      items.add(new MetadataExportItem(items, services.getDatabaseService().getConnection().getMetaData()));
       items.add(new DbTableExportItem(services, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
       items.add(new DbTableExportItem(services, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
       items.add(new DbTableExportItem(services, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
@@ -234,6 +235,6 @@ public class ExchangeDb {
    }
 
    private ExchangeDb() {
+      // utility class
    }
-
 }

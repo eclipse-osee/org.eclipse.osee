@@ -12,14 +12,17 @@ package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.sql.Types;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -34,11 +37,11 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class DbTableExportItem extends AbstractDbExportItem {
    private final String query;
-   private final StringBuffer binaryContentBuffer = new StringBuffer();
-   private final StringBuffer stringContentBuffer = new StringBuffer();
-   private final StringBuffer oseeCommentBuffer = new StringBuffer();
-   private final StringBuffer branchNameBuffer = new StringBuffer();
-   private final StringBuffer rationaleBuffer = new StringBuffer();
+   private final StringBuilder binaryContentBuffer = new StringBuilder();
+   private final StringBuilder stringContentBuffer = new StringBuilder();
+   private final StringBuilder oseeCommentBuffer = new StringBuilder();
+   private final StringBuilder branchNameBuffer = new StringBuilder();
+   private final StringBuilder rationaleBuffer = new StringBuilder();
    private final OseeServices services;
 
    public DbTableExportItem(OseeServices services, ExportItem id, String query) {
@@ -47,7 +50,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
       this.query = query;
    }
 
-   protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws Exception {
+   protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws OseeCoreException, IOException {
       tempFolder = new File(tempFolder + File.separator + ExportImportXml.RESOURCE_FOLDER_NAME);
       if (tempFolder.exists() != true) {
          tempFolder.mkdirs();
@@ -76,7 +79,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      IOseeStatement chStmt = services.getDatabaseService().getStatement(getConnection());
+      IOseeStatement chStmt = services.getDatabaseService().getStatement();
       try {
          Pair<String, Object[]> sqlData = ExchangeDb.getQueryWithOptions(query, getJoinQueryId(), getOptions());
          chStmt.runPreparedQuery(10000, sqlData.getFirst(), sqlData.getSecond());
@@ -90,47 +93,39 @@ public class DbTableExportItem extends AbstractDbExportItem {
 
    private void processData(Appendable appendable, IOseeStatement chStmt) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
+
       try {
-         int numberOfColumns = chStmt.getColumnCount() + 1;
-         for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
-            String name = chStmt.getColumnName(columnIndex).toLowerCase();
-            if (name.equals("uri")) {
-               handleBinaryContent(binaryContentBuffer, getWriteLocation(), chStmt.getString(name));
-            } else if (name.equals("value")) {
-               handleStringContent(stringContentBuffer, chStmt.getString(name), ExportImportXml.STRING_CONTENT);
-            } else if (name.equals(ExportImportXml.OSEE_COMMENT)) {
-               handleStringContent(oseeCommentBuffer, chStmt.getString(name), ExportImportXml.OSEE_COMMENT);
-            } else if (name.equals(ExportImportXml.BRANCH_NAME)) {
-               handleStringContent(branchNameBuffer, chStmt.getString(name), ExportImportXml.BRANCH_NAME);
-            } else if (name.equals(ExportImportXml.RATIONALE)) {
-               handleStringContent(rationaleBuffer, chStmt.getString(name), ExportImportXml.RATIONALE);
-            } else if (name.equals(ExportImportXml.ART_TYPE_ID)) {
-               int typeId = chStmt.getInt(name);
-               String guid = services.getCachingService().getArtifactTypeCache().getById(typeId).getGuid();
-               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
-            } else if (name.equals(ExportImportXml.ATTR_TYPE_ID)) {
-               int typeId = chStmt.getInt(name);
-               String guid = services.getCachingService().getAttributeTypeCache().getById(typeId).getGuid();
-               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
-            } else if (name.equals(ExportImportXml.REL_TYPE_ID)) {
-               int typeId = chStmt.getInt(name);
-               String guid = services.getCachingService().getRelationTypeCache().getById(typeId).getGuid();
-               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
+         int numberOfColumns = chStmt.getColumnCount();
+         for (int columnIndex = 1; columnIndex <= numberOfColumns; columnIndex++) {
+            String columnName = chStmt.getColumnName(columnIndex).toLowerCase();
+            Object value = chStmt.getObject(columnIndex);
+            if (columnName.equals("uri")) {
+               handleBinaryContent(binaryContentBuffer, value);
+            } else if (columnName.equals("value")) {
+               handleStringContent(stringContentBuffer, value, ExportImportXml.STRING_CONTENT);
+            } else if (columnName.equals(ExportImportXml.OSEE_COMMENT)) {
+               handleStringContent(oseeCommentBuffer, value, columnName);
+            } else if (columnName.equals(ExportImportXml.BRANCH_NAME)) {
+               handleStringContent(branchNameBuffer, value, columnName);
+            } else if (columnName.equals(ExportImportXml.RATIONALE)) {
+               handleStringContent(rationaleBuffer, value, columnName);
+            } else if (columnName.equals(ExportImportXml.ART_TYPE_ID)) {
+               handleTypeId(appendable, value, services.getCachingService().getArtifactTypeCache());
+            } else if (columnName.equals(ExportImportXml.ATTR_TYPE_ID)) {
+               handleTypeId(appendable, value, services.getCachingService().getAttributeTypeCache());
+            } else if (columnName.equals(ExportImportXml.REL_TYPE_ID)) {
+               handleTypeId(appendable, value, services.getCachingService().getRelationTypeCache());
             } else {
-               switch (chStmt.getColumnType(columnIndex)) {
-                  case Types.TIMESTAMP:
-                     Timestamp timestamp = chStmt.getTimestamp(name);
-                     ExportImportXml.addXmlAttribute(appendable, name, timestamp);
-                     break;
-                  default:
-                     try {
-                        String value = chStmt.getString(name);
-                        ExportImportXml.addXmlAttribute(appendable, name, value);
-                     } catch (Exception ex) {
-                        throw new Exception(String.format("Unable to convert [%s] of raw type [%s] to string.", name,
-                           chStmt.getColumnTypeName(columnIndex)), ex);
-                     }
-                     break;
+               if (value instanceof Timestamp) {
+                  Timestamp timestamp = (Timestamp) value;
+                  ExportImportXml.addXmlAttribute(appendable, columnName, timestamp);
+               } else {
+                  try {
+                     ExportImportXml.addXmlAttribute(appendable, columnName, value);
+                  } catch (Exception ex) {
+                     throw new Exception(String.format("Unable to convert [%s] of raw type [%s] to string.",
+                        columnName, chStmt.getColumnTypeName(columnIndex)), ex);
+                  }
                }
             }
          }
@@ -164,16 +159,24 @@ public class DbTableExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void handleBinaryContent(Appendable appendable, File tempFolder, String uriData) throws Exception {
+   private void handleBinaryContent(Appendable appendable, Object value) throws OseeCoreException, IOException {
+      String uriData = (String) value;
       if (Strings.isValid(uriData)) {
-         uriData = exportBinaryDataTo(tempFolder, uriData);
+         uriData = exportBinaryDataTo(getWriteLocation(), uriData);
          ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.BINARY_CONTENT);
          ExportImportXml.addXmlAttribute(appendable, "location", uriData);
          ExportImportXml.closePartialXmlNode(appendable);
       }
    }
 
-   private void handleStringContent(Appendable appendable, String stringValue, String tag) throws Exception {
+   private void handleTypeId(Appendable appendable, Object value, AbstractOseeCache<?> cache) throws IOException, OseeCoreException {
+      int typeId = ((BigDecimal) value).intValueExact();
+      String guid = cache.getById(typeId).getGuid();
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
+   }
+
+   private void handleStringContent(Appendable appendable, Object value, String tag) throws IOException {
+      String stringValue = (String) value;
       if (Strings.isValid(stringValue)) {
          ExportImportXml.openXmlNodeNoNewline(appendable, tag);
          Xml.writeAsCdata(appendable, stringValue);

@@ -80,12 +80,12 @@ public class ExportImportXml {
    public static void addXmlAttribute(Appendable appendable, String name, Object value) throws IOException {
       appendable.append(name);
       appendable.append("=\"");
-      appendable.append(value.toString());
+      appendable.append(String.valueOf(value));
       appendable.append("\" ");
    }
 
    public static void closePartialXmlNode(Appendable appendable) throws IOException {
-      appendable.append(" />\n");
+      appendable.append("/>\n");
    }
 
    public static void endOpenedPartialXmlNode(Appendable appendable) throws IOException {
