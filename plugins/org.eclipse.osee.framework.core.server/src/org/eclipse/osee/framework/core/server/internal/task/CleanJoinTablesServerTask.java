@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IServerTask;
+import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SchedulingScheme;
 import org.eclipse.osee.framework.core.server.SessionUtil;
@@ -73,13 +74,15 @@ public class CleanJoinTablesServerTask implements IServerTask {
       try {
          chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(SELECT_SESSION_FROM_JOIN);
+
          String prevSessionId = "";
          while (chStmt.next()) {
             String sessionId = chStmt.getString("session_id");
             String tableName = chStmt.getString("table_name");
             Integer queryId = chStmt.getInt("query_id");
             if (!sessionId.equals(prevSessionId)) {
-               isAlive = SessionUtil.isAlive(manager.getSessionById(sessionId));
+               ISession sessionById = manager.getSessionById(sessionId);
+               isAlive = sessionById != null && SessionUtil.isAlive(sessionById);
             }
             if (!isAlive) {
                queryIds.add(new Integer[] {queryId});
