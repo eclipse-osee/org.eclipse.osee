@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -34,7 +34,7 @@ public class RequirementData extends BaseTraceDataCache {
    private final HashMap<String, Artifact> allSwRequirementsMap = new HashMap<String, Artifact>();
    private final TraceabilityExtractor extractor = TraceabilityExtractor.getInstance();
 
-   public RequirementData(Branch branch) {
+   public RequirementData(IOseeBranch branch) {
       super("Software Requirements Data", branch);
    }
 

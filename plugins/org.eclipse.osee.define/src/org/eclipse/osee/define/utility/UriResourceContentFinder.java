@@ -19,7 +19,6 @@ import java.nio.CharBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -155,7 +154,7 @@ public class UriResourceContentFinder {
             if (locator.isValidFile(fileStore)) {
                CharBuffer fileBuffer = getContents(monitor, fileStore);
                if (locator.hasValidContent(fileBuffer)) {
-                  String fileName = locator.getIdentifier(fileStore, fileBuffer);
+                  String fileName = locator.getIdentifier(fileStore, fileBuffer).getName();
                   if (!monitor.isCanceled()) {
                      monitor.subTask(String.format("processing [%s]", fileStore.getName()));
                      notifyListeners(locator, fileStore.toURI(), fileName, fileBuffer);

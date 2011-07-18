@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.define.traceability.ITraceParser;
@@ -132,10 +131,10 @@ public class ResourceToTraceUnit {
          if (monitor.isCanceled()) {
             break;
          }
-         Map<IArtifactType, TraceUnit> unitToTrace = testUnitCollector.getUnitsToTraceMarks(testUnitType);
+         Map<String, TraceUnit> unitToTrace = testUnitCollector.getUnitsToTraceMarks(testUnitType);
          if (unitToTrace != null) {
-            for (IArtifactType tUnit : unitToTrace.keySet()) {
-               monitor.subTask(String.format("Processing [%s - %s]", testUnitType, tUnit.getName()));
+            for (String tUnit : unitToTrace.keySet()) {
+               monitor.subTask(String.format("Processing [%s - %s]", testUnitType, tUnit));
                if (monitor.isCanceled()) {
                   break;
                }
@@ -176,12 +175,12 @@ public class ResourceToTraceUnit {
 
       private final ITraceParser traceParser;
       private final ITraceUnitResourceLocator traceUnitLocator;
-      private final Map<IArtifactType, Map<IArtifactType, TraceUnit>> traceUnitToTraceMarks;
+      private final Map<IArtifactType, Map<String, TraceUnit>> traceUnitToTraceMarks;
 
       public TraceUnitCollector(ITraceUnitResourceLocator traceUnitLocator, ITraceParser traceParser) {
          this.traceParser = traceParser;
          this.traceUnitLocator = traceUnitLocator;
-         this.traceUnitToTraceMarks = new HashMap<IArtifactType, Map<IArtifactType, TraceUnit>>();
+         this.traceUnitToTraceMarks = new HashMap<IArtifactType, Map<String, TraceUnit>>();
       }
 
       @Override
@@ -190,16 +189,17 @@ public class ResourceToTraceUnit {
          if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             Collection<TraceMark> traceMarks = traceParser.getTraceMarks(fileBuffer);
             if (traceMarks != null && !traceMarks.isEmpty()) {
-               Map<IArtifactType, TraceUnit> traceUnits = traceUnitToTraceMarks.get(traceUnitType);
+               Map<String, TraceUnit> traceUnits = traceUnitToTraceMarks.get(traceUnitType);
                if (traceUnits == null) {
-                  traceUnits = new HashMap<IArtifactType, TraceUnit>();
+                  traceUnits = new HashMap<String, TraceUnit>();
                   traceUnitToTraceMarks.put(traceUnitType, traceUnits);
                }
                TraceUnit unit = traceUnits.get(name);
                if (unit == null) {
                   unit = new TraceUnit(traceUnitType, name);
-                  traceUnits.put(traceUnitType, unit);
+                  traceUnits.put(name, unit);
                }
+               unit.setUriPath(uriPath);
                unit.addAllTraceMarks(traceMarks);
             }
          }
@@ -213,7 +213,7 @@ public class ResourceToTraceUnit {
          return traceUnitToTraceMarks.keySet();
       }
 
-      public Map<IArtifactType, TraceUnit> getUnitsToTraceMarks(IArtifactType unitType) {
+      public Map<String, TraceUnit> getUnitsToTraceMarks(IArtifactType unitType) {
          return traceUnitToTraceMarks.get(unitType);
       }
    }

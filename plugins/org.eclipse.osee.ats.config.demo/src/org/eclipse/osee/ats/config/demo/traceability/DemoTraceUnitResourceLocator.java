@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.config.demo.traceability;
 import java.nio.CharBuffer;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
+import org.eclipse.osee.define.traceability.ResourceIdentifier;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -48,8 +49,8 @@ public class DemoTraceUnitResourceLocator implements ITraceUnitResourceLocator {
    }
 
    @Override
-   public String getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception {
-      return fileStore.getName();
+   public ResourceIdentifier getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception {
+      return new ResourceIdentifier(fileStore.getName(), null);
    }
 
    @Override

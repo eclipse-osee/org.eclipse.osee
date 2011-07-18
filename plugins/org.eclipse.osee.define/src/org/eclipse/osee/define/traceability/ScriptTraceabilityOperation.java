@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -44,7 +43,7 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Ryan D. Brooks
  */
-public class ImportTraceabilityOperation extends AbstractOperation {
+public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
    private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
@@ -59,7 +58,7 @@ public class ImportTraceabilityOperation extends AbstractOperation {
    private int pathPrefixLength;
    private final boolean writeOutResults;
 
-   public ImportTraceabilityOperation(File file, Branch branch, boolean writeOutResults) throws IOException {
+   public ScriptTraceabilityOperation(File file, Branch branch, boolean writeOutResults) throws IOException {
       super("Importing Traceability", DefinePlugin.PLUGIN_ID);
       this.file = file;
       this.requirementData = new RequirementData(branch);
@@ -202,6 +201,7 @@ public class ImportTraceabilityOperation extends AbstractOperation {
       return "full match";
    }
 
+   @Override
    public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() {
       return requirementToCodeUnitsMap;
    }
@@ -209,10 +209,12 @@ public class ImportTraceabilityOperation extends AbstractOperation {
    /**
     * @return the codeUnits
     */
+   @Override
    public HashSet<String> getCodeUnits() {
       return codeUnits;
    }
 
+   @Override
    public RequirementData getRequirementData() {
       return requirementData;
    }

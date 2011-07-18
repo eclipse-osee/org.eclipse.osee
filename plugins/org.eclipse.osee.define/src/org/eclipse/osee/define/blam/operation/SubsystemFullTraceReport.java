@@ -19,7 +19,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.traceability.ImportTraceabilityOperation;
+import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -75,7 +75,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
 
       if (!scriptPath.equals("")) {
          File scriptDir = new File(variableMap.getString("Script Root Directory"));
-         ImportTraceabilityOperation traceOperation = new ImportTraceabilityOperation(scriptDir, branch, false);
+         ScriptTraceabilityOperation traceOperation = new ScriptTraceabilityOperation(scriptDir, branch, false);
          Operations.executeWorkAndCheckStatus(traceOperation, monitor);
          requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
       }

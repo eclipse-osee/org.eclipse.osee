@@ -72,7 +72,7 @@ public class TestUnitData extends BaseTraceDataCache {
       subMonitor.worked(20);
 
       if (!monitor.isCanceled()) {
-         monitor.subTask(String.format("Load Test Support from: [%s]", getBranch().getShortName()));
+         monitor.subTask(String.format("Load Test Support from: [%s]", getBranch()));
 
          testSupportItems.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestSupport, getBranch()));
          populateTraceMap(monitor, testSupportItems, testSupportMap);
@@ -80,7 +80,7 @@ public class TestUnitData extends BaseTraceDataCache {
       }
 
       if (!monitor.isCanceled()) {
-         monitor.subTask(String.format("Load Test Procedures from: [%s]", getBranch().getShortName()));
+         monitor.subTask(String.format("Load Test Procedures from: [%s]", getBranch()));
          testProcedures.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestProcedure, getBranch()));
          testProcedures.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestProcedureWML, getBranch()));
          testProcedures.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestProcedureXL, getBranch()));

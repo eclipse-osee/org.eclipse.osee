@@ -38,7 +38,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
       try {
          Branch branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
-         Operations.executeWorkAndCheckStatus(new ImportTraceabilityOperation(file, branch, true));
+         Operations.executeWorkAndCheckStatus(new ScriptTraceabilityOperation(file, branch, true));
       } catch (Exception ex) {
          OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Traceability Import Error", ex);
       }

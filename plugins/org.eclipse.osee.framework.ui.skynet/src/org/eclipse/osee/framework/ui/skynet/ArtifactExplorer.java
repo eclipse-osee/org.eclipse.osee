@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,6 +21,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -28,6 +33,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -49,7 +55,9 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -136,6 +144,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ExportResourcesAction;
 import org.eclipse.ui.actions.ImportResourcesAction;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 
@@ -148,6 +157,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
    private static final ArtifactClipboard artifactClipboard = new ArtifactClipboard(VIEW_ID);
    private static final LinkedList<Tree> trees = new LinkedList<Tree>();
+   private static final String REVEAL_IN_WORKSPACE_MENU = "Reveal in Workspace";
 
    private TreeViewer treeViewer;
    private Action upAction;
@@ -162,6 +172,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private MenuItem renameArtifactMenuItem;
    private MenuItem refreshMenuItem;
    private MenuItem findOnAnotherBranch;
+   private MenuItem findInWorkspace;
    private NeedArtifactMenuListener needArtifactListener;
    private NeedProjectMenuListener needProjectListener;
    private Tree myTree;
@@ -446,6 +457,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createFindOnDifferentBranchItem(popupMenu);
+      createFindInWorkspace(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createNewChildMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
@@ -706,6 +718,67 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                }
 
             }
+         }
+      });
+   }
+
+   private void createFindInWorkspace(Menu parentMenu) {
+      findInWorkspace = new MenuItem(parentMenu, SWT.PUSH);
+      findInWorkspace.setText(REVEAL_IN_WORKSPACE_MENU);
+      needArtifactListener.add(findInWorkspace);
+
+      ArtifactMenuListener listener = new ArtifactMenuListener();
+      parentMenu.addMenuListener(listener);
+      findInWorkspace.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent ev) {
+            final List<Artifact> selected = getSelection().toList();
+            final List<IResource> matches = new ArrayList<IResource>();
+
+            IOperation op = new RevealInWorkspaceOperation(selected, matches);
+            Operations.executeAsJob(op, true, Job.LONG, new JobChangeAdapter() {
+
+               @Override
+               public void done(IJobChangeEvent event) {
+                  super.done(event);
+                  if (event.getResult().isOK()) {
+                     Displays.ensureInDisplayThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                           String errorMsg = "";
+                           if (matches.isEmpty()) {
+                              errorMsg =
+                                 String.format("Unable to find: [%s] in the workspace",
+                                    Collections.toString(",", selected));
+                           } else {
+                              for (IResource resource : matches) {
+                                 IPath fullPath = resource.getLocation();
+                                 final File fileToOpen = fullPath.toFile();
+                                 if (fileToOpen != null && fileToOpen.exists() && fileToOpen.isFile()) {
+                                    try {
+                                       IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
+                                       IWorkbenchPage page =
+                                          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                                       IDE.openEditorOnFileStore(page, fileStore);
+                                    } catch (PartInitException e) {
+                                       errorMsg = e.toString();
+                                    }
+                                 } else {
+                                    errorMsg += String.format("Unable to find: [%s] in the workspace.\n", fullPath);
+                                 }
+                              }
+                           }
+                           if (Strings.isValid(errorMsg)) {
+                              Shell shell = AWorkbench.getActiveShell();
+                              MessageDialog.openError(shell, REVEAL_IN_WORKSPACE_MENU, errorMsg);
+                           }
+                        }
+                     });
+                  }
+               }
+            });
          }
       });
    }

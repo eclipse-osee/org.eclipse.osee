@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.operations;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,6 +23,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.traceability.AbstractSourceTagger;
+import org.eclipse.osee.define.traceability.TestUnitTagger;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
 import org.eclipse.osee.define.traceability.data.CodeUnitData;
 import org.eclipse.osee.define.traceability.data.RequirementData;
@@ -31,11 +35,14 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -123,6 +130,13 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return null;
    }
 
+   private AbstractSourceTagger getGuidUtility(IArtifactType artifactType) {
+      if (artifactType.equals(CoreArtifactTypes.TestCase)) {
+         return TestUnitTagger.getInstance();
+      }
+      return null;
+   }
+
    @Override
    public void process(IProgressMonitor monitor, TraceUnit traceUnit) throws OseeCoreException {
       if (transaction == null) {
@@ -131,11 +145,58 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       boolean hasChange = false;
       boolean artifactWasCreated = false;
       boolean wasRelated = false;
-      Artifact traceUnitArtifact = getArtifactFromCache(monitor, traceUnit.getTraceUnitType(), traceUnit.getName());
+      Artifact traceUnitArtifact = null;
+      AbstractSourceTagger guidUtility = getGuidUtility(traceUnit.getTraceUnitType());
+      String guid = null;
+
+      if (guidUtility != null) {
+         URI uriPath = traceUnit.getUriPath();
+         if (uriPath != null) {
+            try {
+               guid = guidUtility.getSourceTag(uriPath);
+            } catch (IOException ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            }
+         }
+         if (guid != null) {
+            if (!GUID.isValid(guid)) {
+               try {
+                  guidUtility.removeSourceTag(uriPath);
+               } catch (IOException ex) {
+                  OseeExceptions.wrapAndThrow(ex);
+               }
+            } else {
+               traceUnitArtifact =
+                  ArtifactQuery.checkArtifactFromId(guid, transaction.getBranch(), DeletionFlag.INCLUDE_DELETED);
+               if (traceUnitArtifact != null && traceUnitArtifact.isDeleted()) {
+                  traceUnitArtifact = null;
+                  guid = null;
+               }
+            }
+         }
+      }
+      if (traceUnitArtifact == null) {
+         traceUnitArtifact = getArtifactFromCache(monitor, traceUnit.getTraceUnitType(), traceUnit.getName());
+      }
       if (traceUnitArtifact == null) {
          traceUnitArtifact =
-            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), traceUnit.getName());
+            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), guid, null);
+         traceUnitArtifact.setName(traceUnit.getName());
          artifactWasCreated = true;
+      }
+
+      if (guidUtility != null && !traceUnitArtifact.getGuid().equals(guid)) {
+         try {
+            guidUtility.removeSourceTag(traceUnit.getUriPath());
+            guidUtility.addSourceTag(traceUnit.getUriPath(), traceUnitArtifact.getGuid());
+         } catch (IOException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
+      }
+
+      if (!traceUnitArtifact.getName().equals(traceUnit.getName())) {
+         traceUnitArtifact.setName(traceUnit.getName());
+         hasChange = true;
       }
 
       for (TraceMark traceMark : traceUnit.getTraceMarks()) {

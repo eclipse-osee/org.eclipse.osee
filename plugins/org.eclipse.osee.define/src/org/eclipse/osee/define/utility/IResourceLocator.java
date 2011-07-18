@@ -12,6 +12,7 @@ package org.eclipse.osee.define.utility;
 
 import java.nio.CharBuffer;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.osee.define.traceability.ResourceIdentifier;
 
 /**
  * @author Roberto E. Escobar
@@ -24,5 +25,5 @@ public interface IResourceLocator {
 
    public boolean hasValidContent(CharBuffer fileBuffer);
 
-   public String getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception;
+   public ResourceIdentifier getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception;
 }

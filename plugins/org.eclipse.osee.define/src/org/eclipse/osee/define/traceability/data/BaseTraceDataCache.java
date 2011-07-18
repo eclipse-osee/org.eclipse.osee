@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class BaseTraceDataCache {
 
    private boolean isInitialized;
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final String traceType;
 
-   public BaseTraceDataCache(String traceType, Branch branch) {
+   public BaseTraceDataCache(String traceType, IOseeBranch branch) {
       isInitialized = false;
       this.traceType = traceType;
       this.branch = branch;
@@ -38,7 +38,7 @@ public abstract class BaseTraceDataCache {
       return isInitialized;
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branch;
    }
 
@@ -46,7 +46,7 @@ public abstract class BaseTraceDataCache {
       IStatus toReturn = Status.CANCEL_STATUS;
       try {
          reset();
-         monitor.subTask(String.format("Loading %s from: [%s]", traceType, getBranch().getShortName()));
+         monitor.subTask(String.format("Loading %s from: [%s]", traceType, getBranch()));
 
          doBulkLoad(monitor);
 

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.data;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
@@ -23,11 +23,20 @@ public class TraceUnit {
    private final IArtifactType traceUnitType;
    private final String name;
    private final Collection<TraceMark> traceMarks;
+   private URI uriPath;
 
    public TraceUnit(IArtifactType traceUnitType, String name) {
       this.name = name;
       this.traceUnitType = traceUnitType;
       this.traceMarks = new HashSet<TraceMark>();
+   }
+
+   public URI getUriPath() {
+      return uriPath;
+   }
+
+   public void setUriPath(URI uriPath) {
+      this.uriPath = uriPath;
    }
 
    public IArtifactType getTraceUnitType() {

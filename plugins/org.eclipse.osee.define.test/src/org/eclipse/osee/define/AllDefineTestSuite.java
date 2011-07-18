@@ -12,11 +12,12 @@ package org.eclipse.osee.define;
 
 import org.eclipse.osee.define.blam.operation.BlamTestSuite;
 import org.eclipse.osee.define.jobs.JobsTestSuite;
+import org.eclipse.osee.define.traceability.TestUnitAnnotationUtilityTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BlamTestSuite.class, JobsTestSuite.class})
+@Suite.SuiteClasses({BlamTestSuite.class, JobsTestSuite.class, TestUnitAnnotationUtilityTest.class})
 public final class AllDefineTestSuite {
    // Tests added above
 }
