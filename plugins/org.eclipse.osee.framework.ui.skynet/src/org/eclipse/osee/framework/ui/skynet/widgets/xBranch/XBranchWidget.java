@@ -98,8 +98,8 @@ public class XBranchWidget extends GenericXWidget {
                   break;
             }
          }
-         refresh();
       }
+      refresh();
    }
 
    public void reveal(Branch branch) {

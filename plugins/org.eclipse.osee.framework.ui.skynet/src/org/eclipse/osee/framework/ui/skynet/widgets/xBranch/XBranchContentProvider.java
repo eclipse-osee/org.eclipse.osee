@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -113,7 +115,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchTypes.add(BranchType.WORKING);
          }
 
-         List<Branch> branchesToReturn = new ArrayList<Branch>();
+         Set<Branch> branchesToReturn = new HashSet<Branch>();
          if (showOnlyWorkingBranches) {
             branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING));
          }
