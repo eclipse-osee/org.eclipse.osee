@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.notify;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,6 +26,8 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.email.EmailGroup;
 import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 
@@ -144,6 +147,21 @@ public class AtsNotificationManager {
 
    public static void setIsProduction(boolean isProduction) {
       AtsNotificationManager.isProduction = isProduction;
+   }
+
+   public static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
+      ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
+      ArrayList<String> emails = new ArrayList<String>();
+      emails.add(UserManager.getEmail(workflow.getCreatedBy()));
+      groupNames.add(new EmailGroup("Originator", emails));
+      if (workflow.getStateMgr().getAssignees().size() > 0) {
+         emails = new ArrayList<String>();
+         for (IBasicUser u : workflow.getStateMgr().getAssignees()) {
+            emails.add(UserManager.getEmail(u));
+         }
+         groupNames.add(new EmailGroup("Assignees", emails));
+      }
+      return groupNames;
    }
 
 }

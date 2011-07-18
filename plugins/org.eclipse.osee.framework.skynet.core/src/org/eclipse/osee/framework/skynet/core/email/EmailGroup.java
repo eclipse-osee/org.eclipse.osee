@@ -8,15 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util.email;
+package org.eclipse.osee.framework.skynet.core.email;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -62,7 +62,7 @@ public class EmailGroup {
          if (EmailUtil.isEmailValid(str)) {
             this.emails.add(str);
          } else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Invalid Email [%s]", str));
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Invalid Email [%s]", str));
          }
       }
    }

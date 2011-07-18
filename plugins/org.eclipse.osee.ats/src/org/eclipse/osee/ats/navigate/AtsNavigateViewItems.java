@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
+import org.eclipse.osee.ats.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
@@ -267,6 +268,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       new EmailUserGroups(emailItems);
       new SubscribeByActionableItem(emailItems);
       new SubscribeByTeamDefinition(emailItems);
+      new XNavigateItemBlam(emailItems, new EmailActionsBlam(), FrameworkImage.EMAIL);
       items.add(emailItems);
 
       items.add(reportItems);

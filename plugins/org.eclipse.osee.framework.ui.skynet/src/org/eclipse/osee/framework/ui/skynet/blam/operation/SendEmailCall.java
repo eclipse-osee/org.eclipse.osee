@@ -12,18 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.concurrent.Callable;
 import javax.mail.MessagingException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
 
 public final class SendEmailCall implements Callable<String> {
-   private final Artifact user;
    private final OseeEmail emailMessage;
-   private final String emailAddress;
+   private final String description;
 
-   SendEmailCall(Artifact user, OseeEmail emailMessage, String emailAddress) {
-      this.user = user;
+   public SendEmailCall(OseeEmail emailMessage, String description) {
       this.emailMessage = emailMessage;
-      this.emailAddress = emailAddress;
+      this.description = description;
    }
 
    @Override
@@ -31,9 +28,8 @@ public final class SendEmailCall implements Callable<String> {
       try {
          emailMessage.sendLocalThread();
       } catch (MessagingException ex) {
-         return String.format("An exception occured with sending the email for address \"%s\" for user %s.  %s",
-            emailAddress, user.getName(), ex);
+         return String.format("An exception occured with sending the email [%s].  %s", description, ex);
       }
-      return String.format("Sucess for address \"%s\" for user %s.", emailAddress, user.getName());
+      return String.format("Sucess for [%s]", description);
    }
 }

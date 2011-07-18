@@ -54,7 +54,7 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.ArtifactEmailWizard;
+import org.eclipse.osee.ats.notify.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;

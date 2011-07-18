@@ -126,7 +126,8 @@ public class EmailGroupsBlam extends AbstractBlam {
       }
       final OseeEmail emailMessage = new OseeEmail(emailAddress, data.getSubject(), "", BodyType.Html);
       emailMessage.addHTMLBody(data.getHtmlResult(user));
-      futures.add(emailTheadPool.submit(new SendEmailCall(user, emailMessage, emailAddress)));
+      String description = String.format("[%s] for [%s]", emailAddress, user);
+      futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, description)));
    }
 
    @Override

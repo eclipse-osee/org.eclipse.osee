@@ -163,9 +163,6 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
       };
    };
 
-   /**
-    * @return the sendNotifications
-    */
    public boolean isSendNotifications() {
       return sendNotifications;
    }
