@@ -138,7 +138,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
    }
 
    public boolean validate(WizardDataTransferPage wizardPage) {
-      if (isDirectorySelected() && getFile().isDirectory() || !isDirectorySelected() && getFile().isFile()) {
+      if (getFile() != null && (isDirectorySelected() && getFile().isDirectory() || !isDirectorySelected() && getFile().isFile())) {
          return true;
       }
 
