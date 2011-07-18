@@ -365,6 +365,9 @@ public final class SkyWalkerOptions {
    }
 
    public void setSelectedRelTypes(Object[] selected) {
+      if (relTypes == null) {
+         loadRelTypes();
+      }
       List<Object> selList = new ArrayList<Object>();
       for (Object obj : selected) {
          selList.add(obj);
@@ -387,6 +390,9 @@ public final class SkyWalkerOptions {
    }
 
    public void setSelectedArtTypes(Collection<IArtifactType> selected) {
+      if (artTypes == null) {
+         loadArtTypes();
+      }
       for (Entry<IArtifactType, Boolean> entry : artTypes.entrySet()) {
          entry.setValue(selected.contains(entry.getKey()));
       }

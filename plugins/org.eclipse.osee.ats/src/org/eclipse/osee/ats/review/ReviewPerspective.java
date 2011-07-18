@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.review;
 
-import org.eclipse.osee.ats.hyper.ActionHyperView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -29,7 +28,6 @@ public class ReviewPerspective implements IPerspectiveFactory {
 
    public void defineActions(final IPageLayout layout) {
       layout.addShowViewShortcut(ReviewNavigateView.VIEW_ID);
-      layout.addShowViewShortcut(ActionHyperView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);

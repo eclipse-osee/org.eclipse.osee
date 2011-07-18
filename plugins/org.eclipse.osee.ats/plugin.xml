@@ -112,13 +112,13 @@
          name="ATS Navigator"
          id="org.eclipse.osee.ats.navigate.NavigateView">
    </view>
-   <view
-         class="org.eclipse.osee.ats.hyper.ActionHyperView"
+    <view
+         class="org.eclipse.osee.ats.walker.ActionWalkerView"
          icon="images/action.gif"
          category="org.eclipse.osee.ats.category"
          name="Action View"
-         id="org.eclipse.osee.ats.hyper.ActionHyperView">
-   </view>
+         id="org.eclipse.osee.ats.ActionWalkerView">
+    </view>
 <!-- Don't allow access to this yet 
     <view
          class="org.eclipse.osee.ats.hyper.ActionSkyWalker"
@@ -128,13 +128,6 @@
          id="org.eclipse.osee.ats.hyper.ActionSkyWalker">
    </view>
 -->
-   <view
-         class="org.eclipse.osee.ats.hyper.ArtifactHyperView"
-         icon="images/artView.gif"
-         category="org.eclipse.osee.ats.category"
-         name="Artifact View"
-         id="org.eclipse.osee.ats.hyper.ArtifactHyperView">
-   </view>
    <view
          category="org.eclipse.osee.ats.review.category"
          class="org.eclipse.osee.ats.review.ReviewNavigateView"

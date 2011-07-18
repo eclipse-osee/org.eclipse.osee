@@ -96,6 +96,10 @@ public class SkyWalkerView extends GenericViewPart {
 
          @Override
          public void doubleClick(DoubleClickEvent event) {
+            handleDoubleClick(event);
+         }
+
+         public void handleDoubleClick(DoubleClickEvent event) {
             IStructuredSelection selection = (IStructuredSelection) event.getSelection();
             Iterator<?> itemsIter = selection.iterator();
             while (itemsIter.hasNext()) {
@@ -371,9 +375,6 @@ public class SkyWalkerView extends GenericViewPart {
       }
    }
 
-   /**
-    * @return the options
-    */
    public SkyWalkerOptions getOptions() {
       return options;
    }

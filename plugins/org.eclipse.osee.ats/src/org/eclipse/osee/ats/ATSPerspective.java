@@ -11,9 +11,8 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.hyper.ActionHyperView;
-import org.eclipse.osee.ats.hyper.ArtifactHyperView;
 import org.eclipse.osee.ats.navigate.NavigateView;
+import org.eclipse.osee.ats.walker.ActionWalkerView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
@@ -37,9 +36,8 @@ public class ATSPerspective implements IPerspectiveFactory {
 
    public void defineActions(final IPageLayout layout) {
       layout.addShowViewShortcut(NavigateView.VIEW_ID);
-      layout.addShowViewShortcut(ActionHyperView.VIEW_ID);
+      layout.addShowViewShortcut(ActionWalkerView.VIEW_ID);
 
-      layout.addShowViewShortcut(ArtifactHyperView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(GroupExplorer.VIEW_ID);
@@ -72,6 +70,6 @@ public class ATSPerspective implements IPerspectiveFactory {
       bottom.addView(NewSearchUI.SEARCH_VIEW_ID);
       bottom.addPlaceholder(MergeView.VIEW_ID);
 
-      bottomRight.addView(ActionHyperView.VIEW_ID);
+      bottomRight.addView(ActionWalkerView.VIEW_ID);
    }
 }

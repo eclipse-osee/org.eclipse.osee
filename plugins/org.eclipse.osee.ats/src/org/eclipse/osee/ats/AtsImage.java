@@ -42,6 +42,7 @@ public enum AtsImage implements KeyedImage {
    GOAL("goal.gif"),
    GOAL_NEW("goalNew.gif"),
    HOME("home.gif"),
+   LAYOUT("layout.gif"),
    NEW_ACTION("newAction.gif"),
    NEW_NOTE("newNote.gif"),
    NEW_TASK("newTask.gif"),

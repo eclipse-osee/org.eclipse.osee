@@ -1,0 +1,146 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.osee.ats.walker;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
+
+/**
+ * @author Donald G. Dunne
+ */
+public class ActionWalkerContentProvider implements IGraphEntityContentProvider {
+   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
+
+   private final ActionWalkerView view;
+
+   public ActionWalkerContentProvider(ActionWalkerView view) {
+      super();
+      this.view = view;
+   }
+
+   private boolean isTopArtifactGoal() {
+      return view.getTopAtsArt() instanceof GoalArtifact;
+   }
+
+   @Override
+   public Object[] getElements(Object entity) {
+      List<Object> objs = new ArrayList<Object>(5);
+      try {
+         if (!isTopArtifactGoal() && entity instanceof ActionArtifact) {
+            objs.add(entity);
+            objs.addAll(((ActionArtifact) entity).getTeams());
+         } else if (!isTopArtifactGoal() && entity instanceof TeamWorkFlowArtifact) {
+            objs.add(entity);
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) entity;
+            if (!view.isShowAll() && teamArt.getTaskArtifacts().size() > 8) {
+               TaskWrapper taskWrapper = new TaskWrapper(teamArt);
+               objs.add(taskWrapper);
+               if (teamArt.getTaskArtifacts().contains(view.getActiveAwa())) {
+                  view.setActiveGraphItem(taskWrapper);
+               }
+            } else {
+               objs.addAll(((TeamWorkFlowArtifact) entity).getTaskArtifacts());
+            }
+            if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 4) {
+               ReviewWrapper reviewWrapper = new ReviewWrapper(teamArt);
+               objs.add(reviewWrapper);
+               if (ReviewManager.getReviews(teamArt).contains(view.getActiveAwa())) {
+                  view.setActiveGraphItem(reviewWrapper);
+               }
+            } else {
+               objs.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) entity));
+            }
+         } else if (entity instanceof GoalArtifact) {
+            objs.add(entity);
+            GoalArtifact goal = (GoalArtifact) entity;
+            if (!view.isShowAll() && goal.getMembers().size() > 10) {
+               objs.add(new GoalMemberWrapper(goal));
+            } else {
+               objs.addAll(goal.getMembers());
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return objs.toArray();
+   }
+
+   @Override
+   public Object[] getConnectedTo(Object inputElement) {
+      try {
+         if (!isTopArtifactGoal() && inputElement instanceof ActionArtifact) {
+            return ((ActionArtifact) inputElement).getTeams().toArray();
+         } else if (inputElement instanceof TeamWorkFlowArtifact) {
+            List<Object> objs = new ArrayList<Object>(5);
+            if (!isTopArtifactGoal()) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) inputElement;
+               if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 4) {
+                  ReviewWrapper reviewWrapper = new ReviewWrapper(teamArt);
+                  objs.add(reviewWrapper);
+                  if (ReviewManager.getReviews(teamArt).contains(view.getActiveAwa())) {
+                     view.setActiveGraphItem(reviewWrapper);
+                  }
+               } else {
+                  objs.addAll(ReviewManager.getReviews(teamArt));
+               }
+               if (!view.isShowAll() && teamArt.getTaskArtifacts().size() > 8) {
+                  TaskWrapper taskWrapper = new TaskWrapper(teamArt);
+                  objs.add(taskWrapper);
+                  if (teamArt.getTaskArtifacts().contains(view.getActiveAwa())) {
+                     view.setActiveGraphItem(taskWrapper);
+                  }
+               } else {
+                  objs.addAll(teamArt.getTaskArtifacts());
+               }
+            }
+            return objs.toArray();
+         } else if (inputElement instanceof GoalArtifact) {
+            List<Object> objs = new ArrayList<Object>(5);
+            objs.add(inputElement);
+            GoalArtifact goal = (GoalArtifact) inputElement;
+            if (!view.isShowAll() && goal.getMembers().size() > 10) {
+               objs.add(new GoalMemberWrapper(goal));
+            } else {
+               objs.addAll(goal.getMembers());
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return new Object[] {};
+   }
+
+   public double getWeight(Object entity1, Object entity2) {
+      return 0;
+   }
+
+   @Override
+   public void dispose() {
+      // do nothing
+   }
+
+   @Override
+   public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
+   }
+
+}
