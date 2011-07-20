@@ -96,4 +96,12 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
       }
       return DateUtil.getMMDDYYHHMM(getDate(object));
    }
+
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (!Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+         return getDate(element);
+      }
+      return null;
+   }
 }

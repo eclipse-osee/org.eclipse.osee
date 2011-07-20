@@ -123,4 +123,10 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
       }
       return "";
    }
+
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      return getDate(element);
+   }
+
 }

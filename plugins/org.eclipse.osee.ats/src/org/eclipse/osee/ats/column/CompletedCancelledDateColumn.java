@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
@@ -75,4 +76,23 @@ public class CompletedCancelledDateColumn extends XViewerAtsColumn implements IX
       }
       return "";
    }
+
+   public Date getDate(Object element) throws OseeCoreException {
+      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
+      if (awa.isCompleted()) {
+         return CompletedDateColumn.getDate(element);
+      } else if (awa.isCancelled()) {
+         return CancelledDateColumn.getDate(element);
+      }
+      return null;
+   }
+
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (!Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+         return getDate(element);
+      }
+      return null;
+   }
+
 }

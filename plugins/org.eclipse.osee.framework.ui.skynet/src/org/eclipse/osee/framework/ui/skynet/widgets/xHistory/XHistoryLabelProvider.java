@@ -59,7 +59,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(HistoryXViewerFactory.is)) {
             return data.getIsValue();
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-            return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(data.getTxDelta().getEndTx().getTimeStamp());
+            return new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(data.getTxDelta().getEndTx().getTimeStamp());
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
             return UserManager.getUserNameById(data.getTxDelta().getEndTx().getAuthor());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {
@@ -69,6 +69,22 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "unhandled column";
+   }
+
+   /**
+    * Provides the XViewerSorter the actual Date object to sort instead of having to convert the text back to Date (and
+    * loose the precision)
+    */
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (!(element instanceof Change)) {
+         return "";
+      }
+      Change data = (Change) element;
+      if (xCol.equals(HistoryXViewerFactory.timeStamp)) {
+         return data.getTxDelta().getEndTx().getTimeStamp();
+      }
+      return super.getBackingData(element, xCol, columnIndex);
    }
 
    @Override
@@ -113,4 +129,5 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       }
       return null;
    }
+
 }

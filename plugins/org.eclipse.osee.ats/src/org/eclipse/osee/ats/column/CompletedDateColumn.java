@@ -97,4 +97,9 @@ public class CompletedDateColumn extends XViewerAtsColumn implements IXViewerVal
       return DateUtil.getMMDDYYHHMM(getDate(object));
    }
 
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      return getDate(element);
+   }
+
 }
