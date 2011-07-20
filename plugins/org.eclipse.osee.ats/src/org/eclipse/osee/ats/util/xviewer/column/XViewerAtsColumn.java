@@ -77,4 +77,11 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       return false;
    }
 
+   /**
+    * Returns the backing data object for operations like sorting
+    */
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      return null;
+   }
+
 }
