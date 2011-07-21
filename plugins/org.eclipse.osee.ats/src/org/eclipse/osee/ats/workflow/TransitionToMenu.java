@@ -154,18 +154,25 @@ public class TransitionToMenu {
 
          @Override
          public Result getCompleteOrCancellationReason() {
-            AbstractWorkflowArtifact awa = getAwas().iterator().next();
-            StateDefinition stateDef = awa.getStateDefinitionByName(getToStateName());
-            Result result = new Result(false, "");
-            if (stateDef.isCancelledPage()) {
-               EntryDialog dialog = new EntryDialog("Enter Cancellation Reason", "Enter Cancellation Reason");
-               if (dialog.open() != 0) {
-                  result.setCancelled(true);
-               } else {
-                  result.setText(dialog.getEntry());
-                  result.set(true);
+            final Result result = new Result(false, "");
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  AbstractWorkflowArtifact awa = getAwas().iterator().next();
+                  StateDefinition stateDef = awa.getStateDefinitionByName(getToStateName());
+                  if (stateDef.isCancelledPage()) {
+                     EntryDialog dialog = new EntryDialog("Enter Cancellation Reason", "Enter Cancellation Reason");
+                     if (dialog.open() != 0) {
+                        result.setCancelled(true);
+                     } else {
+                        result.setText(dialog.getEntry());
+                        result.set(true);
+                     }
+                  }
                }
-            }
+
+            }, true);
             return result;
          }
 
