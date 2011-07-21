@@ -1480,6 +1480,9 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+      if (branch == null) {
+         return;
+      }
       if (branch.getGuid().equals(branchEvent.getBranchGuid())) {
          if ((branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed) && branch != null) {
             SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
