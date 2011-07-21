@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.Review_Demo_Suite;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.coverage.Coverage_Db_Suite;
 import org.eclipse.osee.define.AllDefineTestSuite;
+import org.eclipse.osee.framework.access.test.AllAccessTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.test.AllEventResTestSuite;
@@ -33,6 +34,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AllAccessTestSuite.class,
    Review_Demo_Suite.class,
    AtsTest_Demo_StateItem_Suite.class,
    CoreRuntimeFeatureTestsSuite.class,
