@@ -208,4 +208,10 @@
           classname="org.eclipse.osee.define.navigate.DefineNavigateViewItems">
     </XCommonNavigateItem>
  </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.traceability.report.PublishStdStpTraceability">
+    </Operation>
+ </extension>
 </plugin>

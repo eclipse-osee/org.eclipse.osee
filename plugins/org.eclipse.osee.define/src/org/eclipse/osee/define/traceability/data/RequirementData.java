@@ -14,10 +14,12 @@ package org.eclipse.osee.define.traceability.data;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -30,31 +32,47 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class RequirementData extends BaseTraceDataCache {
    private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
-   private final List<Artifact> directSwRequirements = new ArrayList<Artifact>();
-   private final HashMap<String, Artifact> allSwRequirementsMap = new HashMap<String, Artifact>();
+   private final List<Artifact> directRequirements = new ArrayList<Artifact>();
+   private final HashMap<String, Artifact> allRequirementsMap = new HashMap<String, Artifact>();
    private final TraceabilityExtractor extractor = TraceabilityExtractor.getInstance();
+   private final Collection<? extends IArtifactType> types;
+   private final boolean withInheritance;
+
+   public RequirementData(IOseeBranch branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
+      super("Software Requirements Data", branch);
+      this.types = types;
+      this.withInheritance = withInheritance;
+   }
 
    public RequirementData(IOseeBranch branch) {
       super("Software Requirements Data", branch);
+      types = Collections.singleton(CoreArtifactTypes.AbstractSoftwareRequirement);
+      withInheritance = true;
    }
 
    @Override
    public void reset() {
       super.reset();
-      this.directSwRequirements.clear();
-      allSwRequirementsMap.clear();
+      this.directRequirements.clear();
+      allRequirementsMap.clear();
    }
 
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
-      List<Artifact> allSwRequirements =
-         ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
-            getBranch(), EXCLUDE_DELETED);
-      populateTraceMap(monitor, allSwRequirements, allSwRequirementsMap);
+      List<Artifact> allSwRequirements = new ArrayList<Artifact>();
+      for (IArtifactType type : types) {
+         if (withInheritance) {
+            allSwRequirements.addAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(type, getBranch(),
+               EXCLUDE_DELETED));
+         } else {
+            allSwRequirements.addAll(ArtifactQuery.getArtifactListFromType(type, getBranch(), EXCLUDE_DELETED));
+         }
+      }
+      populateTraceMap(monitor, allSwRequirements, allRequirementsMap);
 
-      for (Artifact requirement : getAllSwRequirements()) {
+      for (Artifact requirement : getAllRequirements()) {
          if (!requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement)) {
-            directSwRequirements.add(requirement);
+            directRequirements.add(requirement);
          }
       }
       monitor.worked(38);
@@ -65,12 +83,12 @@ public class RequirementData extends BaseTraceDataCache {
       return traceExtractor.getCanonicalRequirementName(artifact.getName());
    }
 
-   public Collection<Artifact> getDirectSwRequirements() {
-      return directSwRequirements;
+   public Collection<Artifact> getDirectRequirements() {
+      return directRequirements;
    }
 
-   public Collection<Artifact> getAllSwRequirements() {
-      return allSwRequirementsMap.values();
+   public Collection<Artifact> getAllRequirements() {
+      return allRequirementsMap.values();
    }
 
    /**
@@ -79,7 +97,7 @@ public class RequirementData extends BaseTraceDataCache {
     * @return requirement artifact
     */
    public Artifact getRequirementFromTraceMark(String traceMark) {
-      return allSwRequirementsMap.get(extractor.getCanonicalRequirementName(traceMark));
+      return allRequirementsMap.get(extractor.getCanonicalRequirementName(traceMark));
    }
 
    /**

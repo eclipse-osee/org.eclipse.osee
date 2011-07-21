@@ -104,7 +104,7 @@ public class UiToTestBlam extends AbstractBlam {
          } else {
             RequirementData requirements = new RequirementData(branch);
             requirements.initialize(monitor);
-            toTrace.addAll(requirements.getAllSwRequirements());
+            toTrace.addAll(requirements.getAllRequirements());
          }
 
          StringWriter appendable = new StringWriter();

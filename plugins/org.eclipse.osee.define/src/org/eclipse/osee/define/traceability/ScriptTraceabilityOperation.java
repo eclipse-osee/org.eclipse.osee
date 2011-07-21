@@ -13,6 +13,7 @@ package org.eclipse.osee.define.traceability;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.data.RequirementData;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -49,26 +51,31 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
 
    private final File file;
    private final RequirementData requirementData;
-   private final ArrayList<String> noTraceabilityFiles;
-   private final CountingMap<Artifact> reqsTraceCounts;
-   private final HashCollection<Artifact, String> requirementToCodeUnitsMap;
-   private final HashSet<String> codeUnits;
+   private final ArrayList<String> noTraceabilityFiles = new ArrayList<String>(200);
+   private final CountingMap<Artifact> reqsTraceCounts = new CountingMap<Artifact>();
+   private final HashCollection<Artifact, String> requirementToCodeUnitsMap = new HashCollection<Artifact, String>(
+      false, LinkedList.class);
+   private final HashSet<String> codeUnits = new HashSet<String>();
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
    private int pathPrefixLength;
    private final boolean writeOutResults;
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults) throws IOException {
+   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults) throws IOException {
       super("Importing Traceability", DefinePlugin.PLUGIN_ID);
       this.file = file;
-      this.requirementData = new RequirementData(branch);
-      noTraceabilityFiles = new ArrayList<String>(200);
-      reqsTraceCounts = new CountingMap<Artifact>();
-      codeUnits = new HashSet<String>();
-      requirementToCodeUnitsMap = new HashCollection<Artifact, String>(false, LinkedList.class);
+      this.requirementData = requirementData;
+      this.writeOutResults = writeOutResults;
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
-      this.writeOutResults = writeOutResults;
+   }
+
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults) throws IOException {
+      this(new RequirementData(branch), file, writeOutResults);
+   }
+
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance) throws IOException {
+      this(new RequirementData(branch, types, withInheritance), file, writeOutResults);
    }
 
    @Override
@@ -143,7 +150,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions");
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
 
-      for (Artifact artifact : requirementData.getDirectSwRequirements()) {
+      for (Artifact artifact : requirementData.getDirectRequirements()) {
          excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)),
             Collections.toString(",", artifact.getAttributesToStringList(CoreAttributeTypes.Partition)));
       }

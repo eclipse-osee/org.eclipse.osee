@@ -73,5 +73,6 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.ui.skynet.widgets.xHistory,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.ui.ws,
+ org.eclipse.osee.ote.define.artifacts,
  org.eclipse.ui.forms.editor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

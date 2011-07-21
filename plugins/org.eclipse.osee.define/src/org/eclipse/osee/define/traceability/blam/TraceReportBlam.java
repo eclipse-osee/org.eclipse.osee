@@ -353,7 +353,7 @@ public class TraceReportBlam extends AbstractBlam {
 
    private AbstractArtifactRelationReport getTraceCountReport(RequirementData reqData, List<TraceTypeEnum> traceTypes) {
       ArtifactTraceCount report = new ArtifactTraceCount();
-      report.setArtifacts(reqData.getDirectSwRequirements());
+      report.setArtifacts(reqData.getDirectRequirements());
       addRelationToCheck(traceTypes, report, false);
       return report;
    }
