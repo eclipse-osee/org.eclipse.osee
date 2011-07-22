@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -214,16 +215,10 @@ public final class ImportController {
          currentSavePoint = item.getSource();
          handler.setExportItem(item);
          if (!doesSavePointExist(currentSavePoint)) {
-            DbTransaction importTx = new DbTransaction() {
-               @Override
-               protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-                  process(handler, connection, item);
-                  handler.store();
-                  handler.reset();
-                  addSavePoint(currentSavePoint);
-               }
-            };
-            importTx.execute();
+            process(handler, ConnectionHandler.getConnection(), item);
+            handler.store();
+            handler.reset();
+            addSavePoint(currentSavePoint);
          } else {
             OseeLog.log(Activator.class, Level.INFO,
                String.format("Save point found for: [%s] - skipping", item.getSource()));
