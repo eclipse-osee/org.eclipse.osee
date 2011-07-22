@@ -10,12 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
@@ -84,7 +91,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    }
 
    public boolean isStorageNeeded() {
-      return this.isCacheAll != true && this.data.size() > this.cacheLimit;
+      return !isCacheAll && data.size() > cacheLimit;
    }
 
    protected void addData(Object[] objects) {
@@ -98,8 +105,44 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       }
    }
 
+   private boolean isTruncateSupported() throws OseeCoreException {
+      boolean isTruncateSupported = false;
+      DatabaseMetaData metaData = connection.getMetaData();
+      if (!SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.derby)) {
+         ResultSet resultSet = null;
+         try {
+            resultSet = metaData.getTablePrivileges(null, null, getMetaData().getTableName().toUpperCase());
+            while (resultSet.next()) {
+               String value = resultSet.getString("PRIVILEGE");
+               if ("TRUNCATE".equalsIgnoreCase(value)) {
+                  isTruncateSupported = true;
+                  break;
+               }
+            }
+         } catch (SQLException ex1) {
+            OseeLog.log(Activator.class, Level.INFO, ex1);
+         } finally {
+            if (resultSet != null) {
+               try {
+                  resultSet.close();
+               } catch (SQLException ex) {
+                  // Do Nothing
+               }
+            }
+         }
+      }
+      return isTruncateSupported;
+   }
+
    public void clearDataTable() throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(connection, String.format("DELETE FROM %s", getMetaData().getTableName()));
+      String cmd = isTruncateSupported() ? "TRUNCATE TABLE" : "DELETE FROM";
+      String deleteSql = String.format("%s %s", cmd, getMetaData().getTableName());
+      try {
+         getDatabaseService().runPreparedUpdate(connection, deleteSql);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.INFO, ex, "Error clearing: %s", deleteSql);
+         throw ex;
+      }
    }
 
    protected IOseeDatabaseService getDatabaseService() {
