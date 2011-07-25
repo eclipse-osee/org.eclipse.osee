@@ -22,7 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -96,8 +96,10 @@ public class EmailActionsBlam extends AbstractBlam {
       emailTheadPool = Executors.newFixedThreadPool(30);
       futures.clear();
 
-      for (Artifact user : data.getWorkflows()) {
-         sendEmailTo(data, (TeamWorkFlowArtifact) user);
+      for (Artifact art : data.getWorkflows()) {
+         if (art instanceof AbstractWorkflowArtifact) {
+            sendEmailTo(data, (AbstractWorkflowArtifact) art);
+         }
       }
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
@@ -107,12 +109,12 @@ public class EmailActionsBlam extends AbstractBlam {
 
    }
 
-   private void sendEmailTo(EmailActionsData data, final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void sendEmailTo(EmailActionsData data, final AbstractWorkflowArtifact awa) throws OseeCoreException {
       Set<IBasicUser> assignees = new HashSet<IBasicUser>();
-      assignees.addAll(teamArt.getStateMgr().getAssignees());
+      assignees.addAll(awa.getStateMgr().getAssignees());
       Collection<IBasicUser> activeEmailUsers = EmailUtil.getActiveEmailUsers(assignees);
       if (assignees.isEmpty()) {
-         report(String.format("No active assignees for workflow [%s].", teamArt.toStringWithId()));
+         report(String.format("No active assignees for workflow [%s].", awa.toStringWithId()));
          return;
       }
 
@@ -125,7 +127,7 @@ public class EmailActionsBlam extends AbstractBlam {
       }
 
       if (emailAddresses.isEmpty()) {
-         report(String.format("No valid emails for workflow [%s].", teamArt.toStringWithId()));
+         report(String.format("No valid emails for workflow [%s].", awa.toStringWithId()));
          return;
       }
 
@@ -138,14 +140,13 @@ public class EmailActionsBlam extends AbstractBlam {
          new OseeEmail(emailAddresses, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(),
             data.getSubject(), "", BodyType.Html);
       emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(data.getBody()) + "</p><p>--------------------------------------------------------</p>");
-      emailMessage.addHTMLBody(getHtmlMessage(data, teamArt));
-      String description = String.format("%s for %s", teamArt.toStringWithId(), emailAddresses);
+      emailMessage.addHTMLBody(getHtmlMessage(data, awa));
+      String description = String.format("%s for %s", awa.toStringWithId(), emailAddresses);
       futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, description)));
    }
 
-   private String getHtmlMessage(EmailActionsData data, TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return AtsNotificationManagerUI.getPreviewHtml(teamArt, PreviewStyle.HYPEROPEN,
-         PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE);
+   private String getHtmlMessage(EmailActionsData data, AbstractWorkflowArtifact awa) throws OseeCoreException {
+      return AtsNotificationManagerUI.getPreviewHtml(awa, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE);
    }
 
    @Override
