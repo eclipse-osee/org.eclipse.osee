@@ -175,6 +175,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          items.add(new ArtifactImpactToActionSearchItem(null));
 
+         createEmailItems(item, items);
+
          createReportItems(item, items);
 
          createUtilItems(item, items);
@@ -250,6 +252,18 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       items.add(utilItems);
    }
 
+   private void createEmailItems(XNavigateItem parent, List<XNavigateItem> items) {
+      XNavigateItem emailItems = new XNavigateItem(parent, "Email & Notifications", FrameworkImage.EMAIL);
+      new EmailTeamsItem(emailItems, null, MemberType.Both);
+      new EmailTeamsItem(emailItems, null, MemberType.Leads);
+      new EmailTeamsItem(emailItems, null, MemberType.Members);
+      new EmailUserGroups(emailItems);
+      new SubscribeByActionableItem(emailItems);
+      new SubscribeByTeamDefinition(emailItems);
+      new XNavigateItemBlam(emailItems, new EmailActionsBlam(), FrameworkImage.EMAIL);
+      items.add(emailItems);
+   }
+
    private void createReportItems(XNavigateItem parent, List<XNavigateItem> items) {
       XNavigateItem reportItems = new XNavigateItem(parent, "Reports", AtsImage.REPORT);
       new FirstTimeQualityMetricReportItem(reportItems);
@@ -260,18 +274,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       new XViewerExample(reportItems);
       new XResultDataExample(reportItems);
       //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
-
-      XNavigateItem emailItems = new XNavigateItem(null, "Email & Notifications", FrameworkImage.EMAIL);
-      new EmailTeamsItem(emailItems, null, MemberType.Both);
-      new EmailTeamsItem(emailItems, null, MemberType.Leads);
-      new EmailTeamsItem(emailItems, null, MemberType.Members);
-      new EmailUserGroups(emailItems);
-      new SubscribeByActionableItem(emailItems);
-      new SubscribeByTeamDefinition(emailItems);
-      new XNavigateItemBlam(emailItems, new EmailActionsBlam(), FrameworkImage.EMAIL);
-      items.add(emailItems);
-
       items.add(reportItems);
+
    }
 
    private void createVersionsSection(XNavigateItem parent, List<XNavigateItem> items) {
