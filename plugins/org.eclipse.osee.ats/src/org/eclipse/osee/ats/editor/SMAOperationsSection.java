@@ -57,7 +57,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class SMAOperationsSection extends SectionPart {
 
    protected final SMAEditor editor;
-   private static List<ISMAOperationsSection> advOperations;
+   private static List<ISMAOperationsSection> operationsSectionProviders;
    private boolean sectionCreated = false;
 
    public SMAOperationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
@@ -67,13 +67,13 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private synchronized void registerAdvancedSectionsFromExtensionPoints() {
-      if (advOperations == null) {
-         advOperations = new ArrayList<ISMAOperationsSection>();
+      if (operationsSectionProviders == null) {
+         operationsSectionProviders = new ArrayList<ISMAOperationsSection>();
          ExtensionDefinedObjects<ISMAOperationsSection> extensions =
             new ExtensionDefinedObjects<ISMAOperationsSection>(AtsPlugin.PLUGIN_ID + ".AtsAdvancedOperationAction",
                "AtsAdvancedOperationAction", "classname");
          for (ISMAOperationsSection item : extensions.getObjects()) {
-            advOperations.add(item);
+            operationsSectionProviders.add(item);
          }
       }
    }
@@ -147,10 +147,6 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createAdvancedSection(Composite parent, FormToolkit toolkit) {
-      if (!editor.getAwa().isTeamWorkflow()) {
-         return;
-      }
-
       Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
       section.setText("Advanced");
 
@@ -167,10 +163,8 @@ public class SMAOperationsSection extends SectionPart {
          new XButtonViaAction(new ConvertActionableItemsAction(editor)).createWidgets(sectionBody, 2);
       }
 
-      for (ISMAOperationsSection operation : advOperations) {
-         if (operation.isValid(editor)) {
-            operation.createAdvancedSection(editor, sectionBody, toolkit);
-         }
+      for (ISMAOperationsSection operation : operationsSectionProviders) {
+         operation.createAdvancedSection(editor, sectionBody, toolkit);
       }
 
       section.setClient(sectionBody);
@@ -195,6 +189,10 @@ public class SMAOperationsSection extends SectionPart {
       new XButtonViaAction(new WorkflowDebugAction(editor.getAwa())).createWidgets(sectionBody, 2);
       if (ShowBranchChangeDataAction.isApplicable(editor.getAwa())) {
          new XButtonViaAction(new ShowBranchChangeDataAction(editor.getAwa())).createWidgets(sectionBody, 2);
+      }
+
+      for (ISMAOperationsSection operation : operationsSectionProviders) {
+         operation.createAdminSection(editor, sectionBody, toolkit);
       }
 
       section.setClient(sectionBody);

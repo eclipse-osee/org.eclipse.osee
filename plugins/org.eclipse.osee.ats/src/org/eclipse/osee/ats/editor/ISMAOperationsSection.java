@@ -17,5 +17,6 @@ public interface ISMAOperationsSection {
 
    public abstract void createAdvancedSection(SMAEditor editor, Composite parent, FormToolkit toolkit);
 
-   public abstract boolean isValid(SMAEditor editor);
+   public abstract void createAdminSection(SMAEditor editor, Composite parent, FormToolkit toolkit);
+
 }
