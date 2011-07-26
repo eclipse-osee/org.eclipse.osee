@@ -56,6 +56,7 @@ public abstract class AbstractOperation implements IOperation {
 
    @Override
    public final IStatus run(SubMonitor subMonitor) {
+      setStatus(null);
       wasExecuted = true;
       try {
          doWork(subMonitor);
