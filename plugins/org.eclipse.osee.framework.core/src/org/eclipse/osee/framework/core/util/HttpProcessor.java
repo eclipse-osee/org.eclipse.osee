@@ -59,6 +59,8 @@ public class HttpProcessor {
    private static final long CHECK_WINDOW = 5000;
 
    private static final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+   private static final HttpClient client = new HttpClient(connectionManager);
+
    private static IProxyService proxyService;
 
    private static final Map<String, IProxyData[]> proxiedData = new ConcurrentHashMap<String, IProxyData[]>();
@@ -72,7 +74,6 @@ public class HttpProcessor {
    }
 
    private static HttpClient getHttpClient(URI uri) {
-      HttpClient client = new HttpClient(connectionManager);
       HostConfiguration config = client.getHostConfiguration();
       configureProxyData(uri, config);
       return client;
@@ -233,15 +234,8 @@ public class HttpProcessor {
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       } finally {
-         try {
-            if (responseInputStream != null) {
-               responseInputStream.close();
-            }
-         } catch (Exception ex) {
-            // Do Nothing;
-         } finally {
-            method.releaseConnection();
-         }
+         Lib.close(responseInputStream);
+         method.releaseConnection();
       }
       return response;
    }
@@ -272,16 +266,9 @@ public class HttpProcessor {
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       } finally {
-         try {
-            result.setCode(statusCode);
-            if (httpInputStream != null) {
-               httpInputStream.close();
-            }
-         } catch (Exception ex) {
-            // Do Nothing;
-         } finally {
-            method.releaseConnection();
-         }
+         Lib.close(httpInputStream);
+         result.setCode(statusCode);
+         method.releaseConnection();
       }
       return result;
    }
@@ -312,16 +299,9 @@ public class HttpProcessor {
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       } finally {
-         try {
-            result.setCode(statusCode);
-            if (httpInputStream != null) {
-               httpInputStream.close();
-            }
-         } catch (Exception ex) {
-            // Do Nothing;
-         } finally {
-            method.releaseConnection();
-         }
+         Lib.close(httpInputStream);
+         result.setCode(statusCode);
+         method.releaseConnection();
       }
       return result;
    }
@@ -349,15 +329,8 @@ public class HttpProcessor {
             response = Lib.inputStreamToString(responseInputStream);
          }
       } finally {
-         try {
-            if (responseInputStream != null) {
-               responseInputStream.close();
-            }
-         } catch (Exception ex) {
-            // Do Nothing;
-         } finally {
-            method.releaseConnection();
-         }
+         Lib.close(responseInputStream);
+         method.releaseConnection();
       }
       return response;
    }
@@ -397,16 +370,9 @@ public class HttpProcessor {
       } catch (Exception ex) {
          throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]", url, statusCode), ex);
       } finally {
-         try {
-            result.setCode(statusCode);
-            if (inputStream != null) {
-               inputStream.close();
-            }
-         } catch (Exception ex) {
-            // Do Nothing;
-         } finally {
-            method.releaseConnection();
-         }
+         Lib.close(inputStream);
+         result.setCode(statusCode);
+         method.releaseConnection();
       }
       return result;
    }
@@ -427,15 +393,8 @@ public class HttpProcessor {
       } catch (Exception ex) {
          throw new Exception(String.format("Error deleting resource: [%s] - status code: [%s]", url, statusCode), ex);
       } finally {
-         try {
-            if (responseInputStream != null) {
-               responseInputStream.close();
-            }
-         } catch (Exception ex) {
-            // Do Nothing;
-         } finally {
-            method.releaseConnection();
-         }
+         Lib.close(responseInputStream);
+         method.releaseConnection();
       }
       return response;
    }
