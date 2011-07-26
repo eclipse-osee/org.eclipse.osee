@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Date;
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -99,6 +101,19 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
 
    public static String getDateStr(AbstractWorkflowArtifact artifact) throws OseeCoreException {
       return DateUtil.getMMDDYY(getDate(artifact));
+   }
+
+   @Override
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String value = super.getColumnText(element, column, columnIndex);
+      if (Strings.isValid(value)) {
+         return value;
+      }
+      try {
+         return DateUtil.getMMDDYYHHMM(getDate(element));
+      } catch (OseeCoreException ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
 }
