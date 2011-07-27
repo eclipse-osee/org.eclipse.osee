@@ -17,9 +17,13 @@ import org.eclipse.osee.ats.core.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.core.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.core.validator.AtsOperationalImpactValidator;
 import org.eclipse.osee.ats.core.validator.AtsOperationalImpactWithWorkaroundValidator;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
 import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -67,8 +71,13 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XDefectViewer();
       } else if (widgetName.equals(AtsXUserRoleValidator.WIDGET_NAME)) {
          return new XUserRoleViewer();
+      } else if (widgetName.equals("XAtsProgramComboWidget")) {
+         try {
+            return new XAtsProgramComboWidget();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
-
       return toReturn;
    }
 }

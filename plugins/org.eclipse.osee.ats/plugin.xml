@@ -483,5 +483,4 @@
                classname="org.eclipse.osee.ats.util.AtsUserNavigateItems">
          </UserNavigateItem>
       </extension>
-   
 </plugin>
