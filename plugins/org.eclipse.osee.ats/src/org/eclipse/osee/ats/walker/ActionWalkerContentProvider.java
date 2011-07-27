@@ -115,13 +115,13 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             return objs.toArray();
          } else if (inputElement instanceof GoalArtifact) {
             List<Object> objs = new ArrayList<Object>(5);
-            objs.add(inputElement);
             GoalArtifact goal = (GoalArtifact) inputElement;
             if (!view.isShowAll() && goal.getMembers().size() > 10) {
                objs.add(new GoalMemberWrapper(goal));
             } else {
                objs.addAll(goal.getMembers());
             }
+            return objs.toArray();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
