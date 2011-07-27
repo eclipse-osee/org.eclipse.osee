@@ -38,6 +38,10 @@ public final class FontManager {
       return getFont("Courier New", 8, SWT.NONE);
    }
 
+   public static Font getCourierNew12Bold() {
+      return getFont("Courier New", 12, SWT.BOLD);
+   }
+
    public static Font getFont(String fontName, int size, int swtType) {
       String hashKey = fontName + "-" + size + "-" + swtType;
       if (!fontMap.containsKey(hashKey)) {
