@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,10 +19,12 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -33,6 +36,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
@@ -49,7 +55,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -62,6 +70,8 @@ public class NewActionPage1 extends WizardPage {
    protected OSEECheckedFilteredTree treeViewer;
    private static PatternFilter patternFilter = new PatternFilter();
    private Text descriptionLabel;
+   private boolean debugPopulated = false;
+   private static Artifact atsAi;
 
    protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);
@@ -88,6 +98,15 @@ public class NewActionPage1 extends WizardPage {
 
          page = new WorkPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
+
+         ((XText) getXWidget("Title")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               if (event.button == 3) {
+                  handlePopulateWithDebugInfo();
+               }
+            }
+         });
 
          Composite aiComp = new Composite(comp, SWT.NONE);
          aiComp.setLayout(new GridLayout(1, false));
@@ -142,6 +161,26 @@ public class NewActionPage1 extends WizardPage {
          }
          ((XText) getXWidget("Title")).setFocus();
       } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private void handlePopulateWithDebugInfo() {
+      if (debugPopulated) {
+         return;
+      }
+      try {
+         ((XText) getXWidget("Title")).set("tt");
+         if (atsAi == null) {
+            atsAi =
+               ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, "ATS",
+                  BranchManager.getCommonBranch());
+         }
+         treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
+         treeViewer.setInitalChecked(Arrays.asList(atsAi));
+         getContainer().updateButtons();
+         debugPopulated = true;
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
