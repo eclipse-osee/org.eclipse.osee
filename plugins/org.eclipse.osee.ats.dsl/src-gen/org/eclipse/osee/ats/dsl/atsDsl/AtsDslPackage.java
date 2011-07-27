@@ -445,22 +445,13 @@ public interface AtsDslPackage extends EPackage
   int VERSION_DEF__NAME = 0;
 
   /**
-   * The feature id for the '<em><b>Active</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_DEF__ACTIVE = 1;
-
-  /**
    * The feature id for the '<em><b>Static Id</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VERSION_DEF__STATIC_ID = 2;
+  int VERSION_DEF__STATIC_ID = 1;
 
   /**
    * The feature id for the '<em><b>Next</b></em>' attribute.
@@ -469,7 +460,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__NEXT = 3;
+  int VERSION_DEF__NEXT = 2;
 
   /**
    * The feature id for the '<em><b>Released</b></em>' attribute.
@@ -478,7 +469,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__RELEASED = 4;
+  int VERSION_DEF__RELEASED = 3;
 
   /**
    * The feature id for the '<em><b>Allow Create Branch</b></em>' attribute.
@@ -487,7 +478,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__ALLOW_CREATE_BRANCH = 5;
+  int VERSION_DEF__ALLOW_CREATE_BRANCH = 4;
 
   /**
    * The feature id for the '<em><b>Allow Commit Branch</b></em>' attribute.
@@ -496,7 +487,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__ALLOW_COMMIT_BRANCH = 6;
+  int VERSION_DEF__ALLOW_COMMIT_BRANCH = 5;
 
   /**
    * The feature id for the '<em><b>Baseline Branch Guid</b></em>' attribute.
@@ -505,7 +496,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__BASELINE_BRANCH_GUID = 7;
+  int VERSION_DEF__BASELINE_BRANCH_GUID = 6;
 
   /**
    * The feature id for the '<em><b>Parallel Version</b></em>' attribute list.
@@ -514,7 +505,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__PARALLEL_VERSION = 8;
+  int VERSION_DEF__PARALLEL_VERSION = 7;
 
   /**
    * The number of structural features of the '<em>Version Def</em>' class.
@@ -523,7 +514,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF_FEATURE_COUNT = 9;
+  int VERSION_DEF_FEATURE_COUNT = 8;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl <em>Work Def</em>}' class.
@@ -1908,17 +1899,6 @@ public interface AtsDslPackage extends EPackage
   EAttribute getVersionDef_Name();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getActive <em>Active</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Active</em>'.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getActive()
-   * @see #getVersionDef()
-   * @generated
-   */
-  EAttribute getVersionDef_Active();
-
-  /**
    * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getStaticId <em>Static Id</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3243,14 +3223,6 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute VERSION_DEF__NAME = eINSTANCE.getVersionDef_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Active</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute VERSION_DEF__ACTIVE = eINSTANCE.getVersionDef_Active();
 
     /**
      * The meta object literal for the '<em><b>Static Id</b></em>' attribute list feature.

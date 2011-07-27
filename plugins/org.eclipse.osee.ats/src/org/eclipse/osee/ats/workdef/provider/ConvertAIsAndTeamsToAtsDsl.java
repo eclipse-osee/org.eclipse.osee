@@ -149,9 +149,6 @@ public class ConvertAIsAndTeamsToAtsDsl {
    private void convertVersionArtifact(TeamDef dslTeamDef, Artifact art, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       VersionDef dslVerDef = AtsDslFactoryImpl.init().createVersionDef();
       dslVerDef.setName(art.getName());
-      if (art.getSoleAttributeValue(AtsAttributeTypes.Active, false)) {
-         dslVerDef.setActive(BooleanDef.TRUE);
-      }
       if (art.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false)) {
          dslVerDef.setNext(BooleanDef.TRUE);
       }

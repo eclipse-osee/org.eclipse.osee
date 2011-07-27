@@ -72,7 +72,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VersionDef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="active" eType="ecore:EEnum platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//BooleanDef"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="staticId" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="next" eType="ecore:EEnum platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//BooleanDef"/>

@@ -66,7 +66,6 @@ VERSION_DEF_REFERENCE:
 VersionDef:
 	name=VERSION_DEF_REFERENCE
 	'{'
-		('active' active=BooleanDef)?
 		('staticId' staticId+=STRING)*
 		('next' next=BooleanDef)?
 		('released' released=BooleanDef)?

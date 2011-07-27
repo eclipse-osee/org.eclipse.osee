@@ -697,7 +697,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_Active()
+  public EAttribute getVersionDef_StaticId()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(1);
   }
@@ -707,7 +707,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_StaticId()
+  public EAttribute getVersionDef_Next()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(2);
   }
@@ -717,7 +717,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_Next()
+  public EAttribute getVersionDef_Released()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(3);
   }
@@ -727,7 +727,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_Released()
+  public EAttribute getVersionDef_AllowCreateBranch()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(4);
   }
@@ -737,7 +737,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_AllowCreateBranch()
+  public EAttribute getVersionDef_AllowCommitBranch()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(5);
   }
@@ -747,7 +747,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_AllowCommitBranch()
+  public EAttribute getVersionDef_BaselineBranchGuid()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(6);
   }
@@ -757,19 +757,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_BaselineBranchGuid()
-  {
-    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(7);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getVersionDef_ParallelVersion()
   {
-    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(8);
+    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -1694,7 +1684,6 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
 
     versionDefEClass = createEClass(VERSION_DEF);
     createEAttribute(versionDefEClass, VERSION_DEF__NAME);
-    createEAttribute(versionDefEClass, VERSION_DEF__ACTIVE);
     createEAttribute(versionDefEClass, VERSION_DEF__STATIC_ID);
     createEAttribute(versionDefEClass, VERSION_DEF__NEXT);
     createEAttribute(versionDefEClass, VERSION_DEF__RELEASED);
@@ -1891,7 +1880,6 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
 
     initEClass(versionDefEClass, VersionDef.class, "VersionDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVersionDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVersionDef_Active(), this.getBooleanDef(), "active", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_StaticId(), ecorePackage.getEString(), "staticId", null, 0, -1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_Next(), this.getBooleanDef(), "next", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_Released(), this.getBooleanDef(), "released", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

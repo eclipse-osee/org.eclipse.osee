@@ -5666,7 +5666,7 @@ rule__VersionDef__Group__2__Impl
 :
 (
 { before(grammarAccess.getVersionDefAccess().getGroup_2()); }
-(rule__VersionDef__Group_2__0)?
+(rule__VersionDef__Group_2__0)*
 { after(grammarAccess.getVersionDefAccess().getGroup_2()); }
 )
 
@@ -5695,7 +5695,7 @@ rule__VersionDef__Group__3__Impl
 :
 (
 { before(grammarAccess.getVersionDefAccess().getGroup_3()); }
-(rule__VersionDef__Group_3__0)*
+(rule__VersionDef__Group_3__0)?
 { after(grammarAccess.getVersionDefAccess().getGroup_3()); }
 )
 
@@ -5840,7 +5840,7 @@ rule__VersionDef__Group__8__Impl
 :
 (
 { before(grammarAccess.getVersionDefAccess().getGroup_8()); }
-(rule__VersionDef__Group_8__0)?
+(rule__VersionDef__Group_8__0)*
 { after(grammarAccess.getVersionDefAccess().getGroup_8()); }
 )
 
@@ -5856,7 +5856,6 @@ rule__VersionDef__Group__9
     }
 :
 	rule__VersionDef__Group__9__Impl
-	rule__VersionDef__Group__10
 ;
 finally {
 	restoreStackSize(stackSize);
@@ -5868,47 +5867,17 @@ rule__VersionDef__Group__9__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getGroup_9()); }
-(rule__VersionDef__Group_9__0)*
-{ after(grammarAccess.getVersionDefAccess().getGroup_9()); }
-)
-
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-
-rule__VersionDef__Group__10
-    @init {
-		int stackSize = keepStackSize();
-    }
-:
-	rule__VersionDef__Group__10__Impl
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__VersionDef__Group__10__Impl
-    @init {
-		int stackSize = keepStackSize();
-    }
-:
-(
-{ before(grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_10()); }
+{ before(grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_9()); }
 
 	'}' 
 
-{ after(grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_10()); }
+{ after(grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_9()); }
 )
 
 ;
 finally {
 	restoreStackSize(stackSize);
 }
-
-
 
 
 
@@ -5949,11 +5918,11 @@ rule__VersionDef__Group_2__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getActiveKeyword_2_0()); }
+{ before(grammarAccess.getVersionDefAccess().getStaticIdKeyword_2_0()); }
 
-	'active' 
+	'staticId' 
 
-{ after(grammarAccess.getVersionDefAccess().getActiveKeyword_2_0()); }
+{ after(grammarAccess.getVersionDefAccess().getStaticIdKeyword_2_0()); }
 )
 
 ;
@@ -5979,9 +5948,9 @@ rule__VersionDef__Group_2__1__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getActiveAssignment_2_1()); }
-(rule__VersionDef__ActiveAssignment_2_1)
-{ after(grammarAccess.getVersionDefAccess().getActiveAssignment_2_1()); }
+{ before(grammarAccess.getVersionDefAccess().getStaticIdAssignment_2_1()); }
+(rule__VersionDef__StaticIdAssignment_2_1)
+{ after(grammarAccess.getVersionDefAccess().getStaticIdAssignment_2_1()); }
 )
 
 ;
@@ -6012,11 +5981,11 @@ rule__VersionDef__Group_3__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getStaticIdKeyword_3_0()); }
+{ before(grammarAccess.getVersionDefAccess().getNextKeyword_3_0()); }
 
-	'staticId' 
+	'next' 
 
-{ after(grammarAccess.getVersionDefAccess().getStaticIdKeyword_3_0()); }
+{ after(grammarAccess.getVersionDefAccess().getNextKeyword_3_0()); }
 )
 
 ;
@@ -6042,9 +6011,9 @@ rule__VersionDef__Group_3__1__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getStaticIdAssignment_3_1()); }
-(rule__VersionDef__StaticIdAssignment_3_1)
-{ after(grammarAccess.getVersionDefAccess().getStaticIdAssignment_3_1()); }
+{ before(grammarAccess.getVersionDefAccess().getNextAssignment_3_1()); }
+(rule__VersionDef__NextAssignment_3_1)
+{ after(grammarAccess.getVersionDefAccess().getNextAssignment_3_1()); }
 )
 
 ;
@@ -6075,11 +6044,11 @@ rule__VersionDef__Group_4__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getNextKeyword_4_0()); }
+{ before(grammarAccess.getVersionDefAccess().getReleasedKeyword_4_0()); }
 
-	'next' 
+	'released' 
 
-{ after(grammarAccess.getVersionDefAccess().getNextKeyword_4_0()); }
+{ after(grammarAccess.getVersionDefAccess().getReleasedKeyword_4_0()); }
 )
 
 ;
@@ -6105,9 +6074,9 @@ rule__VersionDef__Group_4__1__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getNextAssignment_4_1()); }
-(rule__VersionDef__NextAssignment_4_1)
-{ after(grammarAccess.getVersionDefAccess().getNextAssignment_4_1()); }
+{ before(grammarAccess.getVersionDefAccess().getReleasedAssignment_4_1()); }
+(rule__VersionDef__ReleasedAssignment_4_1)
+{ after(grammarAccess.getVersionDefAccess().getReleasedAssignment_4_1()); }
 )
 
 ;
@@ -6138,11 +6107,11 @@ rule__VersionDef__Group_5__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getReleasedKeyword_5_0()); }
+{ before(grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_5_0()); }
 
-	'released' 
+	'allowCreateBranch' 
 
-{ after(grammarAccess.getVersionDefAccess().getReleasedKeyword_5_0()); }
+{ after(grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_5_0()); }
 )
 
 ;
@@ -6168,9 +6137,9 @@ rule__VersionDef__Group_5__1__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getReleasedAssignment_5_1()); }
-(rule__VersionDef__ReleasedAssignment_5_1)
-{ after(grammarAccess.getVersionDefAccess().getReleasedAssignment_5_1()); }
+{ before(grammarAccess.getVersionDefAccess().getAllowCreateBranchAssignment_5_1()); }
+(rule__VersionDef__AllowCreateBranchAssignment_5_1)
+{ after(grammarAccess.getVersionDefAccess().getAllowCreateBranchAssignment_5_1()); }
 )
 
 ;
@@ -6201,11 +6170,11 @@ rule__VersionDef__Group_6__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_6_0()); }
+{ before(grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_6_0()); }
 
-	'allowCreateBranch' 
+	'allowCommitBranch' 
 
-{ after(grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_6_0()); }
+{ after(grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_6_0()); }
 )
 
 ;
@@ -6231,9 +6200,9 @@ rule__VersionDef__Group_6__1__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getAllowCreateBranchAssignment_6_1()); }
-(rule__VersionDef__AllowCreateBranchAssignment_6_1)
-{ after(grammarAccess.getVersionDefAccess().getAllowCreateBranchAssignment_6_1()); }
+{ before(grammarAccess.getVersionDefAccess().getAllowCommitBranchAssignment_6_1()); }
+(rule__VersionDef__AllowCommitBranchAssignment_6_1)
+{ after(grammarAccess.getVersionDefAccess().getAllowCommitBranchAssignment_6_1()); }
 )
 
 ;
@@ -6264,11 +6233,11 @@ rule__VersionDef__Group_7__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_7_0()); }
+{ before(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_7_0()); }
 
-	'allowCommitBranch' 
+	'baslineBranchGuid' 
 
-{ after(grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_7_0()); }
+{ after(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_7_0()); }
 )
 
 ;
@@ -6294,9 +6263,9 @@ rule__VersionDef__Group_7__1__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getAllowCommitBranchAssignment_7_1()); }
-(rule__VersionDef__AllowCommitBranchAssignment_7_1)
-{ after(grammarAccess.getVersionDefAccess().getAllowCommitBranchAssignment_7_1()); }
+{ before(grammarAccess.getVersionDefAccess().getBaselineBranchGuidAssignment_7_1()); }
+(rule__VersionDef__BaselineBranchGuidAssignment_7_1)
+{ after(grammarAccess.getVersionDefAccess().getBaselineBranchGuidAssignment_7_1()); }
 )
 
 ;
@@ -6327,11 +6296,11 @@ rule__VersionDef__Group_8__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0()); }
+{ before(grammarAccess.getVersionDefAccess().getParallelVersionKeyword_8_0()); }
 
-	'baslineBranchGuid' 
+	'parallelVersion' 
 
-{ after(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0()); }
+{ after(grammarAccess.getVersionDefAccess().getParallelVersionKeyword_8_0()); }
 )
 
 ;
@@ -6357,72 +6326,9 @@ rule__VersionDef__Group_8__1__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getBaselineBranchGuidAssignment_8_1()); }
-(rule__VersionDef__BaselineBranchGuidAssignment_8_1)
-{ after(grammarAccess.getVersionDefAccess().getBaselineBranchGuidAssignment_8_1()); }
-)
-
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-
-
-
-
-
-rule__VersionDef__Group_9__0
-    @init {
-		int stackSize = keepStackSize();
-    }
-:
-	rule__VersionDef__Group_9__0__Impl
-	rule__VersionDef__Group_9__1
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__VersionDef__Group_9__0__Impl
-    @init {
-		int stackSize = keepStackSize();
-    }
-:
-(
-{ before(grammarAccess.getVersionDefAccess().getParallelVersionKeyword_9_0()); }
-
-	'parallelVersion' 
-
-{ after(grammarAccess.getVersionDefAccess().getParallelVersionKeyword_9_0()); }
-)
-
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-
-rule__VersionDef__Group_9__1
-    @init {
-		int stackSize = keepStackSize();
-    }
-:
-	rule__VersionDef__Group_9__1__Impl
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__VersionDef__Group_9__1__Impl
-    @init {
-		int stackSize = keepStackSize();
-    }
-:
-(
-{ before(grammarAccess.getVersionDefAccess().getParallelVersionAssignment_9_1()); }
-(rule__VersionDef__ParallelVersionAssignment_9_1)
-{ after(grammarAccess.getVersionDefAccess().getParallelVersionAssignment_9_1()); }
+{ before(grammarAccess.getVersionDefAccess().getParallelVersionAssignment_8_1()); }
+(rule__VersionDef__ParallelVersionAssignment_8_1)
+{ after(grammarAccess.getVersionDefAccess().getParallelVersionAssignment_8_1()); }
 )
 
 ;
@@ -11773,14 +11679,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__VersionDef__ActiveAssignment_2_1
+rule__VersionDef__StaticIdAssignment_2_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getActiveBooleanDefEnumRuleCall_2_1_0()); }
-	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getActiveBooleanDefEnumRuleCall_2_1_0()); }
+{ before(grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_2_1_0()); }
+	RULE_STRING{ after(grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_2_1_0()); }
 )
 
 ;
@@ -11788,14 +11694,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__VersionDef__StaticIdAssignment_3_1
+rule__VersionDef__NextAssignment_3_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_3_1_0()); }
-	RULE_STRING{ after(grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_3_1_0()); }
+{ before(grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_3_1_0()); }
+	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_3_1_0()); }
 )
 
 ;
@@ -11803,14 +11709,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__VersionDef__NextAssignment_4_1
+rule__VersionDef__ReleasedAssignment_4_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_4_1_0()); }
-	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_4_1_0()); }
+{ before(grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_4_1_0()); }
+	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_4_1_0()); }
 )
 
 ;
@@ -11818,14 +11724,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__VersionDef__ReleasedAssignment_5_1
+rule__VersionDef__AllowCreateBranchAssignment_5_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_5_1_0()); }
-	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_5_1_0()); }
+{ before(grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_5_1_0()); }
+	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_5_1_0()); }
 )
 
 ;
@@ -11833,14 +11739,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__VersionDef__AllowCreateBranchAssignment_6_1
+rule__VersionDef__AllowCommitBranchAssignment_6_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_6_1_0()); }
-	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_6_1_0()); }
+{ before(grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_6_1_0()); }
+	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_6_1_0()); }
 )
 
 ;
@@ -11848,14 +11754,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__VersionDef__AllowCommitBranchAssignment_7_1
+rule__VersionDef__BaselineBranchGuidAssignment_7_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_7_1_0()); }
-	ruleBooleanDef{ after(grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_7_1_0()); }
+{ before(grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0()); }
+	RULE_STRING{ after(grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0()); }
 )
 
 ;
@@ -11863,29 +11769,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__VersionDef__BaselineBranchGuidAssignment_8_1
+rule__VersionDef__ParallelVersionAssignment_8_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0()); }
-	RULE_STRING{ after(grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0()); }
-)
-
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__VersionDef__ParallelVersionAssignment_9_1
-    @init {
-		int stackSize = keepStackSize();
-    }
-:
-(
-{ before(grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0()); }
-	RULE_STRING{ after(grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0()); }
+{ before(grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_8_1_0()); }
+	RULE_STRING{ after(grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_8_1_0()); }
 )
 
 ;

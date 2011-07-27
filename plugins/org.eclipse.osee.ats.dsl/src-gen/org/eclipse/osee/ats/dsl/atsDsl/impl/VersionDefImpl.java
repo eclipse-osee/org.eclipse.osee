@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getNext <em>Next</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getReleased <em>Released</em>}</li>
@@ -65,26 +64,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getActive() <em>Active</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getActive()
-   * @generated
-   * @ordered
-   */
-  protected static final BooleanDef ACTIVE_EDEFAULT = BooleanDef.NONE;
-
-  /**
-   * The cached value of the '{@link #getActive() <em>Active</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getActive()
-   * @generated
-   * @ordered
-   */
-  protected BooleanDef active = ACTIVE_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getStaticId() <em>Static Id</em>}' attribute list.
@@ -255,29 +234,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * <!-- end-user-doc -->
    * @generated
    */
-  public BooleanDef getActive()
-  {
-    return active;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setActive(BooleanDef newActive)
-  {
-    BooleanDef oldActive = active;
-    active = newActive == null ? ACTIVE_EDEFAULT : newActive;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.VERSION_DEF__ACTIVE, oldActive, active));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EList<String> getStaticId()
   {
     if (staticId == null)
@@ -428,8 +384,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     {
       case AtsDslPackage.VERSION_DEF__NAME:
         return getName();
-      case AtsDslPackage.VERSION_DEF__ACTIVE:
-        return getActive();
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         return getStaticId();
       case AtsDslPackage.VERSION_DEF__NEXT:
@@ -461,9 +415,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     {
       case AtsDslPackage.VERSION_DEF__NAME:
         setName((String)newValue);
-        return;
-      case AtsDslPackage.VERSION_DEF__ACTIVE:
-        setActive((BooleanDef)newValue);
         return;
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         getStaticId().clear();
@@ -505,9 +456,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
       case AtsDslPackage.VERSION_DEF__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case AtsDslPackage.VERSION_DEF__ACTIVE:
-        setActive(ACTIVE_EDEFAULT);
-        return;
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         getStaticId().clear();
         return;
@@ -545,8 +493,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     {
       case AtsDslPackage.VERSION_DEF__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case AtsDslPackage.VERSION_DEF__ACTIVE:
-        return active != ACTIVE_EDEFAULT;
       case AtsDslPackage.VERSION_DEF__STATIC_ID:
         return staticId != null && !staticId.isEmpty();
       case AtsDslPackage.VERSION_DEF__NEXT:
@@ -578,8 +524,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
-    result.append(", active: ");
-    result.append(active);
     result.append(", staticId: ");
     result.append(staticId);
     result.append(", next: ");

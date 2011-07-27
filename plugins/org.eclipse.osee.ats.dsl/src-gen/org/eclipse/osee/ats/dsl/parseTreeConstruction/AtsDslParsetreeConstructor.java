@@ -3123,15 +3123,15 @@ protected class ActionableItemDef_RightCurlyBracketKeyword_2_8 extends KeywordTo
 /************ begin Rule VersionDef ****************
  *
  * VersionDef:
- * 	name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
- * 	("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+ * 	name=VERSION_DEF_REFERENCE "{" ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
+ * 	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
  * 	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
  * 	parallelVersion+=STRING)* "}";
  *
  **/
 
-// name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
-// ("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+// name=VERSION_DEF_REFERENCE "{" ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
+// released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 // allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 // parallelVersion+=STRING)* "}"
 protected class VersionDef_Group extends GroupToken {
@@ -3148,7 +3148,7 @@ protected class VersionDef_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_RightCurlyBracketKeyword_10(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_RightCurlyBracketKeyword_9(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -3217,7 +3217,7 @@ protected class VersionDef_LeftCurlyBracketKeyword_1 extends KeywordToken  {
 
 }
 
-// ("active" active=BooleanDef)?
+// ("staticId" staticId+=STRING)*
 protected class VersionDef_Group_2 extends GroupToken {
 	
 	public VersionDef_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3232,62 +3232,63 @@ protected class VersionDef_Group_2 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_ActiveAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_StaticIdAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "active"
-protected class VersionDef_ActiveKeyword_2_0 extends KeywordToken  {
+// "staticId"
+protected class VersionDef_StaticIdKeyword_2_0 extends KeywordToken  {
 	
-	public VersionDef_ActiveKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_StaticIdKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getActiveKeyword_2_0();
+		return grammarAccess.getVersionDefAccess().getStaticIdKeyword_2_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_Group_2(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 1, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// active=BooleanDef
-protected class VersionDef_ActiveAssignment_2_1 extends AssignmentToken  {
+// staticId+=STRING
+protected class VersionDef_StaticIdAssignment_2_1 extends AssignmentToken  {
 	
-	public VersionDef_ActiveAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_StaticIdAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getActiveAssignment_2_1();
+		return grammarAccess.getVersionDefAccess().getStaticIdAssignment_2_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_ActiveKeyword_2_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_StaticIdKeyword_2_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("active",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("active");
-		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getActiveBooleanDefEnumRuleCall_2_1_0(), value, null)) { 
-			type = AssignmentType.ENUM_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getActiveBooleanDefEnumRuleCall_2_1_0();
+		if((value = eObjectConsumer.getConsumable("staticId",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("staticId");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_2_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_2_1_0();
 			return obj;
 		}
 		return null;
@@ -3296,7 +3297,7 @@ protected class VersionDef_ActiveAssignment_2_1 extends AssignmentToken  {
 }
 
 
-// ("staticId" staticId+=STRING)*
+// ("next" next=BooleanDef)?
 protected class VersionDef_Group_3 extends GroupToken {
 	
 	public VersionDef_Group_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3311,64 +3312,63 @@ protected class VersionDef_Group_3 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_StaticIdAssignment_3_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_NextAssignment_3_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "staticId"
-protected class VersionDef_StaticIdKeyword_3_0 extends KeywordToken  {
+// "next"
+protected class VersionDef_NextKeyword_3_0 extends KeywordToken  {
 	
-	public VersionDef_StaticIdKeyword_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_NextKeyword_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getStaticIdKeyword_3_0();
+		return grammarAccess.getVersionDefAccess().getNextKeyword_3_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_Group_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new VersionDef_Group_2(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 2, inst);
+			case 0: return new VersionDef_Group_2(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 1, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// staticId+=STRING
-protected class VersionDef_StaticIdAssignment_3_1 extends AssignmentToken  {
+// next=BooleanDef
+protected class VersionDef_NextAssignment_3_1 extends AssignmentToken  {
 	
-	public VersionDef_StaticIdAssignment_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_NextAssignment_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getStaticIdAssignment_3_1();
+		return grammarAccess.getVersionDefAccess().getNextAssignment_3_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_StaticIdKeyword_3_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_NextKeyword_3_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("staticId",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("staticId");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_3_1_0(), value, null)) {
-			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_3_1_0();
+		if((value = eObjectConsumer.getConsumable("next",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("next");
+		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_3_1_0(), value, null)) { 
+			type = AssignmentType.ENUM_RULE_CALL;
+			element = grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_3_1_0();
 			return obj;
 		}
 		return null;
@@ -3377,7 +3377,7 @@ protected class VersionDef_StaticIdAssignment_3_1 extends AssignmentToken  {
 }
 
 
-// ("next" next=BooleanDef)?
+// ("released" released=BooleanDef)?
 protected class VersionDef_Group_4 extends GroupToken {
 	
 	public VersionDef_Group_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3392,23 +3392,23 @@ protected class VersionDef_Group_4 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_NextAssignment_4_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_ReleasedAssignment_4_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "next"
-protected class VersionDef_NextKeyword_4_0 extends KeywordToken  {
+// "released"
+protected class VersionDef_ReleasedKeyword_4_0 extends KeywordToken  {
 	
-	public VersionDef_NextKeyword_4_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_ReleasedKeyword_4_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getNextKeyword_4_0();
+		return grammarAccess.getVersionDefAccess().getReleasedKeyword_4_0();
 	}
 
     @Override
@@ -3423,33 +3423,33 @@ protected class VersionDef_NextKeyword_4_0 extends KeywordToken  {
 
 }
 
-// next=BooleanDef
-protected class VersionDef_NextAssignment_4_1 extends AssignmentToken  {
+// released=BooleanDef
+protected class VersionDef_ReleasedAssignment_4_1 extends AssignmentToken  {
 	
-	public VersionDef_NextAssignment_4_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_ReleasedAssignment_4_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getNextAssignment_4_1();
+		return grammarAccess.getVersionDefAccess().getReleasedAssignment_4_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_NextKeyword_4_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_ReleasedKeyword_4_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("next",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("next");
-		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_4_1_0(), value, null)) { 
+		if((value = eObjectConsumer.getConsumable("released",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("released");
+		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_4_1_0(), value, null)) { 
 			type = AssignmentType.ENUM_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_4_1_0();
+			element = grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_4_1_0();
 			return obj;
 		}
 		return null;
@@ -3458,7 +3458,7 @@ protected class VersionDef_NextAssignment_4_1 extends AssignmentToken  {
 }
 
 
-// ("released" released=BooleanDef)?
+// ("allowCreateBranch" allowCreateBranch=BooleanDef)?
 protected class VersionDef_Group_5 extends GroupToken {
 	
 	public VersionDef_Group_5(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3473,23 +3473,23 @@ protected class VersionDef_Group_5 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_ReleasedAssignment_5_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_AllowCreateBranchAssignment_5_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "released"
-protected class VersionDef_ReleasedKeyword_5_0 extends KeywordToken  {
+// "allowCreateBranch"
+protected class VersionDef_AllowCreateBranchKeyword_5_0 extends KeywordToken  {
 	
-	public VersionDef_ReleasedKeyword_5_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_AllowCreateBranchKeyword_5_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getReleasedKeyword_5_0();
+		return grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_5_0();
 	}
 
     @Override
@@ -3505,33 +3505,33 @@ protected class VersionDef_ReleasedKeyword_5_0 extends KeywordToken  {
 
 }
 
-// released=BooleanDef
-protected class VersionDef_ReleasedAssignment_5_1 extends AssignmentToken  {
+// allowCreateBranch=BooleanDef
+protected class VersionDef_AllowCreateBranchAssignment_5_1 extends AssignmentToken  {
 	
-	public VersionDef_ReleasedAssignment_5_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_AllowCreateBranchAssignment_5_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getReleasedAssignment_5_1();
+		return grammarAccess.getVersionDefAccess().getAllowCreateBranchAssignment_5_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_ReleasedKeyword_5_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_AllowCreateBranchKeyword_5_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("released",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("released");
-		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_5_1_0(), value, null)) { 
+		if((value = eObjectConsumer.getConsumable("allowCreateBranch",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("allowCreateBranch");
+		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_5_1_0(), value, null)) { 
 			type = AssignmentType.ENUM_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_5_1_0();
+			element = grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_5_1_0();
 			return obj;
 		}
 		return null;
@@ -3540,7 +3540,7 @@ protected class VersionDef_ReleasedAssignment_5_1 extends AssignmentToken  {
 }
 
 
-// ("allowCreateBranch" allowCreateBranch=BooleanDef)?
+// ("allowCommitBranch" allowCommitBranch=BooleanDef)?
 protected class VersionDef_Group_6 extends GroupToken {
 	
 	public VersionDef_Group_6(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3555,23 +3555,23 @@ protected class VersionDef_Group_6 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_AllowCreateBranchAssignment_6_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_AllowCommitBranchAssignment_6_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "allowCreateBranch"
-protected class VersionDef_AllowCreateBranchKeyword_6_0 extends KeywordToken  {
+// "allowCommitBranch"
+protected class VersionDef_AllowCommitBranchKeyword_6_0 extends KeywordToken  {
 	
-	public VersionDef_AllowCreateBranchKeyword_6_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_AllowCommitBranchKeyword_6_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_6_0();
+		return grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_6_0();
 	}
 
     @Override
@@ -3588,33 +3588,33 @@ protected class VersionDef_AllowCreateBranchKeyword_6_0 extends KeywordToken  {
 
 }
 
-// allowCreateBranch=BooleanDef
-protected class VersionDef_AllowCreateBranchAssignment_6_1 extends AssignmentToken  {
+// allowCommitBranch=BooleanDef
+protected class VersionDef_AllowCommitBranchAssignment_6_1 extends AssignmentToken  {
 	
-	public VersionDef_AllowCreateBranchAssignment_6_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_AllowCommitBranchAssignment_6_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getAllowCreateBranchAssignment_6_1();
+		return grammarAccess.getVersionDefAccess().getAllowCommitBranchAssignment_6_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_AllowCreateBranchKeyword_6_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_AllowCommitBranchKeyword_6_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("allowCreateBranch",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("allowCreateBranch");
-		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_6_1_0(), value, null)) { 
+		if((value = eObjectConsumer.getConsumable("allowCommitBranch",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("allowCommitBranch");
+		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_6_1_0(), value, null)) { 
 			type = AssignmentType.ENUM_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_6_1_0();
+			element = grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_6_1_0();
 			return obj;
 		}
 		return null;
@@ -3623,7 +3623,7 @@ protected class VersionDef_AllowCreateBranchAssignment_6_1 extends AssignmentTok
 }
 
 
-// ("allowCommitBranch" allowCommitBranch=BooleanDef)?
+// ("baslineBranchGuid" baselineBranchGuid=STRING)?
 protected class VersionDef_Group_7 extends GroupToken {
 	
 	public VersionDef_Group_7(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3638,23 +3638,23 @@ protected class VersionDef_Group_7 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_AllowCommitBranchAssignment_7_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_BaselineBranchGuidAssignment_7_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "allowCommitBranch"
-protected class VersionDef_AllowCommitBranchKeyword_7_0 extends KeywordToken  {
+// "baslineBranchGuid"
+protected class VersionDef_BaslineBranchGuidKeyword_7_0 extends KeywordToken  {
 	
-	public VersionDef_AllowCommitBranchKeyword_7_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_BaslineBranchGuidKeyword_7_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_7_0();
+		return grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_7_0();
 	}
 
     @Override
@@ -3672,33 +3672,33 @@ protected class VersionDef_AllowCommitBranchKeyword_7_0 extends KeywordToken  {
 
 }
 
-// allowCommitBranch=BooleanDef
-protected class VersionDef_AllowCommitBranchAssignment_7_1 extends AssignmentToken  {
+// baselineBranchGuid=STRING
+protected class VersionDef_BaselineBranchGuidAssignment_7_1 extends AssignmentToken  {
 	
-	public VersionDef_AllowCommitBranchAssignment_7_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_BaselineBranchGuidAssignment_7_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getAllowCommitBranchAssignment_7_1();
+		return grammarAccess.getVersionDefAccess().getBaselineBranchGuidAssignment_7_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_AllowCommitBranchKeyword_7_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_BaslineBranchGuidKeyword_7_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("allowCommitBranch",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("allowCommitBranch");
-		if(enumLitSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_7_1_0(), value, null)) { 
-			type = AssignmentType.ENUM_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_7_1_0();
+		if((value = eObjectConsumer.getConsumable("baselineBranchGuid",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("baselineBranchGuid");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0();
 			return obj;
 		}
 		return null;
@@ -3707,7 +3707,7 @@ protected class VersionDef_AllowCommitBranchAssignment_7_1 extends AssignmentTok
 }
 
 
-// ("baslineBranchGuid" baselineBranchGuid=STRING)?
+// ("parallelVersion" parallelVersion+=STRING)*
 protected class VersionDef_Group_8 extends GroupToken {
 	
 	public VersionDef_Group_8(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3722,92 +3722,7 @@ protected class VersionDef_Group_8 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_BaselineBranchGuidAssignment_8_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "baslineBranchGuid"
-protected class VersionDef_BaslineBranchGuidKeyword_8_0 extends KeywordToken  {
-	
-	public VersionDef_BaslineBranchGuidKeyword_8_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new VersionDef_Group_7(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new VersionDef_Group_6(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new VersionDef_Group_5(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new VersionDef_Group_4(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new VersionDef_Group_3(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new VersionDef_Group_2(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 6, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// baselineBranchGuid=STRING
-protected class VersionDef_BaselineBranchGuidAssignment_8_1 extends AssignmentToken  {
-	
-	public VersionDef_BaselineBranchGuidAssignment_8_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getBaselineBranchGuidAssignment_8_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new VersionDef_BaslineBranchGuidKeyword_8_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("baselineBranchGuid",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("baselineBranchGuid");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0(), value, null)) {
-			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("parallelVersion" parallelVersion+=STRING)*
-protected class VersionDef_Group_9 extends GroupToken {
-	
-	public VersionDef_Group_9(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getGroup_9();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new VersionDef_ParallelVersionAssignment_9_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_ParallelVersionAssignment_8_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -3815,29 +3730,28 @@ protected class VersionDef_Group_9 extends GroupToken {
 }
 
 // "parallelVersion"
-protected class VersionDef_ParallelVersionKeyword_9_0 extends KeywordToken  {
+protected class VersionDef_ParallelVersionKeyword_8_0 extends KeywordToken  {
 	
-	public VersionDef_ParallelVersionKeyword_9_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_ParallelVersionKeyword_8_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getParallelVersionKeyword_9_0();
+		return grammarAccess.getVersionDefAccess().getParallelVersionKeyword_8_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_Group_9(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new VersionDef_Group_8(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new VersionDef_Group_7(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new VersionDef_Group_6(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new VersionDef_Group_5(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new VersionDef_Group_4(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new VersionDef_Group_3(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new VersionDef_Group_2(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 8, inst);
+			case 0: return new VersionDef_Group_8(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VersionDef_Group_7(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VersionDef_Group_6(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VersionDef_Group_5(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VersionDef_Group_4(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VersionDef_Group_3(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VersionDef_Group_2(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 7, inst);
 			default: return null;
 		}	
 	}
@@ -3845,21 +3759,21 @@ protected class VersionDef_ParallelVersionKeyword_9_0 extends KeywordToken  {
 }
 
 // parallelVersion+=STRING
-protected class VersionDef_ParallelVersionAssignment_9_1 extends AssignmentToken  {
+protected class VersionDef_ParallelVersionAssignment_8_1 extends AssignmentToken  {
 	
-	public VersionDef_ParallelVersionAssignment_9_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_ParallelVersionAssignment_8_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getParallelVersionAssignment_9_1();
+		return grammarAccess.getVersionDefAccess().getParallelVersionAssignment_8_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_ParallelVersionKeyword_9_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_ParallelVersionKeyword_8_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -3868,9 +3782,9 @@ protected class VersionDef_ParallelVersionAssignment_9_1 extends AssignmentToken
 	public IEObjectConsumer tryConsume() {
 		if((value = eObjectConsumer.getConsumable("parallelVersion",false)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("parallelVersion");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0(), value, null)) {
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_8_1_0(), value, null)) {
 			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0();
+			element = grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_8_1_0();
 			return obj;
 		}
 		return null;
@@ -3880,29 +3794,28 @@ protected class VersionDef_ParallelVersionAssignment_9_1 extends AssignmentToken
 
 
 // "}"
-protected class VersionDef_RightCurlyBracketKeyword_10 extends KeywordToken  {
+protected class VersionDef_RightCurlyBracketKeyword_9 extends KeywordToken  {
 	
-	public VersionDef_RightCurlyBracketKeyword_10(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_RightCurlyBracketKeyword_9(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_10();
+		return grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_9();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_Group_9(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new VersionDef_Group_8(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new VersionDef_Group_7(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new VersionDef_Group_6(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new VersionDef_Group_5(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new VersionDef_Group_4(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new VersionDef_Group_3(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new VersionDef_Group_2(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 8, inst);
+			case 0: return new VersionDef_Group_8(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VersionDef_Group_7(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VersionDef_Group_6(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VersionDef_Group_5(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VersionDef_Group_4(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VersionDef_Group_3(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VersionDef_Group_2(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VersionDef_LeftCurlyBracketKeyword_1(lastRuleCallOrigin, this, 7, inst);
 			default: return null;
 		}	
 	}

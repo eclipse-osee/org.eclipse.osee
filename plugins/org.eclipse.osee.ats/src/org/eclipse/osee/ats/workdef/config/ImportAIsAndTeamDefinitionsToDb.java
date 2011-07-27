@@ -81,8 +81,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
    private IUserToken getOseeUser(final UserDef dslUserDef) {
       return TokenFactory.createUserToken(GUID.create(), Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
-         Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()), BooleanDefUtil.get(dslUserDef.getActive(), true),
-         false, true);
+         Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()),
+         BooleanDefUtil.get(dslUserDef.getActive(), true), false, true);
    }
 
    public void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) throws OseeCoreException {
@@ -152,7 +152,6 @@ public class ImportAIsAndTeamDefinitionsToDb {
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
          newVersions.put(newVer.getName(), newVer);
-         newVer.setSoleAttributeValue(CoreAttributeTypes.Active, BooleanDefUtil.get(dslVersionDef.getActive(), true));
          newVer.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch,
             BooleanDefUtil.get(dslVersionDef.getAllowCommitBranch(), true));
          newVer.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch,

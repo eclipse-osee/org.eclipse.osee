@@ -668,48 +668,44 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cNameVERSION_DEF_REFERENCEParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cActiveKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cActiveAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cActiveBooleanDefEnumRuleCall_2_1_0 = (RuleCall)cActiveAssignment_2_1.eContents().get(0);
+		private final Keyword cStaticIdKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cStaticIdAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cStaticIdSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cStaticIdAssignment_2_1.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
-		private final Keyword cStaticIdKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
-		private final Assignment cStaticIdAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final RuleCall cStaticIdSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cStaticIdAssignment_3_1.eContents().get(0);
+		private final Keyword cNextKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cNextAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cNextBooleanDefEnumRuleCall_3_1_0 = (RuleCall)cNextAssignment_3_1.eContents().get(0);
 		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
-		private final Keyword cNextKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
-		private final Assignment cNextAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final RuleCall cNextBooleanDefEnumRuleCall_4_1_0 = (RuleCall)cNextAssignment_4_1.eContents().get(0);
+		private final Keyword cReleasedKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cReleasedAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cReleasedBooleanDefEnumRuleCall_4_1_0 = (RuleCall)cReleasedAssignment_4_1.eContents().get(0);
 		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
-		private final Keyword cReleasedKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cReleasedAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cReleasedBooleanDefEnumRuleCall_5_1_0 = (RuleCall)cReleasedAssignment_5_1.eContents().get(0);
+		private final Keyword cAllowCreateBranchKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cAllowCreateBranchAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cAllowCreateBranchBooleanDefEnumRuleCall_5_1_0 = (RuleCall)cAllowCreateBranchAssignment_5_1.eContents().get(0);
 		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
-		private final Keyword cAllowCreateBranchKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
-		private final Assignment cAllowCreateBranchAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
-		private final RuleCall cAllowCreateBranchBooleanDefEnumRuleCall_6_1_0 = (RuleCall)cAllowCreateBranchAssignment_6_1.eContents().get(0);
+		private final Keyword cAllowCommitBranchKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cAllowCommitBranchAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final RuleCall cAllowCommitBranchBooleanDefEnumRuleCall_6_1_0 = (RuleCall)cAllowCommitBranchAssignment_6_1.eContents().get(0);
 		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
-		private final Keyword cAllowCommitBranchKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
-		private final Assignment cAllowCommitBranchAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
-		private final RuleCall cAllowCommitBranchBooleanDefEnumRuleCall_7_1_0 = (RuleCall)cAllowCommitBranchAssignment_7_1.eContents().get(0);
+		private final Keyword cBaslineBranchGuidKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cBaselineBranchGuidAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final RuleCall cBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0 = (RuleCall)cBaselineBranchGuidAssignment_7_1.eContents().get(0);
 		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
-		private final Keyword cBaslineBranchGuidKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
-		private final Assignment cBaselineBranchGuidAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
-		private final RuleCall cBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0 = (RuleCall)cBaselineBranchGuidAssignment_8_1.eContents().get(0);
-		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
-		private final Keyword cParallelVersionKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
-		private final Assignment cParallelVersionAssignment_9_1 = (Assignment)cGroup_9.eContents().get(1);
-		private final RuleCall cParallelVersionSTRINGTerminalRuleCall_9_1_0 = (RuleCall)cParallelVersionAssignment_9_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
+		private final Keyword cParallelVersionKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Assignment cParallelVersionAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
+		private final RuleCall cParallelVersionSTRINGTerminalRuleCall_8_1_0 = (RuleCall)cParallelVersionAssignment_8_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_9 = (Keyword)cGroup.eContents().get(9);
 		
 		//VersionDef:
-		//	name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
-		//	("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+		//	name=VERSION_DEF_REFERENCE "{" ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
+		//	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 		//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 		//	parallelVersion+=STRING)* "}";
 		public ParserRule getRule() { return rule; }
 
-		//name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
-		//("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+		//name=VERSION_DEF_REFERENCE "{" ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
+		//released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 		//allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 		//parallelVersion+=STRING)* "}"
 		public Group getGroup() { return cGroup; }
@@ -723,104 +719,92 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
 
-		//("active" active=BooleanDef)?
+		//("staticId" staticId+=STRING)*
 		public Group getGroup_2() { return cGroup_2; }
 
-		//"active"
-		public Keyword getActiveKeyword_2_0() { return cActiveKeyword_2_0; }
-
-		//active=BooleanDef
-		public Assignment getActiveAssignment_2_1() { return cActiveAssignment_2_1; }
-
-		//BooleanDef
-		public RuleCall getActiveBooleanDefEnumRuleCall_2_1_0() { return cActiveBooleanDefEnumRuleCall_2_1_0; }
-
-		//("staticId" staticId+=STRING)*
-		public Group getGroup_3() { return cGroup_3; }
-
 		//"staticId"
-		public Keyword getStaticIdKeyword_3_0() { return cStaticIdKeyword_3_0; }
+		public Keyword getStaticIdKeyword_2_0() { return cStaticIdKeyword_2_0; }
 
 		//staticId+=STRING
-		public Assignment getStaticIdAssignment_3_1() { return cStaticIdAssignment_3_1; }
+		public Assignment getStaticIdAssignment_2_1() { return cStaticIdAssignment_2_1; }
 
 		//STRING
-		public RuleCall getStaticIdSTRINGTerminalRuleCall_3_1_0() { return cStaticIdSTRINGTerminalRuleCall_3_1_0; }
+		public RuleCall getStaticIdSTRINGTerminalRuleCall_2_1_0() { return cStaticIdSTRINGTerminalRuleCall_2_1_0; }
 
 		//("next" next=BooleanDef)?
-		public Group getGroup_4() { return cGroup_4; }
+		public Group getGroup_3() { return cGroup_3; }
 
 		//"next"
-		public Keyword getNextKeyword_4_0() { return cNextKeyword_4_0; }
+		public Keyword getNextKeyword_3_0() { return cNextKeyword_3_0; }
 
 		//next=BooleanDef
-		public Assignment getNextAssignment_4_1() { return cNextAssignment_4_1; }
+		public Assignment getNextAssignment_3_1() { return cNextAssignment_3_1; }
 
 		//BooleanDef
-		public RuleCall getNextBooleanDefEnumRuleCall_4_1_0() { return cNextBooleanDefEnumRuleCall_4_1_0; }
+		public RuleCall getNextBooleanDefEnumRuleCall_3_1_0() { return cNextBooleanDefEnumRuleCall_3_1_0; }
 
 		//("released" released=BooleanDef)?
-		public Group getGroup_5() { return cGroup_5; }
+		public Group getGroup_4() { return cGroup_4; }
 
 		//"released"
-		public Keyword getReleasedKeyword_5_0() { return cReleasedKeyword_5_0; }
+		public Keyword getReleasedKeyword_4_0() { return cReleasedKeyword_4_0; }
 
 		//released=BooleanDef
-		public Assignment getReleasedAssignment_5_1() { return cReleasedAssignment_5_1; }
+		public Assignment getReleasedAssignment_4_1() { return cReleasedAssignment_4_1; }
 
 		//BooleanDef
-		public RuleCall getReleasedBooleanDefEnumRuleCall_5_1_0() { return cReleasedBooleanDefEnumRuleCall_5_1_0; }
+		public RuleCall getReleasedBooleanDefEnumRuleCall_4_1_0() { return cReleasedBooleanDefEnumRuleCall_4_1_0; }
 
 		//("allowCreateBranch" allowCreateBranch=BooleanDef)?
-		public Group getGroup_6() { return cGroup_6; }
+		public Group getGroup_5() { return cGroup_5; }
 
 		//"allowCreateBranch"
-		public Keyword getAllowCreateBranchKeyword_6_0() { return cAllowCreateBranchKeyword_6_0; }
+		public Keyword getAllowCreateBranchKeyword_5_0() { return cAllowCreateBranchKeyword_5_0; }
 
 		//allowCreateBranch=BooleanDef
-		public Assignment getAllowCreateBranchAssignment_6_1() { return cAllowCreateBranchAssignment_6_1; }
+		public Assignment getAllowCreateBranchAssignment_5_1() { return cAllowCreateBranchAssignment_5_1; }
 
 		//BooleanDef
-		public RuleCall getAllowCreateBranchBooleanDefEnumRuleCall_6_1_0() { return cAllowCreateBranchBooleanDefEnumRuleCall_6_1_0; }
+		public RuleCall getAllowCreateBranchBooleanDefEnumRuleCall_5_1_0() { return cAllowCreateBranchBooleanDefEnumRuleCall_5_1_0; }
 
 		//("allowCommitBranch" allowCommitBranch=BooleanDef)?
-		public Group getGroup_7() { return cGroup_7; }
+		public Group getGroup_6() { return cGroup_6; }
 
 		//"allowCommitBranch"
-		public Keyword getAllowCommitBranchKeyword_7_0() { return cAllowCommitBranchKeyword_7_0; }
+		public Keyword getAllowCommitBranchKeyword_6_0() { return cAllowCommitBranchKeyword_6_0; }
 
 		//allowCommitBranch=BooleanDef
-		public Assignment getAllowCommitBranchAssignment_7_1() { return cAllowCommitBranchAssignment_7_1; }
+		public Assignment getAllowCommitBranchAssignment_6_1() { return cAllowCommitBranchAssignment_6_1; }
 
 		//BooleanDef
-		public RuleCall getAllowCommitBranchBooleanDefEnumRuleCall_7_1_0() { return cAllowCommitBranchBooleanDefEnumRuleCall_7_1_0; }
+		public RuleCall getAllowCommitBranchBooleanDefEnumRuleCall_6_1_0() { return cAllowCommitBranchBooleanDefEnumRuleCall_6_1_0; }
 
 		//("baslineBranchGuid" baselineBranchGuid=STRING)?
-		public Group getGroup_8() { return cGroup_8; }
+		public Group getGroup_7() { return cGroup_7; }
 
 		//"baslineBranchGuid"
-		public Keyword getBaslineBranchGuidKeyword_8_0() { return cBaslineBranchGuidKeyword_8_0; }
+		public Keyword getBaslineBranchGuidKeyword_7_0() { return cBaslineBranchGuidKeyword_7_0; }
 
 		//baselineBranchGuid=STRING
-		public Assignment getBaselineBranchGuidAssignment_8_1() { return cBaselineBranchGuidAssignment_8_1; }
+		public Assignment getBaselineBranchGuidAssignment_7_1() { return cBaselineBranchGuidAssignment_7_1; }
 
 		//STRING
-		public RuleCall getBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0() { return cBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0; }
+		public RuleCall getBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0() { return cBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0; }
 
 		//("parallelVersion" parallelVersion+=STRING)*
-		public Group getGroup_9() { return cGroup_9; }
+		public Group getGroup_8() { return cGroup_8; }
 
 		//"parallelVersion"
-		public Keyword getParallelVersionKeyword_9_0() { return cParallelVersionKeyword_9_0; }
+		public Keyword getParallelVersionKeyword_8_0() { return cParallelVersionKeyword_8_0; }
 
 		//parallelVersion+=STRING
-		public Assignment getParallelVersionAssignment_9_1() { return cParallelVersionAssignment_9_1; }
+		public Assignment getParallelVersionAssignment_8_1() { return cParallelVersionAssignment_8_1; }
 
 		//STRING
-		public RuleCall getParallelVersionSTRINGTerminalRuleCall_9_1_0() { return cParallelVersionSTRINGTerminalRuleCall_9_1_0; }
+		public RuleCall getParallelVersionSTRINGTerminalRuleCall_8_1_0() { return cParallelVersionSTRINGTerminalRuleCall_8_1_0; }
 
 		//"}"
-		public Keyword getRightCurlyBracketKeyword_10() { return cRightCurlyBracketKeyword_10; }
+		public Keyword getRightCurlyBracketKeyword_9() { return cRightCurlyBracketKeyword_9; }
 	}
 
 	public class WorkDefElements extends AbstractParserRuleElementFinder {
@@ -2893,8 +2877,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//VersionDef:
-	//	name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
-	//	("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+	//	name=VERSION_DEF_REFERENCE "{" ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
+	//	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 	//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 	//	parallelVersion+=STRING)* "}";
 	public VersionDefElements getVersionDefAccess() {

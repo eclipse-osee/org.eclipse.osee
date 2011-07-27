@@ -65,7 +65,6 @@
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/active"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/staticId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/next"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/AtsDsl.ecore#//VersionDef/released"/>

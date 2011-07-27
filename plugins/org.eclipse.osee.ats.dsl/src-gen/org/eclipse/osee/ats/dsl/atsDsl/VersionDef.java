@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getNext <em>Next</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getReleased <em>Released</em>}</li>
@@ -61,35 +60,6 @@ public interface VersionDef extends EObject
    * @generated
    */
   void setName(String value);
-
-  /**
-   * Returns the value of the '<em><b>Active</b></em>' attribute.
-   * The literals are from the enumeration {@link org.eclipse.osee.ats.dsl.atsDsl.BooleanDef}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Active</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Active</em>' attribute.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.BooleanDef
-   * @see #setActive(BooleanDef)
-   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getVersionDef_Active()
-   * @model
-   * @generated
-   */
-  BooleanDef getActive();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getActive <em>Active</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Active</em>' attribute.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.BooleanDef
-   * @see #getActive()
-   * @generated
-   */
-  void setActive(BooleanDef value);
 
   /**
    * Returns the value of the '<em><b>Static Id</b></em>' attribute list.
