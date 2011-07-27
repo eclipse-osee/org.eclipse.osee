@@ -31,7 +31,7 @@ public class LabelComposite extends Composite {
       Label text = new Label(this, SWT.WRAP);
       text.setFont(parent.getFont());
       text.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-      text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      text.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, true, true));
       text.setText(label);
    }
 }

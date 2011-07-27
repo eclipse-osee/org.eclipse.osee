@@ -91,7 +91,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    @Override
    public void createPartControl(Composite parent) {
 
-      viewerComp = new Composite(parent, SWT.NONE);
+      viewerComp = new Composite(parent, SWT.BORDER);
       viewerComp.setLayout(new FillLayout());
 
       viewer = new GraphViewer(viewerComp, ZestStyles.NONE);
@@ -217,6 +217,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       tbm.add(new ActionWalkerLayoutAction(this));
       tbm.add(new ActionWalkerShowAllAction(this));
       tbm.add(new ActionWalkerRefreshAction(this));
+      bars.updateActionBars();
    }
 
    public void refresh() {
