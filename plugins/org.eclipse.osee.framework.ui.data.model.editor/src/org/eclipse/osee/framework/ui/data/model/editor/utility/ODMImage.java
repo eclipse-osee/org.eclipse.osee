@@ -34,7 +34,6 @@ public enum ODMImage implements KeyedImage {
    INHERITED_RELATION("access_restriction_relat.gif"),
    LOCAL_RELATION("arrows.gif"),
 
-   EXPAND_ALL("expandAll.gif"),
    TWO_WAY_REFERENCE("two_way_reference.gif"),
    ONE_WAY_REFERENCE("one_way_reference.gif"),
 
