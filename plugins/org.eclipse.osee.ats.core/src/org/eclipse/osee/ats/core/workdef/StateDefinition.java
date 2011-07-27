@@ -31,7 +31,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    private final List<PeerReviewDefinition> peerReviews = new ArrayList<PeerReviewDefinition>();
    private WorkDefinition workDefinition;
    private int percentWeight = 0;
-   private int recommendedPercentComplete = 0;
+   private Integer recommendedPercentComplete = null;
    private StateColor color = null;
 
    public StateDefinition(String name) {
@@ -99,11 +99,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    @Override
    public String getPageName() {
       return getName();
-   }
-
-   @Override
-   public Integer getDefaultPercent() {
-      return null;
    }
 
    public WorkDefinition getWorkDefinition() {
@@ -241,7 +236,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       this.recommendedPercentComplete = recommendedPercentComplete;
    }
 
-   public int getRecommendedPercentComplete() {
+   public Integer getRecommendedPercentComplete() {
       return recommendedPercentComplete;
    }
 

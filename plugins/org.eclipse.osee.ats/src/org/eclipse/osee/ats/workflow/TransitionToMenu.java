@@ -115,9 +115,15 @@ public class TransitionToMenu {
 
                @Override
                public void run() {
+                  StateDefinition stateDef = awas.iterator().next().getWorkDefinition().getStateByName(toStateName);
+                  boolean showPercentCompleted = !stateDef.isCompletedOrCancelledPage();
                   SMAStatusDialog tsd =
                      new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Enter Hours Spent", "Enter additional hours spent in current state(s)", false, getAwas());
+                        "Enter Hours Spent", "Enter additional hours spent in current state(s)", showPercentCompleted,
+                        getAwas());
+                  if (stateDef.getRecommendedPercentComplete() != null) {
+                     tsd.setDefaultPercent(stateDef.getRecommendedPercentComplete());
+                  }
                   int dialogResult = tsd.open();
                   if (dialogResult == 0) {
                      try {

@@ -45,6 +45,7 @@ public class SMAStatusDialog extends MessageDialog {
    private Button okButton;
    private final boolean showPercent;
    protected final Collection<? extends AbstractWorkflowArtifact> awas;
+   private Integer defaultPercent = null;
 
    public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, Collection<? extends AbstractWorkflowArtifact> awas) {
       this(parentShell, dialogTitle, dialogMessage, true, awas);
@@ -85,13 +86,18 @@ public class SMAStatusDialog extends MessageDialog {
          new Label(parent, SWT.NONE).setText("Task will auto-transition to complete when statused 100%.\n" + "Make all other changes to Task prior to statusing 100%.");
       }
 
+      boolean percentSet = false;
       if (showPercent) {
          percent.setRequiredEntry(true);
          percent.setToolTip("Enter total percent complete.");
          percent.createWidgets(parent, 2);
          try {
-            if (awas.size() == 1) {
+            if (defaultPercent != null) {
+               percent.set(defaultPercent);
+               percentSet = true;
+            } else if (awas.size() == 1) {
                percent.set(awas.iterator().next().getStateMgr().getPercentComplete());
+               percentSet = true;
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -138,6 +144,10 @@ public class SMAStatusDialog extends MessageDialog {
          splitRadio.createWidgets(comp, 2);
          splitRadio.setSelected(true);
          splitRadio.setToolTip("Hours Spent will be divided equaly by the number of objects " + "and added to the existing hours spent for the object.");
+      }
+
+      if (percentSet) {
+         hours.setFocus();
       }
 
       return parent;
@@ -199,6 +209,10 @@ public class SMAStatusDialog extends MessageDialog {
 
    public XPercent getPercent() {
       return percent;
+   }
+
+   public void setDefaultPercent(Integer defaultPercent) {
+      this.defaultPercent = defaultPercent;
    }
 
 }

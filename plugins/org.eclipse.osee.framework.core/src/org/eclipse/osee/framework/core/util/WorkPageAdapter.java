@@ -84,11 +84,6 @@ public abstract class WorkPageAdapter implements IWorkPage {
    }
 
    @Override
-   public Integer getDefaultPercent() {
-      return null;
-   }
-
-   @Override
    public String getPageName() {
       return pageName;
    }

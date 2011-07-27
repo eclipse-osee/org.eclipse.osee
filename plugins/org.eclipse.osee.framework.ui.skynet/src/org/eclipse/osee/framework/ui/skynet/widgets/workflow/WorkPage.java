@@ -297,9 +297,4 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
       return null;
    }
 
-   @Override
-   public Integer getDefaultPercent() {
-      return 0;
-   }
-
 }

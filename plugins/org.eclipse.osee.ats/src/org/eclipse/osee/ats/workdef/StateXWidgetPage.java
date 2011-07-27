@@ -311,11 +311,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       return null;
    }
 
-   @Override
-   public Integer getDefaultPercent() {
-      return 0;
-   }
-
    public AbstractWorkflowArtifact getSma() {
       return sma;
    }

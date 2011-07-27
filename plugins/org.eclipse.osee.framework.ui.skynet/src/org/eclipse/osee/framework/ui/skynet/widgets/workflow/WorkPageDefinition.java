@@ -171,11 +171,6 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition implement
       return getWorkPageType().isWorkingPage();
    }
 
-   @Override
-   public Integer getDefaultPercent() {
-      return null;
-   }
-
    public Integer getWorkPageOrdinal() {
       return workPageOrdinal;
    }
