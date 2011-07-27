@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.actions.RefreshDirtyAction;
 import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowBranchChangeDataAction;
+import org.eclipse.osee.ats.actions.ShowWorkDefinitionAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.actions.WorkflowDebugAction;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -105,7 +106,7 @@ public class SMAOperationsSection extends SectionPart {
       }
 
       final Composite sectionBody = toolkit.createComposite(section, SWT.NONE);
-      sectionBody.setLayout(ALayout.getZeroMarginLayout(3, false));
+      sectionBody.setLayout(new GridLayout(3, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       createImpactsSection(sectionBody, toolkit);
@@ -219,6 +220,7 @@ public class SMAOperationsSection extends SectionPart {
          if (AtsUtilCore.isAtsAdmin()) {
             new XButtonViaAction(new OpenInArtifactEditorAction(editor)).createWidgets(sectionBody, 2);
          }
+         new XButtonViaAction(new ShowWorkDefinitionAction()).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
