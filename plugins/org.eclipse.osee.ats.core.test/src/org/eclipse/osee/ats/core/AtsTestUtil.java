@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
@@ -223,14 +222,14 @@ public class AtsTestUtil {
       testAi =
          (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
             AtsUtilCore.getAtsBranchToken(), getTitle("AI", postFixName));
-      testAi.setSoleAttributeValue(CoreAttributeTypes.Active, true);
+      testAi.setSoleAttributeValue(AtsAttributeTypes.Active, true);
       testAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
 
       teamDef =
          (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
             AtsUtilCore.getAtsBranchToken(), getTitle("Team Def", postFixName));
       teamDef.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
-      teamDef.setSoleAttributeValue(CoreAttributeTypes.Active, true);
+      teamDef.setSoleAttributeValue(AtsAttributeTypes.Active, true);
       teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
       teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
 
