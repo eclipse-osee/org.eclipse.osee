@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xWidgets>
+	<XWidget xwidgetType="XAtsProgramComboWidget" horizontalLabel="true"
+		displayName="Program" />
+	<XWidget xwidgetType="XArtifactList" displayName="Versions"
+		multiSelect="true" />
+	<XWidget xwidgetType="XText" displayName="Script Root Directory"
+		defaultValue="C:/UserData/workspaceScripts" />
+	<XWidget xwidgetType="XBranchSelectWidget" displayName="Requirements Branch"
+		toolTip="Select a requirements branch." />
+	<XWidget xwidgetType="XBranchSelectWidget" displayName="Scripts Branch"
+		toolTip="Select a scripts results branch." />
+	<XWidget xwidgetType="XBranchSelectWidget" displayName="Test Procedure Branch"
+		toolTip="Select a test procedures branch." />
+</xWidgets>

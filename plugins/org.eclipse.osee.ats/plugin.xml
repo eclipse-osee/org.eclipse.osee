@@ -483,4 +483,9 @@
                classname="org.eclipse.osee.ats.util.AtsUserNavigateItems">
          </UserNavigateItem>
       </extension>
+   <extension
+         id="DetailedTestStatus" name="DetailedTestStatus"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation className="org.eclipse.osee.ats.operation.DetailedTestStatus"/>
+   </extension>
 </plugin>
