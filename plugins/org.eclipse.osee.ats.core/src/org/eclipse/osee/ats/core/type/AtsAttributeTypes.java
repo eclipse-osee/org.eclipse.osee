@@ -103,6 +103,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType SmaNote = createType("AAMFEdm7ywte8qayfbAA", "SMA Note", "Notes applicable to ATS object");
    public static final IAttributeType State = createType("AAMFEdMa3wzVvp60xLQA", "State", "States of workflow state machine.");
    public static final IAttributeType StateNotes = createType("AAMFEdiWPm7M_xV1EswA", "State Notes");
+   public static final IAttributeType SwEnhancement = createType("AAMFEgVmxCgOdP+DuNwA", "SW Enhancement");
    public static final IAttributeType TeamDefinition = createType("AAMFEdd5bFEe18bd0lQA", "Team Definition");
    public static final IAttributeType TeamUsesVersions = createType("AAMFEcrHnzPxQ7w3ligA", "Team Uses Versions", "True if Team Workflow uses versioning/releasing option.");
    public static final IAttributeType Title = createType(CoreAttributeTypes.Name.getGuid(), CoreAttributeTypes.Name.getName(), "Enter clear and consise title that can be generally understood.");

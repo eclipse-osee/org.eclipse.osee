@@ -844,6 +844,14 @@ attributeType "ats.Role" extends StringAttribute {
    max unlimited
 }
 
+attributeType "ats.SW Enhancement" extends StringAttribute {
+   guid "AAMFEgVmxCgOdP+DuNwA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+}
+
 relationType "TeamLead" {
    guid "AAMFE90HyTZPyHuQWOQA"
    sideAName "Team Definition"
