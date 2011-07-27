@@ -27,10 +27,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
@@ -163,8 +161,6 @@ public class QuickSearchView extends GenericViewPart implements Listener {
       }
       OseeStatusContributionItemFactory.addTo(this, true);
 
-      createActions();
-
       Composite panel = new Composite(parent, SWT.NONE);
       GridLayout gL = new GridLayout();
       gL.marginHeight = 0;
@@ -204,10 +200,6 @@ public class QuickSearchView extends GenericViewPart implements Listener {
       action.setToolTipText("Clears search history");
       action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REMOVE));
       getViewSite().getActionBars().getMenuManager().add(action);
-   }
-
-   private void createActions() {
-      OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.PLUGIN_ID, VIEW_ID, "Quick Search");
    }
 
    private void compositeEnablement(SearchComposite composite, boolean enable) {

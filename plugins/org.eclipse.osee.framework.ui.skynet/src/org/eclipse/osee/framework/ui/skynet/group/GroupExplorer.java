@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
@@ -232,7 +231,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(refreshAction);
 
-      OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.PLUGIN_ID, VIEW_ID, "Group Explorer");
    }
 
    private void handleNewGroup() {

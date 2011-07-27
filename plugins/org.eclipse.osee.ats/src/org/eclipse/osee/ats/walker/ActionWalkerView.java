@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
@@ -211,7 +210,6 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    }
 
    private void createActions() {
-
       IActionBars bars = getViewSite().getActionBars();
       // IMenuManager mm = bars.getMenuManager();
       IToolBarManager tbm = bars.getToolBarManager();
@@ -219,8 +217,6 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       tbm.add(new ActionWalkerLayoutAction(this));
       tbm.add(new ActionWalkerShowAllAction(this));
       tbm.add(new ActionWalkerRefreshAction(this));
-      OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.PLUGIN_ID, VIEW_ID, "ATS Action View");
-
    }
 
    public void refresh() {

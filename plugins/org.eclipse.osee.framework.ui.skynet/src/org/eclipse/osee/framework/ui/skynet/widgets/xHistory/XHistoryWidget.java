@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -150,9 +149,6 @@ public class XHistoryWidget extends GenericXWidget {
             setInputData(artifact, true);
          }
       });
-
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, HistoryView.VIEW_ID,
-         "Resource History");
 
       new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 

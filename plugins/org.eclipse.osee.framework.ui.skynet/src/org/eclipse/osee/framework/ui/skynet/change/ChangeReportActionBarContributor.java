@@ -14,14 +14,11 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenAssociatedArtifact;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenQuickSearchAction;
 import org.eclipse.osee.framework.ui.skynet.change.actions.ReloadChangeReportAction;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
-import org.eclipse.ui.IEditorSite;
 
 /**
  * @author Roberto E. Escobar
@@ -29,7 +26,6 @@ import org.eclipse.ui.IEditorSite;
 public class ChangeReportActionBarContributor implements IActionContributor {
 
    private final ChangeReportEditor editor;
-   private Action bugAction;
    private Action reloadAction;
    private OpenAssociatedArtifact openAssocAction;
 
@@ -45,8 +41,6 @@ public class ChangeReportActionBarContributor implements IActionContributor {
       //      manager.add(createCompareMenu());
       manager.add(getOpenAssociatedArtifactAction());
       manager.add(new OpenQuickSearchAction(new UiSelectBetweenDeltasBranchProvider(uiData)));
-      manager.add(new Separator());
-      manager.add(getAtsBugAction());
    }
 
    //   public Action createCompareMenu() {
@@ -76,12 +70,4 @@ public class ChangeReportActionBarContributor implements IActionContributor {
       return reloadAction;
    }
 
-   public Action getAtsBugAction() {
-      if (bugAction == null) {
-         IEditorSite site = editor.getEditorSite();
-         bugAction =
-            OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, editor, site.getId(), site.getRegisteredName());
-      }
-      return bugAction;
-   }
 }

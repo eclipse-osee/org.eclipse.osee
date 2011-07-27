@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,7 +55,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -398,8 +396,6 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
       getSite().setSelectionProvider(treeViewer);
 
       treeViewer.addCustomizeToViewToolbar(this);
-      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Message Watch");
-
       createMenuActions();
 
       setHelpContexts();
@@ -412,31 +408,31 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
       clientService.addDictionaryListener(this);
       clientService.addConnectionListener(this);
       loadWatchFile();
-      
+
       cb = new Clipboard(Display.getCurrent());
-      
-      treeViewer.getControl().addKeyListener(new KeyListener(){
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			if(e.stateMask == SWT.CTRL && e.keyCode == 'v'){
-				TextTransfer transfer = TextTransfer.getInstance();
-		        String data = (String) cb.getContents(transfer);
-		        if (data != null) {
-		        	SignalStripper signalStripper = new SignalStripper();
-					String mwi = signalStripper.generateStringToWrite(data);
-					loadWatchFile(mwi);
-		        }
-			}
-		}
+      treeViewer.getControl().addKeyListener(new KeyListener() {
 
-		@Override
-		public void keyReleased(KeyEvent e) {
-		}
+         @Override
+         public void keyPressed(KeyEvent e) {
+            if (e.stateMask == SWT.CTRL && e.keyCode == 'v') {
+               TextTransfer transfer = TextTransfer.getInstance();
+               String data = (String) cb.getContents(transfer);
+               if (data != null) {
+                  SignalStripper signalStripper = new SignalStripper();
+                  String mwi = signalStripper.generateStringToWrite(data);
+                  loadWatchFile(mwi);
+               }
+            }
+         }
+
+         @Override
+         public void keyReleased(KeyEvent e) {
+         }
       });
-      
+
       int ops = DND.DROP_COPY | DND.DROP_MOVE;
-      Transfer[] transfers = new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance()};
+      Transfer[] transfers = new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance()};
       treeViewer.addDropSupport(ops, transfers, new WatchViewDropAdapter(this));
    }
 
@@ -716,175 +712,173 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
          Jobs.startJob(job);
       }
    }
-   
+
    public void loadWatchFile(final String watchFileText) {
-     final Job job = new LoadWatchList(watchFileText);
-     Jobs.startJob(job);
+      final Job job = new LoadWatchList(watchFileText);
+      Jobs.startJob(job);
    }
 
-   private class LoadWatchList extends Job{
-	   
-	   private File watchFile;
-	   private String text;
-	   
-	   LoadWatchList(File watchFile){
-		   super("Loading watch file");
-		   this.watchFile = watchFile;
-	   }
-	   
-	   LoadWatchList(String watchFileText){
-		   super("Loading watch file");
-		   this.text = watchFileText;
-	   }
-   
+   private class LoadWatchList extends Job {
 
-       @Override
-       protected IStatus run(IProgressMonitor monitor) {
-          try {
-        	 if(watchFile != null){
-        		 text = Lib.fileToString(watchFile);
-        	 }
-             final String[] msgs = text.split("\n");
-             monitor.beginTask("loading watch elements", msgs.length + 10);
+      private File watchFile;
+      private String text;
 
-             if (msgs.length > 0) {
-                if (msgs[0].equals("version=2.0")) {
-                   final Map<String, ArrayList<ElementPath>> pathsToAdd =
-                      new HashMap<String, ArrayList<ElementPath>>();
-                   final List<ElementPath> recBodyElementsToAdd = new ArrayList<ElementPath>();
-                   final List<ElementPath> recHeaderElementsToAdd = new ArrayList<ElementPath>();
-                   final Set<String> recHeaderHex = new HashSet<String>();
-                   final Set<String> recBodyHex = new HashSet<String>();
-                   for (int i = 1; i < msgs.length; i++) {
-                      if (msgs[i].startsWith("#rec#")) {
-                         // #rec#,message,[body|header|bodyHex|
-                         // headerHex],[boolean|path]
-                         String[] els = msgs[i].split(",");
-                         if (els.length == 4) {
-                            String message = els[1];
-                            String type = els[2];
-                            String value = els[3];
-                            if (type.equals("body")) {
-                               recBodyElementsToAdd.add(new ElementPath(value));
-                            } else if (type.equals("header")) {
-                               recHeaderElementsToAdd.add(new ElementPath(value));
-                            } else if (type.equals("headerHex")) {
-                               if (Boolean.parseBoolean(value)) {
-                                  recHeaderHex.add(message);
-                               }
-                            } else if (type.equals("bodyHex")) {
-                               if (Boolean.parseBoolean(value)) {
-                                  recBodyHex.add(message);
-                               }
-                            }
-                         }
-                         monitor.worked(1);
-                      } else {
-                         ElementPath path = new ElementPath(msgs[i]);
-                         ArrayList<ElementPath> collection = pathsToAdd.get(path.getMessageName());
-                         if (collection == null) {
-                            collection = new ArrayList<ElementPath>();
-                            pathsToAdd.put(path.getMessageName(), collection);
-                         }
-                         collection.add(path);
-                         monitor.worked(1);
-                      }
-                   }
-                   Displays.pendInDisplayThread(new Runnable() {
-                      @Override
-                      public void run() {
-                         try {
-                            treeViewer.getTree().setRedraw(false);
-                            addWatchMessage(new AddWatchParameter(pathsToAdd));
-                            for (ElementPath path : recBodyElementsToAdd) {
-                               WatchedMessageNode msgNode = watchList.getMessageNode(path.getMessageName());
-                               if (msgNode != null) {
-                                  msgNode.getRecordingState().addBody(path);
-                               }
-                            }
-                            for (ElementPath path : recHeaderElementsToAdd) {
-                               WatchedMessageNode msgNode = watchList.getMessageNode(path.getMessageName());
-                               if (msgNode != null) {
-                                  msgNode.getRecordingState().addHeader(path);
-                               }
-                            }
-                            for (String msg : recBodyHex) {
-                               WatchedMessageNode msgNode = watchList.getMessageNode(msg);
-                               if (msgNode != null) {
-                                  msgNode.getRecordingState().setBodyDump(true);
-                               }
-                            }
-                            for (String msg : recHeaderHex) {
-                               WatchedMessageNode msgNode = watchList.getMessageNode(msg);
-                               if (msgNode != null) {
-                                  msgNode.getRecordingState().setHeaderDump(true);
-                               }
-                            }
-                         } finally {
-                            treeViewer.getTree().setRedraw(true);
-                            treeViewer.refresh();
-                         }
-                      }
-                   });
+      LoadWatchList(File watchFile) {
+         super("Loading watch file");
+         this.watchFile = watchFile;
+      }
 
-                   Displays.pendInDisplayThread(new Runnable() {
-                      @Override
-                      public void run() {
-                         saveWatchFile();
-                         treeViewer.refresh();
-                      }
-                   });
-                   monitor.worked(10);
-                } else {
+      LoadWatchList(String watchFileText) {
+         super("Loading watch file");
+         this.text = watchFileText;
+      }
 
-                   for (String msg : msgs) {
-                      // final Matcher jarMatch =
-                      // jarPattern.matcher(msg);
-                      final Matcher elmMatch = elmPattern.matcher(msg);
-                      final Matcher msgMatch = msgPattern.matcher(msg);
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+         try {
+            if (watchFile != null) {
+               text = Lib.fileToString(watchFile);
+            }
+            final String[] msgs = text.split("\n");
+            monitor.beginTask("loading watch elements", msgs.length + 10);
 
-                      if (elmMatch.find()) {
-                         Displays.pendInDisplayThread(new Runnable() {
-                            @Override
-                            public void run() {
-                               String msg = elmMatch.group(1);
-                               String elm = elmMatch.group(2);
-                               ElementPath element = new ElementPath(msg, elm);
-                               AddWatchParameter parameter = new AddWatchParameter(elmMatch.group(1), element);
-                               addWatchMessage(parameter);
-                            }
-                         });
-                      } else if (msgMatch.find()) {
-                         Displays.pendInDisplayThread(new Runnable() {
-                            @Override
-                            public void run() {
-                               addWatchMessage(new AddWatchParameter(msgMatch.group(1)));
-                            }
-                         });
-                      }
-                      monitor.worked(1);
-                   }
-                   Displays.pendInDisplayThread(new Runnable() {
-                      @Override
-                      public void run() {
-                         saveWatchFile();
-                         treeViewer.refresh();
-                      }
-                   });
-                   monitor.worked(10);
+            if (msgs.length > 0) {
+               if (msgs[0].equals("version=2.0")) {
+                  final Map<String, ArrayList<ElementPath>> pathsToAdd = new HashMap<String, ArrayList<ElementPath>>();
+                  final List<ElementPath> recBodyElementsToAdd = new ArrayList<ElementPath>();
+                  final List<ElementPath> recHeaderElementsToAdd = new ArrayList<ElementPath>();
+                  final Set<String> recHeaderHex = new HashSet<String>();
+                  final Set<String> recBodyHex = new HashSet<String>();
+                  for (int i = 1; i < msgs.length; i++) {
+                     if (msgs[i].startsWith("#rec#")) {
+                        // #rec#,message,[body|header|bodyHex|
+                        // headerHex],[boolean|path]
+                        String[] els = msgs[i].split(",");
+                        if (els.length == 4) {
+                           String message = els[1];
+                           String type = els[2];
+                           String value = els[3];
+                           if (type.equals("body")) {
+                              recBodyElementsToAdd.add(new ElementPath(value));
+                           } else if (type.equals("header")) {
+                              recHeaderElementsToAdd.add(new ElementPath(value));
+                           } else if (type.equals("headerHex")) {
+                              if (Boolean.parseBoolean(value)) {
+                                 recHeaderHex.add(message);
+                              }
+                           } else if (type.equals("bodyHex")) {
+                              if (Boolean.parseBoolean(value)) {
+                                 recBodyHex.add(message);
+                              }
+                           }
+                        }
+                        monitor.worked(1);
+                     } else {
+                        ElementPath path = new ElementPath(msgs[i]);
+                        ArrayList<ElementPath> collection = pathsToAdd.get(path.getMessageName());
+                        if (collection == null) {
+                           collection = new ArrayList<ElementPath>();
+                           pathsToAdd.put(path.getMessageName(), collection);
+                        }
+                        collection.add(path);
+                        monitor.worked(1);
+                     }
+                  }
+                  Displays.pendInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        try {
+                           treeViewer.getTree().setRedraw(false);
+                           addWatchMessage(new AddWatchParameter(pathsToAdd));
+                           for (ElementPath path : recBodyElementsToAdd) {
+                              WatchedMessageNode msgNode = watchList.getMessageNode(path.getMessageName());
+                              if (msgNode != null) {
+                                 msgNode.getRecordingState().addBody(path);
+                              }
+                           }
+                           for (ElementPath path : recHeaderElementsToAdd) {
+                              WatchedMessageNode msgNode = watchList.getMessageNode(path.getMessageName());
+                              if (msgNode != null) {
+                                 msgNode.getRecordingState().addHeader(path);
+                              }
+                           }
+                           for (String msg : recBodyHex) {
+                              WatchedMessageNode msgNode = watchList.getMessageNode(msg);
+                              if (msgNode != null) {
+                                 msgNode.getRecordingState().setBodyDump(true);
+                              }
+                           }
+                           for (String msg : recHeaderHex) {
+                              WatchedMessageNode msgNode = watchList.getMessageNode(msg);
+                              if (msgNode != null) {
+                                 msgNode.getRecordingState().setHeaderDump(true);
+                              }
+                           }
+                        } finally {
+                           treeViewer.getTree().setRedraw(true);
+                           treeViewer.refresh();
+                        }
+                     }
+                  });
 
-                }
-             }
-          } catch (Throwable t) {
-             OseeLog.log(Activator.class, Level.SEVERE, "error loading watch file", t);
-             return org.eclipse.core.runtime.Status.CANCEL_STATUS;
-          } finally {
-             monitor.done();
-          }
-          return org.eclipse.core.runtime.Status.OK_STATUS;
-       }
-    }
-   
+                  Displays.pendInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        saveWatchFile();
+                        treeViewer.refresh();
+                     }
+                  });
+                  monitor.worked(10);
+               } else {
+
+                  for (String msg : msgs) {
+                     // final Matcher jarMatch =
+                     // jarPattern.matcher(msg);
+                     final Matcher elmMatch = elmPattern.matcher(msg);
+                     final Matcher msgMatch = msgPattern.matcher(msg);
+
+                     if (elmMatch.find()) {
+                        Displays.pendInDisplayThread(new Runnable() {
+                           @Override
+                           public void run() {
+                              String msg = elmMatch.group(1);
+                              String elm = elmMatch.group(2);
+                              ElementPath element = new ElementPath(msg, elm);
+                              AddWatchParameter parameter = new AddWatchParameter(elmMatch.group(1), element);
+                              addWatchMessage(parameter);
+                           }
+                        });
+                     } else if (msgMatch.find()) {
+                        Displays.pendInDisplayThread(new Runnable() {
+                           @Override
+                           public void run() {
+                              addWatchMessage(new AddWatchParameter(msgMatch.group(1)));
+                           }
+                        });
+                     }
+                     monitor.worked(1);
+                  }
+                  Displays.pendInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        saveWatchFile();
+                        treeViewer.refresh();
+                     }
+                  });
+                  monitor.worked(10);
+
+               }
+            }
+         } catch (Throwable t) {
+            OseeLog.log(Activator.class, Level.SEVERE, "error loading watch file", t);
+            return org.eclipse.core.runtime.Status.CANCEL_STATUS;
+         } finally {
+            monitor.done();
+         }
+         return org.eclipse.core.runtime.Status.OK_STATUS;
+      }
+   }
+
    public void saveWatchFile() {
       saveWatchFile(watchFile);
    }

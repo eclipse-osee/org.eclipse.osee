@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
@@ -43,7 +42,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -60,8 +58,6 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 
    @Override
    public void contributeToToolBar(IToolBarManager manager) {
-      manager.add(createAtsBugAction());
-      manager.add(new Separator());
       addOpenWithContributionItem(manager);
       manager.add(new DeleteArtifactAction());
       manager.add(new Separator());
@@ -96,11 +92,6 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open");
       contributionItem.setVisible(true);
       manager.add(contributionItem);
-   }
-
-   private final Action createAtsBugAction() {
-      IEditorSite site = editor.getEditorSite();
-      return OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, editor, site.getId(), site.getRegisteredName());
    }
 
    private final class RevealBranchAction extends Action {

@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEventType;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -124,8 +123,6 @@ public class AdminView extends ViewPart implements IActionable {
       pingAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.HELP));
       pingAction.setToolTipText("Ping OSEE Clients");
       pingAction.setEnabled(AccessControlManager.isOseeAdmin());
-
-      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Admin");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(saveAction);

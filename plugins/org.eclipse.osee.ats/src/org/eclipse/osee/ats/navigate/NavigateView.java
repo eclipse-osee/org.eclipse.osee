@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
@@ -244,7 +243,6 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
       IMenuManager mm = bars.getMenuManager();
       mm.add(new NewAction());
       mm.add(new NewGoal());
-      mm.add(OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, this, VIEW_ID, "ATS Navigator"));
 
       toolbarManager.update(true);
    }

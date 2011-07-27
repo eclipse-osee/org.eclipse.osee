@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Label;
 public class LabelComposite extends Composite {
 
    public LabelComposite(Composite parent, Image image, String label) {
-      super(parent, SWT.NONE);
+      super(parent, SWT.BORDER);
       setLayout(new GridLayout(2, false));
       setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));

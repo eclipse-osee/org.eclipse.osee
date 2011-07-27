@@ -13,11 +13,9 @@ package org.eclipse.osee.ote.ui.test.manager.pages;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.plugin.core.IActionable;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
-import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -125,9 +123,6 @@ public class OverviewPage extends TestManagerPage implements IActionable {
 
          labelMap.put(enumEntry, updateableLabel);
       }
-      OseeUiActions.addButtonToEditorToolBar(this, TestManagerPlugin.PLUGIN_ID, composite, TestManagerEditor.namespace,
-         "Test Manager");
-
    }
 
    @Override

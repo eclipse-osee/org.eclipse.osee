@@ -60,7 +60,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -475,9 +474,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new PrivilegedEditAction(awa, editor));
       toolBarMgr.add(new ResourceHistoryAction(awa));
       toolBarMgr.add(new ReloadAction(awa));
-
-      OseeUiActions.addButtonToEditorToolBar(editor, this, AtsPlugin.PLUGIN_ID,
-         managedForm.getForm().getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
 
       managedForm.getForm().updateToolBar();
    }

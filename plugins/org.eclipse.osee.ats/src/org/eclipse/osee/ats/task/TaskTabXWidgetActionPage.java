@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -153,8 +152,6 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       toolBarManager.add(new RefreshAction(taskComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      OseeUiActions.addButtonToEditorToolBar(smaEditor, smaEditor, AtsPlugin.PLUGIN_ID, toolBarManager,
-         TaskEditor.EDITOR_ID, "ATS Task Tab");
       toolBarManager.add(new Separator());
       createDropDownMenuActions();
       toolBarManager.add(new DropDownAction());

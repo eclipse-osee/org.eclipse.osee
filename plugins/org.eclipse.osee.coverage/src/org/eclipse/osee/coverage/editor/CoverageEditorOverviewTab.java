@@ -245,7 +245,6 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       getManagedForm().getForm().getToolBarManager().add(new GenerateDetailedCoverageReportAction(this));
       getManagedForm().getForm().getToolBarManager().add(new BrowserPrintAction(this));
       getManagedForm().getForm().getToolBarManager().add(new RefreshAction(this));
-      CoverageEditor.addToToolBar(getManagedForm().getForm().getToolBarManager(), coverageEditor);
    }
 
    @Override

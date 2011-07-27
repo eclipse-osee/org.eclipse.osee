@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -125,8 +124,6 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toolBarManager.add(new RefreshAction(worldComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      toolBarManager.add(OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, worldEditor, WorldEditor.EDITOR_ID,
-         "ATS World"));
       toolBarManager.add(new Separator());
 
       createDropDownMenuActions();

@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -38,7 +37,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -107,7 +105,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
          @SuppressWarnings("unused")
          Collection<Artifact> artifactLoadCache = null;
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
-               //               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
+            //               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
             artifactLoadCache =
                RelationManager.getRelatedArtifacts(
                   Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
@@ -115,7 +113,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
             // TODO Need to bulk load binary attributes also; Some Coverage Items are binary attributes
             // that are not bulk loaded with attributes.  This was mitigated by moving test units to separate table
             // and only referencing their ids in Coverage Items.
-               //               elapsedTime.end();
+            //               elapsedTime.end();
          }
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
             //            ElapsedTime elapsedTime = new ElapsedTime("Coverage - load model");
@@ -199,11 +197,6 @@ public class CoverageEditor extends FormEditor implements IActionable {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return pageIndex;
-   }
-
-   public static void addToToolBar(IToolBarManager manager, CoverageEditor coverageEditor) {
-      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, coverageEditor, EDITOR_ID, "Coverage Editor"));
-      manager.update(true);
    }
 
    public void setEditorTitle(final String str) {

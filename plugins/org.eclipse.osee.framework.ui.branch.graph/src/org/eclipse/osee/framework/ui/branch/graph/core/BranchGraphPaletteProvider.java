@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
-import org.eclipse.gef.Tool;
 import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;
@@ -18,13 +17,7 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteToolbar;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
-import org.eclipse.gef.tools.AbstractTool;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.branch.graph.Activator;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -82,40 +75,6 @@ public class BranchGraphPaletteProvider {
       palette.setDefaultEntry(tool);
 
       toolbar.add(new MarqueeToolEntry());
-
-      final Action action =
-         OseeUiActions.createBugAction(Activator.PLUGIN_ID, editor, BranchGraphEditor.EDITOR_ID,
-            "Branch Graph");
-      final ImageDescriptor img = action.getImageDescriptor();
-
-      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
-
-         @Override
-         public Tool createTool() {
-            return new AbstractTool() {
-
-               @Override
-               protected String getCommandName() {
-                  return action.getText();
-               }
-
-               @Override
-               public void activate() {
-                  super.activate();
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     @Override
-                     public void run() {
-                        deactivate();
-                        action.run();
-                     }
-                  });
-
-               }
-            };
-         }
-
-      });
-
       return toolbar;
    }
 }

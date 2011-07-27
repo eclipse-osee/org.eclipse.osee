@@ -83,7 +83,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -366,8 +365,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          myTreeEditor.minimumWidth = 50;
 
          dragAndDropWorker = new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this, branch);
-
-         OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.PLUGIN_ID, VIEW_ID, "Artifact Explorer");
 
          OseeStatusContributionItemFactory.addTo(this, false);
 

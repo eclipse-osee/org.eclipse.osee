@@ -424,7 +424,6 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    public void createEditorToolbar() {
-      CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
    }
 

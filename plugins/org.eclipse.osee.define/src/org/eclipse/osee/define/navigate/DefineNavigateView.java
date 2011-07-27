@@ -17,10 +17,8 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.plugin.core.IActionable;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
@@ -111,8 +109,6 @@ public class DefineNavigateView extends ViewPart implements IActionable, IXNavig
       };
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
-
-      OseeUiActions.addBugToViewToolbar(this, this, DefinePlugin.PLUGIN_ID, VIEW_ID, "Define Navigator");
 
    }
 

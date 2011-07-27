@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -91,12 +90,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
    }
 
    public ToolBar createToolBar(Composite parent) {
-      ToolBar toolBar = ALayout.createCommonToolBar(parent);
-
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, getEditorId(),
-         getActionableItemName());
-
-      return toolBar;
+      return ALayout.createCommonToolBar(parent);
    }
 
    public void setEditorTitle(final String str) {

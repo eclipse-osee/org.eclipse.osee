@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
@@ -178,7 +177,6 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
       manager.add(new ShowDestinationBranchChangeReportAction());
       manager.add(new Separator());
       manager.add(mergeXViewer.getCustomizeAction());
-      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, this, MergeView.VIEW_ID, "Merge Manager"));
       manager.update(true);
    }
 

@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -155,8 +154,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
          }
       });
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, EDITOR_ID,
-         "Mass Artifact Editor");
    }
 
    public static void editArtifacts(final MassArtifactEditorInput input) {

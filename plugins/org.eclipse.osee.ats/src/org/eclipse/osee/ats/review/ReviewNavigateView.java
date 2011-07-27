@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -41,7 +40,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -56,7 +54,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -213,11 +210,6 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
       toolbarManager.add(new ExpandAllAction(xNavComp.getFilteredTree().getViewer()));
       toolbarManager.add(new OpenWorkflowByIdAction());
       getViewSite().getActionBars().updateActionBars();
-
-      IActionBars bars = getViewSite().getActionBars();
-      IMenuManager mm = bars.getMenuManager();
-      mm.add(OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, this, VIEW_ID, "Review Navigator"));
-
       toolbarManager.update(true);
    }
 

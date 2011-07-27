@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
@@ -69,8 +69,6 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
          return;
       }
 
-      OseeStatusContributionItemFactory.addTo(this, false);
-
       comp = new Composite(parent, SWT.None);
       comp.setLayout(ALayout.getZeroMarginLayout());
       comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -102,9 +100,11 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
          }
       });
       xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), comp, SWT.NONE);
+      GridData gridData = new GridData(GridData.FILL_BOTH);
+      gridData.widthHint = 100;
+      xNavComp.setLayoutData(gridData);
 
       createActions();
-      xNavComp.refresh();
 
       Label label = new Label(xNavComp, SWT.None);
       String str = getWhoAmI();
@@ -120,13 +120,19 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
       }
       label.setText(str);
       label.setToolTipText(str);
-      GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+      gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
       gridData.heightHint = 15;
       label.setLayoutData(gridData);
 
       HelpUtil.setHelp(xNavComp, CoverageHelpContext.NAVIGATOR);
 
-      addExtensionPointListenerBecauseOfWorkspaceLoading();
+      xNavComp.refresh();
+      xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+      parent.getParent().layout(true);
+      parent.layout(true);
+
+      OseeStatusContributionItemFactory.addTo(this, false);
    }
 
    private String getWhoAmI() {
@@ -175,10 +181,9 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
       };
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
-      getViewSite().getActionBars().getMenuManager().add(refreshAction);
 
-      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Coverage Navigator");
-
+      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(refreshAction);
    }
 
    @Override

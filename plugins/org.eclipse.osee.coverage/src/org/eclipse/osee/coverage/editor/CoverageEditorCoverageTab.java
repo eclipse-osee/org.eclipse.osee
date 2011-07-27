@@ -215,7 +215,6 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
       toolBarManager.add(new CollapseAllAction(xCoverageViewer.getXViewer()));
       toolBarManager.add(new ExpandAllAction(xCoverageViewer.getXViewer()));
       toolBarManager.add(xCoverageViewer.getXViewer().getCustomizeAction());
-      CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
    }
 

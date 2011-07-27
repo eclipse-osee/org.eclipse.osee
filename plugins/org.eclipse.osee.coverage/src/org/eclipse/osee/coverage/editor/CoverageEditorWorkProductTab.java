@@ -176,7 +176,6 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
       toolBarManager.add(new OpenMultipleWorkProductsAction(coverageEditor,
          coveragePackage.getWorkProductTaskProvider()));
       toolBarManager.add(new RemoveRelatedWorkProductAction(this));
-      CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
    }
 

@@ -51,13 +51,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -368,7 +366,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    private ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = AtsUtil.createCommonToolBar(parent);
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, EDITOR_ID, "ATS Editor");
       AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(awa), FrameworkImage.EDIT_BLUE);
       AtsUtil.actionToToolItem(toolBar, new AccessControlAction(awa), FrameworkImage.AUTHENTICATED);
       AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(this), FrameworkImage.DIRTY);

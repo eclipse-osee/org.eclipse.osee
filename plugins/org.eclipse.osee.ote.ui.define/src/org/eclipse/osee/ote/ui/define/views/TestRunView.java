@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
@@ -161,7 +160,6 @@ public class TestRunView extends GenericViewPart implements IDataChangedListener
       menuManager.setParent(getViewSite().getActionBars().getMenuManager());
       fillMenu(menuManager);
       getSite().setSelectionProvider(viewer);
-      OseeUiActions.addBugToViewToolbar(this, this, OteUiDefinePlugin.PLUGIN_ID, VIEW_ID, "Test Run View");
    }
 
    private void fillMenu(IMenuManager menuManager) {

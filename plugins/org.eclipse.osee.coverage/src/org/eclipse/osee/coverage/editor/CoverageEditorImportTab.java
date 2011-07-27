@@ -96,8 +96,6 @@ public class CoverageEditorImportTab extends FormPage {
       scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
 
       scrolledForm.getBody().setLayout(ALayout.getZeroMarginLayout());
-      CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
-
       scrolledForm.getBody().setLayout(new GridLayout(1, false));
       scrolledForm.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 

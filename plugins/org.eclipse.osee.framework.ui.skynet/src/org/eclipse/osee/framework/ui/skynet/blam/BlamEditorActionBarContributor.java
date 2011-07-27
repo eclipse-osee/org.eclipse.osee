@@ -16,12 +16,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.ui.IEditorSite;
 
 /**
  * @author Roberto E. Escobar
@@ -30,7 +27,6 @@ public class BlamEditorActionBarContributor implements IActionContributor {
 
    private final BlamEditor editor;
    private Action executeBlamAction;
-   private Action bugAction;
 
    public BlamEditorActionBarContributor(BlamEditor editor) {
       this.editor = editor;
@@ -39,18 +35,6 @@ public class BlamEditorActionBarContributor implements IActionContributor {
    @Override
    public void contributeToToolBar(IToolBarManager manager) {
       manager.add(getExecuteBlamAction());
-      manager.add(getAtsBugAction());
-   }
-
-   //   OseeAts.addButtonToEditorToolBar(editor, this, SkynetGuiPlugin.getInstance(), form.getToolBarManager(),
-   //         BlamEditor.EDITOR_ID, "BLAM Editor");
-   public final Action getAtsBugAction() {
-      if (bugAction == null) {
-         IEditorSite site = editor.getEditorSite();
-         bugAction =
-            OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, editor, site.getId(), site.getRegisteredName());
-      }
-      return bugAction;
    }
 
    public final Action getExecuteBlamAction() {

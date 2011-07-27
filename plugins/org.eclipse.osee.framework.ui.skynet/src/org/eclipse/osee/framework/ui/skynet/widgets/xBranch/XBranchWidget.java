@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -185,8 +184,6 @@ public class XBranchWidget extends GenericXWidget {
          }
       });
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, BranchView.VIEW_ID,
-         "Branch Manager");
    }
 
    public ArrayList<Branch> getSelectedBranches() {

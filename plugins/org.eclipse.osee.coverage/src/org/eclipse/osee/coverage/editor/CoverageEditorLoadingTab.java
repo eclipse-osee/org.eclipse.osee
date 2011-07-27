@@ -74,14 +74,13 @@ public class CoverageEditorLoadingTab extends FormPage implements IRefreshAction
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            xResultsComp.setHtmlText(XResultDataUI.getReport(rd,"").getManipulatedHtml(), "");
+            xResultsComp.setHtmlText(XResultDataUI.getReport(rd, "").getManipulatedHtml(), "");
          }
       });
    }
 
    public void createToolBar() {
       getManagedForm().getForm().getToolBarManager().add(new RefreshAction(this));
-      CoverageEditor.addToToolBar(getManagedForm().getForm().getToolBarManager(), coverageEditor);
    }
 
    @Override

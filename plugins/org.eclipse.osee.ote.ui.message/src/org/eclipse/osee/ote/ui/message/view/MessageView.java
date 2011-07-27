@@ -33,7 +33,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -482,7 +481,6 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
       refreshAction.setToolTipText("Reload Messages from JAR");
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.REFRESH));
 
-      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Message View");
    }
 
    protected void createMenus() {
