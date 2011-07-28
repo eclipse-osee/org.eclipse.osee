@@ -367,7 +367,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          }
          items.add(new WrappedLayout(stateDef.getStateItems()));
          items.add(new WrappedRules(stateDef, awa));
-         if (stateDef.getRecommendedPercentComplete() == 0) {
+         if (stateDef.getRecommendedPercentComplete() == null) {
             items.add("Recommended Percent Complete: not set");
          } else {
             items.add("Recommended Percent Complete: " + stateDef.getRecommendedPercentComplete());
