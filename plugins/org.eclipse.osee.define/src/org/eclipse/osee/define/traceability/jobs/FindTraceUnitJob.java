@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.internal.DefinePlugin;
 import org.eclipse.osee.define.traceability.operations.FindTraceUnitFromResource;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;

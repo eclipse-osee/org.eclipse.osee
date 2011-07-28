@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.internal.DefinePlugin;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;

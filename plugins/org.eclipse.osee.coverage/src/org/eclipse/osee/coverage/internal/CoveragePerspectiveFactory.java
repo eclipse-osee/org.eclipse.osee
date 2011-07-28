@@ -26,6 +26,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  * @author Donald G. Dunne
  */
 public class CoveragePerspectiveFactory implements IPerspectiveFactory {
+   public static String ID = "org.eclipse.osee.coverage.CoveragePerspective";
 
    @Override
    public void createInitialLayout(IPageLayout layout) {

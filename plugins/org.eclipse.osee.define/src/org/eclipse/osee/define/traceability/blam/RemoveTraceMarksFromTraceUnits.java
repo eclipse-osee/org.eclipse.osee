@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.internal.DefinePlugin;
 import org.eclipse.osee.define.traceability.ITraceParser;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;

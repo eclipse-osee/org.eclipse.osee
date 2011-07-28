@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define;
+package org.eclipse.osee.define.internal;
 
 import org.eclipse.osee.define.navigate.DefineNavigateView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
@@ -27,6 +27,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  * @author Robert A. Fisher
  */
 public class DefinePerspectiveFactory implements IPerspectiveFactory {
+   public static String ID = "osee.define.PerspectiveFactory";
 
    @Override
    public void createInitialLayout(IPageLayout layout) {

@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.internal.DefinePlugin;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;

@@ -21,7 +21,7 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.internal.DefinePlugin;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.ResourceIdentifier;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;

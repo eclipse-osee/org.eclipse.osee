@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.internal.DefinePlugin;
 import org.eclipse.osee.define.traceability.data.BaseTraceDataCache;
 import org.eclipse.osee.define.traceability.data.CodeUnitData;
 import org.eclipse.osee.define.traceability.data.RequirementData;

@@ -62,7 +62,7 @@
 <extension point="org.eclipse.ui.perspectives">
    <perspective
          name="ATS"
-         class="org.eclipse.osee.ats.ATSPerspective"
+         class="org.eclipse.osee.ats.internal.ATSPerspective"
          fixed="false"
          id="org.eclipse.osee.ats.ATSPerspective"
          icon="images/atsPerspective.gif">
@@ -119,15 +119,6 @@
          name="Action View"
          id="org.eclipse.osee.ats.ActionWalkerView">
     </view>
-<!-- Don't allow access to this yet 
-    <view
-         class="org.eclipse.osee.ats.hyper.ActionSkyWalker"
-         icon="images/action.gif"
-         category="org.eclipse.osee.ats.category"
-         name="Action View"
-         id="org.eclipse.osee.ats.hyper.ActionSkyWalker">
-   </view>
--->
    <view
          category="org.eclipse.osee.ats.review.category"
          class="org.eclipse.osee.ats.review.ReviewNavigateView"

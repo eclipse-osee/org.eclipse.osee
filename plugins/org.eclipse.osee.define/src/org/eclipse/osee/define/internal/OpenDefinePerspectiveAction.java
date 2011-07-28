@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.actions;
+package org.eclipse.osee.define.internal;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.osee.ats.internal.ATSPerspective;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -24,9 +23,9 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  * 
  * @see IWorkbenchWindowActionDelegate
  */
-public class OpenAtsPerspectiveAction implements IWorkbenchWindowActionDelegate {
+public class OpenDefinePerspectiveAction implements IWorkbenchWindowActionDelegate {
 
-   public OpenAtsPerspectiveAction() {
+   public OpenDefinePerspectiveAction() {
       // do nothing
    }
 
@@ -38,7 +37,7 @@ public class OpenAtsPerspectiveAction implements IWorkbenchWindowActionDelegate 
     */
    @Override
    public void run(IAction action) {
-      AWorkbench.openPerspective(ATSPerspective.ID);
+      AWorkbench.openPerspective(DefinePerspectiveFactory.ID);
    }
 
    /**
