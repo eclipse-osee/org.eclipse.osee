@@ -107,7 +107,7 @@ public class CoverageTestUtil {
 
    public static Branch getTestBranch() {
       try {
-         return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1.getName());
+         return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
