@@ -16,6 +16,7 @@ import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -40,10 +41,9 @@ public class CoveragePreferencesTest {
 
    private static Artifact getCoveragePrefArt() throws OseeCoreException {
       try {
-         Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
-               CoverageTestUtil.getTestBranch());
-         return artifact;
+         Branch branch = CoverageTestUtil.getTestBranch();
+         Assert.assertNotNull(branch);
+         return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences", branch);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
