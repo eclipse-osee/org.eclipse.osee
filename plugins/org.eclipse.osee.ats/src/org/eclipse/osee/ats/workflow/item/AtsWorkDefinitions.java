@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.task.TaskManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
-import org.eclipse.osee.ats.core.type.ATSAttributes;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
@@ -86,8 +85,8 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    public static void relatePageToBranchCommitRules(String pageId) throws OseeCoreException {
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, XWorkingBranch.WIDGET_ID);
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, XCommitManager.WIDGET_ID);
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, "ats.Working Branch");
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, "ats.Commit Manager");
    }
 
    @Override
@@ -244,11 +243,11 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    public static boolean isAllowCreateBranch(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId());
+      return stateDefinition.hasWidgetWithXWidgetName(XWorkingBranch.WIDGET_NAME);
    }
 
    public static boolean isAllowCommitBranch(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId());
+      return stateDefinition.hasWidgetWithXWidgetName(XCommitManager.WIDGET_NAME);
    }
 
    public static Result validateWorkItemDefinition(WorkItemDefinition workItemDefinition) {

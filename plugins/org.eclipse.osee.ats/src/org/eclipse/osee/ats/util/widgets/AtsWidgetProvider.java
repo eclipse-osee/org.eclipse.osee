@@ -55,9 +55,9 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XStateCombo();
       } else if (widgetName.equals(XStateSearchCombo.WIDGET_ID)) {
          toReturn = new XStateSearchCombo();
-      } else if (widgetName.equals("XCommitManager")) {
+      } else if (widgetName.equals(XCommitManager.WIDGET_NAME)) {
          toReturn = new XCommitManager();
-      } else if (widgetName.equals("XWorkingBranch")) {
+      } else if (widgetName.equals(XWorkingBranch.WIDGET_NAME)) {
          toReturn = new XWorkingBranch();
       } else if (widgetName.equals(AtsOperationalImpactValidator.WIDGET_NAME)) {
          toReturn = new OperationalImpactXWidget();

@@ -248,4 +248,22 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       return color;
    }
 
+   public boolean hasWidgetNamed(String name) {
+      for (WidgetDefinition widgetDef : getWidgetsFromStateItems()) {
+         if (widgetDef.getName().equals(name)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean hasWidgetWithXWidgetName(String xWidgetName) {
+      for (WidgetDefinition widgetDef : getWidgetsFromStateItems()) {
+         if (widgetDef.getXWidgetName().equals(xWidgetName)) {
+            return true;
+         }
+      }
+      return false;
+
+   }
 }

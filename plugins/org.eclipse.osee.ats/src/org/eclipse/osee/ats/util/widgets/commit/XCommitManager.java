@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.type.ATSAttributes;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -77,13 +76,15 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
    private TeamWorkFlowArtifact teamArt;
    private static final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
-   public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId();
+   public static final String WIDGET_NAME = "XCommitManager";
+   public static final String NAME = "Commit Manager";
+   public static final String DESCRIPTION = "Commit branches to parent and parallel branches.";
    private int lastDefectListSize = 0;
    private Composite mainComp;
    private Composite parentComp;
 
    public XCommitManager() {
-      super("Commit Manager");
+      super(NAME);
       OseeEventManager.addListener(this);
    }
 

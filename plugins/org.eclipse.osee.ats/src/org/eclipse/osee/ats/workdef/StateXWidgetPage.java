@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.core.task.TaskResolutionOptionRule;
-import org.eclipse.osee.ats.core.type.ATSAttributes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
@@ -39,6 +38,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -354,9 +354,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
          String description = "";
-         ATSAttributes atsAttribute = ATSAttributes.getAtsAttributeByStoreName(layoutData.getId());
-         if (atsAttribute != null && Strings.isValid(atsAttribute.getDescription())) {
-            description = atsAttribute.getDescription();
+         if (layoutData.getXWidgetName().equals(XCommitManager.WIDGET_NAME)) {
+            description = XCommitManager.DESCRIPTION;
          }
          IAttributeType type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
          if (type != null && Strings.isValid(type.getDescription())) {

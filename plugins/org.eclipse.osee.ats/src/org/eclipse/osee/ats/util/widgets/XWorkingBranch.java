@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.type.ATSAttributes;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -81,6 +80,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private Button favoriteBranchButton;
    private Button lockBranchButton;
    private XWorkingBranchEnablement enablement;
+   public static String NAME = "Working Branch";
+   public static String WIDGET_NAME = "XWorkingBranch";
 
    private Composite buttonComp;
 
@@ -107,10 +108,9 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          return changesPermitted;
       }
    }
-   public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId();
 
    public XWorkingBranch() {
-      super("Working Branch");
+      super(NAME);
       OseeEventManager.addListener(this);
    }
 
