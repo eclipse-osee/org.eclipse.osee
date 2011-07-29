@@ -27,17 +27,17 @@ public class AtsOperationalImpactWithWorkaroundValidator implements IAtsXWidgetV
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          if (provider instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) provider;
-            boolean checked = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, false);
-            if (checked) {
+            String impact = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, "No");
+            if (impact.equals("Yes")) {
                String desc = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, "");
                if (!Strings.isValid(desc)) {
                   return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "Must enter [%s]",
                      AtsAttributeTypes.OperationalImpactDescription.getName());
                }
             }
-            boolean workaroundChecked =
-               teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaround, false);
-            if (workaroundChecked) {
+            String workaroundChecked =
+               teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaround, "No");
+            if (workaroundChecked.equals("Yes")) {
                String desc =
                   teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundDescription, "");
                if (!Strings.isValid(desc)) {

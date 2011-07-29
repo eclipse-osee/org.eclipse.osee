@@ -30,8 +30,8 @@ public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          if (provider instanceof ArtifactValueProvider && ((ArtifactValueProvider) provider).getArtifact() instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ((ArtifactValueProvider) provider).getArtifact();
-            boolean checked = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, false);
-            if (checked) {
+            String impact = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, "No");
+            if (impact.equals("Yes")) {
                String desc = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, "");
                if (!Strings.isValid(desc)) {
                   return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "Must enter [%s]",
