@@ -14,7 +14,7 @@ import java.util.Arrays;
 import org.eclipse.osee.coverage.util.CoverageImportTestBlam;
 
 /**
- * Imports new method initAdded to end of PowerUnit1
+ * Add PowerUnit1.initAdded to end; Change getColumnCount.line1 from TestUnit2 to TestUnit3
  * 
  * @author Donald G. Dunne
  */

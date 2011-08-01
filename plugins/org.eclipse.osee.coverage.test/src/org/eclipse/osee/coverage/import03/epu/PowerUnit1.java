@@ -86,7 +86,7 @@ public class PowerUnit1 extends Table {
 
    @Override
    public int getColumnCount() {
-      return super.getColumnCount(); // 7, 1, TestUnit2
+      return super.getColumnCount(); // 7, 1, TestUnit3
    }
 
    public int initAdded() {

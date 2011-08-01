@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -281,6 +282,13 @@ public class MergeManager {
                childICoverage, false));
             unMatchedImportCoverageItems.remove(childICoverage);
          }
+
+         // Check for test units change
+         else if (childMatchItem != null && isCoverageItemTestUnitsUpdate(childMatchItem)) {
+            groupMergeItems.add(new MergeItem(MergeType.CI_Test_Units_Update, childMatchItem.getPackageItem(),
+               childICoverage, false));
+            unMatchedImportCoverageItems.remove(childICoverage);
+         }
       }
 
       // Check for moves in any items left unhandled by above renames and adds
@@ -319,6 +327,19 @@ public class MergeManager {
          mergeItems.add(new MergeItemGroup(MergeType.CI_Changes, importCoverage, groupMergeItems, !unMergeableExists));
       }
 
+   }
+
+   private boolean isCoverageItemTestUnitsUpdate(MatchItem childMatchItem) throws OseeCoreException {
+      ICoverage importItem = childMatchItem.getImportItem();
+      ICoverage packageItem = childMatchItem.getPackageItem();
+      // Only valid for coverage items
+      if (!(importItem instanceof CoverageItem)) {
+         return false;
+      }
+      if (!Collections.isEqual(((CoverageItem) packageItem).getTestUnits(), ((CoverageItem) importItem).getTestUnits())) {
+         return true;
+      }
+      return false;
    }
 
    private boolean isCoverageItemMethodUpdate(MatchItem childMatchItem) {

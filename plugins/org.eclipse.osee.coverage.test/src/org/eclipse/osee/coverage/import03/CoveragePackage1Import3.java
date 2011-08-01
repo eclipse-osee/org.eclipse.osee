@@ -19,7 +19,10 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 public class CoveragePackage1Import3 extends CpSelectAndImportItem {
 
    public CoveragePackage1Import3(XNavigateItem parent) {
-      super(parent, "Open CP 1 - Import 3 - Add PowerUnit1.initAdded to end", CoverageImport3TestBlam.NAME);
+      super(
+         parent,
+         "Open CP 1 - Import 3 - Add PowerUnit1.initAdded to end; Change getColumnCount.line1 from TestUnit2 to TestUnit3",
+         CoverageImport3TestBlam.NAME);
    }
 
 }

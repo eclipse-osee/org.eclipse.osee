@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -70,6 +71,8 @@ public class MergeImportManager {
                      deleteCoverageItem(mergeItem, childMergeItem, rd);
                   } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Method_Update) {
                      updateCoverageItemMethod(childMergeItem, rd);
+                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Test_Units_Update) {
+                     updateTestUnits(childMergeItem, rd);
                   } else {
                      rd.logError(String.format("Coverage_Item_Changes Group: Unsupported merge type [%s]",
                         childMergeItem.getMergeType()));
@@ -153,12 +156,24 @@ public class MergeImportManager {
       return rd;
    }
 
+   private void updateTestUnits(IMergeItem mergeItem, XResultData rd) throws OseeCoreException {
+      CoverageItem importItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
+      CoverageItem packageItem = (CoverageItem) ((MergeItem) mergeItem).getPackageItem();
+      packageItem.setCoverageMethod(importItem.getCoverageMethod());
+      if (!Collections.isEqual(packageItem.getTestUnits(), importItem.getTestUnits())) {
+         packageItem.setTestUnits(importItem.getTestUnits());
+      }
+   }
+
    private void addCoverageItem(IMergeItem mergeItem, XResultData rd) throws OseeCoreException {
       CoverageItem importItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
       MatchItem parentMatchItem = mergeManager.getPackageCoverageItem(importItem.getParent());
       ICoverage parentPackageItem = parentMatchItem == null ? null : parentMatchItem.getPackageItem();
       CoverageUnit parentPackageCoverageUnit = (CoverageUnit) parentPackageItem;
       CoverageItem packageItem = importItem.copy(parentPackageCoverageUnit);
+      if (!Collections.isEqual(packageItem.getTestUnits(), importItem.getTestUnits())) {
+         packageItem.setTestUnits(importItem.getTestUnits());
+      }
       updateFileContents(packageItem, importItem);
    }
 
@@ -177,6 +192,9 @@ public class MergeImportManager {
          packageItem.setRationale("");
       }
       packageItem.setCoverageMethod(importItem.getCoverageMethod());
+      if (!Collections.isEqual(packageItem.getTestUnits(), importItem.getTestUnits())) {
+         packageItem.setTestUnits(importItem.getTestUnits());
+      }
       updateFileContents(packageItem, importItem);
    }
 
@@ -184,6 +202,9 @@ public class MergeImportManager {
       CoverageItem importItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
       CoverageItem packageItem = (CoverageItem) ((MergeItem) mergeItem).getPackageItem();
       packageItem.setCoverageMethod(importItem.getCoverageMethod());
+      if (!Collections.isEqual(packageItem.getTestUnits(), importItem.getTestUnits())) {
+         packageItem.setTestUnits(importItem.getTestUnits());
+      }
       if (importItem.getCoverageMethod().getName().equals(CoverageOptionManager.Test_Unit.name)) {
          packageItem.setRationale("");
       }
@@ -218,7 +239,12 @@ public class MergeImportManager {
          ((CoverageUnit) packageCoverage).setOrderNumber(((CoverageUnit) importCoverage).getOrderNumber());
       } else if (packageCoverage instanceof CoverageItem) {
          ((CoverageItem) packageCoverage).setOrderNumber(((CoverageItem) importCoverage).getOrderNumber());
-         updateFileContents((CoverageItem) packageCoverage, (CoverageItem) importCoverage);
+         CoverageItem packageCoverageItem = (CoverageItem) packageCoverage;
+         CoverageItem importCoverageItem = (CoverageItem) importCoverage;
+         updateFileContents(packageCoverageItem, importCoverageItem);
+         if (!Collections.isEqual(packageCoverageItem.getTestUnits(), importCoverageItem.getTestUnits())) {
+            packageCoverageItem.setTestUnits(importCoverageItem.getTestUnits());
+         }
       } else {
          rd.logError(String.format("[%s] doesn't support merge type [%s] for item [%s] (1)",
             mergeItem.getClass().getSimpleName(), MergeType.Add_With_Moves, mergeItem));

@@ -11,11 +11,6 @@
 package org.eclipse.osee.coverage.navigate;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IRegistryEventListener;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -144,31 +139,6 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();
       }
-   }
-
-   private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
-      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-      extensionRegistry.addListener(new IRegistryEventListener() {
-         @Override
-         public void added(IExtension[] extensions) {
-            refresh();
-         }
-
-         @Override
-         public void added(IExtensionPoint[] extensionPoints) {
-            refresh();
-         }
-
-         @Override
-         public void removed(IExtension[] extensions) {
-            refresh();
-         }
-
-         @Override
-         public void removed(IExtensionPoint[] extensionPoints) {
-            refresh();
-         }
-      }, "org.eclipse.osee.coverage.CoverageNavigateItem");
    }
 
    protected void createActions() {

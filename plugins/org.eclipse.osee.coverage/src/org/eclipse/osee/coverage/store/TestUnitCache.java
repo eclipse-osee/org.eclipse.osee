@@ -145,6 +145,7 @@ public class TestUnitCache implements ITestUnitProvider {
    @Override
    public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException {
       ensurePopulated();
+      itemsToTestUnit.removeValues(coverageItem);
       Collection<String> entries = getTestUnits(coverageItem);
       List<String> notAdded = Collections.setComplement(testUnitNames, entries);
       for (String testUnitName : notAdded) {

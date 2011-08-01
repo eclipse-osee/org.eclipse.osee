@@ -34,6 +34,8 @@ public enum MergeType {
    // Group option containing Add, Rename of coverage items
    CI_Changes,
    // Group option that contains deletions and re-order items
+   CI_Test_Units_Update,
+   // Group option that contains just test unit name updates
    Delete_And_Reorder,
    // Just update package item's order with import item's order
    Moved_Due_To_Delete,

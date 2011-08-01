@@ -113,7 +113,9 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       rd.addRaw(AHTML.endMultiColumnTable());
       String branchName = null;
       try {
-         branchName = coverageEditor.getBranch().getName();
+         if (coverageEditor.getBranch() != null) {
+            branchName = coverageEditor.getBranch().getName();
+         }
       } catch (Exception ex) {
          branchName = "Exception: " + ex.getLocalizedMessage();
       }

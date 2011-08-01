@@ -100,8 +100,10 @@ public class CoverageEditor extends FormEditor implements IActionable {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         monitor.beginTask("Load Coverage", 3);
-         monitor.worked(1);
+         if (monitor != null) {
+            monitor.beginTask("Load Coverage", 3);
+            monitor.worked(1);
+         }
          @SuppressWarnings("unused")
          Collection<Artifact> artifactLoadCache = null;
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
@@ -119,15 +121,19 @@ public class CoverageEditor extends FormEditor implements IActionable {
             //            ElapsedTime elapsedTime = new ElapsedTime("Coverage - load model");
             CoveragePackage coveragePackage =
                OseeCoveragePackageStore.get(getCoverageEditorInput().getCoveragePackageArtifact());
-            if (monitor.isCanceled()) {
+            if (monitor != null && monitor.isCanceled()) {
                return;
             }
-            monitor.worked(1);
+            if (monitor != null) {
+               monitor.worked(1);
+            }
             getCoverageEditorInput().setCoveragePackageBase(coveragePackage);
-            if (monitor.isCanceled()) {
+            if (monitor != null && monitor.isCanceled()) {
                return;
             }
-            monitor.worked(1);
+            if (monitor != null) {
+               monitor.worked(1);
+            }
 
             CoverageEventManager.instance.register(editor);
             //            elapsedTime.end();

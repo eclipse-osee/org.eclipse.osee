@@ -14,7 +14,7 @@ import java.util.Arrays;
 import org.eclipse.osee.coverage.util.CoverageImportTestBlam;
 
 /**
- * Delete PowerUnit2.clear
+ * Change items AuxPowerUnit1.clear line 2 and 3
  * 
  * @author Donald G. Dunne
  */

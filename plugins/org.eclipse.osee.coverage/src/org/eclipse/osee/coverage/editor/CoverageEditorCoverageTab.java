@@ -165,7 +165,9 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
       // show branch name
       try {
          label = new Label(branchComp, SWT.NONE);
-         label.setText(Strings.truncate(coverageEditor.getBranch().getName(), 200, true));
+         if (coverageEditor.getBranch() != null) {
+            label.setText(Strings.truncate(coverageEditor.getBranch().getName(), 200, true));
+         }
          coverageEditor.getToolkit().adapt(label, false, false);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

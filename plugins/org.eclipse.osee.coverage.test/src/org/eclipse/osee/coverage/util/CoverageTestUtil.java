@@ -67,9 +67,27 @@ public class CoverageTestUtil {
       }
    }
 
-   public static ICoverage getFirstCoverageByName(CoveragePackageBase coveragePackageBase, String name) {
+   public static ICoverage getFirstCoverageByNameEquals(CoveragePackageBase coveragePackageBase, String name) {
       for (ICoverage coverage : coveragePackageBase.getChildren(true)) {
          if (coverage.getName().equals(name)) {
+            return coverage;
+         }
+      }
+      return null;
+   }
+
+   public static CoverageUnit getFirstCoverageUnitByNameContains(CoverageUnit coverageUnit, String name) {
+      for (CoverageUnit coverage : coverageUnit.getCoverageUnits()) {
+         if (coverage.getName().contains(name)) {
+            return coverage;
+         }
+      }
+      return null;
+   }
+
+   public static CoverageItem getFirstCoverageItemByNameContains(CoverageUnit coverageUnit, String name) {
+      for (CoverageItem coverage : coverageUnit.getCoverageItems()) {
+         if (coverage.getName().contains(name)) {
             return coverage;
          }
       }

@@ -35,7 +35,6 @@ public class MasterTestSuite_Demo {
    @BeforeClass
    public static void setup() throws Exception {
       OseeProperties.setIsInTest(true);
-      OseeLog.log(MasterTestSuite_Demo.class, Level.INFO,
-         "Starting osee client integration test suite...");
+      OseeLog.log(MasterTestSuite_Demo.class, Level.INFO, "Starting osee client integration test suite...");
    }
 }
