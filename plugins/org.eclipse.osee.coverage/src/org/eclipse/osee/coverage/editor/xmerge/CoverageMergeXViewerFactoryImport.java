@@ -49,4 +49,9 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
       }
    }
 
+   @Override
+   public String getNamespace() {
+      return NAMESPACE;
+   }
+
 }
