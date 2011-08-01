@@ -106,15 +106,19 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       for (int i = 0; i < nodeSize; i++) {
          Element element = (Element) nodeList.item(i);
 
-         if (parseState == ParseState.LOOKING_FOR_START && isArtifactEditTag(element, true)) {
-            parseState = ParseState.LOOKING_FOR_END;
-            //This is where we create a new data object for each artifact
-            extractorData = new WordExtractorData();
-            handleStartElement(linkBuilder, artifactElements, element, extractorData);
-         } else if (parseState == ParseState.LOOKING_FOR_END && isArtifactEditTag(element, false)) {
-            parseState = handleEndElement(linkBuilder, extractorData, element);
-         } else if (parseState == ParseState.LOOKING_FOR_END && properLevelChild(element)) {
-            extractorData.addChild(element.cloneNode(true));
+         if (properLevelChild(element)) {
+            if (parseState == ParseState.LOOKING_FOR_END) {
+               if (isArtifactEditTag(element, false)) {
+                  parseState = handleEndElement(linkBuilder, extractorData, element);
+               } else {
+                  extractorData.addChild(element.cloneNode(true));
+               }
+            } else if (isArtifactEditTag(element, true)) {
+               parseState = ParseState.LOOKING_FOR_END;
+               //This is where we create a new data object for each artifact
+               extractorData = new WordExtractorData();
+               handleStartElement(linkBuilder, artifactElements, element, extractorData);
+            }
          }
       }
 
@@ -334,9 +338,6 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    }
 
    private boolean isArtifactEditTag(Element element, boolean lookingForStart) {
-      if (!properLevelChild(element)) {
-         return false;
-      }
       boolean isArtifactEditTag = false;
       NodeList descendants = element.getElementsByTagName(PICT);
       int nodeSize = descendants.getLength();
