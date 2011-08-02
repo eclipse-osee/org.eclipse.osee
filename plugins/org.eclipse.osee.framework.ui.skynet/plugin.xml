@@ -189,9 +189,6 @@
 	<extension id="PurgeTransaction" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeTransactionBlam"/>
 	</extension>	
-	<extension id="LoadAllArtifactsOnBranch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.LoadAllArtifactsOnBranch"/>
-	</extension>
 	
 	<extension id="FindInvalidUTF8Chars" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
