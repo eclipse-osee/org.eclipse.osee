@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -133,32 +130,6 @@ public class AttributeTypeManager {
 
    public static Set<String> getEnumerationValues(String attributeName) throws OseeCoreException {
       return getEnumerationValues(getType(attributeName));
-   }
-
-   private static final String DELETE_VALID_ATTRIBUTE =
-      "delete from osee_artifact_type_attributes where attr_type_id = ?";
-   private static final String COUNT_ATTRIBUTE_OCCURRENCE =
-      "select count(1) FROM osee_attribute where attr_type_id = ?";
-   private static final String DELETE_ATTRIBUTE_TYPE = "delete from osee_attribute_type where attr_type_id = ?";
-
-   public static void purgeAttributeType(final AttributeType attributeType) throws OseeCoreException {
-      int attributeCount =
-         ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeType.getId());
-      if (attributeCount != 0) {
-         throw new OseeArgumentException(
-            "Can not delete attribute type [%s] because there are %d existing attributes of this type.", attributeType,
-            attributeCount);
-      }
-
-      DbTransaction dbTransaction = new DbTransaction() {
-         @Override
-         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-            int attributeTypeId = attributeType.getId();
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, attributeTypeId);
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTE_TYPE, attributeTypeId);
-         }
-      };
-      dbTransaction.execute();
    }
 
    public static void persist() throws OseeCoreException {
