@@ -90,7 +90,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
          try {
             type = RelationTypeManager.getType(typeSide.getFirst());
          } catch (OseeTypeDoesNotExist ex) {
-            report(String.format("Type [%s] on artifact [%s] does not exist\n", typeSide.getFirst(), art.getName()));
+            logf("Type [%s] on artifact [%s] does not exist\n", typeSide.getFirst(), art.getName());
             return;
          }
          RelationSide side = RelationSide.fromString(typeSide.getSecond());
@@ -100,7 +100,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
             List<String> orderList = currentData.getOrderList(type, side);
             List<String> actualOrder = Artifacts.toGuids(RelationManager.getRelatedArtifacts(art, type, side));
             if (!orderList.equals(actualOrder)) {
-               report(String.format("Incorrect order on %s (%s %s)\n", art.getName(), type, side));
+               logf("Incorrect order on %s (%s %s)\n", art.getName(), type, side);
                currentData.storeFromGuids(type, side, RelationOrderBaseTypes.USER_DEFINED, actualOrder);
                art.persist(transaction);
             }

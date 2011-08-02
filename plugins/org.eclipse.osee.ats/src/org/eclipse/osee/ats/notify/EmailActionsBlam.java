@@ -104,7 +104,7 @@ public class EmailActionsBlam extends AbstractBlam {
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
       for (Future<String> future : futures) {
-         report(future.get());
+         logf(future.get());
       }
 
    }
@@ -114,7 +114,7 @@ public class EmailActionsBlam extends AbstractBlam {
       assignees.addAll(awa.getStateMgr().getAssignees());
       Collection<IBasicUser> activeEmailUsers = EmailUtil.getActiveEmailUsers(assignees);
       if (assignees.isEmpty()) {
-         report(String.format("No active assignees for workflow [%s].", awa.toStringWithId()));
+         logf("No active assignees for workflow [%s].", awa.toStringWithId());
          return;
       }
 
@@ -127,12 +127,12 @@ public class EmailActionsBlam extends AbstractBlam {
       }
 
       if (emailAddresses.isEmpty()) {
-         report(String.format("No valid emails for workflow [%s].", awa.toStringWithId()));
+         logf("No valid emails for workflow [%s].", awa.toStringWithId());
          return;
       }
 
       if (!EmailUtil.isEmailValid(UserManager.getUser())) {
-         report(String.format("Can't email from user account [%s] cause email not valid.", UserManager.getUser()));
+         logf("Can't email from user account [%s] cause email not valid.", UserManager.getUser());
          return;
       }
 

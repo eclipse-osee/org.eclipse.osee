@@ -32,8 +32,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
@@ -102,8 +100,8 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    /**
-    * Return collection of categories that blam belongs to eg: ATS, ATS.Admin, ATS.Report. These will be used to create
-    * categories that blams are put into in UI navigators. BLAM can belong in multiple categories.
+    * Return collection of categories that blam belongs to. These will be used to create categories that blams are put
+    * into in UI navigators. BLAM can belong in multiple categories.
     */
    public abstract Collection<String> getCategories();
 
@@ -156,8 +154,16 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       databaseService = service;
    }
 
-   public void report(String... row) {
+   public void log(String... row) {
       logger.log(row);
+   }
+
+   public void log(Throwable th) {
+      logger.log(th);
+   }
+
+   public void logf(String format, Object... args) {
+      logger.logf(format, args);
    }
 
    public void execute(OperationLogger logger, VariableMap variableMap, IJobChangeListener jobChangeListener) {
@@ -166,7 +172,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
          IOperation blamOperation = createOperation(variableMap, logger);
          Operations.executeAsJob(blamOperation, true, Job.LONG, jobChangeListener);
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         log(ex);
       }
    }
 

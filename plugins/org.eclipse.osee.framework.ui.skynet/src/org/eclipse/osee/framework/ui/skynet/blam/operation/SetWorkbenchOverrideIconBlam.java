@@ -19,7 +19,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -56,7 +55,7 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
             if (Strings.isValid(filename)) {
                File imageFile = new File(filename);
                if (!imageFile.exists()) {
-                  report("Invalid image filename.");
+                  logf("Invalid image filename.");
                }
                try {
                   Image overrideImage = ImageDescriptor.createFromURL(imageFile.toURI().toURL()).createImage();
@@ -64,7 +63,7 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
                   File overrideFile = OseeData.getFile("workbenchOverride.gif");
                   Lib.copyFile(imageFile, overrideFile);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  log(ex);
                }
             }
          }

@@ -20,14 +20,11 @@ import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -131,13 +128,13 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                   job.join();
                   transaction.execute();
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  log(ex);
                   return;
                }
 
                SMAEditor.editArtifact(artifact);
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               log(ex);
             }
          };
       });

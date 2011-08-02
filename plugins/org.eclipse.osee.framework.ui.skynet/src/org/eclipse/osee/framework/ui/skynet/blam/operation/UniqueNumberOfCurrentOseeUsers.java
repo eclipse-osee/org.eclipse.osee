@@ -12,12 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -46,7 +43,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       try {
          chStmt.runPreparedQuery(SELECT_USER_COUNT);
          if (chStmt.next()) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "active user count: " + chStmt.getInt("user_count"));
+            logf("active user count: %d" + chStmt.getInt("user_count"));
          }
       } finally {
          chStmt.close();

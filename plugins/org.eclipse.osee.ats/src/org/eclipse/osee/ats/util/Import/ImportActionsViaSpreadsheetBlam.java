@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -81,7 +79,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
             importActions(file, ImportOption.POPUP_ERROR_REPORT,
                (emailPocs ? ImportOption.EMAIL_POCS : ImportOption.NONE));
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            log(ex);
          }
 
       } finally {
@@ -97,7 +95,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
       XResultData rd = extractor.dataIsValid();
       if (!rd.toString().equals("")) {
          if (popupReport) {
-            XResultDataUI.report(rd,"Ats Action Import Errors");
+            XResultDataUI.report(rd, "Ats Action Import Errors");
          }
       } else {
          SkynetTransaction transaction =
@@ -122,7 +120,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
                   File file = getSampleSpreadsheetFile();
                   Program.launch(file.getCanonicalPath());
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  log(ex);
                }
             }
          });

@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -198,7 +197,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+         log(ex);
       }
       return handlers;
    }

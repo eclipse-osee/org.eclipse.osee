@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
@@ -113,7 +110,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
       for (Future<String> future : futures) {
-         report(future.get());
+         logf(future.get());
       }
 
    }
@@ -121,7 +118,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    private void sendEmailTo(EmailGroupsData data, final User user) throws OseeCoreException {
       final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
-         report(String.format("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName()));
+         logf("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
          return;
       }
       final OseeEmail emailMessage = new OseeEmail(emailAddress, data.getSubject(), "", BodyType.Html);
@@ -193,7 +190,7 @@ public class EmailGroupsBlam extends AbstractBlam {
                data.getHtmlResult(UserManager.getUser()));
          dialog.open();
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         log(ex);
       }
    }
 
@@ -240,7 +237,7 @@ public class EmailGroupsBlam extends AbstractBlam {
                templateList.setInputArtifacts(templates);
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            log(ex);
          }
       }
    }

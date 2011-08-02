@@ -46,7 +46,7 @@ public class ImageCaptureBlam extends AbstractBlam {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            System.out.println("Starting Image Capture...");
+            log("Starting Image Capture...");
             topLeftPoint = null;
             botRightPoint = null;
             Display.getDefault().addFilter(SWT.MouseUp, displayKeysListener);
@@ -59,10 +59,10 @@ public class ImageCaptureBlam extends AbstractBlam {
          if (event.type == SWT.MouseUp) {
             if (topLeftPoint == null) {
                topLeftPoint = event.display.getCursorLocation();
-               report("\nFirst Mouse Event " + topLeftPoint);
+               logf("\nFirst Mouse Event " + topLeftPoint);
             } else {
                botRightPoint = event.display.getCursorLocation();
-               report("Second Mouse Event " + botRightPoint);
+               logf("Second Mouse Event " + botRightPoint);
                GC gc = new GC(Display.getCurrent());
                Image image =
                   new Image(Display.getCurrent(), botRightPoint.x - topLeftPoint.x, botRightPoint.y - topLeftPoint.y);

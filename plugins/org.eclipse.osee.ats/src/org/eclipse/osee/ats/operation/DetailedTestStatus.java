@@ -60,7 +60,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -146,7 +145,7 @@ public class DetailedTestStatus extends AbstractBlam {
                scriptsBranchWidget.setSelection(selectedBranch);
                testProcedureBranchWidget.setSelection(selectedBranch);
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               log(ex);
             }
          }
       }
@@ -174,7 +173,7 @@ public class DetailedTestStatus extends AbstractBlam {
 
                versionsListViewer.addSelectionChangedListener(branchSelectionListener);
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               log(ex);
             }
          }
       }
@@ -419,7 +418,7 @@ public class DetailedTestStatus extends AbstractBlam {
                try {
                   statusLine[Index.RUN_DATE.ordinal()] = dateFormatter.format(runOperator.getEndDate());
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  log(ex);
                }
                if (runOperator.wasAborted()) {
                   statusLine[Index.TOTAL_TP.ordinal()] = "Aborted";
@@ -570,7 +569,7 @@ public class DetailedTestStatus extends AbstractBlam {
                task.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""));
             requirementStatus.setTestPocs(task.getImplementers());
          } else {
-            System.out.println("odd task:  " + task.getName());
+            logf("odd task:  [%s]", task.getName());
          }
       }
    }

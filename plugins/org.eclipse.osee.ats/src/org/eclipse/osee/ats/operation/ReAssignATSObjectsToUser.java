@@ -16,10 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -95,7 +92,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                Artifacts.persistInTransaction("Re-Assign ATS Objects to User", artsToReAssign);
                OseeNotificationManager.getInstance().sendNotifications();
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               log(ex);
             }
          };
       });

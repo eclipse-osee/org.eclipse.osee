@@ -56,7 +56,7 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
             ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
                DeletionFlag.EXCLUDE_DELETED);
          String str = String.format("\nAritfact Count for Type [%s] = %d\n\n", artType, count);
-         report(str);
+         logf(str);
       }
    }
 

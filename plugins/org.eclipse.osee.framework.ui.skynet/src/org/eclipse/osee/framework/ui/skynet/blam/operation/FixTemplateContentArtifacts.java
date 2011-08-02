@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -63,8 +62,6 @@ import org.w3c.dom.NodeList;
  * @author Theron Virgin
  */
 public class FixTemplateContentArtifacts extends AbstractBlam {
-   private static final boolean DEBUG =
-      Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
    private static final String GET_ATTRS =
       "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
@@ -90,8 +87,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          return;
       }
       File backupFolder = createTempFolder();
-      OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
-         "Backup Folder location: [%s]", backupFolder.getAbsolutePath());
+      logf("Backup Folder location: [%s]", backupFolder.getAbsolutePath());
 
       ArrayList<AttrData> attrDatas = loadAttrData();
       int totalAttrs = attrDatas.size();
@@ -104,9 +100,6 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          Resource resource = getResource(attrData.getUri());
 
          Element rootElement = null;
-         if (DEBUG) {
-            OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, "Before Fix: %s", resource.data);
-         }
 
          final Collection<Element> elements = new LinkedList<Element>();
          final Collection<Element> sectPr = new LinkedList<Element>();
@@ -138,8 +131,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
             }
          } catch (Exception ex) {
             badData.add(attrData.gammaId);
-            OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
-               "Skiping File %s because of exception %s", attrData.getHrid(), ex);
+            OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, "Skiping File %s because of exception %s",
+               attrData.getHrid(), ex);
          }
 
          if (fixedAttribute) {
@@ -154,12 +147,9 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                // UploadResource
                uploadResource(attrData.getGammaId(), resource);
 
-               if (DEBUG) {
-                  OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, " After Fix : %s", resource.data);
-               }
             } catch (Exception ex) {
-               OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
-                  "Skiping File %s because of exception %s", attrData.getHrid(), ex);
+               OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, "Skiping File %s because of exception %s",
+                  attrData.getHrid(), ex);
             }
          }
          monitor.worked(1);
@@ -174,7 +164,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
-      XResultDataUI.report(rd,"Fix bad data", Manipulations.RAW_HTML);
+      XResultDataUI.report(rd, "Fix bad data", Manipulations.RAW_HTML);
 
    }
 

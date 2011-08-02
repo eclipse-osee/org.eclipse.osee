@@ -14,6 +14,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -39,7 +42,7 @@ public class BlamOutputSection extends BaseBlamSection {
    public BlamOutputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style, Action executBlamAction) {
       super(editor, abstractBlam, parent, toolkit, style);
       this.executBlamAction = executBlamAction;
-      this.OperationLogger = new InternalReporter();
+      this.OperationLogger = new InternalLogger();
    }
 
    public void simluateRun() {
@@ -120,10 +123,15 @@ public class BlamOutputSection extends BaseBlamSection {
       super.refresh();
    }
 
-   private final class InternalReporter extends OperationLogger {
+   private final class InternalLogger extends OperationLogger {
       @Override
       public void log(String... row) {
          appendText(Collections.toString(", ", (Object[]) row) + "\n");
+      }
+
+      @Override
+      public void log(Throwable th) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, th);
       }
    }
 }

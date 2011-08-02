@@ -129,7 +129,7 @@ public class RequirementsTestReport extends AbstractBlam {
       report.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(report.toString());
-      XResultDataUI.report(rd,"Requirements Test Report", Manipulations.RAW_HTML);
+      XResultDataUI.report(rd, "Requirements Test Report", Manipulations.RAW_HTML);
    }
 
    private void init(VariableMap variableMap) throws OseeCoreException, IOException {
@@ -152,7 +152,7 @@ public class RequirementsTestReport extends AbstractBlam {
          RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelationTypes.Verification__Verifier);
       Collection<Artifact> temp2 =
          RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
-      System.out.println("Bulk loaded " + temp2.size() + " test results");
+      logf("Bulk loaded %d test results", temp2.size());
    }
 
    @Override

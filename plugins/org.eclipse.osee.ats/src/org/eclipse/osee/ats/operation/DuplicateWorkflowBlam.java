@@ -109,8 +109,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                      handleCreateDuplicate(teamArts, duplicateTasks, title);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  return;
+                  log(ex);
                } finally {
                   AtsUtilCore.setEmailEnabled(true);
                }
