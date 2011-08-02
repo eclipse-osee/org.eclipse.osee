@@ -116,7 +116,7 @@ public class NoteItem {
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Error parsing notes for [%s]", hrid), ex);
+                  OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing notes for [%s]", hrid);
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), UserManager.getUser(SystemUser.Guest), element.getAttribute("msg"));
                   logItems.add(item);

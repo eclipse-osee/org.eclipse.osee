@@ -74,7 +74,7 @@ public class OseeConnectionPoolImpl {
       }
       OseeConnectionImpl connection = getOseeConnection();
       connections.add(connection);
-      OseeLog.log(Activator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl, connections.size()));
+      OseeLog.logf(Activator.class, Level.INFO, "DbConnection: [%s] - [%d]", dbUrl, connections.size());
       return connection;
    }
 

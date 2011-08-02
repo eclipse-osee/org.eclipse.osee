@@ -73,8 +73,8 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
             response.getOutputStream().flush();
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Failed to process application server lookup request [%s]", request.toString()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Failed to process application server lookup request [%s]", request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
          response.getWriter().flush();
          response.getWriter().close();
@@ -93,8 +93,8 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
                String.format("Registration into server lookup was a [%s]", wasSuccessful ? "success" : "failure"));
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Failed to process application server lookup request [%s]", request.toString()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Failed to process application server lookup request [%s]", request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
       }
       response.getWriter().flush();

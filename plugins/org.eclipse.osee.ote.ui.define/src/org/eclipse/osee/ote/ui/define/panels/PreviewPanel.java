@@ -106,7 +106,7 @@ public class PreviewPanel extends Composite {
             browser.setUrl(uri.toURL().toString());
          }
       } catch (Exception ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, String.format("Error Updating Preview [%s]", panelId), ex);
+         OseeLog.logf(OteUiDefinePlugin.class, Level.SEVERE, ex, "Error Updating Preview [%s]", panelId);
       }
    }
 }

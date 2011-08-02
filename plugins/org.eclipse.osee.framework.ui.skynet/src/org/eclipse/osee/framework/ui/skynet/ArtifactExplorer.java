@@ -726,11 +726,11 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   try {
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(
+                     OseeLog.logf(
                         SkynetGuiPlugin.class,
                         OseeLevel.SEVERE_POPUP,
-                        String.format("Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
-                           branch.getName()));
+                        "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
+                           branch.getName());
                   }
                }
 

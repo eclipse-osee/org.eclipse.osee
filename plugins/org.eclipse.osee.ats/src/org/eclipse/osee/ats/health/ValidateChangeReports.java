@@ -392,8 +392,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
          ChangeReportComparer comparer = new ChangeReportComparer();
          comparer.compare(currentData, storedData);
 
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,
-            String.format("Checksums not equal - stored:[%s] current:[%s]", checkSum1, checkSum2));
+         OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+            "Checksums not equal - stored:[%s] current:[%s]", checkSum1, checkSum2);
       }
       return result;
    }

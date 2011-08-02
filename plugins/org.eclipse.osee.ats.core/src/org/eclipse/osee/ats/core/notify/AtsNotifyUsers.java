@@ -52,8 +52,8 @@ public class AtsNotifyUsers {
          IBasicUser originator = awa.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
-               OseeLog.log(Activator.class, Level.INFO, String.format("Email [%s] invalid for user [%s]",
-                  UserManager.getUser(originator).getEmail(), originator.getName()));
+               OseeLog.logf(Activator.class, Level.INFO, "Email [%s] invalid for user [%s]",
+                  UserManager.getUser(originator).getEmail(), originator.getName());
             } else if (!UserManager.getUser().equals(originator)) {
                oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
                   AtsNotificationManager.getIdString(awa), AtsNotifyType.Originator.name(), String.format(
@@ -94,8 +94,8 @@ public class AtsNotifyUsers {
          IBasicUser originator = awa.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
-               OseeLog.log(Activator.class, Level.INFO, String.format("Email [%s] invalid for user [%s]",
-                  UserManager.getUser(originator).getEmail(), originator.getName()));
+               OseeLog.logf(Activator.class, Level.INFO, "Email [%s] invalid for user [%s]",
+                  UserManager.getUser(originator).getEmail(), originator.getName());
             } else if (!UserManager.getUser().equals(originator)) {
                if (awa.isCompleted()) {
                   oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),

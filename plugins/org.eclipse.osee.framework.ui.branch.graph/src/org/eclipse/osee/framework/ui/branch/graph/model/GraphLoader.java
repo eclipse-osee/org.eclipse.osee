@@ -106,11 +106,11 @@ public class GraphLoader {
                   if (source != null) {
                      connect(source, txModel);
                   } else {
-                     OseeLog.log(
+                     OseeLog.logf(
                         Activator.class,
                         Level.SEVERE,
-                        String.format("Invalid parent transaction id of [%s] for branch [%s]", parentTxId,
-                           branchModel.getBranch()));
+                        "Invalid parent transaction id of [%s] for branch [%s]", parentTxId,
+                           branchModel.getBranch());
                      //                     StubBranchModel stubModel = graphCache.getStubBranchModel();
                      //                     TxModel stubTxModel = stubModel.addTx(parentTxId);
                      //                     graphCache.addTxModel(stubTxModel);

@@ -65,8 +65,8 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
                templateArtifact.persist(getClass().getSimpleName());
                templateFolder.addChild(templateArtifact);
             } else {
-               OseeLog.log(SimpleTemplateProviderTask.class, Level.SEVERE,
-                  String.format("Problem loading file %s", filePath));
+               OseeLog.logf(SimpleTemplateProviderTask.class, Level.SEVERE,
+                  "Problem loading file %s", filePath);
             }
          }
       }

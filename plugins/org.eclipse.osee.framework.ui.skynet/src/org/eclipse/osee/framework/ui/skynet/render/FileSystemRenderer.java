@@ -104,8 +104,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                   Program program = getAssociatedProgram(firstArtifact);
                   program.execute(file.getLocation().toFile().getAbsolutePath());
                } else {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-                     String.format("Test - Opening File - [%s]" + file.getLocation().toFile().getAbsolutePath()));
+                  OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+                     "Test - Opening File - [%s]" + file.getLocation().toFile().getAbsolutePath());
                }
             } catch (Exception ex) {
                IWorkbench workbench = PlatformUI.getWorkbench();

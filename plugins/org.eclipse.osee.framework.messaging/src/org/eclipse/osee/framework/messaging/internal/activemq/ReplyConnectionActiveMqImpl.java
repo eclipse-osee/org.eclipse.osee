@@ -59,7 +59,7 @@ class ReplyConnectionActiveMqImpl implements ReplyConnection {
          Message message = activeMqUtil.createMessage(session, clazz, body);
          message.setJMSCorrelationID(correlationId);
          producer.send(destReply, message);
-         OseeLog.log(Activator.class, Level.INFO, String.format("Sending Reply Message %s", message.toString()));
+         OseeLog.logf(Activator.class, Level.INFO, "Sending Reply Message %s", message.toString());
       } catch (JMSException ex) {
          statusCallback.fail(ex);
          OseeExceptions.wrapAndThrow(ex);

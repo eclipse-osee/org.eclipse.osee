@@ -148,8 +148,8 @@ public class DatabaseInitializationOperation {
             selectedChoice = choices.get(selection);
          }
       }
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
-         String.format("DB Config Choice Selected: [%s]", selectedChoice));
+      OseeLog.logf(DatabaseInitActivator.class, Level.INFO,
+         "DB Config Choice Selected: [%s]", selectedChoice);
       return selector.getDbInitConfiguration(selectedChoice);
    }
 
@@ -201,11 +201,11 @@ public class DatabaseInitializationOperation {
                isExecutionAllowed = rule.isAllowed();
             }
 
-            OseeLog.log(
+            OseeLog.logf(
                DatabaseInitActivator.class,
                isExecutionAllowed ? Level.INFO : Level.WARNING,
-               String.format("%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
-                  extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
+               "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
+                  extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default");
             if (isExecutionAllowed) {
                IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
                if (task instanceof DbBootstrapTask) {

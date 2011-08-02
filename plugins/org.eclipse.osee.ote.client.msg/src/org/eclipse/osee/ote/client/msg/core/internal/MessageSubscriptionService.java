@@ -240,9 +240,9 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
    @Override
    public InetSocketAddress getAddressByType(String messageName, DataType dataType) throws RemoteException {
       final DatagramChannel channel = dispatcher.getChannel(dataType);
-      OseeLog.log(Activator.class, Level.INFO, String.format(
+      OseeLog.logf(Activator.class, Level.INFO, 
          "callback from remote msg manager: msg=%s, type=%s, ip=%s:%d\n", messageName, dataType.name(),
-         localAddress.toString(), channel.socket().getLocalPort()));
+         localAddress.toString(), channel.socket().getLocalPort());
 
       return new InetSocketAddress(localAddress, channel.socket().getLocalPort());
    }

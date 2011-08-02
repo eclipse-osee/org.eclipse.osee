@@ -87,8 +87,8 @@ public class MysqlSqlManager extends SqlManagerImpl {
          if (iData.ignoreMySql()) {
             continue;
          }
-         OseeLog.log(Activator.class, Level.INFO,
-            String.format("Dropping Index: [%s] FROM [%s]", iData.getId(), tableName));
+         OseeLog.logf(Activator.class, Level.INFO,
+            "Dropping Index: [%s] FROM [%s]", iData.getId(), tableName);
          if (iData.getId().equals("PRIMARY")) {
             ConnectionHandler.runPreparedUpdate("ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
          } else {

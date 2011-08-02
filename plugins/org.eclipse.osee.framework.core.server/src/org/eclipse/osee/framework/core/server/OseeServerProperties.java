@@ -67,10 +67,10 @@ public class OseeServerProperties {
       if (!wasBinaryDataChecked) {
          File file = new File(toReturn);
          if (file.exists()) {
-            OseeLog.log(ServerActivator.class, Level.INFO, String.format("Application Server Data: [%s]", toReturn));
+            OseeLog.logf(ServerActivator.class, Level.INFO, "Application Server Data: [%s]", toReturn);
          } else {
-            OseeLog.log(ServerActivator.class, Level.WARNING,
-               String.format("Application Server Data: [%s] does not exist and will be created", toReturn));
+            OseeLog.logf(ServerActivator.class, Level.WARNING,
+               "Application Server Data: [%s] does not exist and will be created", toReturn);
          }
          wasBinaryDataChecked = true;
       }

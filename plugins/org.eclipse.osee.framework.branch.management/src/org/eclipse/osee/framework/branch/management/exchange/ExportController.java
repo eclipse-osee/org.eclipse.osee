@@ -136,12 +136,12 @@ final class ExportController implements IExchangeTaskListener {
 
          String zipTargetName = getExchangeFileName() + ZIP_EXTENSION;
          if (this.options.getBoolean(ExportOptions.COMPRESS.name())) {
-            OseeLog.log(this.getClass(), Level.INFO,
-               String.format("Compressing Branch Export Data - [%s]", zipTargetName));
+            OseeLog.logf(this.getClass(), Level.INFO,
+               "Compressing Branch Export Data - [%s]", zipTargetName);
             File zipTarget = new File(tempFolder.getParent(), zipTargetName);
             Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
-            OseeLog.log(this.getClass(), Level.INFO,
-               String.format("Deleting Branch Export Temp Folder - [%s]", tempFolder));
+            OseeLog.logf(this.getClass(), Level.INFO,
+               "Deleting Branch Export Temp Folder - [%s]", tempFolder);
             Lib.deleteDir(tempFolder);
          } else {
             File target = new File(tempFolder.getParent(), getExchangeFileName());
@@ -157,11 +157,11 @@ final class ExportController implements IExchangeTaskListener {
       } finally {
          cleanUp(taskList);
       }
-      OseeLog.log(
+      OseeLog.logf(
          this.getClass(),
          Level.INFO,
-         String.format("Exported [%s] branch%s in [%s]", branchIds.size(), branchIds.size() != 1 ? "es" : "",
-            Lib.getElapseString(startTime)));
+         "Exported [%s] branch%s in [%s]", branchIds.size(), branchIds.size() != 1 ? "es" : "",
+            Lib.getElapseString(startTime));
    }
 
    private void sendTasksToExecutor(List<AbstractExportItem> taskList, final File exportFolder) throws InterruptedException, ExecutionException, OseeCoreException {

@@ -102,8 +102,8 @@ public class ArtifactOperations {
             partitions.addAll(artifact.getAttributesToStringList(CoreAttributeTypes.Partition));
             Collections.sort(partitions);
          } catch (OseeCoreException ex) {
-            OseeLog.log(DefinePlugin.class, Level.WARNING,
-               String.format("Error obtaining partition info for [%s]", getName()), ex);
+            OseeLog.logf(DefinePlugin.class, Level.WARNING,
+               ex, "Error obtaining partition info for [%s]", getName());
             partitions.add("Error");
          }
       }
@@ -142,8 +142,8 @@ public class ArtifactOperations {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(DefinePlugin.class, Level.WARNING,
-            String.format("Error obtaining qualification info [%s]", getName()), ex);
+         OseeLog.logf(DefinePlugin.class, Level.WARNING,
+            ex, "Error obtaining qualification info [%s]", getName());
       }
       qualificationMethod = qualMethodBuilder.toString();
       qualificationFacility = qualFacilityBuilder.toString();

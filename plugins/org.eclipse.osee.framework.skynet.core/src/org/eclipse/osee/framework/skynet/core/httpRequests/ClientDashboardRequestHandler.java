@@ -154,8 +154,8 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("Error processing request for [%s]", httpRequest.toString()), ex);
+            OseeLog.logf(Activator.class, Level.SEVERE,
+               ex, "Error processing request for [%s]", httpRequest.toString());
             httpResponse.getPrintStream().println(Lib.exceptionToString(ex));
          } finally {
             httpResponse.getOutputStream().flush();
@@ -171,8 +171,8 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
          httpResponse.sendResponseHeaders(HttpURLConnection.HTTP_OK, results.length());
          httpResponse.getPrintStream().println(results);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Error processing request for [%s]", httpRequest.toString()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Error processing request for [%s]", httpRequest.toString());
          httpResponse.getPrintStream().println(Lib.exceptionToString(ex));
       } finally {
          httpResponse.getOutputStream().flush();

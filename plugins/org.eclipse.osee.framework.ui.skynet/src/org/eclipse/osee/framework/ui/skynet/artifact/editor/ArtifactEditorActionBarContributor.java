@@ -216,9 +216,9 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
                clipboard = new Clipboard(null);
                clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
+               OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, ex,
                   "Error obtaining url for - guid: [%s] branch:[%s]", getSelectedArtifact().getGuid(),
-                  getSelectedArtifact().getBranch()), ex);
+                  getSelectedArtifact().getBranch());
             } finally {
                if (clipboard != null && !clipboard.isDisposed()) {
                   clipboard.dispose();

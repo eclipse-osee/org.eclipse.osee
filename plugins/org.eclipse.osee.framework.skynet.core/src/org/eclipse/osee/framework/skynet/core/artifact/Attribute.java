@@ -313,9 +313,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       try {
          return modificationType.isDeleted();
       } catch (NullPointerException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+         OseeLog.logf(Activator.class, Level.SEVERE, ex,
             "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]", getId(),
-            getGammaId(), getArtifact().getSafeName()), ex);
+            getGammaId(), getArtifact().getSafeName());
       }
       return false;
    }

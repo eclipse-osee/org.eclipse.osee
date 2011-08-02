@@ -41,8 +41,7 @@ public class UserDataStore {
             toReturn = TokenFactory.createUserToken(null, "-", "-", chStmt.getString("user_id"), false, false, false);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(ServerActivator.class, Level.SEVERE,
-            String.format("Unable to find userId [%s] in OSEE database.", userId), ex);
+         OseeLog.logf(ServerActivator.class, Level.SEVERE, ex, "Unable to find userId [%s] in OSEE database.", userId);
       } finally {
          if (chStmt != null) {
             chStmt.close();

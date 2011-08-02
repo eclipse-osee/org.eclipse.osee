@@ -122,8 +122,8 @@ public class LoggingPanel extends Composite {
       try {
          level = Level.parse(value);
       } catch (Exception ex) {
-         OseeLog.log(TestManagerPlugin.class, Level.WARNING,
-            String.format("Error parsing log level [%s] using default [%s]", value, level));
+         OseeLog.logf(TestManagerPlugin.class, Level.WARNING,
+            "Error parsing log level [%s] using default [%s]", value, level);
       }
 
       LoggingLevel loggingLevel = LoggingLevel.fromLevel(level);

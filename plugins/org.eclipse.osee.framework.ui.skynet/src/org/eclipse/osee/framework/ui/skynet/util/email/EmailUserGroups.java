@@ -75,8 +75,8 @@ public class EmailUserGroups extends XNavigateItemAction {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                      if (userArt instanceof User) {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
-                           OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-                              "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt));
+                           OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+                              "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt);
                         } else if (((User) userArt).isActive()) {
                            emails.add(((User) userArt).getEmail());
                         }
@@ -85,8 +85,8 @@ public class EmailUserGroups extends XNavigateItemAction {
                } else if (artifact.isOfType(CoreArtifactTypes.UserGroup)) {
                   for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
                      if (!EmailUtil.isEmailValid(user)) {
-                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-                           String.format("Invalid email [%s] for user [%s]; skipping", user.getEmail(), user));
+                        OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
+                           user.getEmail(), user);
                      } else if (user.isActive()) {
                         emails.add(user.getEmail());
                      }

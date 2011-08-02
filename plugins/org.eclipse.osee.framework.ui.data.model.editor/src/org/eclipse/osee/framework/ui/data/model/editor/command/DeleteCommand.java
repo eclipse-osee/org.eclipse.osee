@@ -193,8 +193,8 @@ public class DeleteCommand extends Command {
             try {
                subClass.setSuperType(null);
             } catch (OseeStateException ex) {
-               OseeLog.log(ODMEditorActivator.class, Level.SEVERE,
-                  String.format("Unable to remove inheritance link between [%s] - [%s]", superClass, subClass), ex);
+               OseeLog.logf(ODMEditorActivator.class, Level.SEVERE,
+                  ex, "Unable to remove inheritance link between [%s] - [%s]", superClass, subClass);
                removeConnection = false;
             }
          }
@@ -222,8 +222,8 @@ public class DeleteCommand extends Command {
             try {
                subClass.setSuperType(superClass);
             } catch (OseeStateException ex) {
-               OseeLog.log(ODMEditorActivator.class, Level.SEVERE,
-                  String.format("Unable to add inheritance link between [%s] - [%s]", superClass, subClass), ex);
+               OseeLog.logf(ODMEditorActivator.class, Level.SEVERE,
+                  ex, "Unable to add inheritance link between [%s] - [%s]", superClass, subClass);
                addConnection = false;
             }
          }

@@ -75,11 +75,9 @@ public final class XNavigateContributionManager {
             toReturn = (IXNavigateContainer) taskClass.newInstance();
          }
       } catch (Exception ex) {
-         OseeLog.log(OseeActivator.class, Level.SEVERE,
-            String.format("Unable to Load: [%s - %s]", bundleName, className), ex);
+         OseeLog.logf(OseeActivator.class, Level.SEVERE, ex, "Unable to Load: [%s - %s]", bundleName, className);
       } catch (LinkageError error) {
-         OseeLog.log(OseeActivator.class, Level.SEVERE,
-            String.format("Unable to Load: [%s - %s]", bundleName, className), error);
+         OseeLog.logf(OseeActivator.class, Level.SEVERE, error, "Unable to Load: [%s - %s]", bundleName, className);
       }
       return toReturn;
    }

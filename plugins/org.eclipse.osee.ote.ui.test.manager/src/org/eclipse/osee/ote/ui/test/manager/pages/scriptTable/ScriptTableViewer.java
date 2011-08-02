@@ -169,7 +169,7 @@ public class ScriptTableViewer {
     * @param str <script>-ISRUN-, <script>, <script>-ISRUN
     */
    public void loadStorageString(String str) {
-      OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("Storage String [%s]", str));
+      OseeLog.logf(TestManagerPlugin.class, Level.INFO, "Storage String [%s]", str);
       if (str != null) {
          if (str.equals("file:")) {
             File configFile = OseeData.getFile("tm.xml");
@@ -196,8 +196,8 @@ public class ScriptTableViewer {
                      task.setRun(run);
                      taskList.addTask(task);
                   } catch (Exception ex) {
-                     OseeLog.log(TestManagerPlugin.class, Level.SEVERE,
-                        String.format("Unable to add file [%s] to script view.", script), ex);
+                     OseeLog.logf(TestManagerPlugin.class, Level.SEVERE,
+                        ex, "Unable to add file [%s] to script view.", script);
                   }
                }
             }

@@ -422,11 +422,11 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
             if (!outDir.mkdirs()) {
                throw new IOException("Failed to create the output directory");
             }
-            OseeLog.log(TestEnvironment.class, Level.INFO,
-               String.format("Outfile Dir [%s] created.", outDir.getAbsolutePath()));
+            OseeLog.logf(TestEnvironment.class, Level.INFO,
+               "Outfile Dir [%s] created.", outDir.getAbsolutePath());
          } else {
-            OseeLog.log(TestEnvironment.class, Level.FINE,
-               String.format("Outfile Dir [%s] exists.", outDir.getAbsolutePath()));
+            OseeLog.logf(TestEnvironment.class, Level.FINE,
+               "Outfile Dir [%s] exists.", outDir.getAbsolutePath());
          }
       } else {
          throw new IOException("A valid outfile directory must be specified.");

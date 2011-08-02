@@ -89,8 +89,8 @@ public class DatastoreInitOperation extends AbstractOperation {
 
    private static void deleteBinaryBackingData() {
       String binaryDataPath = OseeServerProperties.getOseeApplicationServerData();
-      OseeLog.log(Activator.class, Level.INFO,
-         String.format("Deleting application server binary data [%s]...", binaryDataPath));
+      OseeLog.logf(Activator.class, Level.INFO,
+         "Deleting application server binary data [%s]...", binaryDataPath);
       Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
    }
 }

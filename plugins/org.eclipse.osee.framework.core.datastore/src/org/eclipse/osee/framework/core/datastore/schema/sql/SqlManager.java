@@ -300,8 +300,8 @@ public abstract class SqlManager {
       List<IndexElement> tableIndices = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndices) {
-         OseeLog.log(Activator.class, Level.FINE,
-            String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName));
+         OseeLog.logf(Activator.class, Level.FINE,
+            "Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName);
          ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
       }
    }

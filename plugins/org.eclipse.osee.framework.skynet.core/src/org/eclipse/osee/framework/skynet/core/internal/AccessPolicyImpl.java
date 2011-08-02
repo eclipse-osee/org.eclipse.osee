@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -56,10 +55,10 @@ public class AccessPolicyImpl implements AccessPolicy {
       boolean notMatched = !permissionStatus.matched();
 
       if (notMatched) {
-         OseeLog.log(Activator.class, level, String.format(
+         OseeLog.logf(Activator.class, level,
             "Access Denied - [%s] does not have valid permission to edit item(s) : [%s]%s", user,
             org.eclipse.osee.framework.jdk.core.util.Collections.toString("; ", objects),
-            (Strings.isValid(permissionStatus.getReason()) ? "\n reason:[%s]" : "")));
+            (Strings.isValid(permissionStatus.getReason()) ? "\n reason:[%s]" : ""));
       }
       return notMatched;
    }
@@ -73,7 +72,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    public boolean isReadOnly(Artifact artifact) {
       try {
          return artifact.isDeleted() || artifact.isHistorical() || !artifact.getBranch().isEditable() || !getAccessService().hasPermission(
-        		 artifact, PermissionEnum.WRITE);
+            artifact, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return true;

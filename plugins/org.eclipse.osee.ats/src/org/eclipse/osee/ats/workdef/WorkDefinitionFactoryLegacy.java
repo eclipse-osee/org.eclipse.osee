@@ -213,8 +213,8 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
                   } else {
                      RuleDefinition ruleDef = getRuleById(workRule.getId().replaceFirst("^ats", ""));
                      if (ruleDef == null) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                           String.format("Null work rule for " + workRule.getId()));
+                        OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+                           "Null work rule for " + workRule.getId());
                      } else {
                         stateDef.addRule(ruleDef, "from related WorkItemDefintion");
                      }

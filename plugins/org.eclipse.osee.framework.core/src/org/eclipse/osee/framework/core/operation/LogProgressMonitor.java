@@ -33,14 +33,14 @@ public class LogProgressMonitor implements IProgressMonitor {
    public void beginTask(String name, int totalWork) {
       this.taskName = name;
       if (!OseeProperties.isInTest()) {
-         OseeLog.log(Activator.class, Level.INFO, String.format("Start: %s", taskName));
+         OseeLog.logf(Activator.class, Level.INFO, "Start: %s", taskName);
       }
    }
 
    @Override
    public void done() {
       if (!OseeProperties.isInTest()) {
-         OseeLog.log(Activator.class, Level.INFO, String.format("Finish: %s", taskName));
+         OseeLog.logf(Activator.class, Level.INFO, "Finish: %s", taskName);
       }
    }
 

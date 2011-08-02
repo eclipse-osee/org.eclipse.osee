@@ -59,8 +59,8 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
 
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Failed to respond to a search engine servlet request [%s]", request.getRequestURL()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Failed to respond to a search engine servlet request [%s]", request.getRequestURL());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));

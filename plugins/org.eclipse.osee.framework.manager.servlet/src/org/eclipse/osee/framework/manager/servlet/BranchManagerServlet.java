@@ -87,8 +87,8 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
          }
          Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor());
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Branch servlet request error: [%s]", req.toString()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Branch servlet request error: [%s]", req.toString());
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
          resp.getWriter().write(Lib.exceptionToString(ex));

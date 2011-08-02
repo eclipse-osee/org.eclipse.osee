@@ -158,8 +158,8 @@ public class UpdateArtifactOperation extends AbstractOperation {
    }
 
    private void logUpdateSkip(Artifact artifact) {
-      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-         String.format("Skipping update - artifact [%s] is read-only", artifact.toString()));
+      OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+         "Skipping update - artifact [%s] is read-only", artifact.toString());
    }
 
    private Artifact getArtifact(WordExtractorData artifactElement) throws OseeCoreException {

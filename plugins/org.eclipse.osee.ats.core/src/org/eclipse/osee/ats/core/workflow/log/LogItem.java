@@ -50,8 +50,8 @@ public class LogItem {
          this.user = UserManager.getUserByUserId(userId);
       } catch (UserNotInDatabase ex) {
          this.user = UserManager.getUser(SystemUser.Guest);
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Error parsing ATS Log for %s - %s", hrid, ex.getLocalizedMessage()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Error parsing ATS Log for %s - %s", hrid, ex.getLocalizedMessage());
       }
       this.type = type;
    }

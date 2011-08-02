@@ -139,9 +139,8 @@ public class SetValueAction extends Action {
                final String val = dialog.getValue();
                msgNode.getSubscription().setElementValue(path, val);
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                  String.format("Unable to set the %s element for the message %s", element.getName(), msg.getName()),
-                  ex);
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Unable to set the %s element for the message %s",
+                  element.getName(), msg.getName());
                MessageDialog.openError(Displays.getActiveShell(), "Error", "Could not set value");
             }
          }

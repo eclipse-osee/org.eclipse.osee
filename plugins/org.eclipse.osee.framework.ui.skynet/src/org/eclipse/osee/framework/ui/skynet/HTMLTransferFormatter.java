@@ -50,8 +50,8 @@ public class HTMLTransferFormatter {
                link =
                   String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(), artifact.getBranch().getId(),
                      artifact.getGammaId());
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-                  String.format("Error creating link for: [%s]", artifact), ex);
+               OseeLog.logf(SkynetGuiPlugin.class, Level.WARNING,
+                  ex, "Error creating link for: [%s]", artifact);
             }
             urls.add(link + "\">" + artifact.getName());
          }

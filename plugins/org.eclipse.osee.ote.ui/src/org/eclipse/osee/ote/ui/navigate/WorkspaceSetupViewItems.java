@@ -68,11 +68,8 @@ public class WorkspaceSetupViewItems implements IXNavigateContainer {
                   new XNavigateItemRunnable(parent, shortCutName, OteImage.CHECKOUT, configPath);
                }
             } catch (Exception ex) {
-               OseeLog.log(
-                  TestCoreGuiPlugin.class,
-                  Level.WARNING,
-                  String.format("Unable to Load: [%s.%s - %s]", bundleName, resourceName, OteImage.CHECKOUT.toString()),
-                  ex);
+               OseeLog.logf(TestCoreGuiPlugin.class, Level.WARNING, ex, "Unable to Load: [%s.%s - %s]", bundleName,
+                  resourceName, OteImage.CHECKOUT);
             }
          }
       }

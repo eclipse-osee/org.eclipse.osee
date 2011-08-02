@@ -86,8 +86,8 @@ public class PostgreSqlManager extends SqlManagerImpl {
          if (iData.ignoreMySql()) {
             continue;
          }
-         OseeLog.log(Activator.class, Level.FINE,
-            String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName));
+         OseeLog.logf(Activator.class, Level.FINE,
+            "Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName);
          if (iData.getId().equals("PRIMARY")) {
             ConnectionHandler.runPreparedUpdate(connection,
                "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");

@@ -244,8 +244,7 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
             }
 
          } catch (Throwable th) {
-            OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, String.format("Unable to load [%s].", bundleName),
-               th);
+            OseeLog.logf(AbstractRuntimeManager.class, Level.SEVERE, th, "Unable to load [%s].", bundleName);
          }
       }
 
@@ -278,8 +277,8 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
          ensureJarFileOnDisk(bundleDescription, anticipatedJarFile);
 
-         OseeLog.log(AbstractRuntimeManager.class, Level.FINEST,
-            String.format("Looking for [%s] on disk.", anticipatedJarFile.getAbsolutePath()));
+         OseeLog.logf(AbstractRuntimeManager.class, Level.FINEST,
+            "Looking for [%s] on disk.", anticipatedJarFile.getAbsolutePath());
 
          return new FileInputStream(anticipatedJarFile);
       } catch (Exception ex) {

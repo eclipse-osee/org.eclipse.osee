@@ -80,8 +80,8 @@ public class OteArtifactFetcher<T extends Artifact> {
             toReturn.add((T) artifact);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(OteDefinePlugin.class, Level.WARNING,
-            String.format("Search for all artifacts failed [%s, %s]", oteArtifactType.getName(), branch.getName()), ex);
+         OseeLog.logf(OteDefinePlugin.class, Level.WARNING,
+            ex, "Search for all artifacts failed [%s, %s]", oteArtifactType.getName(), branch.getName());
       }
       return toReturn;
    }

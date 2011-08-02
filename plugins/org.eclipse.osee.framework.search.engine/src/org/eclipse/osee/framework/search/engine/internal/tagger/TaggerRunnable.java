@@ -76,8 +76,8 @@ class TaggerRunnable implements Runnable {
          AttributeToTagTx attributeToTagTx = new AttributeToTagTx();
          attributeToTagTx.execute();
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Unable to tag - tagQueueQueryId [%d]", getTagQueueQueryId()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Unable to tag - tagQueueQueryId [%d]", getTagQueueQueryId());
       } finally {
          this.processingTime = System.currentTimeMillis() - processStart;
          notifyOnTagQueryIdTagComplete();
@@ -90,8 +90,8 @@ class TaggerRunnable implements Runnable {
          try {
             listener.onAttributeTagComplete(tagQueueQueryId, gammaId, totalTags, processingTime);
          } catch (Exception ex) {
-            OseeLog.log(TaggerRunnable.class, Level.SEVERE,
-               String.format("Error notifying listener: [%s] ", listener.getClass().getName()), ex);
+            OseeLog.logf(TaggerRunnable.class, Level.SEVERE,
+               ex, "Error notifying listener: [%s] ", listener.getClass().getName());
          }
       }
    }
@@ -101,8 +101,8 @@ class TaggerRunnable implements Runnable {
          try {
             listener.onTagQueryIdTagComplete(tagQueueQueryId, waitTime, processingTime);
          } catch (Exception ex) {
-            OseeLog.log(TaggerRunnable.class, Level.SEVERE,
-               String.format("Error notifying listener: [%s] ", listener.getClass().getName()), ex);
+            OseeLog.logf(TaggerRunnable.class, Level.SEVERE,
+               ex, "Error notifying listener: [%s] ", listener.getClass().getName());
          }
       }
    }
@@ -112,8 +112,8 @@ class TaggerRunnable implements Runnable {
          try {
             listener.onAttributeAddTagEvent(tagQueueQueryId, gammaId, word, codedTag);
          } catch (Exception ex) {
-            OseeLog.log(TaggerRunnable.class, Level.SEVERE,
-               String.format("Error notifying listener: [%s] ", listener.getClass().getName()), ex);
+            OseeLog.logf(TaggerRunnable.class, Level.SEVERE,
+               ex, "Error notifying listener: [%s] ", listener.getClass().getName());
          }
       }
    }
@@ -159,7 +159,7 @@ class TaggerRunnable implements Runnable {
                      taggingManager.tagIt(attributeData, this);
                      checkSizeStoreIfNeeded(connection);
                   } catch (Throwable ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag));
+                     OseeLog.logf(Activator.class, Level.SEVERE, "Unable to tag - [%s]", this.currentTag);
                   } finally {
                      notifyOnAttributeTagComplete(this.currentTag.getGammaId(), this.currentTag.getTotalTags(),
                         (System.currentTimeMillis() - startItemTime));
@@ -171,8 +171,8 @@ class TaggerRunnable implements Runnable {
                ConnectionHandler.runPreparedUpdate(connection, JoinItem.TAG_GAMMA_QUEUE.getDeleteSql(),
                   getTagQueueQueryId());
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                  String.format("Unable to store tags - tagQueueQueryId [%d]", getTagQueueQueryId()), ex);
+               OseeLog.logf(Activator.class, Level.SEVERE,
+                  ex, "Unable to store tags - tagQueueQueryId [%d]", getTagQueueQueryId());
             }
          } else {
             System.out.println(String.format("Empty gamma query id: %s", getTagQueueQueryId()));

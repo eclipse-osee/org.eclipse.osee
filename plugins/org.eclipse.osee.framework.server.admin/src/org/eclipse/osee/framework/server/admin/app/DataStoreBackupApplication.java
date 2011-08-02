@@ -87,19 +87,19 @@ public class DataStoreBackupApplication implements IApplication {
          List<Integer> branchIds = getAllBranches();
 
          int totalBranches = branchIds.size();
-         OseeLog.log(Activator.class, Level.INFO,
-            String.format("Exporting [%s] branch%s", totalBranches, totalBranches == 1 ? "" : "es"));
+         OseeLog.logf(Activator.class, Level.INFO,
+            "Exporting [%s] branch%s", totalBranches, totalBranches == 1 ? "" : "es");
 
          IResourceLocator exportLocator = Activator.getBranchExchange().exportBranch(backupName, options, branchIds);
 
-         OseeLog.log(Activator.class, Level.INFO,
-            String.format("Verifying export file integrity [%s]", exportLocator.getLocation()));
+         OseeLog.logf(Activator.class, Level.INFO,
+            "Verifying export file integrity [%s]", exportLocator.getLocation());
 
          IResourceLocator exportCheckLocator = Activator.getBranchExchange().checkIntegrity(exportLocator);
-         OseeLog.log(Activator.class, Level.INFO, String.format("Verified [%s]", exportCheckLocator.getLocation()));
+         OseeLog.logf(Activator.class, Level.INFO, "Verified [%s]", exportCheckLocator.getLocation());
 
-         OseeLog.log(Activator.class, Level.INFO,
-            String.format("Completed export - [%s] branch%s", totalBranches, totalBranches == 1 ? "" : "es"));
+         OseeLog.logf(Activator.class, Level.INFO,
+            "Completed export - [%s] branch%s", totalBranches, totalBranches == 1 ? "" : "es");
 
          String backupPath = (String) context.getArguments().get("osee.backup.path");
          if (Strings.isValid(backupPath)) {

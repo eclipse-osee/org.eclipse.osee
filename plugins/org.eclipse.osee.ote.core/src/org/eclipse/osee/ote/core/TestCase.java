@@ -311,8 +311,8 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       //This creates the test case outfile logging.
 
       environment.getTestScript().setTestCase(this);
-      OseeLog.log(TestEnvironment.class, OteLevel.TEST_EVENT, String.format("Starting Test Case %s.%s",
-         this.getTestScript().getClass().getSimpleName(), this.getClass().getSimpleName()));
+      OseeLog.logf(TestEnvironment.class, OteLevel.TEST_EVENT, "Starting Test Case %s.%s",
+         this.getTestScript().getClass().getSimpleName(), this.getClass().getSimpleName());
       doTestCase(environment, environment.getLogger());
    }
 

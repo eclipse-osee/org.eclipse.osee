@@ -79,8 +79,8 @@ public class RemoveTestBatchProjectNature implements IObjectActionDelegate {
          currentJavaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
          ((ApplicationWindow) window).setStatus(NATURE_REMOVED);
       } catch (Exception ex) {
-         OseeLog.log(TestManagerPlugin.class, Level.SEVERE,
-            String.format("Error removing test batch nature on [%s]", currentJavaProject.getProject().getName()), ex);
+         OseeLog.logf(TestManagerPlugin.class, Level.SEVERE,
+            ex, "Error removing test batch nature on [%s]", currentJavaProject.getProject().getName());
          Shell shell = new Shell();
          MessageDialog.openInformation(shell, TestManagerPlugin.PLUGIN_ID,
             "Error removing test batch nature:\n" + SelectionUtil.getStatusMessages(ex));

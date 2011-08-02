@@ -64,8 +64,8 @@ public class ExchangeUtil {
       if (source.isFile()) {
          wasZipExtractionRequired = true;
          importSource = ExchangeUtil.createTempFolder();
-         OseeLog.log(ExchangeUtil.class, Level.INFO,
-            String.format("Extracting Exchange File: [%s] to [%s]", source.getName(), importSource));
+         OseeLog.logf(ExchangeUtil.class, Level.INFO,
+            "Extracting Exchange File: [%s] to [%s]", source.getName(), importSource);
          try {
             Lib.decompressStream(new FileInputStream(source), importSource);
          } catch (Exception ex) {
@@ -82,8 +82,8 @@ public class ExchangeUtil {
    public static void cleanUpTempExchangeFile(File exchangeSource, boolean wasZipExtractionRequired) {
       if (wasZipExtractionRequired && exchangeSource != null && exchangeSource.exists() && !exchangeSource.getAbsolutePath().equals(
          ExchangeProvider.getExchangeFilePath())) {
-         OseeLog.log(ExchangeUtil.class, Level.INFO,
-            String.format("Deleting Branch Import Temp Folder - [%s]", exchangeSource));
+         OseeLog.logf(ExchangeUtil.class, Level.INFO,
+            "Deleting Branch Import Temp Folder - [%s]", exchangeSource);
          Lib.deleteDir(exchangeSource);
       }
    }

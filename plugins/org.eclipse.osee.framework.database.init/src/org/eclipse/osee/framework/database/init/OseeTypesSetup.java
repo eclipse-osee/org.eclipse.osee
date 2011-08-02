@@ -117,14 +117,14 @@ public class OseeTypesSetup {
       for (String idsToImport : uniqueIdsToImport) {
          URL urlEntry = extensions.get(idsToImport);
          if (urlEntry == null) {
-            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE,
-               String.format("ExtensionUniqueId [%s] was not found", idsToImport));
+            OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE,
+               "ExtensionUniqueId [%s] was not found", idsToImport);
          } else {
             items.put(idsToImport, urlEntry);
          }
       }
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
-         String.format("Importing:\n\t%s", items.keySet().toString().replaceAll(",", ",\n\t")));
+      OseeLog.logf(DatabaseInitActivator.class, Level.INFO,
+         "Importing:\n\t%s", items.keySet().toString().replaceAll(",", ",\n\t"));
       return items;
    }
 
@@ -133,11 +133,11 @@ public class OseeTypesSetup {
       if (handler != null) {
          handler.execute(new NullProgressMonitor(), uri);
       } else {
-         OseeLog.log(
+         OseeLog.logf(
             DatabaseInitActivator.class,
             Level.SEVERE,
-            String.format("Unable to find handler for [%s] - handlers - %s", uri.toASCIIString(),
-               this.extensionObjects.getObjects()));
+            "Unable to find handler for [%s] - handlers - %s", uri.toASCIIString(),
+               this.extensionObjects.getObjects());
       }
    }
 

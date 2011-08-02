@@ -214,10 +214,10 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       try {
          setCurrentLength(destOffset + length);
          mem.copyData(destOffset, data, length);
-      } catch (MessageSystemException e) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, String.format(
+      } catch (MessageSystemException ex) {
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO, ex,
             "increasing backing store for %s to %d. prev length: %d, recv cnt: %d", getName(), destOffset + length,
-            mem.getData().length, this.activityCount), e);
+            mem.getData().length, this.activityCount);
          setNewBackingBuffer(data, destOffset, length);
       }
    }
@@ -383,10 +383,10 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       try {
          copyData(0, input, 0, input.length);
       } catch (MessageSystemException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.WARNING,
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.WARNING,
 
-         String.format("Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, input.length));
+         "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
+            this.mem.getData().length, input.length);
          setNewBackingBuffer(input);
       }
    }
@@ -396,9 +396,9 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       try {
          copyData(buffer);
       } catch (Exception e) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, String.format(
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
             "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, buffer.limit()));
+            this.mem.getData().length, buffer.limit());
          setNewBackingBuffer(buffer);
       }
    }
@@ -412,9 +412,9 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       try {
          copyData(0, input, 0, length);
       } catch (MessageSystemException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, String.format(
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
             "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, length));
+            this.mem.getData().length, length);
          setNewBackingBuffer(input);
       }
    }
@@ -423,9 +423,9 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       try {
          copyData(destOffset, input, srcOffset, length);
       } catch (MessageSystemException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, String.format(
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
             "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, length));
+            this.mem.getData().length, length);
          setNewBackingBuffer(input);
       }
    }
@@ -434,9 +434,9 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       try {
          copyData(0, input, length);
       } catch (MessageSystemException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, String.format(
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
             "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, length));
+            this.mem.getData().length, length);
          setNewBackingBuffer(input);
       }
    }

@@ -58,12 +58,12 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                   if (value < 0) {
                      templateMap.put(matchCriteria, art);
                   }
-                  OseeLog.log(
+                  OseeLog.logf(
                      SkynetGuiPlugin.class,
                      Level.SEVERE,
-                     String.format(
+                     
                         "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
-                        matchCriteria, templateMap.get(matchCriteria).getName()));
+                        matchCriteria, templateMap.get(matchCriteria).getName());
 
                }
             }

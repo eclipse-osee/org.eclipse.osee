@@ -286,7 +286,7 @@ public class OseeClientProperties extends OseeProperties {
             OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
          }
          if (!properties.isEmpty()) {
-            OseeLog.log(CoreClientActivator.class, Level.INFO, String.format("Initializing properties [%s]", flag));
+            OseeLog.logf(CoreClientActivator.class, Level.INFO, "Initializing properties [%s]", flag);
 
             Properties itemToSet = null;
             switch (flag) {

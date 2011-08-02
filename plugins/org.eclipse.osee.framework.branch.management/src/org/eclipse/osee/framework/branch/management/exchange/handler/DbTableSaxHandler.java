@@ -185,8 +185,8 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          }
       } catch (OseeCoreException ex) {
          cleanUpBinaryContent();
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Error processing in [%s]", getMetaData().getTableName());
          throw ex;
       }
    }

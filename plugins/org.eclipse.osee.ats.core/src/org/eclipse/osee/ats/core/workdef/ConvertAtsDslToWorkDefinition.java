@@ -188,8 +188,7 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          blockType = ReviewBlockType.valueOf(dslBlockType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
-            String.format("Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType));
+         OseeLog.logf(Activator.class, Level.WARNING, "Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType);
       }
       revDef.setBlockingType(blockType);
 
@@ -198,8 +197,7 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          eventType = StateEventType.valueOf(dslEventType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
-            String.format("Unknown StateEventType [%s]; Defaulting to None", dslEventType));
+         OseeLog.logf(Activator.class, Level.WARNING, "Unknown StateEventType [%s]; Defaulting to None", dslEventType);
       }
       revDef.setStateEventType(eventType);
       revDef.setAutoTransitionToDecision(BooleanDefUtil.get(dslRevDef.getAutoTransitionToDecision(), false));
@@ -236,8 +234,7 @@ public class ConvertAtsDslToWorkDefinition {
                }
             }
             if (!found) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                  String.format("Could not find WidgetRef [%s] in WidgetDefs", widgetName));
+               OseeLog.logf(Activator.class, Level.SEVERE, "Could not find WidgetRef [%s] in WidgetDefs", widgetName);
             }
          } else if (layoutItem instanceof AttrWidget) {
             AttrWidget attrWidget = (AttrWidget) layoutItem;
@@ -245,8 +242,8 @@ public class ConvertAtsDslToWorkDefinition {
             try {
                AttributeType attributeType = AttributeTypeManager.getType(attributeName);
                if (attributeType == null) {
-                  OseeLog.log(Activator.class, Level.SEVERE,
-                     String.format("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
+                  OseeLog.logf(Activator.class, Level.SEVERE, "Invalid attribute name [%s] in WorkDefinition [%s]",
+                     attributeName, SHEET_NAME);
                } else {
                   WidgetDefinition widgetDef = new WidgetDefinition(attributeType.getUnqualifiedName());
                   widgetDef.setAttributeName(attributeType.getName());
@@ -281,8 +278,7 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          blockType = ReviewBlockType.valueOf(dslBlockType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
-            String.format("Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType));
+         OseeLog.logf(Activator.class, Level.WARNING, "Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType);
       }
       revDef.setBlockingType(blockType);
 
@@ -291,8 +287,7 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          eventType = StateEventType.valueOf(dslEventType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
-            String.format("Unknown StateEventType [%s]; Defaulting to None", dslEventType));
+         OseeLog.logf(Activator.class, Level.WARNING, "Unknown StateEventType [%s]; Defaulting to None", dslEventType);
       }
       revDef.setStateEventType(eventType);
       Collection<String> userIds = getAssigneesFromUserRefs(dslRevDef.getAssigneeRefs());
@@ -307,32 +302,30 @@ public class ConvertAtsDslToWorkDefinition {
             UserByName byName = (UserByName) UserRef;
             String name = Strings.unquote(byName.getUserName());
             if (!Strings.isValid(name)) {
-               OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled UserByName name [%s]", name));
+               OseeLog.logf(Activator.class, Level.WARNING, "Unhandled UserByName name [%s]", name);
                continue;
             }
             try {
                User user = UserManager.getUserByName(name);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.WARNING,
-                  String.format("No user by name [%s] [%s]", name, ex.getLocalizedMessage()));
+               OseeLog.logf(Activator.class, Level.WARNING, "No user by name [%s] [%s]", name, ex.getLocalizedMessage());
             }
          } else if (UserRef instanceof UserByUserId) {
             UserByUserId byUserId = (UserByUserId) UserRef;
             String userId = byUserId.getUserId();
             if (!Strings.isValid(userId)) {
-               OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled UserByUserId id [%s]", userId));
+               OseeLog.logf(Activator.class, Level.WARNING, "Unhandled UserByUserId id [%s]", userId);
                continue;
             }
             try {
                User user = UserManager.getUserByUserId(userId);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.WARNING,
-                  String.format("No user by id [%s] [%s]", userId, ex.getLocalizedMessage()));
+               OseeLog.logf(Activator.class, Level.WARNING, "No user by id [%s] [%s]", userId, ex.getLocalizedMessage());
             }
          } else {
-            OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled UserRef type [%s]", UserRef));
+            OseeLog.logf(Activator.class, Level.WARNING, "Unhandled UserRef type [%s]", UserRef);
          }
       }
       return userIds;
@@ -373,20 +366,18 @@ public class ConvertAtsDslToWorkDefinition {
             try {
                AttributeType attributeType = AttributeTypeManager.getType(attributeName);
                if (attributeType == null) {
-                  OseeLog.log(Activator.class, Level.SEVERE,
-                     String.format("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
+                  OseeLog.logf(Activator.class, Level.SEVERE, "Invalid attribute name [%s] in WorkDefinition [%s]",
+                     attributeName, SHEET_NAME);
                } else {
                   setXWidgetNameBasedOnAttribute(attributeType, widgetDef);
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(
-                  Activator.class,
-                  Level.SEVERE,
-                  String.format("Error resolving attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
+               OseeLog.logf(Activator.class, Level.SEVERE,
+                  "Error resolving attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME);
             }
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
+            OseeLog.logf(Activator.class, Level.SEVERE, "Invalid attribute name [%s] in WorkDefinition [%s]",
+               attributeName, SHEET_NAME);
          }
       }
       processMinMaxConstraints(widgetDef, dslWidgetDef.getMinConstraint(), dslWidgetDef.getMaxConstraint());

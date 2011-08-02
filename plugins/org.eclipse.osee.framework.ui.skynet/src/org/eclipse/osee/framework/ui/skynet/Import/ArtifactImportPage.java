@@ -373,8 +373,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                   Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
                   artifactSelectPanel.setDefaultItem(artifact);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-                     String.format("Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch));
+                  OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+                     "Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch);
                }
             }
          }

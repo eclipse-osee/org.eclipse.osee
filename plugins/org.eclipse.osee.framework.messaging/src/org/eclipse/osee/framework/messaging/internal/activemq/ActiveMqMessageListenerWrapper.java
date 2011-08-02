@@ -69,8 +69,8 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
    private void process(javax.jms.Message message, ReplyConnection replyConnection) throws JMSException, OseeCoreException {
       Map<String, Object> headers = new HashMap<String, Object>();
       listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
-      OseeLog.log(Activator.class, Level.FINE,
-         String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
+      OseeLog.logf(Activator.class, Level.FINE,
+         "recieved message %s - %s", message.getJMSDestination().toString(), message.toString());
    }
 
 }

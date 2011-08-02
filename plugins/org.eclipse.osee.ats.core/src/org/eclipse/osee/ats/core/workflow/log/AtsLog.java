@@ -100,9 +100,9 @@ public class AtsLog {
             openTagsFound++;
          }
          if (logItems.size() != openTagsFound) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format(
+            OseeLog.logf(Activator.class, Level.SEVERE,
                "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound, logItems.size(),
-               id));
+               id);
          }
       }
       return logItems;

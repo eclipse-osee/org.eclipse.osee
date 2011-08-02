@@ -127,8 +127,8 @@ public class OseeValidator {
    //                     loadedObjects.put(attributeType, object);
    //                  }
    //               } catch (Exception ex) {
-   //                  OseeLog.log(OseeActivator.class, Level.SEVERE, String.format("Unable to Load: [%s - %s]", bundleName,
-   //                        className), ex);
+   //                  OseeLog.log(OseeActivator.class, Level.SEVERE, ex, "Unable to Load: [%s - %s]", bundleName,
+   //                        className);
    //               }
    //            }
    //         }

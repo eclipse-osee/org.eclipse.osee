@@ -270,8 +270,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
                msgUpdatePart.putLong(Activator.getTestEnvironment().getEnvTime());
                if (msgUpdatePart.remaining() < msgLength) {// != bodyLength + bodyStartPosition){
                   allocateBackingBuffer(msgLength);
-                  OseeLog.log(MessageSystemTestEnvironment.class, Level.WARNING, String.format(
-                     "Backing buffer was changed in AbstractMessageTool %s to %d", msg.getName(), msgLength));
+                  OseeLog.logf(MessageSystemTestEnvironment.class, Level.WARNING,
+                     "Backing buffer was changed in AbstractMessageTool %s to %d", msg.getName(), msgLength);
                }
                msgUpdatePart.put(msgData, 0, msgLength);
 
@@ -281,17 +281,16 @@ public class AbstractMessageToolService implements IRemoteMessageService {
                updateCount++;
 
             }
-         } catch (Exception t) {
+         } catch (Exception ex) {
             // stop listening for updates on this message
             unregister();
-            cancelledSubscriptions.put(msg.getMessageName(), t);
-            OseeLog.log(
+            cancelledSubscriptions.put(msg.getMessageName(), ex);
+            OseeLog.logf(
                MessageSystemTestEnvironment.class,
                Level.SEVERE,
-               String.format(
-                  "Exception during processing of update for %s: data length=%d, payload size=%d, buf start=%d, buf cap=%d",
-                  msg.getMessageName(), msgData.length, data.getPayloadSize(), msgStartPos, msgUpdatePart.capacity()),
-               t);
+               ex,
+               "Exception during processing of update for %s: data length=%d, payload size=%d, buf start=%d, buf cap=%d",
+               msg.getMessageName(), msgData.length, data.getPayloadSize(), msgStartPos, msgUpdatePart.capacity());
          }
       }
 
@@ -382,8 +381,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          /* check to see if an instance of a writer for the specified message exists */
          Message<?, ?, ?> writer = messageRequestor.getMessageWriter(msgWriterClass);
          if (writer == null) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
-               String.format("Attempting to set message data for %s even though no previous writer exist", msgName));
+            OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
+               "Attempting to set message data for %s even though no previous writer exist", msgName);
             throw new Exception("Could not find the class definition for " + msgName + " message writer");
          }
 
@@ -421,8 +420,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          /* check to see if an instance of a writer for the specified message exists */
          Message<?, ?, ?> writer = messageRequestor.getMessageWriter(msgWriterClass);
          if (writer == null) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
-               String.format("Attempting to zeroize data for %s even though no previous writer exist", msgName));
+            OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
+               "Attempting to zeroize data for %s even though no previous writer exist", msgName);
             throw new Exception("Could not find the class definition for " + msgName + " message writer");
          }
          List<Object> elementPath = cmd.getElement();
@@ -490,9 +489,9 @@ public class AbstractMessageToolService implements IRemoteMessageService {
             throw new Exception(
                "client callback for user " + key.getUser().getName() + " returned a null address when subscribing to " + name);
          }
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, String.format(
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO,
             "Client %s at %s is subscribing to message %s: current mem=%s", key.getUser().getName(),
-            address.toString(), name, type));
+            address.toString(), name, type);
 
          Map<DataType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
          if (memToModeMap == null) {
@@ -512,8 +511,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
              * make sure the listener is still registered for message update. This should always be the case
              */
             if (record.isRegistered()) {
-               OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
-                  String.format("Existing listener for %s (mem = %s) is not registered for updates", name, type));
+               OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
+                  "Existing listener for %s (mem = %s) is not registered for updates", name, type);
             }
             /* there is atleast one client already registered, add this one as well */
             record.addClient(client);
@@ -547,10 +546,10 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    //      final String name = cmd.getMsgName();
    //      final MemType oldMemType = MemType.values()[cmd.getOldMemTypeOrdinal()];
    //      final MemType newMemType = MemType.values()[cmd.getNewMemTypeOrdinal()];
-   //      OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO,
-   //            String.format("changing subscription for %s from %s to %s", name, oldMemType, newMemType));
-   //      OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO,
-   //            String.format("old address = %s. new address = %s", cmd.getOldAddress(), cmd.getNewAddress()));
+   //      OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO,
+   //            "changing subscription for %s from %s to %s", name, oldMemType, newMemType);
+   //      OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO,
+   //            "old address = %s. new address = %s", cmd.getOldAddress(), cmd.getNewAddress());
    //
    //      final EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
    //
@@ -589,31 +588,30 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    //               }
    //               return newMemType.ordinal();
    //            } else {
-   //               OseeLog.log(
+   //               OseeLog.logf(
    //                     MessageSystemTestEnvironment.class,
    //                     "org.eclipse.osee.ote.message",
    //                     Level.WARNING,
-   //                     String.format(
    //                           "Can't change registration for %s from %s to %s: Subscription not for message mode of %s",
-   //                           name, oldMemType, newMemType, cmd.getMode()));
+   //                           name, oldMemType, newMemType, cmd.getMode());
    //               return oldMemType.ordinal();
    //            }
    //         } else {
-   //            OseeLog.log(
+   //            OseeLog.logf(
    //                  MessageSystemTestEnvironment.class,
    //                  "org.eclipse.osee.ote.message",
    //                  Level.WARNING,
-   //                  String.format("Can't change registration for %s from %s to %s: Subscription not current mem type",
-   //                        name, oldMemType, newMemType));
+   //                  "Can't change registration for %s from %s to %s: Subscription not current mem type",
+   //                        name, oldMemType, newMemType);
    //            return oldMemType.ordinal();
    //         }
    //      } else {
-   //         OseeLog.log(
+   //         OseeLog.logf(
    //               MessageSystemTestEnvironment.class,
    //               "org.eclipse.osee.ote.message",
    //               Level.WARNING,
-   //               String.format("Can't change registration for %s from %s to %s: No subscriptions for this message", name,
-   //                     oldMemType, newMemType));
+   //               "Can't change registration for %s from %s to %s: No subscriptions for this message", name,
+   //                     oldMemType, newMemType);
    //         return oldMemType.ordinal();
    //      }
    //   }
@@ -641,18 +639,16 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
          record.removeClient(client);
 
-         OseeLog.log(
-            MessageSystemTestEnvironment.class,
-            Level.INFO,
-            String.format("client at %s is unsubscribing to the %s for %s(%s)", client.ipAddress.toString(),
-               cmd.getMode(), name, type));
+         OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO,
+            "client at %s is unsubscribing to the %s for %s(%s)", client.ipAddress.toString(), cmd.getMode(), name,
+            type);
          /*
           * if the listener has no more clients then remove the listener and unregister the listener for message
           * updates.
           */
          if (record.clients.isEmpty()) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, String.format(
-               "No longer listening for updates for message %s. Final update count=%d", name, record.updateCount));
+            OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO,
+               "No longer listening for updates for message %s. Final update count=%d", name, record.updateCount);
             record.unregister();
             record.msg.setMemTypeInactive(type);
             messageRequestor.remove(record.msg);
@@ -831,14 +827,14 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       assert buffer.limit() > 0;
       for (ClientInfo client : sendToList) {
          if (debugEnabled) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO,
-               String.format("sending update for message %s to %s", msgName, client.toString()));
+            OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO, "sending update for message %s to %s",
+               msgName, client.toString());
          }
          if (client == null) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, String.format("client was null %s", msgName));
+            OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO, "client was null %s", msgName);
          } else if (client.getIpAddress() == null) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO,
-               String.format("client ip address is null %s to %s", msgName, client.toString()));
+            OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO, "client ip address is null %s to %s", msgName,
+               client.toString());
          } else {
 
             channel.send(buffer, client.getIpAddress());

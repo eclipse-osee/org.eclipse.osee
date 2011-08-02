@@ -30,7 +30,7 @@ public final class DatabaseTransactions {
       boolean initialAutoCommit = true;
       OseeCoreException saveException = null;
       try {
-         OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", dbWork.getName()));
+         OseeLog.logf(Activator.class, Level.FINEST, "Start Transaction: [%s]", dbWork.getName());
 
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
@@ -38,7 +38,7 @@ public final class DatabaseTransactions {
          dbWork.handleTxWork(connection);
 
          connection.commit();
-         OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", dbWork.getName()));
+         OseeLog.logf(Activator.class, Level.FINEST, "End Transaction: [%s]", dbWork.getName());
       } catch (Exception ex) {
          saveException = OseeExceptions.wrap(ex);
          try {

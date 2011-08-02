@@ -151,8 +151,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
             //               try {
             //                  result = m1.compareTo(m2);
             //               } catch (Exception ex) {
-            //                  OseeLog.log(RevisionGraphActivator.class, Level.SEVERE, String.format(
-            //                        "One of the branch models did not have a starting tx. 1:[%s] 2:[%s]", o1, o2));
+            //                  OseeLog.logf(RevisionGraphActivator.class, Level.SEVERE, 
+            //                        "One of the branch models did not have a starting tx. 1:[%s] 2:[%s]", o1, o2);
             //               }
             //            }
             return result;
@@ -175,8 +175,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
             txNumberToTxModelMap.put(txNumber, model);
             txNumberToTxFigureMap.put(txNumber, FigureFactory.createTxFigure(model));
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("Orphan TxModel: [%s]", model.toString()));
+            OseeLog.logf(Activator.class, Level.SEVERE,
+               "Orphan TxModel: [%s]", model.toString());
          }
       }
 
@@ -281,8 +281,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          } else {
             TxModel txModel = branchModel.getFirstTx();
             if (txModel == null) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                  String.format("Branch did not have a starting tx [%s]", branchModel));
+               OseeLog.logf(Activator.class, Level.SEVERE,
+                  "Branch did not have a starting tx [%s]", branchModel);
             } else {
                if (txModel.getSourceTx() != null) {
                   TxModel sourceTx = txModel.getSourceTx();

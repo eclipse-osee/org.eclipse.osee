@@ -74,8 +74,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       for (Branch branch : cache.getAll()) {
          branch.clearDirty();
       }
-      OseeLog.log(Activator.class, Level.INFO,
-         String.format("Branch Cache loaded [%s]", Lib.getElapseString(startTime)));
+      OseeLog.logf(Activator.class, Level.INFO,
+         "Branch Cache loaded [%s]", Lib.getElapseString(startTime));
    }
 
    private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {

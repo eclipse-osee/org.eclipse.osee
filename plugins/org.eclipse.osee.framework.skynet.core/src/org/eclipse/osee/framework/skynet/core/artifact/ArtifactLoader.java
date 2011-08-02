@@ -112,8 +112,8 @@ public final class ArtifactLoader {
                previousBranchId = branchId;
             }
          } catch (OseeDataStoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("%s - %s", sqlKey, sql == null ? "SQL unknown" : sql), ex);
+            OseeLog.logf(Activator.class, Level.SEVERE,
+               ex, "%s - %s", sqlKey, sql == null ? "SQL unknown" : sql);
             throw ex;
          } finally {
             chStmt.close();
@@ -213,11 +213,8 @@ public final class ArtifactLoader {
             if (data != loadedItems) {
                loadedItems.addAll(data);
             }
-            OseeLog.log(
-               Activator.class,
-               Level.FINE,
-               String.format("Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time),
-                  loadedItems.size()), new Exception("Artifact Load Time"));
+            OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Load Time"),
+               "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), loadedItems.size());
             clearQuery(queryId);
          }
       }
@@ -295,8 +292,8 @@ public final class ArtifactLoader {
       } finally {
          chStmt.close();
       }
-      OseeLog.log(Activator.class, Level.FINE, String.format("Artifact Selection Time [%s], [%d] artifacts selected",
-         Lib.getElapseString(time), insertParameters.size()), new Exception("Artifact Selection Time"));
+      OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Selection Time"),
+         "Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time), insertParameters.size());
    }
 
    private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {

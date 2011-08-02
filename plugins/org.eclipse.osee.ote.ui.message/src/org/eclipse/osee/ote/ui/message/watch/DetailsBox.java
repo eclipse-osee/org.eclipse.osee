@@ -294,8 +294,8 @@ public class DetailsBox implements IRegistryEventListener {
                String bundleName = element.getContributor().getName();
                Bundle bundle = Platform.getBundle(bundleName);
                if (bundle == null) {
-                  OseeLog.log(DetailsBox.class, Level.SEVERE, String.format(
-                     "no bundle found for name %s while handling extension element %s", bundleName, element.getName()));
+                  OseeLog.logf(DetailsBox.class, Level.SEVERE, 
+                     "no bundle found for name %s while handling extension element %s", bundleName, element.getName());
                   return;
                }
                try {
@@ -311,20 +311,20 @@ public class DetailsBox implements IRegistryEventListener {
                      newTab.setControl(provider);
                      detailsProviderMap.put(element.getDeclaringExtension().getUniqueIdentifier(), newTab);
                   } catch (Exception ex) {
-                     OseeLog.log(DetailsBox.class, Level.SEVERE, String.format("failed to install details provider"));
+                     OseeLog.logf(DetailsBox.class, Level.SEVERE, "failed to install details provider");
                   }
                } catch (ClassCastException ex) {
-                  OseeLog.log(
+                  OseeLog.logf(
                      DetailsBox.class,
                      Level.SEVERE,
-                     String.format("the class named %s is not a subclass of %s", className,
-                        DetailsProvider.class.getName()));
+                     "the class named %s is not a subclass of %s", className,
+                        DetailsProvider.class.getName());
                } catch (ClassNotFoundException ex) {
-                  OseeLog.log(DetailsBox.class, Level.SEVERE,
-                     String.format("no class found named %s in bundle %s", className, bundleName));
+                  OseeLog.logf(DetailsBox.class, Level.SEVERE,
+                     "no class found named %s in bundle %s", className, bundleName);
                } catch (NoSuchMethodException ex) {
-                  OseeLog.log(DetailsBox.class, Level.SEVERE,
-                     String.format("can't find appropriate constructor for %s", className));
+                  OseeLog.logf(DetailsBox.class, Level.SEVERE,
+                     "can't find appropriate constructor for %s", className);
                }
             }
          }

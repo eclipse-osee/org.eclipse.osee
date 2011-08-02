@@ -107,8 +107,8 @@ public class ServiceLaunchConfig {
                getApplicationConfig(ExecutionTypesEnum.StandAloneApplication, element, serviceItem);
                toReturn.add(serviceItem);
             } catch (Throwable ex) {
-               OseeLog.log(ControlPlugin.class, Level.WARNING,
-                  String.format("Error while loading service launch extension for: [%s]", serviceName), ex);
+               OseeLog.logf(ControlPlugin.class, Level.WARNING,
+                  ex, "Error while loading service launch extension for: [%s]", serviceName);
             }
          }
       }

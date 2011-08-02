@@ -231,9 +231,9 @@ public final class ArtifactImageManager {
 
       // Database can override other providers, don't display error in that cases
       if (alreadyProvided && !providedByOseeDatabase) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
+         OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
             "Two ArtifactImageProviders [%s][%s] specify image for same artifact type [%s]",
-            provider.getClass().getSimpleName(), artifactTypeImageProviderMap.get(artifactType), artifactType));
+            provider.getClass().getSimpleName(), artifactTypeImageProviderMap.get(artifactType), artifactType);
       }
       // Regardless of error, register image if not already provided
       if (!alreadyProvided) {

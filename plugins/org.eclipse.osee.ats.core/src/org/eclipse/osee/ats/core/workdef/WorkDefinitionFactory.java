@@ -238,8 +238,8 @@ public class WorkDefinitionFactory {
       if (Strings.isValid(overrideId)) {
          // Only display this override once in log
          if (!errorDisplayed.contains(overrideId)) {
-            OseeLog.log(Activator.class, Level.INFO,
-               String.format("Override WorkDefinition [%s] with [%s]", id, overrideId));
+            OseeLog.logf(Activator.class, Level.INFO,
+               "Override WorkDefinition [%s] with [%s]", id, overrideId);
             errorDisplayed.add(overrideId);
          }
          return overrideId;

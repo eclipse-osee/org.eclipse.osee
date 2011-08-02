@@ -117,7 +117,7 @@ public class SearchEngine implements ISearchEngine {
                         attributeData.getGammaId(), locations);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));
+                  OseeLog.logf(Activator.class, Level.SEVERE, "Error processing: [%s]", attributeData);
                }
             }
          }

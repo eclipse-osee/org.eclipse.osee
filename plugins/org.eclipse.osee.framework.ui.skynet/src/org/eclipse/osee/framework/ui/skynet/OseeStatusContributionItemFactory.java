@@ -53,8 +53,8 @@ public final class OseeStatusContributionItemFactory {
                object.dispose();
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-               String.format("Error creating status line contribution item [%s]", contribClazz), ex);
+            OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+               ex, "Error creating status line contribution item [%s]", contribClazz);
          }
       }
    }

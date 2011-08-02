@@ -163,7 +163,7 @@ public class AtsWorkDefinitionProvider {
 
    public String loadWorkFlowDefinitionStringFromFile(WorkDefinitionSheet sheet) throws OseeCoreException {
       if (!sheet.getFile().exists()) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("WorkDefinition [%s]", sheet));
+         OseeLog.logf(AtsPlugin.class, Level.SEVERE, "WorkDefinition [%s]", sheet);
          return null;
       }
       try {

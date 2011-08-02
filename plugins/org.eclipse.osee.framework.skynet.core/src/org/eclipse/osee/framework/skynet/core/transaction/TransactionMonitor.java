@@ -44,9 +44,9 @@ public class TransactionMonitor {
          // use the same transaction.
          // This case may happens legitimately if an exception occurs outside this API before transaction.execute() is called,
          // so it is only notification that this is occurring.
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("New transaction [%s] created over Last transaction [%s]", comment, lastComment),
-            currentTx.getError());
+         OseeLog.logf(Activator.class, Level.SEVERE, currentTx.getError(),
+            "New transaction [%s] created over Last transaction [%s]", comment, lastComment);
+
       }
       lastComment = comment;
       txMap.put(key, new TxOperation(transaction));

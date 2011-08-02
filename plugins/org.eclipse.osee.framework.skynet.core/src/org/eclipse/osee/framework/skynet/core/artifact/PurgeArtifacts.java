@@ -152,13 +152,13 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
          int artifactVersions =
             ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
 
-         OseeLog.log(
+         OseeLog.logf(
             Activator.class,
             Level.FINE,
-            String.format(
+            
                "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d].  txs vs. total versions [%d vs %d]",
                txsDeletes, relationVersions, attributeVersions, artifactVersions, txDetails,
-               (relationVersions + attributeVersions + artifactVersions)));
+               (relationVersions + attributeVersions + artifactVersions));
 
          ConnectionHandler.runPreparedUpdate(connection, "DELETE FROM osee_join_transaction where query_id = ?",
             transactionJoinId);

@@ -117,8 +117,8 @@ public class AttributeLoader {
          artifact = ArtifactCache.getActive(current.artifactId, current.branchId);
       }
       if (artifact == null) {
-         OseeLog.log(ArtifactLoader.class, Level.WARNING,
-            String.format("Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId));
+         OseeLog.logf(ArtifactLoader.class, Level.WARNING,
+            "Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId);
       }
       return artifact;
    }
@@ -150,13 +150,13 @@ public class AttributeLoader {
       // Do not warn about skipping on historical loading, because the most recent
       // transaction is used first due to sorting on the query
       if (!historical) {
-         OseeLog.log(
+         OseeLog.logf(
             ArtifactLoader.class,
             Level.WARNING,
-            String.format(
+            
                "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
                current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId,
-               previous.modType, current.modType));
+               previous.modType, current.modType);
       }
    }
 

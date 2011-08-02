@@ -310,8 +310,8 @@ public class ExcelAtsTaskArtifactExtractor {
                }
             }
             if (user == null) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                  String.format("Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum));
+               OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+                  "Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum);
                user = UserManager.getUser();
             }
             assignees.add(user);
@@ -328,8 +328,8 @@ public class ExcelAtsTaskArtifactExtractor {
             u = UserManager.getUserByName(userName);
          }
          if (u == null) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE,
-               String.format("Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
+            OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+               "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum);
          }
          taskArt.internalSetCreatedBy(u);
       }

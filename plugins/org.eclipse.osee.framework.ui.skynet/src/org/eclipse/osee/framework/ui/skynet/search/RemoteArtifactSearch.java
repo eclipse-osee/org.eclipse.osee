@@ -112,8 +112,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                      resultCollector.acceptArtifactMatch(artifactMatch);
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-                     String.format("Error processing attribute line matches for [%s]", artifactMatch.getArtifact()), ex);
+                  OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+                     ex, "Error processing attribute line matches for [%s]", artifactMatch.getArtifact());
                   resultCollector.acceptArtifactMatch(artifactMatch);
                }
             } else {
@@ -125,9 +125,9 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       } finally {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(
+         OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, 
             "Quick Search: [%s] artifacts with [%s] location matches loaded in [%s secs] collected in [%s]",
-            artifactCount, lineMatches, (endOfloadTime - startTime) / 1000.0, Lib.getElapseString(startCollectTime)));
+            artifactCount, lineMatches, (endOfloadTime - startTime) / 1000.0, Lib.getElapseString(startCollectTime));
       }
       setIsDoneRunning(true);
       return new MultiStatus(NewSearchUI.PLUGIN_ID, IStatus.OK, "OK", null);

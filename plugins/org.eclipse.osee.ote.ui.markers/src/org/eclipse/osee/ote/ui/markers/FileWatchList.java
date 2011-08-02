@@ -66,9 +66,9 @@ public class FileWatchList {
          }
       }
       if (oldest != null) {
-         OseeLog.log(FileWatchList.class, Level.INFO, String.format(
+         OseeLog.logf(FileWatchList.class, Level.INFO, 
             "Removing markers from [%s] because maximium marker watch list size has been reached.",
-            oldest.file.getName()));
+            oldest.file.getName());
          fileWatchItems.remove(oldest);
          if (oldest.markers != null) {
             for (IMarker marker : oldest.markers) {

@@ -89,8 +89,8 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
       } finally {
          if (areLogsAllowed()) {
             long elapsed = System.currentTimeMillis() - start;
-            OseeLog.log(this.getClass(), Level.INFO, String.format("[%s] [%s - %s] serviced in [%s] ms",
-               request.getMethod(), request.getContextPath(), request.getQueryString(), elapsed));
+            OseeLog.logf(this.getClass(), Level.INFO, "[%s] [%s - %s] serviced in [%s] ms",
+               request.getMethod(), request.getContextPath(), request.getQueryString(), elapsed);
          }
          this.processingState = ProcessingStateEnum.IDLE;
          this.request = null;

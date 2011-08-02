@@ -366,8 +366,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void importRequirements(IOseeBranch branch, String rootArtifactName, IArtifactType requirementType, String filename) throws Exception {
 
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            String.format("Importing \"%s\" requirements on branch \"%s\"", rootArtifactName, branch));
+         OseeLog.logf(OseeAtsConfigDemoActivator.class, Level.INFO,
+            "Importing \"%s\" requirements on branch \"%s\"", rootArtifactName, branch);
       }
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, rootArtifactName, branch);
 

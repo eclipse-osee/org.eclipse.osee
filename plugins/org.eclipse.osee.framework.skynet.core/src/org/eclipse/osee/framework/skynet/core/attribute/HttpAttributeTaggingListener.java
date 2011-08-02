@@ -142,8 +142,8 @@ public class HttpAttributeTaggingListener implements IArtifactEventListener, IBr
                HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
                   parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
-            OseeLog.log(Activator.class, Level.FINEST,
-               String.format("Transmitted to Tagger in [%d ms]", System.currentTimeMillis() - start));
+            OseeLog.logf(Activator.class, Level.FINEST,
+               "Transmitted to Tagger in [%d ms]", System.currentTimeMillis() - start);
          } catch (Exception ex) {
             if (response.length() > 0) {
                response.append("\n");

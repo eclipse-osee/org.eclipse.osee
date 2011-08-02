@@ -90,8 +90,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
    public boolean executeLookupRegistration() {
       boolean isRegistered = getApplicationServerInfo().updateRegistration();
       if (isRegistered) {
-         OseeLog.log(ServerActivator.class, Level.INFO,
-            String.format("Application Server: [%s] registered.", getApplicationServerInfo().getServerId()));
+         OseeLog.logf(ServerActivator.class, Level.INFO,
+            "Application Server: [%s] registered.", getApplicationServerInfo().getServerId());
       }
       return isRegistered;
    }

@@ -85,8 +85,8 @@ public class AddTestBatchProjectNature implements IObjectActionDelegate {
          ((ApplicationWindow) window).setStatus(NATURE_ADDED);
 
       } catch (Exception ex) {
-         OseeLog.log(TestManagerPlugin.class, Level.SEVERE,
-            String.format("Error adding test batch nature on [%s]", currentJavaProject.getProject().getName()), ex);
+         OseeLog.logf(TestManagerPlugin.class, Level.SEVERE, ex, "Error adding test batch nature on [%s]",
+            currentJavaProject.getProject().getName());
          Shell shell = new Shell();
          MessageDialog.openInformation(shell, TestManagerPlugin.PLUGIN_ID,
             "Error adding test batch nature:\n" + SelectionUtil.getStatusMessages(ex));

@@ -286,7 +286,7 @@ public class ClassServer extends Thread {
                return;
             }
             if (bytes == null) {
-               OseeLog.log(PluginCoreActivator.class, Level.FINE, String.format("%s not found", path));
+               OseeLog.logf(PluginCoreActivator.class, Level.FINE, "%s not found", path);
                out.writeBytes("HTTP/1.0 404 Not Found\r\n\r\n");
                out.flush();
                return;

@@ -39,17 +39,17 @@ public class MessagingGatewayBindTracker extends ServiceTracker {
       Object obj = context.getService(reference);
       MessagingGateway messagingGateway = (MessagingGateway) obj;
       if (!messagingGateway.bind(send)) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Unable to bind %s to the MessagingGateway.", send.toString()));
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            "Unable to bind %s to the MessagingGateway.", send.toString());
       }
       if (!messagingGateway.bind(receive)) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Unable to bind %s to the MessagingGateway.", receive.toString()));
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            "Unable to bind %s to the MessagingGateway.", receive.toString());
       }
       if (!messagingGateway.bindSendProtocol(OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL, send)) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+         OseeLog.logf(Activator.class, Level.SEVERE, 
             "Unable to bind %s to %s through the MessagingGateway.",
-            OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString()));
+            OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString());
       }
       return super.addingService(reference);
    }
@@ -59,17 +59,17 @@ public class MessagingGatewayBindTracker extends ServiceTracker {
       Object obj = context.getService(reference);
       MessagingGateway messagingGateway = (MessagingGateway) obj;
       if (!messagingGateway.unbindSendProtocol(OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL, send)) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+         OseeLog.logf(Activator.class, Level.SEVERE, 
             "Unable to bind %s to %s through the MessagingGateway.",
-            OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString()));
+            OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString());
       }
       if (!messagingGateway.unbind(send)) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Unable to unbind %s to the MessagingGateway.", send.toString()));
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            "Unable to unbind %s to the MessagingGateway.", send.toString());
       }
       if (!messagingGateway.unbind(receive)) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Unable to bind %s to the MessagingGateway.", receive.toString()));
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            "Unable to bind %s to the MessagingGateway.", receive.toString());
       }
       super.removedService(reference, service);
    }

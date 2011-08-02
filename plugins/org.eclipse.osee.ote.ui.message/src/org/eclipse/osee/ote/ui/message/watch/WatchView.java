@@ -628,7 +628,7 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
    public void addWatchMessage(final AddWatchParameter parameter) {
       for (String message : parameter.getMessages()) {
          Collection<ElementPath> elements = parameter.getMessageElements(message);
-         OseeLog.log(Activator.class, Level.FINEST, String.format("Watch request for message %s", message));
+         OseeLog.logf(Activator.class, Level.FINEST, "Watch request for message %s", message);
          try {
             if (elements == null) {
                elements = new ArrayList<ElementPath>();
@@ -684,12 +684,12 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
       }
       try {
          if (Benchmark.isBenchmarkingEnabled()) {
-            OseeLog.log(
+            OseeLog.logf(
                Activator.class,
                Level.INFO,
-               String.format("%s: # samples=%d, max=%d, min=%d, avg=%d", benchMark.getName(),
+               "%s: # samples=%d, max=%d, min=%d, avg=%d", benchMark.getName(),
                   benchMark.getTotalSamples(), benchMark.getLongestSample(), benchMark.getShortestSample(),
-                  benchMark.getAverage()));
+                  benchMark.getAverage());
          }
       } catch (Throwable t) {
          OseeLog.log(Activator.class, Level.WARNING, "Exception during disconnect", t);

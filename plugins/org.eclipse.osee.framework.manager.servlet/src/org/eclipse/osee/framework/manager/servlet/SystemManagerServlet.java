@@ -88,8 +88,8 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(appendable.toString() + AHTML.newline() + "As of: " + new Date());
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("Error processing request for protocols [%s]", request.toString()), ex);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            ex, "Error processing request for protocols [%s]", request.toString());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));

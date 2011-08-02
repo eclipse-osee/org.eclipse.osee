@@ -58,7 +58,7 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
    }
 
    private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
-      OseeLog.log(Activator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request), th);
+      OseeLog.logf(Activator.class, Level.SEVERE, th, "Osee Cache request error: [%s]", request);
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       resp.setContentType("text/plain");
       resp.getWriter().write(Lib.exceptionToString(th));

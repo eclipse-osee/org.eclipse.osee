@@ -90,8 +90,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          return;
       }
       File backupFolder = createTempFolder();
-      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-         String.format("Backup Folder location: [%s]", backupFolder.getAbsolutePath()));
+      OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+         "Backup Folder location: [%s]", backupFolder.getAbsolutePath());
 
       ArrayList<AttrData> attrDatas = loadAttrData();
       int totalAttrs = attrDatas.size();
@@ -105,7 +105,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
          Element rootElement = null;
          if (DEBUG) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Before Fix: %s", resource.data));
+            OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, "Before Fix: %s", resource.data);
          }
 
          final Collection<Element> elements = new LinkedList<Element>();
@@ -138,8 +138,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
             }
          } catch (Exception ex) {
             badData.add(attrData.gammaId);
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-               String.format("Skiping File %s because of exception %s", attrData.getHrid(), ex));
+            OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+               "Skiping File %s because of exception %s", attrData.getHrid(), ex);
          }
 
          if (fixedAttribute) {
@@ -155,11 +155,11 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                uploadResource(attrData.getGammaId(), resource);
 
                if (DEBUG) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(" After Fix : %s", resource.data));
+                  OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, " After Fix : %s", resource.data);
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-                  String.format("Skiping File %s because of exception %s", attrData.getHrid(), ex));
+               OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+                  "Skiping File %s because of exception %s", attrData.getHrid(), ex);
             }
          }
          monitor.worked(1);

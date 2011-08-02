@@ -37,8 +37,8 @@ public class RunCSVConversion implements IApplication {
       File file = new File(filepath);
       File csvFile = new File(filepath + ".csv");
       if (!file.exists()) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-            String.format("[%s] does not exist.  Exiting the csv processor.", file.toString()));
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            "[%s] does not exist.  Exiting the csv processor.", file.toString());
          return null;
       }
 
@@ -53,7 +53,7 @@ public class RunCSVConversion implements IApplication {
       reader.parse(new InputSource(new FileInputStream(file)));
 
       Lib.writeBytesToFile(csv.getBuilder().toString().getBytes(), csvFile);
-      OseeLog.log(Activator.class, Level.INFO, String.format("Wrote [%s].", csvFile.toString()));
+      OseeLog.logf(Activator.class, Level.INFO, "Wrote [%s].", csvFile.toString());
       return IApplication.EXIT_OK;
    }
 

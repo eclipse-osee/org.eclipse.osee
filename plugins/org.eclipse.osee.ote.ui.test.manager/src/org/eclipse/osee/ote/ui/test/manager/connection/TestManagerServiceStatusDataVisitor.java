@@ -124,7 +124,7 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
 
             final ScriptTask task = getScriptTask(sequentialCommandBegan);
             if (task != null && task.getScriptModel() != null) {
-               OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("Script Task: [%s]", task));
+               OseeLog.logf(TestManagerPlugin.class, Level.INFO, "Script Task: [%s]", task);
                logOnConsole(Level.INFO, String.format("Test Starting: [%s]", task.getName()));
                task.setStatus(ScriptStatusEnum.RUNNING);
                scriptManager.updateScriptTableViewer(task);
@@ -144,7 +144,7 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
             logServiceStatusData(sequentialCommandEnded);
             final ScriptTask task = getScriptTask(sequentialCommandEnded);
             if (task != null) {
-               OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("Script Task: [%s]", task));
+               OseeLog.logf(TestManagerPlugin.class, Level.INFO, "Script Task: [%s]", task);
                CommandEndedStatusEnum cmdStat = sequentialCommandEnded.getStatus();
                switch (cmdStat) {
                   case ABORTED:
@@ -224,8 +224,8 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
    }
 
    private void logServiceStatusData(IServiceStatusDataCommand statusData) {
-      OseeLog.log(TestManagerPlugin.class, Level.FINE,
-         String.format("%s: %s ", statusData.getClass().getName(), statusData.getDescription()));
+      OseeLog.logf(TestManagerPlugin.class, Level.FINE,
+         "%s: %s ", statusData.getClass().getName(), statusData.getDescription());
    }
 
    private ScriptTask getScriptTask(IServiceStatusDataCommand statusData) {
@@ -279,7 +279,7 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
          public void run() {
             ScriptTask task = scriptManager.getScriptTask(testComplete.getClassName());
             if (task != null) {
-               OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("Script Task: [%s]", task));
+               OseeLog.logf(TestManagerPlugin.class, Level.INFO, "Script Task: [%s]", task);
                boolean isValidRun = true;
                CommandEndedStatusEnum cmdStat = testComplete.getStatus();
                switch (cmdStat) {
@@ -356,8 +356,8 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
 
    private void logExecutorSize() {
       if (executor instanceof ThreadPoolExecutor) {
-         OseeLog.log(TestManagerServiceStatusDataVisitor.class, Level.FINE,
-            String.format("Current StatusBoard Executor Size [%d]", ((ThreadPoolExecutor) executor).getQueue().size()));
+         OseeLog.logf(TestManagerServiceStatusDataVisitor.class, Level.FINE,
+            "Current StatusBoard Executor Size [%d]", ((ThreadPoolExecutor) executor).getQueue().size());
       }
    }
 }

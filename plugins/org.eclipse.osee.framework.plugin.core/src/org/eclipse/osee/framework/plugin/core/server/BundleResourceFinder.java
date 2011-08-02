@@ -29,9 +29,9 @@ public class BundleResourceFinder extends ResourceFinder {
          if (bundle != null) {
             bundles.add(Platform.getBundle(bundlenames[i]));
          } else {
-            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, String.format(
+            OseeLog.logf(PluginCoreActivator.class, Level.SEVERE,
                "Unable to load bundle [ %s ].  This bundle was not added to the list in BundleResourceFinder.",
-               bundlenames[i]));
+               bundlenames[i]);
          }
       }
    }

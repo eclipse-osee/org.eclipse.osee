@@ -55,8 +55,8 @@ public class PropertyStoreControlContributions {
                   }
                   toReturn.add((IPropertyStoreBasedControl) object);
                } catch (Exception ex) {
-                  OseeLog.log(OseePluginUiActivator.class, Level.SEVERE,
-                     String.format("Unable to Load: [%s - %s]", bundleName, className), ex);
+                  OseeLog.logf(OseePluginUiActivator.class, Level.SEVERE,
+                     ex, "Unable to Load: [%s - %s]", bundleName, className);
                }
             }
          }

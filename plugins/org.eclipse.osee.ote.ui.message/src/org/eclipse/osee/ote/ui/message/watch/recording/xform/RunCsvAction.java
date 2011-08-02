@@ -56,8 +56,8 @@ public class RunCsvAction extends Action {
          File file = new File(getter.getPath());
          File csvFile = new File(getter.getPath() + ".csv");
          if (!file.exists()) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("[%s] does not exist.  Exiting the csv processor.", file.toString()));
+            OseeLog.logf(Activator.class, Level.SEVERE,
+               "[%s] does not exist.  Exiting the csv processor.", file.toString());
          }
 
          XMLReader reader;
@@ -72,7 +72,7 @@ public class RunCsvAction extends Action {
             reader.parse(new InputSource(new FileInputStream(file)));
 
             Lib.writeBytesToFile(csv.getBuilder().toString().getBytes(), csvFile);
-            OseeLog.log(Activator.class, Level.INFO, String.format("Wrote [%s].", csvFile.toString()));
+            OseeLog.logf(Activator.class, Level.INFO, "Wrote [%s].", csvFile.toString());
          } catch (SAXException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          } catch (FileNotFoundException ex) {

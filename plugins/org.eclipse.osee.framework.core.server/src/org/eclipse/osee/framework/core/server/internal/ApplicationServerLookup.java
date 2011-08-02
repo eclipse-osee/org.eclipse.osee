@@ -70,8 +70,8 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
                try {
                   ApplicationServerDataStore.removeByServerId(unHealthyServers);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(ServerActivator.class, Level.SEVERE,
-                     String.format("Error removing unhealthy server entries: [%s]", unHealthyServers), ex);
+                  OseeLog.logf(ServerActivator.class, Level.SEVERE,
+                     ex, "Error removing unhealthy server entries: [%s]", unHealthyServers);
                }
             }
          });

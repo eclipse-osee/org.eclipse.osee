@@ -61,8 +61,8 @@ public class HttpServer {
             try {
                portToUse = Integer.valueOf(value);
             } catch (Exception ex) {
-               OseeLog.log(CoreClientActivator.class, Level.SEVERE,
-                  String.format("Unable to parse port property - [%s]", value), ex);
+               OseeLog.logf(CoreClientActivator.class, Level.SEVERE,
+                  ex, "Unable to parse port property - [%s]", value);
             }
          }
 
@@ -130,8 +130,8 @@ public class HttpServer {
       public void run() {
          try {
             listenSocket = new ServerSocket(getPort());
-            OseeLog.log(CoreClientActivator.class, Level.INFO,
-               String.format("Starting HttpServer on port: [%s]", getPort()));
+            OseeLog.logf(CoreClientActivator.class, Level.INFO,
+               "Starting HttpServer on port: [%s]", getPort());
 
             // Process HTTP service requests in an infinite loop.
             while (listenFlag) {

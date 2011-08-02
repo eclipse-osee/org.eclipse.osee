@@ -45,8 +45,8 @@ public final class WordUiUtil {
                if (RenderingUtil.arePopupsAllowed()) {
                   XResultDataUI.report(rd, "Unhandled Artifacts");
                } else {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-                     String.format("Test - Skip Unhandled Artifacts Report - %s - [%s]", warningString, artifacts));
+                  OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+                     "Test - Skip Unhandled Artifacts Report - %s - [%s]", warningString, artifacts);
                }
             }
          });

@@ -223,7 +223,7 @@ public class FrameworkEventUtil {
             EventModType modType = EventModType.getType(remGuidArt.getModTypeGuid());
             // This can happen if new events are added that old releases don't handle
             if (modType == null) {
-               OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled remote artifact [%s]", remGuidArt));
+               OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote artifact [%s]", remGuidArt);
             } else {
                if (modType == EventModType.Modified) {
                   event.getArtifacts().add(getEventModifiedBasicGuidArtifact(modType, remGuidArt));
@@ -238,7 +238,7 @@ public class FrameworkEventUtil {
             EventBasicGuidRelation relEvent = getEventBasicGuidRelation(guidRel);
             // This can happen if new events are added that old releases don't handle
             if (relEvent == null) {
-               OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled remote relation [%s]", guidRel));
+               OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote relation [%s]", guidRel);
             } else {
                event.getRelations().add(relEvent);
             }

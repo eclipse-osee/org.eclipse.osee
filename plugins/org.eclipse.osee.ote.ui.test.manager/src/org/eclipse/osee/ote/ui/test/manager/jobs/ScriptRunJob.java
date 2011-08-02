@@ -101,9 +101,9 @@ public class ScriptRunJob extends Job {
       getScriptPage().onScriptRunning(true);
 
       long elapsed = System.currentTimeMillis() - time;
-      OseeLog.log(TestManagerPlugin.class, Level.FINE,
-         String.format("%d milliseconds to initialize the running of scripts.", elapsed));
-      OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("%d scripts have been batched.", runTasks.size()));
+      OseeLog.logf(TestManagerPlugin.class, Level.FINE,
+         "%d milliseconds to initialize the running of scripts.", elapsed);
+      OseeLog.logf(TestManagerPlugin.class, Level.INFO, "%d scripts have been batched.", runTasks.size());
 
       Displays.pendInDisplayThread(new Runnable() {
          @Override

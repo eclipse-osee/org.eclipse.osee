@@ -153,8 +153,8 @@ public final class AtsWorkDefinitionSheetProviders {
          PluginUtil util = new PluginUtil(pluginId);
          return util.getPluginFile(filename);
       } catch (IOException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,
-            String.format("Unable to access work definition sheet [%s]", filename), ex);
+         OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+            ex, "Unable to access work definition sheet [%s]", filename);
       }
       return null;
    }

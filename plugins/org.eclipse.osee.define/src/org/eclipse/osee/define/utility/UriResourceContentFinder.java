@@ -177,8 +177,8 @@ public class UriResourceContentFinder {
             try {
                inputStream.close();
             } catch (IOException ex) {
-               OseeLog.log(DefinePlugin.class, Level.SEVERE,
-                  String.format("Error closing stream for resource: [%s]", fileStore.getName()), ex);
+               OseeLog.logf(DefinePlugin.class, Level.SEVERE,
+                  ex, "Error closing stream for resource: [%s]", fileStore.getName());
             }
          }
       }

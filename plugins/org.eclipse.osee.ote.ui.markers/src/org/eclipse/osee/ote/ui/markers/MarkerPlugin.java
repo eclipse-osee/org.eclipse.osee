@@ -55,18 +55,18 @@ public class MarkerPlugin implements BundleActivator {
                            if (file != null) {
                               switch (delta.getKind()) {
                                  case IResourceDelta.ADDED:
-                                    // OseeLog.log(Activator.class, Level.INFO, String.format("ADDED %s updating
-                                    // markers - delta kind: %d", file.getName(), delta.getKind()));
+                                    // OseeLog.logf(Activator.class, Level.INFO, "ADDED %s updating
+                                    // markers - delta kind: %d", file.getName(), delta.getKind());
                                     // addMarkers(file);
                                     break;
                                  case IResourceDelta.CHANGED:
-                                    // OseeLog.log(Activator.class, Level.INFO, String.format("CHANGED %s updating
-                                    // markers - delta kind: %d", file.getName(), delta.getKind()));
+                                    // OseeLog.logf(Activator.class, Level.INFO, "CHANGED %s updating
+                                    // markers - delta kind: %d", file.getName(), delta.getKind());
                                     // updateMarkers(file);
                                     break;
                                  case IResourceDelta.REMOVED:
-                                    // OseeLog.log(Activator.class, Level.INFO, String.format("removing %s markers -
-                                    // delta kind: %d", file.getName(), delta.getKind()));
+                                    // OseeLog.logf(Activator.class, Level.INFO, "removing %s markers -
+                                    // delta kind: %d", file.getName(), delta.getKind());
                                     removeMarkers(file);
                                     break;
                               }

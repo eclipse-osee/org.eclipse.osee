@@ -47,7 +47,7 @@ public class VcpSourceFile {
             unitNumber = m.group(2);
          }
       } else {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpSourceFile line [%s]", line));
+         OseeLog.logf(Activator.class, Level.SEVERE, "Unhandled VcpSourceFile line [%s]", line);
       }
    }
 

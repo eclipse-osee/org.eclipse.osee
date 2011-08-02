@@ -42,7 +42,7 @@ public class VcpResultsFile {
             filename = m.group(2);
          }
       } else {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsFile line [%s]", line));
+         OseeLog.logf(Activator.class, Level.SEVERE, "Unhandled VcpResultsFile line [%s]", line);
       }
    }
 

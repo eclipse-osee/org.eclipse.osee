@@ -62,7 +62,7 @@ public class EmailGroup {
          if (EmailUtil.isEmailValid(str)) {
             this.emails.add(str);
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Invalid Email [%s]", str));
+            OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Email [%s]", str);
          }
       }
    }

@@ -41,8 +41,8 @@ public class CsvTransform extends Action {
          File file = new File(getter.getPath());
          File csvFile = new File(getter.getPath() + "_transformed.csv");
          if (!file.exists()) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("[%s] does not exist.  Exiting the csv transformer.", file.toString()));
+            OseeLog.logf(Activator.class, Level.SEVERE,
+               "[%s] does not exist.  Exiting the csv transformer.", file.toString());
          }
 
          try {
@@ -68,9 +68,9 @@ public class CsvTransform extends Action {
             BufferedWriter bw = new BufferedWriter(new FileWriter(csvFile));
             bw.write("time,");
             if (columnsArray.length >= 254) {
-               OseeLog.log(CsvTransform.class, Level.SEVERE, String.format(
+               OseeLog.logf(CsvTransform.class, Level.SEVERE, 
                   "%d columns have been lost in the CsvTransform because there is a limitation of 256 rows in excel.",
-                  (columnsArray.length - 254)));
+                  (columnsArray.length - 254));
             }
             for (int i = 0; i < columnsArray.length && i < 254; i++) {
                bw.write(columnsArray[i]);
@@ -113,7 +113,7 @@ public class CsvTransform extends Action {
             bw.flush();
             bw.close();
 
-            OseeLog.log(Activator.class, Level.INFO, String.format("Wrote [%s].", csvFile.toString()));
+            OseeLog.logf(Activator.class, Level.INFO, "Wrote [%s].", csvFile.toString());
          } catch (Throwable ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

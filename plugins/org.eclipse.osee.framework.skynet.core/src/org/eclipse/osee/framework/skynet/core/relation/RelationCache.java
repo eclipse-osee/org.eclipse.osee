@@ -92,9 +92,9 @@ public class RelationCache {
          relationsByType.put(new ArtifactKey(artifact), relationType, selectedRelations);
       }
       if (selectedRelations.contains(newRelation)) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+         OseeLog.logf(Activator.class, Level.SEVERE, 
             "Duplicate relationByType objects for same relation for Relation [%s] Artifact (%s)[%s]", newRelation,
-            artifact.getArtId(), artifact.getName()));
+            artifact.getArtId(), artifact.getName());
       }
       selectedRelations.add(newRelation);
    }
@@ -177,11 +177,11 @@ public class RelationCache {
       }
       int size = relations.size();
       if (size > 1) {
-         OseeLog.log(
+         OseeLog.logf(
             Activator.class,
             Level.SEVERE,
-            String.format("Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]",
-               artifact.getArtId(), relations.size(), relationType, bArtifactId));
+            "Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]",
+               artifact.getArtId(), relations.size(), relationType, bArtifactId);
       }
       return size != 0 ? relations.iterator().next() : null;
    }
