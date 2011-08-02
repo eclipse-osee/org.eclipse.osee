@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
 import org.eclipse.osee.framework.database.operation.ParseWindowsDirectoryListingOperation;
+import org.eclipse.osee.framework.database.operation.PruneWorkspaceOperation;
 import org.eclipse.osee.framework.database.operation.FindInvalidUTF8CharsOperation;
 import org.eclipse.osee.framework.database.operation.ConsolidateRelationsTxOperation;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
@@ -181,6 +182,39 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(operation, false);
    }
    
+   public Job _prune_workspace(CommandInterpreter ci) {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+
+      String preserveFilePattern = "";
+      String workspacePathStr = "";
+      String purgeFilePattern = "";
+
+      //to be purged
+      final ArrayList<String> args = new ArrayList<String>();
+
+      boolean force = false;
+      for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
+         args.add(arg);
+      }
+
+      if (args.size() <= 1) {
+         ci.print(getHelp());
+      } else if (args.size() == 2) {
+         workspacePathStr = args.get(0);
+         purgeFilePattern = args.get(1);
+      } else {
+         preserveFilePattern = args.get(0);
+         workspacePathStr = args.get(1);
+         purgeFilePattern = args.get(2);
+      }
+
+      IOperation operation =
+         new PruneWorkspaceOperation(Activator.getOseeDatabaseService(), Activator.getOseeCachingService(), logger,
+            preserveFilePattern, workspacePathStr, purgeFilePattern);
+
+      return Operations.executeAsJob(operation, false);
+   }
+   
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
@@ -199,6 +233,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
       sb.append("        purge_relation_type -force excute the operation, relationType1 ...\n");
       sb.append("        parse_dir - converts the given file into a formatted CSV file\n");
+      sb.append("        prune_workspace [preserve_file_pattern] workspace_path purge_file_pattern - delete files that are found in workspace_path and whose filenames match purge_file_pattern.  Any filename that matches the optional preserve_file_pattern are not deleted\n");
       sb.append("        find_invalid_utf8 - finds invalid UTF8 chars in table osee_attribute\n");
       sb.append("        consolidate_relations - consolidate rows of relations\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n",
