@@ -1129,14 +1129,6 @@
     </Operation>
  </extension>
  <extension
-       id="SetRequirementCategory"
-       name="SetRequirementCategory"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.SetRequirementCategory">
-    </Operation>
- </extension>
- <extension
        id="ExportArtifacts"
        name="ExportArtifacts"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
