@@ -145,7 +145,7 @@ public class WorldXViewerEventManager {
                   handler.getWorldXViewer().remove(deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
                }
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex, "Error processing event handler for deleted - %s",
+               OseeLog.logf(AtsPlugin.class, Level.SEVERE, ex, "Error processing event handler for deleted - %s",
                   handler);
             }
          }
@@ -167,7 +167,7 @@ public class WorldXViewerEventManager {
                   handler.relationsModifed(relModifiedArts);
                }
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex, "Error processing event handler for - %s", handler);
+               OseeLog.logf(AtsPlugin.class, Level.SEVERE, ex, "Error processing event handler for - %s", handler);
             }
          }
       }

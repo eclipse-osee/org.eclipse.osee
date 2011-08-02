@@ -105,7 +105,7 @@ public class HttpProcessor {
             config.setProxy(data.getHost(), data.getPort());
          }
       }
-      OseeLog.format(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
+      OseeLog.logf(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
    }
 
    public static String acquireString(URL url) throws Exception {

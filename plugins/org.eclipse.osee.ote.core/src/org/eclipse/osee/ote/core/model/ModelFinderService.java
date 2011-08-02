@@ -40,7 +40,7 @@ public class ModelFinderService {
 
    public void addModel(IModel newModel) {
       try {
-         OseeLog.log(ModelFinderService.class, Level.INFO, null, "### Adding model %s\n", newModel.getKey());
+         OseeLog.logf(ModelFinderService.class, Level.INFO, "### Adding model %s\n", newModel.getKey());
          models.put(newModel.getKey(), newModel);
       } catch (RemoteException ex) {
          ex.printStackTrace();
@@ -49,7 +49,7 @@ public class ModelFinderService {
 
    public void removeModel(IModel newModel) {
       try {
-         OseeLog.log(ModelFinderService.class, Level.INFO, null, "### Removing model %s\n", newModel.getKey());
+         OseeLog.logf(ModelFinderService.class, Level.INFO, "### Removing model %s\n", newModel.getKey());
          models.remove(newModel.getKey());
       } catch (RemoteException ex) {
          ex.printStackTrace();

@@ -30,7 +30,7 @@ public class DirtyArtifactCacheTest {
          "After all tests are run, there should be no dirty artifacts in Artifact Cache; Found [%s]",
          Artifacts.getNames(dirtyArtifacts)), dirtyArtifacts.isEmpty());
       for (Artifact artifact : dirtyArtifacts) {
-         OseeLog.format(getClass(), Level.WARNING, "Name: %s Type: %s ", artifact.getName(),
+         OseeLog.logf(getClass(), Level.WARNING, "Name: %s Type: %s ", artifact.getName(),
             artifact.getArtifactTypeName());
       }
    }

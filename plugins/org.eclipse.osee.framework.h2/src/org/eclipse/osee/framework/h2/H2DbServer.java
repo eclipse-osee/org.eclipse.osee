@@ -32,7 +32,7 @@ public class H2DbServer {
    }
 
    private void startServerInternal(String host, int port) throws Exception {
-      OseeLog.format(H2DbServer.class, Level.INFO, "Starting H2 Database Server on [%s:%s]....", host, port);
+      OseeLog.logf(H2DbServer.class, Level.INFO, "Starting H2 Database Server on [%s:%s]....", host, port);
       try {
          nwServer = new H2DbServerUtil(InetAddress.getByName(host), port);
          nwServer.start();

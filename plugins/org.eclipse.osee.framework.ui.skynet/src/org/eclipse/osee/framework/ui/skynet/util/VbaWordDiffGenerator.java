@@ -111,7 +111,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       if (executeVbScript) {
          executeScript(new File(compareData.getGeneratorScriptPath()));
       } else {
-         OseeLog.format(SkynetGuiPlugin.class, Level.INFO, "Test - Skip launch of [%s]",
+         OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, "Test - Skip launch of [%s]",
             compareData.getGeneratorScriptPath());
       }
    }

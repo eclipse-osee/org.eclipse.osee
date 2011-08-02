@@ -137,7 +137,7 @@ public class TestUnitCache implements ITestUnitProvider {
       if (value != null) {
          itemsToTestUnit.removeValue(coverageItem, value);
       } else {
-         OseeLog.format(Activator.class, Level.WARNING, "TestUnitName: [%s] is not associated with CoverageItem: [%s]",
+         OseeLog.logf(Activator.class, Level.WARNING, "TestUnitName: [%s] is not associated with CoverageItem: [%s]",
             testUnitName, coverageItem.toString());
       }
    }

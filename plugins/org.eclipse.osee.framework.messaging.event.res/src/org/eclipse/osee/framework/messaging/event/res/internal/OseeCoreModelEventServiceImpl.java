@@ -57,9 +57,9 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
    public void sendRemoteEvent(RemoteEvent remoteEvent) throws OseeCoreException {
       ResMessages resMessage = getResMessageType(remoteEvent);
       if (resMessage == null) {
-         OseeLog.log(Activator.class, Level.INFO, null, "ResEventManager: Unhandled remote event [%s]", resMessage);
+         OseeLog.logf(Activator.class, Level.INFO, "ResEventManager: Unhandled remote event [%s]", resMessage);
       } else if (connectionNode == null) {
-         OseeLog.log(Activator.class, Level.INFO, null,
+         OseeLog.logf(Activator.class, Level.INFO,
             "ResEventManager: Connection node was null - unable to send remote event [%s]", resMessage);
       } else {
          connectionNode.send(resMessage, remoteEvent, this);

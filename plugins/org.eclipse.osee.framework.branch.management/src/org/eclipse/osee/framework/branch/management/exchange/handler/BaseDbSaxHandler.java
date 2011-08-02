@@ -137,7 +137,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       try {
          getDatabaseService().runPreparedUpdate(connection, deleteSql);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex, "Error clearing: %s", deleteSql);
+         OseeLog.logf(Activator.class, Level.INFO, ex, "Error clearing: %s", deleteSql);
          throw ex;
       }
    }

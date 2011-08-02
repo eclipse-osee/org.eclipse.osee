@@ -86,7 +86,7 @@ public final class AtsWorkDefinitionSheetProviders {
    public static void importWorkDefinitionSheets(XResultData resultData, boolean onlyWorkDefinitions, SkynetTransaction transaction, Artifact folder, Collection<WorkDefinitionSheet> sheets) throws OseeCoreException {
       for (WorkDefinitionSheet sheet : sheets) {
          if (isValidSheet(sheet)) {
-            OseeLog.log(AtsPlugin.class, Level.INFO, null, "Importing ATS sheet [%s]", sheet.getName());
+            OseeLog.logf(AtsPlugin.class, Level.INFO, "Importing ATS sheet [%s]", sheet.getName());
             Artifact artifact =
                AtsWorkDefinitionProvider.get().importWorkDefinitionSheetToDb(sheet, resultData, onlyWorkDefinitions,
                   transaction);
@@ -103,7 +103,7 @@ public final class AtsWorkDefinitionSheetProviders {
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          if (isValidSheet(sheet)) {
-            OseeLog.log(AtsPlugin.class, Level.INFO, null, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
+            OseeLog.logf(AtsPlugin.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
             AtsWorkDefinitionProvider.get().importAIsAndTeamsToDb(sheet, transaction);
          }
       }

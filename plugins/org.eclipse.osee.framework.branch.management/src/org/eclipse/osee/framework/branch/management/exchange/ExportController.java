@@ -147,7 +147,7 @@ final class ExportController implements IExchangeTaskListener {
             File target = new File(tempFolder.getParent(), getExchangeFileName());
             if (!target.equals(tempFolder)) {
                if (!tempFolder.renameTo(target)) {
-                  OseeLog.format(this.getClass(), Level.INFO, "Unable to move [%s] to [%s]",
+                  OseeLog.logf(this.getClass(), Level.INFO, "Unable to move [%s] to [%s]",
                      tempFolder.getAbsolutePath(), target.getAbsolutePath());
                }
             }

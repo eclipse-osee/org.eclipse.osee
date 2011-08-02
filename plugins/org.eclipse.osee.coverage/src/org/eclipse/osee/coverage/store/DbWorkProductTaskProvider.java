@@ -83,7 +83,7 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
             }
          }
          if (!found) {
-            OseeLog.format(Activator.class, Level.SEVERE,
+            OseeLog.logf(Activator.class, Level.SEVERE,
                "Invalid related WorkProductPcrGuid [%s] for Coverage Package [%s] on branch [%s]; ignoring.", guid,
                coveragePackage.getName(), branch.getName());
          }

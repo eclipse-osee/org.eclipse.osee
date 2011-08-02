@@ -50,7 +50,7 @@ public class ReviewFormalTypeColumn extends XViewerAtsAttributeValueColumn {
          try {
             return ReviewFormalType.valueOf(value);
          } catch (IllegalArgumentException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex, "Unexpected formal type [%s]", value);
+            OseeLog.logf(AtsPlugin.class, Level.SEVERE, ex, "Unexpected formal type [%s]", value);
          }
       }
       return null;

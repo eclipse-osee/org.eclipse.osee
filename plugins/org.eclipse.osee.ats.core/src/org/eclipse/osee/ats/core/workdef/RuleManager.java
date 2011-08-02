@@ -29,7 +29,7 @@ public class RuleManager {
             RuleDefinitionOption ruleOption = RuleDefinitionOption.valueOf(ruleId);
             ruleMap.put(ruleId, new RuleDefinition(ruleOption));
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, null, "Unrecognized rule definition [%s]", ruleId);
+            OseeLog.logf(Activator.class, Level.SEVERE, "Unrecognized rule definition [%s]", ruleId);
          }
       }
       return ruleMap.get(ruleId);

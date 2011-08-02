@@ -255,7 +255,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       StateXWidgetPage page = WorkflowManager.getCurrentAtsWorkPage(awa);
       if (page == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, null,
+         OseeLog.logf(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
             "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
             awa.getWorkDefinition().getName());
       }

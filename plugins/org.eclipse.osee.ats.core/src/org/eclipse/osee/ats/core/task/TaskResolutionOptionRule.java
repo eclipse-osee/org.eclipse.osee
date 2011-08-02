@@ -83,7 +83,7 @@ public class TaskResolutionOptionRule {
                AtsUtilCore.getAtsBranch());
          return artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "");
       } catch (ArtifactDoesNotExist ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex, "GeneralData artifact named [%s] does not exist",
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "GeneralData artifact named [%s] does not exist",
             ruleDefinition.getName());
       }
       return "";

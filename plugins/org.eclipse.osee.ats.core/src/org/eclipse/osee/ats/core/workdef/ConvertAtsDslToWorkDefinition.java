@@ -255,7 +255,7 @@ public class ConvertAtsDslToWorkDefinition {
                   stateItems.add(widgetDef);
                }
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex,
+               OseeLog.logf(Activator.class, Level.SEVERE, ex,
                   "Error resolving attribute [%s] to WorkDefinition in [%s]", attributeName, SHEET_NAME);
             }
          } else if (layoutItem instanceof Composite) {
@@ -419,7 +419,7 @@ public class ConvertAtsDslToWorkDefinition {
             option = WidgetOption.valueOf(value);
             widgetDef.getOptions().add(option);
          } catch (IllegalArgumentException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex, "Unexpected value [%s] in WorkDefinition [%s] ", value,
+            OseeLog.logf(Activator.class, Level.WARNING, ex, "Unexpected value [%s] in WorkDefinition [%s] ", value,
                SHEET_NAME);
          }
       }

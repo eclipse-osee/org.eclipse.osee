@@ -37,7 +37,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    public Artifact resolve(final RoughArtifact roughArtifact, final IOseeBranch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       IArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
-      OseeLog.format(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]",
+      OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]",
          roughArtifact, roughArtifact.getAttributes());
 
       Artifact realArtifact =

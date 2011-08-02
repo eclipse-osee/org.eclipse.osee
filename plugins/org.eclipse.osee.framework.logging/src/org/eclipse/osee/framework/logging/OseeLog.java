@@ -55,16 +55,12 @@ public class OseeLog {
       getLog().log(activatorClass.getName(), level, message, th);
    }
 
-   public static void log(Class<?> activatorClass, Level level, Throwable th, String message, Object... objects) {
-      format(th, activatorClass, level, message, objects);
-   }
-
-   public static void format(Class<?> activatorClass, Level level, String message, Object... objects) {
-      getLog().format(activatorClass.getName(), level, message, objects);
-   }
-
-   public static void format(Throwable th, Class<?> activatorClass, Level level, String message, Object... objects) {
+   public static void logf(Class<?> activatorClass, Level level, Throwable th, String message, Object... objects) {
       getLog().format(th, activatorClass.getName(), level, message, objects);
+   }
+
+   public static void logf(Class<?> activatorClass, Level level, String message, Object... objects) {
+      getLog().format(activatorClass.getName(), level, message, objects);
    }
 
    public static void registerLoggerListener(ILoggerListener listener) {

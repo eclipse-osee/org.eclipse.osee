@@ -95,7 +95,7 @@ public class WorkDefinitionFactory {
             match = WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromReverseId(id);
          }
          if (match.isMatched()) {
-            OseeLog.log(Activator.class, Level.INFO, null, "Loaded Work Definition [%s]", match);
+            OseeLog.logf(Activator.class, Level.INFO, "Loaded Work Definition [%s]", match);
             workDefIdToWorkDefintion.put(id, match);
          }
       }

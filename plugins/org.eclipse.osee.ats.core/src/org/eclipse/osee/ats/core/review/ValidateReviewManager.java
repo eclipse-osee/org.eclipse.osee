@@ -90,8 +90,8 @@ public class ValidateReviewManager {
          TransitionManager transitionMgr = new TransitionManager(helper, transaction);
          TransitionResults results = transitionMgr.handleAll();
          if (!results.isEmpty()) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, null,
-               "Error transitioning Decision review [%s] to Decision %s", decRev.toStringWithId(), results.toString());
+            OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
+               "Error transitioning Decision review [%s] to Decision %s", decRev.toStringWithId(), results);
          }
 
          return decRev;

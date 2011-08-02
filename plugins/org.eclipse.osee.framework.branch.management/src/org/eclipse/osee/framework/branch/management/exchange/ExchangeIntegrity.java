@@ -98,7 +98,7 @@ public class ExchangeIntegrity {
          writer = openResults();
 
          for (ReferentialIntegrityConstraint constraint : constraints) {
-            OseeLog.format(Activator.class, Level.INFO, "Verifing constraint [%s]", constraint.getPrimaryKeyListing());
+            OseeLog.logf(Activator.class, Level.INFO, "Verifing constraint [%s]", constraint.getPrimaryKeyListing());
             constraint.checkConstraint(services.getDatabaseService(), processor);
             writeConstraintResults(writer, constraint);
          }
@@ -108,7 +108,7 @@ public class ExchangeIntegrity {
       } finally {
          Lib.close(writer);
          processor.cleanUp();
-         OseeLog.format(Activator.class, Level.INFO, "Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
+         OseeLog.logf(Activator.class, Level.INFO, "Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
             Lib.getElapseString(startTime));
       }
    }
