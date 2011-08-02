@@ -12,16 +12,14 @@ package org.eclipse.osee.ats.core.action;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
@@ -36,7 +34,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -86,27 +83,14 @@ public class ActionManager {
    }
 
    public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<IBasicUser> assignees, SkynetTransaction transaction, Date createdDate, IBasicUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      IArtifactType teamWorkflowArtifact = AtsArtifactTypes.TeamWorkflow;
-      ITeamWorkflowProvider teamExt = null;
-
-      // Check if any plugins want to create the team workflow themselves
-      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
-         boolean isResponsible = false;
-         try {
-            isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex);
-         }
-         if (isResponsible) {
-            teamWorkflowArtifact = teamExtension.getTeamWorkflowArtifactType(teamDef, actionableItems);
-            teamExt = teamExtension;
-         }
-      }
+      ITeamWorkflowProvider teamExt = TeamWorkFlowManager.getTeamWorkflowProvider(teamDef, actionableItems);
+      IArtifactType teamWorkflowArtifactType =
+         TeamWorkFlowManager.getTeamWorkflowArtifactType(teamDef, actionableItems);
 
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
          createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, createdDate, createdBy, null, null,
-            teamWorkflowArtifact, newActionListener, transaction, createTeamOption);
+            teamWorkflowArtifactType, newActionListener, transaction, createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) {
          teamExt.teamWorkflowCreated(teamArt);

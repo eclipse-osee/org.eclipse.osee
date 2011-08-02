@@ -33,7 +33,7 @@ public final class TeamWorkflowProviders {
    public static Set<IArtifactType> getAllTeamWorkflowArtifactTypes() throws OseeCoreException {
       Set<IArtifactType> artifactTypes = new HashSet<IArtifactType>();
       artifactTypes.add(AtsArtifactTypes.TeamWorkflow);
-      for (ITeamWorkflowProvider ext : getAtsTeamWorkflowExtensions()) {
+      for (ITeamWorkflowProvider ext : getAtsTeamWorkflowProviders()) {
          artifactTypes.addAll(ext.getTeamWorkflowArtifactTypes());
       }
       return artifactTypes;
@@ -42,7 +42,7 @@ public final class TeamWorkflowProviders {
    /*
     * due to lazy initialization, this function is non-reentrant therefore, the synchronized keyword is necessary
     */
-   public synchronized static List<ITeamWorkflowProvider> getAtsTeamWorkflowExtensions() {
+   public synchronized static List<ITeamWorkflowProvider> getAtsTeamWorkflowProviders() {
       if (teamWorkflowProvider == null) {
 
          ExtensionDefinedObjects<ITeamWorkflowProvider> objects =

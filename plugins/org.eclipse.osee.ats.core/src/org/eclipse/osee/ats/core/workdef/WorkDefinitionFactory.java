@@ -154,7 +154,7 @@ public class WorkDefinitionFactory {
    private static WorkDefinitionMatch getWorkDefinitionForTask(Artifact taskArt) throws OseeCoreException {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
       AbstractWorkflowArtifact parentAwa = WorkflowManagerCore.getParentAWA(taskArt);
-      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(parentAwa);
          if (Strings.isValid(workFlowDefId)) {
             String translatedId = getOverrideWorkDefId(workFlowDefId);
@@ -195,7 +195,7 @@ public class WorkDefinitionFactory {
       if (!match.isMatched() && artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
          // Check extensions for definition handling
-         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(aba);
             if (Strings.isValid(workFlowDefId)) {
                match =

@@ -44,7 +44,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       super(AtsArtifactTypes.Action, AtsArtifactTypes.Version, AtsArtifactTypes.PeerToPeerReview,
          AtsArtifactTypes.DecisionReview, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Task,
          AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Goal);
-      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          try {
             for (IArtifactType teamWorkflowTypeName : atsTeamWorkflow.getTeamWorkflowArtifactTypes()) {
                registerAsResponsible(teamWorkflowTypeName);

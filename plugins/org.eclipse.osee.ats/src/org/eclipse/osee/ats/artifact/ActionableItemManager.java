@@ -26,9 +26,11 @@ import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -188,26 +190,46 @@ public class ActionableItemManager {
          if (newTeamDef.equals(teamArt.getTeamDefinition())) {
             toReturn =
                new Result(
-                  "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instaed.");
-         } else {
-            StringBuffer sb = new StringBuffer("Converting...\nActionable Item(s): ");
-            sb.append(ActionableItemsColumn.getActionableItemsStr(teamArt));
-            sb.append("\nTeam: ");
-            sb.append(teamArt.getTeamDefinition().getName());
-            sb.append("\nto\nActionable Item(s): ");
-            sb.append(selectedAia);
-            sb.append("\nTeam: ");
-            sb.append(newTeamDef.getName());
-            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Convert", sb.toString())) {
-               Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
-               toProcess.add(selectedAia);
-               toReturn = actionableItemsTx(teamArt, AtsUtil.getAtsBranch(), toProcess, newTeamDef);
-            }
+                  "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instead.");
+         } else if (!newTeamDef.getWorkDefinition().equals(teamArt.getTeamDefinition())) {
+            toReturn =
+               new Result(
+                  "Work Definitions configuration is not the same for these teams.  Use \"Edit Actionable Items\" instead.");
          }
+         Result result = isResultingArtifactTypesSame(newTeamDef, teamArt, selectedAia);
+         if (result.isFalse()) {
+            return result;
+         }
+         StringBuffer sb = new StringBuffer("Converting...\nActionable Item(s): ");
+         sb.append(ActionableItemsColumn.getActionableItemsStr(teamArt));
+         sb.append("\nTeam: ");
+         sb.append(teamArt.getTeamDefinition().getName());
+         sb.append("\nto\nActionable Item(s): ");
+         sb.append(selectedAia);
+         sb.append("\nTeam: ");
+         sb.append(newTeamDef.getName());
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Convert", sb.toString())) {
+            Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
+            toProcess.add(selectedAia);
+            toReturn = actionableItemsTx(teamArt, AtsUtil.getAtsBranch(), toProcess, newTeamDef);
+         }
+
       } else {
          toReturn = new Result("Single team can not retrieved for " + selectedAia.getName());
       }
       return toReturn;
+   }
+
+   private static Result isResultingArtifactTypesSame(TeamDefinitionArtifact newTeamDef, TeamWorkFlowArtifact teamArt, ActionableItemArtifact newAI) throws OseeCoreException {
+      IArtifactType newTeamWorkflowArtifactType =
+         TeamWorkFlowManager.getTeamWorkflowArtifactType(newTeamDef, Arrays.asList(newAI));
+      if (!newTeamWorkflowArtifactType.equals(teamArt.getArtifactType())) {
+         return new Result(
+            String.format(
+               "Can not convert because new workflow type [%s] does not match old type [%s].  Use \"Edit Actionable Items\" instead.",
+               newTeamWorkflowArtifactType, teamArt.getArtifactType()));
+      }
+      return Result.TrueResult;
    }
 
    private static Result actionableItemsTx(TeamWorkFlowArtifact teamArt, Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
@@ -216,7 +238,7 @@ public class ActionableItemManager {
          if (teamDefinition != null) {
             teamArt.setTeamDefinition(teamDefinition);
          }
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Converate Actionable Item");
+         SkynetTransaction transaction = new SkynetTransaction(branch, "Convert Actionable Item");
          ActionArtifactRollup rollup = new ActionArtifactRollup(teamArt.getParentActionArtifact(), transaction);
          rollup.resetAttributesOffChildren();
          teamArt.persist(transaction);

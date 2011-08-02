@@ -170,7 +170,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.persist(transaction);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
-         for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+         for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
             teamExtension.teamWorkflowDuplicating(teamArt, dupArt);
          }
       }

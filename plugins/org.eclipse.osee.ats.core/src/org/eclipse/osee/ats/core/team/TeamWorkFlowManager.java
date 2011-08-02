@@ -12,7 +12,13 @@
 package org.eclipse.osee.ats.core.team;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
@@ -20,10 +26,12 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -207,7 +215,7 @@ public class TeamWorkFlowManager {
    public static String getPcrId(AbstractWorkflowArtifact awa) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
       if (teamArt != null) {
-         for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+         for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
             String pcrId = atsTeamWorkflow.getPcrId(teamArt);
             if (Strings.isValid(pcrId)) {
                return pcrId;
@@ -219,7 +227,7 @@ public class TeamWorkFlowManager {
    }
 
    public static String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt) {
-      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          String typeName = atsTeamWorkflow.getArtifactTypeShortName(teamArt);
          if (Strings.isValid(typeName)) {
             return typeName;
@@ -233,6 +241,30 @@ public class TeamWorkFlowManager {
          return (TeamWorkFlowArtifact) artifact;
       }
       return null;
+   }
+
+   public static ITeamWorkflowProvider getTeamWorkflowProvider(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
+      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
+         boolean isResponsible = false;
+         try {
+            isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, ex);
+         }
+         if (isResponsible) {
+            return teamExtension;
+         }
+      }
+      return null;
+   }
+
+   public static IArtifactType getTeamWorkflowArtifactType(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
+      IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
+      ITeamWorkflowProvider teamWorkflowProvider = getTeamWorkflowProvider(teamDef, actionableItems);
+      if (teamWorkflowProvider != null) {
+         teamWorkflowArtifactType = teamWorkflowProvider.getTeamWorkflowArtifactType(teamDef, actionableItems);
+      }
+      return teamWorkflowArtifactType;
    }
 
 }

@@ -110,7 +110,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public WorkFlowDefinitionMatch getWorkFlowDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       WorkFlowDefinitionMatch match = new WorkFlowDefinitionMatch();
-      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentAWA());
          if (Strings.isValid(workFlowDefId)) {
             match.setWorkFlowDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId));
@@ -155,7 +155,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
          // Check extensions for definition handling
-         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(aba);
             if (Strings.isValid(workFlowDefId)) {
                WorkFlowDefinition workDef =
