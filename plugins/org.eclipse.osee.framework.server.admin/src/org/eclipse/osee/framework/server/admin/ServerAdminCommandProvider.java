@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
 import org.eclipse.osee.framework.database.operation.ParseWindowsDirectoryListingOperation;
+import org.eclipse.osee.framework.database.operation.FindInvalidUTF8CharsOperation;
 import org.eclipse.osee.framework.database.operation.ConsolidateRelationsTxOperation;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -170,6 +171,16 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(operation, false);
    }
    
+   public Job _find_invalid_utf8(CommandInterpreter ci) {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+
+      IOperation operation =
+         new FindInvalidUTF8CharsOperation(Activator.getOseeDatabaseService(), Activator.getOseeCachingService(),
+            logger);
+
+      return Operations.executeAsJob(operation, false);
+   }
+   
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
@@ -188,6 +199,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
       sb.append("        purge_relation_type -force excute the operation, relationType1 ...\n");
       sb.append("        parse_dir - converts the given file into a formatted CSV file\n");
+      sb.append("        find_invalid_utf8 - finds invalid UTF8 chars in table osee_attribute\n");
       sb.append("        consolidate_relations - consolidate rows of relations\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n",
          Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " | ")));

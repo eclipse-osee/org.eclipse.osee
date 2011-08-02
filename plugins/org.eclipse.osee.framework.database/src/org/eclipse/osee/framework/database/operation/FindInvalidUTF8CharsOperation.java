@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,29 +8,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.blam.operation;
+package org.eclipse.osee.framework.database.operation;
 
-import java.util.Arrays;
-import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
+ * @author Shawn F. Cook
  */
-public class FindInvalidUTF8Chars extends AbstractBlam {
+public class FindInvalidUTF8CharsOperation extends AbstractDbTxOperation {
    private static final String READ_ATTRIBUTE_VALUES = "SELECT art_id, value FROM osee_attribute";
 
-   @Override
-   public String getName() {
-      return "Find Invalid UTF8 Chars";
+   public FindInvalidUTF8CharsOperation(IOseeDatabaseService databaseService, IOseeCachingService cachingService, OperationLogger logger) {
+      super(databaseService, "Find Invalid UTF8 Chars Operation", Activator.PLUGIN_ID, logger);
    }
 
    @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+
+      log();
+      log("Find Invalid UTF8 Chars in Table osee_attribute:");
 
       int count = 0;
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -45,24 +51,16 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
                   char c = value.charAt(i);
                   // based on http://www.w3.org/TR/2006/REC-xml-20060816/#charsets
                   if (c < 0x20 && c != 0x9 && c != 0xA && c != 0xD || c > 0xD7FF && c < 0xE000 || c > 0xFFFD && c < 0x10000 || c > 0x10FFFF) {
-                     System.out.println("artifact id: " + chStmt.getInt("art_id") + "   char: " + (int) c);
+                     log("artifact id: " + chStmt.getInt("art_id") + "   char: " + (int) c);
                   }
                }
             }
          }
       } finally {
          chStmt.close();
-         System.out.println("count:  " + count);
+         log("count:  " + count);
       }
-   }
 
-   @Override
-   public String getXWidgetsXml() {
-      return AbstractBlam.emptyXWidgetsXml;
-   }
-
-   @Override
-   public Collection<String> getCategories() {
-      return Arrays.asList("Admin.Health");
+      log("...done.");
    }
 }
