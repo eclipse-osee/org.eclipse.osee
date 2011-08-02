@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.database.operation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -26,6 +28,8 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
@@ -35,12 +39,8 @@ import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.TransactionJoinQuery;
+import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.PurgeTransactionEventUtil;
-import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Ryan D. Brooks
@@ -75,7 +75,21 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final int[] txIdsToDelete;
    private final boolean force;
    private boolean success;
-   private TransactionEvent transactionEvent;
+
+   public static interface PurgeTransactionListener {
+      void onPurgeTransactionSuccess(Collection<TransactionRecord> transactions);
+   }
+
+   private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<PurgeTransactionListener>();
+   private Collection<TransactionRecord> changedTransactions;
+
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, boolean force, OperationLogger logger, int... txIdsToDelete) {
+      super(databaseService, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
+         Activator.PLUGIN_ID, logger);
+      this.txIdsToDelete = txIdsToDelete;
+      this.force = force;
+      this.success = false;
+   }
 
    public PurgeTransactionOperation(IOseeDatabaseService databaseService, boolean force, int... txIdsToDelete) {
       super(databaseService, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
@@ -85,8 +99,22 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       this.success = false;
    }
 
+   public void addListener(PurgeTransactionListener listener) {
+      if (listener != null) {
+         listeners.add(listener);
+      }
+   }
+
+   public void removeListener(PurgeTransactionListener listener) {
+      if (listener != null) {
+         listeners.remove(listener);
+      }
+   }
+
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+      log();
+      log("Purging Transactions...");
       Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
       Conditions.checkExpressionFailOnTrue(txIdsToDelete.length <= 0, "transaction ids to delete cannot be empty");
 
@@ -97,7 +125,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       Map<TransactionRecord, TransactionRecord> deleteToPreviousTx =
          findPriorTransactions(monitor, txsToDeleteQuery, 0.20);
 
-      transactionEvent = PurgeTransactionEventUtil.createPurgeTransactionEvent(deleteToPreviousTx.keySet());
+      changedTransactions = deleteToPreviousTx.keySet();
 
       txsToDeleteQuery.store(connection);
 
@@ -117,6 +145,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          monitor.subTask("Remove Tx Rows");
          List<Object[]> txsToDelete = new ArrayList<Object[]>();
          for (int txId : txIdsToDelete) {
+            log("  Adding tx to list:" + txId);
             txsToDelete.add(new Object[] {txId});
          }
          ConnectionHandler.runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
@@ -134,13 +163,17 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       } finally {
          clearJoin(connection, txsToDeleteQuery);
       }
+      log("...done.");
    }
 
    @Override
-   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
-      if (success) {
-         OseeEventManager.kickTransactionEvent(this, transactionEvent);
+   protected void handleTxFinally(IProgressMonitor monitor) {
+      if (success && changedTransactions != null) {
+         for (PurgeTransactionListener listener : listeners) {
+            listener.onPurgeTransactionSuccess(changedTransactions);
+         }
       }
+      changedTransactions = null;
    }
 
    private void computeNewTxCurrents(OseeConnection connection, Collection<Object[]> txsUpdate, String itemId, String tableName, Map<Integer, IdJoinQuery> affected) throws OseeCoreException {
@@ -215,13 +248,14 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       Map<TransactionRecord, TransactionRecord> deleteToPreviousTx =
          new HashMap<TransactionRecord, TransactionRecord>();
       double workStep = workPercentage / txIdsToDelete.length;
+      TransactionCache transactionCache = Activator.getOseeCachingService().getTransactionCache();
       for (int index = 0; index < txIdsToDelete.length; index++) {
          monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txIdsToDelete.length));
          int fromTx = txIdsToDelete[index];
-         TransactionRecord fromTransaction = TransactionManager.getTransactionId(fromTx);
+         TransactionRecord fromTransaction = transactionCache.getOrLoad(fromTx);
          TransactionRecord previousTransaction;
          try {
-            previousTransaction = TransactionManager.getPriorTransaction(fromTransaction);
+            previousTransaction = transactionCache.getPriorTransaction(fromTransaction);
          } catch (TransactionDoesNotExist ex) {
             throw new OseeArgumentException(
                "You are trying to delete Transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",

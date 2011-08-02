@@ -69,5 +69,4 @@ public final class DatabaseTransactions {
          }
       }
    }
-
 }

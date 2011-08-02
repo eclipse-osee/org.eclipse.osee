@@ -13,25 +13,21 @@ package org.eclipse.osee.framework.skynet.core.event;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.mocks.MockTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -110,8 +106,7 @@ public abstract class TransactionEventTest {
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // Delete it
-      IOperation operation =
-         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), false, transIdToDelete);
+      IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(false, transIdToDelete);
       Asserts.testOperation(operation, IStatus.OK);
 
       // Verify that all stuff reverted
@@ -124,22 +119,8 @@ public abstract class TransactionEventTest {
 
       Assert.assertEquals(TransactionEventType.Purged, resultTransEvent.getEventType());
 
-      Collection<TransactionChange> transactions = resultTransEvent.getTransactions();
-      Assert.assertEquals(1, transactions.size());
-
-      TransactionChange transChange = transactions.iterator().next();
-      Assert.assertEquals(transIdToDelete, transChange.getTransactionId());
-      Assert.assertEquals(CoreBranches.COMMON.getGuid(), transChange.getBranchGuid());
-
-      Collection<DefaultBasicGuidArtifact> artifacts = transChange.getArtifacts();
-      Assert.assertEquals(1, artifacts.size());
-
-      DefaultBasicGuidArtifact guidArt = artifacts.iterator().next();
-
-      Assert.assertEquals(CoreBranches.COMMON.getGuid(), guidArt.getBranchGuid());
-      Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
-
-      Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getArtTypeGuid());
+      Collection<TransactionChange> transactionChanges = resultTransEvent.getTransactionChanges();
+      Assert.assertTrue(transactionChanges.isEmpty());
 
       TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? Arrays.asList("") : new ArrayList<String>()));
    }

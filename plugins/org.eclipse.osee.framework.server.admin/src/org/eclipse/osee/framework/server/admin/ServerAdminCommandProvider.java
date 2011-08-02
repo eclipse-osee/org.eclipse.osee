@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
 import org.eclipse.osee.framework.database.operation.ParseWindowsDirectoryListingOperation;
+import org.eclipse.osee.framework.database.operation.PurgeTransactionOperation;
 import org.eclipse.osee.framework.database.operation.PruneWorkspaceOperation;
 import org.eclipse.osee.framework.database.operation.FindInvalidUTF8CharsOperation;
 import org.eclipse.osee.framework.database.operation.ConsolidateRelationsTxOperation;
@@ -232,6 +233,32 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(operation, false);
    }
    
+   public Job _purge_transactions(CommandInterpreter ci) {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+
+      //to be purged
+      final Collection<String> transactions = new ArrayList<String>();
+
+      boolean force = false;
+      for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
+         if (arg.equals("--force")) {
+            force = true;
+         } else {
+            transactions.add(arg);
+         }
+      }
+      int transactions_int[] = new int[transactions.size()];
+      int index = 0;
+      for (String tx : transactions) {
+         transactions_int[index++] = Integer.parseInt(tx);
+      }
+
+      IOperation operation =
+         new PurgeTransactionOperation(Activator.getOseeDatabaseService(), force, logger, transactions_int);
+
+      return Operations.executeAsJob(operation, false);
+   }
+
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
@@ -250,6 +277,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
       sb.append("        purge_relation_type -force excute the operation, relationType1 ...\n");
       sb.append("        parse_dir - converts the given file into a formatted CSV file\n");
+      sb.append("        purge_transactions [--force] <transaction ids> - ");
       sb.append("        purge_attribute_type <attr ids> - deletes specified rows from osee_artifact_type_attributes and osee_attribute_type\n");
       sb.append("        prune_workspace [preserve_file_pattern] workspace_path purge_file_pattern - delete files that are found in workspace_path and whose filenames match purge_file_pattern.  Any filename that matches the optional preserve_file_pattern are not deleted\n");
       sb.append("        find_invalid_utf8 - finds invalid UTF8 chars in table osee_attribute\n");

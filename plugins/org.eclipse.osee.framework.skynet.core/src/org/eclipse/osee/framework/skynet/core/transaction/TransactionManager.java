@@ -51,9 +51,6 @@ public final class TransactionManager {
    private static final String SELECT_TRANSACTIONS =
       "SELECT * FROM osee_tx_details WHERE branch_id = ? ORDER BY transaction_id DESC";
 
-   private static final String GET_PRIOR_TRANSACTION =
-      "SELECT MAX(transaction_id) AS prior_id FROM osee_tx_details WHERE branch_id = ? AND transaction_id < ?";
-
    private static final String SELECT_COMMIT_TRANSACTIONS =
       "SELECT transaction_id FROM osee_tx_details WHERE commit_art_id = ?";
 
@@ -193,29 +190,6 @@ public final class TransactionManager {
          transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
    }
 
-   /**
-    * @return The prior transactionId, or null if there is no prior.
-    */
-   public static TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
-      TransactionRecord priorTransactionId = null;
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-
-      try {
-         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranchId(), transactionId.getId());
-
-         if (chStmt.next()) {
-            int priorId = chStmt.getInt("prior_id");
-            if (chStmt.wasNull()) {
-               throw new TransactionDoesNotExist("the prior transation id was null");
-            }
-            priorTransactionId = getTransactionId(priorId);
-         }
-      } finally {
-         chStmt.close();
-      }
-      return priorTransactionId;
-   }
-
    public static TransactionRecord getTransactionAtDate(IOseeBranch branch, Date maxDateExclusive) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
@@ -288,5 +262,10 @@ public final class TransactionManager {
          }
       }
       return transactionRecord;
+   }
+
+   public static TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
+      TransactionCache txCache = getTransactionCache();
+      return txCache.getPriorTransaction(transactionId);
    }
 }

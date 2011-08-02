@@ -36,8 +36,12 @@ public class TransactionEvent extends FrameworkEvent {
     * <p>
     * Objects of the following type(s) are allowed in the list {@link DefaultBasicGuidArtifact }
     */
-   public List<TransactionChange> getTransactions() {
-      return this.transactions;
+   public List<TransactionChange> getTransactionChanges() {
+      return transactions;
+   }
+
+   public void addTransactionChange(TransactionChange txChange) {
+      transactions.add(txChange);
    }
 
    /**

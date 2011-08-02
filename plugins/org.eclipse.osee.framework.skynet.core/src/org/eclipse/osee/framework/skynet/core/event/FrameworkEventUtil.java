@@ -153,7 +153,7 @@ public class FrameworkEventUtil {
       RemoteTransactionEvent1 event = new RemoteTransactionEvent1();
       event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
       event.setEventTypeGuid(transEvent.getEventType().getGuid());
-      for (TransactionChange change : transEvent.getTransactions()) {
+      for (TransactionChange change : transEvent.getTransactionChanges()) {
          RemoteTransactionChange1 remChange = new RemoteTransactionChange1();
          remChange.setBranchGuid(change.getBranchGuid());
          remChange.setTransactionId(change.getTransactionId());
@@ -178,7 +178,7 @@ public class FrameworkEventUtil {
          for (RemoteBasicGuidArtifact1 remGuidArt : remChange.getArtifacts()) {
             eventArts.add(getBasicGuidArtifact(remGuidArt));
          }
-         event.getTransactions().add(change);
+         event.addTransactionChange(change);
       }
       return event;
    }

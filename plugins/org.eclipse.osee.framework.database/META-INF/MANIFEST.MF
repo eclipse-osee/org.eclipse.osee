@@ -9,6 +9,7 @@ Export-Package: org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.operation
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
+DynamicImport-Package: *
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
@@ -16,6 +17,8 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
@@ -30,4 +33,3 @@ Import-Package: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/uri.connection.contributor.xml
 Require-Bundle: org.eclipse.equinox.ds
-DynamicImport-Package: *

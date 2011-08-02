@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchStateHttp
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchTypeHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
@@ -319,8 +320,9 @@ public class BranchManager {
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
     */
    public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
-      IOperation op =
-         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), force, transactionIdNumbers);
+      final IOperation op =
+         PurgeTransactionOperationWithListener.getPurgeTransactionOperation(force, transactionIdNumbers);
+
       return Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
    }
 

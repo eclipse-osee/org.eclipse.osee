@@ -151,6 +151,10 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    public void storeItems(Collection<TransactionRecord> toStore) throws OseeCoreException {
    }
 
+   public TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
+      return getDataAccessor().getOrLoadPriorTransaction(this, transactionId.getId(), transactionId.getBranchId());
+   }
+
    public TransactionRecord getTransaction(Branch branch, TransactionVersion revision) throws OseeCoreException {
       TransactionRecord toReturn = null;
       if (TransactionVersion.BASE == revision) {

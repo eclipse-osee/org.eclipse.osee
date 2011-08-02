@@ -10,29 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -47,30 +39,7 @@ public final class PurgeTransactionEventUtil {
    public static TransactionEvent createPurgeTransactionEvent(Collection<TransactionRecord> purgedTransactions) {
       TransactionEvent transactionEvent = new TransactionEvent();
       transactionEvent.setEventType(TransactionEventType.Purged);
-      List<TransactionChange> txChanges = transactionEvent.getTransactions();
 
-      for (TransactionRecord txRecord : purgedTransactions) {
-         try {
-            Branch branch = BranchManager.getBranch(txRecord.getBranchId());
-
-            TransactionChange transChange = new TransactionChange();
-            transChange.setTransactionId(txRecord.getId());
-            transChange.setBranchGuid(branch.getGuid());
-
-            Collection<Change> changes = new ArrayList<Change>();
-            IOperation operation = ChangeManager.comparedToPreviousTx(txRecord, changes);
-            Operations.executeWorkAndCheckStatus(operation);
-
-            Collection<DefaultBasicGuidArtifact> eventArts = transChange.getArtifacts();
-            for (Change change : changes) {
-               Artifact art = change.getChangeArtifact();
-               eventArts.add(art.getBasicGuidArtifact());
-            }
-            txChanges.add(transChange);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
       return transactionEvent;
    }
 
@@ -78,7 +47,7 @@ public final class PurgeTransactionEventUtil {
       if (transEvent.getEventType() == TransactionEventType.Purged) {
 
          Set<Artifact> artifactsInCache = new HashSet<Artifact>();
-         for (TransactionChange transChange : transEvent.getTransactions()) {
+         for (TransactionChange transChange : transEvent.getTransactionChanges()) {
             try {
                TransactionManager.deCache(transChange.getTransactionId());
             } catch (OseeCoreException ex1) {

@@ -43,6 +43,9 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    private static final String SELECT_TRANSACTIONS_BY_QUERY_ID =
       "select * from osee_tx_details txd, osee_join_id oji where txd.transaction_id = oji.id and oji.query_id = ?";
 
+   private static final String GET_PRIOR_TRANSACTION =
+      "select transaction_id FROM osee_tx_details where branch_id = ? and transaction_id < ? order by transaction_id desc";
+
    private final IOseeDatabaseService oseeDatabaseService;
    private final BranchCache branchCache;
    private final TransactionRecordFactory factory;
@@ -154,5 +157,12 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    @Override
    public void load(TransactionCache transactionCache) throws OseeCoreException {
       // Not implemented
+   }
+
+   @Override
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, int branchId) throws OseeCoreException {
+      int priorTransactionId =
+         oseeDatabaseService.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchId, transactionNumber);
+      return cache.getOrLoad(priorTransactionId);
    }
 }

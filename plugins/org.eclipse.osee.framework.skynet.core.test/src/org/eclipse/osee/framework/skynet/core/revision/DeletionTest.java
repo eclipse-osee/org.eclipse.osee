@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.junit.Before;
 
 /**
@@ -170,7 +170,7 @@ public class DeletionTest {
       if (DELETE_TRANSACTION_TEST) {
          IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
          IOperation operation =
-            new PurgeTransactionOperation(databaseProvider.getOseeDatabaseService(), true, deletionTransaction);
+            PurgeTransactionOperationWithListener.getPurgeTransactionOperation(true, deletionTransaction);
          Asserts.testOperation(operation, IStatus.OK);
          if (DEBUG) {
             System.err.println("Deleting the Transaction");

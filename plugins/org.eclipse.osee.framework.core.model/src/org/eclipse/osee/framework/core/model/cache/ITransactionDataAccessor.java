@@ -50,4 +50,6 @@ public interface ITransactionDataAccessor {
 
    public void load(TransactionCache transactionCache) throws OseeCoreException;
 
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, int branchId) throws OseeCoreException;
+
 }

@@ -78,4 +78,9 @@ public class MockOseeTransactionDataAccessor implements ITransactionDataAccessor
       // Empty
    }
 
+   @Override
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, int branchId) throws OseeCoreException {
+      return null;
+   }
+
 }

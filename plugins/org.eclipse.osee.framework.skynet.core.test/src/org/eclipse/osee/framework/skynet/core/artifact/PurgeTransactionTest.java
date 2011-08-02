@@ -24,10 +24,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -98,8 +98,7 @@ public class PurgeTransactionTest {
    }
 
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
-      IOperation operation =
-         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), true, transactionId);
+      IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(true, transactionId);
       Asserts.testOperation(operation, IStatus.OK);
       DbTestUtil.getTableRowCounts(dbCount, tables);
    }

@@ -26,12 +26,16 @@ import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.ITransactionDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ClientTransactionAccessor implements ITransactionDataAccessor {
+
+   private static final String GET_PRIOR_TRANSACTION =
+      "select transaction_id FROM osee_tx_details where branch_id = ? and transaction_id < ? order by transaction_id desc";
 
    private final TransactionRecordFactory txFactory;
    private final BranchCache branchCache;
@@ -80,4 +84,10 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
       }
    }
 
+   @Override
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, int branchId) throws OseeCoreException {
+      int priorTransactionId =
+         ConnectionHandler.runPreparedQueryFetchInt(-1, GET_PRIOR_TRANSACTION, branchId, transactionNumber);
+      return cache.getOrLoad(priorTransactionId);
+   }
 }

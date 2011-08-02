@@ -156,7 +156,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
          txDeltas[0] = changeUiData.getTxDelta().getStartTx().getId();
          txDeltas[1] = changeUiData.getTxDelta().getEndTx().getId();
          for (int transactionIdToMatch : txDeltas) {
-            for (TransactionChange transChange : transEvent.getTransactions()) {
+            for (TransactionChange transChange : transEvent.getTransactionChanges()) {
                if (transactionIdToMatch == transChange.getTransactionId()) {
                   close(false);
                   break;

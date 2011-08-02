@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.internal;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
@@ -29,6 +30,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
 
    private ServiceDependencyTracker databaseServiceTracker;
    private ServiceTracker dbTracker;
+   private ServiceTracker cacheTracker;
    private DatabaseInfoProvider databaseInfoProvider;
 
    @Override
@@ -42,6 +44,9 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
 
       dbTracker = new ServiceTracker(bundleContext, IOseeDatabaseService.class.getName(), null);
       dbTracker.open(true);
+
+      cacheTracker = new ServiceTracker(bundleContext, IOseeCachingService.class.getName(), null);
+      cacheTracker.open(true);
    }
 
    public DatabaseInfoProvider getDatabaseInfoProvider() {
@@ -61,6 +66,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
    public void stop(BundleContext context) throws Exception {
       databaseServiceTracker.close();
       dbTracker.close();
+      cacheTracker.close();
       databaseInfoProvider = null;
       instance = null;
    }
@@ -69,4 +75,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
       return instance;
    }
 
+   public static IOseeCachingService getOseeCachingService() {
+      return (IOseeCachingService) getInstance().cacheTracker.getService();
+   }
 }
