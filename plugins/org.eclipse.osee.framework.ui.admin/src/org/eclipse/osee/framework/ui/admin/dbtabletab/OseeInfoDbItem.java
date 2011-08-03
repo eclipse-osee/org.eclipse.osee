@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -42,20 +43,17 @@ public class OseeInfoDbItem extends DbItem {
       return 100;
    }
 
-   public boolean exists(String key) {
+   public boolean exists(String key) throws OseeDataStoreException {
       boolean toReturn = false;
-      IOseeStatement chStmt = null;
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt = ConnectionHandler.getStatement();
          String query = "SELECT * FROM " + getTableName() + " WHERE OSEE_KEY = " + returnTic(key);
          chStmt.runPreparedQuery(query);
          toReturn = chStmt.next();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
       return toReturn;
    }

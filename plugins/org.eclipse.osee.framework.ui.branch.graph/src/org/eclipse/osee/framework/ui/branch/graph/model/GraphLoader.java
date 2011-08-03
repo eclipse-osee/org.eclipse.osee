@@ -106,11 +106,8 @@ public class GraphLoader {
                   if (source != null) {
                      connect(source, txModel);
                   } else {
-                     OseeLog.logf(
-                        Activator.class,
-                        Level.SEVERE,
-                        "Invalid parent transaction id of [%s] for branch [%s]", parentTxId,
-                           branchModel.getBranch());
+                     OseeLog.logf(Activator.class, Level.SEVERE,
+                        "Invalid parent transaction id of [%s] for branch [%s]", parentTxId, branchModel.getBranch());
                      //                     StubBranchModel stubModel = graphCache.getStubBranchModel();
                      //                     TxModel stubTxModel = stubModel.addTx(parentTxId);
                      //                     graphCache.addTxModel(stubTxModel);
@@ -145,9 +142,8 @@ public class GraphLoader {
 
    private static List<TxData> getTxData(int queryId) throws OseeCoreException {
       List<TxData> txDatas = new ArrayList<TxData>();
-      IOseeStatement chStmt = null;
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(GET_TRANSACTION_DATA, queryId);
          while (chStmt.next()) {
             Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
@@ -158,9 +154,7 @@ public class GraphLoader {
             txDatas.add(txData);
          }
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
       return txDatas;
    }

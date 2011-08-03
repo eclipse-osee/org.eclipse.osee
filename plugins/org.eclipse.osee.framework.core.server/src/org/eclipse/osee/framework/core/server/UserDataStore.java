@@ -43,9 +43,7 @@ public class UserDataStore {
       } catch (OseeCoreException ex) {
          OseeLog.logf(ServerActivator.class, Level.SEVERE, ex, "Unable to find userId [%s] in OSEE database.", userId);
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
       return toReturn;
    }

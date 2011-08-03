@@ -94,7 +94,7 @@ public class CompressedContentFix {
          try {
             initializeData();
             doWork(time);
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
             clear();
@@ -193,10 +193,9 @@ public class CompressedContentFix {
          return resourceExists;
       }
 
-      private void doWork(long time) {
-         IOseeStatement chStmt = null;
+      private void doWork(long time) throws Exception {
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt = ConnectionHandler.getStatement();
             chStmt.runPreparedQuery(FIND_ALL_NATIVE_CONTENT_SQL);
             int count = 0;
             while (chStmt.next() && execute) {
@@ -219,12 +218,8 @@ public class CompressedContentFix {
                   }
                }
             }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
-            if (chStmt != null) {
-               chStmt.close();
-            }
+            chStmt.close();
          }
       }
    }

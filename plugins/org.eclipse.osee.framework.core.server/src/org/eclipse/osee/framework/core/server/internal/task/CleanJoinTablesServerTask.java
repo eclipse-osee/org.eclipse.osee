@@ -68,11 +68,10 @@ public class CleanJoinTablesServerTask implements IServerTask {
 
    private void deleteFromJoinCleanup() throws OseeCoreException {
       List<Integer[]> queryIds = new ArrayList<Integer[]>();
-      IOseeStatement chStmt = null;
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       boolean isAlive = false;
       ISessionManager manager = ServerActivator.getSessionManager();
       try {
-         chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(SELECT_SESSION_FROM_JOIN);
 
          String prevSessionId = "";

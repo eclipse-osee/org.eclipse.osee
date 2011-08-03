@@ -118,9 +118,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                ModificationType.getMod(chStmt.getInt("mod_type")), TxChange.getChangeType(chStmt.getInt("tx_current"))));
          }
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
    }
 
@@ -249,9 +247,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
             }
          }
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
    }
 
@@ -305,9 +301,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
             previuosTransactionId = transactionId;
          }
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
 
       writeAddressingChanges(archived, true);

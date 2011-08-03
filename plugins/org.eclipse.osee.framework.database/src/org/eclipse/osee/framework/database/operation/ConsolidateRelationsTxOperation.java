@@ -131,9 +131,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
             }
          }
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
    }
 
@@ -189,9 +187,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
             writeAddressingBackup(obsoleteGammaId, transactionId, netGammaId, modType, txCurrent);
          }
       } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
+         chStmt.close();
       }
       gammaJoin.delete();
    }
