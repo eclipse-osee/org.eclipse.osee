@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class UserDataStore {
+public final class UserDataStore {
    private static final String LOAD_OSEE_USER =
       "select oa.value as user_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
 
@@ -38,7 +38,7 @@ public class UserDataStore {
          chStmt.runPreparedQuery(LOAD_OSEE_USER, userId);
          if (chStmt.next()) {
             // Only need the userId all other fields will be loaded by the client
-            toReturn = TokenFactory.createUserToken(null, "-", "-", chStmt.getString("user_id"), false, false, false);
+            toReturn = TokenFactory.createUserToken(null, "-", "-", chStmt.getString("user_id"), true, false, false);
          }
       } catch (OseeCoreException ex) {
          OseeLog.logf(ServerActivator.class, Level.SEVERE, ex, "Unable to find userId [%s] in OSEE database.", userId);
