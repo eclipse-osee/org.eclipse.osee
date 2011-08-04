@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -73,7 +73,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
                      }
                   }
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -81,7 +81,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
             getTreeViewer().setInitalChecked(getInitialAias());
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return comp;
    }
@@ -95,7 +95,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return super.isComplete();
    }

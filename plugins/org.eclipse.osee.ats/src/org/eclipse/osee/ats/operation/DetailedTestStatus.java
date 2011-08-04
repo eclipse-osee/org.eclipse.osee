@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
@@ -303,7 +303,7 @@ public class DetailedTestStatus extends AbstractBlam {
             try {
                runDate = dateFormatter.format(runOperator.getEndDate());
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             totalTestPoints = String.valueOf(runOperator.getTotalTestPoints());
             failedTestPoints = String.valueOf(runOperator.getTestPointsFailed());
@@ -586,7 +586,7 @@ public class DetailedTestStatus extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() throws OseeCoreException {
-      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), AtsPlugin.PLUGIN_ID);
+      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
    }
 
    @Override

@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.walker.action.ActionWalkerLayoutAction;
 import org.eclipse.osee.ats.walker.action.ActionWalkerRefreshAction;
@@ -155,11 +155,11 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
             if (parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
             } else {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unknown parent " + art.getHumanReadableId());
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unknown parent " + art.getHumanReadableId());
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return artifact;
    }
@@ -188,7 +188,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -359,7 +359,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
             try {
                builder.append("\n Team: " + ((TeamWorkFlowArtifact) awa).getTeamDefinition());
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          builder.append("\n State: " + ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentStateName());
@@ -375,7 +375,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
             return Artifacts.toString("; ", ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
       return "";
@@ -388,7 +388,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
             return str.isEmpty() ? "" : str;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
       return "";

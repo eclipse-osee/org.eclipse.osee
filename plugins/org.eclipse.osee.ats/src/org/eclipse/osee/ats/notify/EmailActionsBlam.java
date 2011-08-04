@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -72,7 +72,7 @@ public class EmailActionsBlam extends AbstractBlam {
             try {
                data.getWorkflows().addAll(variableMap.getArtifacts(TEAM_WORKFLOW));
             } catch (OseeArgumentException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             data.setSubject(subjectTextBox.get());
             data.setBody(bodyTextBox.get());

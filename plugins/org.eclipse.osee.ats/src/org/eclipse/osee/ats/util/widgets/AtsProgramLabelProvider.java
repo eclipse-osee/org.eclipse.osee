@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.core.config.IAtsProgram;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,7 +37,7 @@ public class AtsProgramLabelProvider implements ILabelProvider {
          try {
             active = program.isActive();
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             return "Exception: " + ex.getLocalizedMessage();
          }
          return ((IAtsProgram) element).getName() + (active ? "" : " (InActive)");

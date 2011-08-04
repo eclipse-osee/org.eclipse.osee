@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.version.VersionLockedType;
 import org.eclipse.osee.ats.core.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -76,7 +76,7 @@ public class SMATargetedVersionHeader extends Composite {
                         editor.onDirtied();
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
@@ -92,7 +92,7 @@ public class SMATargetedVersionHeader extends Composite {
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
    }

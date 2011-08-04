@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.version.VersionLockedType;
 import org.eclipse.osee.ats.core.version.VersionReleaseType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,7 +66,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
                }
                versionList.setInput(objs);
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });

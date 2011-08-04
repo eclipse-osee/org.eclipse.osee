@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
@@ -136,7 +136,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       try {
          reSearch();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -193,7 +193,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
                         try {
                            taskComposite.loadTable();
                         } catch (OseeCoreException ex) {
-                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      }
                   }));
@@ -204,14 +204,14 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
                         try {
                            taskComposite.loadTable();
                         } catch (OseeCoreException ex) {
-                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      }
                   }));
 
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
          return fMenu;
@@ -321,7 +321,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       try {
          worldAssigneeFilter = new WorldAssigneeFilter();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", IAction.AS_CHECK_BOX) {
@@ -330,7 +330,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
             try {
                updateExtraInfoLine();
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
@@ -128,7 +128,7 @@ public class AtsBranchAccessManagerTest {
       try {
          TestUtil.sleep(1000);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch()).size());
@@ -142,7 +142,7 @@ public class AtsBranchAccessManagerTest {
       try {
          TestUtil.sleep(1000);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch()).size());
@@ -157,7 +157,7 @@ public class AtsBranchAccessManagerTest {
       try {
          TestUtil.sleep(1000);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       Assert.assertEquals(3, mgr.getContextId(teamArt.getWorkingBranch()).size());
@@ -185,7 +185,7 @@ public class AtsBranchAccessManagerTest {
       try {
          TestUtil.sleep(2000);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch()).size());

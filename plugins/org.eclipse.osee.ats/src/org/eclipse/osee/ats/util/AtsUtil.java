@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -132,7 +132,7 @@ public final class AtsUtil {
       try {
          return IncrementingNum.get();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return 99;
    }
@@ -178,7 +178,7 @@ public final class AtsUtil {
          Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
          openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -191,7 +191,7 @@ public final class AtsUtil {
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, getAtsBranch());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;
       }
 
@@ -208,7 +208,7 @@ public final class AtsUtil {
             AWorkbench.popup("ERROR", "Unimplemented");
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -223,7 +223,7 @@ public final class AtsUtil {
             return;
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;
       }
 
@@ -237,7 +237,7 @@ public final class AtsUtil {
          try {
             openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             AWorkbench.popup("ERROR", ex.getLocalizedMessage());
          }
       } else {
@@ -270,7 +270,7 @@ public final class AtsUtil {
                               return;
                            }
                         } catch (OseeCoreException ex) {
-                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      }
                   });
@@ -280,7 +280,7 @@ public final class AtsUtil {
             SMAEditor.editArtifact(art);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

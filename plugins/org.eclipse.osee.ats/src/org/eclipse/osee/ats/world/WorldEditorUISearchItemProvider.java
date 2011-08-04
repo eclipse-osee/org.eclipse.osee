@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
@@ -91,7 +91,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
          try {
             job.join();
          } catch (InterruptedException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -137,8 +137,8 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
             worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts, customizeData);
          } catch (final Exception ex) {
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
          } finally {
             monitor.done();
          }

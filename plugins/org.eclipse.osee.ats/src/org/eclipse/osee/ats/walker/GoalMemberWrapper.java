@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.walker;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -80,7 +80,7 @@ public class GoalMemberWrapper implements IActionWalkerItem {
          AtsUtil.openInAtsWorldEditor(String.format("Goal [%s] Members", goal.getName()),
             Collections.castAll(Artifact.class, goal.getMembers()));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -162,7 +162,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             try {
                ArtifactExplorer.exploreBranch(teamArt.getWorkingBranch());
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -223,7 +223,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       try {
          branch = teamArt.getWorkingBranch();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       // just show normal icon if no branch yet
       if (branch == null) {
@@ -258,7 +258,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                branch.getId());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -302,7 +302,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             AWorkbench.popup(String.format("Branch set to [%s]", !isLocked ? "Locked" : "NOT Locked"));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -321,7 +321,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                getLabel() + ": " + enablement.getStatus().getDisplayName() + (workBranch != null ? " - " + workBranch.getShortName() : "");
             labelWidget.setText(labelStr);
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          if (getToolTip() != null) {
             labelWidget.setToolTipText(getToolTip());
@@ -373,7 +373,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                enablement.refresh();
                enablement.getStatus();
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             Displays.ensureInDisplayThread(new Runnable() {
                @Override

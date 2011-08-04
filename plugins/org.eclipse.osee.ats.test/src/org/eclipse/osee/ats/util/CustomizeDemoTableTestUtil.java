@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.dialog.XViewerCustomizeDialog;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -35,7 +35,7 @@ public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
    @Override
    public Control createDialogArea(Composite parent) {
       if (DEBUG) {
-         OseeLog.log(AtsPlugin.class, Level.INFO, "===> Simulating CustomizationView " + "\"...");
+         OseeLog.log(Activator.class, Level.INFO, "===> Simulating CustomizationView " + "\"...");
       }
       return super.createDialogArea(parent);
    }
@@ -45,7 +45,7 @@ public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
     */
    public void handleAddAllItemButtonClick() {
       if (DEBUG) {
-         OseeLog.log(AtsPlugin.class, Level.INFO, "===> Simulating CustomizationView Add All Columns" + "\"...");
+         OseeLog.log(Activator.class, Level.INFO, "===> Simulating CustomizationView Add All Columns" + "\"...");
       }
       super.handleAddAllItem();
       super.handleLoadConfigCust();

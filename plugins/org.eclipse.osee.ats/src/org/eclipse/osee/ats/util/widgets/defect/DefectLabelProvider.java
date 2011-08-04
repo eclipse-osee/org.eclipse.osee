@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -55,7 +55,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
             User user = UserManager.getUser(defectItem.getUser());
             return ArtifactImageManager.getImage(user);
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return null;

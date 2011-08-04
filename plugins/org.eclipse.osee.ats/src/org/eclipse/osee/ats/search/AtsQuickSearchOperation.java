@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -39,7 +39,7 @@ class AtsQuickSearchOperation extends AbstractOperation implements IWorldEditorC
    private WorldEditor worldEditor;
 
    public AtsQuickSearchOperation(AtsQuickSearchData data) {
-      super(data.toString(), AtsPlugin.PLUGIN_ID);
+      super(data.toString(), Activator.PLUGIN_ID);
       this.data = data;
    }
 

@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -45,7 +45,7 @@ public class ValidationReportOperation extends AbstractOperation {
    final XResultData rd;
 
    public ValidationReportOperation(XResultData rd, TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) {
-      super("Validate Requirement Changes - " + teamArt.getName(), AtsPlugin.PLUGIN_ID);
+      super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID);
       this.rd = rd;
       this.teamArt = teamArt;
       this.attributeSetRules = attributeSetRules;
@@ -72,7 +72,7 @@ public class ValidationReportOperation extends AbstractOperation {
 
          rd.log("Validation Complete");
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          rd.logError(ex.getLocalizedMessage());
       }
       createReport();
@@ -97,7 +97,7 @@ public class ValidationReportOperation extends AbstractOperation {
       operations.add(new AttributeRuleCheckOperation(itemsToCheck, rd, attributeSetRules));
       operations.add(new RelationRuleCheckOperation(itemsToCheck, rd, relationSetRules));
       operations.add(new ArtifactValidationCheckOperation(itemsToCheck, false));
-      CompositeOperation operation = new CompositeOperation(getName(), AtsPlugin.PLUGIN_ID, operations);
+      CompositeOperation operation = new CompositeOperation(getName(), Activator.PLUGIN_ID, operations);
 
       IStatus status = Operations.executeWork(operation);
       if (!status.isOK()) {

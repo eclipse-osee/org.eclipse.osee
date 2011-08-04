@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -55,7 +55,7 @@ public class OpenNewAtsTaskEditorSelected extends Action {
             openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts(),
             openNewAtsTaskEditorSelectedHandler.getCustomizeDataCopy()));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

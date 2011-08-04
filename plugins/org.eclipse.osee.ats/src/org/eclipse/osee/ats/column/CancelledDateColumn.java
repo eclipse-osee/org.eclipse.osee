@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -74,7 +74,7 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
          if (((AbstractWorkflowArtifact) object).isCancelled()) {
             Date date = ((AbstractWorkflowArtifact) object).internalGetCancelledDate();
             if (date == null) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
                   "Cancelled with no date => " + awa.getHumanReadableId());
             }
             return date;

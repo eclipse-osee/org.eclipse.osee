@@ -49,7 +49,7 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.walker.action.OpenActionViewAction;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -228,7 +228,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       if (Widgets.isAccessible(atsBody)) {
          atsBody.dispose();
       }
-      OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      OseeLog.log(Activator.class, Level.SEVERE, ex);
       new ExceptionComposite(bodyComp, ex);
       bodyComp.layout();
    }
@@ -255,7 +255,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       StateXWidgetPage page = WorkflowManager.getCurrentAtsWorkPage(awa);
       if (page == null) {
-         OseeLog.logf(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+         OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
             "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
             awa.getWorkDefinition().getName());
       }
@@ -283,7 +283,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          smaDetailsSection = new SMADetailsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaDetailsSection);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -293,7 +293,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             new SMAOperationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaOperationsSection);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -303,7 +303,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          managedForm.addPart(smaRelationsSection);
 
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -312,7 +312,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          smaHistorySection = new SMAHistorySection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaHistorySection);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -323,7 +323,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             managedForm.addPart(smaGoalMembersSection);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -347,11 +347,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                   statePages.add(statePage);
                }
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -388,7 +388,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             smaRelationsComposite.create(awa);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -600,7 +600,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", awa.getStateMgr().getCurrentStateName());
          FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", DateUtil.getMMDDYYHHMM(awa.getCreatedDate()));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       new SMAOriginatorHeader(topLineComp, SWT.NONE, awa, editor);
@@ -613,7 +613,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ", pcrId);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactSuperTypeName() + " Id: ",
          awa.getHumanReadableId());
@@ -624,7 +624,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             FormsUtil.createLabelText(toolkit, topLineComp, " Id: ", pcrId);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -644,7 +644,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             new AnnotationComposite(toolkit, comp, SWT.None, awa);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception resolving annotations", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Exception resolving annotations", ex);
       }
    }
 
@@ -661,7 +661,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             try {
                page.showView("org.eclipse.ui.views.ContentOutline", null, IWorkbenchPage.VIEW_ACTIVATE);
             } catch (PartInitException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

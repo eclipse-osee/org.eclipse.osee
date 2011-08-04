@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,7 +47,7 @@ public class XTeamDefinitionCombo extends XComboViewer {
          Collections.sort(sortedTeamDefs);
          getComboViewer().setInput(sortedTeamDefs);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       ArrayList<Object> defaultSelection = new ArrayList<Object>();
       defaultSelection.add("--select--");

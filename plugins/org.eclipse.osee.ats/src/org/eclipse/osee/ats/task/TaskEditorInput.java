@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.task;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.ui.IEditorInput;
@@ -67,7 +67,7 @@ public class TaskEditorInput implements IEditorInput {
       try {
          return itaskEditorProvider.getName();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
       }
    }
@@ -83,7 +83,7 @@ public class TaskEditorInput implements IEditorInput {
       try {
          return itaskEditorProvider.getName();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
       }
    }

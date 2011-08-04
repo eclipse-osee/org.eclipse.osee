@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -63,7 +63,7 @@ public class AtsBranchCommitJob extends Job {
          workflowWorkingBranch = teamArt.getWorkingBranch();
          AtsBranchManagerCore.branchesInCommit.add(workflowWorkingBranch);
          if (workflowWorkingBranch == null) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                "Commit Branch Failed: Can not locate branch for workflow " + teamArt.getHumanReadableId());
          }
 
@@ -72,7 +72,7 @@ public class AtsBranchCommitJob extends Job {
          if (teamArt.isTeamWorkflow()) {
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
-                  return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+                  return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                      "Blocking Review must be completed before commit.");
                }
             }
@@ -99,7 +99,7 @@ public class AtsBranchCommitJob extends Job {
                      });
                   }
                   if (!adminOverride) {
-                     return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, tempResult.getText());
+                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, tempResult.getText());
                   }
                }
             }
@@ -123,7 +123,7 @@ public class AtsBranchCommitJob extends Job {
             transaction.execute();
          }
       } catch (OseeCoreException ex) {
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, Strings.truncate(ex.getLocalizedMessage(), 250, true),
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, Strings.truncate(ex.getLocalizedMessage(), 250, true),
             ex);
       } finally {
          if (workflowWorkingBranch != null) {

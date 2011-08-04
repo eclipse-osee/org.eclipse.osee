@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -130,7 +130,7 @@ public class TransitionToMenu {
                         SMAPromptChangeStatus.performChangeStatus(awas, null, null, tsd.getHours().getFloat(),
                            tsd.getPercent().getInt(), tsd.isSplitHours(), true);
                      } catch (OseeCoreException ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                         result.set(false);
                         result.setTextWithFormat(
                            "Exception handling extra hours spent for transition to [%s] (see log)", getToStateName());

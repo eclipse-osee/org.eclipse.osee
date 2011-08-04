@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -125,8 +125,8 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      WorldEditor.open(new WorldEditorSimpleProvider(name, arts));
                   }
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
                }
                return Status.OK_STATUS;
             }

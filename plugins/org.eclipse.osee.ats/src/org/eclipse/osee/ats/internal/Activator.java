@@ -28,18 +28,17 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * The main plugin class to be used in the desktop.
  * 
  * @author Donald G. Dunne
  */
-public class AtsPlugin implements BundleActivator {
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
 
    private ServiceRegistration service1;
    private ServiceRegistration service2;
    private ServiceDependencyTracker tracker;
 
-   public AtsPlugin() {
+   public Activator() {
       super();
       AtsCacheManager.start();
       AtsBranchManager.start();
@@ -47,7 +46,7 @@ public class AtsPlugin implements BundleActivator {
          AtsNotificationManager.start(OseeNotificationManager.getInstance(),
             ClientSessionManager.isProductionDataStore());
       } catch (OseeAuthenticationRequiredException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

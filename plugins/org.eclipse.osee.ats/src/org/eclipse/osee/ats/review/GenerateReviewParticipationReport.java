@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
@@ -87,7 +87,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             try {
                job.join();
             } catch (InterruptedException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }
@@ -122,7 +122,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             }, forcePend);
 
          } catch (Exception ex) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.toString(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;

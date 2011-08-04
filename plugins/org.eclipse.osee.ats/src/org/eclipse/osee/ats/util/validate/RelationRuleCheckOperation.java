@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -29,7 +29,7 @@ final class RelationRuleCheckOperation extends AbstractOperation {
    private final Set<RelationSetRule> relationSetRules;
 
    public RelationRuleCheckOperation(Collection<Artifact> itemsToCheck, XResultData rd, Set<RelationSetRule> relationSetRules) {
-      super("Relation Check", AtsPlugin.PLUGIN_ID);
+      super("Relation Check", Activator.PLUGIN_ID);
       this.itemsToCheck = itemsToCheck;
       this.rd = rd;
       this.relationSetRules = relationSetRules;

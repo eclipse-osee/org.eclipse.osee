@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -156,7 +156,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                               Thread.sleep(1000);
                            }
                         } catch (Exception ex) {
-                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      }
                   }
@@ -177,7 +177,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             loadTable();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       // reset bold for label
       SMAEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
@@ -249,7 +249,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             refresh();
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -332,7 +332,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
          }
          updateExtraInfoLabel(backgroundColor, infoStr);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Status(IStatus.ERROR, getClass().getSimpleName(), ex.getLocalizedMessage());
       }
       return returnStatus;

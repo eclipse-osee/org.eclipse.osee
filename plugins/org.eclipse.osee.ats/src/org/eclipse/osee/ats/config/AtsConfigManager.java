@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
@@ -77,7 +77,7 @@ public class AtsConfigManager extends AbstractOperation {
     * @param actionableItems - list of actionable items
     */
    public AtsConfigManager(Display display, String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
-      super("Configure Ats", AtsPlugin.PLUGIN_ID);
+      super("Configure Ats", Activator.PLUGIN_ID);
       this.name = name;
       this.teamDefName = teamDefName;
       this.versionNames = versionNames;
@@ -229,7 +229,7 @@ public class AtsConfigManager extends AbstractOperation {
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
                      workDefinition.getName(), AtsUtil.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
                return Status.OK_STATUS;
             }

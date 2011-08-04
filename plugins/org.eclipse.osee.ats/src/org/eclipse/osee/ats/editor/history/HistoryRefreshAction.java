@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.history.operations.LoadChangesOperation;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -51,7 +51,7 @@ public final class HistoryRefreshAction extends Action {
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadChangesOperation(xHistoryViewer.awa, xHistoryViewer.changes));
-      IOperation operation = new CompositeOperation("Load History Viewer", AtsPlugin.PLUGIN_ID, ops);
+      IOperation operation = new CompositeOperation("Load History Viewer", Activator.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, true, Job.LONG, new JobChangeAdapter() {
 
          @Override
@@ -69,7 +69,7 @@ public final class HistoryRefreshAction extends Action {
                            xHistoryViewer.getXViewer().setInput(xHistoryViewer.changes);
                         }
                      } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      } finally {
                         setEnabled(true);
                         setToolTipText("Refresh History");

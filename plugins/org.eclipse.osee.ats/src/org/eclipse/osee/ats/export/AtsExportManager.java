@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAPrint;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -105,7 +105,7 @@ public class AtsExportManager extends Action {
             } else if (Artifacts.isOfType(selectedObject, AtsArtifactTypes.Action)) {
                smaArts.addAll(ActionManager.getTeams(selectedObject));
             } else {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");
             }
          }
       }
@@ -185,7 +185,7 @@ public class AtsExportManager extends Action {
          try {
             AtsExportManager.export(treeViewer.getSelection(), ExportOption.POPUP_DIALOG);
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

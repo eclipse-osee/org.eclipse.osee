@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.editor.widget.StateHoursSpentXWidget;
 import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
@@ -115,7 +115,7 @@ public class SMAWorkFlowSection extends SectionPart {
                try {
                   createSection(section);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
@@ -123,7 +123,7 @@ public class SMAWorkFlowSection extends SectionPart {
          section.layout();
          section.setExpanded(isCurrentSectionExpanded);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -418,7 +418,7 @@ public class SMAWorkFlowSection extends SectionPart {
                   item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
                      WorkflowManagerCore.isEditable(sma, sma.getStateDefinition(), false));
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
             if (workflowTransitionComposite != null) {
@@ -427,7 +427,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             editor.onDirtied();
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    };
@@ -447,7 +447,7 @@ public class SMAWorkFlowSection extends SectionPart {
             xWidget.refresh();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

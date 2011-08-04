@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.action.INewActionListener;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -91,8 +91,8 @@ public class NewActionJob extends Job {
          AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenAll);
          OseeNotificationManager.getInstance().sendNotifications();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
          if (monitor != null) {
             monitor.done();

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,7 +50,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
             arts.add(prod);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't Load product list.");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't Load product list.");
       }
       setArtifacts(arts);
    }

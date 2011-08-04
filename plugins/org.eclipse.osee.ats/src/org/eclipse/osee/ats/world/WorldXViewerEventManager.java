@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -130,7 +130,7 @@ public class WorldXViewerEventManager {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 
@@ -145,7 +145,7 @@ public class WorldXViewerEventManager {
                   handler.getWorldXViewer().remove(deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
                }
             } catch (Exception ex) {
-               OseeLog.logf(AtsPlugin.class, Level.SEVERE, ex, "Error processing event handler for deleted - %s",
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for deleted - %s",
                   handler);
             }
          }
@@ -167,7 +167,7 @@ public class WorldXViewerEventManager {
                   handler.relationsModifed(relModifiedArts);
                }
             } catch (Exception ex) {
-               OseeLog.logf(AtsPlugin.class, Level.SEVERE, ex, "Error processing event handler for - %s", handler);
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for - %s", handler);
             }
          }
       }

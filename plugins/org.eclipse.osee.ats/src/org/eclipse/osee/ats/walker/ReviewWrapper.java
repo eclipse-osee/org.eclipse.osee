@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.walker;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -80,7 +80,7 @@ public class ReviewWrapper implements IActionWalkerItem {
       try {
          AtsUtil.openInAtsWorldEditor("Reviews", Collections.castAll(Artifact.class, ReviewManager.getReviews(teamArt)));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

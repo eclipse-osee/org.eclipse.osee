@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -100,7 +100,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
          try {
             job.join();
          } catch (InterruptedException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -125,7 +125,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          if (loading) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
          }
          String selectedName = "";
          try {
@@ -156,9 +156,9 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
                str += " => " + ex.getLocalizedMessage();
             }
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             monitor.done();
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, str, null);
          } finally {
             setLoading(false);
          }

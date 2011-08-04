@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.goal.RemoveFromGoalAction;
 import org.eclipse.osee.ats.goal.SetGoalOrderAction;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IMenuActionProvider;
 import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
@@ -207,7 +207,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
             customizeData, TableLoadOption.None);
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
    }
@@ -274,7 +274,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
                editor.getAwa().setRelationOrder(AtsRelationTypes.Goal_Member, members);
                editor.doSave(null);
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };

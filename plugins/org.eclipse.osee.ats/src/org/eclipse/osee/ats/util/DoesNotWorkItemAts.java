@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.core.workdef.ModelUtil;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -75,7 +75,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       //      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileOldWay();

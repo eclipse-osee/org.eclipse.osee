@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -66,7 +66,7 @@ public class NewActionPage3 extends WizardPage {
                item.wizardCompleted(action, wizard, transaction);
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -99,7 +99,7 @@ public class NewActionPage3 extends WizardPage {
                      item.getWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts(), stringBuffer);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
             stringBuffer.append("</WorkPage>");
@@ -110,7 +110,7 @@ public class NewActionPage3 extends WizardPage {
             comp.layout();
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -144,7 +144,7 @@ public class NewActionPage3 extends WizardPage {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       setErrorMessage(null);
@@ -163,7 +163,7 @@ public class NewActionPage3 extends WizardPage {
 
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWizardItem");
       if (point == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWizardItem extension point");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWizardItem extension point");
          return;
       }
       IExtension[] extensions = point.getExtensions();
@@ -182,7 +182,7 @@ public class NewActionPage3 extends WizardPage {
                      Object obj = taskClass.newInstance();
                      wizardExtensionItems.add((IAtsWizardItem) obj);
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsWizardItem extension", ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading AtsWizardItem extension", ex);
                   }
                }
 
@@ -199,7 +199,7 @@ public class NewActionPage3 extends WizardPage {
                return true;
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return false;
@@ -216,7 +216,7 @@ public class NewActionPage3 extends WizardPage {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return Result.TrueResult;

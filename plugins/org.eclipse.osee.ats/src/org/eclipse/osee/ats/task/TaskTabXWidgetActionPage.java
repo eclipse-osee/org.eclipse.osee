@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
@@ -141,7 +141,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
             toolBarManager.add(new TaskDeleteAction(taskComposite));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       toolBarManager.add(new Separator());
       toolBarManager.add(taskComposite.getTaskXViewer().getCustomizeAction());
@@ -189,7 +189,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
 
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
          return fMenu;
@@ -260,7 +260,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       try {
          worldAssigneeFilter = new WorldAssigneeFilter();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", IAction.AS_CHECK_BOX) {

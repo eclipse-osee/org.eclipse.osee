@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.CreateNewUsersByNameItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.operation.PurgeUser;
@@ -39,7 +39,7 @@ public class AtsUserNavigateItems implements IUserNavigateItem {
             new SearchNavigateItem(parentItem, new UserRelatedToAtsObjectSearch("Show Active User Related Objects",
                null, true, LoadView.WorldEditor));
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return items;

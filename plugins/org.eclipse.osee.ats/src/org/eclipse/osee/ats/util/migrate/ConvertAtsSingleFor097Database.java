@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.migrate;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -62,7 +62,7 @@ public class ConvertAtsSingleFor097Database extends XNavigateItemAction {
             XResultDataUI.report(xResultData,getName());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 }

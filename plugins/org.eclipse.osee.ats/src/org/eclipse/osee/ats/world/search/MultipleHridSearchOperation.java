@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -64,7 +64,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
    private final MultipleHridSearchData data;
 
    public MultipleHridSearchOperation(MultipleHridSearchData data) {
-      super(data.getName(), AtsPlugin.PLUGIN_ID);
+      super(data.getName(), Activator.PLUGIN_ID);
       this.data = data;
    }
 
@@ -163,7 +163,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
             });
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -194,7 +194,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                try {
                   SMAEditor.editArtifact(artifact);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }

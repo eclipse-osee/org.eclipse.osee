@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 /**
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 public class AtsNavigateViewItemsOperation extends AbstractOperation {
 
    public AtsNavigateViewItemsOperation() {
-      super("Loading ATS Navigate View Items", AtsPlugin.PLUGIN_ID);
+      super("Loading ATS Navigate View Items", Activator.PLUGIN_ID);
    }
 
    @Override

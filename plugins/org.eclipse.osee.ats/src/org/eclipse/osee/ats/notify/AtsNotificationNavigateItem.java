@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.notify;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.notify.IAtsNotification;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -66,7 +66,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
       private final Collection<IAtsNotification> notifications;
 
       public NotificationJob(boolean sendNotifications, Collection<IAtsNotification> notifications) {
-         super("Processing ATS Notifications", AtsPlugin.PLUGIN_ID);
+         super("Processing ATS Notifications", Activator.PLUGIN_ID);
          this.sendNotifications = sendNotifications;
          this.notifications = notifications;
       }
@@ -101,7 +101,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                AWorkbench.popup("Complete", numEvents + " Notifications Sent");
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    };

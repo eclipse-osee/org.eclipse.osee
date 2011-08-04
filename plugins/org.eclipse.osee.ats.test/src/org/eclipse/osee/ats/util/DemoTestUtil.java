@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -211,7 +211,7 @@ public class DemoTestUtil {
             "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
             UserManager.getUser().getUserId().equals("Joe Smith"));
       } catch (OseeAuthenticationException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          Assert.fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
       }
 
@@ -226,7 +226,7 @@ public class DemoTestUtil {
          return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
             team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }

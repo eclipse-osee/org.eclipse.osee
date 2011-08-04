@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -104,7 +104,7 @@ public class AtsDeleteManager {
          }
       }
       AbstractOperation operation =
-         new AbstractOperation((purge ? "Purge" : "Delete") + " ATS Objects", AtsPlugin.PLUGIN_ID) {
+         new AbstractOperation((purge ? "Purge" : "Delete") + " ATS Objects", Activator.PLUGIN_ID) {
 
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {

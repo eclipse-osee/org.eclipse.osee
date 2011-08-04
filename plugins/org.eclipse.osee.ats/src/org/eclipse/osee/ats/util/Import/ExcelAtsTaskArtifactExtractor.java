@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -162,7 +162,7 @@ public class ExcelAtsTaskArtifactExtractor {
          AtsUtilCore.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
+               OseeLog.log(Activator.class, Level.SEVERE, "Null header column => " + i);
             } else if (headerRow[i].equalsIgnoreCase("Originator")) {
                processOriginator(row, taskArt, i);
             } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
@@ -184,7 +184,7 @@ public class ExcelAtsTaskArtifactExtractor {
             } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
                processEstimatedHours(row, taskArt, i);
             } else {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
+               OseeLog.log(Activator.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
             }
          }
          AtsUtilCore.setEmailEnabled(true);
@@ -210,7 +210,7 @@ public class ExcelAtsTaskArtifactExtractor {
             }
          }
          if (!fullRow) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
+            OseeLog.log(Activator.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
          }
          return fullRow;
       }
@@ -306,11 +306,11 @@ public class ExcelAtsTaskArtifactExtractor {
                try {
                   user = UserManager.getUserByName(userName);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
             if (user == null) {
-               OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+               OseeLog.logf(Activator.class, Level.SEVERE,
                   "Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum);
                user = UserManager.getUser();
             }
@@ -328,7 +328,7 @@ public class ExcelAtsTaskArtifactExtractor {
             u = UserManager.getUserByName(userName);
          }
          if (u == null) {
-            OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+            OseeLog.logf(Activator.class, Level.SEVERE,
                "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum);
          }
          taskArt.internalSetCreatedBy(u);

@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -66,7 +66,7 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
          AtsExportManager.export(artifacts,
             mainPage.getSelectedExportOptions().toArray(new ExportOption[mainPage.getSelectedExportOptions().size()]));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return true;
    }
@@ -76,7 +76,7 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
       try {
          mainPage = new AtsExportPage(selection);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

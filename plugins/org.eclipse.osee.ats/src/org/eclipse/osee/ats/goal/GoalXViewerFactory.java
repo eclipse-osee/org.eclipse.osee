@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
 import org.eclipse.osee.ats.column.TypeColumn;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -91,7 +91,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       registerAllAttributeColumns();
    }

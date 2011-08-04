@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
@@ -100,7 +100,7 @@ public class SMAStatusDialog extends MessageDialog {
                percentSet = true;
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          percent.addModifyListener(new ModifyListener() {
             @Override
@@ -182,10 +182,10 @@ public class SMAStatusDialog extends MessageDialog {
       }
       if (awas.size() > 1) {
          if (!splitRadio.isSelected() && !eachRadio.isSelected()) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Either split or each must be selected");
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Either split or each must be selected");
          }
          if (splitRadio.isSelected() && eachRadio.isSelected()) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Select only split or each");
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Select only split or each");
          }
       }
       return Status.OK_STATUS;

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.core.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.core.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.core.validator.AtsOperationalImpactValidator;
 import org.eclipse.osee.ats.core.validator.AtsOperationalImpactWithWorkaroundValidator;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
 import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
@@ -75,7 +75,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          try {
             return new XAtsProgramComboWidget();
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return toReturn;

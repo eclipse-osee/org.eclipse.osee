@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.column.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,7 +58,7 @@ public class DeadlineManager {
             return Result.FalseResult;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       if (new Date().after(getDeadlineDate(sma))) {
          return new Result(true, "Need By Date has passed.");
@@ -72,7 +72,7 @@ public class DeadlineManager {
             return Result.FalseResult;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       Date ecdDate = getEcdDate(sma);
       Date deadlineDate = getDeadlineDate(sma);
@@ -111,7 +111,7 @@ public class DeadlineManager {
             return new Result(true, "Need By Date is past current Release Date.");
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return Result.FalseResult;
    }

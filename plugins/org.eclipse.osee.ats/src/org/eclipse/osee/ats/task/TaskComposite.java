@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldContentProvider;
@@ -123,7 +123,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
          WorldXViewerEventManager.add(this);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -204,7 +204,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             }
             iXTaskViewer.getEditor().onDirtied();
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -223,7 +223,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             add(Collections.singleton(taskArt));
             AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return taskArt;
@@ -322,7 +322,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             }
             transaction.execute();
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -340,7 +340,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             loadTable();
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -384,7 +384,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       try {
          loadTable();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -43,7 +43,7 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
             try {
                hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
 
             if (!hasPermissionToRead) {
@@ -61,7 +61,7 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
                            AHTML.simplePage("Action [" + artifact.getName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
                         httpResponse.getPrintStream().println(html);
                      } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                         httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
                            String.format("Unable to open: [%s]", artifact.getName()), ex);
                      } finally {
@@ -74,13 +74,13 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
                   try {
                      Thread.sleep(350);
                   } catch (InterruptedException ex) {
-                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                   count++;
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
                String.format("Unable to open: [%s]", artifact.getName()), ex);
          }

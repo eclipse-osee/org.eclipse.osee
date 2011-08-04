@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
@@ -120,7 +120,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             throw new OseeArgumentException("Editor Input not SMAEditorInput");
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;
       }
 
@@ -143,7 +143,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
          setActivePage(SMAWorkFlowTab.ID);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       enableGlobalPrint();
@@ -175,7 +175,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          workFlowTab = new SMAWorkFlowTab(this, awa);
          addPage(workFlowTab);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -216,14 +216,14 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
                awa.saveSMA(transaction);
                transaction.execute();
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             onDirtied();
          }
 
          OseeNotificationManager.getInstance().sendNotifications();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -298,7 +298,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
          return new Result((rString != null), rString);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result(true, ex.getLocalizedMessage());
       }
    }
@@ -322,7 +322,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          int metricsPageIndex = addPage(composite);
          setPageText(metricsPageIndex, "Metrics");
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
    }
@@ -346,7 +346,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
                try {
                   awa.persist(getClass().getSimpleName());
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -359,7 +359,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          attributesPageIndex = addPage(composite);
          setPageText(attributesPageIndex, "Attributes");
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -392,7 +392,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          onDirtied();
          updatePartName();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -427,7 +427,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
                page.openEditor(new SMAEditorInput(sma), EDITOR_ID);
                VisitedItems.addVisited(sma);
             } catch (PartInitException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -531,7 +531,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             return false;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
       }
       return true;

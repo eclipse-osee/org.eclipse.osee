@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.version.VersionLockedType;
 import org.eclipse.osee.ats.core.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -104,7 +104,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       return false;
@@ -220,7 +220,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          getXViewer().update(awas.toArray(), null);
          return;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

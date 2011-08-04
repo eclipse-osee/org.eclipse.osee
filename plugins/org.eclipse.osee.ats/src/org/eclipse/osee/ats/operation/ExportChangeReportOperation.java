@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -52,7 +52,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final boolean reverse;
 
    public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, Appendable resultFolder) {
-      super("Exporting Change Report(s)", AtsPlugin.PLUGIN_ID);
+      super("Exporting Change Report(s)", Activator.PLUGIN_ID);
       this.workflows = workflows;
       this.reverse = reverse;
       this.resultFolder = resultFolder;

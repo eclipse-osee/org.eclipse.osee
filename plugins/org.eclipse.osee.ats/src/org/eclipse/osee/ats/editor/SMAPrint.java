@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.workflow.note.NoteItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
@@ -64,7 +64,7 @@ public class SMAPrint extends Action {
          XResultData xResultData = getResultData();
          XResultDataUI.report(xResultData, "Print Preview of " + sma.getName(), Manipulations.RAW_HTML);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
    }
@@ -152,7 +152,7 @@ public class SMAPrint extends Action {
          }
          rd.addRaw(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          rd.addRaw("Task Exception - " + ex.getLocalizedMessage());
       }
    }

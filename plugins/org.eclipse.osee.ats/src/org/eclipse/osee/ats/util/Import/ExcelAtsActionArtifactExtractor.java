@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.core.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -112,7 +112,7 @@ public class ExcelAtsActionArtifactExtractor {
 
                } catch (Exception ex) {
                   rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -130,7 +130,7 @@ public class ExcelAtsActionArtifactExtractor {
                }
             } catch (Exception ex) {
                rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          // If no assignees, ATS will auto-assign to correct person
@@ -223,7 +223,7 @@ public class ExcelAtsActionArtifactExtractor {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          AtsUtilCore.setEmailEnabled(true);
       }
@@ -252,7 +252,7 @@ public class ExcelAtsActionArtifactExtractor {
             xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(actionDatas, rd), true));
             xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
          } catch (SAXException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             rd.logError("Exception in parsing import (see log for details) " + (Strings.isValid(ex.getLocalizedMessage()) ? ex.getLocalizedMessage() : ""));
          }
          if (!rd.isEmpty()) {

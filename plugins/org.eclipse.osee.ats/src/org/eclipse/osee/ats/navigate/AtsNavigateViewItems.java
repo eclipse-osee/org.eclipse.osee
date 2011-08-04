@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.internal.ATSPerspective;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.notify.EmailActionsBlam;
@@ -184,7 +184,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          createAdminItems(item, items);
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -292,7 +292,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new GenerateFullVersionReportItem(releaseItems);
          items.add(releaseItems);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Can't create Goals section");
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }
    }
 
@@ -305,14 +305,14 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", UserManager.getUser()));
          items.add(goalItem);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Can't create Goals section");
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }
    }
 
    private void addExtensionPointItems(XNavigateItem parentItem, List<XNavigateItem> items) {
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsNavigateItem");
       if (point == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsNavigateItem extension point");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsNavigateItem extension point");
          return;
       }
       IExtension[] extensions = point.getExtensions();
@@ -336,7 +336,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
                   nameToNavItem.put(navItem.getName(), navItem);
                }
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error loading AtsNavigateItem extension", ex);
+               OseeLog.log(Activator.class, Level.SEVERE, "Error loading AtsNavigateItem extension", ex);
             }
          }
       }

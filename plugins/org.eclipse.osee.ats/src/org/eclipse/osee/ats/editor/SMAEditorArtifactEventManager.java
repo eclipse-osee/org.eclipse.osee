@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -84,7 +84,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          try {
             safelyProcessHandler(artifactEvent, handler);
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
          }
       }
    }
@@ -207,7 +207,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
       }
       return false;

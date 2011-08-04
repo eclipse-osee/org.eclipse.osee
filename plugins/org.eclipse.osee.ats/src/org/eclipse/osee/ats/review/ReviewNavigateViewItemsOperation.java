@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.review;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 
 /**
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 public class ReviewNavigateViewItemsOperation extends AbstractOperation {
 
    public ReviewNavigateViewItemsOperation() {
-      super("Loading Review Navigate View Items", AtsPlugin.PLUGIN_ID);
+      super("Loading Review Navigate View Items", Activator.PLUGIN_ID);
    }
 
    @Override

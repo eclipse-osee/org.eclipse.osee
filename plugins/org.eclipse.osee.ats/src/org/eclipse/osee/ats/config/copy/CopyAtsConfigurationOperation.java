@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -44,7 +44,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       new HashMap<TeamDefinitionArtifact, TeamDefinitionArtifact>();
 
    public CopyAtsConfigurationOperation(ConfigData data, XResultData resultData) {
-      super("Copy ATS Configuration", AtsPlugin.PLUGIN_ID);
+      super("Copy ATS Configuration", Activator.PLUGIN_ID);
       this.data = data;
       this.resultData = resultData;
    }

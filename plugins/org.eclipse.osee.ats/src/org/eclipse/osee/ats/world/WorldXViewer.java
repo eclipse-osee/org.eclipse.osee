@@ -53,7 +53,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.notify.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -143,7 +143,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             try {
                new ColumnMultiEditAction(thisXViewer).run();
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -162,7 +162,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                   refresh(getSelectedArtifactItems().toArray()[0]);
                }
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -179,7 +179,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                }
                transaction.execute();
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
 
          }
@@ -225,7 +225,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                rData.logError(attributeType + " not valid for artifact " + art.getGuid() + " - " + art.getName());
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             rData.logError(ex.getLocalizedMessage());
          }
       }
@@ -239,7 +239,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             ArtifactPromptChange.promptChangeAttribute(attributeType, useArts, persist);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -280,7 +280,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                return false;
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             return false;
          }
       }
@@ -524,7 +524,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return smaArts;
    }

@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
@@ -128,7 +128,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
    }
 
    public File getSampleSpreadsheetFile() throws Exception {
-      PluginUtil util = new PluginUtil(AtsPlugin.PLUGIN_ID);
+      PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
       return util.getPluginFile("support/Action Import.xml");
    }
 

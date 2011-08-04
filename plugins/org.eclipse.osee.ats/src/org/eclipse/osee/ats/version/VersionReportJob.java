@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.workflow.PriorityUtil;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -57,7 +57,7 @@ public class VersionReportJob extends Job {
          final String html = getReleaseReportHtml(title + " - " + DateUtil.getMMDDYYHHMM(), verArt, monitor);
          ResultsEditor.open(new XResultPage(title, html, Manipulations.HTML_MANIPULATIONS));
       } catch (Exception ex) {
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.toString(), ex);
       }
       monitor.done();
       return Status.OK_STATUS;

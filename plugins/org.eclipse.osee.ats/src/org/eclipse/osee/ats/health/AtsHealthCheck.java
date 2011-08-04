@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -31,7 +31,7 @@ public class AtsHealthCheck {
 
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsHealthCheck");
       if (point == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsHealthCheck extension point");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsHealthCheck extension point");
          return healthCheckItems;
       }
       IExtension[] extensions = point.getExtensions();
@@ -50,7 +50,7 @@ public class AtsHealthCheck {
                      Object obj = taskClass.newInstance();
                      healthCheckItems.add((IAtsHealthCheck) obj);
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsHealthCheck extension", ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading AtsHealthCheck extension", ex);
                   }
                }
             }

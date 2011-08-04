@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.column;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.review.ReviewFormalType;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -50,7 +50,7 @@ public class ReviewFormalTypeColumn extends XViewerAtsAttributeValueColumn {
          try {
             return ReviewFormalType.valueOf(value);
          } catch (IllegalArgumentException ex) {
-            OseeLog.logf(AtsPlugin.class, Level.SEVERE, ex, "Unexpected formal type [%s]", value);
+            OseeLog.logf(Activator.class, Level.SEVERE, ex, "Unexpected formal type [%s]", value);
          }
       }
       return null;

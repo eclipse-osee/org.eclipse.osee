@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.core.workdef.provider.AtsWorkDefinitionProviderCore;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -119,7 +119,7 @@ public class AtsWorkDefinitionProvider {
          String importStr = String.format("WorkDefinition [%s] already loaded into database", workDefName);
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Overwrite Work Definition",
             importStr + "\n\nOverwrite?")) {
-            OseeLog.log(AtsPlugin.class, Level.INFO, importStr + "...skipping");
+            OseeLog.log(Activator.class, Level.INFO, importStr + "...skipping");
             resultData.log(importStr + "...skipping");
             return artifact;
          } else {
@@ -163,7 +163,7 @@ public class AtsWorkDefinitionProvider {
 
    public String loadWorkFlowDefinitionStringFromFile(WorkDefinitionSheet sheet) throws OseeCoreException {
       if (!sheet.getFile().exists()) {
-         OseeLog.logf(AtsPlugin.class, Level.SEVERE, "WorkDefinition [%s]", sheet);
+         OseeLog.logf(Activator.class, Level.SEVERE, "WorkDefinition [%s]", sheet);
          return null;
       }
       try {

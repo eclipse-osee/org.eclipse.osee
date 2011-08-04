@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -289,7 +289,7 @@ public class DefectXViewer extends XViewer {
       try {
          promptChangeData((XViewerColumn) treeColumn.getData(), defectItems, isColumnMultiEditEnabled());
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -316,7 +316,7 @@ public class DefectXViewer extends XViewer {
             return promptChangeData(xCol, defectItems, false);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

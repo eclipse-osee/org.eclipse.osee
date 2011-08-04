@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
@@ -141,7 +141,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      job.schedule();
                   }
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
@@ -180,7 +180,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      job.schedule();
                   }
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -198,7 +198,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -229,7 +229,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Review Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();
@@ -311,7 +311,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      }
                      transitionMgr.getTransaction().execute();
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             }

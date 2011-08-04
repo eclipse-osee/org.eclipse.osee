@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -114,14 +114,14 @@ public final class NavigateTestUtil {
 
    public static void compare(int expectedNumOfType, int actualNumOfType, String expectedStr) {
       if (expectedNumOfType != actualNumOfType) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, expectedStr, null);
+         OseeLog.log(Activator.class, Level.SEVERE, expectedStr, null);
       }
       Assert.assertTrue(expectedStr, actualNumOfType == expectedNumOfType);
    }
 
    public static void compare(boolean expectedCond, boolean actualCond, String expectedStr) {
       if (expectedCond != actualCond) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, expectedStr, null);
+         OseeLog.log(Activator.class, Level.SEVERE, expectedStr, null);
       }
       Assert.assertTrue(expectedStr, expectedCond == actualCond);
    }

@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.editor.history.column.EventColumn;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -29,7 +29,7 @@ public final class LoadChangesOperation extends AbstractOperation {
    private final Artifact workflowArtifact;
 
    public LoadChangesOperation(Artifact workflowArtifact, Collection<Change> changes) {
-      super("Load History Viewer - Changes", AtsPlugin.PLUGIN_ID);
+      super("Load History Viewer - Changes", Activator.PLUGIN_ID);
       this.workflowArtifact = workflowArtifact;
       this.changes = changes;
    }
@@ -46,7 +46,7 @@ public final class LoadChangesOperation extends AbstractOperation {
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error loading History View - See Error Log", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error loading History View - See Error Log", ex);
       }
    }
 }

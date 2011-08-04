@@ -46,7 +46,7 @@ import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.core.workflow.XStateDam;
 import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -141,8 +141,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   String.format("Sync - %s [%s]", DateUtil.getDateNow(), getName()), html);
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;
@@ -462,7 +462,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   artifact.persist(transaction);
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
                testNameToResultsMap.put(
                   "testAtsAttributeValues",
                   "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
@@ -470,7 +470,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          transaction.execute();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          testNameToResultsMap.put("testAtsAttributeValues", "Error: Exception: " + ex.getLocalizedMessage());
       }
    }
@@ -524,7 +524,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   "Error: Action " + XResultDataUI.getHyperlink(artifact) + " has no Team Workflows\n");
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
@@ -562,7 +562,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testAtsWorkflowsHaveAction", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
@@ -584,7 +584,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testAtsWorkflowsHaveZeroOrOneVersion",
                "Error: Exception: " + ex.getLocalizedMessage());
          }
@@ -607,7 +607,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
@@ -617,7 +617,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                badTasks));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          testNameToResultsMap.put("testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
       }
    }
@@ -634,7 +634,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testActionableItemToTeamDefinition",
                "Error: Exception: " + ex.getLocalizedMessage());
          }
@@ -656,7 +656,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testTeamDefinitionHasWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
@@ -700,7 +700,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testTeamDefinitionHasWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
@@ -781,7 +781,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          } catch (OseeCoreException ex) {
             testNameToResultsMap.put("testStateMachineAssignees",
                "Error: Exception retrieving users: " + ex.getLocalizedMessage());
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       for (Artifact art : artifacts) {
@@ -822,7 +822,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             } catch (OseeCoreException ex) {
                testNameToResultsMap.put("testStateMachineAssignees",
                   "Error: Exception testing assignees: " + ex.getLocalizedMessage());
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
@@ -62,7 +62,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    private IStatus createStatus(String message) {
-      return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, message);
+      return new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
    }
 
    private String checkActionableItems(Collection<Artifact> artifacts) throws OseeCoreException {

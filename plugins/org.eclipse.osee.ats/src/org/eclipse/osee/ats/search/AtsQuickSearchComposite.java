@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.search;
 
 import java.io.File;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -66,10 +66,10 @@ public class AtsQuickSearchComposite extends Composite {
          public void mouseDoubleClick(MouseEvent mouseEvent) {
             if (mouseEvent.button == 3) {
                try {
-                  File file = (new PluginUtil(AtsPlugin.PLUGIN_ID)).getPluginFile("support/OSEEDay.wav");
+                  File file = (new PluginUtil(Activator.PLUGIN_ID)).getPluginFile("support/OSEEDay.wav");
                   Program.launch(file.getAbsolutePath());
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }

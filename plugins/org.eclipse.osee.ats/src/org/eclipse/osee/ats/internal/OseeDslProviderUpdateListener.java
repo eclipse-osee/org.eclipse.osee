@@ -54,7 +54,7 @@ public final class OseeDslProviderUpdateListener implements IArtifactEventListen
       try {
          dslProvider.loadDsl();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.workflow.log.LogType;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -86,8 +86,8 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
             runIt(monitor, rd);
             XResultDataUI.report(rd, getName());
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
          } finally {
             OseeNotificationManager.getInstance().setEmailEnabled(true);
          }
@@ -155,7 +155,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             if (testNameToResultsMap != null) {
                testNameToResultsMap.put("convertWorkPageDefinitions", "Error: Exception: " + ex.getLocalizedMessage());
             }
@@ -296,7 +296,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             if (testNameToResultsMap != null) {
                testNameToResultsMap.put("convertWorkPageDefinitions", "Error: Exception: " + ex.getLocalizedMessage());
             }

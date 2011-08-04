@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -74,7 +74,7 @@ public class SMAAssigneesHeader extends Composite {
                         editor.doSave(null);
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
@@ -83,7 +83,7 @@ public class SMAAssigneesHeader extends Composite {
             origLabel.setLayoutData(new GridData());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       valueLabel = editor.getToolkit().createLabel(this, "Not Set");
@@ -102,7 +102,7 @@ public class SMAAssigneesHeader extends Composite {
             value = sma.getStateMgr().getAssigneesStr();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          value = ex.getLocalizedMessage();
          valueLabel.setToolTipText(value);
       }

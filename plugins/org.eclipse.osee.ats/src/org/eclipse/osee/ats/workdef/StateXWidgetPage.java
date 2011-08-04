@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -103,7 +103,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             processXmlLayoutDatas(xWidgetsXml);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error processing attributes", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error processing attributes", ex);
       }
    }
 
@@ -144,7 +144,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             layoutData.getXWidget().dispose();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -172,7 +172,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return OK_PAIR;
    }
@@ -213,7 +213,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
                page) ? " (return)" : "") + "\n");
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return sb.toString();
    }
@@ -378,7 +378,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
          for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
             Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, isEditable);
             if (result.isFalse()) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
             }
          }
       }

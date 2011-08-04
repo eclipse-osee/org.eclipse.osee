@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.walker.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.walker.ActionWalkerView;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,7 +27,7 @@ public class OpenActionViewAction extends Action {
       try {
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ActionWalkerView.VIEW_ID);
       } catch (PartInitException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to open outline", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unable to open outline", ex);
       }
    }
 

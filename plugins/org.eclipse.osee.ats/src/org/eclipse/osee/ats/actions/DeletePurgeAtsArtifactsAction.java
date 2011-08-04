@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -39,7 +39,7 @@ public class DeletePurgeAtsArtifactsAction extends Action {
          AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(), false,
             DeleteOption.Prompt);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -47,7 +47,7 @@ public class DeletePurgeAtsArtifactsAction extends Action {
       try {
          setEnabled(!selectedAtsArtifacts.getSelectedSMAArtifacts().isEmpty());
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          setEnabled(false);
       }
    }

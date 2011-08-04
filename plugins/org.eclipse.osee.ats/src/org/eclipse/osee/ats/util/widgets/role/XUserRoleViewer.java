@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.review.role.UserRoleError;
 import org.eclipse.osee.ats.core.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.review.role.UserRoleValidator;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -273,7 +273,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             xViewer.set(roleMgr.getUserRoles());
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       refresh();
    }
@@ -298,7 +298,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             removeUserRoleHelper(items, transaction);
             transaction.execute();
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -322,7 +322,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          notifyXModifiedListeners();
          loadTable();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -381,7 +381,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          extraInfoLabel.setText("Select \"New Role\" to add.  Select icon in cell to update value.");
          extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Status(IStatus.ERROR, getClass().getSimpleName(),
             "Exception validating roles. See log for details. " + ex.getLocalizedMessage(), ex);
       }
@@ -419,7 +419,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "User Role Item Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();

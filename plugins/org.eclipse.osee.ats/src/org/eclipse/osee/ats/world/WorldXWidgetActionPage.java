@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -107,7 +107,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       try {
          worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.Search, false);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -189,7 +189,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       try {
          reSearch();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -338,7 +338,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       try {
          worldAssigneeFilter = new WorldAssigneeFilter();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", IAction.AS_CHECK_BOX) {
@@ -347,7 +347,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             try {
                updateExtraInfoLine();
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -462,7 +462,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                   }
                });
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -485,7 +485,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                   }
                });
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -517,7 +517,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                   }
                });
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -548,7 +548,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                   }
                });
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -579,7 +579,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                   }
                });
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -602,7 +602,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).handleSaveButtonPressed();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -613,7 +613,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).isSaveButtonAvailable();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

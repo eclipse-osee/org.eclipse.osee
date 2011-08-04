@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -123,10 +123,10 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
                return new Result("Weekly Benefit Hours not set.");
             }
          } catch (NumberFormatException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "HRID " + artifact.getHumanReadableId(), ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "HRID " + artifact.getHumanReadableId(), ex);
             return new Result("Weekly Benefit value is invalid double \"" + value + "\"");
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "HRID " + artifact.getHumanReadableId(), ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "HRID " + artifact.getHumanReadableId(), ex);
             return new Result("Exception calculating cost avoidance.  See log for details.");
          }
          return Result.TrueResult;

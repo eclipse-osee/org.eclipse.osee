@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -75,7 +75,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
          }
          transaction.execute();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       onDirtied();
    }
@@ -174,9 +174,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
          getSite().setSelectionProvider(getTaskActionPage().getTaskComposite().getTaskXViewer());
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } catch (PartInitException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -228,7 +228,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
          try {
             job.join();
          } catch (InterruptedException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -251,7 +251,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
             try {
                page.openEditor(new TaskEditorInput(provider), EDITOR_ID);
             } catch (PartInitException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }, (provider.getTableLoadOptions() != null && provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)));
@@ -275,7 +275,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          if (taskEditor.isLoading()) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
          }
          try {
             taskEditor.setLoading(true);
@@ -300,13 +300,13 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
                      }
                      taskEditor.getTaskActionPage().getTaskComposite().loadTable();
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             });
          } catch (final Exception ex) {
             monitor.done();
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, "Can't load tasks", ex);
          } finally {
             taskEditor.setLoading(false);
          }

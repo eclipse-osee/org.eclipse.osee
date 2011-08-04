@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -122,7 +122,7 @@ public class NewActionPage1 extends WizardPage {
          try {
             treeViewer.getViewer().setInput(ActionableItemManagerCore.getTopLevelActionableItems(Active.Active));
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          treeViewer.getViewer().setSorter(new ArtifactNameSorter());
          treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
@@ -161,7 +161,7 @@ public class NewActionPage1 extends WizardPage {
          }
          ((XText) getXWidget("Title")).setFocus();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -181,7 +181,7 @@ public class NewActionPage1 extends WizardPage {
          getContainer().updateButtons();
          debugPopulated = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -196,7 +196,7 @@ public class NewActionPage1 extends WizardPage {
          try {
             descriptionLabel.setText(aia.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

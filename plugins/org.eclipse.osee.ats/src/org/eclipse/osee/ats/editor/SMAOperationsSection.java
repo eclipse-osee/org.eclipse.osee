@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.actions.WorkflowDebugAction;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -71,7 +71,7 @@ public class SMAOperationsSection extends SectionPart {
       if (operationsSectionProviders == null) {
          operationsSectionProviders = new ArrayList<ISMAOperationsSection>();
          ExtensionDefinedObjects<ISMAOperationsSection> extensions =
-            new ExtensionDefinedObjects<ISMAOperationsSection>(AtsPlugin.PLUGIN_ID + ".AtsAdvancedOperationAction",
+            new ExtensionDefinedObjects<ISMAOperationsSection>(Activator.PLUGIN_ID + ".AtsAdvancedOperationAction",
                "AtsAdvancedOperationAction", "classname");
          for (ISMAOperationsSection item : extensions.getObjects()) {
             operationsSectionProviders.add(item);
@@ -222,7 +222,7 @@ public class SMAOperationsSection extends SectionPart {
          }
          new XButtonViaAction(new ShowWorkDefinitionAction()).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       section.setClient(sectionBody);
@@ -244,7 +244,7 @@ public class SMAOperationsSection extends SectionPart {
          new XButtonViaAction(new FavoriteAction(editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new EmailActionAction(editor)).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       section.setClient(sectionBody);

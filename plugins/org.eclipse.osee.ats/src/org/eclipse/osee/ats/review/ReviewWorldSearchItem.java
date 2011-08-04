@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -237,7 +237,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
             }
          }
       } catch (OseeTypeDoesNotExist ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          // Backward compatibility; remove after 0.9.7 release
          List<String> cancelOrComplete = new ArrayList<String>(2);
          if (!includeCancelled) {

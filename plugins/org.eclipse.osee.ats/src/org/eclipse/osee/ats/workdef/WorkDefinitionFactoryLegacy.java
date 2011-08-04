@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.core.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.WidgetOption;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -95,13 +95,13 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
                         copyKeyValuePair(ruleDef, workRule);
                         idToRule.put(ruleDef.getName(), ruleDef);
                      } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   }
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -213,14 +213,14 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
                   } else {
                      RuleDefinition ruleDef = getRuleById(workRule.getId().replaceFirst("^ats", ""));
                      if (ruleDef == null) {
-                        OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+                        OseeLog.logf(Activator.class, Level.SEVERE,
                            "Null work rule for " + workRule.getId());
                      } else {
                         stateDef.addRule(ruleDef, "from related WorkItemDefintion");
                      }
                   }
                } else {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                  OseeLog.log(Activator.class, Level.SEVERE,
                      "Unexpected item type as page child -> " + itemDef.getType());
                }
             }
@@ -237,7 +237,7 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
                      double percent = new Double(value).doubleValue();
                      if (percent < 0.0 || percent > 1) {
                         OseeLog.log(
-                           AtsPlugin.class,
+                           Activator.class,
                            Level.SEVERE,
                            "Invalid percent value \"" + value + "\" (must be 0..1) for rule " + ruleDefinition.getName(),
                            new OseeArgumentException("state map exception"));
@@ -247,7 +247,7 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
                      }
                   } catch (Exception ex) {
                      OseeLog.log(
-                        AtsPlugin.class,
+                        Activator.class,
                         Level.SEVERE,
                         "Invalid percent value \"" + value + "\" (must be float 0..1) for rule " + ruleDefinition.getName(),
                         new OseeArgumentException("state map exception"));
@@ -255,14 +255,14 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
                }
                IStatus result = workDef.validateStateWeighting();
                if (!result.isOK()) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                  OseeLog.log(Activator.class, Level.SEVERE,
                      "Error translating weight definitions - " + result.getMessage());
                }
             }
          }
          return workDef;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -320,7 +320,7 @@ public class WorkDefinitionFactoryLegacy implements IWorkDefintionFactoryLegacyM
             workDef.getRules().add(ruleDef);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,
+         OseeLog.log(Activator.class, Level.SEVERE,
             "Error processing WorkRuleDefinition for workflow " + workDef.getName(), ex);
       }
    }

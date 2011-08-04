@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.List;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -83,7 +83,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          }
          managedForm.addPart(new SectionPart(createResultsSection(body)));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       AttributeFormPart.setLabelFonts(body, FontManager.getDefaultLabelFont());
@@ -146,7 +146,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          }
          parameterSection.setExpanded(true);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

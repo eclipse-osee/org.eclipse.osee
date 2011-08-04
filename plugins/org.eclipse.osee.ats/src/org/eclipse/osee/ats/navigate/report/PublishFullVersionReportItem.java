@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionReportJob;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -117,7 +117,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
             Program.launch(filename);
             AWorkbench.popup("Publish Complete", "Data Published To \"" + filename + "\"");
          } catch (Exception ex) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.toString(), ex);
          }
 
          monitor.done();

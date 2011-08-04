@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -42,7 +42,7 @@ public class XWorkingBranchEnablement {
          ensurePopulated();
          return !workingBranchCommitInProgress && !workingBranchCreationInProgress && !workingBranchInWork && !committedBranchExists;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
 
@@ -56,7 +56,7 @@ public class XWorkingBranchEnablement {
          ensurePopulated();
          return workingBranch != null && getStatus().isChangesPermitted();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -69,7 +69,7 @@ public class XWorkingBranchEnablement {
          ensurePopulated();
          return workingBranchInWork || committedBranchExists;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -82,7 +82,7 @@ public class XWorkingBranchEnablement {
          ensurePopulated();
          return workingBranchInWork && !committedBranchExists;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -95,7 +95,7 @@ public class XWorkingBranchEnablement {
          ensurePopulated();
          return workingBranchInWork;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

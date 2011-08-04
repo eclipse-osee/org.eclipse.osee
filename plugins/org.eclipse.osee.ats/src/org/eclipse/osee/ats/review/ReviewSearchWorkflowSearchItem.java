@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.review.ReviewFormalType;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.util.widgets.XReviewStateSearchCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -205,7 +205,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
                      }
                      versionCombo.setDataStrings(names.toArray(new String[names.size()]));
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             }
@@ -371,7 +371,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
          }
          return Result.TrueResult;
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
       }
    }

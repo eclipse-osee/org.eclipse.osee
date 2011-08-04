@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -332,7 +332,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             try {
                items.add(UserManager.getUserByUserId(userId));
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
             }
          }
@@ -353,7 +353,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             try {
                items.add(UserManager.getUserByUserId(userId));
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
             }
          }
@@ -397,7 +397,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
                items.add(user);
             } catch (OseeCoreException ex) {
                items.add("Erroring getting user: " + ex.getLocalizedMessage());
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          for (String userName : revOpt.getUserNames()) {
@@ -406,7 +406,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
                items.add(user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }
@@ -452,7 +452,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
                   }
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          return result;

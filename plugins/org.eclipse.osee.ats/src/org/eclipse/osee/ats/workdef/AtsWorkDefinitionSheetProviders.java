@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.core.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -86,7 +86,7 @@ public final class AtsWorkDefinitionSheetProviders {
    public static void importWorkDefinitionSheets(XResultData resultData, boolean onlyWorkDefinitions, SkynetTransaction transaction, Artifact folder, Collection<WorkDefinitionSheet> sheets) throws OseeCoreException {
       for (WorkDefinitionSheet sheet : sheets) {
          if (isValidSheet(sheet)) {
-            OseeLog.logf(AtsPlugin.class, Level.INFO, "Importing ATS sheet [%s]", sheet.getName());
+            OseeLog.logf(Activator.class, Level.INFO, "Importing ATS sheet [%s]", sheet.getName());
             Artifact artifact =
                AtsWorkDefinitionProvider.get().importWorkDefinitionSheetToDb(sheet, resultData, onlyWorkDefinitions,
                   transaction);
@@ -103,7 +103,7 @@ public final class AtsWorkDefinitionSheetProviders {
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          if (isValidSheet(sheet)) {
-            OseeLog.logf(AtsPlugin.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
+            OseeLog.logf(Activator.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
             AtsWorkDefinitionProvider.get().importAIsAndTeamsToDb(sheet, transaction);
          }
       }
@@ -131,16 +131,16 @@ public final class AtsWorkDefinitionSheetProviders {
    public static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<WorkDefinitionSheet>();
       sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, "osee.ats.teamWorkflow", getSupportFile(
-         AtsPlugin.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
+         Activator.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", "osee.ats.taskWorkflow", getSupportFile(
-         AtsPlugin.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));
+         Activator.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision", "osee.ats.decisionReview", getSupportFile(
-         AtsPlugin.PLUGIN_ID, "support/WorkDef_Review_Decision.ats")));
+         Activator.PLUGIN_ID, "support/WorkDef_Review_Decision.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer", "osee.ats.peerToPeerReview", getSupportFile(
-         AtsPlugin.PLUGIN_ID, "support/WorkDef_Review_PeerToPeer.ats")));
+         Activator.PLUGIN_ID, "support/WorkDef_Review_PeerToPeer.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple", "osee.ats.simpleTeamWorkflow", getSupportFile(
-         AtsPlugin.PLUGIN_ID, "support/WorkDef_Team_Simple.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Goal", "osee.ats.goalWorkflow", getSupportFile(AtsPlugin.PLUGIN_ID,
+         Activator.PLUGIN_ID, "support/WorkDef_Team_Simple.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Goal", "osee.ats.goalWorkflow", getSupportFile(Activator.PLUGIN_ID,
          "support/WorkDef_Goal.ats")));
       for (IAtsWorkDefinitionSheetProvider provider : getProviders()) {
          sheets.addAll(provider.getWorkDefinitionSheets());
@@ -153,7 +153,7 @@ public final class AtsWorkDefinitionSheetProviders {
          PluginUtil util = new PluginUtil(pluginId);
          return util.getPluginFile(filename);
       } catch (IOException ex) {
-         OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+         OseeLog.logf(Activator.class, Level.SEVERE,
             ex, "Unable to access work definition sheet [%s]", filename);
       }
       return null;
@@ -171,7 +171,7 @@ public final class AtsWorkDefinitionSheetProviders {
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWorkDefinitionSheetProvider");
       if (point == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
             "Can't access AtsWorkDefinitionSheetProvider extension point");
          return teamWorkflowExtensionItems;
       }
@@ -191,7 +191,7 @@ public final class AtsWorkDefinitionSheetProviders {
                      Object obj = taskClass.newInstance();
                      teamWorkflowExtensionItems.add((IAtsWorkDefinitionSheetProvider) obj);
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
                         "Error loading AtsWorkDefinitionSheetProvider extension", ex);
                   }
                }

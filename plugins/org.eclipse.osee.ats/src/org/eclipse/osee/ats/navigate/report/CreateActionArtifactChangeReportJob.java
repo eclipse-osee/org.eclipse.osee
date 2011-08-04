@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -90,8 +90,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Failed", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, "Failed", ex);
       }
    }
 

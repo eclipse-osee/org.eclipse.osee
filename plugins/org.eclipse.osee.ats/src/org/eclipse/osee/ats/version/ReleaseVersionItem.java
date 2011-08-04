@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.version.VersionLockedType;
 import org.eclipse.osee.ats.core.version.VersionReleaseType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -111,7 +111,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error releasing version");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error releasing version");
       }
    }
 
@@ -123,7 +123,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       try {
          ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Active));
       } catch (MultipleAttributesExist ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       int result = ld.open();
       if (result == 0) {

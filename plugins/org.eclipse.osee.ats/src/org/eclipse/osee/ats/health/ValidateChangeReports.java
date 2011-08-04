@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -111,8 +111,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
             runIt(monitor, rd);
             XResultDataUI.report(rd, getName());
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;
@@ -142,7 +142,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
                   try {
                      String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
-                     OseeLog.log(AtsPlugin.class, Level.INFO, str);
+                     OseeLog.log(Activator.class, Level.INFO, str);
                      if (monitor != null) {
                         monitor.subTask(str);
                      }
@@ -157,7 +157,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      }
                   } catch (Exception ex) {
                      resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
-                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                   sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(),
                      teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, ""), resultStr));
@@ -190,7 +190,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
 
          String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
-         OseeLog.log(AtsPlugin.class, Level.INFO, str);
+         OseeLog.log(Activator.class, Level.INFO, str);
 
          // Only validate committed branches cause working branches change too much
          if (!AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
@@ -270,13 +270,13 @@ public class ValidateChangeReports extends XNavigateItemAction {
                            compareHandler.compare();
 
                         } catch (Exception ex) {
-                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      }
                   });
 
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
             return new Result("FAIL: Was/Is Change Report different");
@@ -289,7 +289,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
             art.getName();
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("FAIL: Exception accessing name of change report artifacts: " + ex.getLocalizedMessage());
       }
       // As another test, allow ATS extensions add their own tests
@@ -392,7 +392,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          ChangeReportComparer comparer = new ChangeReportComparer();
          comparer.compare(currentData, storedData);
 
-         OseeLog.logf(AtsPlugin.class, Level.SEVERE,
+         OseeLog.logf(Activator.class, Level.SEVERE,
             "Checksums not equal - stored:[%s] current:[%s]", checkSum1, checkSum2);
       }
       return result;

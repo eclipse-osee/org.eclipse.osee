@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.walker;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -79,7 +79,7 @@ public class TaskWrapper implements IActionWalkerItem {
       try {
          AtsUtil.openInAtsTaskEditor("Tasks", Collections.castAll(Artifact.class, teamArt.getTaskArtifacts()));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

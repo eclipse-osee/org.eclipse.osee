@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.core.task.TaskResOptionDefinition;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -63,10 +63,10 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
       TaskResOptionDefinition trd = getSelectedOptionDef();
       int percentComp = percent.getInt();
       if (trd != null && trd.isCompleteable() && percentComp != 100) {
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Completed resolution must have %Complete == 100");
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Completed resolution must have %Complete == 100");
       }
       if (percentComp == 100 && trd != null && !trd.isCompleteable()) {
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
             "Can't have 100% complete with a non-Completed resolution");
       }
       return super.isComplete();
@@ -102,7 +102,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          resolutionCombo.getCombo().setVisibleItemCount(20);
          resolutionCombo.addSelectionListener(new SelectionAdapter() {

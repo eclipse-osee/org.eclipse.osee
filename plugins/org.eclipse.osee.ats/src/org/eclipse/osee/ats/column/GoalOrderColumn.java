@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -99,7 +99,7 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
          }
          return true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
    }

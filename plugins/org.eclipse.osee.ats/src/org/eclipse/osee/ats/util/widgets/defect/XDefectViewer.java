@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectValidator;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -314,7 +314,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             xViewer.set(defectManager.getDefectItems());
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       handleExpandCollapseDefectTableList();
       refresh();
@@ -339,7 +339,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             notifyXModifiedListeners();
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -363,7 +363,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             deleteDefectHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -377,7 +377,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
          loadTable();
          notifyXModifiedListeners();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -401,7 +401,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             notifyXModifiedListeners();
             loadTable();
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -464,7 +464,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
          extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
          extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Status(IStatus.ERROR, getClass().getSimpleName(),
             "Exception validating defects. See log for details. " + ex);
       }
@@ -503,7 +503,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Defect Item Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();

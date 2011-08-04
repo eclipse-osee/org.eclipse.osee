@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -87,11 +87,11 @@ public enum AtsImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(AtsPlugin.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
    }
 
    @Override
    public String getImageKey() {
-      return AtsPlugin.PLUGIN_ID + "." + fileName;
+      return Activator.PLUGIN_ID + "." + fileName;
    }
 }

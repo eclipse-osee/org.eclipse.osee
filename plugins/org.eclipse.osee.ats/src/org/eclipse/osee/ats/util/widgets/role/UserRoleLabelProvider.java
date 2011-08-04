@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.role.UserRole;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.defect.DefectSeverityToImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -57,7 +57,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
             return DefectSeverityToImage.getImage(Severity.Issue);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
       }
       return null;
    }

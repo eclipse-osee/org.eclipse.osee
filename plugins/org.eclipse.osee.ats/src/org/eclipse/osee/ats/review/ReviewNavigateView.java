@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.AtsNavigateComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
@@ -94,7 +94,7 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(AtsBulkLoad.getConfigLoadingOperation());
       ops.add(new ReviewNavigateViewItemsOperation());
-      IOperation operation = new CompositeOperation("Load Review Navigator", AtsPlugin.PLUGIN_ID, ops);
+      IOperation operation = new CompositeOperation("Load Review Navigator", Activator.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
@@ -119,7 +119,7 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
                   }
 
                   if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-                     return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
+                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
                   }
 
                   xNavComp = new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE);
@@ -159,7 +159,7 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
                   addExtensionPointListenerBecauseOfWorkspaceLoading();
 
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
                return Status.OK_STATUS;
             }
@@ -199,7 +199,7 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
             ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();
       }
    }
@@ -255,7 +255,7 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.WARNING, "NavigateView error on init", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "NavigateView error on init", ex);
       }
    }
 

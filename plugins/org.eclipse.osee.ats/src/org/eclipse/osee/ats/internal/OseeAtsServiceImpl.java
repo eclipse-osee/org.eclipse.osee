@@ -75,7 +75,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guidOrHrids, AtsUtil.getAtsBranch());
          openArtifacts(name, artifacts, oseeCmEditor);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error opening ATS artifacts by Id", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error opening ATS artifacts by Id", ex);
       }
    }
 
@@ -101,7 +101,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
             return ((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return false;
    }
@@ -114,7 +114,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
             arts.addAll(((AbstractTaskableArtifact) pcrArtifact).getTaskArtifacts());
             return arts;
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return Collections.emptyList();
@@ -128,7 +128,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
             return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(), UserManager.getUser());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return null;
    }
@@ -149,7 +149,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          job.join();
          return job.getActionArt();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }

@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.workflow.PriorityUtil;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionMetrics;
 import org.eclipse.osee.ats.version.VersionTeamMetrics;
@@ -84,7 +84,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          try {
             ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Both));
          } catch (MultipleAttributesExist ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          int result = ld.open();
          if (result == 0) {
@@ -123,7 +123,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             resultData.addRaw(html);
             XResultDataUI.report(resultData, getName(), Manipulations.RAW_HTML);
          } catch (Exception ex) {
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.toString(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;

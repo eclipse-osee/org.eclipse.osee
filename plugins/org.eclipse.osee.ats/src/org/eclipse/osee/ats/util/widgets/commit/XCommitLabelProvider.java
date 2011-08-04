@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.branch.CommitStatus;
 import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -74,7 +74,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             }
             return null;
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
@@ -85,7 +85,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             }
             return null;
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return null;

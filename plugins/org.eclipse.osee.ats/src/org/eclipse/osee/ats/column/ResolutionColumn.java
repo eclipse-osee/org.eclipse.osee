@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.task.TaskResOptionDefinition;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinitionToSwtColor;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -91,7 +91,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
             return true;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -124,7 +124,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
             return Displays.getSystemColor(TaskResOptionDefinitionToSwtColor.getColorInt(def));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -145,7 +145,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
                otherTreeItems.add(item);
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       // Ensure tasks are related to current state of workflow
@@ -156,7 +156,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
             return;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       if (!tasksUsingResOptions.isEmpty()) {

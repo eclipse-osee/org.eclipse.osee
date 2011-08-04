@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -109,7 +109,7 @@ public class AtsBranchManager implements IBranchEventListener {
             MergeView.openView(transactionId);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -138,7 +138,7 @@ public class AtsBranchManager implements IBranchEventListener {
          }
          BranchView.revealBranch(AtsBranchManagerCore.getWorkingBranch(teamArt));
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -171,12 +171,12 @@ public class AtsBranchManager implements IBranchEventListener {
                   status.isOK() ? "Branch delete was successful." : "Branch delete failed.\n" + status.getMessage());
             } else {
                if (!status.isOK()) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, status.getMessage(), status.getException());
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, status.getMessage(), status.getException());
                }
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.", ex);
       }
    }
 
@@ -243,7 +243,7 @@ public class AtsBranchManager implements IBranchEventListener {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't show change report.", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't show change report.", ex);
       }
    }
 
@@ -258,7 +258,7 @@ public class AtsBranchManager implements IBranchEventListener {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't show change report.", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't show change report.", ex);
       }
    }
 
@@ -302,7 +302,7 @@ public class AtsBranchManager implements IBranchEventListener {
          }
          createWorkingBranch(teamArt, pageId, parentBranch);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Exception occurred: " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;
@@ -358,7 +358,7 @@ public class AtsBranchManager implements IBranchEventListener {
          }
       };
 
-      Jobs.runInJob("Create Branch", runnable, AtsPlugin.class, AtsPlugin.PLUGIN_ID);
+      Jobs.runInJob("Create Branch", runnable, Activator.class, Activator.PLUGIN_ID);
    }
 
    /**
@@ -487,7 +487,7 @@ public class AtsBranchManager implements IBranchEventListener {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

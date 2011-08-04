@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -39,7 +39,7 @@ public class ChangeReportComparer {
 
       if (currentList.size() != storedList.size() || currentList.get(0).size() != storedList.get(0).size() || currentList.get(
          1).size() != storedList.get(1).size() || currentList.get(2).size() != storedList.get(2).size()) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "The change reports must have the same number of items");
+         OseeLog.log(Activator.class, Level.SEVERE, "The change reports must have the same number of items");
          return false;
       }
       for (int i = 0; i < currentList.size(); i++) {
@@ -50,7 +50,7 @@ public class ChangeReportComparer {
                sb.append(currentList.get(i).get(j).getContent());
                sb.append(storedList.get(i).get(j).getContent());
                sb.append("---------------------------------------------------");
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, sb.toString());
+               OseeLog.log(Activator.class, Level.SEVERE, sb.toString());
             }
          }
       }

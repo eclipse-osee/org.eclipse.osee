@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.SMAState;
 import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.core.workflow.XStateDam;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -184,7 +184,7 @@ public class TaskMetrics extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() throws OseeCoreException {
-      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), AtsPlugin.PLUGIN_ID);
+      return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
    }
 
    @Override

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -36,7 +36,7 @@ public class AtsWorldEditorItems {
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWorldEditorItem");
       if (point == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWorldEditorItem extension point");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWorldEditorItem extension point");
          return;
       }
       IExtension[] extensions = point.getExtensions();
@@ -55,13 +55,13 @@ public class AtsWorldEditorItems {
                      Class taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
                      if (obj == null) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                        OseeLog.log(Activator.class, Level.SEVERE,
                            "Error Instantiating AtsWorldEditorItem extension \"" + classname + "\"", null);
                      } else {
                         items.add((IAtsWorldEditorItem) obj);
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsWorldEditorItem extension",
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading AtsWorldEditorItem extension",
                         ex);
                   }
                }

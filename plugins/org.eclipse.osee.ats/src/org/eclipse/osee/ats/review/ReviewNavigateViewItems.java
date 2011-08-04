@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
@@ -60,7 +60,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
             XNavigateCommonItems.addCommonNavigateItems(items, Arrays.asList(getSectionId()));
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -71,7 +71,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("User's Reviews", null, ReviewState.InWork)));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       items.add(new SearchNavigateItem(item, new ReviewSearchWorkflowSearchItem()));
       items.add(new SearchNavigateItem(item, new ShowOpenWorkflowsByArtifactType(
@@ -99,7 +99,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
          addOseePeerSectionChildren(reviewItem);
          items.add(reviewItem);
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Can't create OSEE Review section");
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create OSEE Review section");
       }
    }
 

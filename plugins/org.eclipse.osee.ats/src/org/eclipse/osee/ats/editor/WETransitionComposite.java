@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
@@ -149,7 +149,7 @@ public class WETransitionComposite extends Composite {
             try {
                updateTransitionToAssignees();
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -177,7 +177,7 @@ public class WETransitionComposite extends Composite {
             try {
                handleChangeTransitionAssignees(awa);
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -229,7 +229,7 @@ public class WETransitionComposite extends Composite {
                   try {
                      resultBool = handlePopulateStateMetrics(fromStateDef, toStateDef);
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      result.set(false);
                      result.setText(String.format("Error processing extra hours spent for [%s]",
                         awas.iterator().next().toStringWithId()));
@@ -411,7 +411,7 @@ public class WETransitionComposite extends Composite {
    private void handleChangeTransitionAssignees(AbstractWorkflowArtifact aba) throws OseeCoreException {
       StateDefinition toWorkPage = (StateDefinition) transitionToStateCombo.getSelected();
       if (toWorkPage == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
          return;
       }
       if (toWorkPage.isCancelledPage() || toWorkPage.isCompletedPage()) {

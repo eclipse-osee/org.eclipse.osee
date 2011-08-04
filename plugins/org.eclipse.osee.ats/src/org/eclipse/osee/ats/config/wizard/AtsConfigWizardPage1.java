@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.config.wizard;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -122,7 +122,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
                   ((XText) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
                   ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + IncrementingNum.get());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -130,7 +130,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
          ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + IncrementingNum.get());
 
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
@@ -101,7 +101,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             try {
                handleUpdateMetrics();
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -138,7 +138,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
                AtsAttributeTypes.EstimatedReleaseDate, null));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       WorkflowMetrics sMet =
@@ -258,7 +258,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
                   "%5.2f release remaining hours", hoursRemainingFromEstimates)));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       XBarGraphTable table = new XBarGraphTable("Overview", "", "", lines);
@@ -362,7 +362,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             }
          } catch (OseeCoreException ex) {
             lines.add(new XBarGraphLine(user.getName(), 0, "Exception: " + ex.getLocalizedMessage()));
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       XBarGraphTable table =

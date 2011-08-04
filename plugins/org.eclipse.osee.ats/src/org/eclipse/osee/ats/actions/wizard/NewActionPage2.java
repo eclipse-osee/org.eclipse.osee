@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.actions.wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -61,7 +61,7 @@ public class NewActionPage2 extends WizardPage {
          wizard.createPage3IfNecessary();
          ((XText) getXWidget(DESCRIPTION)).getStyledText().setFocus();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -104,7 +104,7 @@ public class NewActionPage2 extends WizardPage {
          setControl(comp);
          setHelpContexts();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -123,7 +123,7 @@ public class NewActionPage2 extends WizardPage {
          ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
          debugPopulated = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.access.AtsBranchAccessContextId;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -102,7 +102,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error determining access applicibility", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error determining access applicibility", ex);
       }
       return result;
    }
@@ -129,7 +129,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
          contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
       }
       return contextIds;
@@ -157,7 +157,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
          return Arrays.asList(AtsBranchAccessContextId.DENY_CONTEXT);
       }
       return contextIds;
@@ -179,7 +179,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
             contextIds.addAll(getFromArtifact(artifact.getParent()));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return contextIds;
    }
@@ -212,7 +212,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
             atsObjectEventFilter.add(atsArtifactTypesFilter);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return atsObjectEventFilter;
    }
@@ -249,7 +249,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

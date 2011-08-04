@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,7 +71,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
          } catch (BranchDoesNotExist ex) {
             // if branch doesn't exist (purged), don't need this event
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
          }
       }
    }
@@ -79,7 +79,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
    private void safelyProcessHandler(BranchEventType branchModType, Branch branch) {
       for (final ISMAEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unexpected handler disposed but not unregistered.");
+            OseeLog.log(Activator.class, Level.SEVERE, "Unexpected handler disposed but not unregistered.");
          }
          final AbstractWorkflowArtifact awa = handler.getSMAEditor().getAwa();
          try {
@@ -110,13 +110,13 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                            handler.getSMAEditor().refreshPages();
                            handler.getSMAEditor().onDirtied();
                         } catch (Exception ex) {
-                           OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }
                      }
                   });
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

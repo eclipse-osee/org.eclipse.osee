@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.workflow.StateManager;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
@@ -310,7 +310,7 @@ public class WorkflowManager {
                   ATSXWidgetOptionResolver.getInstance());
             statePages.add(statePage);
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return statePages;

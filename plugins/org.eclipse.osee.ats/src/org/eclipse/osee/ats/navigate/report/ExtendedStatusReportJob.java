@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -60,8 +60,8 @@ public class ExtendedStatusReportJob extends Job {
 
    public static IStatus runIt(IProgressMonitor monitor, final String jobName, Collection<? extends Artifact> teamArts) {
       if (teamArts.isEmpty()) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "No Artifacts Returned");
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Artifacts Returned", null);
+         OseeLog.log(Activator.class, Level.SEVERE, "No Artifacts Returned");
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, "No Artifacts Returned", null);
       }
       try {
 
@@ -72,8 +72,8 @@ public class ExtendedStatusReportJob extends Job {
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
       }
    }
 
@@ -201,7 +201,7 @@ public class ExtendedStatusReportJob extends Job {
 
    private static void handleOriginatorColumn(AbstractWorkflowArtifact sma, List<String> values) throws OseeCoreException {
       if (sma.getCreatedBy() == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't retrieve orig for " + sma.getHumanReadableId());
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't retrieve orig for " + sma.getHumanReadableId());
          values.add(".");
       } else {
          values.add(sma.getCreatedBy().getName());
