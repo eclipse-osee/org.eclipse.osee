@@ -15,7 +15,7 @@ import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
@@ -69,7 +69,7 @@ public class CreateConnectionCommand extends Command {
          connectionModel.setSource(source);
          connectionModel.setTarget(target);
       } catch (OseeCoreException ex) {
-         OseeLog.log(ODMEditor.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -83,7 +83,7 @@ public class CreateConnectionCommand extends Command {
          }
          source.setSuperType(oldAncestor);
       } catch (OseeCoreException ex) {
-         OseeLog.log(ODMEditor.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

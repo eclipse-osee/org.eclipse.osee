@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.wizard.FileOrFolderSelectPanel.ButtonType;
 import org.eclipse.osee.framework.ui.swt.StackedViewer;
 import org.eclipse.swt.SWT;
@@ -202,7 +202,7 @@ public class ODMExportOutputPage extends WizardPage {
                ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreLoginName());
 
       } catch (Exception ex) {
-         OseeLog.log(ODMEditorActivator.class, Level.WARNING, ex);
+         OseeLog.log(Activator.class, Level.WARNING, ex);
          message = "Data Store";
       }
       dataStoreButton.setText(String.format("%s", message));

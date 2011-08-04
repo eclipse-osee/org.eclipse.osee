@@ -18,7 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.operation.ODMToXmlOperation;
@@ -70,7 +70,7 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
             worker = createXmlExportWorker(selectedTypes);
          }
          if (worker != null) {
-            Jobs.runInJob(jobName, worker, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
+            Jobs.runInJob(jobName, worker, Activator.class, Activator.PLUGIN_ID, true);
          }
       }
       return true;

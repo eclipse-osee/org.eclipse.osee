@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.data.model.editor.utility;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -48,11 +48,11 @@ public enum ODMImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(ODMEditorActivator.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
    }
 
    @Override
    public String getImageKey() {
-      return ODMEditorActivator.PLUGIN_ID + ".images." + fileName;
+      return Activator.PLUGIN_ID + ".images." + fileName;
    }
 }

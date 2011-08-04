@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.plugin.views.property.IntegerPropertyDescriptor;
 import org.eclipse.osee.framework.ui.plugin.views.property.ModelPropertySource;
@@ -187,7 +187,7 @@ public class AttributePropertySource extends ModelPropertySource {
          try {
             getDataTypeElement().setEnumTypeId(OseeEnumTypeManager.getType(enumTypeName).getId());
          } catch (OseeCoreException ex) {
-            OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       if (id == idToolTipText) {

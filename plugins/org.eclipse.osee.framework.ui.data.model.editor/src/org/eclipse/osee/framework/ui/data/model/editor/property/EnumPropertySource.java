@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.plugin.views.property.ModelPropertySource;
 import org.eclipse.osee.framework.ui.plugin.views.property.PropertyId;
@@ -68,7 +68,7 @@ public class EnumPropertySource extends ModelPropertySource {
                descriptor = enumType.valuesAsOrderedStringSet().toString();
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return StringPropertyDescriptor.fromModel(descriptor);
       }

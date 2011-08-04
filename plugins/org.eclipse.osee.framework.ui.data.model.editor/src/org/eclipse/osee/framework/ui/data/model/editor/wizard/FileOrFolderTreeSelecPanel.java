@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.wizard.FileOrFolderSelectPanel.ButtonType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -179,7 +179,7 @@ public class FileOrFolderTreeSelecPanel extends Composite {
                      //                  }
                   }
                } catch (Exception ex) {
-                  OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
             treeViewer.refresh();

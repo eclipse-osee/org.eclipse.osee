@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ImageUtility;
@@ -61,7 +61,7 @@ public class ArtifactDataTypeXml extends BaseXmlDataType<ArtifactDataType> {
       try {
          return ImageUtility.base64ToImage(data.getBytes("UTF-8"));
       } catch (Exception ex) {
-         OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }

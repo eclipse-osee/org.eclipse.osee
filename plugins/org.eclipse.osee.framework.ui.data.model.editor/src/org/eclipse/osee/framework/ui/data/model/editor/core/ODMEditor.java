@@ -46,10 +46,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.action.ODMExportAction;
 import org.eclipse.osee.framework.ui.data.model.editor.action.ODMImportAction;
 import org.eclipse.osee.framework.ui.data.model.editor.command.DeleteCommand;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.operation.ODMLoadGraphRunnable;
 import org.eclipse.osee.framework.ui.data.model.editor.part.ODMEditPartFactory;
 import org.eclipse.swt.SWT;
@@ -238,7 +238,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
    public void showGraphFor(ODMEditorInput editorInput) {
       setPartName(editorInput.getName() + " graph");
       ODMLoadGraphRunnable runnable = new ODMLoadGraphRunnable(getGraphicalViewer(), this, editorInput);
-      Jobs.runInJob(runnable.getName(), runnable, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
+      Jobs.runInJob(runnable.getName(), runnable, Activator.class, Activator.PLUGIN_ID, true);
    }
 
    @Override

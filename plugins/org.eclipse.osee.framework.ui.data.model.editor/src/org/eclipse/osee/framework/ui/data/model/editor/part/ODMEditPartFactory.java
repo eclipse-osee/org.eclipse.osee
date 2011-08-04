@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
@@ -58,7 +58,7 @@ public class ODMEditPartFactory implements EditPartFactory {
       if (editPart == null) {
          String message = String.format("Error no EditPart defined for: [%s]", model.getClass().getName());
          editPart = new StringEditPart(message);
-         OseeLog.log(ODMEditorActivator.class, Level.SEVERE, message);
+         OseeLog.log(Activator.class, Level.SEVERE, message);
       } else {
          editPart.setModel(model);
       }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.data.model.editor;
+package org.eclipse.osee.framework.ui.data.model.editor.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -16,7 +16,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Roberto E. Escobar
  */
-public class ODMEditorActivator implements BundleActivator {
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.data.model.editor";
 
    @Override

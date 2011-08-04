@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -98,7 +98,7 @@ public class ArtifactDataType extends DataType {
             }
             super.addConnection(connection);
          } catch (OseeStateException ex) {
-            OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -114,7 +114,7 @@ public class ArtifactDataType extends DataType {
             }
             super.removeConnection(connection);
          } catch (OseeStateException ex) {
-            OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

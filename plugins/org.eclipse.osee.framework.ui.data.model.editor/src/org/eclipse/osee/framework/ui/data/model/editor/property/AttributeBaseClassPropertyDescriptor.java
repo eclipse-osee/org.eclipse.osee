@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.plugin.views.property.PropertyId;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 
@@ -30,7 +30,7 @@ public class AttributeBaseClassPropertyDescriptor extends ComboBoxPropertyDescri
       try {
          items.addAll(AttributeExtensionManager.getAttributeClasses());
       } catch (OseeStateException ex) {
-         OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

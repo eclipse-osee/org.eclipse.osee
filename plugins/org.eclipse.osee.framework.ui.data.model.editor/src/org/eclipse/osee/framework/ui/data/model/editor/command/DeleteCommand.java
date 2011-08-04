@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
@@ -193,7 +193,7 @@ public class DeleteCommand extends Command {
             try {
                subClass.setSuperType(null);
             } catch (OseeStateException ex) {
-               OseeLog.logf(ODMEditorActivator.class, Level.SEVERE,
+               OseeLog.logf(Activator.class, Level.SEVERE,
                   ex, "Unable to remove inheritance link between [%s] - [%s]", superClass, subClass);
                removeConnection = false;
             }
@@ -222,7 +222,7 @@ public class DeleteCommand extends Command {
             try {
                subClass.setSuperType(superClass);
             } catch (OseeStateException ex) {
-               OseeLog.logf(ODMEditorActivator.class, Level.SEVERE,
+               OseeLog.logf(Activator.class, Level.SEVERE,
                   ex, "Unable to add inheritance link between [%s] - [%s]", superClass, subClass);
                addConnection = false;
             }

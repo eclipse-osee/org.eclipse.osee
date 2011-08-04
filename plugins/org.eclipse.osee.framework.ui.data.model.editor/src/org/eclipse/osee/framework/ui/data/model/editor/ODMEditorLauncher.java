@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditorInput;
+import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -31,7 +32,7 @@ public class ODMEditorLauncher implements IEditorLauncher {
 
          workbenchPage.openEditor(new ODMEditorInput(), ODMEditor.EDITOR_ID);
       } catch (Exception ex) {
-         OseeLog.log(ODMEditorActivator.class, Level.WARNING, ex);
+         OseeLog.log(Activator.class, Level.WARNING, ex);
       }
    }
 }
