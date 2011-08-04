@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.ServiceProvider;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -47,9 +48,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -208,7 +209,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          }
       });
 
-      if (SkynetGuiPlugin.getInstance().getOseeCmService() != null) {
+      if (ServiceProvider.getOseeCmService() != null) {
          createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
          deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
          favoriteBranchButton.setImage(ImageManager.getImage(AtsImage.FAVORITE));

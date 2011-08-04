@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
-import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
 import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptServiceRegHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -59,7 +58,6 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
    private ServiceTracker packageAdminTracker;
    private ServiceTracker cacheServiceTracker;
    private ServiceTracker databaseServiceTracker;
-   private ServiceTracker cmServiceTracker;
    private ServiceTracker accessServiceTracker;
 
    private final Map<String, ServiceDependencyTracker> trackers = new HashMap<String, ServiceDependencyTracker>();
@@ -75,7 +73,6 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
       packageAdminTracker.close();
       cacheServiceTracker.close();
       databaseServiceTracker.close();
-      cmServiceTracker.close();
       accessServiceTracker.close();
 
       for (ServiceDependencyTracker tracker : trackers.values()) {
@@ -95,9 +92,6 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
 
       databaseServiceTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
       databaseServiceTracker.open();
-
-      cmServiceTracker = new ServiceTracker(context, IOseeCmService.class.getName(), null);
-      cmServiceTracker.open();
 
       accessServiceTracker = new ServiceTracker(context, AccessPolicy.class.getName(), null);
       accessServiceTracker.open();
@@ -162,10 +156,6 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
    @Override
    public IOseeDatabaseService getOseeDatabaseService() {
       return (IOseeDatabaseService) databaseServiceTracker.getService();
-   }
-
-   public IOseeCmService getOseeCmService() {
-      return (IOseeCmService) cmServiceTracker.getService();
    }
 
    public AccessPolicy getAccessPolicy() {
