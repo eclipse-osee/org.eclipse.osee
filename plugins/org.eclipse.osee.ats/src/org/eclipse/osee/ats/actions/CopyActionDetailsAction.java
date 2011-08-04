@@ -15,6 +15,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
@@ -59,10 +62,7 @@ public class CopyActionDetailsAction extends Action {
                detailsStr = detailsStr.replaceAll("<hrid>", sma.getHumanReadableId());
                detailsStr = detailsStr.replaceAll("<name>", sma.getName());
                detailsStr = detailsStr.replaceAll("<artType>", sma.getArtifactTypeName());
-               detailsStr =
-                  detailsStr.replaceAll(
-                     "<changeType>",
-                     Strings.isValid(ChangeTypeUtil.getChangeTypeStr(sma)) ? ChangeTypeUtil.getChangeTypeStr(sma) : "unknown");
+               detailsStr = detailsStr.replaceAll("<changeType>", getChangeTypeOrObjectType(sma));
             } else {
                detailsStr =
                   "\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\"";
@@ -72,6 +72,23 @@ public class CopyActionDetailsAction extends Action {
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   private String getChangeTypeOrObjectType(AbstractWorkflowArtifact awa) throws OseeCoreException {
+      String result = "";
+      if (awa instanceof TeamWorkFlowArtifact) {
+         result = ChangeTypeUtil.getChangeTypeStr(sma);
+      } else if (awa instanceof TaskArtifact) {
+         result = "Task";
+      } else if (awa.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+         result = "Review";
+      } else if (awa.isOfType(AtsArtifactTypes.Goal)) {
+         result = "Goal";
+      }
+      if (Strings.isValid(result)) {
+         result = "unknown";
+      }
+      return result;
    }
 
    private String getFormatStr(TeamDefinitionArtifact teamDef) throws OseeCoreException {
