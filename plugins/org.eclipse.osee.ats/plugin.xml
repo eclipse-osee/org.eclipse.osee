@@ -423,22 +423,24 @@
 			<menu
             label="&amp;OSEE"
             id="osee.product.oseeMenu">
+            <separator name="perspectives"/>
+            <separator name="properties"/>
          </menu>         <action
                class="org.eclipse.osee.ats.actions.OpenReviewPerspectiveAction"
                icon="images/review.gif"
                id="org.eclipse.osee.ats.actions.OpenReviewPerspectiveAction"
                label="OSEE &amp;Review"
-               menubarPath="osee.product.oseeMenu/main"
+               menubarPath="osee.product.oseeMenu/perspectives"
                tooltip="Open OSEE Review Perspective">
          </action>
-                         <action
-                               class="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
-                               icon="images/action.gif"
-                               id="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
-                               label="OSEE &amp;ATS"
-                               menubarPath="osee.product.oseeMenu/main"
-                               tooltip="Open OSEE ATS Perspective">
-                         </action>
+          <action
+                class="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
+                icon="images/action.gif"
+                id="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
+                label="OSEE &amp;ATS"
+                menubarPath="osee.product.oseeMenu/perspectives"
+                tooltip="Open OSEE ATS Perspective">
+          </action>
       </actionSet>
    </extension>
       <extension

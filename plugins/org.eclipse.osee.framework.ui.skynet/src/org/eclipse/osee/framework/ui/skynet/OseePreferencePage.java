@@ -41,6 +41,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 
 public class OseePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+   public static String PAGE_ID = "org.eclipse.osee.framework.ui.skynet.OseePreferencePage";
    private HashMap<InetAddress, Button> networkButtons;
    private Button wordWrapChkBox;
 

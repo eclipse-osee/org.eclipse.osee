@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IRemoteEventManager
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
-import org.eclipse.osee.framework.ui.skynet.OseeBuildTypeContributionItem.OpenConfigDetailsAction;
+import org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;

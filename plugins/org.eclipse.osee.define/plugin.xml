@@ -222,13 +222,15 @@
 			<menu
             label="&amp;OSEE"
             id="osee.product.oseeMenu">
+            <separator name="perspectives"/>
+            <separator name="properties"/>
          </menu>         
          <action
                class="org.eclipse.osee.define.internal.OpenDefinePerspectiveAction"
                icon="images/laser_16_16.gif"
                id="org.eclipse.osee.define.OpenDefinePerspectiveAction"
                label="OSEE &amp;Define"
-               menubarPath="osee.product.oseeMenu/main"
+               menubarPath="osee.product.oseeMenu/perspectives"
                tooltip="Open OSEE Define Perspective">
          </action>
       </actionSet>

@@ -28,13 +28,15 @@
 			<menu
             label="&amp;OSEE"
             id="osee.product.oseeMenu">
+            <separator name="perspectives"/>
+            <separator name="properties"/>
          </menu>         
          <action
                class="org.eclipse.osee.coverage.internal.OpenCoveragePerspectiveAction"
                icon="images/coverage.gif"
                id="org.eclipse.osee.coverage.internal.OpenCoveragePerspectiveAction"
                label="OSEE &amp;Coverage"
-               menubarPath="osee.product.oseeMenu/main"
+               menubarPath="osee.product.oseeMenu/perspectives"
                tooltip="Open OSEE Coverage Perspective">
          </action>
       </actionSet>

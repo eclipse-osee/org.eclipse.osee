@@ -1699,4 +1699,33 @@
             name="User Management">
       </perspective>
    </extension>
+   <extension point="org.eclipse.ui.actionSets">
+      <actionSet
+         label="OSEE"
+         visible="true"
+         id="osee.actionSet">
+			<menu
+            label="&amp;OSEE"
+            id="osee.product.oseeMenu">
+            <separator name="perspectives"/>
+            <separator name="properties"/>
+         </menu>         
+         <action
+               class="org.eclipse.osee.framework.ui.skynet.action.OpenOseePropertiesWorkbenchAction"
+               icon="images/gear.gif"
+               id="org.eclipse.osee.framework.ui.skynet.action.OpenOseePropertiesWorkbenchAction"
+               label="Properties"
+               menubarPath="osee.product.oseeMenu/properties"
+               tooltip="Open OSEE Properties">
+         </action>
+         <action
+               class="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsWorkbenchAction"
+               icon="images/gear.gif"
+               id="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsAction"
+               label="Configuration Details"
+               menubarPath="osee.product.oseeMenu/properties"
+               tooltip="Open OSEE Configuration Details">
+         </action>
+      </actionSet>
+   </extension>
 </plugin>
