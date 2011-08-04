@@ -16,7 +16,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.ui.IEditorDescriptor;
@@ -71,7 +71,7 @@ public class OtherEditorHandler extends AbstractEditorHandler {
             IDE.setDefaultEditor(file, editorId);
          }
       } catch (PartInitException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Open Editor Error", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Open Editor Error", ex);
       }
    }
 }

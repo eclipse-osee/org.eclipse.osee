@@ -33,13 +33,13 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadChangesOperation;
 import org.eclipse.osee.framework.ui.skynet.change.operations.UpdateChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.presenter.ChangeReportInfoPresenter;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -217,7 +217,7 @@ public class ChangeReportPage extends FormPage {
          ops.add(new LoadChangesOperation(changeData));
       }
       ops.add(new LoadAssociatedArtifactOperation(changeData));
-      IOperation operation = new CompositeOperation("Load Change Report Data", SkynetGuiPlugin.PLUGIN_ID, ops);
+      IOperation operation = new CompositeOperation("Load Change Report Data", Activator.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter());
    }
 
@@ -241,7 +241,7 @@ public class ChangeReportPage extends FormPage {
       public void done(IJobChangeEvent event) {
          super.done(event);
          String message = String.format("Change Report Load completed in [%s]", Lib.getElapseString(startTime));
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, message);
+         OseeLog.log(Activator.class, Level.INFO, message);
 
          Job job = new UIJob("Refresh Change Report") {
 

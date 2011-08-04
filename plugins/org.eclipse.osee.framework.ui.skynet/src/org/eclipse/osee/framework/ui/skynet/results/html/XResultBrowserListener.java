@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -68,7 +68,7 @@ public class XResultBrowserListener implements LocationListener {
                      RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
                break;
 
@@ -89,7 +89,7 @@ public class XResultBrowserListener implements LocationListener {
                   IWebBrowser browser = browserSupport.createBrowser("osee.ats.navigator.browser");
                   browser.openURL(new URL(value));
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
                break;
             case browserExternal:
@@ -100,7 +100,7 @@ public class XResultBrowserListener implements LocationListener {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't process hyperlink.", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't process hyperlink.", ex);
       }
    }
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -64,7 +64,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
             processXmlLayoutDatas(xWidgetsXml);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error processing attributes", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error processing attributes", ex);
       }
    }
 
@@ -121,7 +121,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
             layoutData.getXWidget().dispose();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -149,7 +149,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return Result.TrueResult;
    }
@@ -192,7 +192,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
                workFlowDefinition.getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage)) ? " (return)" : "") + "\n");
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return sb.toString();
    }

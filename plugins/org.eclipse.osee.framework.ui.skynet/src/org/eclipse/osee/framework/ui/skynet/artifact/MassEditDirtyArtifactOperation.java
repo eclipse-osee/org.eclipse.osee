@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +32,7 @@ public class MassEditDirtyArtifactOperation extends AbstractOperation implements
    public static final String NAME = "Mass Edit Dirty Artifacts";
 
    public MassEditDirtyArtifactOperation() {
-      super(NAME, SkynetGuiPlugin.PLUGIN_ID);
+      super(NAME, Activator.PLUGIN_ID);
    }
 
    @Override

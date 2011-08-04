@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -55,7 +55,7 @@ public class EditTransactionComment extends Action {
                TransactionManager.setTransactionComment(record, ed.getEntry());
                record.setComment(ed.getEntry());
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
          provider.refreshUI(records);

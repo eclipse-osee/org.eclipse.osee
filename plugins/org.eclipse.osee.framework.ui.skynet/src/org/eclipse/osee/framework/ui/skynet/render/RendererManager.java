@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.NoOpCompareDataCollector;
@@ -92,7 +92,7 @@ public final class RendererManager {
 
    private static void registerRendersFromExtensionPoints() {
       ExtensionDefinedObjects<IRenderer> contributions =
-         new ExtensionDefinedObjects<IRenderer>(SkynetGuiPlugin.PLUGIN_ID + ".ArtifactRenderer", "Renderer",
+         new ExtensionDefinedObjects<IRenderer>(Activator.PLUGIN_ID + ".ArtifactRenderer", "Renderer",
             "classname");
       for (IRenderer renderer : contributions.getObjects()) {
          renderers.add(renderer);

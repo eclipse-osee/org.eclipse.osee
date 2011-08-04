@@ -15,7 +15,7 @@ import java.text.ParseException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -63,11 +63,11 @@ public class XFloat extends XText {
          if (!result.isOK()) {
             return result;
          } else if (!this.isFloat()) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be a Float");
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, name + " must be a Float");
          } else if (minValueSet && this.getFloat() < minValue) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be >= " + minValue);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, name + " must be >= " + minValue);
          } else if (maxValueSet && this.getFloat() > maxValue) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be <= " + maxValue);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, name + " must be <= " + maxValue);
          }
       }
       return Status.OK_STATUS;

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
@@ -74,7 +74,7 @@ public class CompressWordAttributesHandler extends AbstractHandler {
                monitor.done();
                return Status.OK_STATUS;
             } catch (Exception ex) {
-               return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, ex.getLocalizedMessage(), ex);
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.OK, ex.getLocalizedMessage(), ex);
             }
          }
 

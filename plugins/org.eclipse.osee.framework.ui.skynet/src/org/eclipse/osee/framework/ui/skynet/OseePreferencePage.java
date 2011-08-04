@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.CorePreferences;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -82,7 +83,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       try {
          addrs = Network.getLocalNetworkAdapters();
       } catch (UnknownHostException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       networkButtons = new HashMap<InetAddress, Button>();
@@ -114,7 +115,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    }
 
    private void setupWordWrapChkButton() {
-      IPreferenceStore prefStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
+      IPreferenceStore prefStore = Activator.getInstance().getPreferenceStore();
       wordWrapChkBox.setSelection(prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
          PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE));
    }
@@ -144,7 +145,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    @Override
    public void init(IWorkbench workbench) {
       // Initialize the preference store we wish to use
-      setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
+      setPreferenceStore(Activator.getInstance().getPreferenceStore());
    }
 
    @Override
@@ -168,7 +169,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
          }
       }
 
-      SkynetGuiPlugin.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
+      Activator.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
          wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
 
       return super.performOk();

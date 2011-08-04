@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -126,7 +126,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    private IArtifactSearchContentProvider fContentProvider;
    private ISelectionProvider selectionProvider;
    private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
-      SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
+      Activator.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
 
    public ArtifactSearchPage() {
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));

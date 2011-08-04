@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 class DiffHandler extends AbstractSelectionEnabledHandler {
    private final int diffToShow;
@@ -139,7 +139,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
                   break;
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
       } else if (conflicts.get(0) instanceof ArtifactConflict) {
@@ -171,7 +171,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
                   return false;
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
       }

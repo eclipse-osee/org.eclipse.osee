@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.ProgramImage;
 import org.eclipse.swt.graphics.ImageData;
@@ -41,7 +42,7 @@ public class BaseImage implements KeyedImage {
 
    @Override
    public String getImageKey() {
-      return SkynetGuiPlugin.PLUGIN_ID + ".artifact_type." + artifactType.getName();
+      return Activator.PLUGIN_ID + ".artifact_type." + artifactType.getName();
    }
 
    public static KeyedImage getBaseImageEnum(IArtifactType artifactType, byte[] imageData) {
@@ -74,7 +75,7 @@ public class BaseImage implements KeyedImage {
             return new ProgramImage(extension);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return getBaseImageEnum(artifact.getArtifactType());
    }

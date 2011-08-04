@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -83,7 +83,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return otherItems.toArray();
    }
@@ -145,7 +145,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

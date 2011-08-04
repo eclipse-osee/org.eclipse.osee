@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Michael A. Winston
@@ -90,7 +90,7 @@ public class OseeEmail extends MimeMessage {
          }
 
       } catch (MessagingException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -278,7 +278,7 @@ public class OseeEmail extends MimeMessage {
          try {
             email.sendLocalThread();
          } catch (MessagingException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -298,7 +298,7 @@ public class OseeEmail extends MimeMessage {
 
          // Set class loader so can find the mail handlers
          Thread.currentThread().setContextClassLoader(
-            new ExportClassLoader(SkynetGuiPlugin.getInstance().getPackageAdmin()));
+            new ExportClassLoader(Activator.getInstance().getPackageAdmin()));
          if (bodyType == null) {
             bodyType = plainText;
             body = "";

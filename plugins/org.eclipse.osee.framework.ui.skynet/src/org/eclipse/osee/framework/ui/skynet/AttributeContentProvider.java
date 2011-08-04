@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -33,7 +34,7 @@ public class AttributeContentProvider implements IStructuredContentProvider {
          try {
             return ((Artifact) inputElement).getAttributes().toArray();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return dummyArray;

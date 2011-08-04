@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.ArmListener;
@@ -38,7 +39,7 @@ import org.eclipse.swt.widgets.MenuItem;
  */
 public class RelationOrderContributionItem extends ContributionItem {
 
-   public static final String ID = SkynetGuiPlugin.PLUGIN_ID + ".RelationOrder";
+   public static final String ID = Activator.PLUGIN_ID + ".RelationOrder";
    private static final String MENU_TEXT = "&Order Relations";
 
    public static interface SelectionListener {
@@ -125,7 +126,7 @@ public class RelationOrderContributionItem extends ContributionItem {
          try {
             listener.onSelected(sorter, wasId, isId);
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -142,7 +143,7 @@ public class RelationOrderContributionItem extends ContributionItem {
          try {
             sorterId = sorter.getSorterId();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return sorterId;
@@ -179,7 +180,7 @@ public class RelationOrderContributionItem extends ContributionItem {
                      notifyListeners(sorter, sorterId, id);
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }

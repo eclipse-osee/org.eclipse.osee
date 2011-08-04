@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -67,7 +67,7 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
    private final AttributeConflict attributeConflict;
 
    public ThreeWayWordMergeOperation(AttributeConflict attributeConflict) {
-      super("Generate 3 Way Merge", SkynetGuiPlugin.PLUGIN_ID);
+      super("Generate 3 Way Merge", Activator.PLUGIN_ID);
       this.attributeConflict = attributeConflict;
    }
 

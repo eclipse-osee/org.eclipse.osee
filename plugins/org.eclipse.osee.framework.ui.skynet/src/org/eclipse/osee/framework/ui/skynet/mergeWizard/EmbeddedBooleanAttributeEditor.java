@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -80,11 +80,11 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
                if (object instanceof Boolean) {
                   editor.setEntry(((Boolean) object).booleanValue());
                } else {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, new Exception(
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, new Exception(
                      "Boolean editor did not receive a boolean value"));
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
          if (obj instanceof AttributeConflict) {
@@ -94,7 +94,7 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return true;
    }
@@ -126,7 +126,7 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
             }
             return true;
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       AWorkbench.popup("ERROR", "Could not store the attribute");

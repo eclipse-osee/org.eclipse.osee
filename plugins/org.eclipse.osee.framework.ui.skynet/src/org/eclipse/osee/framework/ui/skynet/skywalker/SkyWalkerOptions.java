@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
@@ -106,7 +106,7 @@ public final class SkyWalkerOptions {
                artTypes.put(descriptor, true);
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -119,7 +119,7 @@ public final class SkyWalkerOptions {
                showAttributes.put(descriptor, false);
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -134,7 +134,7 @@ public final class SkyWalkerOptions {
                relTypes.put(new RelationTypeSide(relationType, RelationSide.SIDE_B), true);
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -167,7 +167,7 @@ public final class SkyWalkerOptions {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "SkyWalker couldn't find stored artifact via guid", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "SkyWalker couldn't find stored artifact via guid", ex);
       }
       String artTypeStr = AXml.getTagData(xml, "artTypes");
       if (Strings.isValid(artTypeStr)) {

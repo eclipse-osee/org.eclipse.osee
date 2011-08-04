@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Search;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -110,7 +110,7 @@ public class XMembersCombo extends GenericXWidget {
             dataCombo.setData(user.getName(), user);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       searchControl = new Search(dataCombo.getItems());
 
@@ -248,7 +248,7 @@ public class XMembersCombo extends GenericXWidget {
    @Override
    public IStatus isValid() {
       if (isRequiredEntry() && isEmpty()) {
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must select " + getLabel());
       }
       return Status.OK_STATUS;
    }

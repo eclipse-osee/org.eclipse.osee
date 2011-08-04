@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
@@ -56,7 +56,7 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
          @Override
          public IStatus validate(Object[] selection) {
             if (selection.length == 0) {
-               return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                   "Select at least one item or click cancel to exit.");
             }
             return Status.OK_STATUS;

@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
 import org.eclipse.search.ui.text.Match;
 
@@ -240,7 +240,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
          try {
             return resource.getParent();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return null;

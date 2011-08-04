@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -246,7 +246,7 @@ public class XComboViewer extends GenericXWidget {
       }
       Object selected = getSelected();
       if (selected == null && isRequiredEntry()) {
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must select " + getLabel());
       }
       return Status.OK_STATUS;
    }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -51,7 +52,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          try {
             toReturn = ArtifactImageManager.getImage(relationLinkWrapper.getOther());
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       } else if (element instanceof RelationTypeSide && columnIndex == 0) {
          toReturn = getImage((RelationTypeSide) element);
@@ -63,12 +64,12 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       boolean isLocked = true;
       AccessPolicy policyHandlerService;
       try {
-         policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
+         policyHandlerService = Activator.getInstance().getAccessPolicy();
          PermissionStatus permissionStatus =
             policyHandlerService.canRelationBeModified(artifact, null, relationTypeSide, Level.FINE);
          isLocked = !permissionStatus.matched();
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return isLocked;
    }
@@ -121,7 +122,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
             try {
                return link.getArtifactOnOtherSide(artifact).getName();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          } else if (columnIndex == 1) {
             return link.getRationale();
@@ -138,7 +139,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
                      wrapper.getRelationType());
                rationale = link.getRationale();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             return rationale;
          }

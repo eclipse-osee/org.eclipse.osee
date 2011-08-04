@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -44,11 +44,11 @@ public class XInteger extends XText {
          if (!result.isOK()) {
             return result;
          } else if (!this.isInteger()) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be an Integer");
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must be an Integer");
          } else if (minValueSet && this.getInteger() < minValue) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be >= " + minValue);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must be >= " + minValue);
          } else if (maxValueSet && this.getInteger() > maxValue) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be <= " + maxValue);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must be <= " + maxValue);
          }
       }
       return Status.OK_STATUS;

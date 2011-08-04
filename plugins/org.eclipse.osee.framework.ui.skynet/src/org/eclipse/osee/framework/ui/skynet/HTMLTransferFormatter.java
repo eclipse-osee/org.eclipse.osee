@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 public class HTMLTransferFormatter {
    private static final String START = "<A href=\"";
    private static final String END = "</A>";
-   private static IPreferenceStore prefStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
+   private static IPreferenceStore prefStore = Activator.getInstance().getPreferenceStore();
 
    public static String getHtml(Artifact... artifacts) {
       boolean applyWordTagWrap =
@@ -50,7 +51,7 @@ public class HTMLTransferFormatter {
                link =
                   String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(), artifact.getBranch().getId(),
                      artifact.getGammaId());
-               OseeLog.logf(SkynetGuiPlugin.class, Level.WARNING,
+               OseeLog.logf(Activator.class, Level.WARNING,
                   ex, "Error creating link for: [%s]", artifact);
             }
             urls.add(link + "\">" + artifact.getName());

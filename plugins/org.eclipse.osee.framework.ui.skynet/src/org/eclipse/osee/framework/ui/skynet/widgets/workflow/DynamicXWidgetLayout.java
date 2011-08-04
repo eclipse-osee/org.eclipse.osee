@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -174,13 +174,13 @@ public class DynamicXWidgetLayout {
                   IAttributeType attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
                   ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             } else if (xWidget instanceof IArtifactWidget) {
                try {
                   ((IArtifactWidget) xWidget).setArtifact(artifact);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -256,7 +256,7 @@ public class DynamicXWidgetLayout {
                }
                refreshOrAndXOrRequiredFlags();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -267,7 +267,7 @@ public class DynamicXWidgetLayout {
          try {
             refreshOrAndXOrRequiredFlags();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    };
@@ -316,7 +316,7 @@ public class DynamicXWidgetLayout {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return Status.OK_STATUS;
    }

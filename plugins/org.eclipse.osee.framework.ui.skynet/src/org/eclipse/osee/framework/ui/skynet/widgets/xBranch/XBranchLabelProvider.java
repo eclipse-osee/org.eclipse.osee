@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -206,7 +206,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
                   return ArtifactImageManager.getImage(BranchManager.getAssociatedArtifact((Branch) element));
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          } else if (element instanceof TransactionRecord) {
             try {
@@ -220,7 +220,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
                   return ArtifactImageManager.getImage(artifact);
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.IOseeDictionary;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -39,7 +39,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       try {
          return updateArtifact("Global", word, OseeSystemArtifacts.getGlobalPreferenceArtifact());
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -49,7 +49,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       try {
          return updateArtifact("Local", word, UserManager.getUser());
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
    }
@@ -68,7 +68,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
             loadDictionary(true);
             return true;
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return false;
@@ -118,7 +118,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 }

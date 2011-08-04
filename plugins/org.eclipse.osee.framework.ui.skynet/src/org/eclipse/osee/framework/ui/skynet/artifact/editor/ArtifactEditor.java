@@ -27,9 +27,9 @@ import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -104,7 +104,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          firePropertyChange(PROP_DIRTY);
       } catch (OseeCoreException ex) {
          onDirtied();
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -117,11 +117,11 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
             try {
                artifact.reloadAttributesAndRelations();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
          super.dispose();
       }
@@ -179,14 +179,14 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       try {
          addPage(formPage);
       } catch (PartInitException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       try {
          if (EditorsPreferencePage.isIncludeAttributeTabOnArtifactEditor()) {
             createAttributesTab();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -225,7 +225,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
                try {
                   getEditorInput().getArtifact().persist("ArtifactEditor attribute tab persist");
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -238,7 +238,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          int attributesPageIndex = addPage(composite);
          setPageText(attributesPageIndex, "Attributes");
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -313,7 +313,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
             }
             onDirtied();
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return Status.OK_STATUS;
       }

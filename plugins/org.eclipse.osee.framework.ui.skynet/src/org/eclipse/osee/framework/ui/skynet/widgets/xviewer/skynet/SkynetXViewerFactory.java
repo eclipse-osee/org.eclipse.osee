@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
@@ -67,7 +67,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       try {
          registerColumns(getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -83,7 +83,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
             registerColumns(xCol);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -111,7 +111,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
             attributeTypes.addAll(art.getAttributeTypes());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       Set<String> attrNames = new HashSet<String>();
       // Add Name first

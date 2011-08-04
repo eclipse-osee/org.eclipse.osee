@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class XTextDam extends XText implements IAttributeWidget {
 
@@ -107,7 +107,7 @@ public class XTextDam extends XText implements IAttributeWidget {
             status =
                OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
          } catch (OseeCoreException ex) {
-            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error getting Artifact", ex);
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
          }
       }
       return status;

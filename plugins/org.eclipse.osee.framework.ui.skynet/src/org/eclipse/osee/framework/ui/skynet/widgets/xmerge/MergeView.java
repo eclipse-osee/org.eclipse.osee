@@ -63,7 +63,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -174,7 +174,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                         mergeView.explore(sourceBranch, destBranch, tranId, commitTrans, showConflicts);
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             });
@@ -250,7 +250,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   addRevertUnresolvableConflictsMenuItem(menuManager);
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -695,7 +695,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          }
 
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -719,7 +719,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
                   final Branch sourceBranch = BranchManager.getBranch(sourceBranchId);
                   if (sourceBranch == null) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                     OseeLog.log(Activator.class, Level.WARNING,
                         "Merge View can't init due to invalid source branch id " + sourceBranchId);
                      mergeXWidget.setLabel("Could not restore this Merge View");
                      return;
@@ -727,7 +727,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   destBranchId = memento.getInteger(DEST_BRANCH_ID);
                   final Branch destBranch = BranchManager.getBranch(destBranchId);
                   if (destBranch == null) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                     OseeLog.log(Activator.class, Level.WARNING,
                         "Merge View can't init due to invalid destination branch id " + sourceBranchId);
                      mergeXWidget.setLabel("Could not restore this Merge View");
                      return;
@@ -737,7 +737,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                         TransactionManager.getTransactionId(memento.getInteger(TRANSACTION_NUMBER));
                      openViewUpon(sourceBranch, destBranch, transactionId, null, false);
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                     OseeLog.log(Activator.class, Level.WARNING,
                         "Merge View can't init due to invalid transaction id " + transactionId);
                      mergeXWidget.setLabel("Could not restore this Merge View due to invalid transaction id " + transactionId);
                      return;
@@ -748,7 +748,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Merge View error on init", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "Merge View error on init", ex);
       }
    }
 
@@ -819,7 +819,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      break;
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -943,7 +943,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      }
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
             if (!deletedPurgedArts.isEmpty()) {
@@ -961,7 +961,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                         showConflicts);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }

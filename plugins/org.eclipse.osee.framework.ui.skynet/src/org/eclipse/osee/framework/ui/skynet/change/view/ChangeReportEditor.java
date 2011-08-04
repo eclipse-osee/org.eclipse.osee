@@ -28,11 +28,11 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportActionBarContributor;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.IChangeReportView;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
@@ -74,7 +74,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
          changeReportPage = new ChangeReportPage(this);
          addPage(changeReportPage);
       } catch (PartInitException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       OseeEventManager.addListener(eventRelay);
    }
@@ -95,7 +95,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
                   branch1 = txDelta.getStartTx().getBranch();
                   branch2 = txDelta.getEndTx().getBranch();
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
                }
                if (txDelta.areOnTheSameBranch()) {
                   sb.append(String.format("\nBranch - %s", branch1));
@@ -173,7 +173,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
             branches[0] = changeUiData.getTxDelta().getStartTx().getBranch();
             branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error obtaining change report branches for branch event",
+            OseeLog.log(Activator.class, Level.SEVERE, "Error obtaining change report branches for branch event",
                ex);
          }
          for (Branch branch : branches) {

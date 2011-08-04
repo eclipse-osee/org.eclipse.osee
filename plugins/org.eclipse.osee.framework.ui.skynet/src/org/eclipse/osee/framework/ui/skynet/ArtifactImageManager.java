@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
@@ -49,7 +50,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public final class ArtifactImageManager {
    private static final String EXTENSION_ELEMENT = "ArtifactImageProvider";
-   private static final String EXTENSION_ID = SkynetGuiPlugin.PLUGIN_ID + "." + EXTENSION_ELEMENT;
+   private static final String EXTENSION_ID = Activator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
 
    private static final String SELECT_ARTIFACT_TYPES_IMAGE_QUERY =
       "SELECT art_type_id, image FROM osee_artifact_type where image is not null";
@@ -96,7 +97,7 @@ public final class ArtifactImageManager {
             imageProvider.init();
          } catch (Exception ex) {
             // prevent an exception in one provider from affecting the initialization of other providers
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -117,7 +118,7 @@ public final class ArtifactImageManager {
                      BaseImage.getBaseImageEnum(artifactType, Lib.inputStreamToBytes(chStmt.getBinaryStream("image"))));
                   artifactTypeImageProviderMap.put(artifactType, OSEE_DATABASE_PROVIDER);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          } finally {
@@ -199,7 +200,7 @@ public final class ArtifactImageManager {
          // Return image for the base image
          return ImageManager.getImage(BaseImage.getBaseImageEnum(artifactType));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return ImageManager.getImage(ImageManager.MISSING);
    }
@@ -231,7 +232,7 @@ public final class ArtifactImageManager {
 
       // Database can override other providers, don't display error in that cases
       if (alreadyProvided && !providedByOseeDatabase) {
-         OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+         OseeLog.logf(Activator.class, Level.SEVERE,
             "Two ArtifactImageProviders [%s][%s] specify image for same artifact type [%s]",
             provider.getClass().getSimpleName(), artifactTypeImageProviderMap.get(artifactType), artifactType);
       }
@@ -265,7 +266,7 @@ public final class ArtifactImageManager {
             return imageProvider.setupImage(castedArtifact);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       return setupImageNoProviders(artifact);
@@ -288,7 +289,7 @@ public final class ArtifactImageManager {
             return ImageManager.setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY, Location.BOT_LEFT).getImageKey();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return ImageManager.setupImage(baseImageEnum);
    }

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImporter;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
@@ -101,7 +102,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
          if (dropTarget != null && toBeDropped.getSource().equals(viewId)) {
             try {
-               AccessPolicy policy = SkynetGuiPlugin.getInstance().getAccessPolicy();
+               AccessPolicy policy = Activator.getInstance().getAccessPolicy();
                valid =
                   policy.canRelationBeModified(dropTarget, Arrays.asList(toBeDropped.getArtifacts()),
                      CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
@@ -120,7 +121,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   }
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                valid = false;
             }
          }
@@ -158,7 +159,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated,
                      true);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(
                viewPart.getViewSite().getShell(),

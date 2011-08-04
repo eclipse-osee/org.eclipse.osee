@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -84,7 +84,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
          try {
             editor.setEntry(((Artifact) obj).getSoleAttributeValue(attributeType).toString());
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (obj instanceof AttributeConflict) {
          try {
@@ -92,7 +92,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
                editor.setEntry(((AttributeConflict) obj).getMergeObject().toString());
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       if (regExp != null) {
@@ -126,7 +126,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
                            AWorkbench.popup("Attention", MergeUtility.COMMITED_PROMPT);
                         }
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                        OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      }
                   } else {
                      if (!((AttributeConflict) object).clearValue()) {
@@ -137,7 +137,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
             }
             return true;
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return false;

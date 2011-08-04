@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -23,14 +23,14 @@ public class ExecuteBlamOperation extends AbstractOperation {
    private final VariableMap variableMap;
 
    public ExecuteBlamOperation(AbstractBlam blamOperation, VariableMap variableMap, OperationLogger logger) {
-      super(blamOperation.getName(), SkynetGuiPlugin.PLUGIN_ID, logger);
+      super(blamOperation.getName(), Activator.PLUGIN_ID, logger);
       this.variableMap = variableMap;
       this.blamOperation = blamOperation;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      blamOperation.setOseeDatabaseService(SkynetGuiPlugin.getInstance().getOseeDatabaseService());
+      blamOperation.setOseeDatabaseService(Activator.getInstance().getOseeDatabaseService());
       blamOperation.runOperation(variableMap, monitor);
    }
 }

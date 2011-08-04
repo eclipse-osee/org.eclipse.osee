@@ -52,11 +52,11 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorAction;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.CompareArtifactAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -114,7 +114,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
                      historyView.explore(artifact, loadHistory);
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
@@ -238,7 +238,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                   }
 
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -271,7 +271,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                try {
                   ChangeUiUtil.open(((Change) selectedObject).getTxDelta().getStartTx());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -321,7 +321,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "History View error on init", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "History View error on init", ex);
       }
    }
 
@@ -341,7 +341,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                try {
                   explore(artifact, true);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });

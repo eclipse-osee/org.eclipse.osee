@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.FileWatcher;
 import org.eclipse.osee.framework.jdk.core.util.io.IFileWatcherListener;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 final class ArtifactFileMonitor implements IFileWatcherListener {
    private final ResourceAttributes readonlyfileAttributes;
@@ -79,7 +79,7 @@ final class ArtifactFileMonitor implements IFileWatcherListener {
          @Override
          public void done(IJobChangeEvent event) {
             if (event.getResult().isOK()) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Updated artifact linked to: " + file.getAbsolutePath());
+               OseeLog.log(Activator.class, Level.INFO, "Updated artifact linked to: " + file.getAbsolutePath());
             }
          }
       });
@@ -87,6 +87,6 @@ final class ArtifactFileMonitor implements IFileWatcherListener {
 
    @Override
    public void handleException(Exception ex) {
-      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
    }
 }

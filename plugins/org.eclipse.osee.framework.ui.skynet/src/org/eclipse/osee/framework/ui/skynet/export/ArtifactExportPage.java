@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -56,7 +56,7 @@ public class ArtifactExportPage extends WizardDataTransferPage {
             if (selectedObject instanceof Artifact) {
                selectedArtifacts.add((Artifact) selectedObject);
             } else {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");
             }
          }
       }

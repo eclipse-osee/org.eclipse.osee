@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -510,7 +510,7 @@ public class XText extends XWidget {
          return status;
       }
       if (isRequiredEntry() && isEmpty()) {
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, String.format("Must enter \"%s\"", getLabel()));
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Must enter \"%s\"", getLabel()));
       }
       return Status.OK_STATUS;
    }

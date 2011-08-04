@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 
 /**
@@ -111,7 +111,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       if (executeVbScript) {
          executeScript(new File(compareData.getGeneratorScriptPath()));
       } else {
-         OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, "Test - Skip launch of [%s]",
+         OseeLog.logf(Activator.class, Level.INFO, "Test - Skip launch of [%s]",
             compareData.getGeneratorScriptPath());
       }
    }
@@ -159,7 +159,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
             @Override
             protected void log(String message) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, message);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, message);
             }
 
          };
@@ -167,7 +167,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
             @Override
             protected void log(String message) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, message);
+               OseeLog.log(Activator.class, Level.INFO, message);
             }
          };
          errorCatcher.start();

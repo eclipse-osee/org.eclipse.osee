@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 public final class BaseToHeadHandler implements IChangeReportUiHandler {
@@ -39,7 +39,7 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
       try {
          branchName = txDelta.getEndTx().getBranch().getShortName();
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";
       }
       return String.format("%s - All Changes", branchName);

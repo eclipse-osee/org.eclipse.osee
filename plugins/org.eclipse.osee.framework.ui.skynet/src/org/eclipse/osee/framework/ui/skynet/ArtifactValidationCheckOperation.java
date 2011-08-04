@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -30,7 +31,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
    private final boolean stopOnFirstError;
 
    public ArtifactValidationCheckOperation(final Collection<Artifact> itemsToCheck, boolean stopOnFirstError) {
-      super("Validate Artifact(s)", SkynetGuiPlugin.PLUGIN_ID);
+      super("Validate Artifact(s)", Activator.PLUGIN_ID);
       this.stopOnFirstError = stopOnFirstError;
       this.itemsToCheck = new ArrayList<Artifact>(itemsToCheck);
       if (itemsToCheck != null) {

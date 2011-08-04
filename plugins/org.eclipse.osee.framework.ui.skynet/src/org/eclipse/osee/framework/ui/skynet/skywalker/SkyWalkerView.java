@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -161,7 +161,7 @@ public class SkyWalkerView extends GenericViewPart {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       HelpUtil.setHelp(viewer.getControl(), OseeHelpContext.SKY_WALKER_VIEW);
@@ -269,7 +269,7 @@ public class SkyWalkerView extends GenericViewPart {
             Lib.writeStringToFile(options.toXml(), new File(filename));
             AWorkbench.popup("Saved", "Save Successful");
          } catch (IOException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -284,7 +284,7 @@ public class SkyWalkerView extends GenericViewPart {
             options.fromXml(xml);
             explore(options.getArtifact());
          } catch (IOException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -371,7 +371,7 @@ public class SkyWalkerView extends GenericViewPart {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Sky Walker error on init: ", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "Sky Walker error on init: ", ex);
       }
    }
 

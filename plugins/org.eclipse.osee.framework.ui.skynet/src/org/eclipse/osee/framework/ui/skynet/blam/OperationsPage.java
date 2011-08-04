@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -44,9 +44,9 @@ public class OperationsPage {
                Class<?> renderClass = bundle.loadClass(classname);
                renderClass.newInstance();
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             } catch (NoClassDefFoundError er) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+               OseeLog.log(Activator.class, Level.WARNING,
                   "Failed to find a class definition for " + classname + ", registered from bundle " + bundleName, er);
             }
          }

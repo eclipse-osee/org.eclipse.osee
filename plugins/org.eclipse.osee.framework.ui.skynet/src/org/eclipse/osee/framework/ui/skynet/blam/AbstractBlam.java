@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -108,7 +108,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public String getXWidgetsXml() throws OseeCoreException {
       switch (source) {
          case FILE:
-            return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), SkynetGuiPlugin.PLUGIN_ID);
+            return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
          case DEFAULT:
          default:
             return AbstractBlam.branchXWidgetXml;

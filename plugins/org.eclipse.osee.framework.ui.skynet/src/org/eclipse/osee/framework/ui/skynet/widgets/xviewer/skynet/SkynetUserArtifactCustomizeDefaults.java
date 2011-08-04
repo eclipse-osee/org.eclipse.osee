@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * This class provides the functionality necessary to store the user's defaults in their User Artifact
@@ -73,7 +73,7 @@ public class SkynetUserArtifactCustomizeDefaults {
          try {
             xml = user.getSoleAttributeValue(CoreAttributeTypes.XViewerDefaults, "");
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             xml = "";
          }
       }
@@ -89,7 +89,7 @@ public class SkynetUserArtifactCustomizeDefaults {
          }
          user.persist(getClass().getSimpleName());
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

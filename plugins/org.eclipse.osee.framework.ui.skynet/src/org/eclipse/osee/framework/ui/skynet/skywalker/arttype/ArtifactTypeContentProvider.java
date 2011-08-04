@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -38,7 +38,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
             return ((ArtifactType) entity).getFirstLevelDescendantTypes().toArray();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -53,7 +53,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
             return artifactTypes.toArray();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }

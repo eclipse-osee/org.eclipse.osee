@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -56,7 +56,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       try {
          artifactEditButton.setSelection(UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       closeChangeReportEditorsOnShutdown = new Button(composite, SWT.CHECK);
@@ -66,7 +66,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          boolean value = UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
          closeChangeReportEditorsOnShutdown.setSelection(value);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       try {
@@ -78,11 +78,11 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
                boolean value = UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR);
                includeAttributeTabOnArtifactEditor.setSelection(value);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       return composite;
@@ -121,7 +121,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
          UserManager.getUser().persist(getClass().getSimpleName());
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return super.performOk();
    }

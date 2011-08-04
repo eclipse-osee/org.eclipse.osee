@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.Select
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -372,7 +373,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             try {
                RendererManager.open(link.getOther(), PresentationType.DEFAULT_OPEN);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }
@@ -489,7 +490,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             WrapperForRelationLink data = (WrapperForRelationLink) selection.getFirstElement();
             AccessPolicy policyHandlerService;
             try {
-               policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
+               policyHandlerService = Activator.getInstance().getAccessPolicy();
 
                RelationTypeSide rts = new RelationTypeSide(data.getRelationType(), data.getRelationSide());
                valid =
@@ -498,7 +499,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                      java.util.Collections.singleton(data.getArtifactA().equals(artifact) ? data.getArtifactB() : data.getArtifactA()),
                      rts, Level.INFO).matched();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -552,7 +553,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          }
 
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       refresh();
    }
@@ -576,7 +577,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                      treeViewer.refresh();
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             } else if (object instanceof RelationTypeSideSorter) {
                RelationTypeSideSorter group = (RelationTypeSideSorter) object;
@@ -584,7 +585,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                   RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
                   treeViewer.refresh(group);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -696,7 +697,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                   }
                }
 
-               AccessPolicy policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
+               AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
 
                boolean matched =
                   policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts), data,
@@ -719,7 +720,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                }
 
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
 
          } else if (selected != null && selected.getData() instanceof WrapperForRelationLink) {
@@ -730,7 +731,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
                boolean matched = false;
                try {
-                  AccessPolicy policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
+                  AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
                   RelationTypeSide rts =
                      new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
 
@@ -740,7 +741,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                         Arrays.asList(artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
                         rts, Level.INFO).matched();
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
                if (!matched) {
                   event.detail = DND.DROP_NONE;
@@ -816,7 +817,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
          isFeedbackAfter = false;
@@ -838,13 +839,13 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             artifacts.add(group.getArtifact());
          }
 
-         AccessPolicy policyHandlerService = SkynetGuiPlugin.getInstance().getAccessPolicy();
+         AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
 
          hasPermission =
             policyHandlerService.canRelationBeModified(artifact, artifacts, relationTypeSide, Level.INFO).matched();
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return hasPermission;
    }

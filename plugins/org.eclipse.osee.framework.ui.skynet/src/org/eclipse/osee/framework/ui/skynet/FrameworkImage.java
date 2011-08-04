@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -215,7 +216,7 @@ public enum FrameworkImage implements KeyedImage {
    @Override
    public ImageDescriptor createImageDescriptor() {
       if (alias == null) {
-         return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
+         return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
       }
       return alias.createImageDescriptor();
    }
@@ -223,7 +224,7 @@ public enum FrameworkImage implements KeyedImage {
    @Override
    public String getImageKey() {
       if (alias == null) {
-         return SkynetGuiPlugin.PLUGIN_ID + "." + fileName;
+         return Activator.PLUGIN_ID + "." + fileName;
       }
       return alias.getImageKey();
    }

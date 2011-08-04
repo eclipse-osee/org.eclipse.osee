@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -123,7 +123,7 @@ public class GroupExplorerItem implements IAdaptable {
             addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
       if (groupItems != null) {

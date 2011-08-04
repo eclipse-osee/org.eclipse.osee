@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 
@@ -42,7 +42,7 @@ public class DetailsBrowserComposite extends BrowserComposite {
          addData(sb, "Last Modified", String.valueOf(artifact.getLastModified()));
          addData(sb, "Last Modified By", String.valueOf(artifact.getLastModifiedBy()));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          sb.append(AHTML.getLabelStr("Exception in rendering details: ", ex.getLocalizedMessage()));
       }
       setHtml(AHTML.simplePage(sb.toString()));

@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -64,7 +64,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
          // Hand out an modifiable copy of the LayoutData to ensure widgets created off it aren't shared
          data = (DynamicXWidgetLayoutData) widgetLayoutData.clone();
       } catch (CloneNotSupportedException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return data;
    }

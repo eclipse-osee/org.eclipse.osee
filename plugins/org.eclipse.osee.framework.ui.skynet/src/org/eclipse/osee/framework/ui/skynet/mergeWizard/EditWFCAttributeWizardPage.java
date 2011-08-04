@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
@@ -116,7 +116,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
                MergeUtility.launchMerge(conflict, getShell());
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          getWizard().getContainer().updateButtons();
       }
@@ -130,7 +130,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
             changeType = conflict.getAttributeType().getName();
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -155,7 +155,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.TYPE_TEXT);
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + changeType);
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       new Label(composite, SWT.NONE);
@@ -189,7 +189,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       try {
          setResolution(XMergeLabelProvider.getMergeImage(conflict));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       setControl(composite);

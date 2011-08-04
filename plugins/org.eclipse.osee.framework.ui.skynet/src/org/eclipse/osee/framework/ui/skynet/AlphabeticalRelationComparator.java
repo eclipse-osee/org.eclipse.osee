@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -33,7 +34,7 @@ public class AlphabeticalRelationComparator implements Comparator<RelationLink> 
       try {
          return relationLink1.getArtifact(relationSide).compareTo(relationLink2.getArtifact(relationSide));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return 0;
       }
    }

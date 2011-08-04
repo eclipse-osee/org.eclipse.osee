@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -31,7 +31,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    public ArtifactImportWizard(ArtifactImporter importer) {
       this.importer = importer;
-      setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
+      setDialogSettings(Activator.getInstance().getDialogSettings());
       setWindowTitle("OSEE Artifact Import Wizard");
       setNeedsProgressMonitor(true);
       setHelpAvailable(true);

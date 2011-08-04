@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -74,7 +74,7 @@ public class EditAttributeWizardPage extends WizardPage {
             }
 
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          getWizard().getContainer().updateButtons();
       }
@@ -91,7 +91,7 @@ public class EditAttributeWizardPage extends WizardPage {
                   conflict.getSourceDisplayData(), Arrays.asList(conflict), true);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -131,7 +131,7 @@ public class EditAttributeWizardPage extends WizardPage {
          new Label(composite, SWT.NONE).setText(DEST_TEXT);
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + conflict.getDestDisplayData());
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       Composite buttonComp = new Composite(composite, SWT.NONE);

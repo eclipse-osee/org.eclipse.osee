@@ -18,14 +18,14 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class LoadAssociatedArtifactOperation extends AbstractOperation {
    private final ChangeUiData changeData;
 
    public LoadAssociatedArtifactOperation(ChangeUiData changeData) {
-      super("Load Associated Artifact", SkynetGuiPlugin.PLUGIN_ID);
+      super("Load Associated Artifact", Activator.PLUGIN_ID);
       this.changeData = changeData;
    }
 

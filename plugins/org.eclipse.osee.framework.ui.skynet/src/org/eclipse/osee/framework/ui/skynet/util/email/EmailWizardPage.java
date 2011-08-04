@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
@@ -106,7 +106,7 @@ public class EmailWizardPage extends WizardPage {
          names.remove(UserManager.getUser(SystemUser.UnAssigned));
          names.remove(UserManager.getUser(SystemUser.OseeSystem));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          names.add(ex.getLocalizedMessage());
       }
 
@@ -254,7 +254,7 @@ public class EmailWizardPage extends WizardPage {
             bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       // Additional Text
@@ -285,7 +285,7 @@ public class EmailWizardPage extends WizardPage {
             return true;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -360,7 +360,7 @@ public class EmailWizardPage extends WizardPage {
                return ((String) element).toString();
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return "";
       }
@@ -391,7 +391,7 @@ public class EmailWizardPage extends WizardPage {
       try {
          return getToAddresses().length > 0 || getCcAddresses().length > 0;
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

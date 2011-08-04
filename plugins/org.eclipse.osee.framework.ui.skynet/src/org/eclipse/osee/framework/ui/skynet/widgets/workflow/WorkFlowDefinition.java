@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -257,7 +257,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       for (String transition : artifact.getAttributesToStringList(CoreAttributeTypes.WorkTransition)) {
          String[] strs = transition.split(";");
          if (strs.length != 3) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, new OseeStateException(
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, new OseeStateException(
                "Transition attribute from artifact [%s] is invalid.  Must be <fromState>;<transitionType>;<toState>",
                artifact.getGuid()));
             continue;
@@ -453,7 +453,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       try {
          return id + " - " + name + (parentId != null ? " - Parent: " + parentId : "") + getPageNames().toString();
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return id + " - " + name;
       }
    }

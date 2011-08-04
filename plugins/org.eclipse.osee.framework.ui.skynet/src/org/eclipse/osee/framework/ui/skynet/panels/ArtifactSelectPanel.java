@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
@@ -81,9 +81,9 @@ public class ArtifactSelectPanel extends AbstractItemSelectPanel<Artifact> {
       public IStatus validate(Object[] selection) {
          IStatus status;
          if (selection == null || selection.length != 1) {
-            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.ERROR, "Must select 1 item", null);
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, "Must select 1 item", null);
          } else {
-            status = new Status(IStatus.OK, SkynetGuiPlugin.PLUGIN_ID, 0, "", null);
+            status = new Status(IStatus.OK, Activator.PLUGIN_ID, 0, "", null);
          }
          return status;
       }

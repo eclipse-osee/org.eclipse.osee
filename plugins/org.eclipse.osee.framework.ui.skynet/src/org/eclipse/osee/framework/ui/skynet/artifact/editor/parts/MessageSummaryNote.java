@@ -15,7 +15,7 @@ import java.io.StringWriter;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -92,7 +92,7 @@ public class MessageSummaryNote {
                   c.setFocus();
                }
             } catch (NumberFormatException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
             }
          }
       });

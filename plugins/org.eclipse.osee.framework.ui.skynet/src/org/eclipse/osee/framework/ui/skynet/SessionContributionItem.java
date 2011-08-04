@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
@@ -81,14 +82,14 @@ public final class SessionContributionItem extends OseeStatusContributionItem im
                               event.setEventType(AccessControlEventType.UserAuthenticated);
                               OseeEventManager.kickAccessControlArtifactsEvent(this, event);
                            } catch (Exception ex) {
-                              OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                              OseeLog.log(Activator.class, Level.SEVERE, ex);
                            }
                         }
                      });
                   }
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -139,7 +140,7 @@ public final class SessionContributionItem extends OseeStatusContributionItem im
             userId = UserManager.getUser().getUserId();
             sessionId = ClientSessionManager.getSessionId();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return String.format(ENABLED_TOOLTIP, skynetName, userId, sessionId);
       }

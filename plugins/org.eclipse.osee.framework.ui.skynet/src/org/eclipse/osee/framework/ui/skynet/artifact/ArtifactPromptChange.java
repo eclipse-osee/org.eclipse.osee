@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -31,7 +31,7 @@ public final class ArtifactPromptChange {
    }
 
    private static ArtifactPromptService getService() throws OseeCoreException {
-      return SkynetGuiPlugin.getInstance().getArtifactPromptService();
+      return Activator.getInstance().getArtifactPromptService();
    }
 
    public static boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist) {
@@ -43,7 +43,7 @@ public final class ArtifactPromptChange {
       try {
          result = getService().promptChangeAttribute(attributeType, artifacts, persist, multiLine);
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return result;
    }

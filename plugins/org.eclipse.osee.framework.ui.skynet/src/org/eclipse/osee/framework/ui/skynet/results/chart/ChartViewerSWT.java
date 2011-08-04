@@ -19,7 +19,7 @@ import org.eclipse.birt.chart.model.attribute.Bounds;
 import org.eclipse.birt.chart.model.attribute.impl.BoundsImpl;
 import org.eclipse.birt.chart.util.PluginSettings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Rectangle;
@@ -39,7 +39,7 @@ public class ChartViewerSWT implements PaintListener
       try {
          idr = ps.getDevice("dv.SWT");
       } catch (ChartException pex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, pex);
+         OseeLog.log(Activator.class, Level.SEVERE, pex);
       }
    }
 
@@ -61,7 +61,7 @@ public class ChartViewerSWT implements PaintListener
       try {
          gr.render(idr, gr.build(idr.getDisplayServer(), chart, null, bo, null));
       } catch (ChartException gex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, gex);
+         OseeLog.log(Activator.class, Level.SEVERE, gex);
       }
 
    }

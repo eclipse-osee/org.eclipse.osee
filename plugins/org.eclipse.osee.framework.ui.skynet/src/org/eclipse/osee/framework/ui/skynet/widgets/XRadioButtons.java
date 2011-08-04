@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton.ButtonType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -266,7 +266,7 @@ public class XRadioButtons extends GenericXWidget {
    @Override
    public IStatus isValid() {
       if (isRequiredEntry() && isEmpty()) {
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must have at least one selection.");
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must have at least one selection.");
       }
       return Status.OK_STATUS;
    }

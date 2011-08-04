@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewImageHandler;
 import org.eclipse.swt.graphics.Image;
@@ -68,7 +68,7 @@ public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
             getTreeViewer().setInitalChecked(getInitialBranches());
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return comp;
    }

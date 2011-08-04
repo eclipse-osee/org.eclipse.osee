@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 
@@ -32,7 +32,7 @@ public final class DiffUsingRenderer extends AbstractOperation {
    private final CompareDataCollector collector;
 
    public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
-      super(generateOperationName(artifactDeltas), SkynetGuiPlugin.PLUGIN_ID);
+      super(generateOperationName(artifactDeltas), Activator.PLUGIN_ID);
       this.artifactDeltas = artifactDeltas;
       this.pathPrefix = pathPrefix;
       this.options = options;

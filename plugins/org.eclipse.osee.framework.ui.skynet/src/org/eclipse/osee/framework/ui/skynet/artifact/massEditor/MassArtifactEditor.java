@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -76,7 +76,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
       try {
          Artifacts.persistInTransaction("Mass Artifact Editor - Save", xViewer.getArtifacts());
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       onDirtied();
    }
@@ -92,7 +92,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
                Set<Artifact> accessibleArts = new HashSet<Artifact>();
                for (Artifact artifact : artifacts) {
                   if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                     OseeLog.log(Activator.class, Level.INFO,
                         "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;
                   } else {
@@ -110,7 +110,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
                   AWorkbench.popup("ERROR", "Some Artifacts not loaded due to access control limitations.");
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }, options.contains(TableLoadOption.ForcePend));
@@ -164,7 +164,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
             try {
                page.openEditor(input, EDITOR_ID);
             } catch (PartInitException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -186,7 +186,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
                taskArt.reloadAttributesAndRelations();
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -251,7 +251,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
       try {
          xViewer.set(((MassArtifactEditorInput) editorInput).getArtifacts());
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       getSite().setSelectionProvider(xViewer);
    }

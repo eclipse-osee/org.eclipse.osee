@@ -40,11 +40,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
@@ -158,7 +158,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
       RelationOrderRenderer renderer =
-         new RelationOrderRenderer(SkynetGuiPlugin.getInstance().getOseeCacheService().getRelationTypeCache(),
+         new RelationOrderRenderer(Activator.getInstance().getOseeCacheService().getRelationTypeCache(),
             guidResolver, RelationManager.getSorterProvider());
 
       WordMLProducer producer = new WordMLProducer(builder);
@@ -243,7 +243,7 @@ public class DefaultArtifactRenderer implements IRenderer {
                   try {
                      HistoryView.open(artifact);
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             } else if (isRenderOption(OPEN_IN_EXPLORER)) {
@@ -258,7 +258,7 @@ public class DefaultArtifactRenderer implements IRenderer {
                      AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), ArtifactEditor.EDITOR_ID);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -270,7 +270,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       try {
          result = getBooleanOption(value);
       } catch (OseeArgumentException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return result;
    }

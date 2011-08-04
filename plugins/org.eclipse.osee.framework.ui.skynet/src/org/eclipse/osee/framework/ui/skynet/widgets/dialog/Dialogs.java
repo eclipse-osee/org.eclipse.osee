@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -51,7 +51,7 @@ public class Dialogs {
       try {
          Lib.writeStringToFile(htmlText, new File(filename));
       } catch (IOException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return Result.FalseResult;
       }
       if (openInSystem) {

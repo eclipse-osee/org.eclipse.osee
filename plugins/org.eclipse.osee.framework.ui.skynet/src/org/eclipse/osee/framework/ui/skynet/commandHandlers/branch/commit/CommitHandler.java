@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -116,7 +116,7 @@ public abstract class CommitHandler extends CommandHandler {
                      }
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -180,7 +180,7 @@ public abstract class CommitHandler extends CommandHandler {
          try {
             commitBranch(new ConflictManagerExternal(destinationBranch, sourceBranch), archiveSourceBranch);
          } catch (OseeCoreException ex) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }
          return Status.OK_STATUS;
       }

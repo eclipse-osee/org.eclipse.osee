@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
@@ -163,7 +163,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
                resultsEditor.addResultsTab(new ResultsEditorHtmlTab(new XResultPage(filename, html,
                   Manipulations.RAW_HTML)));
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

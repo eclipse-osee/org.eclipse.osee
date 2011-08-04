@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * The basis for the comments in this class can be found at
@@ -126,7 +127,7 @@ public class RelationContentProvider implements ITreeContentProvider {
             return wrapper;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       return EMPTY_ARRAY;
@@ -152,7 +153,7 @@ public class RelationContentProvider implements ITreeContentProvider {
             return RelationManager.getRelatedArtifactsCount(sorter.getArtifact(), sorter.getRelationType(),
                sorter.getSide()) > 0;
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             return false;
          }
       } else if (element instanceof RelationType) {

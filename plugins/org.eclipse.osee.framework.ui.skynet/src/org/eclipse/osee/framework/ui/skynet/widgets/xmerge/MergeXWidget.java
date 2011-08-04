@@ -49,11 +49,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -202,7 +202,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
                   Branch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
                   conflict.applyPreviousMerge(mergeBranch.getId(), destBranchId);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                } finally {
                   monitor.worked(1);
                }
@@ -238,7 +238,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
                   }
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
 
             return Status.OK_STATUS;
@@ -385,7 +385,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
                   mergeXViewer.setConflicts(conflicts);
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -427,7 +427,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
             openAssociatedArtifactAction.setEnabled(true);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -558,7 +558,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
                ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
                BranchManager.completeUpdateBranch(conflictManager, true, false);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }
@@ -587,7 +587,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
                AWorkbench.popup("ERROR", "Unknown branch association");
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -611,13 +611,13 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
                try {
                   ChangeUiUtil.open(sourceBranch);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             } else {
                try {
                   ChangeUiUtil.open(firstConflict.getCommitTransactionId());
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -639,7 +639,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
             try {
                ChangeUiUtil.open(conflicts[0].getDestBranch());
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }
@@ -700,7 +700,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
                         "This Source Branch has had No Prior Merges", 2, new String[] {"OK"}, 1).open();
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }

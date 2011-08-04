@@ -20,7 +20,7 @@ import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate.ContentType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -50,7 +50,7 @@ public class UIOutlineResolutionHandler implements IStatusHandler {
          return mutableBoolean.booleanValue() ? ContentType.OUTLINE_TITLE : ContentType.CONTENT;
       }
 
-      throw new CoreException(new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+      throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
          "Invalid source object in UIOutlineResolutionHandler"));
    }
 }

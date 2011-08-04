@@ -14,14 +14,14 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
  */
 public class AttributeXWidgetManager {
    private static final String EXTENSION_NAME = "AttributeXWidgetProvider";
-   private static final String EXTENSION_POINT = SkynetGuiPlugin.PLUGIN_ID + "." + EXTENSION_NAME;
+   private static final String EXTENSION_POINT = Activator.PLUGIN_ID + "." + EXTENSION_NAME;
    private static final String CLASS_NAME_ATTRIBUTE = "classname";
 
    private final static AttributeXWidgetManager instance = new AttributeXWidgetManager();

@@ -21,7 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -356,17 +356,17 @@ public class XList extends GenericXWidget {
          if (size >= requiredMinSelected && size <= requiredMaxSelected) {
             return Status.OK_STATUS;
          } else if (size < requiredMinSelected) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                getLabel() + " must have at least " + requiredMinSelected + " selected.");
          } else if (size < requiredMaxSelected) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                getLabel() + " should only have " + requiredMaxSelected + " selected.");
          } else {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel());
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel());
          }
       }
       if (size == 0) {
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
       }
       return Status.OK_STATUS;
    }

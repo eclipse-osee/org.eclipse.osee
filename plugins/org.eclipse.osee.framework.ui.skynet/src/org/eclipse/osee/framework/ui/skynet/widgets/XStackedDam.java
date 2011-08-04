@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -93,7 +93,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
             addPage("");
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       Job job = new UIJob("Update Stacked XText") {
 
@@ -174,7 +174,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
             xWidget.addXModifiedListener(xModifiedListener);
             parent.layout();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -212,7 +212,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       try {
          return new Date(Long.parseLong(value));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return new Date();
    }

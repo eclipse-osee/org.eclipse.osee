@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.IElementExtractor;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.MergeEditArtifactElementExtractor;
@@ -61,7 +61,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
    private final boolean threeWayMerge;
 
    public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, Branch branch, boolean threeWayMerge) {
-      super("Update Artifact", SkynetGuiPlugin.PLUGIN_ID);
+      super("Update Artifact", Activator.PLUGIN_ID);
       this.workingFile = workingFile;
       this.artifacts = artifacts;
       this.branch = branch;
@@ -158,7 +158,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
    }
 
    private void logUpdateSkip(Artifact artifact) {
-      OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+      OseeLog.logf(Activator.class, Level.INFO,
          "Skipping update - artifact [%s] is read-only", artifact.toString());
    }
 

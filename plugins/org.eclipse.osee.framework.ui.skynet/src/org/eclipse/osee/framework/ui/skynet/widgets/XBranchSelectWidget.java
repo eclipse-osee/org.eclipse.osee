@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -110,7 +110,7 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    @Override
    public IStatus isValid() {
       if (isEmpty()) {
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select a Branch");
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must select a Branch");
       }
       return Status.OK_STATUS;
    }

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -159,7 +160,7 @@ public class XWidgetParser {
             } else if (value.equalsIgnoreCase("Vertically")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             } else {
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, new IllegalArgumentException(
+               OseeLog.log(Activator.class, Level.WARNING, new IllegalArgumentException(
                   "Unknown Fill Value \"" + value + "\""));
             }
          } else if (nodeName.equals("height")) {
@@ -173,7 +174,7 @@ public class XWidgetParser {
             } else if (value.equalsIgnoreCase("Center")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_CENTER);
             } else {
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, new IllegalArgumentException(
+               OseeLog.log(Activator.class, Level.WARNING, new IllegalArgumentException(
                   "Unknown Align Value \"" + value + "\""));
             }
          } else if (nodeName.equals("defaultValue")) {
@@ -181,7 +182,7 @@ public class XWidgetParser {
          } else if (nodeName.equals("keyedBranch")) {
             dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
          } else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeArgumentException(
+            OseeLog.log(Activator.class, Level.SEVERE, new OseeArgumentException(
                "Unsupported XWidget attribute \"" + nodeName + "\""));
          }
       }

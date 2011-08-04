@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.CompareType;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class LoadCompareBranchToBranch extends AbstractOperation {
 
@@ -29,7 +29,7 @@ public class LoadCompareBranchToBranch extends AbstractOperation {
    private final IBranchProvider branchProvider;
 
    public LoadCompareBranchToBranch(ChangeUiData uiData, IBranchProvider branchProvider) {
-      super("Load data to compare different branches", SkynetGuiPlugin.PLUGIN_ID);
+      super("Load data to compare different branches", Activator.PLUGIN_ID);
       this.uiData = uiData;
       this.branchProvider = branchProvider;
    }

@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -54,7 +54,7 @@ public class AttributeElement {
          } else if (elementType.equals("Format")) {
             format = value;
          } else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unexpected element read in Attribute:" + elementType);
+            OseeLog.log(Activator.class, Level.WARNING, "Unexpected element read in Attribute:" + elementType);
          }
       }
    }

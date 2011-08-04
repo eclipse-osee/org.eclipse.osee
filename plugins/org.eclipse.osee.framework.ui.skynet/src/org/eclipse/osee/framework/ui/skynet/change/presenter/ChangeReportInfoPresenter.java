@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.view.EditorSection;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -91,7 +91,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
          try {
             changeData.getCompareType().getHandler().appendTransactionInfoHtml(sb, changeData);
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       sb.append("</p>");
@@ -104,7 +104,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       try {
          sb.append(changeData.getCompareType().getHandler().getScenarioDescriptionHtml(changeData));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          sb.append(changeData.getCompareType().getHandler().getActionDescription());
       }
       sb.append("");
@@ -127,7 +127,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
          User user = UserManager.getUserByArtId(transaction.getAuthor());
          author = user.toString();
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          author = "Unknown";
       }
       DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);

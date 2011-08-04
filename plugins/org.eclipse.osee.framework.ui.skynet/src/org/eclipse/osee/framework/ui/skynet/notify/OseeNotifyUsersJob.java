@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
 
 /**
@@ -46,7 +46,7 @@ public class OseeNotifyUsersJob extends Job {
       super("Notifying Users");
       this.notificationEvents = notificationEvents;
       if (testing) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+         OseeLog.log(Activator.class, Level.SEVERE,
             "OseeNotifyUsersJob: testing is enabled....turn off for production.");
       }
    }
@@ -76,8 +76,8 @@ public class OseeNotifyUsersJob extends Job {
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
       }
    }
 

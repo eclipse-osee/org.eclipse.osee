@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.BaseArtifactLoopbackCmd;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IEditorPart;
 
@@ -46,7 +46,7 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
             try {
                hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
 
             if (!hasPermissionToRead) {
@@ -71,7 +71,7 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
                               String.format("Unable to open: [%s]", artifact.getName()));
                         }
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                         httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
                            String.format("Unable to open: [%s]", artifact.getName()), ex);
                      } finally {
@@ -85,13 +85,13 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
                   try {
                      Thread.sleep(350);
                   } catch (InterruptedException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                   count++;
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
                String.format("Unable to open: [%s]", artifact.getName()), ex);
          }

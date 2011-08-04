@@ -22,7 +22,7 @@ import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -166,12 +166,12 @@ public class XDate extends XWidget {
    public IStatus isValid() {
       if (isRequireFutureDate()) {
          if (getDate().before(new Date())) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be in future.");
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be in future.");
          }
       }
       if (isRequiredEntry()) {
          if (get().equals("")) {
-            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
          }
       }
       return Status.OK_STATUS;

@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -378,7 +378,7 @@ public abstract class XFlatWidget<T> extends XLabel {
             if (numberOfPages > maxPage) {
                message.add(String.format("Can't add more than [%s] page%s", maxPage, maxPage == 1 ? "" : "s"));
             }
-            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, Collections.toString(" &", message));
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, Collections.toString(" &", message));
          }
          return status;
       }

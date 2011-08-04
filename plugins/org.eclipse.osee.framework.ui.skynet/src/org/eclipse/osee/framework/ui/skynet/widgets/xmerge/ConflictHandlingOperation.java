@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Karol M. Wilk
@@ -37,7 +37,7 @@ public final class ConflictHandlingOperation extends AbstractOperation {
    private final ConflictOperationEnum operation;
 
    public ConflictHandlingOperation(ConflictOperationEnum operation, Collection<Conflict> conflicts) {
-      super("Updating conflicts", SkynetGuiPlugin.PLUGIN_ID);
+      super("Updating conflicts", Activator.PLUGIN_ID);
       this.conflicts = conflicts;
       this.operation = operation;
    }

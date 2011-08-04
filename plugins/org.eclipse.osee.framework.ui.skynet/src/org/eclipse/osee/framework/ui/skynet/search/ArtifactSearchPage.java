@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
@@ -149,7 +149,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             branch = BranchManager.getCommonBranch();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return branch;
    }
@@ -190,7 +190,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
             "Error encountered while getting list of artifact types", ex);
       }
       addToSearchTypeList(new ArtifactTypeFilter(artifactTypeControls, artifactTypeList));
@@ -226,7 +226,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       relationTypeList.getCombo().addSelectionListener(new SelectionAdapter() {
@@ -304,7 +304,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             attributeTypeList.setData(type.getName(), type);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
             "Error encountered while getting list of attribute types", ex);
       }
       attributeTypeList.getCombo().setVisibleItemCount(Math.min(attributeTypeList.getCombo().getItemCount(), 15));
@@ -539,7 +539,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    protected void saveState() {
-      IDialogSettings dialogSettings = SkynetGuiPlugin.getInstance().getDialogSettings();
+      IDialogSettings dialogSettings = Activator.getInstance().getDialogSettings();
       if (dialogSettings != null) {
 
          List<String> filterString = new ArrayList<String>();
@@ -547,15 +547,15 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          for (FilterModel model : filterList.getFilters()) {
             filterString.add(asString(model));
          }
-         dialogSettings.put(SkynetGuiPlugin.PLUGIN_ID + FILTERS_STORAGE_KEY,
+         dialogSettings.put(Activator.PLUGIN_ID + FILTERS_STORAGE_KEY,
             filterString.toArray(new String[filterString.size()]));
       }
    }
 
    protected void loadState() {
-      IDialogSettings dialogSettings = SkynetGuiPlugin.getInstance().getDialogSettings();
+      IDialogSettings dialogSettings = Activator.getInstance().getDialogSettings();
       if (dialogSettings != null) {
-         String[] filters = dialogSettings.getArray(SkynetGuiPlugin.PLUGIN_ID + FILTERS_STORAGE_KEY);
+         String[] filters = dialogSettings.getArray(Activator.PLUGIN_ID + FILTERS_STORAGE_KEY);
          if (filters != null) {
             for (String entry : filters) {
                processStoredFilter(entry);

@@ -39,9 +39,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -89,7 +89,7 @@ public class UserNavigateView extends ViewPart implements IActionable, IXNavigat
    public void refreshData() {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new UserNavigateViewItemsOperation());
-      IOperation operation = new CompositeOperation("Load User Navigator", SkynetGuiPlugin.PLUGIN_ID, ops);
+      IOperation operation = new CompositeOperation("Load User Navigator", Activator.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
@@ -114,7 +114,7 @@ public class UserNavigateView extends ViewPart implements IActionable, IXNavigat
                   }
 
                   if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-                     return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
+                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
                   }
 
                   xNavComp = new XNavigateComposite(UserNavigateViewItems.getInstance(), parent, SWT.NONE);
@@ -153,7 +153,7 @@ public class UserNavigateView extends ViewPart implements IActionable, IXNavigat
                   addExtensionPointListenerBecauseOfWorkspaceLoading();
 
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
                return Status.OK_STATUS;
             }
@@ -193,7 +193,7 @@ public class UserNavigateView extends ViewPart implements IActionable, IXNavigat
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
             ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();
       }
    }
@@ -248,7 +248,7 @@ public class UserNavigateView extends ViewPart implements IActionable, IXNavigat
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "NavigateView error on init", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "NavigateView error on init", ex);
       }
    }
 

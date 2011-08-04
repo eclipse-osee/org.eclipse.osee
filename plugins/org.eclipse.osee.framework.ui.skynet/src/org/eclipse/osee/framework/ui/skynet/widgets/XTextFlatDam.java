@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -104,7 +104,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             addPage("");
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       Job job = new UIJob("Update Flat XText") {
 
@@ -186,7 +186,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             xWidget.addXModifiedListener(xModifiedListener);
             parent.layout();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -221,7 +221,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
       try {
          return new Date(Long.parseLong(value));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return new Date();
    }

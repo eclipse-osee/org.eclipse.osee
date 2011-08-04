@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -58,7 +58,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
          }
       } else {
          OseeLog.log(
-            SkynetGuiPlugin.class,
+            Activator.class,
             OseeLevel.SEVERE_POPUP,
             "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifactId());
       }

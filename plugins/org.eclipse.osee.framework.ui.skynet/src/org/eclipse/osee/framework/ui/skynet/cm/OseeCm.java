@@ -14,8 +14,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public final class OseeCm {
 
@@ -28,7 +28,7 @@ public final class OseeCm {
          }
          oseeCmInstance = ServiceProvider.getOseeCmService();
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          AWorkbench.popup("ERROR", ex.getLocalizedMessage());
       }
       return oseeCmInstance;

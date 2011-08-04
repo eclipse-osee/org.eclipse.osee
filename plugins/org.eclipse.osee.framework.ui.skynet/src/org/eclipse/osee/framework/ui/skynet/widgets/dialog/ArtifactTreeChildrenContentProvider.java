@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * Shows artifacts and children of given class
@@ -80,7 +80,7 @@ public class ArtifactTreeChildrenContentProvider implements ITreeContentProvider
          try {
             return Artifacts.getChildrenOfTypeSet((Artifact) parentElement, clazz, true).toArray();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return EMPTY_ARRAY;

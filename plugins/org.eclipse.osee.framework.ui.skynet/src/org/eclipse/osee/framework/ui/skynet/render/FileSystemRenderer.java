@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbench;
@@ -104,7 +104,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                   Program program = getAssociatedProgram(firstArtifact);
                   program.execute(file.getLocation().toFile().getAbsolutePath());
                } else {
-                  OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+                  OseeLog.logf(Activator.class, Level.INFO,
                      "Test - Opening File - [%s]" + file.getLocation().toFile().getAbsolutePath());
                }
             } catch (Exception ex) {

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.DateValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
@@ -70,7 +71,7 @@ public class AttributeCellModifier implements ICellModifier {
                return false;
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return property.equals("value");
@@ -125,7 +126,7 @@ public class AttributeCellModifier implements ICellModifier {
                attribute.setFromString((String) value);
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          tableViewer.update(element, null);
          editor.onDirtied();

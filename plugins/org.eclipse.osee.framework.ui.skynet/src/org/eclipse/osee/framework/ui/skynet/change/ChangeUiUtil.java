@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 
@@ -82,7 +82,7 @@ public final class ChangeUiUtil {
             try {
                AWorkbench.getActivePage().openEditor(editorInput, ChangeReportEditor.EDITOR_ID);
             } catch (PartInitException ex) {
-               status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening change report", ex);
+               status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening change report", ex);
             }
             return status;
          }

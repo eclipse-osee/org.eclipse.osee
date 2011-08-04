@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -45,7 +45,7 @@ public final class WordUiUtil {
                if (RenderingUtil.arePopupsAllowed()) {
                   XResultDataUI.report(rd, "Unhandled Artifacts");
                } else {
-                  OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+                  OseeLog.logf(Activator.class, Level.INFO,
                      "Test - Skip Unhandled Artifacts Report - %s - [%s]", warningString, artifacts);
                }
             }

@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
@@ -121,7 +121,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
                refresh();
                groupExpDnd.setBranch(branch);
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
 
@@ -167,7 +167,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             try {
                handleRemoveFromGroup();
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -180,7 +180,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             try {
                handleDeleteGroup();
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -246,7 +246,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             UniversalGroup.addGroup(ed.getEntry(), branch);
             treeViewer.refresh();
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -272,7 +272,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             }
             transaction.execute();
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -305,7 +305,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             transaction.execute();
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -374,7 +374,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          try {
             topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       if (topArt == null) {
@@ -440,7 +440,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          try {
             memento.putInteger(BRANCH_ID, BranchManager.getBranchId(branch));
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -468,7 +468,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Group Explorer exception on init", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "Group Explorer exception on init", ex);
       }
    }
 

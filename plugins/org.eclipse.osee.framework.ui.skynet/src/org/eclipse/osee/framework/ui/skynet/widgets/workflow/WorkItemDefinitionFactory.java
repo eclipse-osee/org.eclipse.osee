@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
 /**
@@ -75,7 +75,7 @@ public class WorkItemDefinitionFactory {
 
    public synchronized static void loadDefinitions(boolean force) throws OseeCoreException {
       if (itemIdToDefinition == null || force) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading Work Item Definitions");
+         OseeLog.log(Activator.class, Level.INFO, "Loading Work Item Definitions");
          itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
          itemIdToWidArtifact = new HashMap<String, Artifact>();
 

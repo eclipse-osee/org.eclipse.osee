@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.imageDetection.WordImageCompare;
 
 /**
@@ -41,7 +41,7 @@ public class WordImageChecker {
       try {
          downArrow = new String(new byte[] {(byte) 0xE2, (byte) 0x86, (byte) 0x93}, "UTF-8");
       } catch (UnsupportedEncodingException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       String MODIFIED_STRING =
          "<w:t>" + downArrow + " OSEE Detected Image Modification " + downArrow + "</w:t></w:r></w:p><w:p><w:r></w:r></w:p><w:p><w:r>";

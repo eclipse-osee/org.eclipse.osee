@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * The basis for the comments in this class can be found at
@@ -76,7 +77,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (parentElement instanceof Collection) {
          return ((Collection<?>) parentElement).toArray();
@@ -93,7 +94,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          try {
             return ((Artifact) element).getParent();
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return null;
@@ -124,7 +125,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                return false;
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             // Assume it has children if an error happens
             return true;
          }

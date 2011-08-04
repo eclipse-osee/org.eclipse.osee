@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -130,7 +130,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
                getSelectedArtifact().deleteAndPersist();
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -216,7 +216,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
                clipboard = new Clipboard(null);
                clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
             } catch (Exception ex) {
-               OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, ex,
+               OseeLog.logf(Activator.class, Level.SEVERE, ex,
                   "Error obtaining url for - guid: [%s] branch:[%s]", getSelectedArtifact().getGuid(),
                   getSelectedArtifact().getBranch());
             } finally {
@@ -242,7 +242,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
                "org.eclipse.ui.views.ContentOutline");
          } catch (PartInitException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to open outline", ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unable to open outline", ex);
          }
       }
    }

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -48,7 +48,7 @@ public class AnnotationComposite extends Composite {
                   continue;
                }
                if (notify.getType() == ArtifactAnnotation.Type.None) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeStateException(
+                  OseeLog.log(Activator.class, Level.SEVERE, new OseeStateException(
                      "None is an invalid annotation type on artifact [%s]", artifact.getGuid()));
                   continue;
                }
@@ -59,7 +59,7 @@ public class AnnotationComposite extends Composite {
                alertLabel.setText(notify.getType().name() + ": " + notify.getContent());
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Exception resolving annotations", ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Exception resolving annotations", ex);
          }
       }
       if (toolkit != null) {

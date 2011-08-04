@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactMatch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.page.AttributeLineElement;
 import org.eclipse.osee.framework.ui.skynet.search.page.AttributeMatch;
 import org.eclipse.search.ui.NewSearchUI;
@@ -112,7 +112,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                      resultCollector.acceptArtifactMatch(artifactMatch);
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+                  OseeLog.logf(Activator.class, Level.SEVERE,
                      ex, "Error processing attribute line matches for [%s]", artifactMatch.getArtifact());
                   resultCollector.acceptArtifactMatch(artifactMatch);
                }
@@ -125,7 +125,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       } finally {
-         OseeLog.logf(SkynetGuiPlugin.class, Level.INFO, 
+         OseeLog.logf(Activator.class, Level.INFO, 
             "Quick Search: [%s] artifacts with [%s] location matches loaded in [%s secs] collected in [%s]",
             artifactCount, lineMatches, (endOfloadTime - startTime) / 1000.0, Lib.getElapseString(startCollectTime));
       }
@@ -229,7 +229,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                return attribute.getDisplayableString();
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return "";
       }

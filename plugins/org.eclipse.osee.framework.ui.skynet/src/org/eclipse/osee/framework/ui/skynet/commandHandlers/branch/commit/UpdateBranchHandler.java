@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOp
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -94,7 +94,7 @@ public class UpdateBranchHandler extends CommandHandler {
    private static final class UserConflictResolver extends ConflictResolverOperation {
 
       public UserConflictResolver() {
-         super("Launch Merge Manager", SkynetGuiPlugin.PLUGIN_ID);
+         super("Launch Merge Manager", Activator.PLUGIN_ID);
       }
 
       @Override
@@ -120,7 +120,7 @@ public class UpdateBranchHandler extends CommandHandler {
                      mergeView.explore(sourceBranch, destinationBranch, null, null, true);
                   }
                } catch (PartInitException ex) {
-                  status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error launching merge view", ex);
+                  status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error launching merge view", ex);
                }
                return status;
             }

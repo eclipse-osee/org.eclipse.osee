@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
@@ -30,7 +31,7 @@ public class RevealInWorkspaceOperation extends AbstractOperation {
    List<IResource> matches;
 
    public RevealInWorkspaceOperation(List<Artifact> artifacts, List<IResource> matches) {
-      super("Reveal In Workspace", SkynetGuiPlugin.PLUGIN_ID);
+      super("Reveal In Workspace", Activator.PLUGIN_ID);
       this.artifacts = artifacts;
       this.matches = matches;
    }

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -73,7 +73,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
                   try {
                      explore(ArtifactTypeManager.getType((IArtifactType) obj));
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             }
@@ -104,7 +104,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       setPartName("Artifact Type Walker (" + artifactType.getName() + ")");
    }
@@ -131,7 +131,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
       try {
          explore(ArtifactTypeManager.getType(CoreArtifactTypes.Artifact));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

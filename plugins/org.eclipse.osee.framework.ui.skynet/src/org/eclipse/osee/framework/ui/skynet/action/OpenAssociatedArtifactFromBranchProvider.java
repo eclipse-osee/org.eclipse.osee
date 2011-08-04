@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperationFromBranch;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -65,7 +65,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
                      PresentationType.SPECIALIZED_EDIT);
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Cannot access associated artifact.", ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Cannot access associated artifact.", ex);
             }
          }
       });
@@ -77,7 +77,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
       try {
          associatedArtifact = BranchManager.getAssociatedArtifact(branchProvider.getBranch(null));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       ImageDescriptor descriptor;
       if (associatedArtifact != null && !(associatedArtifact instanceof User)) {

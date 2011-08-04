@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -112,7 +112,7 @@ public class GlobalMenu {
                purgeMenuItem.setEnabled(permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -149,7 +149,7 @@ public class GlobalMenu {
                      }
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
 
                Artifact[] artifactsArray = artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]);
@@ -163,11 +163,11 @@ public class GlobalMenu {
                      listener.actioned(GlobalMenuItem.DeleteArtifacts, artifactsToBeDeleted);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    };
@@ -196,12 +196,12 @@ public class GlobalMenu {
                      for (GlobalMenuListener listener : listeners) {
                         Result result = listener.actioning(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
                         if (result.isFalse()) {
-                           return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, result.getText(),
+                           return new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.OK, result.getText(),
                               null);
                         }
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                   monitor.beginTask("Purge artifact", artifactsToBePurged.size());
 
@@ -215,8 +215,8 @@ public class GlobalMenu {
                      }
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                     toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
                   } finally {
                      monitor.done();
                   }
@@ -227,7 +227,7 @@ public class GlobalMenu {
                         listener.actioned(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
 
                   return toReturn;

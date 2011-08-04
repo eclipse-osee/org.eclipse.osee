@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
 import org.eclipse.swt.program.Program;
@@ -75,7 +75,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                      if (userArt instanceof User) {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
-                           OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+                           OseeLog.logf(Activator.class, Level.SEVERE,
                               "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt);
                         } else if (((User) userArt).isActive()) {
                            emails.add(((User) userArt).getEmail());
@@ -85,7 +85,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                } else if (artifact.isOfType(CoreArtifactTypes.UserGroup)) {
                   for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
                      if (!EmailUtil.isEmailValid(user)) {
-                        OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
+                        OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
                            user.getEmail(), user);
                      } else if (user.isActive()) {
                         emails.add(user.getEmail());
@@ -107,7 +107,7 @@ public class EmailUserGroups extends XNavigateItemAction {
             AWorkbench.popup("Complete", "Configured emails openened in local email client.");
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
    }

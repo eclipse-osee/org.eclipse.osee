@@ -15,7 +15,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -52,7 +52,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       try {
          return UserManager.getBooleanSetting(settingKey);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
       }
    }
@@ -61,7 +61,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       try {
          UserManager.setSetting(settingKey, String.valueOf(button.getSelection()));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -80,7 +80,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       try {
          UserManager.getUser().persist(getClass().getSimpleName());
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return super.performOk();
    }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -48,14 +48,14 @@ public class ArtifactExportJob extends Job {
 
          for (Artifact artifact : exportArtifacts) {
             if (monitor.isCanceled()) {
-               return new Status(IStatus.CANCEL, SkynetGuiPlugin.PLUGIN_ID, "User Cancled the operation.");
+               return new Status(IStatus.CANCEL, Activator.PLUGIN_ID, "User Cancled the operation.");
             }
             writeArtifactPreview(rootExportPath, monitor, artifact);
          }
 
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {
          monitor.done();
       }
@@ -81,7 +81,7 @@ public class ArtifactExportJob extends Job {
          try {
             RendererManager.open(artifact, PresentationType.PREVIEW);
          } catch (OseeArgumentException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       monitor.worked(1);

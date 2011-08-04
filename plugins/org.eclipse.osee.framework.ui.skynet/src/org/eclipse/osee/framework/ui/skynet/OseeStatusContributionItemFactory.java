@@ -15,6 +15,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.ViewPart;
@@ -53,7 +54,7 @@ public final class OseeStatusContributionItemFactory {
                object.dispose();
             }
          } catch (Exception ex) {
-            OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+            OseeLog.logf(Activator.class, Level.SEVERE,
                ex, "Error creating status line contribution item [%s]", contribClazz);
          }
       }

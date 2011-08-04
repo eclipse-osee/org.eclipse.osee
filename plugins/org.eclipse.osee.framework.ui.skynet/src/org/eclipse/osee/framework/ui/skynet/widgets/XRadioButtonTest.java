@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton.ButtonType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -39,7 +39,7 @@ public class XRadioButtonTest extends Composite {
             try {
                System.out.println("isSelected *" + rb.isSelected() + "*");
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          };
       });
@@ -58,7 +58,7 @@ public class XRadioButtonTest extends Composite {
             try {
                System.out.println("isSelected *" + rb2.isSelected() + "*");
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          };
       });
@@ -79,7 +79,7 @@ public class XRadioButtonTest extends Composite {
             try {
                System.out.println("isSelected *" + rb3.isSelected() + "*");
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          };
       });

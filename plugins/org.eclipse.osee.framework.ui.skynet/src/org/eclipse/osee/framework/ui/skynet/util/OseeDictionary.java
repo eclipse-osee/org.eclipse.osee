@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
 
 /**
@@ -131,19 +131,19 @@ public class OseeDictionary implements IDictionary {
       private final Collection<IOseeDictionary> toLoad;
 
       public LoadDictionaryOperation(Collection<IOseeDictionary> toLoad) {
-         super("Loading Osee Dictionary", SkynetGuiPlugin.PLUGIN_ID);
+         super("Loading Osee Dictionary", Activator.PLUGIN_ID);
          this.toLoad = toLoad;
       }
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading Osee Dictionary");
+         OseeLog.log(Activator.class, Level.INFO, "Loading Osee Dictionary");
          ExtensionDefinedObjects<IOseeDictionary> contributions =
             new ExtensionDefinedObjects<IOseeDictionary>("org.eclipse.osee.framework.ui.skynet.OseeDictionary",
                "OseeDictionary", "classname");
          List<IOseeDictionary> dictionaries = contributions.getObjects();
          toLoad.addAll(dictionaries);
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loaded Osee Dictionary");
+         OseeLog.log(Activator.class, Level.INFO, "Loaded Osee Dictionary");
       }
    }
 

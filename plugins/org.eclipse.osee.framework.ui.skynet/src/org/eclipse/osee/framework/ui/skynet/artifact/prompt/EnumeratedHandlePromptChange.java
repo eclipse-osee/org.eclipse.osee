@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selection;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSingletonSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -48,7 +48,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       try {
          isSingletonAttribute = AttributeTypeManager.getMaxOccurrences(attributeType) == 1;
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       if (isSingletonAttribute) {
          this.singletonDialog = new EnumSingletonSelectionDialog(attributeType, artifacts);

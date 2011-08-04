@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -53,7 +53,7 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
 
    @Override
    public void init(IWorkbench workbench) {
-      setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
+      setPreferenceStore(Activator.getInstance().getPreferenceStore());
       setDescription("See below for OSEE Data Source Details.");
    }
 

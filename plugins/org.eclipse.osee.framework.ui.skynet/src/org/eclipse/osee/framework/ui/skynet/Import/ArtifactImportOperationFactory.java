@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Robert A. Fisher
@@ -56,7 +56,7 @@ public final class ArtifactImportOperationFactory {
       ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false));
       ops.add(new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), stopOnError));
       ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
-      return new CompositeOperation("Artifact Import", SkynetGuiPlugin.PLUGIN_ID, ops);
+      return new CompositeOperation("Artifact Import", Activator.PLUGIN_ID, ops);
    }
 
    public static IOperation createArtifactAndRoughToRealOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) {
@@ -68,7 +68,7 @@ public final class ArtifactImportOperationFactory {
          "Artifact Import - RoughToRealArtifactOperation, ArtifactValidationCheckOperation, CompleteArtifactImportOperation",
          destinationArtifact, resolver, stopOnError, collector, deleteUnMatched));
       return new CompositeOperation("Artifact Import - ArtifactAndRoughToRealOperation, RoughToRealOperation",
-         SkynetGuiPlugin.PLUGIN_ID, ops);
+         Activator.PLUGIN_ID, ops);
    }
 
    /**
@@ -81,7 +81,7 @@ public final class ArtifactImportOperationFactory {
          ops.add(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
             selectionArtifactTypes));
       }
-      return new CompositeOperation(opDescription, SkynetGuiPlugin.PLUGIN_ID, ops);
+      return new CompositeOperation(opDescription, Activator.PLUGIN_ID, ops);
    }
 
    /**
@@ -96,7 +96,7 @@ public final class ArtifactImportOperationFactory {
          deleteUnmatchedArtifacts));
 
       final List<Artifact> children = new ArrayList<Artifact>();
-      AbstractOperation operation = new AbstractOperation("Fetch Descendants", SkynetGuiPlugin.PLUGIN_ID) {
+      AbstractOperation operation = new AbstractOperation("Fetch Descendants", Activator.PLUGIN_ID) {
          @Override
          protected void doWork(IProgressMonitor monitor) throws Exception {
             try {
@@ -116,6 +116,6 @@ public final class ArtifactImportOperationFactory {
       ops.add(new ArtifactValidationCheckOperation(children, stopOnError));
       ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
 
-      return new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, ops);
+      return new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
    }
 }

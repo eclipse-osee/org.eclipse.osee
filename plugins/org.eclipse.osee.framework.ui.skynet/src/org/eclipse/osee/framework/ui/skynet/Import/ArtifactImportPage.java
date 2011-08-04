@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactExtractorSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactTypeSelectPanel;
@@ -373,7 +373,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                   Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
                   artifactSelectPanel.setDefaultItem(artifact);
                } catch (OseeCoreException ex) {
-                  OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+                  OseeLog.logf(Activator.class, Level.SEVERE,
                      "Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch);
                }
             }
@@ -387,7 +387,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                ArtifactType artType = ArtifactTypeManager.getType(getArtifactType());
                attributeTypeSelectPanel.setAllowedAttributeTypes(artType.getAttributeTypes(getDestinationArtifact().getBranch()));
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          } else {
             attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<IAttributeType>());
@@ -456,7 +456,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                   attributeTypeSelectPanel.setAllowedAttributeTypes(specificArtifactType.getAttributeTypes(getDestinationArtifact().getBranch()));
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }

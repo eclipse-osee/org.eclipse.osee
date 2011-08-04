@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 
 /**
@@ -42,7 +42,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
    private final ArtifactNameConflictHandler nameConflictHandler;
 
    public ArtifactPasteOperation(ArtifactPasteConfiguration config, Artifact destination, List<Artifact> itemsToCopy, ArtifactNameConflictHandler nameConflictHandler) {
-      super("Paste Artifact(s)", SkynetGuiPlugin.PLUGIN_ID);
+      super("Paste Artifact(s)", Activator.PLUGIN_ID);
       this.itemsToCopy = itemsToCopy;
       this.destination = destination;
       this.config = config;

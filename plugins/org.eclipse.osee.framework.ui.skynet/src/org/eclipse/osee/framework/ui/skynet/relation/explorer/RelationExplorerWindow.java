@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
@@ -295,7 +295,7 @@ public class RelationExplorerWindow {
                         urls.get(names.indexOf(model.getName())));
                      artifact.persist(getClass().getSimpleName());
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             } else {
@@ -306,7 +306,7 @@ public class RelationExplorerWindow {
                try {
                   relationGroup.getArtifact().addRelation(relationGroup, artifact);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -315,7 +315,7 @@ public class RelationExplorerWindow {
          try {
             relationGroup.getArtifact().persist(getClass().getSimpleName());
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       shell.dispose();

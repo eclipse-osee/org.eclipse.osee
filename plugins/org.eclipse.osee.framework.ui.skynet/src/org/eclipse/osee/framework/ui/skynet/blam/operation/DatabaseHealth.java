@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -111,7 +111,7 @@ public class DatabaseHealth extends AbstractBlam {
       private final Set<DatabaseHealthOperation> verifyOperations = new HashSet<DatabaseHealthOperation>();
 
       public MasterDbHealthOperation(String operationName) {
-         super(operationName, SkynetGuiPlugin.PLUGIN_ID);
+         super(operationName, Activator.PLUGIN_ID);
       }
 
       public void addOperation(DatabaseHealthOperation operation, boolean isFixOperation) {

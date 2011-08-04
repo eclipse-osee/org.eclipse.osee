@@ -94,6 +94,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
@@ -196,7 +197,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private Control branchWarningComposite;
    private StackLayout stackLayout;
    private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
-      SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
+      Activator.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
    private Label branchWarningLabel;
 
    public static void explore(Collection<Artifact> artifacts) {
@@ -376,7 +377,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          getViewSite().getActionBars().updateActionBars();
 
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       OseeEventManager.addListener(this);
@@ -434,7 +435,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                stackComposite.layout();
                stackComposite.getParent().layout();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -509,7 +510,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                            }
                         }
                      } catch (Exception ex) {
-                        status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening quick search", ex);
+                        status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                      }
                      return status;
                   }
@@ -543,7 +544,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
                treeViewer.setExpandedElements(expandedPlus);
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -584,7 +585,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             try {
                ChangeUiUtil.open(branch);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       };
@@ -617,7 +618,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             try {
                Artifact parent = getParent();
 
-               AccessPolicy policy = SkynetGuiPlugin.getInstance().getAccessPolicy();
+               AccessPolicy policy = Activator.getInstance().getAccessPolicy();
 
                PermissionStatus status =
                   policy.canRelationBeModified(parent, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
@@ -645,7 +646,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -702,7 +703,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   explore((Artifact) itemsIter.next());
                   treeViewer.setExpandedElements(expanded);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -727,7 +728,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.logf(
-                        SkynetGuiPlugin.class,
+                        Activator.class,
                         OseeLevel.SEVERE_POPUP,
                         "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
                            branch.getName());
@@ -897,7 +898,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             myArtifact.setName(newLabel);
             myArtifact.persist(getClass().getSimpleName());
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       treeViewer.refresh();
@@ -937,7 +938,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   refreshBranchWarning();
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -962,7 +963,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      lockArtifacts.add(object);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
 
@@ -970,7 +971,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                AccessControlManager.unLockObjects(unlockArtifacts, UserManager.getUser());
                AccessControlManager.lockObjects(lockArtifacts, UserManager.getUser());
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -988,7 +989,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             try {
                performCopy();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -1007,7 +1008,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                artifactTransferData.add(artifact);
             }
          }
-         artifactClipboard.setArtifactsToClipboard(SkynetGuiPlugin.getInstance().getAccessPolicy(),
+         artifactClipboard.setArtifactsToClipboard(Activator.getInstance().getAccessPolicy(),
             artifactTransferData);
       }
    }
@@ -1140,7 +1141,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             upAction.setEnabled(explorerRoot != null && explorerRoot.hasParent());
          } catch (OseeCoreException ex) {
             upAction.setEnabled(false);
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -1223,7 +1224,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             treeViewer.setInput(explorerRoot);
             initializeSelectionBox();
          } catch (IllegalArgumentException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -1248,7 +1249,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             boolean canModifyDH = false;
             if (obj instanceof Artifact) {
                Artifact art = (Artifact) obj;
-               AccessPolicy service = SkynetGuiPlugin.getInstance().getAccessPolicy();
+               AccessPolicy service = Activator.getInstance().getAccessPolicy();
                canModifyDH =
                   service.canRelationBeModified(art, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
             }
@@ -1270,7 +1271,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             renameArtifactMenuItem.setEnabled(permiss.isWritePermission());
 
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
       }
@@ -1303,7 +1304,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -1370,7 +1371,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             });
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -1445,7 +1446,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       private final ArtifactData artifactData;
 
       public CheckArtifactBeforeReveal(ArtifactData artifactData) {
-         super("Check Artifact Before Reveal", SkynetGuiPlugin.PLUGIN_ID);
+         super("Check Artifact Before Reveal", Activator.PLUGIN_ID);
          this.artifactData = artifactData;
       }
 

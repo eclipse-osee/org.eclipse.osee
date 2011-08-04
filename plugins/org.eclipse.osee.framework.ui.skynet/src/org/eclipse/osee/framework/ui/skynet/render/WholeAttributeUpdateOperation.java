@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -30,7 +30,7 @@ public class WholeAttributeUpdateOperation extends AbstractOperation {
    private final File file;
 
    public WholeAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType) {
-      super("Native Artifact Update", SkynetGuiPlugin.PLUGIN_ID);
+      super("Native Artifact Update", Activator.PLUGIN_ID);
       this.artifact = artifact;
       this.attributeType = attributeType;
       this.file = file;

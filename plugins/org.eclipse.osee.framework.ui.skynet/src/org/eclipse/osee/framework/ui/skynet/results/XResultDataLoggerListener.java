@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.util.IResultDataListener;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * Added to XResultData if desire results to be OseeLog
@@ -25,7 +25,7 @@ public class XResultDataLoggerListener implements IResultDataListener {
 
    @Override
    public void log(final XResultData.Type type, final String str) {
-      OseeLog.log(SkynetGuiPlugin.class, Level.parse(type.name().toUpperCase()), str);
+      OseeLog.log(Activator.class, Level.parse(type.name().toUpperCase()), str);
    }
 
 }

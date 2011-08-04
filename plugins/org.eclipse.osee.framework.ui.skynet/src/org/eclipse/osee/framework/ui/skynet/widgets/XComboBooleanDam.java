@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class XComboBooleanDam extends XCombo implements IAttributeWidget {
 
@@ -64,7 +64,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
             artifact.setSoleAttributeValue(attributeType, (enteredValue != null && enteredValue.equals("yes")));
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

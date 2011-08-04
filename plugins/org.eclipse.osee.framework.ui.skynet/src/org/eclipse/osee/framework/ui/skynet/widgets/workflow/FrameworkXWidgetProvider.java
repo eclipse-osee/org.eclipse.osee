@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
@@ -141,7 +141,7 @@ public final class FrameworkXWidgetProvider {
                multiBranchSelect.setSelectableItems(branches);
                multiBranchSelect.setRequiredSelection(1, maxSelectionRequired);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             multiBranchSelect.setRequiredEntry(true);
             xWidget = multiBranchSelect;
@@ -159,7 +159,7 @@ public final class FrameworkXWidgetProvider {
             try {
                xWidget = new XMembersList(name);
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          } else if (xWidgetName.equals("XMembersCombo")) {
             xWidget = new XMembersCombo(name);
@@ -331,7 +331,7 @@ public final class FrameworkXWidgetProvider {
                   widget.setSelection(BranchManager.getBranchByGuid(branchGuid));
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             xWidget = widget;
          } else if (xWidgetName.equals(XArtifactTypeComboViewer.WIDGET_ID)) {
@@ -385,7 +385,7 @@ public final class FrameworkXWidgetProvider {
 
    private static Collection<IXWidgetProvider> getXWidgetProviders() {
       ExtensionDefinedObjects<IXWidgetProvider> contributions =
-         new ExtensionDefinedObjects<IXWidgetProvider>(SkynetGuiPlugin.PLUGIN_ID + ".XWidgetProvider",
+         new ExtensionDefinedObjects<IXWidgetProvider>(Activator.PLUGIN_ID + ".XWidgetProvider",
             "XWidgetProvider", "classname");
       return contributions.getObjects();
    }

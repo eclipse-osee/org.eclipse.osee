@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
@@ -62,7 +62,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
    @Override
    public boolean preShutdown(IWorkbench arg0, boolean force) {
       boolean isShutdownAllowed = true;
-      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Verifying Artifact Persistence");
+      OseeLog.log(Activator.class, Level.INFO, "Verifying Artifact Persistence");
       Collection<Artifact> dirtyArts = ArtifactCache.getDirtyArtifacts();
 
       if (!dirtyArts.isEmpty()) {
@@ -84,12 +84,12 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
                      for (Entry<Branch, Collection<Artifact>> entry : branchMap.entrySet()) {
                         Branch branch = entry.getKey();
                         Collection<Artifact> arts = entry.getValue();
-                        OseeLog.logf(SkynetGuiPlugin.class, Level.INFO,
+                        OseeLog.logf(Activator.class, Level.INFO,
                            "Persisting [%d] unsaved artifacts for branch [%s]", arts.size(), branch);
                         Artifacts.persistInTransaction("Artifact Save Notification", arts);
                      }
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             } else {
@@ -103,7 +103,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
             }
          } else {
             // For Test Purposes
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
                "Found dirty artifacts after tests: " + dirtyArts);
          }
       }

@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.core.operation.ClientLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.StringGuidsToArtifactListOperation;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -108,7 +108,7 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
                      String data = (String) cb.getContents(transfer);
                      Branch branch = BranchSelectionDialog.getBranchFromUser();
                      Operations.executeAsJob(new StringGuidsToArtifactListOperation(new ClientLogger(
-                        SkynetGuiPlugin.class), data, branch, XListDropViewer.this), true);
+                        Activator.class), data, branch, XListDropViewer.this), true);
                   } finally {
                      cb.dispose();
                   }

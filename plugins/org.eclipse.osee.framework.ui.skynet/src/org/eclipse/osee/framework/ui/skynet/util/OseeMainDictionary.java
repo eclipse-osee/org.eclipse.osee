@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -39,7 +39,7 @@ public class OseeMainDictionary implements IOseeDictionary {
          // open OSEE english dictionary
          BufferedReader br = null;
          try {
-            Bundle bundle = SkynetGuiPlugin.getInstance().getBundle();
+            Bundle bundle = Activator.getInstance().getBundle();
             URL url = bundle.getEntry("support/spellCheck/AllWords.txt");
 
             br = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -49,7 +49,7 @@ public class OseeMainDictionary implements IOseeDictionary {
                dictionary.add(line);
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
             wasLoaded = true;
             Lib.close(br);

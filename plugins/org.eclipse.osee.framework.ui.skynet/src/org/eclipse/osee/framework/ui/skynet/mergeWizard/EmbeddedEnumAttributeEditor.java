@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -90,13 +90,13 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
             editor.addSelectionChoice(string);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       if (obj instanceof Artifact) {
          try {
             editor.setSelected(((Artifact) obj).getSoleAttributeValue(attributeType).toString());
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (obj instanceof AttributeConflict) {
          try {
@@ -104,7 +104,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
                editor.setSelected(((AttributeConflict) obj).getMergeObject().toString());
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return true;
@@ -140,7 +140,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
          }
          return true;
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return true;
    }

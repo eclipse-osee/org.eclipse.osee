@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -97,7 +97,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    private IStatus constructStatus(int limit, String limitNoun) {
       String message =
          String.format("Has %d page(s) but the %s is %d.", stackedControl.getTotalPages(), limitNoun, limit);
-      return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, message);
+      return new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
    }
 
    @Override

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -43,7 +43,7 @@ public class WorkDefinitionProvider {
                   Object obj = taskClass.newInstance();
                   workDefinitionProviders.add((IWorkDefinitionProvider) obj);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
                      "Error loading WorkDefinitionProvider extension", ex);
                }
             }

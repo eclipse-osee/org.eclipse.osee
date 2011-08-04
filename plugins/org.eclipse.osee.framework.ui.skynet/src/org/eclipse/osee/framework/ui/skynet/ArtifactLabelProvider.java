@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
@@ -91,7 +92,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
                   extraInfo.add(selectedAttributes);
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
                extraInfo.add(ex.toString());
             }
          }

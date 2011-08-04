@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -29,7 +29,7 @@ public final class OpenUsingRenderer extends AbstractOperation {
    private String resutPath;
 
    public OpenUsingRenderer(Collection<Artifact> artifacts, PresentationType presentationType, Object... options) {
-      super(String.format("Open for %s using renderer", presentationType), SkynetGuiPlugin.PLUGIN_ID);
+      super(String.format("Open for %s using renderer", presentationType), Activator.PLUGIN_ID);
       this.artifacts = artifacts;
       this.options = options;
       this.presentationType = presentationType;

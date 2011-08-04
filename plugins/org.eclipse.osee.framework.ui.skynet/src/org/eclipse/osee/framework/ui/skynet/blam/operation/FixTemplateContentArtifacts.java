@@ -47,9 +47,9 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -131,7 +131,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
             }
          } catch (Exception ex) {
             badData.add(attrData.gammaId);
-            OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, "Skiping File %s because of exception %s",
+            OseeLog.logf(Activator.class, Level.SEVERE, "Skiping File %s because of exception %s",
                attrData.getHrid(), ex);
          }
 
@@ -148,7 +148,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                uploadResource(attrData.getGammaId(), resource);
 
             } catch (Exception ex) {
-               OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE, "Skiping File %s because of exception %s",
+               OseeLog.logf(Activator.class, Level.SEVERE, "Skiping File %s because of exception %s",
                   attrData.getHrid(), ex);
             }
          }

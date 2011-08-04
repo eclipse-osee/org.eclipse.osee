@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -120,7 +120,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                try {
                   toReturn = BranchManager.getBranch(branchName);
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -216,7 +216,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                   }
                }
             } catch (Exception ex) {
-               OseeLog.logf(SkynetGuiPlugin.class, Level.SEVERE,
+               OseeLog.logf(Activator.class, Level.SEVERE,
                   "Unable to add invalid branch id [%s] to selection list.", toStore);
             }
          }

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class DatabaseHealthOpsExtensionManager {
    private static final String EXTENSION_ELEMENT = "DatabaseHealthOperation";
    private static final String CLASS_ATTRIBUTE_NAME = "className";
-   private static final String EXTENSION_POINT = SkynetGuiPlugin.PLUGIN_ID + "." + EXTENSION_ELEMENT;
+   private static final String EXTENSION_POINT = Activator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
 
    private static final Map<String, DatabaseHealthOperation> fixOps = new TreeMap<String, DatabaseHealthOperation>();
    private static final Map<String, DatabaseHealthOperation> verifyOps = new TreeMap<String, DatabaseHealthOperation>();

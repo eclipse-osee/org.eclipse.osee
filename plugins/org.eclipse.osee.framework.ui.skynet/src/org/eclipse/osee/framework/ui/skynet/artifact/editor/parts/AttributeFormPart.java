@@ -28,9 +28,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -82,10 +82,10 @@ public class AttributeFormPart extends AbstractFormPart {
    public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
       try {
-         AccessPolicy policy = SkynetGuiPlugin.getInstance().getAccessPolicy();
+         AccessPolicy policy = Activator.getInstance().getAccessPolicy();
          decorator.addProvider(new XWidgetAccessDecorationProvider(policy));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
       }
    }
 
@@ -112,7 +112,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
          layoutControls(composite);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       } finally {
          composite.setVisible(true);
       }
@@ -259,7 +259,7 @@ public class AttributeFormPart extends AbstractFormPart {
                      saveCount++;
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
                }
             }
          } else {

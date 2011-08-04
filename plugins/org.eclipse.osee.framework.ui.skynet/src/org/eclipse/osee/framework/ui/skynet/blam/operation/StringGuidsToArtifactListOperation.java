@@ -11,7 +11,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetInputAddable;
 
 /**
@@ -38,7 +38,7 @@ public class StringGuidsToArtifactListOperation extends AbstractOperation {
     * @param widget accepting input by implementing <code>IXWidgetInputAddable</code> interface
     */
    public StringGuidsToArtifactListOperation(OperationLogger logger, String guidData, Branch branch, IXWidgetInputAddable widget) {
-      super(taskName, SkynetGuiPlugin.PLUGIN_ID, logger);
+      super(taskName, Activator.PLUGIN_ID, logger);
       this.rawGuidsData = guidData;
       this.branch = branch;
       this.widget = widget;

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
@@ -49,7 +49,7 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Change report error on init", ex);
+         OseeLog.log(Activator.class, Level.WARNING, "Change report error on init", ex);
       }
       return toReturn;
    }

@@ -44,9 +44,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.dnd.Clipboard;
@@ -122,7 +122,7 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
                   menuManager.add(new ColumnMultiEditAction(branchWidget));
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -163,7 +163,7 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
                   xBranchWidget.loadData();
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -178,7 +178,7 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
                try {
                   xBranchWidget.refresh();
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });

@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class OpenUsersInMassEditor extends Action {
 
@@ -41,12 +41,12 @@ public class OpenUsersInMassEditor extends Action {
 
                MassArtifactEditor.editArtifacts(active == Active.Active ? "Active Users" : "All Users", users);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
             }
             return Status.OK_STATUS;
          }
       };
-      Jobs.runInJob(getText(), runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.runInJob(getText(), runnable, Activator.class, Activator.PLUGIN_ID);
    }
 }

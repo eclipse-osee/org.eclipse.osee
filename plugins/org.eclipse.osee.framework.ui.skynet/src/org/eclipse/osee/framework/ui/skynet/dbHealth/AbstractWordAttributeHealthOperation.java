@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -110,7 +110,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       private final List<AttrData> attributesWithErrors;
 
       public FindAllWordAttributesNeedingFix(String operationName, List<AttrData> attributesWithErrors) {
-         super(operationName, SkynetGuiPlugin.PLUGIN_ID);
+         super(operationName, Activator.PLUGIN_ID);
          this.attributesWithErrors = attributesWithErrors;
       }
 

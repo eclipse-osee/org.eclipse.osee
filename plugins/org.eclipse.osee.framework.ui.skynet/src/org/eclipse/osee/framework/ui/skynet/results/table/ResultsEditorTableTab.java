@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerContentProvider;
@@ -133,7 +133,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
             try {
                new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true).exportCsv();
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -147,7 +147,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
             try {
                new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true).exportTsv();
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -190,7 +190,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
                writerAdaptor.close();
                Program.launch(TableResultsFile.getAbsolutePath());
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

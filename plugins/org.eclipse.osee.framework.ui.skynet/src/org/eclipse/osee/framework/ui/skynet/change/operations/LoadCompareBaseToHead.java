@@ -16,16 +16,16 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.CompareType;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class LoadCompareBaseToHead extends AbstractOperation {
 
    private final ChangeUiData uiData;
 
    public LoadCompareBaseToHead(ChangeUiData uiData) {
-      super("Load Data to compare from base to head transaction", SkynetGuiPlugin.PLUGIN_ID);
+      super("Load Data to compare from base to head transaction", Activator.PLUGIN_ID);
       this.uiData = uiData;
    }
 

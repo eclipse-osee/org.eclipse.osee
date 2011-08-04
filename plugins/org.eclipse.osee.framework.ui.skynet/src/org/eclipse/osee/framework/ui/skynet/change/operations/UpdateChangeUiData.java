@@ -19,15 +19,15 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.CompareType;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class UpdateChangeUiData extends AbstractOperation {
    private final ChangeUiData changeData;
 
    public UpdateChangeUiData(ChangeUiData changeData) {
-      super("Update Change Ui Data", SkynetGuiPlugin.PLUGIN_ID);
+      super("Update Change Ui Data", Activator.PLUGIN_ID);
       this.changeData = changeData;
    }
 

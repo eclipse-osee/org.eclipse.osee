@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet;
+package org.eclipse.osee.framework.ui.skynet.internal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +33,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.DialogPopupLoggerListener;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
-import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
-import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptServiceRegHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -45,8 +44,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventListener, IOseeDatabaseServiceProvider {
-   private static SkynetGuiPlugin pluginInstance; // The shared instance.
+public class Activator extends OseeUiActivator implements IBroadcastEventListener, IOseeDatabaseServiceProvider {
+   private static Activator pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
    public static final String CHANGE_REPORT_ATTRIBUTES_PREF =
       "org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
@@ -62,7 +61,7 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
 
    private final Map<String, ServiceDependencyTracker> trackers = new HashMap<String, ServiceDependencyTracker>();
 
-   public SkynetGuiPlugin() {
+   public Activator() {
       super(PLUGIN_ID);
       pluginInstance = this;
    }
@@ -141,7 +140,7 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
       }
    }
 
-   public static SkynetGuiPlugin getInstance() {
+   public static Activator getInstance() {
       return pluginInstance;
    }
 
@@ -210,7 +209,7 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
             OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Pong, null,
                sender.getOseeSession().toString()));
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Pong) {
          // Got pong from another client; If message == this client's sessionId, then it's
@@ -218,10 +217,10 @@ public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventL
          try {
             if (broadcastEvent.getMessage() != null && broadcastEvent.getMessage().equals(
                ClientSessionManager.getSession().toString())) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Pong: " + sender.toString());
+               OseeLog.log(Activator.class, Level.INFO, "Pong: " + sender.toString());
             }
          } catch (OseeAuthenticationRequiredException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Pong: " + sender.toString(), ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Pong: " + sender.toString(), ex);
          }
       }
    }

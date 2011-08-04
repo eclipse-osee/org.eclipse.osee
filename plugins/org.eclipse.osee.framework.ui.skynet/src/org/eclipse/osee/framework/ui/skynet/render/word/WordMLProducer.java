@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -85,7 +85,7 @@ public class WordMLProducer extends Producer {
       } else {
          flattenedLevelCount++;
          endOutlineSubSection(true);
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
+         OseeLog.log(Activator.class, Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
          return startOutlineSubSection(font, headingText, outlineType);
       }
    }

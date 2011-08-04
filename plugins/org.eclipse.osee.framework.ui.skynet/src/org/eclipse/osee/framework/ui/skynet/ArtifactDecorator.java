@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -92,7 +93,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
             saveAction(attributesAction, "artifact.decorator.show.attrTypes");
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -111,7 +112,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
             loadAction(attributesAction, "artifact.decorator.show.attrTypes");
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -165,7 +166,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
             result = true;
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          result = false;
       }
       return result;
@@ -324,7 +325,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                   try {
                      Branch branch = branchProvider.getBranch(monitor);
                      if (branch == null) {
-                        status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Branch not selected");
+                        status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Branch not selected");
                      } else {
                         Collection<IAttributeType> selectableTypes =
                            AttributeTypeManager.getValidAttributeTypes(branch);
@@ -356,7 +357,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                      }
                   } catch (OseeCoreException ex) {
                      status =
-                        new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening attribute types dialog", ex);
+                        new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening attribute types dialog", ex);
                   }
                   return status;
                }

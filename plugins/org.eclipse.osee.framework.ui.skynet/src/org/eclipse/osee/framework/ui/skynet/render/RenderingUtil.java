@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 public final class RenderingUtil {
@@ -97,7 +97,7 @@ public final class RenderingUtil {
                showAgain = false;
             }
             //log the warning every time
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, warningMessage);
+            OseeLog.log(Activator.class, Level.WARNING, warningMessage);
             withinLimit = false;
          }
       }

@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.UniqueNumberOfCurrentOseeUsers;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
@@ -62,7 +62,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
 
             XNavigateCommonItems.addCommonNavigateItems(items, Arrays.asList(getSectionId()));
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -91,7 +91,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -103,7 +103,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          addOseePeerSectionChildren(reviewItem);
          items.add(reviewItem);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Can't create OSEE Review section");
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create OSEE Review section");
       }
    }
 

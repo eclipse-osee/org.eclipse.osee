@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.user.perspective;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class UserNavigateViewItemsOperation extends AbstractOperation {
 
    public UserNavigateViewItemsOperation() {
-      super("Loading User Navigate View Items", SkynetGuiPlugin.PLUGIN_ID);
+      super("Loading User Navigate View Items", Activator.PLUGIN_ID);
    }
 
    @Override

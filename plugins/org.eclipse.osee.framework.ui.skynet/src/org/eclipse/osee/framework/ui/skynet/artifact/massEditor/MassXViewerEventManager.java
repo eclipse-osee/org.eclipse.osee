@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -81,7 +81,7 @@ public class MassXViewerEventManager implements IArtifactEventListener {
                         }
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                     OseeLog.log(Activator.class, Level.SEVERE,
                         "Error processing event handler for deleted - " + handler, ex);
                   }
                }
@@ -104,7 +104,7 @@ public class MassXViewerEventManager implements IArtifactEventListener {
                      handler.getMassXViewer().refresh(art);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                  OseeLog.log(Activator.class, Level.SEVERE,
                      "Error processing event handler for modified - " + handler, ex);
                }
             }

@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -58,7 +58,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
    private int fWidth = 60;
    private int fHeight = 18;
    private boolean fIsEmpty;
-   private IStatus currentStatus = new Status(IStatus.OK, SkynetGuiPlugin.PLUGIN_ID, 0, "", null);
+   private IStatus currentStatus = new Status(IStatus.OK, Activator.PLUGIN_ID, 0, "", null);
    private ISelectionStatusValidator validator;
    private final ITreeContentProvider contentProvider;
    private final ILabelProvider labelProvider;

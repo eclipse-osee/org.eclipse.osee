@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.FlatPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.HierarchicalPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowArchivedBranchHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowFavoriteBranchesFirstHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowMergeBranchPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowTransactionPresentationHandler;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.osgi.service.prefs.BackingStoreException;
@@ -62,7 +62,7 @@ public class BranchViewPresentationPreferences {
             ((IEclipsePreferences) instanceNode.node(BranchView.VIEW_ID)).addPreferenceChangeListener(singletonPreferenceChangeListener());
          }
       } catch (BackingStoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       instanceNode.addNodeChangeListener(new IEclipsePreferences.INodeChangeListener() {
@@ -145,7 +145,7 @@ public class BranchViewPresentationPreferences {
       try {
          getViewPreference().flush();
       } catch (BackingStoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

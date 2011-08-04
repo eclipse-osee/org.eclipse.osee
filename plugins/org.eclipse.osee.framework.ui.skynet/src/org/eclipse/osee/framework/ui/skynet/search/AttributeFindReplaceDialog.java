@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -106,7 +106,7 @@ public class AttributeFindReplaceDialog extends Dialog {
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -188,7 +188,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                if (ex.getMessage().equals("USER_PURPLE CANCELLED")) {
                   toReturn = Status.CANCEL_STATUS;
                } else {
-                  toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, ex.getMessage(), ex);
+                  toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.OK, ex.getMessage(), ex);
                }
             } finally {
                monitor.done();

@@ -16,14 +16,14 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeDataLoader;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class LoadChangesOperation extends AbstractOperation {
    private final ChangeUiData changeData;
 
    public LoadChangesOperation(ChangeUiData changeData) {
-      super("Load Change Data", SkynetGuiPlugin.PLUGIN_ID);
+      super("Load Change Data", Activator.PLUGIN_ID);
       this.changeData = changeData;
    }
 

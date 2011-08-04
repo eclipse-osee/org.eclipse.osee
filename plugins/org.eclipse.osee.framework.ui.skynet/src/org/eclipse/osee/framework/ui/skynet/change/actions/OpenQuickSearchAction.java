@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IViewPart;
@@ -57,7 +57,7 @@ public class OpenQuickSearchAction extends Action {
                   }
                }
             } catch (Exception ex) {
-               status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening quick search view", ex);
+               status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search view", ex);
             }
             return status;
          }

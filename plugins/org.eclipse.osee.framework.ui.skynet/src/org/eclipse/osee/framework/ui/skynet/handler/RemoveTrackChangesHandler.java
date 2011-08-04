@@ -18,7 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -63,7 +63,7 @@ public class RemoveTrackChangesHandler implements IStatusHandler {
       } else {
          // For Test Purposes
          isOkToRemove.setValue(true);
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Test - accept track change removal.");
+         OseeLog.log(Activator.class, Level.INFO, "Test - accept track change removal.");
       }
       return answer;
    }

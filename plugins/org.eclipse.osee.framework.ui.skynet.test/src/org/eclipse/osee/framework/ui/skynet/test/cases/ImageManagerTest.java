@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -157,7 +157,7 @@ public abstract class ImageManagerTest {
    }
 
    public static ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {
-      File imageFile = SkynetGuiPlugin.getInstance().getPluginFile("images/" + imageFilename);
+      File imageFile = Activator.getInstance().getPluginFile("images/" + imageFilename);
       if (!imageFile.exists()) {
          throw new OseeArgumentException("Invalid image filename.");
       }
@@ -175,12 +175,12 @@ public abstract class ImageManagerTest {
 
       @Override
       public ImageDescriptor createImageDescriptor() {
-         return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
+         return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
       }
 
       @Override
       public String getImageKey() {
-         return SkynetGuiPlugin.PLUGIN_ID + "." + fileName;
+         return Activator.PLUGIN_ID + "." + fileName;
       }
    }
 

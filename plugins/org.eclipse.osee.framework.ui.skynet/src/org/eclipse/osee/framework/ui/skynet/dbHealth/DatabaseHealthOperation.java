@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import java.io.IOException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.MultiPageResultsProvider;
 
 /**
@@ -30,7 +30,7 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
    private final MultiPageResultsProvider resultsProvider = new MultiPageResultsProvider(this);
 
    protected DatabaseHealthOperation(String operationName) {
-      super(operationName, SkynetGuiPlugin.PLUGIN_ID);
+      super(operationName, Activator.PLUGIN_ID);
       this.isFixOperationEnabled = false;
       this.appendableBuffer = new StringBuilder();
       this.detailedReport = new StringBuilder();
