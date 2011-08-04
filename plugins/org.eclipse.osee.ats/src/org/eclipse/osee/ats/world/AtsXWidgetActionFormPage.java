@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
@@ -39,7 +38,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -63,7 +61,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
    public AtsXWidgetActionFormPage(FormEditor editor, String id, String name) {
       super(editor, id, name);
-      this.toolkit = new XFormToolkit(SkynetGuiPlugin.getInstance().getSharedFormColors(Display.getCurrent()));
+      this.toolkit = new XFormToolkit();
    }
 
    public abstract Result isResearchSearchValid() throws OseeCoreException;

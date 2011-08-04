@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
@@ -46,7 +46,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListener, IOseeDatabaseServiceProvider {
+public class SkynetGuiPlugin extends OseeUiActivator implements IBroadcastEventListener, IOseeDatabaseServiceProvider {
    private static SkynetGuiPlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
    public static final String CHANGE_REPORT_ATTRIBUTES_PREF =

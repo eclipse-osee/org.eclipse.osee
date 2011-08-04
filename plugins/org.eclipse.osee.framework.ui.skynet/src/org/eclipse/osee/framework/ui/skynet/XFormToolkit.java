@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * 	Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,13 +29,23 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Ryan D. Brooks
  */
 public class XFormToolkit extends FormToolkit {
+   private static FormColors formColors;
 
-   public XFormToolkit(Display display) {
-      super(display);
+   public XFormToolkit() {
+      super(getSharedFormColors());
    }
 
-   public XFormToolkit(FormColors colors) {
-      super(colors);
+   /**
+    * returns a shared FormColors that can be passed to a FormToolkit constructor "Create one color manager (FormColors)
+    * per plug-in. When creating the toolkit, pass the color manager to the toolkit. The toolkit will know that the
+    * colors are shared and will not dispose them."
+    */
+   public static FormColors getSharedFormColors() {
+      if (formColors == null) {
+         formColors = new FormColors(Display.getCurrent());
+         formColors.markShared();
+      }
+      return formColors;
    }
 
    public Combo createCombo(Composite parent, int style) {

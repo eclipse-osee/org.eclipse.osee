@@ -16,7 +16,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Display;
@@ -36,8 +35,7 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
    @Override
    protected XFormToolkit createToolkit(Display display) {
       // Create a toolkit that shares colors between editors.
-      // the toolkit will be disposed by the super class (FormEditor)
-      return new XFormToolkit(SkynetGuiPlugin.getInstance().getSharedFormColors(display));
+      return new XFormToolkit();
    }
 
    @Override
