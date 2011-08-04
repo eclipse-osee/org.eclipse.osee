@@ -21,7 +21,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 import org.eclipse.swt.widgets.Shell;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -114,7 +114,7 @@ public class SecureRemoteAccess {
          if (logLevel == null) {
             logLevel = Level.SEVERE;
          }
-         OseeLog.log(ControlPlugin.class, logLevel, message);
+         OseeLog.log(Activator.class, logLevel, message);
       }
    }
 

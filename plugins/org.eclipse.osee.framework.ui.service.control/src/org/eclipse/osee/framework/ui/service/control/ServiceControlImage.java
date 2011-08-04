@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.service.control;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -40,11 +41,11 @@ public enum ServiceControlImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(ControlPlugin.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
    }
 
    @Override
    public String getImageKey() {
-      return ControlPlugin.PLUGIN_ID + ".images." + fileName;
+      return Activator.PLUGIN_ID + ".images." + fileName;
    }
 }

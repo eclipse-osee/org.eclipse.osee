@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.service.control;
+package org.eclipse.osee.framework.ui.service.control.internal;
 
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 import org.osgi.framework.BundleActivator;
@@ -16,13 +16,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * The main plugin class to be used in the desktop.
- * 
  * @author Roberto E. Escobar
  */
-public class ControlPlugin implements BundleActivator {
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.service.control";
-   private static ControlPlugin pluginInstance;
+   private static Activator pluginInstance;
    private ServiceTracker tracker;
 
    @Override
@@ -42,7 +40,7 @@ public class ControlPlugin implements BundleActivator {
    /**
     * Returns the shared instance.
     */
-   public static ControlPlugin getInstance() {
+   public static Activator getInstance() {
       return pluginInstance;
    }
 

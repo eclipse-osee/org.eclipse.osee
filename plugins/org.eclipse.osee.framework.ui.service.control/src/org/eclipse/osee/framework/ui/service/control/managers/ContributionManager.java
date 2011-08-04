@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -111,7 +111,7 @@ public class ContributionManager extends ClassLoader {
             }
          }
       }
-      OseeLog.log(ControlPlugin.class, Level.INFO, registrationStatus + "]\n");
+      OseeLog.log(Activator.class, Level.INFO, registrationStatus + "]\n");
    }
 
    public Map<String, String> getInterfaceToRendererMap() {

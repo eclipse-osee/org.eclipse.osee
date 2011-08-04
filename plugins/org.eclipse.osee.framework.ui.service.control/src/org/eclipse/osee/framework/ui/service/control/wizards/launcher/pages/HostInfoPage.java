@@ -18,7 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUser;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.swt.DynamicWizardPage;
@@ -125,7 +125,7 @@ public class HostInfoPage extends DynamicWizardPage {
       userName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       String name;
       try {
-         IWorkbenchUser user = ControlPlugin.getInstance().getDirectoryService().getUser();
+         IWorkbenchUser user = Activator.getInstance().getDirectoryService().getUser();
          name = user.getName();
       } catch (Exception ex) {
          name = System.getProperty("user.name");

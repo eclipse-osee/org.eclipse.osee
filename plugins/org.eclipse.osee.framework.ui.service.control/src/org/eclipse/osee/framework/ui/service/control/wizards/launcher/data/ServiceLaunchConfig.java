@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -107,7 +107,7 @@ public class ServiceLaunchConfig {
                getApplicationConfig(ExecutionTypesEnum.StandAloneApplication, element, serviceItem);
                toReturn.add(serviceItem);
             } catch (Throwable ex) {
-               OseeLog.logf(ControlPlugin.class, Level.WARNING,
+               OseeLog.logf(Activator.class, Level.WARNING,
                   ex, "Error while loading service launch extension for: [%s]", serviceName);
             }
          }

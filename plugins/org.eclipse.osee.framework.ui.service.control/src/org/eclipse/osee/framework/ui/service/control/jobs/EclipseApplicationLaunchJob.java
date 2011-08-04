@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
@@ -65,7 +65,7 @@ public class EclipseApplicationLaunchJob extends Job {
 
             exec = exec.replaceAll(ServiceItem.EXEC_SEPARATOR + ServiceItem.EXEC_SEPARATOR, ServiceItem.EXEC_SEPARATOR);
 
-            OseeLog.log(ControlPlugin.class, Level.INFO, "Local Launch: " + exec);
+            OseeLog.log(Activator.class, Level.INFO, "Local Launch: " + exec);
 
             exec += ServiceItem.EXEC_SEPARATOR + "-debug";
 

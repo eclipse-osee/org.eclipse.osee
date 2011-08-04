@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -104,7 +104,7 @@ public class ServiceLaunchDataPersist {
             document = builder.parse(file);
          }
       } catch (Exception ex) {
-         OseeLog.log(ControlPlugin.class, Level.SEVERE, "Error reading File [" + file.getAbsolutePath() + "] ", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Error reading File [" + file.getAbsolutePath() + "] ", ex);
       }
       return document;
    }
@@ -153,9 +153,9 @@ public class ServiceLaunchDataPersist {
             writer.writeEndDocument();
 
          } catch (FileNotFoundException ex) {
-            OseeLog.log(ControlPlugin.class, Level.SEVERE, "File error [" + fileString + "] ", ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "File error [" + fileString + "] ", ex);
          } catch (XMLStreamException ex) {
-            OseeLog.log(ControlPlugin.class, Level.SEVERE, "Error writing to File [" + fileString + "] ", ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Error writing to File [" + fileString + "] ", ex);
          } finally {
             Lib.close(outputStream);
          }

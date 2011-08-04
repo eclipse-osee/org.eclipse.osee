@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.jini.discovery.IRegistrarListener;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.internal.Activator;
 
 public class ReggieCache implements DiscoveryListener {
 
@@ -129,7 +129,7 @@ public class ReggieCache implements DiscoveryListener {
                lookupDiscoveryManager.addLocators(locatorList.toArray(new LookupLocator[locatorList.size()]));
             }
          } catch (MalformedURLException ex) {
-            OseeLog.log(ControlPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
             Thread.currentThread().setContextClassLoader(loader);
             System.setSecurityManager(securityManager);
