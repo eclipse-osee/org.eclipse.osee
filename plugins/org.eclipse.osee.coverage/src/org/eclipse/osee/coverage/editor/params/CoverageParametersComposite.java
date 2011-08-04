@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -87,7 +87,7 @@ public class CoverageParametersComposite extends Composite {
                getRationaleXText().set("");
                getCoverageMethodHyperlinkSelection().clear();
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -110,7 +110,7 @@ public class CoverageParametersComposite extends Composite {
                   try {
                      coverageParameters.setAssignee(getAssignee());
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             });
@@ -122,7 +122,7 @@ public class CoverageParametersComposite extends Composite {
                try {
                   coverageParameters.setNotes(getNotesStr());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
@@ -133,7 +133,7 @@ public class CoverageParametersComposite extends Composite {
                try {
                   coverageParameters.setWorkProductTasks(getWorkProductTasksStr());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
@@ -144,7 +144,7 @@ public class CoverageParametersComposite extends Composite {
                try {
                   coverageParameters.setName(getNameXText().get());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
@@ -155,7 +155,7 @@ public class CoverageParametersComposite extends Composite {
                try {
                   coverageParameters.setNamespace(getNamespaceStr());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
@@ -166,7 +166,7 @@ public class CoverageParametersComposite extends Composite {
                try {
                   coverageParameters.setRationale(getRationaleStr());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
@@ -179,12 +179,12 @@ public class CoverageParametersComposite extends Composite {
                try {
                   coverageParameters.setCoverageMethods(getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods());
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          });
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public final class LoadChangesOperation extends AbstractOperation {
 
@@ -30,7 +29,7 @@ public final class LoadChangesOperation extends AbstractOperation {
    private final Artifact workflowArtifact;
 
    public LoadChangesOperation(Artifact workflowArtifact, Collection<Change> changes) {
-      super("Load History Viewer - Changes", SkynetGuiPlugin.PLUGIN_ID);
+      super("Load History Viewer - Changes", AtsPlugin.PLUGIN_ID);
       this.workflowArtifact = workflowArtifact;
       this.changes = changes;
    }

@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.internal.ServiceProvider;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -48,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -209,39 +207,33 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          }
       });
 
-      if (ServiceProvider.getOseeCmService() != null) {
-         createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
-         deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
-         favoriteBranchButton.setImage(ImageManager.getImage(AtsImage.FAVORITE));
-      }
-      if (SkynetGuiPlugin.getInstance() != null) {
-         showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
-         showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
-      }
+      createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
+      deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
+      favoriteBranchButton.setImage(ImageManager.getImage(AtsImage.FAVORITE));
+      showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
+      showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
       refreshLockImage();
       refreshLabel();
       refreshEnablement();
    }
 
    private void refreshLockImage() {
-      if (SkynetGuiPlugin.getInstance() != null) {
-         boolean noBranch = false, someAccessControlSet = false;
-         Branch branch = null;
-         try {
-            branch = teamArt.getWorkingBranch();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
-         // just show normal icon if no branch yet
-         if (branch == null) {
-            noBranch = true;
-         } else {
-            someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
-         }
-         lockBranchButton.setImage(ImageManager.getImage((noBranch || someAccessControlSet) ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
-         lockBranchButton.redraw();
-         lockBranchButton.getParent().redraw();
+      boolean noBranch = false, someAccessControlSet = false;
+      Branch branch = null;
+      try {
+         branch = teamArt.getWorkingBranch();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+      // just show normal icon if no branch yet
+      if (branch == null) {
+         noBranch = true;
+      } else {
+         someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
+      }
+      lockBranchButton.setImage(ImageManager.getImage((noBranch || someAccessControlSet) ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
+      lockBranchButton.redraw();
+      lockBranchButton.getParent().redraw();
    }
 
    private void markWorkingBranchAsFavorite() {

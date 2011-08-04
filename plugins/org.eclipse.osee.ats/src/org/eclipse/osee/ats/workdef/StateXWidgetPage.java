@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -104,7 +103,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             processXmlLayoutDatas(xWidgetsXml);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error processing attributes", ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error processing attributes", ex);
       }
    }
 
@@ -145,7 +144,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             layoutData.getXWidget().dispose();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -173,7 +172,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return OK_PAIR;
    }
@@ -214,7 +213,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
                page) ? " (return)" : "") + "\n");
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return sb.toString();
    }

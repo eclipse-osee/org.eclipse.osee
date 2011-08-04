@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeTypesIm
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -33,7 +32,6 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
 
    public OseeTypesImportWizard() {
       super();
-      setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
       setWindowTitle("OSEE Types Import Wizard");
       setNeedsProgressMonitor(true);
       setHelpAvailable(true);

@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEventType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -159,7 +158,7 @@ public class OseeClientsTab {
                   selectedUsers, reason));
                AWorkbench.popup("Success", "Shutdown request sent.");
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       } else {

@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -147,7 +146,7 @@ public class AdminView extends ViewPart implements IActionable {
                      message));
                   AWorkbench.popup("Success", "Message sent.");
                } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -161,7 +160,7 @@ public class AdminView extends ViewPart implements IActionable {
                ClientSessionManager.getSession().toString()));
             AWorkbench.popup("Success", "Ping Sent");
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

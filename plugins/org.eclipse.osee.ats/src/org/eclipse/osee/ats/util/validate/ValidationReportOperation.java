@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -46,7 +45,7 @@ public class ValidationReportOperation extends AbstractOperation {
    final XResultData rd;
 
    public ValidationReportOperation(XResultData rd, TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) {
-      super("Validate Requirement Changes - " + teamArt.getName(), SkynetGuiPlugin.PLUGIN_ID);
+      super("Validate Requirement Changes - " + teamArt.getName(), AtsPlugin.PLUGIN_ID);
       this.rd = rd;
       this.teamArt = teamArt;
       this.attributeSetRules = attributeSetRules;

@@ -15,13 +15,13 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.WorkProductTask;
 import org.eclipse.osee.coverage.util.WorkProductActionLabelProvider;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTreeDialog;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -71,7 +71,7 @@ public class WorkProductTaskFilteredTreeDialog extends OSEEFilteredTreeDialog<Co
          gd.heightHint = 400;
          getTreeViewer().getViewer().getTree().setLayoutData(gd);
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return comp;
    }
@@ -83,7 +83,7 @@ public class WorkProductTaskFilteredTreeDialog extends OSEEFilteredTreeDialog<Co
             return new Result("Must select Work Product Task.");
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return Result.TrueResult;
    }

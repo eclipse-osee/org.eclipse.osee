@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.util.widget;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
@@ -19,7 +20,6 @@ import org.eclipse.osee.coverage.util.dialog.CoverageMethodListDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
 /**
@@ -78,7 +78,7 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
          }
          return true;
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

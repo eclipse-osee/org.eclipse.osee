@@ -19,9 +19,9 @@ import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.review.ReviewManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -79,7 +79,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return objs.toArray();
    }
@@ -124,7 +124,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             return objs.toArray();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return new Object[] {};
    }

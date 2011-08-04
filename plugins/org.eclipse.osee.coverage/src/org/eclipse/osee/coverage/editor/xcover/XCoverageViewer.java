@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -144,7 +144,7 @@ public class XCoverageViewer extends GenericXWidget {
          xViewer.setInput(items);
          xViewer.refresh();
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
