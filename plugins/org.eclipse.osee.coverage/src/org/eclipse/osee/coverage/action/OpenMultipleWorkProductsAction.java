@@ -19,12 +19,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -48,7 +48,7 @@ public class OpenMultipleWorkProductsAction extends Action {
    @Override
    public ImageDescriptor getImageDescriptor() {
       if (image == null) {
-         IOseeCmService service = SkynetGuiPlugin.getInstance().getOseeCmService();
+         IOseeCmService service = ServiceProvider.getOseeCmService();
          if (service != null) {
             image = service.getOpenImage(OseeCmEditor.CmMultiPcrEditor);
          }
@@ -69,7 +69,7 @@ public class OpenMultipleWorkProductsAction extends Action {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            IOseeCmService service = SkynetGuiPlugin.getInstance().getOseeCmService();
+            IOseeCmService service = ServiceProvider.getOseeCmService();
             List<String> guids = new ArrayList<String>();
             for (WorkProductAction action : provider.getWorkProductRelatedActions()) {
                guids.add(action.getGuid());

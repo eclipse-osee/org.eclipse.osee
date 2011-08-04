@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.store.CoverageRelationTypes;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 
 /**
@@ -47,7 +47,7 @@ public class CreateWorkProductAction extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
 
-      IOseeCmService cmService = SkynetGuiPlugin.getInstance().getOseeCmService();
+      IOseeCmService cmService = ServiceProvider.getOseeCmService();
       if (cmService == null) {
          AWorkbench.popup("Can not acquire CM Service");
          return;

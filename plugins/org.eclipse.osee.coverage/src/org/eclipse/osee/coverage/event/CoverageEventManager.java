@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -49,7 +50,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 
 /**
  * @author Donald G. Dunne
@@ -79,11 +80,11 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
 
    private ArtifactTypeEventFilter createArtifactTypeEventFilter() {
       if (artifactTypeEventFilter == null) {
+         IOseeCmService cmService = ServiceProvider.getOseeCmService();
          artifactTypeEventFilter =
             new ArtifactTypeEventFilter(CoverageArtifactTypes.CoverageFolder, CoverageArtifactTypes.CoverageUnit,
-               CoverageArtifactTypes.CoveragePackage,
-               SkynetGuiPlugin.getInstance().getOseeCmService().getPcrArtifactType(),
-               SkynetGuiPlugin.getInstance().getOseeCmService().getPcrTaskArtifactType());
+               CoverageArtifactTypes.CoveragePackage, cmService.getPcrArtifactType(),
+               cmService.getPcrTaskArtifactType());
       }
       return artifactTypeEventFilter;
    }
@@ -151,8 +152,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (CoverageEditor editor : new CopyOnWriteArrayList<CoverageEditor>(editors)) {
          try {
-            if (SkynetGuiPlugin.getInstance().getOseeCmService().getCmBranchToken().getGuid().equals(
-               artifactEvent.getBranchGuid())) {
+            if (ServiceProvider.getOseeCmService().getCmBranchToken().getGuid().equals(artifactEvent.getBranchGuid())) {
                boolean updatedWorkProductTab = false;
                for (EventBasicGuidArtifact eventArt : artifactEvent.getArtifacts()) {
                   if (!updatedWorkProductTab) {

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -60,7 +60,7 @@ public class OpenWorkProductTaskAction extends Action {
          return;
       }
 
-      final IOseeCmService cm = SkynetGuiPlugin.getInstance().getOseeCmService();
+      final IOseeCmService cm = ServiceProvider.getOseeCmService();
       if (cm == null) {
          AWorkbench.popup("Unable to connect to CM service.");
          return;

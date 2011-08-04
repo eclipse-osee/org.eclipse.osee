@@ -12,8 +12,8 @@ package org.eclipse.osee.coverage.util;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.WorkProductAction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService.ImageType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -23,9 +23,9 @@ public class WorkProductActionLabelProvider implements ILabelProvider {
    @Override
    public Image getImage(Object arg0) {
       if (arg0 instanceof WorkProductAction) {
-         return ImageManager.getImage(SkynetGuiPlugin.getInstance().getOseeCmService().getImage(ImageType.Pcr));
+         return ImageManager.getImage(ServiceProvider.getOseeCmService().getImage(ImageType.Pcr));
       } else {
-         return ImageManager.getImage(SkynetGuiPlugin.getInstance().getOseeCmService().getImage(ImageType.Task));
+         return ImageManager.getImage(ServiceProvider.getOseeCmService().getImage(ImageType.Task));
       }
    }
 

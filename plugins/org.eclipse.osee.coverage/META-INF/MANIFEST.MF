@@ -73,3 +73,4 @@ Export-Package: org.eclipse.osee.coverage,
  org.eclipse.osee.coverage.blam,
  org.eclipse.osee.coverage.util,
  org.eclipse.osee.coverage.vcast
+Service-Component: OSGI-INF/service.provider.xml

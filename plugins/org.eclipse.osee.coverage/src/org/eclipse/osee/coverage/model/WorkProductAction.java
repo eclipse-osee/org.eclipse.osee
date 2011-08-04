@@ -12,8 +12,8 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public class WorkProductAction {
 
@@ -33,7 +33,7 @@ public class WorkProductAction {
    }
 
    public boolean isCompleted() {
-      return SkynetGuiPlugin.getInstance().getOseeCmService().isCompleted(artifact);
+      return ServiceProvider.getOseeCmService().isCompleted(artifact);
    }
 
    public Set<WorkProductTask> getTasks() {

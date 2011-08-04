@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.model.WorkProductAction;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 
 public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
@@ -49,7 +49,7 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
       actions.clear();
       try {
          OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, branch);
-         IOseeCmService cm = SkynetGuiPlugin.getInstance().getOseeCmService();
+         IOseeCmService cm = ServiceProvider.getOseeCmService();
          Artifact packageArt = store.getArtifact(false);
          if (packageArt != null) {
             List<String> relatedActionGuids =

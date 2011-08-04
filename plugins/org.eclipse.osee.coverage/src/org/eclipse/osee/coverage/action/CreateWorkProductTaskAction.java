@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.model.WorkProductAction;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -79,7 +79,7 @@ public class CreateWorkProductTaskAction extends Action {
          AWorkbench.popup("Only Coverage Item(s) and Coverage Units(s) can be related to Work Products");
          return;
       }
-      IOseeCmService cm = SkynetGuiPlugin.getInstance().getOseeCmService();
+      IOseeCmService cm = ServiceProvider.getOseeCmService();
       if (cm == null) {
          AWorkbench.popup("Unable to connect to CM service.");
          return;

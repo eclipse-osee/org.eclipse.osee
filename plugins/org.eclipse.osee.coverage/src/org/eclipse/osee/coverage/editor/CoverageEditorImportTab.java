@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
@@ -381,7 +380,7 @@ public class CoverageEditorImportTab extends FormPage {
                                  coverageEditor.simulateImportPostRun();
                                  isSimulateImput = false;
                               } catch (OseeCoreException ex) {
-                                 OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                                 OseeLog.log(Activator.class, Level.SEVERE, ex);
                               }
                            }
                         });

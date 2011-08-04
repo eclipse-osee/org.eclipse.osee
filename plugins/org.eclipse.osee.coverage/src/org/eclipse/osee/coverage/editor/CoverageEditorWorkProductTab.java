@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.action.OpenMultipleWorkProductsAction;
 import org.eclipse.osee.coverage.action.RemoveRelatedWorkProductAction;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.internal.ServiceProvider;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
@@ -102,7 +102,7 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
 
          @Override
          public void handleEvent(Event event) {
-            IOseeCmService cmService = SkynetGuiPlugin.getInstance().getOseeCmService();
+            IOseeCmService cmService = ServiceProvider.getOseeCmService();
             cmService.openArtifact(getSelectedActions().iterator().next().getGuid(), OseeCmEditor.CmPcrEditor);
          }
       });
@@ -126,7 +126,7 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
             super.performArtifactDrop(dropArtifacts);
             Set<WorkProductAction> workProductActions = new HashSet<WorkProductAction>();
             for (Artifact artifact : dropArtifacts) {
-               if (!artifact.isOfType(SkynetGuiPlugin.getInstance().getOseeCmService().getPcrArtifactType())) {
+               if (!artifact.isOfType(ServiceProvider.getOseeCmService().getPcrArtifactType())) {
                   AWorkbench.popup("Related artifact must be a Team Workflow");
                   return;
                }
