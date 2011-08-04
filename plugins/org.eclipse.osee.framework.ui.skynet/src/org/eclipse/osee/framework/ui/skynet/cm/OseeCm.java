@@ -21,7 +21,7 @@ public final class OseeCm {
 
    private static IOseeCmService oseeCmInstance;
 
-   public static IOseeCmService getInstance() {
+   private static IOseeCmService getInstance() {
       try {
          if (Platform.getExtensionRegistry() == null) {
             return null;

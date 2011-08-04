@@ -11,8 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
-import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
-import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -57,8 +56,6 @@ public class AdminContributionItem extends OseeStatusContributionItem {
 
    @Override
    public boolean isCreationAllowed() {
-      IOseeCmService atsService = OseeCm.getInstance();
-      return atsService != null && atsService.isCmAdmin();
+      return ServiceProvider.isOseeCmServiceAvailable() && ServiceProvider.getOseeCmService().isCmAdmin();
    }
-
 }

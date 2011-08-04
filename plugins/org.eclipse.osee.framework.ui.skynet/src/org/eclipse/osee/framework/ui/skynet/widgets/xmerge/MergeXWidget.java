@@ -51,8 +51,9 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
-import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -577,8 +578,9 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
          try {
             Branch sourceBranch = storedConflicts[0].getSourceBranch();
             Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
-            if (OseeCm.getInstance().isPcrArtifact(branchAssociatedArtifact)) {
-               OseeCm.getInstance().openArtifact(branchAssociatedArtifact, OseeCmEditor.CmPcrEditor);
+            IOseeCmService cmService = ServiceProvider.getOseeCmService();
+            if (cmService.isPcrArtifact(branchAssociatedArtifact)) {
+               cmService.openArtifact(branchAssociatedArtifact, OseeCmEditor.CmPcrEditor);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                RendererManager.open(branchAssociatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {

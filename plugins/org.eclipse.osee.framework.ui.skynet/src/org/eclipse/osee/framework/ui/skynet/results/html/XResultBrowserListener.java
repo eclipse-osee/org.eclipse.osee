@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -105,7 +105,7 @@ public class XResultBrowserListener implements LocationListener {
    }
 
    private void openArtifact(String guid, OseeCmEditor view) {
-      OseeCm.getInstance().openArtifact(guid, view);
+      ServiceProvider.getOseeCmService().openArtifact(guid, view);
    }
 
    @Override

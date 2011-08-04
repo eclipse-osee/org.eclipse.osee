@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 
@@ -67,7 +67,7 @@ public class MergeManagerHandler extends CommandHandler {
                   enabled = true;
                } else {
                   enabled =
-                     selectedBranch != null && !(OseeCm.getInstance().isPcrArtifact(BranchManager.getAssociatedArtifact(selectedBranch))) && selectedBranch.hasParentBranch();
+                     selectedBranch != null && !(ServiceProvider.getOseeCmService().isPcrArtifact(BranchManager.getAssociatedArtifact(selectedBranch))) && selectedBranch.hasParentBranch();
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
