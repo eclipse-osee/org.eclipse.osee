@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -154,7 +155,14 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
    public static Result areOSEEServicesAvailable() {
       Result toReturn = Result.TrueResult;
       if (!OseeLog.isStatusOk()) {
-         toReturn = new Result(OseeLog.getStatusReport());
+         StringBuffer message = new StringBuffer();
+         message.append("\nCLIENT VERSION: ");
+         message.append(OseeCodeVersion.getVersion());
+         message.append("\n\nCLIENT INSTALLATION: ");
+         message.append(System.getProperty("user.dir"));
+         message.append("\n\n");
+         message.append(OseeLog.getStatusReport());
+         toReturn = new Result(message.toString());
       }
       return toReturn;
    }

@@ -124,56 +124,58 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
                   }
 
                   if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+                     parent.getParent().layout(true);
+                     parent.layout(true);
                      return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
-                  }
+                  } else {
 
-                  xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
+                     xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
 
-                  XNavigateEventManager.register(navView);
-                  HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
-                  createToolBar();
+                     XNavigateEventManager.register(navView);
+                     HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
+                     createToolBar();
 
-                  // add search text box
-                  AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
-                  composite.addDisposeListener(new DisposeListener() {
+                     // add search text box
+                     AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
+                     composite.addDisposeListener(new DisposeListener() {
 
-                     @Override
-                     public void widgetDisposed(DisposeEvent e) {
-                        OseeNotificationManager.getInstance().sendNotifications();
-                     }
-                  });
+                        @Override
+                        public void widgetDisposed(DisposeEvent e) {
+                           OseeNotificationManager.getInstance().sendNotifications();
+                        }
+                     });
 
-                  Label label = new Label(xNavComp, SWT.None);
-                  String str = getWhoAmI();
-                  if (AtsUtilCore.isAtsAdmin()) {
-                     str += " - Admin";
-                  }
-                  if (!str.equals("")) {
+                     Label label = new Label(xNavComp, SWT.None);
+                     String str = getWhoAmI();
                      if (AtsUtilCore.isAtsAdmin()) {
-                        label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                     } else {
-                        label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                        str += " - Admin";
                      }
+                     if (!str.equals("")) {
+                        if (AtsUtilCore.isAtsAdmin()) {
+                           label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+                        } else {
+                           label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                        }
+                     }
+                     label.setText(str);
+                     label.setToolTipText(str);
+
+                     GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
+                     gridData.heightHint = 15;
+                     label.setLayoutData(gridData);
+
+                     if (savedFilterStr != null) {
+                        xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+                     }
+                     xNavComp.refresh();
+                     xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+                     parent.getParent().layout(true);
+                     parent.layout(true);
+
+                     OseeStatusContributionItemFactory.addTo(navView, false);
+                     addExtensionPointListenerBecauseOfWorkspaceLoading();
                   }
-                  label.setText(str);
-                  label.setToolTipText(str);
-
-                  GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-                  gridData.heightHint = 15;
-                  label.setLayoutData(gridData);
-
-                  if (savedFilterStr != null) {
-                     xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-                  }
-                  xNavComp.refresh();
-                  xNavComp.getFilteredTree().getFilterControl().setFocus();
-
-                  parent.getParent().layout(true);
-                  parent.layout(true);
-
-                  OseeStatusContributionItemFactory.addTo(navView, false);
-                  addExtensionPointListenerBecauseOfWorkspaceLoading();
-
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }

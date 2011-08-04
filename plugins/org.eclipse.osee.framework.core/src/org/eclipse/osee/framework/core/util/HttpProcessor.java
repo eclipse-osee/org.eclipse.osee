@@ -361,11 +361,14 @@ public class HttpProcessor {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
          statusCode = executeMethod(url, method);
+         result.setEncoding(method.getResponseCharSet());
+         result.setContentType(getContentType(method));
          if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_ACCEPTED) {
             inputStream = method.getResponseBodyAsStream();
-            result.setEncoding(method.getResponseCharSet());
-            result.setContentType(getContentType(method));
             Lib.inputStreamToOutputStream(inputStream, outputStream);
+         } else {
+            String response = method.getResponseBodyAsString();
+            result.setResult(response);
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]", url, statusCode), ex);
@@ -403,6 +406,7 @@ public class HttpProcessor {
       private int code;
       private String encoding;
       private String contentType;
+      private String result;
 
       private AcquireResult() {
          super();
@@ -437,6 +441,14 @@ public class HttpProcessor {
 
       private void setContentType(String contentType) {
          this.contentType = contentType;
+      }
+
+      public String getResult() {
+         return result;
+      }
+
+      public void setResult(String result) {
+         this.result = result;
       }
    }
 }

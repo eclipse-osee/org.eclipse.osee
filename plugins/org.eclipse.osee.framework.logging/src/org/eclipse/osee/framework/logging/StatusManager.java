@@ -78,12 +78,14 @@ class StatusManager {
       StringBuilder message = new StringBuilder();
       Collection<IHealthStatus> serviceInfos = getHealthStatus();
       for (IHealthStatus status : serviceInfos) {
+         message.append(status.getSourceName().toUpperCase());
          if (!status.isOk()) {
-            message.append(status.getSourceName());
-            message.append(". Error: ");
-            message.append(status.getMessage());
-            message.append("\n");
+            message.append(" - ERROR - ");
+         } else {
+            message.append(" - OK - ");
          }
+         message.append(status.getMessage());
+         message.append("\n\n");
       }
       return message.toString();
    }

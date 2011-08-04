@@ -56,10 +56,11 @@ public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
          }
 
          if (info == null) {
-            response.setStatus(wasBadRequest ? HttpServletResponse.SC_BAD_REQUEST : HttpServletResponse.SC_NO_CONTENT);
-            response.setContentType("txt/plain");
+            response.setStatus(wasBadRequest ? HttpServletResponse.SC_BAD_REQUEST : HttpServletResponse.SC_NOT_FOUND);
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write(
-               String.format("Unable to locate application server matching - [%s]", request.toString()));
+               String.format("Unable to locate application server matching version [%s]", version));
             response.getWriter().flush();
             response.getWriter().close();
          } else {

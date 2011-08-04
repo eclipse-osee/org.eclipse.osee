@@ -103,6 +103,10 @@ public class InternalClientSessionManager {
    }
 
    public synchronized OseeClientSession authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
+      if (!OseeApplicationServer.isApplicationServerAlive()) {
+         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, "Application Server not Available"));
+         return null;
+      }
       if (!isSessionValid()) {
          try {
             OseeCredential credential = credentialProvider.getCredential();

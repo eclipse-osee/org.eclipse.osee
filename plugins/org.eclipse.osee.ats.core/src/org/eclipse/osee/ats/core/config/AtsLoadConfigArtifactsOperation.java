@@ -45,17 +45,18 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
          loaded = true;
          OseeLog.log(Activator.class, Level.INFO, "Loading ATS Configuration");
          Artifact headingArt = AtsUtilCore.getFromToken(AtsArtifactToken.HeadingFolder);
-         // Loading artifacts will cache them in ArtifactCache
-         for (Artifact artifact : RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-            CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            // CacheByText for all staticId values
-            for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-               ArtifactCache.cacheByTextId(staticId, artifact);
+         if (headingArt == null) {
+            OseeLog.log(Activator.class, Level.SEVERE, "AST Heading not found - ATS Load Configuration failed");
+         } else {
+            // Loading artifacts will cache them in ArtifactCache
+            for (Artifact artifact : RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
+               CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+               // CacheByText for all staticId values
+               for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+                  ArtifactCache.cacheByTextId(staticId, artifact);
+               }
             }
          }
-         // Load Work Definitions
-         // TODO not doing anymore
-         //         WorkItemDefinitionFactory.loadDefinitions();
          loaded = true;
       }
    }

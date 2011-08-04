@@ -100,8 +100,9 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          // Do Nothing;
       }
 
-      builder.append(AHTML.addRowMultiColumnTable("<b>OSEE Client Version</b>", OseeCodeVersion.getVersion(),
-         "<font color=\"green\"><b>Ok</b></font>"));
+      builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2>" + System.getProperty("user.dir") + "</td></tr>");
+
+      builder.append("<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + OseeCodeVersion.getVersion() + "</td></tr>");
 
       builder.append(AHTML.addRowMultiColumnTable("<b>OSEE Client Build Type</b>", buildType,
          wasSuccessful ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
