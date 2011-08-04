@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.AttributeTypeEditPresente
 import org.eclipse.osee.framework.ui.skynet.test.cases.InterArtifactDropTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.RelationOrderRendererTest;
+import org.eclipse.osee.framework.ui.skynet.test.cases.ReplaceRelationWithBaselineTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ResultsEditorConverterTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordArtifactElementExtractorTest;
@@ -45,6 +46,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    WordImageCompareTest.class,
+   ReplaceRelationWithBaselineTest.class,
    ReplaceArtifactWithTest.class,
    BlamXWidgetTest.class,
    EmailGroupsBlamTest.class,

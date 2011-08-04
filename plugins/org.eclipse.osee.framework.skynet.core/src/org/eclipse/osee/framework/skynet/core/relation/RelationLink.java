@@ -67,6 +67,10 @@ public class RelationLink {
       this.modificationType = modificationType;
    }
 
+   public void internalSetModificationType(ModificationType modificationType) {
+      this.modificationType = modificationType;
+   }
+
    public RelationSide getSide(Artifact artifact) {
       if (aArtifactId == artifact.getArtId()) {
          return RelationSide.SIDE_A;

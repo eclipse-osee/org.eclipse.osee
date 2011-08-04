@@ -21,6 +21,51 @@ public class ReplaceRelationsHelper {
    }
 
    public static String removeArtifactGuidFromRelationOrder(String guid, String relationOrder) {
-      return relationOrder.replace(guid, "");
+      String newRelationOrder = relationOrder.replace(guid, "");
+      newRelationOrder = newRelationOrder.trim();
+
+      char[] relationOrderArray = newRelationOrder.toCharArray();
+      StringBuilder newRelationOrderArray = new StringBuilder();
+      boolean previousCommaChar = false;
+      boolean firstTime = true;
+
+      for (int i = 0; i < relationOrderArray.length; i++) {
+         char chr = relationOrderArray[i];
+
+         if (chr != ' ') {
+            if (chr == ',') {
+               if (firstTime) {
+                  continue;
+               } else if (previousCommaChar) {
+                  continue;
+               } else if (i == relationOrderArray.length - 1) {
+                  continue;
+               }
+               previousCommaChar = true;
+            } else {
+               previousCommaChar = false;
+            }
+            firstTime = false;
+            newRelationOrderArray.append(chr);
+         }
+      }
+
+      String returnString = newRelationOrderArray.toString();
+
+      if (returnString.endsWith(",")) {
+         returnString = returnString.substring(0, returnString.length() - 1);
+      }
+      return returnString;
+   }
+
+   public static String getBeforeOrderGuid(String relationOrder, String guid) {
+      String beforeGuid = "";
+      for (String aGuid : relationOrder.split(",")) {
+         if (aGuid.equals(guid)) {
+            break;
+         }
+         beforeGuid = aGuid;
+      }
+      return beforeGuid;
    }
 }

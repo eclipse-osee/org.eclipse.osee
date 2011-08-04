@@ -15,14 +15,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -62,83 +65,107 @@ public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
       return transactions != null ? transactions.values() : Collections.<SkynetTransaction> emptyList();
    }
 
-   //for each relation change
-   //if in baseline
+   public void doSomething() throws OseeCoreException {
 
-   //if gammas are diff
-   //replace with baseline version
-   //handle deleted
-   //undelete
-   //change mod type baseline versions
+      for (Artifact artifact : artifacts) {
+         Branch branch = artifact.getBranch();
+         TransactionRecord baseTx = branch.getBaseTransaction();
 
-   //else if not in baseline
-   //remove - delete relation
+         Collection<Change> changes = ChangeManager.getChangesMadeOnCurrentBranch(artifact, new NullProgressMonitor());
 
-   //This is to handle the order attribute
-   //-------------------------------------------------------
-   //if the relation is ordered
-
-   //Add the artifact guid to relation order attribute- guid, when it existed in the baseline transaction 
-   //Remove - guid, when it did not exist in the baseline
-   //correct releation order for the org side a artifact
-
-   // try find location i.e. before or after previous location
-   // --- else leave it out
-   // transaction delete attribute - when none of the left attributes are ordered
-
-   @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (!artifacts.isEmpty()) {
-         for (Artifact artifact : artifacts) {
-            Branch branch = artifact.getBranch();
-            TransactionRecord baseTx = branch.getBaseTransaction();
-            Collection<Change> changes = ChangeManager.getChangesMadeOnCurrentBranch(artifact, monitor);
-
-            for (Change change : changes) {
-               if (change instanceof RelationChange) {
-                  processRelation(artifact, baseTx, (RelationChange) change);
-                  fixParentAttributeOrdering(artifact, monitor, baseTx);//need a way to make sure this only needs to happen once for each artifact
-               }
+         for (Change change : changes) {
+            if (change instanceof RelationChange) {
+               handleRelations(artifact, baseTx, (RelationChange) change);
             }
-            SkynetTransaction transaction = getTransaction(branch);
-            artifact.persist(transaction);
          }
-         for (SkynetTransaction transaction : getTransactions()) {
-            transaction.execute();
+         SkynetTransaction transaction = getTransaction(branch);
+         artifact.persist(transaction);
+      }
+      for (SkynetTransaction transaction : getTransactions()) {
+         transaction.execute();
+      }
+      for (Artifact artifact : artifacts) {
+         artifact.reloadAttributesAndRelations();
+      }
+   }
+
+   private Attribute<?> getRelationOrder(Artifact artifact) {
+      Attribute<?> relationOrder = null;
+      try {
+         relationOrder = artifact.getAttributes(CoreAttributeTypes.RelationOrder).iterator().next();
+      } catch (Exception ex) {
+         //do nothing
+      }
+      return relationOrder;
+   }
+
+   private String handleOtherSideContainingGuid(Artifact artifact, RelationLink link) throws OseeCoreException {
+      String relationOrderString = null;
+
+      Artifact otherSideArtifact = link.getArtifactOnOtherSide(artifact);
+
+      if (otherSideArtifact.getAttributeCount(CoreAttributeTypes.RelationOrder) > 0) {
+         String otherSideRelationOrderString = getRelationOrder(otherSideArtifact).getDisplayableString();
+         relationOrderString =
+            ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(artifact.getGuid(), otherSideRelationOrderString);
+      }
+      return relationOrderString;
+   }
+
+   private String handleOtherSideDidContainGuid(Artifact artifact, RelationLink link, TransactionRecord baselineTx) throws OseeCoreException {
+      String relationOrderString = null;
+
+      //check before
+      //check after
+      //add insert to the bottom
+      //
+      //
+      Artifact otherSideArtifact = link.getArtifactOnOtherSide(artifact);
+      Artifact baselineOthersideArtifact = getBaselineArtifact(baselineTx, otherSideArtifact);
+
+      if (baselineOthersideArtifact.getAttributeCount(CoreAttributeTypes.RelationOrder) > 0) {
+         String otherSideRelationOrderString = getRelationOrder(baselineOthersideArtifact).getDisplayableString();
+
+         if (otherSideRelationOrderString.contains(artifact.getGuid())) {
+            relationOrderString =
+               ReplaceRelationsHelper.addArtifactGuidToOrder(artifact.getGuid(),
+                  ReplaceRelationsHelper.getBeforeOrderGuid(otherSideRelationOrderString, artifact.getGuid()),
+                  otherSideRelationOrderString);
          }
-         for (Artifact artifact : artifacts) {
-            artifact.reloadAttributesAndRelations();
+      }
+      return relationOrderString;
+   }
+
+   private void handleAttributeOrder(RelationLink link, Artifact artifact, boolean inBaseline, TransactionRecord baselineTransactionRecord) throws OseeCoreException {
+      //this is not correct but will work for now
+      if (link.getRelationType().isOrdered()) {
+
+         Attribute<?> relationOrder = getRelationOrder(artifact);
+         if (relationOrder != null) {
+            Artifact baselineArtifact = getBaselineArtifact(baselineTransactionRecord, artifact);
+            relationOrder.replaceWithVersion(getRelationOrder(baselineArtifact).getGammaId());
+         }
+
+         String newRelationOrder = handleOtherSideContainingGuid(artifact, link);
+
+         if (newRelationOrder == null) {
+            handleOtherSideDidContainGuid(artifact, link, baselineTransactionRecord);
          }
       }
    }
 
-   private void fixParentAttributeOrdering(Artifact artifact, IProgressMonitor monitor, TransactionRecord baseTx) throws OseeCoreException {
-      Artifact parentArtifact = artifact.getParent();
-      Collection<Change> changes = ChangeManager.getChangesMadeOnCurrentBranch(parentArtifact, monitor);
+   public Artifact getBaselineArtifact(TransactionRecord transactionRecord, Artifact artifact) throws OseeCoreException {
+      return ArtifactQuery.getHistoricalArtifactFromId(artifact.getArtId(), transactionRecord,
+         DeletionFlag.INCLUDE_DELETED);
+   }
 
-      for (Change change : changes) {
-         if (change instanceof AttributeChange) {
-            AttributeChange attributeChange = (AttributeChange) change;
+   public void addArtifactGuid(String guid, String beforeGuid, String relationOrder) {
+      ReplaceRelationsHelper.addArtifactGuidToOrder(guid, beforeGuid, relationOrder);
+   }
 
-            if (attributeChange.getAttributeType().equals(CoreAttributeTypes.RelationOrder)) {
-               Attribute<?> attribute = attributeChange.getAttribute();
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
 
-               //if the order already existed replace
-               //How do I know what to do with this guy .... it could of been created for another change and we do not want to remove it because of a relation replace
-               //relation orders might not be from default hir
-               //check relation types if the are ordered and handle adding and removing the relation orders
-               if (isBaselineTransaction(change, baseTx)) {
-                  if (attribute.getGammaId() != change.getGamma()) {
-                     attribute.replaceWithVersion((int) change.getGamma());
-                     parentArtifact.persist(getTransaction(parentArtifact.getBranch()));
-                     break;
-                  }
-               } else { //else delete it because it was not in the baseline
-                  attribute.delete();
-               }
-            }
-         }
-      }
    }
 
    @Override
@@ -147,21 +174,24 @@ public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
       transactions = null;
    }
 
-   private void processRelation(Artifact artifact, TransactionRecord baseTx, RelationChange change) {
+   private void handleRelations(Artifact artifact, TransactionRecord baselineTransactionRecord, RelationChange change) throws OseeCoreException {
       RelationLink link =
          RelationManager.getLoadedRelationById(change.getItemId(), change.getArtId(), change.getBArtId(),
             artifact.getBranch());
       if (link != null) {
-         if (isBaselineTransaction(change, baseTx)) {
+         boolean isInBaselineTransaction = isBaselineTransaction(change, baselineTransactionRecord);
+         if (isInBaselineTransaction) {
+            link.internalSetModificationType(change.getModificationType());
             if (link.getGammaId() != change.getGamma()) {
                link.replaceWithVersion((int) change.getGamma());
             }
          } else {
             link.delete(false);
          }
+         handleAttributeOrder(link, artifact, isInBaselineTransaction, baselineTransactionRecord);
       } else {
-         //this would be an issue
-         //Do something's
+         throw new OseeStateException("The link %s for the replace with version should not come back as null ",
+            change.getRelLinkId());
       }
    }
 

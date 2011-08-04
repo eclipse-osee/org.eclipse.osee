@@ -41,12 +41,42 @@ public class ReplaceRelationsHelperTest {
    }
 
    @org.junit.Test
-   public void testRemoveArtifactGuidFromAttrOrderFailre() {
+   public void testRemoveArtifactGuidFromAttrOrderStartComma() {
       String guid = GUID.create();
       String beforeGuid = GUID.create();
-      String relationOrder = beforeGuid;
-      Assert.assertTrue(true);
-      ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder);
+      String relationOrder = "," + beforeGuid + guid;
+      String returnString = ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder);
+      Assert.assertFalse(returnString.contains(guid));
+      Assert.assertTrue(returnString.equals(beforeGuid));
    }
 
+   @org.junit.Test
+   public void testRemoveArtifactGuidFromAttrOrderExtraMiddleComma() {
+      String guid = GUID.create();
+      String beforeGuid = GUID.create();
+      String endGuid = GUID.create();
+      String relationOrder = beforeGuid + guid + ", ," + endGuid;
+      String returnString = ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder);
+      Assert.assertFalse(returnString.contains(guid));
+      Assert.assertTrue(returnString.equals(beforeGuid + "," + endGuid));
+   }
+
+   @org.junit.Test
+   public void testRemoveArtifactGuidFromAttrOrderEndComma() {
+      String guid = GUID.create();
+      String beforeGuid = GUID.create();
+      String relationOrder = beforeGuid + "," + guid + ",";
+      String returnString = ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder);
+      Assert.assertFalse(returnString.contains(guid));
+      Assert.assertTrue(returnString.equals(beforeGuid));
+   }
+
+   @org.junit.Test
+   public void testGetPreviousArtifactGuiOrder() {
+      String guid = GUID.create();
+      String beforeGuid = GUID.create();
+      String relationOrder = beforeGuid + "," + guid + ",";
+      String returnString = ReplaceRelationsHelper.getBeforeOrderGuid(relationOrder, guid);
+      Assert.assertTrue(returnString.equals(beforeGuid));
+   }
 }
