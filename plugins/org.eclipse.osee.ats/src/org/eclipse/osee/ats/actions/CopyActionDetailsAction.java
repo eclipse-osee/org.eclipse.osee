@@ -85,7 +85,7 @@ public class CopyActionDetailsAction extends Action {
       } else if (awa.isOfType(AtsArtifactTypes.Goal)) {
          result = "Goal";
       }
-      if (Strings.isValid(result)) {
+      if (!Strings.isValid(result)) {
          result = "unknown";
       }
       return result;
