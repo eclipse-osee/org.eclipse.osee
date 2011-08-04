@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.jobs.FindTraceUnitJob;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -35,7 +35,7 @@ public class FindTraceUnitEditorAction implements IEditorActionDelegate {
       if (editorInput instanceof IFileEditorInput) {
          iFile = ((IFileEditorInput) editorInput).getFile();
          if (iFile != null) {
-            OseeLog.log(DefinePlugin.class, Level.INFO, "iFile *" + iFile + "*");
+            OseeLog.log(Activator.class, Level.INFO, "iFile *" + iFile + "*");
          }
       }
       if (iFile == null) {

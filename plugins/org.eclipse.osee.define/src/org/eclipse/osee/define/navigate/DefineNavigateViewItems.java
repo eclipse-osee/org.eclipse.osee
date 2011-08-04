@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
@@ -53,7 +53,7 @@ public class DefineNavigateViewItems implements XNavigateViewItems, IXNavigateCo
             MassEditDirtyArtifactOperation.NAME, new MassEditDirtyArtifactOperation()));
          addExtensionPointItems(items);
       } catch (Exception ex) {
-         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -61,7 +61,7 @@ public class DefineNavigateViewItems implements XNavigateViewItems, IXNavigateCo
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.define.DefineNavigateItem");
       if (point == null) {
-         OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Can't access DefineNavigateItem extension point");
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access DefineNavigateItem extension point");
          return;
       }
       IExtension[] extensions = point.getExtensions();
@@ -83,7 +83,7 @@ public class DefineNavigateViewItems implements XNavigateViewItems, IXNavigateCo
                IDefineNavigateItem task = (IDefineNavigateItem) obj;
                items.addAll(task.getNavigateItems());
             } catch (Exception ex) {
-               OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Error loading DefineNavigateItem extension", ex);
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading DefineNavigateItem extension", ex);
             }
          }
       }

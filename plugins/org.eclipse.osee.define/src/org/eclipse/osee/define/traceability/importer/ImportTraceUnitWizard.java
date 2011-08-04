@@ -13,7 +13,7 @@ package org.eclipse.osee.define.traceability.importer;
 import java.net.URI;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -32,7 +32,6 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
 
    public ImportTraceUnitWizard() {
       super();
-      setDialogSettings(DefinePlugin.getInstance().getDialogSettings());
       setWindowTitle("Import Trace Units Wizard");
    }
 
@@ -52,7 +51,7 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
          Operations.executeAsJob(op, true);
          page.saveWidgetValues();
       } catch (Exception ex) {
-         OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Import Trace Unit Error", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Import Trace Unit Error", ex);
       }
       return true;
    }

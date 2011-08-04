@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -62,7 +62,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private final boolean writeOutResults;
 
    private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults) throws IOException {
-      super("Importing Traceability", DefinePlugin.PLUGIN_ID);
+      super("Importing Traceability", Activator.PLUGIN_ID);
       this.file = file;
       this.requirementData = requirementData;
       this.writeOutResults = writeOutResults;

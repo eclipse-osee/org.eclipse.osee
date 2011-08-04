@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -102,7 +102,7 @@ public class ArtifactOperations {
             partitions.addAll(artifact.getAttributesToStringList(CoreAttributeTypes.Partition));
             Collections.sort(partitions);
          } catch (OseeCoreException ex) {
-            OseeLog.logf(DefinePlugin.class, Level.WARNING,
+            OseeLog.logf(Activator.class, Level.WARNING,
                ex, "Error obtaining partition info for [%s]", getName());
             partitions.add("Error");
          }
@@ -142,7 +142,7 @@ public class ArtifactOperations {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.logf(DefinePlugin.class, Level.WARNING,
+         OseeLog.logf(Activator.class, Level.WARNING,
             ex, "Error obtaining qualification info [%s]", getName());
       }
       qualificationMethod = qualMethodBuilder.toString();
@@ -188,7 +188,7 @@ public class ArtifactOperations {
                }
                return toReturn;
             } catch (Exception ex) {
-               OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             return 1;
          }
@@ -217,7 +217,7 @@ public class ArtifactOperations {
       try {
          toReturn = this.artifact.getSoleAttributeValue(CoreAttributeTypes.Category, "");
       } catch (Exception ex) {
-         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          toReturn = "";
       }
       return toReturn;

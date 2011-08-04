@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -108,7 +108,7 @@ public class TraceUnitExtensionManager {
    private void checkObjectsLoaded() throws OseeCoreException {
       if (contributions.isEmpty()) {
          List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements(DefinePlugin.PLUGIN_ID + "." + TRACE_UNIT_HANDLER, TRACE_UNIT_HANDLER);
+            ExtensionPoints.getExtensionElements(Activator.PLUGIN_ID + "." + TRACE_UNIT_HANDLER, TRACE_UNIT_HANDLER);
          for (IConfigurationElement element : elements) {
             IExtension extension = (IExtension) element.getParent();
             String identifier = extension.getUniqueIdentifier();

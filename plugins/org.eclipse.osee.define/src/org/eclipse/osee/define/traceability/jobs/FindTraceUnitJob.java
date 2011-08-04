@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.operations.FindTraceUnitFromResource;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
@@ -61,7 +61,7 @@ public class FindTraceUnitJob extends Job {
                         return Status.OK_STATUS;
                      }
                   };
-                  Jobs.runInJob(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
+                  Jobs.runInJob(getName(), runnable, Activator.class, Activator.PLUGIN_ID);
                }
             }
          });

@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -41,7 +41,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    private final boolean withInheritance;
 
    private BranchTraceabilityOperation(RequirementData requirementData, Branch branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
-      super("Branch Traceability Provider", DefinePlugin.PLUGIN_ID);
+      super("Branch Traceability Provider", Activator.PLUGIN_ID);
       this.requirementData = requirementData;
       this.branch = branch;
       this.types = types;

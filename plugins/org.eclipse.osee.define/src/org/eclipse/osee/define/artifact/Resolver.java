@@ -11,21 +11,34 @@
 package org.eclipse.osee.define.artifact;
 
 import java.io.CharArrayReader;
+import java.io.IOException;
 import java.nio.CharBuffer;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-import org.eclipse.osee.define.internal.DefinePlugin;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.define.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.PluginUtil;
 
 public class Resolver implements URIResolver {
-   private static final OseeUiActivator plugin = DefinePlugin.getInstance();
-   private static final CharBuffer xslAuxiliary = plugin.getCharBuffer("support/xslt/auxiliary.xsl");
-   private static final CharBuffer xslProperties = plugin.getCharBuffer("support/xslt/elementProperties.xsl");
-   private static final CharBuffer xslStructure = plugin.getCharBuffer("support/xslt/elementStructure.xsl");
-   private static final CharBuffer xslPageLayout = plugin.getCharBuffer("support/xslt/pageLayout.xsl");
-   private static final CharBuffer xslProfile = plugin.getCharBuffer("support/xslt/profile.xsl");
+   private static final PluginUtil plugin = new PluginUtil(Activator.PLUGIN_ID);
+   private static final CharBuffer xslAuxiliary = getResource("support/xslt/auxiliary.xsl");
+   private static final CharBuffer xslProperties = getResource("support/xslt/elementProperties.xsl");
+   private static final CharBuffer xslStructure = getResource("support/xslt/elementStructure.xsl");
+   private static final CharBuffer xslPageLayout = getResource("support/xslt/pageLayout.xsl");
+   private static final CharBuffer xslProfile = getResource("support/xslt/profile.xsl");
+
+   private static CharBuffer getResource(String resource) {
+      try {
+         return Lib.inputStreamToCharBuffer(plugin.getInputStream(resource));
+      } catch (IOException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         return null;
+      }
+   }
 
    @Override
    public Source resolve(String href, String base) throws TransformerException {

@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.BaseTraceDataCache;
 import org.eclipse.osee.define.traceability.data.CodeUnitData;
 import org.eclipse.osee.define.traceability.data.RequirementData;
@@ -324,7 +324,7 @@ public class TraceReportBlam extends AbstractBlam {
                return Status.OK_STATUS;
             }
          };
-         Jobs.runInJob(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
+         Jobs.runInJob(getName(), runnable, Activator.class, Activator.PLUGIN_ID);
       }
    }
 
@@ -449,7 +449,7 @@ public class TraceReportBlam extends AbstractBlam {
          try {
             sheetWriter.writeRow(data);
          } catch (IOException ex) {
-            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 
@@ -459,7 +459,7 @@ public class TraceReportBlam extends AbstractBlam {
             sheetWriter.startSheet(title, header.length);
             sheetWriter.writeRow(header);
          } catch (IOException ex) {
-            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 
@@ -468,7 +468,7 @@ public class TraceReportBlam extends AbstractBlam {
          try {
             sheetWriter.endSheet();
          } catch (IOException ex) {
-            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

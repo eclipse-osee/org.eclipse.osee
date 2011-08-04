@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -124,7 +124,7 @@ public class ExtractTestRelations {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestCase, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {
-         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return null;
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =

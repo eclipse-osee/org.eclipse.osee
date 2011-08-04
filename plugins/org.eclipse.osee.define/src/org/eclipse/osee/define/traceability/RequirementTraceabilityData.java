@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -91,7 +91,7 @@ public class RequirementTraceabilityData {
             status = Status.CANCEL_STATUS;
          }
       } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, "Error gathering traceability data", ex);
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error gathering traceability data", ex);
       }
       return status;
    }
@@ -198,7 +198,7 @@ public class RequirementTraceabilityData {
             testScripts.put(getScriptName(script), testScript);
             toReturn.add(testScript);
          } catch (OseeCoreException ex) {
-            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return toReturn;
@@ -237,13 +237,13 @@ public class RequirementTraceabilityData {
                toReturn.add(line.trim());
             }
          } catch (Exception ex) {
-            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
             if (reader != null) {
                try {
                   reader.close();
                } catch (IOException ex) {
-                  OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }

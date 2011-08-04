@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.ITraceParser;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
@@ -227,7 +227,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
                      try {
                         Lib.writeCharBufferToFile(modifiedBuffer, new File(uriPath));
                      } catch (Exception ex) {
-                        OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   }
                } else {
@@ -345,7 +345,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
                return Status.OK_STATUS;
             }
          };
-         Jobs.runInJob(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
+         Jobs.runInJob(getName(), runnable, Activator.class, Activator.PLUGIN_ID);
       }
    }
 }

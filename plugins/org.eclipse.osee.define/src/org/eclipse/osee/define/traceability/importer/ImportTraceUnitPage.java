@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -206,7 +206,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
             createTraceHandler(composite, handler.getName(), handler.getId());
          }
       } catch (Exception ex) {
-         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
    }
@@ -406,7 +406,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
             try {
                settings.put(BRANCH_KEY, BranchManager.getBranchId(branch));
             } catch (OseeCoreException ex) {
-               OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
 

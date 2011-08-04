@@ -15,7 +15,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -55,7 +55,7 @@ public abstract class BaseTraceDataCache {
          }
          isInitialized = true;
       } catch (Exception ex) {
-         toReturn = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, String.format("Loading %s ", traceType), ex);
+         toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Loading %s ", traceType), ex);
       }
       return toReturn;
    }

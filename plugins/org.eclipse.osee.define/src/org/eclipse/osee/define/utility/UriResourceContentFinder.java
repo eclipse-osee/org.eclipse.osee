@@ -23,7 +23,7 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -177,7 +177,7 @@ public class UriResourceContentFinder {
             try {
                inputStream.close();
             } catch (IOException ex) {
-               OseeLog.logf(DefinePlugin.class, Level.SEVERE,
+               OseeLog.logf(Activator.class, Level.SEVERE,
                   ex, "Error closing stream for resource: [%s]", fileStore.getName());
             }
          }

@@ -21,7 +21,7 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.define.internal.DefinePlugin;
+import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.ResourceIdentifier;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
@@ -59,7 +59,7 @@ public final class FindTraceUnitFromResource {
                resourceToId(returnCollection, resource, locators);
             }
          } catch (Exception ex) {
-            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return returnCollection;
@@ -78,7 +78,7 @@ public final class FindTraceUnitFromResource {
                   IArtifactType traceType = locator.getTraceUnitType(identifier.getName(), buffer);
                   idStore.put(traceType, identifier);
                } catch (Exception ex) {
-                  OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                } finally {
                   if (inputStream != null) {
                      try {
@@ -91,7 +91,7 @@ public final class FindTraceUnitFromResource {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -111,7 +111,7 @@ public final class FindTraceUnitFromResource {
                            branch));
                      }
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             }
@@ -140,7 +140,7 @@ public final class FindTraceUnitFromResource {
                      true);
                }
             } catch (Exception ex) {
-               OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });

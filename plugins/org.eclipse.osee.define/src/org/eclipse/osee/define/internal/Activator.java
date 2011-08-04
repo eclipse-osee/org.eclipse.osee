@@ -10,21 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.define.internal;
 
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-public class DefinePlugin extends OseeUiActivator {
-   private static DefinePlugin pluginInstance;
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.define";
 
-   public DefinePlugin() {
-      super(PLUGIN_ID);
-      pluginInstance = this;
+   @Override
+   public void start(BundleContext context) {
+      // do nothing
    }
 
-   /**
-    * Returns the shared instance.
-    */
-   public static DefinePlugin getInstance() {
-      return pluginInstance;
+   @Override
+   public void stop(BundleContext context) {
+      // do nothing
    }
 }
