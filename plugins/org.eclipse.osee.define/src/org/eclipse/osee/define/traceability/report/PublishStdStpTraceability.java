@@ -50,7 +50,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
    private static final String testProceduresBranch =
       "<XWidget xwidgetType=\"XBranchSelectWidget\" " + "displayName=\"Test Procedures Branch\" defaultValue=\"\" toolTip=\"Select a test procedures branch.\" />";
    private static final String artifactTypeChooser =
-      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.SoftwareRequirement + "\"/>";
+      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.AbstractSoftwareRequirement + "\"/>";
    private static final String searchInheritedTypes =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Inherited Types\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"true\" />";
 
