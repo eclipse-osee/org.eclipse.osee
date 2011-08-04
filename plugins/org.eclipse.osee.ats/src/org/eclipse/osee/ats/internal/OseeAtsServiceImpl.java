@@ -141,7 +141,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
             cType = ChangeType.Improvement;
          }
          Set<ActionableItemArtifact> aias = ActionableItemManagerCore.getActionableItems(productNames);
-         if (aias.size() == 0) {
+         if (aias.isEmpty()) {
             throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
          }
          NewActionJob job = new NewActionJob(title, description, cType, priority, needByDate, false, aias, null, null);

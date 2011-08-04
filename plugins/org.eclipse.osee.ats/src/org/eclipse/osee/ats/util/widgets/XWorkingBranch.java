@@ -273,7 +273,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          Collection<AccessControlData> datas = AccessControlManager.getAccessControlList(branch);
          if (datas.size() > 1) {
             manuallyLocked = true;
-         } else if (datas.size() == 0) {
+         } else if (datas.isEmpty()) {
             isLocked = false;
          } else {
             AccessControlData data = datas.iterator().next();

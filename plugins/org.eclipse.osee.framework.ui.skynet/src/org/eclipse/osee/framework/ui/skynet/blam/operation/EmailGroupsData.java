@@ -76,12 +76,12 @@ public class EmailGroupsData {
       if (!Strings.isValid(getBody())) {
          return new Result("Must enter body");
       }
-      if (groups.size() == 0) {
+      if (groups.isEmpty()) {
          return new Result("No groups selected");
       }
       Set<Artifact> groupArts = new HashSet<Artifact>();
       groupArts.addAll(getUserToGroupMap().getValues());
-      if (groupArts.size() == 0) {
+      if (groupArts.isEmpty()) {
          return new Result("No valid users in groups selected");
       }
       return Result.TrueResult;

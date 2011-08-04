@@ -75,7 +75,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static boolean promptChangeRelatedToState(final Collection<? extends TaskArtifact> tasks, boolean persist) {
-      if (tasks.size() == 0) {
+      if (tasks.isEmpty()) {
          AWorkbench.popup("Select Tasks to change Related-to-State");
          return false;
       }
@@ -155,7 +155,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             tasks.add((TaskArtifact) art);
          }
       }
-      if (tasks.size() == 0) {
+      if (tasks.isEmpty()) {
          AWorkbench.popup("Invalid selection for setting related-to-state.");
          return;
       }

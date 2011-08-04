@@ -53,7 +53,7 @@ public class EmailActionsData {
       if (!Strings.isValid(getBody())) {
          return new Result("Must enter body");
       }
-      if (workflows.size() == 0) {
+      if (workflows.isEmpty()) {
          return new Result("No workflows dropped");
       }
       for (Artifact workflow : workflows) {

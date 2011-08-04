@@ -52,7 +52,7 @@ public class WasIsCompareEditorAction extends Action {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
             List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
-            if (localChanges.size() == 0 || localChanges.size() > 1) {
+            if (localChanges.isEmpty() || localChanges.size() > 1) {
                AWorkbench.popup("Can only show Was/Is for single selection");
                return;
             }

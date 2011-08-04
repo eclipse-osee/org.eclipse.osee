@@ -47,7 +47,7 @@ public class RemoveFromGoalAction extends Action {
    public void run() {
       try {
          Collection<? extends Artifact> selected = selectedAtsArtifacts.getSelectedAtsArtifacts();
-         if (selected.size() == 0) {
+         if (selected.isEmpty()) {
             AWorkbench.popup("No items selected");
             return;
          }

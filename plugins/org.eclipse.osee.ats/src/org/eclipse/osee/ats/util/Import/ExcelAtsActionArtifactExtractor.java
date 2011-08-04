@@ -97,14 +97,14 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   Collection<Artifact> aias =
                      AtsCacheManager.getArtifactsByName(AtsArtifactTypes.ActionableItem, actionableItemName);
-                  if (aias.size() == 0) {
+                  if (aias.isEmpty()) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   } else if (aias.size() > 1) {
                      rd.logError("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   }
                   ActionableItemArtifact aia = (ActionableItemArtifact) aias.iterator().next();
                   teamDefs.addAll(ActionableItemManagerCore.getImpactedTeamDefs(Arrays.asList(aia)));
-                  if (teamDefs.size() == 0) {
+                  if (teamDefs.isEmpty()) {
                      rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
                   } else if (teamDefs.size() > 1) {
                      rd.logError("Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");

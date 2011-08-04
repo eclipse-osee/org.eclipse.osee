@@ -184,7 +184,7 @@ public class OteService implements IHostTestEnvironment, IService {
       if (remoteEnvironment != null) {
          remoteEnvironment.disconnect(key);
          updateDynamicInfo();
-         if (remoteEnvironment.getUserList().size() == 0 && !environmentCreation.isKeepAliveWithNoUsers()) {
+         if (remoteEnvironment.getUserList().isEmpty() && !environmentCreation.isKeepAliveWithNoUsers()) {
             remoteEnvironment = null;
          }
       }

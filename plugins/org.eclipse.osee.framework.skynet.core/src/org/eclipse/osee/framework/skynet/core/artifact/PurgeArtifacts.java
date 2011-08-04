@@ -67,7 +67,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-      if (artifactsToPurge == null || artifactsToPurge.size() == 0) {
+      if (artifactsToPurge == null || artifactsToPurge.isEmpty()) {
          return;
       }
       //first determine if the purge is legal.

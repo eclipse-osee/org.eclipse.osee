@@ -102,7 +102,7 @@ public class TestUnitCacheTest {
       }
 
       Assert.assertTrue(foundNames.size() == entries.length);
-      Assert.assertTrue(Collections.setComplement(foundNames, Arrays.asList(entries)).size() == 0);
+      Assert.assertTrue(Collections.setComplement(foundNames, Arrays.asList(entries)).isEmpty());
    }
 
    @Test
@@ -119,7 +119,7 @@ public class TestUnitCacheTest {
       }
 
       Collection<String> actual = tc.getTestUnits(ci);
-      Assert.assertTrue(Collections.setComplement(expected, actual).size() == 0);
+      Assert.assertTrue(Collections.setComplement(expected, actual).isEmpty());
 
    }
 
@@ -137,7 +137,7 @@ public class TestUnitCacheTest {
       }
 
       Collection<String> actual = tc.getTestUnits(ci);
-      Assert.assertTrue(Collections.setComplement(expected, actual).size() == 0);
+      Assert.assertTrue(Collections.setComplement(expected, actual).isEmpty());
 
       tc.removeTestUnit(ci, "test1");
       tc.removeTestUnit(ci, "test5");
@@ -146,7 +146,7 @@ public class TestUnitCacheTest {
       expected.remove("test5");
       actual = tc.getTestUnits(ci);
 
-      Assert.assertTrue(Collections.setComplement(expected, actual).size() == 0);
+      Assert.assertTrue(Collections.setComplement(expected, actual).isEmpty());
 
    }
 
@@ -164,12 +164,12 @@ public class TestUnitCacheTest {
 
       tc.setTestUnits(ci, expected);
       Collection<String> actual = tc.getTestUnits(ci);
-      Assert.assertTrue(Collections.setComplement(expected, actual).size() == 0);
+      Assert.assertTrue(Collections.setComplement(expected, actual).isEmpty());
 
       expected.add("test12");
       tc.setTestUnits(ci, expected);
       actual = tc.getTestUnits(ci);
-      Assert.assertTrue(Collections.setComplement(expected, actual).size() == 0);
+      Assert.assertTrue(Collections.setComplement(expected, actual).isEmpty());
 
    }
 
@@ -209,7 +209,7 @@ public class TestUnitCacheTest {
       expected.add("test2");
       expected.add("test8");
 
-      Assert.assertTrue(Collections.setComplement(expected, units).size() == 0);
+      Assert.assertTrue(Collections.setComplement(expected, units).isEmpty());
    }
 
 }

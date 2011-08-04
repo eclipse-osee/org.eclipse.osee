@@ -217,7 +217,7 @@ public class InternalEventManager {
 
    public void processEventBroadcastEvent(Sender sender, BroadcastEvent broadcastEvent) {
       EventUtil.eventLog(String.format("IEM: processEventBroadcastEvent [%s]", broadcastEvent));
-      if (broadcastEvent.getUsers().size() == 0) {
+      if (broadcastEvent.getUsers().isEmpty()) {
          return;
       }
       for (IEventListener listener : priorityListeners) {

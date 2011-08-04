@@ -207,7 +207,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
 
    private synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
-         if (atsObjectEventFilter.size() == 0) {
+         if (atsObjectEventFilter.isEmpty()) {
             atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
             atsObjectEventFilter.add(atsArtifactTypesFilter);
          }

@@ -145,7 +145,7 @@ public final class ArtifactImportWizardTest {
                true, true, false);
          Operations.executeWork(operation);
 
-         Assert.assertFalse(collector.getRoughArtifacts().size() == 0);
+         Assert.assertFalse(collector.getRoughArtifacts().isEmpty());
       } finally {
          inputExcelFile.delete();
       }

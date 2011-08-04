@@ -39,7 +39,7 @@ public class WorkDefinitionMatch {
    }
 
    public void addTrace(String traceStr) {
-      if (trace.size() == 0 || (trace.size() >= 1 && !trace.get(trace.size() - 1).equals(traceStr))) {
+      if (trace.isEmpty() || (trace.size() >= 1 && !trace.get(trace.size() - 1).equals(traceStr))) {
          trace.add(traceStr);
       }
    }

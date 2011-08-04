@@ -45,7 +45,7 @@ public class UserRoleValidator {
    }
 
    public static UserRoleError isValid(UserRoleManager roleMgr, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException {
-      if (roleMgr.getUserRoles().size() == 0) {
+      if (roleMgr.getUserRoles().isEmpty()) {
          return UserRoleError.OneRoleEntryRequired;
       }
       if (roleMgr.getUserRoles(Role.Author).size() <= 0) {

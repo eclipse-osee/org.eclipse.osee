@@ -497,7 +497,7 @@ public class ArtifactQuery {
    }
 
    public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      if (artifacts.size() == 0) {
+      if (artifacts.isEmpty()) {
          return artifacts;
       }
       Set<Integer> artIds = new HashSet<Integer>();

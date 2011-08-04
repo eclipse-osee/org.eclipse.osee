@@ -175,7 +175,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
                awas.add(ActionManager.getFirstTeam(art));
             }
          }
-         if (awas.size() == 0) {
+         if (awas.isEmpty()) {
             AWorkbench.popup("Invalid selection for setting assignees.");
             return;
          }

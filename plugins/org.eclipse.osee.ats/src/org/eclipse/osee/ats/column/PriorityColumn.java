@@ -126,7 +126,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
             awas.add((TeamWorkFlowArtifact) art);
          }
       }
-      if (awas.size() == 0) {
+      if (awas.isEmpty()) {
          AWorkbench.popup("Must select Team Workflows");
          return;
       }

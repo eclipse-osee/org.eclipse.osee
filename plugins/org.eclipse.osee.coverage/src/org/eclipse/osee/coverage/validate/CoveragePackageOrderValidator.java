@@ -42,7 +42,7 @@ public class CoveragePackageOrderValidator {
    public void run() {
       List<String> orderErrors = new ArrayList<String>();
       validateCoverageOrderNums(orderErrors, coveragePackageBase.getCoverageUnits());
-      if (orderErrors.size() == 0) {
+      if (orderErrors.isEmpty()) {
          rd.log(AHTML.newline() + AHTML.bold("Validation: ") + "Ok");
       } else {
          rd.log(AHTML.newline() + AHTML.bold("Validation: ") + AHTML.newline());

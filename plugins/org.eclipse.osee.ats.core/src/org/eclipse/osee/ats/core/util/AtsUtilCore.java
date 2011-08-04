@@ -147,7 +147,7 @@ public class AtsUtilCore {
 
    public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
-         if (atsObjectEventFilter.size() == 0) {
+         if (atsObjectEventFilter.isEmpty()) {
             atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
             atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
          }
