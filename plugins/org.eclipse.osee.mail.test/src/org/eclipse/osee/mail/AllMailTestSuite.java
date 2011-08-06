@@ -20,10 +20,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    MailEventUtilTest.class,
    MailMessageTest.class,
-   MailServiceConfigSingleParamStringTest.class,
-   MailServiceConfigSingleParamIntTest.class,
-   MailServiceConfigSingleParamBoolTest.class,
-   MailServiceConfigSetToTest.class,
+   MailServiceConfigTest.class,
    MailUtilsContainsAnyTest.class,
    MailUtilsCreateFromHtmlTest.class,
    MailUtilsCreateFromStringTest.class,

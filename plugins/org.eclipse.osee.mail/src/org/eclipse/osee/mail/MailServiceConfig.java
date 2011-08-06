@@ -118,12 +118,15 @@ public class MailServiceConfig {
 
    public void setTo(MailServiceConfig other) {
       if (other != null) {
-         this.setHost(other.getHost());
-         this.setPassword(other.getPassword());
-         this.setPort(other.getPort());
-         this.setSystemAdminEmailAddress(other.getSystemAdminEmailAddress());
-         this.setTransport(other.getTransport());
-         this.setUserName(other.getUserName());
+         setAuthenticationRequired(other.isAuthenticationRequired());
+         setDebug(other.isDebug());
+         setHost(other.getHost());
+         setMailStatsEnabled(other.isMailStatsEnabled());
+         setPassword(other.getPassword());
+         setPort(other.getPort());
+         setSystemAdminEmailAddress(other.getSystemAdminEmailAddress());
+         setTransport(other.getTransport());
+         setUserName(other.getUserName());
       }
    }
 
