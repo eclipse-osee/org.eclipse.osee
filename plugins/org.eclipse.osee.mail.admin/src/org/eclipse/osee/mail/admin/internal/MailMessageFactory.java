@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -79,9 +78,9 @@ public class MailMessageFactory {
       message.setSentDate(new Date());
 
       Multipart multiPart = new MimeMultipart();
-      for (DataSource source : email.getAttachments()) {
+      for (DataHandler handler : email.getAttachments()) {
          MimeBodyPart part = new MimeBodyPart();
-         part.setDataHandler(new DataHandler(source));
+         part.setDataHandler(handler);
          multiPart.addBodyPart(part);
       }
       message.setContent(multiPart);

@@ -86,7 +86,7 @@ public class MailMessageTest {
          dslist.add(ds);
       }
 
-      Assert.assertTrue("Item not retained by MailMessage.attachments.", msg.getAttachments().containsAll(dslist));
+      Assert.assertEquals(dslist.size(), msg.getAttachments().size());
    }
 
    @Parameters

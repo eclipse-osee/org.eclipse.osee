@@ -102,7 +102,7 @@ public class MailServiceImpl implements MailService {
       String htmlData = String.format("<html><body><h4>%s</h4></body></html>", plainText);
       DataSource source;
       try {
-         source = MailUtils.createAlternativeDataSource("TestEmail", plainText, htmlData);
+         source = MailUtils.createAlternativeDataSource("TestEmail", htmlData, plainText);
       } catch (MessagingException ex) {
          source = MailUtils.createFromString("TestEmail", plainText);
       }

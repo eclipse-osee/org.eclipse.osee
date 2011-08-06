@@ -12,7 +12,9 @@ package org.eclipse.osee.mail;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -28,10 +30,12 @@ public class MailMessage {
 
    @XmlElement
    private final Collection<String> replyToAddress = new LinkedHashSet<String>();
+
    @XmlElement
    private final Collection<String> recepientAddresses = new LinkedHashSet<String>();
 
-   private final Collection<DataSource> attachments = new LinkedHashSet<DataSource>();
+   @XmlAttachmentRef
+   private final Collection<DataHandler> attachments = new LinkedHashSet<DataHandler>();
 
    public void setId(String id) {
       this.id = id;
@@ -75,14 +79,19 @@ public class MailMessage {
       this.recepientAddresses.addAll(recipientAddress);
    }
 
-   public Collection<DataSource> getAttachments() {
+   public Collection<DataHandler> getAttachments() {
       return attachments;
    }
 
    public void addAttachment(DataSource... dataSource) {
       for (DataSource source : dataSource) {
-         attachments.add(source);
+         attachments.add(new DataHandler(source));
       }
    }
 
+   public void addAttachment(DataHandler... dataHandler) {
+      for (DataHandler handler : dataHandler) {
+         attachments.add(handler);
+      }
+   }
 }

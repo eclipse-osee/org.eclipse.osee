@@ -10,18 +10,223 @@
  *******************************************************************************/
 package org.eclipse.osee.mail;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.activation.DataContentHandler;
+import javax.activation.DataSource;
+import javax.activation.MailcapCommandMap;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * Test Case for {@link MailUtils}
+ * 
  * @author Roberto E. Escobar
  */
 public class MailUtilsTest {
 
+   private static final String EXPECTED_NAME = "$p3c!@|_(#@0\\/@(+3&$";
+   private static final String EXPECTED_MESSAGE = "aldsjfaljfajf;afja;alija;ewta efad4`93240741-07";
+   private static final String EXTRA_MESSAGE = "---->>>>APPEND";
+   private static final String EXTENDED_MESSAGE = EXPECTED_MESSAGE + EXTRA_MESSAGE;
+
+   private static final String HTML_DATA = "<html><body><h1>Page</h1> <b>body</b> is here</body></html>";
+   private static final String HTML_PARSED_DATA = "Page body is here";
+
+   private static final Pattern MULTI_PART_PATTERN = Pattern.compile("_Part_\\d+_\\d+\\.\\d+\\s+(.*?)------=",
+      Pattern.DOTALL);
+
    @Test
-   public void test1() {
-      Assert.assertEquals("hello", "Hello");
-      //     DataSource source =  MailUtils.createOutlookEvent(location, event, date, startTime, endTime)
-      //     source.getInputStream();
+   public void testMailCapCommand() {
+      MailcapCommandMap map = MailUtils.getMailcapCommandMap();
+      List<String> mimeTypes = Arrays.asList(map.getMimeTypes());
+
+      Assert.assertTrue(mimeTypes.contains("text/*"));
+      Assert.assertTrue(mimeTypes.contains("text/html"));
+      Assert.assertTrue(mimeTypes.contains("text/xml"));
+      Assert.assertTrue(mimeTypes.contains("text/plain"));
+      Assert.assertTrue(mimeTypes.contains("multipart/*"));
+      Assert.assertTrue(mimeTypes.contains("multipart/mixed"));
+      Assert.assertTrue(mimeTypes.contains("message/rfc822"));
+      Assert.assertTrue(mimeTypes.contains("image/jpeg"));
+      Assert.assertTrue(mimeTypes.contains("image/gif"));
+
+      assertHandler(map, "text/*", "com.sun.mail.handlers.text_plain");
+      assertHandler(map, "text/html", "com.sun.mail.handlers.text_html");
+      assertHandler(map, "text/xml", "com.sun.mail.handlers.text_xml");
+      assertHandler(map, "text/plain", "com.sun.mail.handlers.text_plain");
+      assertHandler(map, "multipart/*", "com.sun.mail.handlers.multipart_mixed");
+      assertHandler(map, "multipart/mixed", "com.sun.mail.handlers.multipart_mixed");
+      assertHandler(map, "message/rfc822", "com.sun.mail.handlers.message_rfc822");
+      assertHandler(map, "image/jpeg", "com.sun.mail.handlers.image_jpeg");
+      assertHandler(map, "image/gif", "com.sun.mail.handlers.image_gif");
    }
+
+   @Test
+   public void testCreateFromString() throws IOException {
+      DataSource source = MailUtils.createFromString(EXPECTED_NAME, EXPECTED_MESSAGE);
+      Assert.assertEquals(EXPECTED_NAME, source.getName());
+      Assert.assertEquals("text/plain; charset=UTF-8", source.getContentType());
+
+      String actualMessage = Lib.inputStreamToString(source.getInputStream());
+      Assert.assertEquals(EXPECTED_MESSAGE, actualMessage);
+
+      OutputStream os = source.getOutputStream();
+      Assert.assertNotNull(os);
+
+      os.write(EXTRA_MESSAGE.getBytes("UTF-8"));
+
+      actualMessage = Lib.inputStreamToString(source.getInputStream());
+      Assert.assertEquals(EXTENDED_MESSAGE, actualMessage);
+   }
+
+   @Test
+   public void testCreateFromStringWithFormat() throws IOException {
+      DataSource source = MailUtils.createFromString(EXPECTED_NAME, "hello [%s]", 1);
+      Assert.assertEquals(EXPECTED_NAME, source.getName());
+      Assert.assertEquals("text/plain; charset=UTF-8", source.getContentType());
+
+      String actualMessage = Lib.inputStreamToString(source.getInputStream());
+      Assert.assertEquals("hello [1]", actualMessage);
+   }
+
+   @Test
+   public void testCreateFromHtml() throws Exception {
+      DataSource source = MailUtils.createFromHtml(EXPECTED_NAME, HTML_DATA);
+      Assert.assertEquals(EXPECTED_NAME, source.getName());
+      Assert.assertTrue(source.getContentType().contains("multipart/alternative;"));
+
+      String actualMessage = Lib.inputStreamToString(source.getInputStream());
+      List<String> parts = parseMultiPart(actualMessage);
+      Assert.assertEquals(2, parts.size());
+
+      Assert.assertEquals(HTML_DATA, parts.get(0));
+      Assert.assertEquals(HTML_PARSED_DATA, parts.get(1));
+   }
+
+   @Test(expected = UnsupportedOperationException.class)
+   public void testCreateFromHtmlGetOutputStream() throws Exception {
+      DataSource source = MailUtils.createFromHtml(EXPECTED_NAME, HTML_DATA);
+      Assert.assertEquals(EXPECTED_NAME, source.getName());
+      Assert.assertTrue(source.getContentType().contains("multipart/alternative;"));
+
+      // Throws Exception
+      source.getOutputStream();
+   }
+
+   @Test
+   public void testCreateAlternative() throws Exception {
+      DataSource source = MailUtils.createAlternativeDataSource(EXPECTED_NAME, HTML_DATA, EXTENDED_MESSAGE);
+      Assert.assertEquals(EXPECTED_NAME, source.getName());
+      Assert.assertTrue(source.getContentType().contains("multipart/alternative;"));
+
+      String actualMessage = Lib.inputStreamToString(source.getInputStream());
+      List<String> parts = parseMultiPart(actualMessage);
+      Assert.assertEquals(2, parts.size());
+
+      Assert.assertEquals(HTML_DATA, parts.get(0));
+      Assert.assertEquals(EXTENDED_MESSAGE, parts.get(1));
+   }
+
+   @org.junit.Test
+   public void testCreateOutlookEvent() throws Exception {
+      checkOutlookEvent("Daily+SCRUM.vcs", "Daily SCRUM", "Meeting room 220.", "01/31/2011 09:45 AM, PDT",
+         "01/31/2011 10:00 AM, PDT");
+
+      String fileName1 = "Discuss+what+to+do+about+the+ant+problem+in+the+break+room..vcs";
+
+      checkOutlookEvent(fileName1, "Discuss what to do about the ant problem in the break room.", "Joe Schmoe's Desk",
+         "12/31/2300 00:00 AM, PDT", "12/31/2300 11:59 PM, PDT");
+
+      checkOutlookEvent(fileName1, "Discuss what to do about the ant problem in the break room.", "Joe Schmoe's Desk",
+         "12/31/2300 11:58 PM, PDT", "12/31/2300 11:59 PM, PDT");
+   }
+
+   @org.junit.Test
+   public void testCreateOutlookEventSpecialChars() throws Exception {
+      String fileName1 = "Testing%21%40%23%24%25%5E+%26+%28+%29+_+%2B+1234567890-%3D%60%7E%7D%7B%5B%5D%2C.%3B%27.vcs";
+
+      checkOutlookEvent(fileName1, "Testing!@#$%^ & ( ) _ + 1234567890-=`~}{[],.;'",
+         "!@#$%^ & ( ) _ + 1234567890-=`~}{[],.;'", "01/31/2011 09:45 AM, PDT", "01/31/2011 10:00 AM, PDT");
+   }
+
+   @org.junit.Test(expected = UnsupportedOperationException.class)
+   public void testCreateOutlookEventGetOutputStream() throws Exception {
+      DataSource source = MailUtils.createOutlookEvent("Test 1", "Here", new Date(), "", "");
+      Assert.assertEquals("Test+1.vcs", source.getName());
+      Assert.assertEquals("text/plain; charset=UTF-8", source.getContentType());
+
+      // Throws Exception
+      source.getOutputStream();
+   }
+
+   private static void checkOutlookEvent(String filename, String eventName, String location, String startDateStr, String endDateStr) throws Exception {
+      Date startDate = DateFormat.getInstance().parse(startDateStr);
+      Date endDate = DateFormat.getInstance().parse(endDateStr);
+
+      Calendar startCal = Calendar.getInstance();
+      Calendar endCal = Calendar.getInstance();
+
+      startCal.setTime(startDate);
+      endCal.setTime(endDate);
+
+      String startTime = String.format("%s%s", startCal.get(Calendar.HOUR_OF_DAY), startCal.get(Calendar.MINUTE));
+      String endTime = String.format("%s%s", endCal.get(Calendar.HOUR_OF_DAY), endCal.get(Calendar.MINUTE));
+
+      DataSource source = MailUtils.createOutlookEvent(eventName, location, startDate, startTime, endTime);
+
+      Assert.assertEquals(filename, source.getName());
+      Assert.assertEquals("text/plain; charset=UTF-8", source.getContentType());
+
+      String actualMessage = Lib.inputStreamToString(source.getInputStream());
+      String expectedMessage = toOutlookExpected(eventName, location, startDate, startTime, endTime);
+      Assert.assertEquals(expectedMessage, actualMessage);
+
+   }
+
+   //@formatter:off
+   private static String toOutlookExpected(String event, String location, Date startDate, String startTime, String endTime) {
+     DateFormat myDateFormat = new SimpleDateFormat("yyyyMMdd");
+     StringBuilder builder = new StringBuilder();
+     builder.append("\nBEGIN:VCALENDAR\nPRODID:-//Microsoft Corporation//Outlook 10.0 MIMEDIR//EN\nVERSION:1.0\nBEGIN:VEVENT\nDTSTART:");
+     builder.append(myDateFormat.format(startDate));
+     builder.append("T"); 
+     builder.append(startTime);
+     builder.append("0Z\nDTEND:"); 
+     builder.append(myDateFormat.format(startDate));
+     builder.append("T"); 
+     builder.append(endTime);
+     builder.append("0Z\nLOCATION;ENCODING=QUOTED-PRINTABLE:");
+     builder.append(location); 
+     builder.append("\nTRANSP:1\nDESCRIPTION;ENCODING=QUOTED-PRINTABLE:=0D=0A\nSUMMARY;ENCODING=QUOTED-PRINTABLE:Event:");
+     builder.append(event); 
+     builder.append("\nPRIORITY:3\nEND:VEVENT\nEND:VCALENDAR\n");
+     return builder.toString();
+   }
+   //@formatter:on
+
+   private List<String> parseMultiPart(String actualMessage) {
+      List<String> toReturn = new ArrayList<String>();
+      Matcher matcher = MULTI_PART_PATTERN.matcher(actualMessage);
+      while (matcher.find()) {
+         toReturn.add(matcher.group(1).trim());
+      }
+      return toReturn;
+   }
+
+   private static void assertHandler(MailcapCommandMap map, String mimeType, String handler) {
+      DataContentHandler actualHandler = map.createDataContentHandler(mimeType);
+      Assert.assertEquals(handler, actualHandler.getClass().getName());
+   }
+
 }

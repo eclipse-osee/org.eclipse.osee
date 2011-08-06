@@ -15,6 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import javax.activation.CommandMap;
 import javax.activation.DataSource;
@@ -24,6 +26,7 @@ import javax.mail.MessagingException;
 import javax.mail.MultipartDataSource;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
 
 /**
@@ -37,67 +40,62 @@ public final class MailUtils {
 
    public static MailcapCommandMap getMailcapCommandMap() {
       MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+      mc.addMailcap("text/*;; x-java-content-handler=com.sun.mail.handlers.text_plain");
       mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
       mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
       mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
       mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
       mc.addMailcap("multipart/mixed;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
       mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+      mc.addMailcap("image/jpeg;; x-java-content-handler=com.sun.mail.handlers.image_jpeg");
+      mc.addMailcap("image/gif;; x-java-content-handler=com.sun.mail.handlers.image_gif");
       return mc;
    }
 
-   //The String.format can handle the '%' character.
    public static DataSource createFromString(String name, String message, Object... args) {
-      //The '%' has special meaning as a format specifier to the 
-      // String::format() function.  Because of this we replace
-      // the '%' with its unicode representation.
-      String msgWReplacedChar = message.replace("%", "\\u0025");
-      String data = String.format(msgWReplacedChar, args);
+      String data;
+      if (args.length > 0) {
+         data = String.format(message, args);
+      } else {
+         data = message;
+      }
       StringDataSource dataSource = new StringDataSource(name, data);
       dataSource.setCharset("UTF-8");
       dataSource.setContentType("text/plain");
       return dataSource;
    }
 
-   //returns -1 if searchChars are NOT found.
-   // Else it returns the index (>=0) into str where the first searchChar is found.
-   public static int containsAny(String str, char[] searchChars) {
-      if (str == null || str.length() == 0 || searchChars == null || searchChars.length == 0) {
-         return -1;
+   private static String toFileName(String value, String extension) throws UnsupportedEncodingException {
+      String fileName = value;
+      if (fileName.endsWith(".vcs")) {
+         fileName = Lib.removeExtension(fileName);
       }
-      for (int i = 0; i < str.length(); i++) {
-         char ch = str.charAt(i);
-         for (int j = 0; j < searchChars.length; j++) {
-            if (searchChars[j] == ch) {
-               return i;
-            }
-         }
-      }
-      return -1;
+      String validName = URLEncoder.encode(fileName, "UTF-8");
+      StringBuilder builder = new StringBuilder();
+      builder.append(validName);
+      builder.append(".vcs");
+
+      return builder.toString();
    }
 
-   public static DataSource createOutlookEvent(String location, String event, Date date, String startTime, String endTime) {
-      OutlookCalendarEvent calendarEvent = new OutlookCalendarEvent(location, event, date, startTime, endTime);
+   public static DataSource createOutlookEvent(String eventName, String location, Date date, String startTime, String endTime) throws UnsupportedEncodingException {
+      OutlookCalendarEvent calendarEvent = new OutlookCalendarEvent(location, eventName, date, startTime, endTime);
+      String fileName = toFileName(eventName, ".vcs");
 
-      //The event string is used as a file name and therefore must be
-      // validated and its contents restricted to valid filename characters.
-      // Invalid Windows characters based on - http://msdn.microsoft.com/en-us/library/aa365247%28v=vs.85%29.aspx#naming_conventions
-      char[] illegalChars_Windows = {'<', '>', ':', '\"', '/', '\\', '|', '?', '*'};
-      int charIndex = containsAny(event, illegalChars_Windows);
-      if (charIndex >= 0) {
-         System.out.println("Illegal Windows character found in event string: " + event.substring(0, charIndex + 1) + "<--");
-         return null;
-      }
-
-      StringBuilder strbld = new StringBuilder(event);
-      strbld.append(".vcs");
-      //System.out.println("event:" + event + " strbld:" + strbld.toString());
-      return createFromString(strbld.toString(), calendarEvent.getEvent());
+      StringDataSource dataSource = new StringDataSource(fileName, calendarEvent.getEvent()) {
+         @Override
+         public OutputStream getOutputStream() {
+            throw new UnsupportedOperationException("OutputStream is not available for this source");
+         }
+      };
+      dataSource.setCharset("UTF-8");
+      dataSource.setContentType("text/plain");
+      return dataSource;
    }
 
    public static DataSource createFromHtml(final String name, String htmlData) throws MessagingException {
       String plainText = stripHtmlTags(htmlData);
-      return createAlternativeDataSource(name, plainText, htmlData);
+      return createAlternativeDataSource(name, htmlData, plainText);
    }
 
    private static String stripHtmlTags(String html) {
@@ -106,17 +104,16 @@ public final class MailUtils {
       plainText = plainText.replaceAll("\r\n", "");
       plainText = plainText.replaceAll("  +", " ");
       return plainText;
-
    }
 
-   public static DataSource createAlternativeDataSource(String name, String plainText, String htmlText) throws MessagingException {
+   public static DataSource createAlternativeDataSource(String name, String htmlText, String plainText) throws MessagingException {
       final MimeMultipart content = new MimeMultipart("alternative");
-
-      MimeBodyPart text = new MimeBodyPart();
-      text.setText(plainText);
 
       MimeBodyPart html = new MimeBodyPart();
       html.setContent(htmlText, "text/html");
+
+      MimeBodyPart text = new MimeBodyPart();
+      text.setText(plainText);
 
       content.addBodyPart(html);
       content.addBodyPart(text);
@@ -175,7 +172,7 @@ public final class MailUtils {
 
    };
 
-   private static final class StringDataSource implements javax.activation.DataSource {
+   private static class StringDataSource implements javax.activation.DataSource {
 
       private final String name;
       private String data;
