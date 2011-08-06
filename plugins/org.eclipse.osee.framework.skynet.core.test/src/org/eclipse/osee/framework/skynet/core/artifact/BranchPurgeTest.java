@@ -20,7 +20,9 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
@@ -55,6 +57,8 @@ public class BranchPurgeTest {
 
    @org.junit.Test
    public void testPurgeBranch() throws Exception {
+      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+
       // Count rows in tables prior to purge
       DbTestUtil.getTableRowCounts(preCreateCount, tables);
 
@@ -62,8 +66,6 @@ public class BranchPurgeTest {
       Branch branch =
          BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, getClass().getSimpleName(),
             UserManager.getUser(SystemUser.OseeSystem));
-
-      TestUtil.sleep(4000);
 
       // create some software artifacts
       Collection<Artifact> softArts =
@@ -82,13 +84,14 @@ public class BranchPurgeTest {
       TestUtil.checkThatIncreased(preCreateCount, postCreateBranchCount);
 
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
+
       TestUtil.sleep(4000);
 
+      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
       // Count rows and check that same as when began
       DbTestUtil.getTableRowCounts(postPurgeCount, tables);
       // TODO looks like artifacts are not being removed when purge a branch
       TestUtil.checkThatEqual(preCreateCount, postPurgeCount);
-
    }
 
    @After
