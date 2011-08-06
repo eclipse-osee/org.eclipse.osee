@@ -57,11 +57,6 @@ public final class MailSendOperation extends AbstractOperation implements SendMa
       MailcapCommandMap mc = MailUtils.getMailcapCommandMap();
       CommandMap.setDefaultCommandMap(mc);
 
-      //ClassLoader original = Thread.currentThread().getContextClassLoader();
-      // // Set class loader so can find the mail handlers
-      //         Thread.currentThread().setContextClassLoader(
-      //            new ExportClassLoader(SkynetGuiPlugin.getInstance().getPackageAdmin()));
-
       final Session session = factory.createSession();
       final MimeMessage message = factory.createMimeMessage(session, email);
       final Transport transport = factory.createTransport(session);
@@ -77,7 +72,6 @@ public final class MailSendOperation extends AbstractOperation implements SendMa
             transport.removeTransportListener(listener);
          }
          transport.close();
-         //         Thread.currentThread().setContextClassLoader(original);
       }
    }
 
