@@ -58,10 +58,12 @@ public class VectorCastImportTest {
    private static boolean testWithDb = true;
 
    @BeforeClass
-   public static void setUp() throws OseeCoreException, IOException {
+   public static void setUp() throws OseeCoreException, IOException, InterruptedException {
       CoverageUtil.setIsInTest(true);
-      testCleanup();
       createVCastFileset();
+      // give time for copied files to be closed and recognized by filesystem
+      Thread.sleep(2000);
+      testCleanup();
    }
 
    @AfterClass
@@ -280,6 +282,8 @@ public class VectorCastImportTest {
 
    /**
     * Create dir structure for importer to read
+    * 
+    * @throws InterruptedException
     */
    private static void createVCastFileset() throws OseeCoreException, IOException {
       PluginUtil helper = new PluginUtil(Activator.PLUGIN_ID);
