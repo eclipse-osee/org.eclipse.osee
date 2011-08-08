@@ -274,7 +274,10 @@ public final class UserManager {
          addUserToUserGroups(user);
          cacheByUserId(user);
 
-         // this is here in case a user is created at an unexpected time
+         /**
+          * Since Users are auto-created, display stack trace as INFO in client's log to help debug any unexpected
+          * creation
+          */
          if (!DbUtil.isDbInit()) {
             OseeLog.log(Activator.class, Level.INFO, "Created user " + user, new Exception(
                "just wanted the stack trace"));

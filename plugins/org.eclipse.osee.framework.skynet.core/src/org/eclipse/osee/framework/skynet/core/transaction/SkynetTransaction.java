@@ -100,6 +100,9 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    private void checkAccess(Artifact artifact) throws OseeCoreException {
+      if (UserManager.duringMainUserCreation()) {
+         return;
+      }
       Branch txBranch = getBranch();
       if (!artifact.getBranch().equals(txBranch)) {
          String msg =
@@ -144,6 +147,9 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    private void checkAccess(Artifact artifact, RelationLink link) throws OseeCoreException {
+      if (UserManager.duringMainUserCreation()) {
+         return;
+      }
       checkBranch(link);
       Branch txBranch = getBranch();
       if (!link.getBranch().equals(txBranch)) {
