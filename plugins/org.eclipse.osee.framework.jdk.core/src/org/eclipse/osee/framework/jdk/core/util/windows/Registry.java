@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.util.windows;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Processes;
@@ -94,7 +93,7 @@ public class Registry {
       }
    }
 
-   public static boolean isRegVersion(double lowerBound, double upperBound) throws IOException {
+   public static boolean isRegVersion(double lowerBound, double upperBound) {
       boolean matched = false;
       String out = Processes.executeCommandToString(Registry.REG_HELP_CMD);
 
@@ -112,7 +111,7 @@ public class Registry {
       return matched;
    }
 
-   public static RegVersion getVersion() throws IOException {
+   public static RegVersion getVersion() {
       Registry r = new Registry();
       RegVersion regVersion = null;
       if (Registry.isRegVersion(1.00, 1.99)) {
@@ -123,7 +122,7 @@ public class Registry {
       return regVersion;
    }
 
-   public static String[] getValue(RegVersion version, String root, String path, String key) throws IOException {
+   public static String[] getValue(RegVersion version, String root, String path, String key) {
       String toReturn[] = null;
 
       String out = Processes.executeCommandToString(version.getQueryCmd(root, path, key));
@@ -146,7 +145,7 @@ public class Registry {
       return toReturn;
    }
 
-   public static boolean prependRegistryValue(File updatedReg, String root, String path, String key, String value) throws IOException {
+   public static boolean prependRegistryValue(File updatedReg, String root, String path, String key, String value) {
 
       RegVersion version = Registry.getVersion();
 
@@ -181,7 +180,7 @@ public class Registry {
       return true;
    }
 
-   public static boolean prependRegistryValue(String root, String path, String key, String value) throws IOException {
+   public static boolean prependRegistryValue(String root, String path, String key, String value) {
 
       RegVersion version = Registry.getVersion();
 
@@ -198,11 +197,7 @@ public class Registry {
    }
 
    public static void main(String[] args) {
-      try {
-         Registry.prependRegistryValue(Registry.HKEY_CURRENT_USER, "environment", "path", "HI THERE");
-      } catch (IOException ex) {
-         ex.printStackTrace();
-      }
+      Registry.prependRegistryValue(Registry.HKEY_CURRENT_USER, "environment", "path", "HI THERE");
    }
 
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.branch.management.change;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 
@@ -75,7 +74,7 @@ public final class Conflict implements IOseeStorable {
    }
 
    @Override
-   public void setId(int uniqueId) throws OseeCoreException {
+   public void setId(int uniqueId) {
       throw new UnsupportedOperationException();
    }
 

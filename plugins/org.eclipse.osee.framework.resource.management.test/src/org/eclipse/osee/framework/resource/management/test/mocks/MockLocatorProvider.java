@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.resource.management.test.mocks;
 
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
-import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
  * @author Roberto E. Escobar
@@ -26,12 +25,12 @@ public class MockLocatorProvider implements IResourceLocatorProvider {
    }
 
    @Override
-   public IResourceLocator generateResourceLocator(String seed, String name) throws MalformedLocatorException {
+   public IResourceLocator generateResourceLocator(String seed, String name) {
       return new MockResourceLocator(getSupportedProtocol(), seed, name, null);
    }
 
    @Override
-   public IResourceLocator getResourceLocator(String path) throws MalformedLocatorException {
+   public IResourceLocator getResourceLocator(String path) {
       return new MockResourceLocator(getSupportedProtocol(), null, null, path);
    }
 

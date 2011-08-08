@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -39,7 +38,7 @@ public class CheckoutJob extends Job {
       try {
          ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
             @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
+            public void run(IProgressMonitor monitor) {
                VersionControl.getInstance().checkOut(fileToCheckout, monitor);
             }
          }, this.getRule(), IWorkspace.AVOID_UPDATE, monitor);

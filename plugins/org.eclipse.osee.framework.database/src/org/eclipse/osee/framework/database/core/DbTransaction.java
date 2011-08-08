@@ -55,7 +55,11 @@ public abstract class DbTransaction {
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/>
     * <b>Override to add additional code to finally block</b>
+    * 
+    * @throws OseeCoreException
     */
+   @SuppressWarnings("unused")
+   //OseeCoreException is thrown by inheriting class
    protected void handleTxFinally() throws OseeCoreException {
       // override to add additional code to finally
    }

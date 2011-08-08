@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.message.internal.translation;
 
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -38,7 +37,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
    }
 
    @Override
-   public BranchCreationRequest convert(PropertyStore store) throws OseeCoreException {
+   public BranchCreationRequest convert(PropertyStore store) {
       String branchName = store.get(Fields.BRANCH_NAME.name());
       int parentBranchId = store.getInt(Fields.PARENT_BRANCH_ID.name());
       int associatedArtifactId = store.getInt(Fields.ASSOCIATED_ART_ID.name());
@@ -59,7 +58,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
    }
 
    @Override
-   public PropertyStore convert(BranchCreationRequest object) throws OseeCoreException {
+   public PropertyStore convert(BranchCreationRequest object) {
       PropertyStore store = new PropertyStore();
       store.put(Fields.BRANCH_NAME.name(), object.getBranchName());
       store.put(Fields.PARENT_BRANCH_ID.name(), object.getParentBranchId());

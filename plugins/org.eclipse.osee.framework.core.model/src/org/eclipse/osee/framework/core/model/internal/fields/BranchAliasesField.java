@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.internal.fields;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +23,7 @@ public class BranchAliasesField extends CollectionField<String> {
    }
 
    @Override
-   protected Collection<String> checkInput(Collection<String> input) throws OseeCoreException {
+   protected Collection<String> checkInput(Collection<String> input) {
       Collection<String> items = new HashSet<String>();
       for (String alias : input) {
          items.add(alias.toLowerCase());

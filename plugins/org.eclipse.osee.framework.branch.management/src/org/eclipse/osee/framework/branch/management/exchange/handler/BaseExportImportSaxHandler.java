@@ -33,6 +33,8 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       this.dataMap = new HashMap<String, String>();
    }
 
+   @SuppressWarnings("unused")
+   //SAXException is thrown by inheriting class
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
       if (localName.equalsIgnoreCase(ExportImportXml.DATA)) {

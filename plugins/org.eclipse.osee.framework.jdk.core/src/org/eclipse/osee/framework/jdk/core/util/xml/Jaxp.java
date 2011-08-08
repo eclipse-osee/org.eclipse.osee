@@ -497,7 +497,7 @@ public class Jaxp {
     * @param document The XML document to output
     * @param file Where to put the output
     */
-   public static void writeXmlDocument(Document document, File file) throws TransformerException, IOException {
+   public static void writeXmlDocument(Document document, File file) throws IOException {
       writeXmlDocument(document, file, getCompactFormat(document));
    }
 
@@ -509,7 +509,7 @@ public class Jaxp {
     * @param prettyOutput If true, turns on indention so the output is more easily readable, if False turns indention
     * off to save space.
     */
-   public static void writeXmlDocument(Document document, File file, OutputFormat format) throws TransformerException, IOException {
+   public static void writeXmlDocument(Document document, File file, OutputFormat format) throws IOException {
       BufferedWriter out = new BufferedWriter(new FileWriter(file));
       outputXmlDocument(document, out, format);
       out.close();

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.internal.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -29,7 +28,7 @@ public class OseeImportModelRequestTranslator implements ITranslator<OseeImportM
    }
 
    @Override
-   public OseeImportModelRequest convert(PropertyStore store) throws OseeCoreException {
+   public OseeImportModelRequest convert(PropertyStore store) {
       String model = store.get(Fields.MODEL.name());
       String modelName = store.get(Fields.MODEL_NAME.name());
       boolean createTypeChangeReport = store.getBoolean(Fields.GENERATE_DIRTY_REPORT.name());
@@ -40,7 +39,7 @@ public class OseeImportModelRequestTranslator implements ITranslator<OseeImportM
    }
 
    @Override
-   public PropertyStore convert(OseeImportModelRequest object) throws OseeCoreException {
+   public PropertyStore convert(OseeImportModelRequest object) {
       PropertyStore store = new PropertyStore();
       store.put(Fields.MODEL_NAME.name(), object.getModelName());
       store.put(Fields.MODEL.name(), object.getModel());

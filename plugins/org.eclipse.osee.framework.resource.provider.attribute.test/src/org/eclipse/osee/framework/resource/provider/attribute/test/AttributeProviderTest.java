@@ -45,7 +45,7 @@ public class AttributeProviderTest {
 
    @Ignore
    @Test
-   public void testOps() throws OseeCoreException, URISyntaxException {
+   public void testOps() {
       //      IResourceProvider provider = new AttributeProvider();
       Assert.fail("Implement Remaining Tests");
       //      provider.acquire(locator, options)

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import net.jini.core.entry.Entry;
-import net.jini.core.lease.UnknownLeaseException;
 import net.jini.core.lookup.ServiceID;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
@@ -208,8 +207,6 @@ public abstract class JiniService implements IService {
          } else {
             System.out.println("service already removed JiniService.deregister");
          }
-      } catch (UnknownLeaseException ex) {
-         ex.printStackTrace();
       } catch (RemoteException ex) {
          ex.printStackTrace();
       } catch (Exception ex) {
@@ -224,7 +221,7 @@ public abstract class JiniService implements IService {
    }
 
    @Override
-   public ServiceID getServiceID() throws RemoteException {
+   public ServiceID getServiceID() {
       return serviceID;
    }
 

@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
@@ -58,8 +57,6 @@ public class RulesLogHandler extends Handler {
             format.setIndent(3);
             Jaxp.writeXmlDocument(document, outFile, format);
          } catch (IOException ex) {
-            ex.printStackTrace();
-         } catch (TransformerException ex) {
             ex.printStackTrace();
          }
       }

@@ -17,7 +17,6 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
@@ -65,7 +64,7 @@ public class DbResource implements IResource {
    }
 
    @Override
-   public InputStream getContent() throws OseeCoreException {
+   public InputStream getContent() {
       return inputStream;
    }
 

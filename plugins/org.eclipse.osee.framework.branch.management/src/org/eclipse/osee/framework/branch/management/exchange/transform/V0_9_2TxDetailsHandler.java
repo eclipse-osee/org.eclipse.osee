@@ -14,7 +14,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Roberto E. Escobar
@@ -27,11 +26,11 @@ public class V0_9_2TxDetailsHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws SAXException {
+   public void endElementFound(String uri, String localName, String qName) {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
       if (localName.equals("entry")) {
          int txType = Integer.parseInt(attributes.getValue("tx_type"));
          TransactionDetailsType detailsType = TransactionDetailsType.toEnum(txType);

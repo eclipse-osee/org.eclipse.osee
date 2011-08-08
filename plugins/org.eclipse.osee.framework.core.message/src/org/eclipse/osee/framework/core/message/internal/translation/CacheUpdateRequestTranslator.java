@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -31,7 +30,7 @@ public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequ
    }
 
    @Override
-   public CacheUpdateRequest convert(PropertyStore propertyStore) throws OseeCoreException {
+   public CacheUpdateRequest convert(PropertyStore propertyStore) {
       OseeCacheEnum cacheId = OseeCacheEnum.valueOf(propertyStore.get(Entry.CACHE_ID.name()));
       String[] itemId = propertyStore.getArray(Entry.ITEM_IDS.name());
       List<Integer> itemIds = new ArrayList<Integer>();
@@ -46,7 +45,7 @@ public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequ
    }
 
    @Override
-   public PropertyStore convert(CacheUpdateRequest object) throws OseeCoreException {
+   public PropertyStore convert(CacheUpdateRequest object) {
       PropertyStore store = new PropertyStore();
 
       store.put(Entry.CACHE_ID.name(), object.getCacheId().name());

@@ -53,7 +53,7 @@ public class GenericParser extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
       if (localName.equalsIgnoreCase(toFind)) {
          startCollecting = true;
          collectedTree = new Tree<XmlNode>(new XmlNode(localName, attributes));
@@ -71,7 +71,7 @@ public class GenericParser extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws SAXException {
+   public void endElementFound(String uri, String localName, String qName) {
       if (localName.equalsIgnoreCase(toFind)) {
          startCollecting = false;
          notifyTreeCollected(collectedTree);
@@ -146,17 +146,17 @@ public class GenericParser extends AbstractSaxHandler {
       xmlReader.setErrorHandler(new ErrorHandler() {
 
          @Override
-         public void warning(SAXParseException exception) throws SAXException {
+         public void warning(SAXParseException exception) {
             exception.printStackTrace();
          }
 
          @Override
-         public void fatalError(SAXParseException exception) throws SAXException {
+         public void fatalError(SAXParseException exception) {
             exception.printStackTrace();
          }
 
          @Override
-         public void error(SAXParseException exception) throws SAXException {
+         public void error(SAXParseException exception) {
             exception.printStackTrace();
          }
 

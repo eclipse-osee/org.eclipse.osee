@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 import java.util.HashMap;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
@@ -22,11 +21,11 @@ public class V0_9_0TxDetailsHandler extends AbstractSaxHandler {
    private final HashMap<Integer, Integer> branchIdMap = new HashMap<Integer, Integer>(10000);
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws SAXException {
+   public void endElementFound(String uri, String localName, String qName) {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
       if (localName.equals("entry")) {
          branchIdMap.put(Integer.parseInt(attributes.getValue("transaction_id")),
             Integer.parseInt(attributes.getValue("branch_id")));

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -269,7 +268,7 @@ public class Xml {
       return newElement;
    }
 
-   public final static String restartNumberingWhenPreparingToEditWithWord(InputStream myInputStream) throws XPathExpressionException, ParserConfigurationException, TransformerException, SAXException, IOException {
+   public final static String restartNumberingWhenPreparingToEditWithWord(InputStream myInputStream) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
       SimpleNamespaceContext mySimpleNamespaceContext = new SimpleNamespaceContext();
       addNamespacesForWordMarkupLanguage(myXPath, mySimpleNamespaceContext);
       Document myDocument = Jaxp.readXmlDocumentNamespaceAware(myInputStream);

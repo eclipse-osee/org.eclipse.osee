@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.internal.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCacheStoreRequest;
 import org.eclipse.osee.framework.core.message.BranchCacheUpdateUtil;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -27,7 +26,7 @@ public class BranchCacheStoreRequestTranslator implements ITranslator<BranchCach
    }
 
    @Override
-   public BranchCacheStoreRequest convert(PropertyStore store) throws OseeCoreException {
+   public BranchCacheStoreRequest convert(PropertyStore store) {
       BranchCacheStoreRequest request = new BranchCacheStoreRequest();
       BranchCacheUpdateUtil.loadMessage(request, store);
       request.setServerUpdateMessage(store.getBoolean(Field.IS_SERVER_MESSAGE.name()));
@@ -35,7 +34,7 @@ public class BranchCacheStoreRequestTranslator implements ITranslator<BranchCach
    }
 
    @Override
-   public PropertyStore convert(BranchCacheStoreRequest object) throws OseeCoreException {
+   public PropertyStore convert(BranchCacheStoreRequest object) {
       PropertyStore store = new PropertyStore();
       BranchCacheUpdateUtil.loadStore(store, object);
       store.put(Field.IS_SERVER_MESSAGE.name(), object.isServerUpdateMessage());

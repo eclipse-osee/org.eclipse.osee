@@ -38,7 +38,7 @@ public abstract class DynamicBlamOperation {
       operationFactory.createInstallOperation(site.getCurrentConfiguredSite(), feature, null, null, null);
    }
 
-   public void init() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, OseeArgumentException {
+   public void init() throws IllegalArgumentException, NoSuchMethodException, OseeArgumentException {
       mainMethod = findMainMethod(getMainMethodName());
 
       String[] parameterNames = getParameterNames();
@@ -59,7 +59,7 @@ public abstract class DynamicBlamOperation {
       mainMethod.invoke(this, actualParameters);
    }
 
-   private Method findMainMethod(String mainMethodName) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+   private Method findMainMethod(String mainMethodName) throws IllegalArgumentException, NoSuchMethodException {
       Class<? extends DynamicBlamOperation> classRep = getClass();
       Method[] methods = classRep.getDeclaredMethods(); // get only the methods declared directly in the given class
 

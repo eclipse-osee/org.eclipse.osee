@@ -62,7 +62,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       InputStream inputStream = null;
       try {
          Pair<String, Boolean> parameters = HttpRequestDecoder.fromGetRequest(request);
@@ -120,7 +120,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doPut(HttpServletRequest request, HttpServletResponse response) {
       int result = HttpServletResponse.SC_BAD_REQUEST;
       try {
          String[] args = HttpRequestDecoder.fromPutRequest(request);
@@ -148,7 +148,7 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
       int result = HttpServletResponse.SC_BAD_REQUEST;
       try {
          String path = HttpRequestDecoder.fromDeleteRequest(request);

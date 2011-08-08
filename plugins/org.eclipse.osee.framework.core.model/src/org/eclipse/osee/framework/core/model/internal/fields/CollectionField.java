@@ -28,7 +28,7 @@ public class CollectionField<T> extends AbstractOseeField<Collection<T>> {
    }
 
    @Override
-   public Collection<T> get() throws OseeCoreException {
+   public Collection<T> get() {
       return items;
    }
 
@@ -43,6 +43,8 @@ public class CollectionField<T> extends AbstractOseeField<Collection<T>> {
       isDirty |= isDifferent;
    }
 
+   @SuppressWarnings("unused")
+   //OseeCoreException is thrown by inherited class
    protected Collection<T> checkInput(Collection<T> input) throws OseeCoreException {
       return input;
    }

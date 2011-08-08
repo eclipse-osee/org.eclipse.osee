@@ -35,7 +35,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<IOs
    }
 
    @Override
-   public Map<IOseeBranch, Collection<AttributeType>> get() throws OseeCoreException {
+   public Map<IOseeBranch, Collection<AttributeType>> get() {
       return new HashMap<IOseeBranch, Collection<AttributeType>>(validityMap);
    }
 

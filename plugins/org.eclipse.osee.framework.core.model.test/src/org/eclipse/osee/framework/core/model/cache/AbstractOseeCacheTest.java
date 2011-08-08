@@ -15,14 +15,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -221,7 +220,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
 
    @Ignore
    @Test
-   public void testPersist() throws OseeCoreException {
+   public void testPersist() {
       //      T item1 = data.get(0);
       //      T item2 = data.get(1);
       //
@@ -249,6 +248,8 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
       //      public void storeItems(Collection<T> toStore) throws OseeCoreException {
    }
 
+   @SuppressWarnings("unused")
+   //OseeCoreException is thrown by inheriting class.
    protected void checkEquals(T expected, T actual) throws OseeCoreException {
       Assert.assertEquals(expected, actual);
    }

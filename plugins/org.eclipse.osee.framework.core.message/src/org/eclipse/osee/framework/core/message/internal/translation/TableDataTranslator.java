@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.message.internal.translation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TableData;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -36,7 +35,7 @@ public class TableDataTranslator implements ITranslator<TableData> {
    }
 
    @Override
-   public TableData convert(PropertyStore store) throws OseeCoreException {
+   public TableData convert(PropertyStore store) {
       String title = store.get(Entry.TITLE.name());
       String[] columns = store.getArray(Entry.HEADERS.name());
 
@@ -49,7 +48,7 @@ public class TableDataTranslator implements ITranslator<TableData> {
    }
 
    @Override
-   public PropertyStore convert(TableData data) throws OseeCoreException {
+   public PropertyStore convert(TableData data) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.TITLE.name(), data.getTitle());
       store.put(Entry.HEADERS.name(), data.getColumns());

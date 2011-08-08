@@ -197,7 +197,7 @@ public class XmlMessage {
       }
 
       @Override
-      public InputStream getContent() throws OseeCoreException {
+      public InputStream getContent() {
          return inputStream;
       }
 

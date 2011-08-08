@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.message.internal.translation;
 
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeBranchStateRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -27,7 +26,7 @@ public final class BranchChangeStateRequestTranslator implements ITranslator<Cha
    }
 
    @Override
-   public ChangeBranchStateRequest convert(PropertyStore propertyStore) throws OseeCoreException {
+   public ChangeBranchStateRequest convert(PropertyStore propertyStore) {
       int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
       BranchState state = BranchState.valueOf(propertyStore.get(Entry.BRANCH_STATE.name()));
       ChangeBranchStateRequest data = new ChangeBranchStateRequest(branchId, state);
@@ -35,7 +34,7 @@ public final class BranchChangeStateRequestTranslator implements ITranslator<Cha
    }
 
    @Override
-   public PropertyStore convert(ChangeBranchStateRequest data) throws OseeCoreException {
+   public PropertyStore convert(ChangeBranchStateRequest data) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.BRANCH_ID.name(), data.getBranchId());
       store.put(Entry.BRANCH_STATE.name(), data.getState().name());

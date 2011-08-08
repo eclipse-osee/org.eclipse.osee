@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.ws;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IContainer;
@@ -185,7 +184,7 @@ public final class AWorkspace {
       return null;
    }
 
-   public static IResource findWorkspaceFile(String fileName) throws IOException {
+   public static IResource findWorkspaceFile(String fileName) {
       IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
       List<IResource> resources = new ArrayList<IResource>();
       recursiveFileFind(fileName, ws, resources);
@@ -206,7 +205,7 @@ public final class AWorkspace {
       }
    }
 
-   public static List<IResource> findWorkspaceFileMatch(String regex) throws IOException {
+   public static List<IResource> findWorkspaceFileMatch(String regex) {
       IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
       List<IResource> resources = new ArrayList<IResource>();
       recursiveFileFindMatch(regex, ws, resources);

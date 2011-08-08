@@ -129,7 +129,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    }
 
    @Override
-   public Collection<TransactionRecord> getAllDirty() throws OseeCoreException {
+   public Collection<TransactionRecord> getAllDirty() {
       Set<TransactionRecord> dirtys = new HashSet<TransactionRecord>();
       for (TransactionRecord record : transactionIdCache.values()) {
          if (record.isDirty()) {
@@ -140,15 +140,15 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    }
 
    @Override
-   public void storeAllModified() throws OseeCoreException {
+   public void storeAllModified() {
    }
 
    @Override
-   public void storeItems(TransactionRecord... items) throws OseeCoreException {
+   public void storeItems(TransactionRecord... items) {
    }
 
    @Override
-   public void storeItems(Collection<TransactionRecord> toStore) throws OseeCoreException {
+   public void storeItems(Collection<TransactionRecord> toStore) {
    }
 
    public TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
@@ -166,7 +166,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       return toReturn;
    }
 
-   public Collection<TransactionRecord> getTransactions(Branch branch) throws OseeCoreException {
+   public Collection<TransactionRecord> getTransactions(Branch branch) {
       return Collections.emptyList();
    }
 

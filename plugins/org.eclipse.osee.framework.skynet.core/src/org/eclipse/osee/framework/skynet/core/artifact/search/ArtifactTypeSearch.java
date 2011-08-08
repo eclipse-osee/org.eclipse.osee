@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Robert A. Fisher
@@ -35,7 +34,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
+   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) {
       String sql =
          "osee_artifact_type.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_artifact.art_type_id";
       dataList.add(typeName);

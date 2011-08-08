@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.activation.DataSource;
@@ -33,7 +32,7 @@ public class StringDataSource implements DataSource {
    }
 
    @Override
-   public InputStream getInputStream() throws IOException {
+   public InputStream getInputStream() {
       return new ByteArrayInputStream(data.getBytes());
    }
 
@@ -43,7 +42,7 @@ public class StringDataSource implements DataSource {
    }
 
    @Override
-   public OutputStream getOutputStream() throws IOException {
+   public OutputStream getOutputStream() {
       throw new UnsupportedOperationException();
    }
 

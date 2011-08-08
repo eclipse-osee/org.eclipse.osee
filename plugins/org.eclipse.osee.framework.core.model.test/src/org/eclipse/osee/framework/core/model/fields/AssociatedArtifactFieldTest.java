@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.fields;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.internal.fields.AssociatedArtifactField;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -36,7 +35,7 @@ public class AssociatedArtifactFieldTest {
    }
 
    @Test
-   public void test() throws OseeCoreException {
+   public void test() {
       AssociatedArtifactField field = new AssociatedArtifactField(art1);
       Assert.assertEquals(false, field.isDirty());
 

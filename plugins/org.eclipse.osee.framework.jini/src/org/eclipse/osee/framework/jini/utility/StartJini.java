@@ -20,7 +20,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -235,7 +234,7 @@ public class StartJini extends JiniService {
    }
 
    @Override
-   public void kill() throws RemoteException {
+   public void kill() {
       OseeLog.log(StartJini.class, Level.INFO, "De-registering Core Jini Service...");
       deregisterService();
       killProcesses();

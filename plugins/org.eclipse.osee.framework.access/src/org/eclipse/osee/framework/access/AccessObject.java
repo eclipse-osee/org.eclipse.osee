@@ -37,7 +37,7 @@ public abstract class AccessObject {
       }
    }
 
-   public static AccessObject getAccessObjectFromCache(Object object) throws OseeCoreException {
+   public static AccessObject getAccessObjectFromCache(Object object) {
       if (object instanceof Artifact) {
          return ArtifactAccessObject.getArtifactAccessObjectFromCache((Artifact) object);
       } else if (object instanceof IOseeBranch) {

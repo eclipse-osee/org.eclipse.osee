@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.internal.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -28,7 +27,7 @@ public final class BranchCommitRequestTranslator implements ITranslator<BranchCo
    }
 
    @Override
-   public BranchCommitRequest convert(PropertyStore propertyStore) throws OseeCoreException {
+   public BranchCommitRequest convert(PropertyStore propertyStore) {
       int srcBranchId = propertyStore.getInt(Entry.SRC_BRANCH_ID.name());
       int destBranchId = propertyStore.getInt(Entry.DEST_BRANCH_ID.name());
       int userArtifactId = propertyStore.getInt(Entry.USER_ART_ID.name());
@@ -39,7 +38,7 @@ public final class BranchCommitRequestTranslator implements ITranslator<BranchCo
    }
 
    @Override
-   public PropertyStore convert(BranchCommitRequest data) throws OseeCoreException {
+   public PropertyStore convert(BranchCommitRequest data) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.IS_ARCHIVE_ALLOWED.name(), data.isArchiveAllowed());
       store.put(Entry.USER_ART_ID.name(), data.getUserArtId());

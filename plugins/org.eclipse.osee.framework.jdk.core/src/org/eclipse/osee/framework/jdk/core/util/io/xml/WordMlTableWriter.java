@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
 
 /**
  * @author Jeff C. Phillips
@@ -31,7 +30,7 @@ public class WordMlTableWriter extends AbstractSheetWriter {
    private int columnSize;
    private boolean startTable;
 
-   public WordMlTableWriter(Appendable str) throws CharacterCodingException {
+   public WordMlTableWriter(Appendable str) {
       this.str = str;
    }
 
@@ -81,6 +80,6 @@ public class WordMlTableWriter extends AbstractSheetWriter {
    }
 
    @Override
-   public void endWorkbook() throws IOException {
+   public void endWorkbook() {
    }
 }

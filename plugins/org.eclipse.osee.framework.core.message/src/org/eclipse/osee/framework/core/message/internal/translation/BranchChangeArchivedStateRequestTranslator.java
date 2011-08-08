@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.message.internal.translation;
 
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeBranchArchiveStateRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -27,7 +26,7 @@ public final class BranchChangeArchivedStateRequestTranslator implements ITransl
    }
 
    @Override
-   public ChangeBranchArchiveStateRequest convert(PropertyStore propertyStore) throws OseeCoreException {
+   public ChangeBranchArchiveStateRequest convert(PropertyStore propertyStore) {
       int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
       BranchArchivedState state = BranchArchivedState.valueOf(propertyStore.get(Entry.BRANCH_ARCHIVED_STATE.name()));
       ChangeBranchArchiveStateRequest data = new ChangeBranchArchiveStateRequest(branchId, state);
@@ -35,7 +34,7 @@ public final class BranchChangeArchivedStateRequestTranslator implements ITransl
    }
 
    @Override
-   public PropertyStore convert(ChangeBranchArchiveStateRequest data) throws OseeCoreException {
+   public PropertyStore convert(ChangeBranchArchiveStateRequest data) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.BRANCH_ID.name(), data.getBranchId());
       store.put(Entry.BRANCH_ARCHIVED_STATE.name(), data.getState().name());

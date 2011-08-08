@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Robert A. Fisher
@@ -44,7 +43,7 @@ public class ArtifactHridSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
+   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) {
       String sql = "osee_artifact.human_readable_id" + operator + "?";
       dataList.add(humanReadableId);
 

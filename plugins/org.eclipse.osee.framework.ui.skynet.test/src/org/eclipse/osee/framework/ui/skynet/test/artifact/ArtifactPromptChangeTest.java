@@ -60,7 +60,7 @@ public class ArtifactPromptChangeTest {
    private static class MockAccessPolicyHandler implements AccessPolicy {
 
       @Override
-      public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
+      public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
@@ -70,27 +70,27 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) throws OseeCoreException {
+      public PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
       @Override
-      public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
+      public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
       @Override
-      public PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException {
+      public PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
       @Override
-      public PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, IRelationTypeSide relationTypeSide, Level level) throws OseeCoreException {
+      public PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, IRelationTypeSide relationTypeSide, Level level) {
          return new PermissionStatus();
       }
 
       @Override
-      public void removePermissions(IOseeBranch branch) throws OseeCoreException {
+      public void removePermissions(IOseeBranch branch) {
       }
 
    }

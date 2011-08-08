@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.message.internal.translation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse.RelationTypeRow;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -29,7 +28,7 @@ public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<Re
    }
 
    @Override
-   public RelationTypeCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
+   public RelationTypeCacheUpdateResponse convert(PropertyStore store) {
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
       int rowCount = store.getInt(Fields.COUNT.name());
       for (int index = 0; index < rowCount; index++) {
@@ -40,7 +39,7 @@ public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<Re
    }
 
    @Override
-   public PropertyStore convert(RelationTypeCacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(RelationTypeCacheUpdateResponse object) {
       PropertyStore store = new PropertyStore();
       List<RelationTypeRow> rows = object.getRelationTypeRows();
       for (int index = 0; index < rows.size(); index++) {

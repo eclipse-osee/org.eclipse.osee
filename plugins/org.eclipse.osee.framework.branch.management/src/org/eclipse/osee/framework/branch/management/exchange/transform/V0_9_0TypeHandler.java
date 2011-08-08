@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
@@ -33,11 +32,11 @@ public class V0_9_0TypeHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws SAXException {
+   public void endElementFound(String uri, String localName, String qName) {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException, OseeCoreException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws OseeCoreException {
       if (localName.equals("entry")) {
          String typeName = attributes.getValue(typeNameColumn);
          if (typeName.equals("ats.Parent Branch Id")) {

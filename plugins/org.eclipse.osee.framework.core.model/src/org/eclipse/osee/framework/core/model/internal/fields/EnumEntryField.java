@@ -13,12 +13,9 @@ package org.eclipse.osee.framework.core.model.internal.fields;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
-import org.eclipse.osee.framework.core.model.internal.Activator;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -87,12 +84,8 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
    @Override
    public void clearDirty() {
       super.clearDirty();
-      try {
-         for (OseeEnumEntry entry : get()) {
-            entry.clearDirty();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      for (OseeEnumEntry entry : get()) {
+         entry.clearDirty();
       }
    }
 
@@ -100,15 +93,11 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
    public boolean isDirty() {
       boolean result = super.isDirty();
       if (!result) {
-         try {
-            for (OseeEnumEntry entry : get()) {
-               if (entry.isDirty()) {
-                  result = true;
-                  break;
-               }
+         for (OseeEnumEntry entry : get()) {
+            if (entry.isDirty()) {
+               result = true;
+               break;
             }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return result;

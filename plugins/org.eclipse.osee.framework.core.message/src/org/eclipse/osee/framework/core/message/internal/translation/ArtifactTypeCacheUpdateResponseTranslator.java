@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse.ArtifactTypeRow;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
@@ -35,7 +34,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
    }
 
    @Override
-   public ArtifactTypeCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
+   public ArtifactTypeCacheUpdateResponse convert(PropertyStore store) {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
       List<Triplet<String, String, String>> artAttrs = new ArrayList<Triplet<String, String, String>>();
@@ -52,7 +51,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
    }
 
    @Override
-   public PropertyStore convert(ArtifactTypeCacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(ArtifactTypeCacheUpdateResponse object) {
       PropertyStore store = new PropertyStore();
       List<ArtifactTypeRow> rows = object.getArtTypeRows();
       for (int index = 0; index < rows.size(); index++) {

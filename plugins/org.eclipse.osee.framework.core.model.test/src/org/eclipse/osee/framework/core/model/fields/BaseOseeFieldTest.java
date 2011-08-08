@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.core.model.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -71,7 +71,7 @@ public abstract class BaseOseeFieldTest {
 
    @SuppressWarnings("unchecked")
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       Collection<Object[]> data = new ArrayList<Object[]>();
 
       data.add(new Object[] {//

@@ -32,19 +32,19 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) throws OseeCoreException {
+   public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) {
       return false;
    }
 
    @Override
-   public void onArtifactType(boolean isAbstract, String artifactTypeName) throws OseeCoreException {
+   public void onArtifactType(boolean isAbstract, String artifactTypeName) {
       ArtifactDataType artifactDataType = new ArtifactDataType(artifactTypeName, null);
 
       this.dataTypeSource.add(artifactDataType);
    }
 
    @Override
-   public void onArtifactTypeInheritance(String ancestor, Collection<String> descendants) throws OseeCoreException {
+   public void onArtifactTypeInheritance(String ancestor, Collection<String> descendants) {
 
    }
 
@@ -62,11 +62,11 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException {
+   public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) {
    }
 
    @Override
-   public void onRelationType(String name, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
+   public void onRelationType(String name, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String defaultOrderTypeGuid) {
       RelationDataType relationDataType =
          new RelationDataType("", name, "", "", Boolean.valueOf(ordered), "", sideAName, sideBName);
 
@@ -74,7 +74,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) throws OseeCoreException {
+   public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) {
    }
 
    public DataTypeSource getODMModel() {
@@ -82,7 +82,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onFinish() throws OseeCoreException {
+   public void onFinish() {
 
    }
 

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.resource.management.test.mocks;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -24,17 +23,17 @@ import org.eclipse.osee.framework.resource.management.IResourceProvider;
 public class ResourceProviderAdaptor implements IResourceProvider {
 
    @Override
-   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
+   public IResource acquire(IResourceLocator locator, PropertyStore options) {
       return null;
    }
 
    @Override
-   public int delete(IResourceLocator locator) throws OseeCoreException {
+   public int delete(IResourceLocator locator) {
       return 0;
    }
 
    @Override
-   public boolean exists(IResourceLocator locator) throws OseeCoreException {
+   public boolean exists(IResourceLocator locator) {
       return false;
    }
 
@@ -44,7 +43,7 @@ public class ResourceProviderAdaptor implements IResourceProvider {
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) {
       return null;
    }
 

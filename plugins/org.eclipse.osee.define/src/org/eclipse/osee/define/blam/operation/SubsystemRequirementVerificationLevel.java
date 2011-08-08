@@ -77,11 +77,11 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       transaction.execute();
    }
 
-   private void report() throws OseeCoreException {
+   private void report() {
       report.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(report.toString());
-      XResultDataUI.report(rd,"Set Verification Level", Manipulations.RAW_HTML);
+      XResultDataUI.report(rd, "Set Verification Level", Manipulations.RAW_HTML);
    }
 
    private void beginReport() {
@@ -105,7 +105,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       private String paragraphNumber;
       private String subsystem;
 
-      public SubsystemRequirement(Artifact req) throws OseeCoreException {
+      public SubsystemRequirement(Artifact req) {
          this.req = req;
       }
 
@@ -127,7 +127,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          verificationLevel = req.getSoleAttributeValue(CoreAttributeTypes.VerificationLevel, "UNDEFINED");
       }
 
-      private int getHardwareComponentCount() throws OseeCoreException {
+      private int getHardwareComponentCount() {
          return RelationManager.getRelatedArtifactsCount(req, CoreRelationTypes.Allocation__Component);
       }
 

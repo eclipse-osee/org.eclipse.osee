@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jini.event;
 
-import java.rmi.RemoteException;
 import net.jini.core.lookup.ServiceItem;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.event.old.IOseeRemoteSubscriber;
@@ -35,12 +34,12 @@ public class RemoteEventHandler implements IServiceLookupListener, IOseeRemoteSu
    }
 
    @Override
-   public boolean receiveEventType(String event) throws RemoteException {
+   public boolean receiveEventType(String event) {
       return false;
    }
 
    @Override
-   public boolean receiveEventGuid(String event) throws RemoteException {
+   public boolean receiveEventGuid(String event) {
       return false;
    }
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.branch.graph.core;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -31,7 +30,7 @@ public class BranchGraphEditorInput implements IEditorInput {
       this.branch = branch;
    }
 
-   public BranchGraphEditorInput() throws OseeCoreException {
+   public BranchGraphEditorInput() {
       this(CoreBranches.SYSTEM_ROOT);
    }
 

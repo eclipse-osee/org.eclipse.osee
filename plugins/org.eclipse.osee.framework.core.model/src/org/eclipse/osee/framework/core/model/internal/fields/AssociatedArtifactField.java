@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.internal.fields;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeField;
 
 /**
@@ -26,12 +25,12 @@ public class AssociatedArtifactField extends AbstractOseeField<Integer> {
    }
 
    @Override
-   public Integer get() throws OseeCoreException {
+   public Integer get() {
       return artId;
    }
 
    @Override
-   public void set(Integer artId) throws OseeCoreException {
+   public void set(Integer artId) {
       boolean wasDifferent = isDifferent(get(), artId);
       if (wasDifferent) {
          this.artId = artId;

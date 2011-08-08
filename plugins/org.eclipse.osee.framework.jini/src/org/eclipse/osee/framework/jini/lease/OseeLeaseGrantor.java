@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jini.lease;
 
 import java.lang.ref.WeakReference;
-import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,7 +90,7 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
     * 
     * @return Return lease reference.
     */
-   public OseeLease newLease(Object consumer, long duration) throws LeaseDeniedException, ExportException {
+   public OseeLease newLease(Object consumer, long duration) throws LeaseDeniedException {
       // debug.report("New Lease:" + consumer + " @" + new Date());
       long actualDuration = checkDuration(duration);
       OseeLease lease = new OseeLease(thisRemoteReference, consumer, actualDuration);
@@ -106,7 +105,7 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
     * @see org.eclipse.osee.framework.jini.lease.ILeaseGrantor#renewRequest
     */
    @Override
-   public void renewRequest(Lease lease, Object consumer, long duration) throws LeaseDeniedException, UnknownLeaseException, RemoteException {
+   public void renewRequest(Lease lease, Object consumer, long duration) throws LeaseDeniedException, UnknownLeaseException {
 
       // debug.report("Lease renewRequest: " + consumer + " @" + new Date());
 
@@ -128,7 +127,7 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
    }
 
    @Override
-   public void cancelRequest(Lease lease, Object consumer) throws UnknownLeaseException, RemoteException {
+   public void cancelRequest(Lease lease, Object consumer) {
       // debug.report("Lease cancelRequest: " + consumer + " @" + new Date());
       if (leaseStore.remove(consumer) != null) {
          leasee.get().onLeaseCompleted(consumer);

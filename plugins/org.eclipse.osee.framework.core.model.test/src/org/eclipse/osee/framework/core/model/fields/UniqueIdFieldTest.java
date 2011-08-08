@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
@@ -34,7 +33,7 @@ public class UniqueIdFieldTest extends BaseOseeFieldTest {
 
    @SuppressWarnings("unchecked")
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       Collection<Object[]> data = new ArrayList<Object[]>();
       data.add(new Object[] {new OseeFieldTestData<Integer>(
          new UniqueIdField(), //

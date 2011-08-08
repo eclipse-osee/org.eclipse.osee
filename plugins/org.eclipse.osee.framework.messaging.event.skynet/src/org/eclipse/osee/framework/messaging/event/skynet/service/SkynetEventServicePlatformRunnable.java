@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.skynet.service;
 
-import java.rmi.RemoteException;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.skynet.SkynetEventPlugin;
 
 /**
  * @author Robert A. Fisher
@@ -41,10 +37,6 @@ public class SkynetEventServicePlatformRunnable implements IApplication {
 
    @Override
    public void stop() {
-      try {
-         skynetEventService.kill();
-      } catch (RemoteException ex) {
-         OseeLog.log(SkynetEventPlugin.class, Level.SEVERE, ex);
-      }
+      skynetEventService.kill();
    }
 }

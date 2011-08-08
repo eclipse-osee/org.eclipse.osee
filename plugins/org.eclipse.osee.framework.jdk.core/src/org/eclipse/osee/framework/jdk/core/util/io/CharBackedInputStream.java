@@ -49,12 +49,12 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       }
 
       @Override
-      public void flush() throws IOException {
+      public void flush() {
          //
       }
 
       @Override
-      public void close() throws IOException {
+      public void close() {
          //
       }
 
@@ -158,13 +158,13 @@ public class CharBackedInputStream extends InputStream implements Appendable {
    }
 
    @Override
-   public Appendable append(char c) throws IOException {
+   public Appendable append(char c) {
       throw new UnsupportedOperationException(
          "doing this one character at a time would be so inefficient it would defeat the whole purpose of this class");
    }
 
    @Override
-   public int available() throws IOException {
+   public int available() {
       int count = 0;
       for (ByteBuffer backer : backers) {
          count += backer.array().length;

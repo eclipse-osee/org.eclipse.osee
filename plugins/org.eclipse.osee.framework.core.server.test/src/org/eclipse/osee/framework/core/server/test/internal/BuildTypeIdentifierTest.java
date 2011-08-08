@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.internal.BuildInfo;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
 import org.eclipse.osee.framework.core.server.test.mocks.MockBuildTypeDataProvider;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -104,7 +104,7 @@ public class BuildTypeIdentifierTest {
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
 
       data.add(new Object[] {"null version && null xml data", null, "N/A", NULL_XML, false, EMPTY_INFOS});

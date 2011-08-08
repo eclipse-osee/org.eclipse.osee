@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.init;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -72,8 +71,8 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE,
-                  ex, "Exception while importing branch: [%s]", importData);
+               OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, ex, "Exception while importing branch: [%s]",
+                  importData);
                throw ex;
             }
          }
@@ -120,7 +119,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       return toReturn;
    }
 
-   private File getExchangeFile(String bundleName, String exchangeFile) throws IOException, OseeCoreException {
+   private File getExchangeFile(String bundleName, String exchangeFile) throws OseeCoreException {
       if (exchangeFile.endsWith("zip") != true) {
          throw new OseeArgumentException(String.format("Branch data file is invalid [%s] ", exchangeFile));
       }

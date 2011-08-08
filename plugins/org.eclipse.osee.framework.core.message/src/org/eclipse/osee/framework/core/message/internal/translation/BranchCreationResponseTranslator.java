@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.internal.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -25,13 +24,13 @@ public class BranchCreationResponseTranslator implements ITranslator<BranchCreat
    }
 
    @Override
-   public BranchCreationResponse convert(PropertyStore store) throws OseeCoreException {
+   public BranchCreationResponse convert(PropertyStore store) {
       int branchId = store.getInt(Fields.BRANCH_ID.name());
       return new BranchCreationResponse(branchId);
    }
 
    @Override
-   public PropertyStore convert(BranchCreationResponse object) throws OseeCoreException {
+   public PropertyStore convert(BranchCreationResponse object) {
       PropertyStore store = new PropertyStore();
       store.put(Fields.BRANCH_ID.name(), object.getBranchId());
       return store;

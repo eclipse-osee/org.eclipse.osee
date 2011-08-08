@@ -68,7 +68,7 @@ public class JiniJoinManager implements IRegistrarListener {
       serviceDataStore.addListener(this);
    }
 
-   public JiniJoinManager(ServiceID serviceID, IService service, Entry[] entry) throws IOException {
+   public JiniJoinManager(ServiceID serviceID, IService service, Entry[] entry) {
       proxy = service;
       this.entry = entry;
       this.serviceID = serviceID;
@@ -79,7 +79,7 @@ public class JiniJoinManager implements IRegistrarListener {
       serviceDataStore.addListener(this);
    }
 
-   public void terminate() throws UnknownLeaseException, RemoteException {
+   public void terminate() throws RemoteException {
       renewTimer.cancel();
       for (int i = 0; i < registrations.size(); i++) {
          ServiceRegistration registration = registrations.get(i);

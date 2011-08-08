@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.internal.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -24,7 +23,7 @@ public class DatastoreInitRequestTranslator implements ITranslator<DatastoreInit
    }
 
    @Override
-   public DatastoreInitRequest convert(PropertyStore store) throws OseeCoreException {
+   public DatastoreInitRequest convert(PropertyStore store) {
       String tableDataSpace = store.get(Entry.TABLE_DATA_SPACE.name());
       String indexDataSpace = store.get(Entry.INDEX_DATA_SPACE.name());
       boolean useSchemasSpecified = store.getBoolean(Entry.USE_FILE_SPECIFIED_SCHEMAS.name());
@@ -32,7 +31,7 @@ public class DatastoreInitRequestTranslator implements ITranslator<DatastoreInit
    }
 
    @Override
-   public PropertyStore convert(DatastoreInitRequest object) throws OseeCoreException {
+   public PropertyStore convert(DatastoreInitRequest object) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.INDEX_DATA_SPACE.name(), object.getIndexDataSpace());
       store.put(Entry.TABLE_DATA_SPACE.name(), object.getTableDataSpace());

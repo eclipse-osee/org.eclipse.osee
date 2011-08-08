@@ -14,15 +14,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jini.utility.StartJini;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 
 public class JiniLookupPlatformRunnable implements IApplication {
@@ -63,11 +60,7 @@ public class JiniLookupPlatformRunnable implements IApplication {
    @Override
    public void stop() {
       if (jiniService != null) {
-         try {
-            jiniService.kill();
-         } catch (RemoteException ex) {
-            OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
-         }
+         jiniService.kill();
       }
    }
 

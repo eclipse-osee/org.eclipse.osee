@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.test.util;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,22 +52,22 @@ public class ResourceTest {
    }
 
    @Test
-   public void testIsCompressed() throws IOException {
+   public void testIsCompressed() {
       Assert.assertEquals(expectedCompressed, resource.isCompressed());
    }
 
    @Test
-   public void testGetName() throws IOException {
+   public void testGetName() {
       Assert.assertEquals(expectedName, resource.getName());
    }
 
    @Test
-   public void testGetLocation() throws IOException {
+   public void testGetLocation() {
       Assert.assertEquals(rawPath, resource.getLocation().toASCIIString());
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws URISyntaxException {
+   public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
       data.add(new Object[] {"file://1/sample.file", "sample.file", true});
       data.add(new Object[] {"http://www.url.com", "www.url.com", false,});

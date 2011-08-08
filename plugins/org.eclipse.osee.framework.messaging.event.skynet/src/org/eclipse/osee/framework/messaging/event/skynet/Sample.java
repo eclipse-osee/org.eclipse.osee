@@ -90,7 +90,7 @@ public class Sample implements IServiceLookupListener, Serializable {
       private static final long serialVersionUID = 2251382843127874925L;
 
       @Override
-      public void onEvent(ISkynetEvent[] events) throws RemoteException {
+      public void onEvent(ISkynetEvent[] events) {
          System.out.println("Events received at " + new Date());
 
          for (ISkynetEvent event : events) {

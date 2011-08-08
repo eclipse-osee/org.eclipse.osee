@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -89,7 +88,7 @@ class ClientInstallInfo {
       }
 
       @Override
-      public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
+      public void startElementFound(String uri, String localName, String name, Attributes attributes) {
          if (localName.equalsIgnoreCase("install")) {
             info.os = attributes.getValue("os");
             if (info.os != null) {
@@ -102,7 +101,7 @@ class ClientInstallInfo {
       }
 
       @Override
-      public void endElementFound(String uri, String localName, String name) throws SAXException {
+      public void endElementFound(String uri, String localName, String name) {
          try {
             if (localName.equalsIgnoreCase("location")) {
                info.execPath = getContents();

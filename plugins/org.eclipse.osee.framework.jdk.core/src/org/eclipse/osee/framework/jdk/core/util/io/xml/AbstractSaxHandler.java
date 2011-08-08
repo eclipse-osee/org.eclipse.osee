@@ -19,15 +19,15 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * <p>
  * If you want to preserve CDATA sections you need to follow this pattern:<br/>
- *
+ * 
  * <pre>
  * XMLReader xmlReader = XMLReaderFactory.createXMLReader();
  * xmlReader.setContentHandler(this);
  * xmlReader.setProperty(&quot;http://xml.org/sax/properties/lexical-handler&quot;, this); //This is the important part
  * </pre>
- *
+ * 
  * </p>
- *
+ * 
  * @author Ryan D. Brooks
  */
 public abstract class AbstractSaxHandler extends DefaultHandler implements LexicalHandler {
@@ -45,7 +45,7 @@ public abstract class AbstractSaxHandler extends DefaultHandler implements Lexic
    }
 
    @Override
-   public void characters(char[] ch, int start, int length) throws SAXException {
+   public void characters(char[] ch, int start, int length) {
       if (maxContentLength > 0 && contents.length() + length > maxContentLength) {
          return; // don't add more characters if doing so will make the content too long
       }
@@ -85,37 +85,37 @@ public abstract class AbstractSaxHandler extends DefaultHandler implements Lexic
    }
 
    @Override
-   public void comment(char[] ch, int start, int length) throws SAXException {
+   public void comment(char[] ch, int start, int length) {
       //Do nothing
    }
 
    @Override
-   public void endCDATA() throws SAXException {
+   public void endCDATA() {
       contents.append("]]>");
    }
 
    @Override
-   public void endDTD() throws SAXException {
+   public void endDTD() {
       //Do nothing
    }
 
    @Override
-   public void endEntity(String name) throws SAXException {
+   public void endEntity(String name) {
       //Do nothing
    }
 
    @Override
-   public void startCDATA() throws SAXException {
+   public void startCDATA() {
       contents.append("<![CDATA[");
    }
 
    @Override
-   public void startDTD(String name, String publicId, String systemId) throws SAXException {
+   public void startDTD(String name, String publicId, String systemId) {
       //Do nothing
    }
 
    @Override
-   public void startEntity(String name) throws SAXException {
+   public void startEntity(String name) {
       //Do nothing
    }
 }

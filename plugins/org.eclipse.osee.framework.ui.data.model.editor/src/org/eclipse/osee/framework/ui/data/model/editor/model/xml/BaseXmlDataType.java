@@ -62,21 +62,27 @@ public abstract class BaseXmlDataType<T extends DataType> {
 
    protected abstract T newDataTypeInstance();
 
+   @SuppressWarnings("unused")
+   //XMLStreamException thrown by inheriting classes.
    protected void populateFromAttributes(T dataType, String tag, Map<String, String> attributes) throws XMLStreamException {
       if (tag.equals(getElementName())) {
          dataType.setName(attributes.get("name"));
       }
    }
 
+   @SuppressWarnings("unused")
+   //XMLStreamException thrown by inheriting classes.
    protected void populateFromTextElement(T dataType, String tag, String text) throws XMLStreamException {
 
    }
 
+   @SuppressWarnings("unused")
+   //XMLStreamException thrown by inheriting classes.
    protected void populateFromCDataElement(T dataType, String tag, String text) throws XMLStreamException {
 
    }
 
-   private Map<String, String> getAttributes(XMLStreamReader reader) throws XMLStreamException {
+   private Map<String, String> getAttributes(XMLStreamReader reader) {
       int count = reader.getAttributeCount();
       Map<String, String> attributes = new HashMap<String, String>();
       for (int index = 0; index < count; index++) {

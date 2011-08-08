@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeVersion;
 import org.eclipse.osee.framework.core.message.test.mocks.ChangeTestUtility;
@@ -36,7 +35,7 @@ import org.junit.Test;
  */
 public class ComputeNetChangeTest {
 
-   public List<TestData> getTestData() throws OseeCoreException {
+   public List<TestData> getTestData() {
       List<TestData> data = new ArrayList<TestData>();
 
       // New Or Introduced
@@ -95,7 +94,7 @@ public class ComputeNetChangeTest {
    }
 
    @Test
-   public void testNetChange() throws OseeCoreException {
+   public void testNetChange() {
       List<TestData> data = getTestData();
       List<ChangeItem> items = new ArrayList<ChangeItem>();
       for (TestData testData : data) {

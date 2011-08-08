@@ -67,7 +67,7 @@ public class AtsResourceProvider implements IResourceProvider {
    }
 
    @Override
-   public int delete(IResourceLocator locator) throws OseeCoreException {
+   public int delete(IResourceLocator locator) {
       throw new UnsupportedOperationException();
    }
 
@@ -77,7 +77,7 @@ public class AtsResourceProvider implements IResourceProvider {
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) {
       throw new UnsupportedOperationException();
    }
 

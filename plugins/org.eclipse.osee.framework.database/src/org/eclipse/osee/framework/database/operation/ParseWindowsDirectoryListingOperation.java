@@ -39,7 +39,7 @@ public class ParseWindowsDirectoryListingOperation extends AbstractDbTxOperation
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) {
 
       log();
       log("Parsing windows directory listing:");

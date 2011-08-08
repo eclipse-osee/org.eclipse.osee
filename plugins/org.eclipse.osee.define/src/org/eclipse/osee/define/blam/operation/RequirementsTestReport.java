@@ -125,20 +125,20 @@ public class RequirementsTestReport extends AbstractBlam {
       report.append(AHTML.addRowMultiColumnTable(outputCells));
    }
 
-   private void report() throws OseeCoreException, IOException {
+   private void report() {
       report.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(report.toString());
       XResultDataUI.report(rd, "Requirements Test Report", Manipulations.RAW_HTML);
    }
 
-   private void init(VariableMap variableMap) throws OseeCoreException, IOException {
+   private void init(VariableMap variableMap) throws OseeCoreException {
       inputArtifacts = variableMap.getArtifacts("artifacts");
       initReport();
       load();
    }
 
-   private void initReport() throws OseeCoreException, IOException {
+   private void initReport() {
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
       report.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
    }

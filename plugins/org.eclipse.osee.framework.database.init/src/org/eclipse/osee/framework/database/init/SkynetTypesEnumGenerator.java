@@ -170,7 +170,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
     * import Artifacts
     */
    @Override
-   public void processRow(String[] row) throws ClassNotFoundException {
+   public void processRow(String[] row) {
       if (done) {
          return;
       }
@@ -189,7 +189,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       }
    }
 
-   private void addAttributeType(String[] row) throws ClassNotFoundException {
+   private void addAttributeType(String[] row) {
       //      String attrBaseType = row[0];
       //      String attrProviderType = row[1];
       String attributeName = row[2];

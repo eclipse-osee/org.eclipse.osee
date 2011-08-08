@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.messaging.internal;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.MessageServiceProvider;
 import org.eclipse.osee.framework.messaging.internal.activemq.ConnectionNodeFactoryImpl;
@@ -43,7 +42,7 @@ public class MessageServiceProviderImpl implements MessageServiceProvider {
    }
 
    @Override
-   public MessageService getMessageService() throws OseeCoreException {
+   public MessageService getMessageService() {
       return messageService;
    }
 }

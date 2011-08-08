@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.internal.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeReportRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -25,7 +24,7 @@ public class ChangeReportRequestTranslator implements ITranslator<ChangeReportRe
    }
 
    @Override
-   public ChangeReportRequest convert(PropertyStore propertyStore) throws OseeCoreException {
+   public ChangeReportRequest convert(PropertyStore propertyStore) {
       int srcTx = propertyStore.getInt(Entry.SRC_TRANSACTION.name());
       int destTx = propertyStore.getInt(Entry.DEST_TRANSACTION.name());
 
@@ -34,7 +33,7 @@ public class ChangeReportRequestTranslator implements ITranslator<ChangeReportRe
    }
 
    @Override
-   public PropertyStore convert(ChangeReportRequest data) throws OseeCoreException {
+   public PropertyStore convert(ChangeReportRequest data) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.SRC_TRANSACTION.name(), data.getSourceTx());
       store.put(Entry.DEST_TRANSACTION.name(), data.getDestinationTx());

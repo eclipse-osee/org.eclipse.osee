@@ -57,7 +57,7 @@ public class PropertyStoreWriter {
       writer.close();
    }
 
-   public void save(PropertyStore store, Writer writer) throws IOException {
+   public void save(PropertyStore store, Writer writer) {
       XMLWriter internalWriter = new XMLWriter(writer);
       internalSave(store, internalWriter);
    }

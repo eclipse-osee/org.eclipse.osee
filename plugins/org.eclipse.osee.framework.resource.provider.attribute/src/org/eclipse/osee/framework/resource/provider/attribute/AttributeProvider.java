@@ -41,7 +41,7 @@ public class AttributeProvider implements IResourceProvider {
       BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
    }
 
-   private URI resolve(IResourceLocator locator) throws OseeCoreException {
+   private URI resolve(IResourceLocator locator) {
       StringBuilder builder = new StringBuilder(BASE_PATH + File.separator + SUPPORTED_PROTOCOL + File.separator);
       builder.append(locator.getRawPath());
       return new File(builder.toString()).toURI();
@@ -53,7 +53,7 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public int delete(IResourceLocator locator) throws OseeCoreException {
+   public int delete(IResourceLocator locator) {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
       if (file == null || file.exists() != true) {
@@ -102,7 +102,7 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public boolean exists(IResourceLocator locator) throws OseeCoreException {
+   public boolean exists(IResourceLocator locator) {
       URI uri = resolve(locator);
       File testFile = new File(uri);
       return testFile.exists();

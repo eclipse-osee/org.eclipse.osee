@@ -76,7 +76,7 @@ public final class MockBranchProvider implements IBranchesProvider {
       return branches;
    }
 
-   public static Branch getRootBranch(Collection<Branch> branches) throws OseeCoreException {
+   public static Branch getRootBranch(Collection<Branch> branches) {
       for (Branch branch : branches) {
          if (branch.getName().equals(ROOT_BRANCH_NAME)) {
             return branch;

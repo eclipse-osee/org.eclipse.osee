@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.skynet.service;
 
-import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
@@ -100,12 +99,12 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    }
 
    @Override
-   public void register(ISkynetEventListener listener, IEventFilter... filters) throws RemoteException {
+   public void register(ISkynetEventListener listener, IEventFilter... filters) {
       addListeners(listener, filters);
    }
 
    @Override
-   public void deregister(ISkynetEventListener listener, IEventFilter... filters) throws RemoteException {
+   public void deregister(ISkynetEventListener listener, IEventFilter... filters) {
       removeListeners(listener, filters);
    }
 
@@ -163,7 +162,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    }
 
    @Override
-   public void kick(final ISkynetEvent[] events, final ISkynetEventListener... except) throws RemoteException {
+   public void kick(final ISkynetEvent[] events, final ISkynetEventListener... except) {
       if (events != null && events.length > 0) {
          executorService.submit(new EventDispatchRunnable(this, getEventAndListenersToSendTo(events,
             toFilteredSet(except))));
@@ -179,7 +178,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    }
 
    @Override
-   public void kill() throws RemoteException {
+   public void kill() {
       try {
          this.deregisterService();
          this.commitSuicide();
@@ -189,7 +188,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    }
 
    @Override
-   public boolean isAlive() throws RemoteException {
+   public boolean isAlive() {
       return true;
    }
 }

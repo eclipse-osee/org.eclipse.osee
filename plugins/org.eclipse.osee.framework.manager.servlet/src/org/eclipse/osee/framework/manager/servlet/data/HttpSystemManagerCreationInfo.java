@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.manager.servlet.data;
 
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
@@ -21,7 +20,7 @@ public class HttpSystemManagerCreationInfo {
    private final String userId;
    private final String sessionId;
 
-   public HttpSystemManagerCreationInfo(HttpServletRequest req) throws OseeArgumentException {
+   public HttpSystemManagerCreationInfo(HttpServletRequest req) {
       userId = req.getParameter("userId");
       sessionId = req.getParameter("sessionId");
    }

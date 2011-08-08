@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.resource.management.internal;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
@@ -31,7 +30,7 @@ public class CompressedResourceBridge implements IResource {
    }
 
    @Override
-   public InputStream getContent() throws OseeCoreException {
+   public InputStream getContent() {
       return new ByteArrayInputStream(backing);
    }
 

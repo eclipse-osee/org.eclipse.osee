@@ -169,11 +169,7 @@ public class BaseBrokerTesting {
 
    protected final MessageService getMessaging() {
       MessageService messaging = null;
-      try {
-         messaging = messageServiceProviderImpl.getMessageService();
-      } catch (OseeCoreException ex) {
-         fail("Failed to get messaging service. " + ex.getMessage());
-      }
+      messaging = messageServiceProviderImpl.getMessageService();
       assertTrue(messaging != null);
       return messaging;
    }

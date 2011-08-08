@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.message.internal.translation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.OseeEnumTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -30,7 +29,7 @@ public class OseeEnumTypeCacheUpdateResponseTranslator implements ITranslator<Os
    }
 
    @Override
-   public OseeEnumTypeCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
+   public OseeEnumTypeCacheUpdateResponse convert(PropertyStore store) {
 
       int enumTypeRowCount = store.getInt(Fields.ENUM_TYPE_COUNT.name());
       List<String[]> enumTypeRows = new ArrayList<String[]>(enumTypeRowCount);
@@ -52,7 +51,7 @@ public class OseeEnumTypeCacheUpdateResponseTranslator implements ITranslator<Os
    }
 
    @Override
-   public PropertyStore convert(OseeEnumTypeCacheUpdateResponse response) throws OseeCoreException {
+   public PropertyStore convert(OseeEnumTypeCacheUpdateResponse response) {
       PropertyStore store = new PropertyStore();
 
       List<String[]> enumTypeRows = response.getEnumTypeRows();

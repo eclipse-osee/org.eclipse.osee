@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Roberto E. Escobar
@@ -50,7 +49,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String name, Attributes attributes) {
       if (localName.equalsIgnoreCase(ExportImportXml.METADATA)) {
          this.importMetadataMap.clear();
       } else if (localName.equalsIgnoreCase(ExportImportXml.TABLE)) {

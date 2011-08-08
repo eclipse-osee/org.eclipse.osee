@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Roberto E. Escobar
@@ -25,7 +24,7 @@ public class V0_9_2ArtifactVersionHandler extends AbstractSaxHandler {
    private final Map<Long, Long> artifactGammaToNetGammaId = new HashMap<Long, Long>(14000);
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws SAXException {
+   public void endElementFound(String uri, String localName, String qName) {
    }
 
    public Map<Long, Long> getArtifactGammaToNetGammaId() {
@@ -33,7 +32,7 @@ public class V0_9_2ArtifactVersionHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
       if (localName.equals("entry")) {
          Integer artifactId = Integer.valueOf(attributes.getValue("art_id"));
          Long gammaId = Long.valueOf(attributes.getValue("gamma_id"));

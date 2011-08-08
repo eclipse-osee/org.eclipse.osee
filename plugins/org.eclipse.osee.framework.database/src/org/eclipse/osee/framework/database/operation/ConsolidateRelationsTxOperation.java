@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.operation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -74,7 +72,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       super(databaseService, "Consolidate Relations", Activator.PLUGIN_ID, logger);
    }
 
-   private void init() throws OseeCoreException, IOException {
+   private void init() throws OseeCoreException {
       previousRelationTypeId = -1;
       previousArtifactAId = -1;
       previousArtiafctBId = -1;
@@ -97,21 +95,17 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
-      try {
-         log("Consolidating relations:");
-         init();
+      log("Consolidating relations:");
+      init();
 
-         findObsoleteRelations();
+      findObsoleteRelations();
 
-         log("gamma join size: " + gammaJoin.size());
+      log("gamma join size: " + gammaJoin.size());
 
-         determineAffectedAddressing();
+      determineAffectedAddressing();
 
-         updateGammas();
-         log("...done.");
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
+      updateGammas();
+      log("...done.");
    }
 
    private void findObsoleteRelations() throws OseeCoreException {
@@ -149,7 +143,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void determineAffectedAddressing() throws OseeCoreException, IOException {
+   private void determineAffectedAddressing() throws OseeCoreException {
       gammaJoin.store();
 
       try {
@@ -232,7 +226,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       return ignore || netModType == ModificationType.ARTIFACT_DELETED && modificationType == ModificationType.DELETED;
    }
 
-   private void updateGammas() throws OseeCoreException, IOException {
+   private void updateGammas() throws OseeCoreException {
       log("Number of txs rows deleted: " + ConnectionHandler.runBatchUpdate(connection, DELETE_TXS, addressingToDelete));
 
       log("Number of relation rows deleted: " + ConnectionHandler.runBatchUpdate(connection, DELETE_RELATIONS,
@@ -242,7 +236,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
          updateAddressingData));
    }
 
-   private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) throws IOException {
+   private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) {
       StringBuilder strB = new StringBuilder(30);
 
       strB.append(obsoleteGammaId);

@@ -312,12 +312,12 @@ public class TraceReportBlam extends AbstractBlam {
             public IStatus run(IProgressMonitor monitor) throws Exception {
                ResultsEditor.open(new IResultsEditorProvider() {
                   @Override
-                  public String getEditorName() throws OseeCoreException {
+                  public String getEditorName() {
                      return getName();
                   }
 
                   @Override
-                  public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+                  public List<IResultsEditorTab> getResultsEditorTabs() {
                      return results;
                   }
                });

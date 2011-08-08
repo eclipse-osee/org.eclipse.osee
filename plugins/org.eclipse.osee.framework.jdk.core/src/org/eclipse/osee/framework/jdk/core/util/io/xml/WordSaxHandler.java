@@ -35,7 +35,7 @@ public class WordSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
       if (localName.equalsIgnoreCase("hdr")) {
          inHeader = true;
       } else if (localName.equalsIgnoreCase("ftr")) {
