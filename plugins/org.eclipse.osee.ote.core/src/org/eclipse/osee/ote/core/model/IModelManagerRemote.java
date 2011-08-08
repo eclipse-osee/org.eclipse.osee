@@ -14,7 +14,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 /**
  * @author Andrew M. Finkbeiner
  */

@@ -35,6 +35,7 @@ public final class AJavaProject {
    private static final Matcher JAVA_PACKAGE_MATCHER = JAVA_PACKAGE_PATTERN.matcher("");
 
    private AJavaProject() {
+      // Private to prevent cons
    }
 
    private static IClasspathEntry[] localGetResolvedClasspath(IJavaProject javaProject) throws JavaModelException {

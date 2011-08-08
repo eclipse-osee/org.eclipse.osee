@@ -39,7 +39,6 @@ public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> 
    /**
     * @see HashCollectionPlus#HashCollectionPlus(boolean, Class, int, float, IPlusProvider)
     */
-   @SuppressWarnings("unchecked")
    public HashCollectionHeavy(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor) {
       super(isSynchronized, collectionType, initialCapacity, loadFactor, provider);
    }
@@ -47,7 +46,6 @@ public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> 
    /**
     * @see HashCollectionPlus#HashCollectionPlus(boolean, Class, int, IPlusProvider)
     */
-   @SuppressWarnings("unchecked")
    public HashCollectionHeavy(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity) {
       super(isSynchronized, collectionType, initialCapacity, provider);
    }
@@ -55,7 +53,6 @@ public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> 
    /**
     * @see HashCollectionPlus#HashCollectionPlus(boolean, Class, IPlusProvider)
     */
-   @SuppressWarnings("unchecked")
    public HashCollectionHeavy(boolean isSynchronized, Class<? extends Collection> collectionType) {
       super(isSynchronized, collectionType, provider);
    }

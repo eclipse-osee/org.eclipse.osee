@@ -31,11 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HashCollection<K, V> {
 
    private boolean isSynchronized;
-   @SuppressWarnings("unchecked")
    private Class<? extends Collection> collectionType;
 
    private Map<K, Collection<V>> map;
-   @SuppressWarnings("unchecked")
    public static final Class<? extends Collection> DEFAULT_COLLECTION_TYPE = ArrayList.class;
 
    /********************************************************************************************************************
@@ -49,7 +47,6 @@ public class HashCollection<K, V> {
     * @param collectionType The type of collection to use to as the values within the HashMap.
     * @see HashMap#HashMap(int, float)
     */
-   @SuppressWarnings("unchecked")
    public HashCollection(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor) {
 
       if (isSynchronized) {
@@ -69,7 +66,6 @@ public class HashCollection<K, V> {
     * @param collectionType - The type of collection to use to as the values within the HashMap.
     * @see HashMap#HashMap(int)
     */
-   @SuppressWarnings("unchecked")
    public HashCollection(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity) {
       if (isSynchronized) {
          map = new ConcurrentHashMap<K, Collection<V>>(initialCapacity);
@@ -88,7 +84,6 @@ public class HashCollection<K, V> {
     * @param collectionType - The type of collection to use to as the values within the HashMap.
     * @see HashMap#HashMap()
     */
-   @SuppressWarnings("unchecked")
    public HashCollection(boolean isSynchronized, Class<? extends Collection> collectionType) {
       if (isSynchronized) {
          map = new ConcurrentHashMap<K, Collection<V>>();

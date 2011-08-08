@@ -35,12 +35,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HashCollectionPlus<K, V, O> {
 
    private boolean isSynchronized;
-   @SuppressWarnings("unchecked")
    private Class<? extends Collection> collectionType;
    private IPlusProvider<O> plusProvider;
 
    private Map<K, Pair<Collection<V>, O>> map;
-   @SuppressWarnings("unchecked")
    public static final Class<? extends Collection> DEFAULT_COLLECTION_TYPE = ArrayList.class;
 
    /********************************************************************************************************************
@@ -54,7 +52,6 @@ public class HashCollectionPlus<K, V, O> {
     * @param collectionType The type of collection to use to as the values within the HashMap.
     * @see HashMap#HashMap(int, float)
     */
-   @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor, IPlusProvider<O> plusProvider) {
 
       if (isSynchronized) {
@@ -75,7 +72,6 @@ public class HashCollectionPlus<K, V, O> {
     * @param collectionType - The type of collection to use to as the values within the HashMap.
     * @see HashMap#HashMap(int)
     */
-   @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
          map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>(initialCapacity);
@@ -95,7 +91,6 @@ public class HashCollectionPlus<K, V, O> {
     * @param collectionType - The type of collection to use to as the values within the HashMap.
     * @see HashMap#HashMap()
     */
-   @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
          map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>();

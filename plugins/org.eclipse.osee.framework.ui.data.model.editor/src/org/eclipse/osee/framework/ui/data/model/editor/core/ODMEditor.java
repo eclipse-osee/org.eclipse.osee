@@ -101,7 +101,6 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
    public void doSave(IProgressMonitor monitor) {
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == GraphicalViewer.class || adapter == EditPartViewer.class) {

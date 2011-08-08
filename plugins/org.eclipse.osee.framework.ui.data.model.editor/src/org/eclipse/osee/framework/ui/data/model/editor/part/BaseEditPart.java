@@ -120,7 +120,6 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Object getAdapter(Class key) {
       if (IPropertySource.class == key) {
          return PropertySourceFactory.getPropertySource(getModel());

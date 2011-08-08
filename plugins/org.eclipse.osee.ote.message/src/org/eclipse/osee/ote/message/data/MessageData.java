@@ -62,7 +62,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private final MemoryResource mem;
    private final String typeName;
    private final String name;
-   @SuppressWarnings("unchecked")
    private final CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
    private final List<IMessageSendListener> messageSendListeners = new CopyOnWriteArrayList<IMessageSendListener>();
    private final int defaultDataByteSize;
@@ -144,7 +143,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    /**
     * adds a {@link Message} who are mapped to this data object
     */
-   @SuppressWarnings("unchecked")
    public void addMessage(Message message) {
       if (!messages.contains(message)) {
          messages.add(message);
@@ -157,7 +155,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     * 
     * @return a collection of messages
     */
-   @SuppressWarnings("unchecked")
    public Collection<Message> getMessages() {
       return new ArrayList<Message>(messages);
    }
@@ -229,7 +226,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    /**
     * Notifies all {@link Message}s that have this registered as a data source of the update
     */
-   @SuppressWarnings("unchecked")
    public void notifyListeners() throws MessageSystemException {
       final DataType memType = getType();
       for (Message message : messages) {
@@ -539,13 +535,11 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private final IMessageDisposeListener disposeListener = new IMessageDisposeListener() {
 
       @Override
-      @SuppressWarnings("unchecked")
       public void onPreDispose(Message message) {
          messages.remove(message);
       }
 
       @Override
-      @SuppressWarnings("unchecked")
       public void onPostDispose(Message message) {
       }
 

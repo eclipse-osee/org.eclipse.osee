@@ -15,12 +15,10 @@ import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 
 public interface IReportData {
    // void addQueueListener(ReportDataListener listener, List<TestEnvironmentCommand> cmds);
-   @SuppressWarnings("unchecked")
    void addQueueListener(ReportDataListener listener, List cmds);
 
    void removeQueueListener(ReportDataListener listener);
 
    // void updateQueueListeners(List<TestEnvironmentCommand> cmds);
-   @SuppressWarnings("unchecked")
    void updateQueueListeners(List cmds);
 }

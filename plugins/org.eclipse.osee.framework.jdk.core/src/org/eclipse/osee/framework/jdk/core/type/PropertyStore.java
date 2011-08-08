@@ -261,21 +261,18 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Set<String> arrayKeySet() {
       List<String> items = Collections.castAll(this.storageArrays.keySet());
       return Collections.toSet(items);
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Set<String> keySet() {
       List<String> items = Collections.castAll(this.storageData.keySet());
       return Collections.toSet(items);
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Set<String> innerStoresKeySet() {
       List<String> items = Collections.castAll(this.storageProperties.keySet());
       return Collections.toSet(items);

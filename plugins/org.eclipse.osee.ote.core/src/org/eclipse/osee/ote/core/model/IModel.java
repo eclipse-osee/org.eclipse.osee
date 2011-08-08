@@ -23,12 +23,10 @@ public interface IModel extends Remote {
 
    void turnModelOff() throws RemoteException;
 
-   @SuppressWarnings("unchecked")
    void init(TestEnvironment testEnvironment, ModelKey key) throws RemoteException;
 
    ModelState getState() throws RemoteException;
 
-   @SuppressWarnings("unchecked")
    <CLASSTYPE extends IModel> ModelKey getKey() throws RemoteException;
 
    void dispose() throws RemoteException;

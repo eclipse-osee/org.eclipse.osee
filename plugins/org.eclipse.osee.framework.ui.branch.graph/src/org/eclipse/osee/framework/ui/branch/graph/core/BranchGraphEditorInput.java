@@ -82,7 +82,6 @@ public class BranchGraphEditorInput implements IEditorInput {
       return super.equals(obj);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       return null;

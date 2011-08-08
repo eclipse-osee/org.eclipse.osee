@@ -87,7 +87,6 @@ public abstract class JiniService implements IService {
       return registerService(entry, null);
    }
 
-   @SuppressWarnings("unchecked")
    public Entry[] registerService(Entry[] entry, Dictionary dictionary) {
       try {
          System.setSecurityManager(new RelaxedSecurity());

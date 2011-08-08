@@ -64,7 +64,6 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
    @Override
-   @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return iFile.getAdapter(adapter);
    }
@@ -119,7 +118,6 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
       return new IStorage() {
 
          @Override
-         @SuppressWarnings("unchecked")
          public Object getAdapter(Class adapter) {
             return iFile.getAdapter(adapter);
          }

@@ -67,7 +67,6 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       return defaultEventFilter;
    }
 
-   @SuppressWarnings("unchecked")
    private void registerWithJini(String dbConfig) throws Exception {
       jiniClassServer = JiniClassServer.getInstance();
       jiniClassServer.addResourceFinder(new BundleResourceFinder(new String[] {

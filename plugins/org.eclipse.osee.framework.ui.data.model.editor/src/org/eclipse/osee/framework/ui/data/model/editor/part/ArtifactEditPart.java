@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerMod
  */
 public class ArtifactEditPart extends DataTypeEditPart {
 
-   @SuppressWarnings("unchecked")
    private List children;
 
    public ArtifactEditPart(Object model) {

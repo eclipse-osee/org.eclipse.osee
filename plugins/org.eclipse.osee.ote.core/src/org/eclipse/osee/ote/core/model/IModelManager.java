@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.core.model;
 import java.rmi.RemoteException;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 /**
  * @author Andrew M. Finkbeiner
  */
@@ -30,7 +29,7 @@ public interface IModelManager {
 
    @Deprecated
    void notifyModeStateListener(ModelKey key, ModelState state) throws RemoteException;
-   
+
    List<ModelKey> getRegisteredModels();
 
    void releaseReference(IModel model);
@@ -49,6 +48,7 @@ public interface IModelManager {
 
    /**
     * Releases a single reference of the model given by the class.
+    * 
     * @param key
     */
    void releaseReference(ModelKey<?> key);

@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.core.model;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-@SuppressWarnings("unchecked")
 /**
  * @author Andrew M. Finkbeiner
  */

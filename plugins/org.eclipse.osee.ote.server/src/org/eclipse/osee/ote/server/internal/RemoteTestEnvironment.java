@@ -431,7 +431,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
 
       @Override
-      @SuppressWarnings("unchecked")
       public void releaseAllReferences(ModelKey key) throws RemoteException {
          env.getModelManager().releaseAllReferences(key);
       }

@@ -33,7 +33,6 @@ public class LibraryChangeProvider<T extends JarCollectionNature> {
       resetClasspath();
    }
 
-   @SuppressWarnings("restriction")
    private void resetClasspath() {
       for (IUserLibListener listener : listeners) {
          listener.libraryChanged();

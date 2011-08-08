@@ -119,7 +119,6 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (IPropertySource.class == adapter) {
          return PropertySourceFactory.getPropertySource(getModel());

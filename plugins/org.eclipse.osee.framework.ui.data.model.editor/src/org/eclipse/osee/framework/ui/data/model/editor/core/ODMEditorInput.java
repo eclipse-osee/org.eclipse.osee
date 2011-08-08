@@ -65,7 +65,6 @@ public class ODMEditorInput implements IEditorInput {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return null;
    }

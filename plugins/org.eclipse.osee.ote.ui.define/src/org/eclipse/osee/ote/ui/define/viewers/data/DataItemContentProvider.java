@@ -22,7 +22,6 @@ public class DataItemContentProvider implements ITreeContentProvider {
    private static final Object[] EMPTY_ARRAY = new Object[0];
 
    @Override
-   @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();

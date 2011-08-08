@@ -79,7 +79,6 @@ public class LookupUpdates implements IRegistrarListener {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public void reggieRemoved(List<ServiceRegistrar> serviceRegistrars) {
       // System.out.println("Reggie Removed: ");
       Set<ServiceID> cachedReggies = handlerMap.keySet();

@@ -18,7 +18,6 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Andrew M. Finkbeiner
  */
 public interface ITestEnvironmentMessageSystemAccessor extends ITestEnvironmentAccessor {
-   @SuppressWarnings("unchecked")
    IMessageManager getMsgManager();
 
    boolean isPhysicalTypeAvailable(DataType physicalType);

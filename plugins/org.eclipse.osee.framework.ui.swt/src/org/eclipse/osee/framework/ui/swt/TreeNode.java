@@ -103,7 +103,6 @@ public class TreeNode implements ITreeNode, Serializable {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
          throw new IllegalArgumentException("adapter can not be null");

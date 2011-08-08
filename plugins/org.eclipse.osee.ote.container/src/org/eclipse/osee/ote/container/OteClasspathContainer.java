@@ -169,7 +169,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
 
    }
 
-   @SuppressWarnings("restriction")
    @Override
    public void libraryChanged() {
    }

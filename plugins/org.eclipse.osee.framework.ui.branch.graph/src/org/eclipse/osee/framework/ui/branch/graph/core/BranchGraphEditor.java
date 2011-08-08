@@ -92,7 +92,6 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       Jobs.runInJob(task.getName(), task, Activator.class, Activator.PLUGIN_ID, true);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == GraphicalViewer.class || adapter == EditPartViewer.class) {

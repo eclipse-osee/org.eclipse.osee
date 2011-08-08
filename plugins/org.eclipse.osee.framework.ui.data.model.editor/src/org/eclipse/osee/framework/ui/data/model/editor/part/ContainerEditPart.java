@@ -38,7 +38,6 @@ public class ContainerEditPart extends AbstractGraphicalEditPart {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    protected List getModelChildren() {
       if (getModel() instanceof ContainerModel) {
          return ((ContainerModel) getModel()).getChildren();

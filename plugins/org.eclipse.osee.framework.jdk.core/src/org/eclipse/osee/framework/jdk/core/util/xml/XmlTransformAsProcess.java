@@ -46,7 +46,6 @@ public class XmlTransformAsProcess {
       outputFromNetwork = null;
    }
 
-   @SuppressWarnings("unchecked")
    private URL getClassLocation(final Class classToFind) {
       URL result = null;
       if (classToFind == null) {
