@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.test.importing.ImportingSuite;
 import org.eclipse.osee.framework.skynet.core.test.importing.parsers.ParsersSuite;
 import org.eclipse.osee.framework.skynet.core.test.relation.CrossBranchLinkTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
+import org.eclipse.osee.framework.skynet.core.test.user.UserManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.word.UpdateBookmarkIdTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -57,6 +58,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   UserManagerTest.class,
    ArtifactTest.class,
    ReplaceWithAttributeTest.class,
    AttributePurgeTest.class,

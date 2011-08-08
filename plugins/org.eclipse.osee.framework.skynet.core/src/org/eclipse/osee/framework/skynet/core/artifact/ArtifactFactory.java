@@ -15,10 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -28,9 +24,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.SystemGroup;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Ryan D. Brooks
@@ -83,20 +76,7 @@ public abstract class ArtifactFactory {
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded(true);
 
-      if (artifactType.equals(CoreArtifactTypes.User)) {
-
-         SystemGroup.Everyone.addMember((User) artifact);
-
-         Collection<Artifact> userGroups =
-            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.UserGroup,
-               CoreAttributeTypes.DefaultGroup, "yes", CoreBranches.COMMON);
-         for (Artifact userGroup : userGroups) {
-            userGroup.addRelation(CoreRelationTypes.Users_User, artifact);
-            userGroup.persist();
-         }
-      } else {
-         artifact.onBirth();
-      }
+      artifact.onBirth();
 
       artifact.onInitializationComplete();
 

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -258,6 +259,7 @@ public final class UserManager {
          user.setActive(userEnum.isActive());
          user.setUserID(userEnum.getUserID());
          user.setEmail(userEnum.getEmail());
+         addUserToUserGroups(user);
          cacheByUserId(user);
 
          // this is here in case a user is created at an unexpected time
@@ -269,6 +271,15 @@ public final class UserManager {
 
       user.persist(transaction);
       return user;
+   }
+
+   private static void addUserToUserGroups(Artifact user) throws OseeCoreException {
+      Collection<Artifact> userGroups =
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.UserGroup,
+            CoreAttributeTypes.DefaultGroup, "yes", CoreBranches.COMMON);
+      for (Artifact userGroup : userGroups) {
+         userGroup.addRelation(CoreRelationTypes.Users_User, user);
+      }
    }
 
    public static boolean isUserInactive(Collection<User> users) throws OseeCoreException {

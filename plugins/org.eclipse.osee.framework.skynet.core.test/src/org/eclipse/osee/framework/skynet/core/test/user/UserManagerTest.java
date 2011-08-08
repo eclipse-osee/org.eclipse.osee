@@ -8,47 +8,59 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact.test;
+package org.eclipse.osee.framework.skynet.core.test.user;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.AfterClass;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * @author Karol M. Wilk
+ * @author Donald G. Dunne
  */
-public final class ArtifactFactoryTest {
+public final class UserManagerTest {
 
    private static final String[] TEST_DEFAULT_GROUPS = {"Alkali Metals", "Metals"};
    private static final String[] NEW_USER_NAMES = {"Lithium", "Sodium", "Potassium"};
 
-   @Test
-   public void test_makeNewArtifact_UserArtifactAndDefaultGroups() throws Exception {
+   @org.junit.Test
+   public void testCreateUser() throws Exception {
 
-      //New User - Yay!
-      Artifact lithium = ArtifactTypeManager.makeNewArtifact(CoreArtifactTypes.User, CoreBranches.COMMON);
-      lithium.setName(NEW_USER_NAMES[0]);
+      SkynetTransaction transaction =
+         new SkynetTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
 
-      //We like friends
-      Artifact sodium = ArtifactTypeManager.makeNewArtifact(CoreArtifactTypes.User, CoreBranches.COMMON);
-      sodium.setName(NEW_USER_NAMES[1]);
+      User lithium =
+         UserManager.createUser(new OseeUser(NEW_USER_NAMES[0], HumanReadableId.generate(), "this1@that.com", true),
+            transaction);
+      lithium.persist(transaction);
 
-      //Viral
-      Artifact potassium = ArtifactTypeManager.makeNewArtifact(CoreArtifactTypes.User, CoreBranches.COMMON);
-      potassium.setName(NEW_USER_NAMES[2]);
+      User sodium =
+         UserManager.createUser(new OseeUser(NEW_USER_NAMES[1], HumanReadableId.generate(), "this2@that.com", true),
+            transaction);
+      sodium.persist(transaction);
+
+      User potassium =
+         UserManager.createUser(new OseeUser(NEW_USER_NAMES[2], HumanReadableId.generate(), "this3@that.com", true),
+            transaction);
+      potassium.persist(transaction);
+
+      transaction.execute();
 
       Set<Artifact> groups = new HashSet<Artifact>();
 
@@ -71,12 +83,12 @@ public final class ArtifactFactoryTest {
       Assert.assertTrue("Members not subscribed to right groups.", verifiedNames.size() == TEST_DEFAULT_GROUPS.length);
    }
 
-   @BeforeClass
+   @org.junit.BeforeClass
    public static void setUpOnce() throws Exception {
       createSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
    }
 
-   @AfterClass
+   @org.junit.AfterClass
    public static void tearDownOnce() throws Exception {
       deleteSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
    }
