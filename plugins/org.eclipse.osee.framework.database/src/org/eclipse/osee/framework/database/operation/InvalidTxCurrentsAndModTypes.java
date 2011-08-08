@@ -30,9 +30,10 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private static final String SELECT_ADDRESSES =
       "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, txs.tx_current, txd.tx_type from %s t1, osee_txs%s txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
 
-   private static final String DELETE_ADDRESS = "delete from osee_txs%s where transaction_id = ? and gamma_id = ?";
+   private static final String DELETE_ADDRESS =
+      "delete from osee_txs%s where transaction_id = ? and gamma_id = ? and branch_id = ?";
    private static final String UPDATE_ADDRESS =
-      "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ?";
+      "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ? and branch_id = ?";
 
    private final List<Address> addresses = new ArrayList<Address>();
 
@@ -78,13 +79,14 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          for (Address address : addresses) {
             if (address.isPurge()) {
                logIssue("purge", address);
-               purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId()});
+               purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId(), address.getBranchId()});
             } else if (address.getCorrectedTxCurrent() != null) {
                logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
                currentData.add(new Object[] {
                   address.getCorrectedTxCurrent().getValue(),
                   address.getTransactionId(),
-                  address.getGammaId()});
+                  address.getGammaId(),
+                  address.getBranchId()});
             } else {
                System.out.println("would have fixed merge here");
             }
