@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.SMAState;
@@ -188,6 +189,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
             testArtifactIds(artifacts);
             testAtsAttributeValues(artifacts);
+            testStateInWorkDefinition(artifacts);
             testAtsActionsHaveTeamWorkflow(artifacts);
             testAtsWorkflowsHaveAction(artifacts);
             testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
@@ -217,6 +219,31 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
+      }
+   }
+
+   private void testStateInWorkDefinition(Collection<Artifact> artifacts) {
+      for (Artifact artifact : artifacts) {
+         try {
+            if (artifact instanceof AbstractWorkflowArtifact) {
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               if (awa.isInWork()) {
+                  String currentStatename = awa.getCurrentStateName();
+                  WorkDefinition workDef = awa.getWorkDefinition();
+                  if (workDef.getStateByName(currentStatename) == null) {
+                     testNameToResultsMap.put(
+                        "testStateInWorkDefinition",
+                        String.format(
+                           "Error: Current State [%s] not valid for Work Definition [%s] for " + XResultDataUI.getHyperlink(artifact),
+                           currentStatename, workDef.getName()));
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            testNameToResultsMap.put(
+               "testStateInWorkDefinition",
+               "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+         }
       }
    }
 
