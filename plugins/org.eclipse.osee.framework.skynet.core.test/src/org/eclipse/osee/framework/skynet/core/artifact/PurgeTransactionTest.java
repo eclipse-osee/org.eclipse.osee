@@ -22,8 +22,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
@@ -100,6 +103,7 @@ public class PurgeTransactionTest {
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
       IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(true, transactionId);
       Asserts.testOperation(operation, IStatus.OK);
+      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
       DbTestUtil.getTableRowCounts(dbCount, tables);
    }
 

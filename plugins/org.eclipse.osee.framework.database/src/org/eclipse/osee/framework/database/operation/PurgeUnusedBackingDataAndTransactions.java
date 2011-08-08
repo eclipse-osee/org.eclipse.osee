@@ -29,12 +29,13 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
    private static final String NOT_ADDRESSESED_GAMMAS =
       "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id) and not exists (select 1 from osee_txs_archived txs3 where t1.gamma_id = txs3.gamma_id)";
    private static final String EMPTY_TRANSACTIONS =
-      "select transaction_id from osee_tx_details txd where not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id)";
+      "select branch_id, transaction_id from osee_tx_details txd where not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id)";
 
    private static final String NONEXISTENT_GAMMAS =
       "SELECT gamma_id FROM %s txs WHERE NOT EXISTS " + "(SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id) AND NOT EXISTS " + "(SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id) AND NOT EXISTS " + "(SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
    private static final String DELETE_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
-   private static final String DELETE_EMPTY_TRANSACTIONS = "DELETE FROM osee_tx_details WHERE transaction_id = ?";
+   private static final String DELETE_EMPTY_TRANSACTIONS =
+      "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
 
    public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) {
       super("Data with no TXS Addressing and empty transactions", Activator.PLUGIN_ID, logger);
@@ -83,7 +84,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractOperation {
       try {
          chStmt.runPreparedQuery(EMPTY_TRANSACTIONS);
          while (chStmt.next()) {
-            emptyTransactions.add(new Object[] {chStmt.getInt("transaction_id")});
+            emptyTransactions.add(new Object[] {chStmt.getInt("branch_id"), chStmt.getInt("transaction_id")});
             log(String.valueOf(chStmt.getInt("transaction_id")));
          }
       } finally {

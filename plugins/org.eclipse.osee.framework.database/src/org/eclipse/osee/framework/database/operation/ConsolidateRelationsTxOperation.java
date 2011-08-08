@@ -41,7 +41,8 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    private static final String UPDATE_TXS_GAMMAS =
       "update osee_txs set gamma_id = ?, mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
 
-   private static final String DELETE_TXS = "delete from osee_txs where transaction_id = ? and gamma_id = ?";
+   private static final String DELETE_TXS =
+      "delete from osee_txs where branch_id = ? and transaction_id = ? and gamma_id = ?";
 
    private static final String DELETE_RELATIONS = "delete from osee_relation_link where gamma_id = ?";
 
@@ -174,7 +175,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
                netModType = ModificationType.getMod(modType);
                netTxCurrent = txCurrent;
             } else {
-               addressingToDelete.add(new Object[] {transactionId, obsoleteGammaId});
+               addressingToDelete.add(new Object[] {chStmt.getInt("branch_id"), transactionId, obsoleteGammaId});
                computeNetAddressing(ModificationType.getMod(modType), txCurrent);
             }
 
