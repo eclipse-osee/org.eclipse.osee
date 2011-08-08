@@ -61,7 +61,10 @@ public final class ExchangeDb {
 
    private static final String[] GAMMA_ID_REG_ALIASES = new String[] {"source_gamma_id", "dest_gamma_id"};
 
-   private static final String[] TRANSACTION_ID_REG_ALIASES = new String[0];
+   private static final String[] TRANSACTION_ID_REG_ALIASES = new String[] {
+      "baseline_transaction_id",
+      "parent_transaction_id"};
+
    private static final String[] TRANSACTION_ID_NEG_ONE_ALIASES = new String[] {"commit_transaction_id"};
 
    private static final String[] ARTIFACT_ID_ALIASES;
