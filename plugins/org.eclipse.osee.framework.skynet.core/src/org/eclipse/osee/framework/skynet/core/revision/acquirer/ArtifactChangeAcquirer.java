@@ -64,10 +64,11 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT_FOR_SPECIFIC_ARTIFACT),
-                  toTransactionId.getId(), getSpecificArtifact().getArtId());
+                  toTransactionId.getBranchId(), toTransactionId.getId(), getSpecificArtifact().getArtId());
                fromTransactionId = toTransactionId;
             } else {
-               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT), toTransactionId.getId());
+               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT),
+                  toTransactionId.getBranchId(), toTransactionId.getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }

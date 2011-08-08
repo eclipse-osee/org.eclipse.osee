@@ -61,11 +61,12 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT),
-                  getTransaction().getId(), getSpecificArtifact().getArtId(), getSpecificArtifact().getArtId());
-               fromTransactionId = getTransaction();
+                  toTransactionId.getBranchId(), toTransactionId.getId(), getSpecificArtifact().getArtId(),
+                  getSpecificArtifact().getArtId());
+               fromTransactionId = toTransactionId;
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION),
-                  getTransaction().getId());
+                  toTransactionId.getBranchId(), toTransactionId.getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
@@ -96,5 +97,4 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
       }
       return getChangeBuilders();
    }
-
 }

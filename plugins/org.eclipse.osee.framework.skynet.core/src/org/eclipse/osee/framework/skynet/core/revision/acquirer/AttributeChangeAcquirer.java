@@ -65,7 +65,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             getMonitor().subTask("Gathering Attribute Changes");
          }
          TransactionRecord fromTransactionId;
-         TransactionRecord toTransactionId;
+         TransactionRecord toTransaction;
          boolean hasSpecificArtifact = getSpecificArtifact() != null;
 
          for (ChangeBuilder changeBuilder : getChangeBuilders()) {// cache in map for performance look ups
@@ -74,27 +74,27 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          //Changes per a branch
          if (hasBranch) {
             fromTransactionId = getSourceBranch().getBaseTransaction();
-            toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
+            toTransaction = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
                getSourceBranch().getId(), fromTransactionId.getId());
 
          }//Changes per transaction number
          else {
-            toTransactionId = getTransaction();
+            toTransaction = getTransaction();
             if (hasSpecificArtifact) {
                chStmt.runPreparedQuery(
                   ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
-                  getTransaction().getId(), getSpecificArtifact().getArtId());
+                  toTransaction.getBranchId(), toTransaction.getId(), getSpecificArtifact().getArtId());
                fromTransactionId = getTransaction();
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
-                  getTransaction().getId());
-               fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
+                  toTransaction.getBranchId(), toTransaction.getId());
+               fromTransactionId = TransactionManager.getPriorTransaction(toTransaction);
             }
          }
          loadIsValues(getSourceBranch(), getArtIds(), getChangeBuilders(), getNewAndDeletedArtifactIds(), getMonitor(),
             attributesWasValueCache, artModTypes, modifiedArtifacts, chStmt, hasBranch, time, fromTransactionId,
-            toTransactionId, hasSpecificArtifact);
+            toTransaction, hasSpecificArtifact);
          loadAttributeWasValues(getSourceBranch(), getTransaction(), getArtIds(), getMonitor(),
             attributesWasValueCache, hasBranch);
       } finally {
