@@ -41,8 +41,9 @@ public class OutfileDataCollector implements IDataListener {
       collectedData.put(name, value);
    }
 
-   public void populate(Artifact artifact) throws OseeCoreException {
+   public void populate(Artifact artifact, Artifact parent) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
+      Conditions.checkNotNull(parent, "parent");
       for (String fieldName : collectedData.keySet()) {
          IAttributeType attributeType = oteToAttributeMap.getAttributeType(fieldName);
          if (attributeType != null && artifact.isAttributeTypeValid(attributeType)) {
@@ -56,6 +57,7 @@ public class OutfileDataCollector implements IDataListener {
          }
       }
       artifact.setName(getField(TestRunField.SCRIPT_NAME.name()));
+      parent.addChild(artifact);
    }
 
    public String getField(String name) {

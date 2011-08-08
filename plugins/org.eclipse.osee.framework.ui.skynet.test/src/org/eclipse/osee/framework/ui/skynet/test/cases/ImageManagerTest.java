@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import junit.framework.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -70,7 +71,7 @@ public abstract class ImageManagerTest {
       }
       StringBuffer sb = new StringBuffer();
       for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
-         if (stat.getMessage().contains("Unable to load the image for") && !stat.getMessage().contains("NOT_HERE")) {
+         if (stat.getMessage().contains("Unable to load the image for") && !stat.getMessage().contains("nothere")) {
             sb.append(stat.getMessage() + "\n");
          }
       }
@@ -82,10 +83,14 @@ public abstract class ImageManagerTest {
    /**
     * Test that image that is not found, returns MISSING image
     */
-   @org.junit.Test(expected = Exception.class)
+   @org.junit.Test
    public void testFrameworkImageMissing() throws Exception {
-      // This will throw an OseeLog exception cause NOT_HERE can't be found; this is expected
+      SevereLoggingMonitor slm = TestUtil.severeLoggingStart();
       assertEquals(ImageManager.getImage(MissingImage.NOT_HERE), ImageManager.getImage(ImageManager.MISSING));
+      TestUtil.severeLoggingStop(slm);
+      List<IHealthStatus> severeLogs = slm.getSevereLogs();
+      Assert.assertEquals(1, severeLogs.size());
+      Assert.assertTrue(severeLogs.iterator().next().getMessage().startsWith("Unable to load the image"));
    }
 
    /**

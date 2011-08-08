@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
+import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
@@ -51,6 +52,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -221,8 +223,9 @@ public class DetailedTestStatus extends AbstractBlam {
       }
 
       IOseeBranch requirementsBranch = variableMap.getBranch("Requirements Branch");
-      IOseeBranch scriptsBranch = variableMap.getBranch("Scripts Branch");
+      IOseeBranch scriptsBranch = variableMap.getBranch("Test Results Branch");
       IOseeBranch procedureBranch = variableMap.getBranch("Test Procedure Branch");
+      IOseeBranch traceabilityBranch = variableMap.getBranch("Traceability Branch");
 
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       versions = variableMap.getCollection(VersionArtifact.class, "Versions");
@@ -231,7 +234,12 @@ public class DetailedTestStatus extends AbstractBlam {
       loadTestRunArtifacts(scriptsBranch);
 
       // Load Requirements Data
-      TraceabilityProviderOperation provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false);
+      TraceabilityProviderOperation provider = null;
+      if (traceabilityBranch != null) {
+         provider = new BranchTraceabilityOperation((Branch) traceabilityBranch);
+      } else {
+         provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false);
+      }
       RequirementTraceabilityData traceabilityData =
          new RequirementTraceabilityData(requirementsBranch, procedureBranch, provider);
 
@@ -248,7 +256,7 @@ public class DetailedTestStatus extends AbstractBlam {
             writeTestScriptSheet(traceabilityData.getCodeUnits());
 
             excelWriter.endWorkbook();
-            IFile iFile = OseeData.getIFile("Block_III_Test_Status_" + Lib.getDateTimeString() + ".xml");
+            IFile iFile = OseeData.getIFile("Detailed_Test_Status_" + Lib.getDateTimeString() + ".xml");
             AIFile.writeToFile(iFile, charBak);
             Program.launch(iFile.getLocation().toOSString());
             break;
@@ -528,7 +536,7 @@ public class DetailedTestStatus extends AbstractBlam {
          versionsListViewer = (XArtifactList) xWidget;
       } else if (widgetLabel.equals("Requirements Branch")) {
          requirementsBranchWidget = (XBranchSelectWidget) xWidget;
-      } else if (widgetLabel.equals("Scripts Branch")) {
+      } else if (widgetLabel.equals("Test Results Branch")) {
          scriptsBranchWidget = (XBranchSelectWidget) xWidget;
       } else if (widgetLabel.equals("Test Procedure Branch")) {
          testProcedureBranchWidget = (XBranchSelectWidget) xWidget;

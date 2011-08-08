@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.ByteArrayInputStream;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -58,11 +57,11 @@ public final class ArtifactImageManager {
       "UPDATE osee_artifact_type SET image = ? where art_type_id = ?";
 
    private static final Map<IArtifactType, ArtifactImageProvider> providersOverrideImageMap =
-      Collections.synchronizedMap(new HashMap<IArtifactType, ArtifactImageProvider>());
+      new ConcurrentHashMap<IArtifactType, ArtifactImageProvider>();
    private static final Map<IArtifactType, KeyedImage> artifactTypeImageMap =
-      Collections.synchronizedMap(new HashMap<IArtifactType, KeyedImage>());
+      new ConcurrentHashMap<IArtifactType, KeyedImage>();
    private static final Map<IArtifactType, String> artifactTypeImageProviderMap =
-      Collections.synchronizedMap(new HashMap<IArtifactType, String>());
+      new ConcurrentHashMap<IArtifactType, String>();
 
    private static final String OSEE_DATABASE_PROVIDER = "OSEE Database Provider";
 
@@ -226,9 +225,9 @@ public final class ArtifactImageManager {
       ensureArtifactTypeImagesLoaded();
 
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactType);
-      boolean providedByOseeDatabase =
-         artifactTypeImageProviderMap.get(artifactType) != null && artifactTypeImageProviderMap.get(artifactType).equals(
-            OSEE_DATABASE_PROVIDER);
+
+      String providerId = artifactTypeImageProviderMap.get(artifactType);
+      boolean providedByOseeDatabase = OSEE_DATABASE_PROVIDER.equals(providerId);
 
       // Database can override other providers, don't display error in that cases
       if (alreadyProvided && !providedByOseeDatabase) {
@@ -261,9 +260,15 @@ public final class ArtifactImageManager {
    private synchronized static String setupImage(IArtifact artifact) {
       try {
          Artifact castedArtifact = artifact.getFullArtifact();
-         ArtifactImageProvider imageProvider = providersOverrideImageMap.get(artifact.getArtifactType());
+         IArtifactType type = artifact.getArtifactType();
+         ArtifactImageProvider imageProvider = providersOverrideImageMap.get(type);
          if (imageProvider != null) {
             return imageProvider.setupImage(castedArtifact);
+         } else {
+            KeyedImage imageKey = artifactTypeImageMap.get(type);
+            if (imageKey != null) {
+               return ImageManager.setupImage(imageKey);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

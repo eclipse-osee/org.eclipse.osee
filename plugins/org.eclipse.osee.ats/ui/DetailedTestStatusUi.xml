@@ -6,9 +6,12 @@
 		multiSelect="true" />
 	<XWidget xwidgetType="XText" displayName="Script Root Directory"
 		defaultValue="C:/UserData/workspaceScripts" />
+	<XWidget xwidgetType="XLabel" displayName="or (Note: If traceability branch is selected, requirements branch is not used as they will be pulled from the traceability branch)"/>
+	<XWidget xwidgetType="XBranchSelectWidget" displayName="Traceability Branch"
+		toolTip="Select a requirements branch." />
 	<XWidget xwidgetType="XBranchSelectWidget" displayName="Requirements Branch"
 		toolTip="Select a requirements branch." />
-	<XWidget xwidgetType="XBranchSelectWidget" displayName="Scripts Branch"
+	<XWidget xwidgetType="XBranchSelectWidget" displayName="Test Results Branch"
 		toolTip="Select a scripts results branch." />
 	<XWidget xwidgetType="XBranchSelectWidget" displayName="Test Procedure Branch"
 		toolTip="Select a test procedures branch." />

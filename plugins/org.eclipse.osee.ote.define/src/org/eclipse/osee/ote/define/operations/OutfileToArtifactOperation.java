@@ -17,8 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.define.parser.BaseOutfileParser;
@@ -44,13 +49,14 @@ public class OutfileToArtifactOperation {
    public void execute(IProgressMonitor monitor) throws Exception {
       this.results.clear();
       monitor.setTaskName("Outfiles to Artifact Conversion...");
+      Artifact parent = getParentArtifact();
       for (URI targetUri : filesToImport) {
          TestRunOperator operator = null;
          try {
             operator = TestRunOperator.getNewArtifactWithOperator(branch);
 
             OutfileDataCollector collector = getOutfileData(monitor, targetUri.toURL());
-            collector.populate(operator.getTestRunArtifact());
+            collector.populate(operator.getTestRunArtifact(), parent);
 
             String path = targetUri.toURL().toString();
             operator.setLocalOutfileURI(path);
@@ -71,6 +77,22 @@ public class OutfileToArtifactOperation {
          operator = null;
          monitor.worked(1);
       }
+   }
+
+   private Artifact getParentArtifact() throws OseeCoreException {
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
+      Artifact testFolder = OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test", (Branch) branch);
+      if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testFolder)) {
+         root.addChild(testFolder);
+         root.persist("New Test Folder");
+      }
+      Artifact scriptFolder =
+         OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test Script Results", (Branch) branch);
+      if (!testFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, scriptFolder)) {
+         testFolder.addChild(scriptFolder);
+         testFolder.persist("New Test Script Results Folder");
+      }
+      return scriptFolder;
    }
 
    private void addChecksum(TestRunOperator operator, URL targetURL) throws Exception {

@@ -67,9 +67,8 @@ public final class ImageManager {
       String imageKey = imageEnum != null ? imageEnum.getImageKey() : MISSING.getImageKey();
       if (getImageRegistry().getDescriptor(imageKey) == null) {
          ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
-         if (imageDescriptor == null && !System.getProperty("isInTest").equals("true")) {
-            OseeLog.logf(Activator.class, Level.SEVERE,
-               "Unable to load the image for [%s]", imageEnum.toString());
+         if (imageDescriptor == null) {
+            OseeLog.logf(Activator.class, Level.SEVERE, "Unable to load the image for [%s]", imageEnum.getImageKey());
             return setupImage(MISSING);
          }
          storeOnImageRegistry(imageKey, imageDescriptor);

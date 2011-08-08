@@ -364,11 +364,16 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
+         Artifact testFolder = getOrCreateFolder(transaction, "Test");
          Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testUnitFolder)) {
-            root.addChild(testUnitFolder);
+         if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testFolder)) {
+            root.addChild(testFolder);
             root.persist(transaction);
+         }
+         if (!testFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testUnitFolder)) {
+            testFolder.addChild(testUnitFolder);
+            testFolder.persist(transaction);
          }
          return testUnitFolder;
       }
