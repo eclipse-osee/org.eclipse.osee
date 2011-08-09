@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.activation.DataSource;
-import javax.mail.MessagingException;
 import org.eclipse.osee.mail.MailConstants;
 import org.eclipse.osee.mail.MailMessage;
 import org.eclipse.osee.mail.MailService;
@@ -103,7 +102,7 @@ public class MailServiceImpl implements MailService {
       DataSource source;
       try {
          source = MailUtils.createAlternativeDataSource("TestEmail", htmlData, plainText);
-      } catch (MessagingException ex) {
+      } catch (Exception ex) {
          source = MailUtils.createFromString("TestEmail", plainText);
       }
       message.addAttachment(source);
