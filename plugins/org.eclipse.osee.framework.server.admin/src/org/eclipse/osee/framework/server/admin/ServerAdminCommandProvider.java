@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.core.operation.MutexSchedulingRule;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
-import org.eclipse.osee.framework.database.operation.ParseWindowsDirectoryListingOperation;
-import org.eclipse.osee.framework.database.operation.PurgeTransactionOperation;
-import org.eclipse.osee.framework.database.operation.PruneWorkspaceOperation;
-import org.eclipse.osee.framework.database.operation.FindInvalidUTF8CharsOperation;
 import org.eclipse.osee.framework.database.operation.ConsolidateRelationsTxOperation;
+import org.eclipse.osee.framework.database.operation.FindInvalidUTF8CharsOperation;
+import org.eclipse.osee.framework.database.operation.ParseWindowsDirectoryListingOperation;
+import org.eclipse.osee.framework.database.operation.PruneWorkspaceOperation;
+import org.eclipse.osee.framework.database.operation.PurgeTransactionOperation;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
@@ -164,7 +164,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
       return Operations.executeAsJob(operation, false);
    }
-   
+
    public Job _consolidate_relations(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
 
@@ -172,7 +172,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
       return Operations.executeAsJob(operation, false);
    }
-   
+
    public Job _find_invalid_utf8(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
 
@@ -182,7 +182,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
       return Operations.executeAsJob(operation, false);
    }
-   
+
    public Job _prune_workspace(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
 
@@ -193,7 +193,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       //to be purged
       final ArrayList<String> args = new ArrayList<String>();
 
-      boolean force = false;
       for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
          args.add(arg);
       }
@@ -215,7 +214,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
       return Operations.executeAsJob(operation, false);
    }
-   
+
    public Job _purge_attribute_type(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
 
@@ -232,7 +231,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
       return Operations.executeAsJob(operation, false);
    }
-   
+
    public Job _purge_transactions(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
 

@@ -157,12 +157,14 @@ public class JavaJdtTipsAndTricks {
       // How: select "a ? 1: 2" below > Ctrl+1 > Replace conditional with if/else
       // JavaTip 25) Quick-Fix - if/else to conditional
       // How: perform previous java tip > select conditional below > Ctrl+1 > Replace with conditional
+      @SuppressWarnings("unused")
       int value;
       value = a ? 1 : 2;
 
       // JavaTip 26) Quick-Fix - Convert string to StringBuffer
       // How: select '"Hello " + name' below > Ctrl+1 > Use StringBuffer for concatenation
       String name = "world";
+      @SuppressWarnings("unused")
       String str = "Hello " + name;
 
       // JavaTip 27) Quick-Fix - extract local
@@ -209,6 +211,7 @@ public class JavaJdtTipsAndTricks {
 
       // JavaTip 33) Wrap strings
       // How: Select after word "very" > press Enter
+      @SuppressWarnings("unused")
       String str4 = "now is the time to very for all good men";
 
       // JavaTip 34) Move lines up / down without cut/paste

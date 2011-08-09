@@ -167,7 +167,6 @@ public class AttributeFindReplaceDialog extends Dialog {
          @Override
          protected IStatus run(final IProgressMonitor monitor) {
             IStatus toReturn = Status.CANCEL_STATUS;
-            Branch branch = artifacts.get(0).getBranch();
             try {
                monitor.beginTask("Find/Replace " + attributeType + " Attribute Value", artifacts.size());
 
