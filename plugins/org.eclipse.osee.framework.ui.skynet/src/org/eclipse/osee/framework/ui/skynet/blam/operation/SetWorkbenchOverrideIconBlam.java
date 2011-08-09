@@ -89,7 +89,7 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
          }
          if (ClientSessionManager.isSessionValid() && ClientSessionManager.getSession().getVersion().equals(
             "Development")) {
-            Image overideImage = ImageManager.getImage(FrameworkImage.OSEE_32_DEV);
+            Image overideImage = ImageManager.getImage(FrameworkImage.OSEE_32_RUN);
             overrideImage(overideImage);
          }
       } catch (Exception ex) {
