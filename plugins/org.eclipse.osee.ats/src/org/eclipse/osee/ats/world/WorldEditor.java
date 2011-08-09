@@ -203,7 +203,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    private void createMetricsTab() {
       Composite comp = AtsUtil.createCommonPageComposite(getContainer());
-      AtsUtil.createCommonToolBar(comp);
       new AtsMetricsComposite(this, comp, SWT.NONE);
       int metricsPageIndex = addPage(comp);
       setPageText(metricsPageIndex, "Metrics");
