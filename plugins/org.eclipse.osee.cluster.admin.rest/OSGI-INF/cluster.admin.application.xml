@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.cluster.admin.rest.internal.ClusterAdminApplication">
+   <implementation class="org.eclipse.osee.cluster.admin.rest.internal.ClusterAdminApplication"/>
+   <service>
+      <provide interface="javax.ws.rs.core.Application"/>
+   </service>
+   <property name="context.name" type="String" value="clusterAdmin"/>
+   <reference bind="setClusterAdmin" cardinality="1..1" interface="org.eclipse.osee.cluster.admin.ClusterAdmin" name="ClusterAdmin" policy="static"/>
+</scr:component>
