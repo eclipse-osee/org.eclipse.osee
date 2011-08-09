@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.message.internal.translation;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
