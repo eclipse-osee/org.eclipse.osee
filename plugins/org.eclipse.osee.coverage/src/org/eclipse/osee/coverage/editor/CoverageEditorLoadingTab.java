@@ -81,6 +81,7 @@ public class CoverageEditorLoadingTab extends FormPage implements IRefreshAction
 
    public void createToolBar() {
       getManagedForm().getForm().getToolBarManager().add(new RefreshAction(this));
+      getManagedForm().getForm().updateToolBar();
    }
 
    @Override
