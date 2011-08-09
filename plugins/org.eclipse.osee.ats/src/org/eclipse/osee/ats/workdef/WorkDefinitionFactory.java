@@ -346,6 +346,22 @@ public class WorkDefinitionFactory {
       return new WorkDefinitionMatch();
    }
 
+   private static WorkDefinitionMatch getTaskWorkDefinitionFromArtifactsAttributeValue(Artifact artifact) throws OseeCoreException {
+      // If this artifact specifies it's own workflow definition, use it
+      String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkflowDefinition, null);
+      if (Strings.isValid(workFlowDefId)) {
+         String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId);
+         WorkDefinitionMatch match = getWorkDefinition(translatedId);
+         if (match.isMatched()) {
+            match.getTrace().add(
+               String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact, workFlowDefId,
+                  translatedId));
+            return match;
+         }
+      }
+      return new WorkDefinitionMatch();
+   }
+
    private static WorkDefinitionMatch getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
       for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
@@ -365,7 +381,7 @@ public class WorkDefinitionFactory {
       }
       if (!match.isMatched()) {
          // Else If parent SMA has a related task definition workflow id specified, use it
-         WorkDefinitionMatch match2 = getWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentSMA());
+         WorkDefinitionMatch match2 = getTaskWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentSMA());
          if (match2.isMatched()) {
             match2.getTrace().add(String.format("from task parent SMA [%s]", taskArt.getParentSMA()));
             match = match2;
@@ -373,7 +389,7 @@ public class WorkDefinitionFactory {
       }
       if (!match.isMatched()) {
          // Else If parent TeamWorkflow's TeamDefinition has a related task definition workflow id, use it
-         match = getWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentTeamWorkflow().getTeamDefinition());
+         match = getTaskWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentTeamWorkflow().getTeamDefinition());
       }
       if (!match.isMatched()) {
          // Else, use default Task workflow
