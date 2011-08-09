@@ -226,7 +226,7 @@ public class WordTemplateProcessor {
 
       if (renderer.getBooleanOption("Publish As Diff")) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
-         templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType);
+         templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType, recurseChildren);
       } else {
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
@@ -284,7 +284,7 @@ public class WordTemplateProcessor {
       if (isDiff) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
          templateFileDiffer.generateFileDifferences(artifacts, "/results/" + subDocFileName, nextParagraphNumber,
-            outlineType);
+            outlineType, recurseChildren);
       } else {
          AIFile.writeToFile(folder.getFile(subDocFileName),
             applyTemplate(artifacts, slaveTemplate, folder, nextParagraphNumber, outlineType, presentationType));
@@ -308,7 +308,11 @@ public class WordTemplateProcessor {
             if (elementType.equals("HeadingAttribute")) {
                headingAttributeType = AttributeTypeManager.getType(value);
             } else if (elementType.equals("RecurseChildren")) {
-               recurseChildren = Boolean.parseBoolean(value);
+               recurseChildren = renderer.getBooleanOption("RecurseChildren");
+
+               if (!recurseChildren) {
+                  recurseChildren = Boolean.parseBoolean(value);
+               }
             } else if (elementType.equals("Number")) {
                outlineNumber = value;
             }

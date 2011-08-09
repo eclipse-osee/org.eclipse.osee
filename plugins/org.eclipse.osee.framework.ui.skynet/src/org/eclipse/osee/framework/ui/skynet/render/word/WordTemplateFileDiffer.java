@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -43,7 +44,7 @@ public final class WordTemplateFileDiffer {
       this.renderer = renderer;
    }
 
-   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType) throws OseeArgumentException, OseeCoreException {
+   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren) throws OseeArgumentException, OseeCoreException {
       renderer.setOption("artifacts", endArtifacts);
       renderer.setOption("paragraphNumber", nextParagraphNumber);
       renderer.setOption("outlineType", outlineType);
@@ -51,6 +52,7 @@ public final class WordTemplateFileDiffer {
       renderer.setOption("Use Artifact Names", true);
       renderer.setOption("inPublishMode", true);
       renderer.setOption("Publish As Diff", false);
+      renderer.setOption("RecurseChildren", recurseChildren);
 
       Branch endBranch = renderer.getBranchOption("Branch");
       renderer.setOption("Diff Branch", endBranch);
