@@ -87,10 +87,11 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       for (Artifact workflow : workflows) {
          Collection<Change> changes = computeChanges(workflow, monitor);
          if (!changes.isEmpty() && changes.size() < 4000) {
-            String legacyPcrId = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
+            String id =
+               workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getHumanReadableId());
 
             Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-            String prefix = "/" + legacyPcrId;
+            String prefix = "/" + id;
             RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true);
          }
          monitor.worked(calculateWork(0.50));
