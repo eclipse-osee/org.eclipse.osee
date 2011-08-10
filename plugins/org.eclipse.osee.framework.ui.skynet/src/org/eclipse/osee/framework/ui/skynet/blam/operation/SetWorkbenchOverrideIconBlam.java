@@ -86,8 +86,7 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
          if (overrideFile.exists()) {
             Image overrideImage = ImageDescriptor.createFromURL(overrideFile.toURI().toURL()).createImage();
             overrideImage(overrideImage);
-         }
-         if (ClientSessionManager.isSessionValid() && ClientSessionManager.getSession().getVersion().equals(
+         } else if (ClientSessionManager.isSessionValid() && ClientSessionManager.getSession().getVersion().equals(
             "Development")) {
             Image overideImage = ImageManager.getImage(FrameworkImage.OSEE_32_RUN);
             overrideImage(overideImage);
