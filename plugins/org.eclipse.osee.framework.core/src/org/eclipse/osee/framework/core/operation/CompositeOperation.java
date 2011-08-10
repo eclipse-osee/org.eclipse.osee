@@ -26,26 +26,26 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 public class CompositeOperation extends AbstractOperation {
    private static final int MONITOR_RESOLUTION = 1000;
    private final List<IStatus> statuses = new ArrayList<IStatus>();
-   private final List<IOperation> operations;
+   private final List<? extends IOperation> operations;
    private final OperationBehavior behavior;
 
-   public CompositeOperation(String name, String pluginId, OperationBehavior behavior, OperationLogger logger, List<IOperation> operations) {
+   public CompositeOperation(String name, String pluginId, OperationBehavior behavior, OperationLogger logger, List<? extends IOperation> operations) {
       super(name, pluginId, logger);
       this.operations = operations;
       this.behavior = behavior;
    }
 
-   public CompositeOperation(String name, String pluginId, OperationBehavior behavior, List<IOperation> operations) {
+   public CompositeOperation(String name, String pluginId, OperationBehavior behavior, List<? extends IOperation> operations) {
       super(name, pluginId);
       this.operations = operations;
       this.behavior = behavior;
    }
 
-   public CompositeOperation(String name, String pluginId, OperationLogger logger, List<IOperation> operations) {
+   public CompositeOperation(String name, String pluginId, OperationLogger logger, List<? extends IOperation> operations) {
       this(name, pluginId, OperationBehavior.TerminateOnError, logger, operations);
    }
 
-   public CompositeOperation(String name, String pluginId, List<IOperation> operations) {
+   public CompositeOperation(String name, String pluginId, List<? extends IOperation> operations) {
       this(name, pluginId, OperationBehavior.TerminateOnError, operations);
    }
 
