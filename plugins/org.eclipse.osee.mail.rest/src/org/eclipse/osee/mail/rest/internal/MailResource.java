@@ -10,20 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.mail.rest.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import javax.activation.DataHandler;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.mail.MailMessage;
 import org.eclipse.osee.mail.MailService;
-import org.eclipse.osee.mail.SendMailOperation;
-import com.sun.jersey.multipart.BodyPart;
-import com.sun.jersey.multipart.MultiPart;
+import org.eclipse.osee.mail.SendMailStatus;
 
 /**
  * @author Roberto E. Escobar
@@ -31,6 +36,7 @@ import com.sun.jersey.multipart.MultiPart;
 @Path("send")
 public class MailResource {
 
+   private static long STATUS_WAIT_TIME = 60;
    private static int testEmailCount = 0;
 
    protected MailService getMailService() {
@@ -45,36 +51,43 @@ public class MailResource {
 
    @POST
    @Path("test")
-   @Produces(MediaType.TEXT_PLAIN)
-   public String sendTestMail() throws Exception {
+   @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+   public SendMailStatus sendTestMail() throws Exception {
       MailMessage message = getMailService().createSystemTestMessage(++testEmailCount);
-      List<SendMailOperation> operations = getMailService().createSendOp(message);
-      if (!operations.isEmpty()) {
-         Operations.executeWorkAndCheckStatus(operations.iterator().next());
-      }
-      return "Test Email sent successfully";
+
+      List<SendMailStatus> results = sendMail(message);
+      return results.iterator().next();
    }
 
    @POST
-   @Consumes("multipart/mixed")
-   public Response sendMail(MultiPart multiPart) throws Exception {
-      boolean isProcessed = true;
-      MailMessage mailMessage = null;
-      int count = 0;
-
-      for (BodyPart part : multiPart.getBodyParts()) {
-         if (count == 0) {
-            mailMessage = part.getEntityAs(MailMessage.class);
-         } else if (mailMessage != null) {
-            mailMessage.addAttachment(new BodyPartDataSource(part));
-         }
+   @Consumes(MediaType.APPLICATION_XML)
+   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+   public List<SendMailStatus> sendXmlMail(MailMessage mailMessage) throws Exception {
+      Collection<? extends DataHandler> handlers = mailMessage.getAttachments();
+      for (DataHandler handler : handlers) {
+         System.out.println(handler.getName() + " " + handler.getContentType());
       }
-      if (isProcessed) {
-         return Response.status(Response.Status.ACCEPTED).entity("Attachements processed successfully.").type(
-            MediaType.TEXT_PLAIN).build();
-      }
-      return Response.status(Response.Status.BAD_REQUEST).entity("Failed to process attachments. Reason : ").type(
-         MediaType.TEXT_PLAIN).build();
+      return sendMail(mailMessage);
    }
 
+   private List<SendMailStatus> sendMail(MailMessage... messages) throws InterruptedException, ExecutionException {
+      List<Callable<SendMailStatus>> calls =
+         getMailService().createSendCalls(STATUS_WAIT_TIME, TimeUnit.SECONDS, messages);
+      List<Future<SendMailStatus>> futures = new ArrayList<Future<SendMailStatus>>();
+
+      if (messages.length > 0) {
+         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+         for (Callable<SendMailStatus> task : calls) {
+            Future<SendMailStatus> future = executor.submit(task);
+            futures.add(future);
+         }
+         executor.shutdown();
+         executor.awaitTermination(100, TimeUnit.MINUTES);
+      }
+      List<SendMailStatus> results = new ArrayList<SendMailStatus>();
+      for (Future<SendMailStatus> future : futures) {
+         results.add(future.get());
+      }
+      return results;
+   }
 }

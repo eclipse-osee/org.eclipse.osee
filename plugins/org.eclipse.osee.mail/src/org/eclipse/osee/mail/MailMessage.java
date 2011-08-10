@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.mail;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Roberto E. Escobar
@@ -34,8 +36,8 @@ public class MailMessage {
    @XmlElement
    private final Collection<String> recepientAddresses = new LinkedHashSet<String>();
 
-   @XmlAttachmentRef
-   private final Collection<DataHandler> attachments = new LinkedHashSet<DataHandler>();
+   @XmlTransient
+   private final List<DataHandler> attachments = new ArrayList<DataHandler>();
 
    public void setId(String id) {
       this.id = id;
@@ -79,6 +81,7 @@ public class MailMessage {
       this.recepientAddresses.addAll(recipientAddress);
    }
 
+   @XmlElement
    public Collection<DataHandler> getAttachments() {
       return attachments;
    }

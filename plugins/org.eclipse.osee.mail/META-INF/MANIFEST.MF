@@ -10,7 +10,6 @@ Import-Package: javax.activation,
  javax.mail.event;version="1.4.1",
  javax.mail.internet;version="1.4.1",
  javax.xml.bind.annotation,
- org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.windows,
  org.osgi.framework

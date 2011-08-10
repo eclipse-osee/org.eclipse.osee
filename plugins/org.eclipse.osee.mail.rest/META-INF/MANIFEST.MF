@@ -9,6 +9,5 @@ Service-Component: OSGI-INF/*.xml
 Import-Package: com.sun.jersey.multipart,
  javax.ws.rs,
  javax.ws.rs.core,
- org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.mail

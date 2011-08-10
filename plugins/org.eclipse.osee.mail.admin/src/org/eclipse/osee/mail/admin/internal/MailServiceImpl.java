@@ -14,13 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.activation.DataSource;
+import javax.mail.event.TransportListener;
 import org.eclipse.osee.mail.MailConstants;
 import org.eclipse.osee.mail.MailMessage;
 import org.eclipse.osee.mail.MailService;
 import org.eclipse.osee.mail.MailServiceConfig;
 import org.eclipse.osee.mail.MailUtils;
-import org.eclipse.osee.mail.SendMailOperation;
+import org.eclipse.osee.mail.SendMailStatus;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
@@ -28,11 +31,11 @@ import org.osgi.service.event.EventAdmin;
  * @author Roberto E. Escobar
  */
 public class MailServiceImpl implements MailService {
-   public static final String PLUGIN_ID = "org.eclipse.osee.mail.admin";
 
    private MailServiceConfig config;
    private MailMessageFactory factory;
    private EventAdmin eventAdmin;
+   private TransportListener[] listeners;
 
    public void setEventAdmin(EventAdmin eventAdmin) {
       this.eventAdmin = eventAdmin;
@@ -52,40 +55,22 @@ public class MailServiceImpl implements MailService {
       config = new MailServiceConfig();
       factory = new MailMessageFactory(config);
       eventAdmin.postEvent(new Event(MailConstants.REGISTRATION_EVENT, props));
+
+      listeners = new TransportListener[] {new MailTransportListener(eventAdmin)};
    }
 
    public synchronized void stop(Map<String, String> props) {
       eventAdmin.postEvent(new Event(MailConstants.DEREGISTRATION_EVENT, props));
+      listeners = null;
    }
 
    @Override
-   public List<SendMailOperation> createSendOp(MailMessage... emails) {
-      return createOperation(factory, eventAdmin, emails);
-   }
-
-   private static List<SendMailOperation> createOperation(MailMessageFactory factory, EventAdmin eventAdmin, MailMessage... emails) {
-      List<SendMailOperation> ops = new ArrayList<SendMailOperation>();
-      int size = emails.length;
-      if (size != 0) {
-         if (size == 1) {
-            MailMessage mail = emails[0];
-            String opName = String.format("Send [%s]", mail.getSubject());
-            ops.add(createMailSendOp(factory, eventAdmin, opName, mail));
-         } else {
-            int count = 0;
-            for (MailMessage mail : emails) {
-               String opName = String.format("Send [%s of %s] [%s]", ++count, size, mail.getSubject());
-               ops.add(createMailSendOp(factory, eventAdmin, opName, mail));
-            }
-         }
+   public List<Callable<SendMailStatus>> createSendCalls(long waitForStatus, TimeUnit timeUnit, MailMessage... emails) {
+      List<Callable<SendMailStatus>> callables = new ArrayList<Callable<SendMailStatus>>();
+      for (MailMessage mail : emails) {
+         callables.add(new SendMailCallable(factory, mail, waitForStatus, timeUnit, listeners));
       }
-      return ops;
-   }
-
-   private static MailSendOperation createMailSendOp(MailMessageFactory handler, EventAdmin eventAdmin, String opName, MailMessage mail) {
-      MailSendOperation operation = new MailSendOperation(opName, PLUGIN_ID, handler, mail);
-      operation.addListener(new MailTransportListener(eventAdmin));
-      return operation;
+      return callables;
    }
 
    @Override
