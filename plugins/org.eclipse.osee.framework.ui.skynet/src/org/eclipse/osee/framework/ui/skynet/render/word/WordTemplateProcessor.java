@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -107,6 +108,7 @@ public class WordTemplateProcessor {
    private final Set<Artifact> processedArtifacts = new HashSet<Artifact>();
    private final WordTemplateRenderer renderer;
    private boolean isDiff;
+   private boolean excludeFolders;
 
    public WordTemplateProcessor(WordTemplateRenderer renderer) {
       this.renderer = renderer;
@@ -120,8 +122,9 @@ public class WordTemplateProcessor {
    public void publishWithExtensionTemplates(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
       String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       slaveTemplate = "";
-
       isDiff = renderer.getBooleanOption("Publish As Diff");
+      renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, masterTemplateArtifact.getName());
+
       if (slaveTemplateArtifact != null) {
          renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, slaveTemplateArtifact.getSafeName());
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
@@ -147,8 +150,10 @@ public class WordTemplateProcessor {
     * @param outlineNumber if null will find based on first artifact
     */
    public InputStream applyTemplate(List<Artifact> artifacts, String template, IFolder folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
+      excludeFolders = renderer.getBooleanOption("Exclude Folders");
       WordMLProducer wordMl = null;
       CharBackedInputStream charBak = null;
+
       try {
          charBak = new CharBackedInputStream();
          wordMl = new WordMLProducer(charBak);
@@ -172,7 +177,9 @@ public class WordTemplateProcessor {
 
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
-            if (artifacts == null) { //This handles the case where artifacts selected in the template
+            if (artifacts == null) { // This handles the case where
+               // artifacts selected in the
+               // template
                Matcher setNameMatcher = setNamePattern.matcher(elementValue);
                setNameMatcher.find();
                artifacts = renderer.getArtifactsOption(WordUtil.textOnly(setNameMatcher.group(2)));
@@ -232,7 +239,8 @@ public class WordTemplateProcessor {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
          }
       }
-      //maintain a list of artifacts that have been processed so we do not have duplicates.
+      // maintain a list of artifacts that have been processed so we do not
+      // have duplicates.
       processedArtifacts.clear();
    }
 
@@ -326,39 +334,43 @@ public class WordTemplateProcessor {
 
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
-         //If the artifact has not been processed
+         // If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
 
-            handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
-            boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
+            boolean ignoreArtifact = excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder);
 
-            if (outlining) {
-               String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
+            if (!ignoreArtifact) {
+               handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
+               boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
 
-               CharSequence paragraphNumber = null;
+               if (outlining) {
+                  String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
 
-               if (publishInline) {
-                  paragraphNumber = wordMl.startOutlineSubSection();
-               } else {
-                  paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
-               }
+                  CharSequence paragraphNumber = null;
 
-               if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
-                  if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
-                     artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
-                     artifact.persist((SkynetTransaction) renderer.getOption(ITemplateRenderer.TRANSACTION_OPTION));
+                  if (publishInline) {
+                     paragraphNumber = wordMl.startOutlineSubSection();
+                  } else {
+                     paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+                  }
+
+                  if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
+                     if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+                        artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
+                        artifact.persist((SkynetTransaction) renderer.getOption(ITemplateRenderer.TRANSACTION_OPTION));
+                     }
                   }
                }
+
+               processAttributes(artifact, wordMl, presentationType, multipleArtifacts, publishInline);
             }
-
-            processAttributes(artifact, wordMl, presentationType, multipleArtifacts, publishInline);
-
             if (recurseChildren) {
                for (Artifact childArtifact : artifact.getChildren()) {
                   processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
                }
             }
-            if (outlining) {
+
+            if (outlining && !ignoreArtifact) {
                wordMl.endOutlineSubSection();
             }
             processedArtifacts.add(artifact);
@@ -370,7 +382,8 @@ public class WordTemplateProcessor {
 
    private void handleLandscapeArtifactSectionBreak(Artifact artifact, WordMLProducer wordMl, boolean multipleArtifacts) throws OseeCoreException {
       String pageTypeValue = null;
-      //There is no reason to add an additional page break if there is a single artifacts
+      // There is no reason to add an additional page break if there is a
+      // single artifacts
       if (multipleArtifacts) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
             pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
@@ -419,7 +432,7 @@ public class WordTemplateProcessor {
          }
       }
 
-      //Create a wordTemplateContent for new guys when opening them for edit.
+      // Create a wordTemplateContent for new guys when opening them for edit.
       if (attributeType.equals(WordTemplateContent) && presentationType == PresentationType.SPECIALIZED_EDIT) {
          artifact.getOrInitializeSoleAttributeValue(attributeType);
       }

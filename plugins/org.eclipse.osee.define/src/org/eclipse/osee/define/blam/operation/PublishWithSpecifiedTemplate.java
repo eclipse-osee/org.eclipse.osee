@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -89,7 +90,13 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             ITemplateRenderer.TRANSACTION_OPTION,
             transaction,
             IRenderer.SKIP_ERRORS,
-            true};
+            true,
+            "Exclude Folders",
+            variableMap.getBoolean("Exclude Folders")};
+      
+      if(variableMap.getBoolean("Exclude Folders")){
+    	  
+      }
       renderer.publish(master, slave, artifacts, options);
 
       transaction.execute();
@@ -110,6 +117,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Artifact Names\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Paragraph Numbers\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Exclude Folders\" />");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
