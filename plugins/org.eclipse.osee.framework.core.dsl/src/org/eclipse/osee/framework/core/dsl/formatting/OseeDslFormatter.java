@@ -60,7 +60,7 @@ public class OseeDslFormatter extends AbstractDeclarativeFormatter {
       OseeDslGrammarAccess access = (OseeDslGrammarAccess) getGrammarAccess();
 
       c.setAutoLinewrap(120);
-      c.setIndentationSpace("   ");
+      //      c.setIndentationSpace("   ");
 
       Iterable<Keyword> keywords = GrammarUtil.containedKeywords(access.getGrammar());
       Stack<Keyword> openBraceStack = new Stack<Keyword>();

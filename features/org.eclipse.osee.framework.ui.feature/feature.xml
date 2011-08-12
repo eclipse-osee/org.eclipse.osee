@@ -73,9 +73,9 @@
       <import plugin="org.apache.ant" version="1.7.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtend" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xpand" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui.shared" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.builder" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.shared" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.builder" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j"/>
       <import plugin="org.eclipse.emf.compare.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.compare.diff" version="1.0.0" match="greaterOrEqual"/>

@@ -25,16 +25,16 @@
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
-      <import feature="de.itemis.xtext.antlr.feature" version="1.0.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.xtext.sdk" version="1.0.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.xtext.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="de.itemis.xtext.antlr.feature" version="2.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.xtext.sdk" version="2.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.xtext.ui" version="2.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.compare" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.mwe.ui" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.mwe2.runtime.sdk" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.mwe2.language.sdk" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
-      <import feature="de.itemis.xtext.antlr.sdk" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="de.itemis.xtext.antlr.sdk" version="2.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5" match="greaterOrEqual"/>
    </requires>
 
