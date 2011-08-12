@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.test.mocks;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Dictionary;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -97,43 +98,59 @@ public class MockBundleContext implements BundleContext {
       //
    }
 
-   @SuppressWarnings("rawtypes")
    @Override
-   public ServiceRegistration registerService(String[] clazzes, Object service, Dictionary properties) {
-      return null;
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public ServiceRegistration registerService(String clazz, Object service, Dictionary properties) {
-      return null;
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public ServiceReference[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
-      return null;
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public ServiceReference[] getAllServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
+   public ServiceRegistration<?> registerService(String[] clazzes, Object service, Dictionary<String, ?> properties) {
       return null;
    }
 
    @Override
-   public ServiceReference getServiceReference(String clazz) {
+   public ServiceRegistration<?> registerService(String clazz, Object service, Dictionary<String, ?> properties) {
       return null;
    }
 
    @Override
-   public Object getService(ServiceReference reference) {
+   public <S> ServiceRegistration<S> registerService(Class<S> clazz, S service, Dictionary<String, ?> properties) {
       return null;
    }
 
    @Override
-   public boolean ungetService(ServiceReference reference) {
+   public <S> ServiceReference<S> getServiceReference(Class<S> clazz) {
+      return null;
+   }
+
+   @Override
+   public <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> clazz, String filter) {
+      return null;
+   }
+
+   @Override
+   public <S> S getService(ServiceReference<S> reference) {
+      return null;
+   }
+
+   @Override
+   public boolean ungetService(ServiceReference<?> reference) {
       return false;
+   }
+
+   @Override
+   public Bundle getBundle(String location) {
+      return null;
+   }
+
+   @Override
+   public ServiceReference<?>[] getServiceReferences(String clazz, String filter) {
+      return null;
+   }
+
+   @Override
+   public ServiceReference<?>[] getAllServiceReferences(String clazz, String filter) {
+      return null;
+   }
+
+   @Override
+   public ServiceReference<?> getServiceReference(String clazz) {
+      return null;
    }
 
    @Override
@@ -141,9 +158,8 @@ public class MockBundleContext implements BundleContext {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
-   public Filter createFilter(String filter) throws InvalidSyntaxException {
+   public Filter createFilter(String filter) {
       return null;
    }
 

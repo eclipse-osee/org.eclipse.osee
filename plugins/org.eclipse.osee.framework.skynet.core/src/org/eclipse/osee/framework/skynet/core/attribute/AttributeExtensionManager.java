@@ -98,7 +98,7 @@ public class AttributeExtensionManager {
       Class<T> toReturn = null;
       try {
          Bundle bundle = Platform.getBundle(bundleName);
-         toReturn = bundle.loadClass(className);
+         toReturn = (Class<T>) bundle.loadClass(className);
       } catch (ClassNotFoundException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }

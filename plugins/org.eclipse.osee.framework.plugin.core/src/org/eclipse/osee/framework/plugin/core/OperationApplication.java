@@ -37,13 +37,14 @@ public class OperationApplication implements IApplication {
       return IApplication.EXIT_OK;
    }
 
+   @SuppressWarnings("unchecked")
    private IOperation loadOperation(String bundleName, String className) throws OseeCoreException, IllegalAccessException, ClassNotFoundException {
       try {
          Bundle bundle = Platform.getBundle(bundleName);
          if (bundle == null) {
             throw new OseeArgumentException("Platform.getBundle found not find [%s]", bundleName);
          }
-         Class<IOperation> clazz = bundle.loadClass(className);
+         Class<IOperation> clazz = (Class<IOperation>) bundle.loadClass(className);
          return clazz.newInstance();
 
       } catch (InstantiationException ex) {
