@@ -33,7 +33,7 @@
       <import plugin="org.apache.xml.resolver" version="1.2.0" match="compatible"/>
       <import plugin="org.apache.xml.serializer" version="2.7.1" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore" version="2.3.2" match="greaterOrEqual"/>
-      <import plugin="com.google.collect" version="0.8.0" match="compatible"/>
+      <import plugin="com.google.collect" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.google.inject" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.antlr.runtime" version="3.0.0" match="greaterOrEqual"/>
