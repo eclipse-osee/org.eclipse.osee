@@ -9,4 +9,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.framework.jdk.core.test,
  org.eclipse.osee.framework.jdk.core.test.mock,
  org.eclipse.osee.framework.jdk.core.test.type
-Require-Bundle: org.junit4
+Require-Bundle: org.junit

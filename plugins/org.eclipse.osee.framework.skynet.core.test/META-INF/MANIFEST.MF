@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.skynet.core.test;singleton:=true
 Bundle-Version: 0.9.8.qualifier
 Fragment-Host: org.eclipse.osee.framework.skynet.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit,
  org.eclipse.osee.support.test.util
 Export-Package: org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.skynet.core.test.branch,

@@ -18,7 +18,7 @@
    </license>
 
    <requires>
-      <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.jdk.core" version="0.4.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.osee.core.feature" version="0.9.8.qualifier" match="greaterOrEqual"/>
    </requires>

@@ -17,5 +17,5 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.5.0"
+Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.search.engine.test

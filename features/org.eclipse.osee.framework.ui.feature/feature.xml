@@ -55,7 +55,7 @@
       <import plugin="org.eclipse.osee.framework.database.init"/>
       <import plugin="org.eclipse.zest.layouts"/>
       <import plugin="org.eclipse.osee.support.test.util"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.junit"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.osee.framework.core.dsl"/>

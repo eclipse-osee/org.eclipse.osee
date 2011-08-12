@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ats.test;singleton:=true
 Bundle-Version: 0.9.8.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.ats
-Require-Bundle: org.junit4
+Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.ui.skynet.test.cases,

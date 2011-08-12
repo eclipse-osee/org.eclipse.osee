@@ -6,5 +6,5 @@ Bundle-Version: 0.9.8.qualifier
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.framework.database
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4
+Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.database.test
