@@ -33,6 +33,13 @@
                id="org.eclipse.osee.ats.world.WorldEditor"
                name="ATS World Editor">
          </editor>
+         <editor
+               class="org.eclipse.osee.ats.workdef.viewer.AtsWorkDefConfigEditor"
+               default="false"
+               icon="images/workDef.gif"
+               id="org.eclipse.osee.ats.workdef.viewer.AtsWorkflowConfigEditor"
+               name="ATS Work Definition Viewer">
+         </editor>
    </extension>
       <extension
          point="org.eclipse.ui.newWizards">
@@ -178,6 +185,9 @@
       <Renderer
             classname="org.eclipse.osee.ats.export.AtsExportRenderer">
       </Renderer>
+      <Renderer
+            classname="org.eclipse.osee.ats.workdef.viewer.AtsWorkDefConfigRenderer">
+      </Renderer>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider">
@@ -261,12 +271,28 @@
             id="org.eclipse.osee.framework.ui.skynet.atsexport.command"
             name="ATS Artifact Export">
       </command>
+      <command
+            id="org.eclipse.osee.ats.atsworkdefviewer.command"
+            name="ATS Work Definition Viewer">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="org.eclipse.osee.ats.handlers.AtsEditorHandler"
-            commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command">
+            commandId="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.eclipse.osee.ats.workdef.viewer.AtsWorkDefViewerHandler"
+            commandId="org.eclipse.osee.ats.atsworkdefviewer.command">
          <enabledWhen>
             <with
                   variable="selection">
@@ -354,6 +380,10 @@
       <image
             commandId="org.eclipse.osee.framework.ui.skynet.atsexport.command"
             icon="images/export.gif">
+      </image>
+      <image
+            commandId="org.eclipse.osee.ats.atsworkdefviewer.command"
+            icon="images/workDef.gif">
       </image>
    </extension>
    <extension
