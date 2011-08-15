@@ -364,9 +364,6 @@
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
        </command>
        <command
-             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
-       </command>
-       <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertRelation.command">
        </command>
        <separator
@@ -549,10 +546,6 @@
                 name="org.eclipse.ui.edit.ChangeView.revert.seperator"
                 visible="true">
           </separator>
-          <command
-                commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command"
-                label="Set attribute to baseline...">
-          </command>
     </menuContribution>
  </extension>
 	<extension
@@ -650,7 +643,7 @@
         </with>
      </enabledWhen>
       </handler>
-				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceArtifactWithBaselineHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
+				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceWithBaselineHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -699,18 +692,6 @@
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PurgeArtifactHandler"
         commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-  </handler>
-  <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceAttributeWithBaseline"
-        commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -797,18 +778,6 @@
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.AccessControlHandler"
         commandId="org.eclipse.osee.framework.ui.skynet.accessControl">
-  </handler>
-  <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceRelationsWithBaselineHandler"
-        commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertRelation.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
   </handler>
 	</extension>
 <extension
@@ -1337,12 +1306,8 @@
   </command>
 	</extension>
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Revert Artifact...">
+		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Replace with Baseline Version...">
          </command>
-  <command
-        id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command"
-        name="Set attribute to baseline...">
-  </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command" name="View Was/Is Comparison">
@@ -1362,10 +1327,6 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command"
         name="Single Native Diff">
-  </command>
-  <command
-        id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertRelation.command"
-        name="Revert Relations...">
   </command>
 	</extension>
 	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">

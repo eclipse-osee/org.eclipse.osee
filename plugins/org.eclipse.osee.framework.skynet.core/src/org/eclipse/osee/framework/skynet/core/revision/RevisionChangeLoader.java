@@ -68,6 +68,7 @@ public final class RevisionChangeLoader {
          recurseThroughBranchHierarchy);
 
       Collection<Change> changes = new ArrayList<Change>();
+
       for (TransactionRecord transactionId : transactionIds) {
          loadChanges(null, transactionId, monitor, artifact, changes);
       }

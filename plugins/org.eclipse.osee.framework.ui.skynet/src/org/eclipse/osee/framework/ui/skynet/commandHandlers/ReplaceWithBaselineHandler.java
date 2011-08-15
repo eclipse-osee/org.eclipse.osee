@@ -19,64 +19,67 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.osee.framework.ui.skynet.replace.ReplaceWithBaselineVersionDialog;
 
 /**
  * @author Paul K. Waldfogel
  * @author Jeff C. Phillips
  */
-public class ReplaceArtifactWithBaselineHandler extends CommandHandler {
+public class ReplaceWithBaselineHandler extends CommandHandler {
    private List<Change> changes;
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
-      Set<Artifact> duplicateCheck = new HashSet<Artifact>();
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+      Set<Artifact> duplicateArtCheck = new HashSet<Artifact>();
+      Set<Attribute<?>> duplicateAttrCheck = new HashSet<Attribute<?>>();
 
       for (Change change : changes) {
          Artifact changeArtifact = change.getChangeArtifact();
-         duplicateCheck.add(changeArtifact);
+
+         if (change instanceof AttributeChange) {
+            duplicateAttrCheck.add(((AttributeChange) change).getAttribute());
+         }
+         duplicateArtCheck.add(changeArtifact);
       }
 
-      Shell shell = HandlerUtil.getActiveShell(event);
-      boolean confirmed =
-         MessageDialog.openConfirm(shell,
-            "Confirm Replace with baseline version of " + duplicateCheck.size() + " attributes.",
-            "All attribute and relation changes will be replaced with thier baseline version.");
-
-      if (confirmed) {
-         scheduelReplaceWithBaseline(duplicateCheck);
-      }
+      scheduelReplaceWithBaseline(duplicateArtCheck, duplicateAttrCheck);
       return null;
    }
 
-   private void scheduelReplaceWithBaseline(final Collection<Artifact> artifacts) {
-      IOperation operation = new ReplaceArtifactWithBaselineOperation(artifacts);
-      Operations.executeAsJob(operation, true, Job.LONG, new JobChangeAdapter() {
+   private void scheduelReplaceWithBaseline(final Collection<Artifact> artifacts, final Collection<Attribute<?>> attributes) {
+      ReplaceWithBaselineVersionDialog baselineVersionDialog =
+         new ReplaceWithBaselineVersionDialog("Replace with Baseline Version", artifacts, attributes);
 
-         @Override
-         public void done(IJobChangeEvent event) {
-            super.done(event);
-            IStatus status = event.getResult();
-            if (status.getSeverity() == IStatus.ERROR) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, status.getException());
-            }
+      if (baselineVersionDialog.open() == Window.OK) {
+         for (AbstractOperation operation : baselineVersionDialog.getOperations()) {
+            Operations.executeAsJob(operation, true, Job.LONG, new JobChangeAdapter() {
+               @Override
+               public void done(IJobChangeEvent event) {
+                  super.done(event);
+                  IStatus status = event.getResult();
+                  if (status.getSeverity() == IStatus.ERROR) {
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, status.getException());
+                  }
+               }
+            });
          }
-      });
+
+      }
    }
 
    @Override

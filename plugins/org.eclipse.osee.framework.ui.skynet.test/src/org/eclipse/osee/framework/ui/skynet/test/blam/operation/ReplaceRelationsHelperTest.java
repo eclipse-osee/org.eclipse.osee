@@ -6,11 +6,11 @@
 package org.eclipse.osee.framework.ui.skynet.test.blam.operation;
 
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceRelationsHelper;
+import org.eclipse.osee.framework.ui.skynet.replace.ReplaceUtil;
 import org.junit.Assert;
 
 /**
- * Test case for {@link ReplaceRelationsHelper}
+ * Test case for {@link ReplaceUtil}
  * 
  * @author Jeff C. Phillips
  */
@@ -21,7 +21,8 @@ public class ReplaceRelationsHelperTest {
       String guid = GUID.create();
       String beforeGuid = GUID.create();
       String relationOrder = beforeGuid + "," + "123344443";
-      Assert.assertTrue(ReplaceRelationsHelper.addArtifactGuidToOrder(guid, beforeGuid, relationOrder).contains(guid));
+      Assert.assertTrue(ReplaceUtil.addArtifactGuidBeforeToRelationOrder(guid, beforeGuid, relationOrder).contains(
+         guid));
    }
 
    @org.junit.Test
@@ -29,7 +30,8 @@ public class ReplaceRelationsHelperTest {
       String guid = GUID.create();
       String beforeGuid = GUID.create();
       String relationOrder = "123344443";
-      Assert.assertFalse(ReplaceRelationsHelper.addArtifactGuidToOrder(guid, beforeGuid, relationOrder).contains(guid));
+      Assert.assertFalse(ReplaceUtil.addArtifactGuidBeforeToRelationOrder(guid, beforeGuid, relationOrder).contains(
+         guid));
    }
 
    @org.junit.Test
@@ -37,7 +39,7 @@ public class ReplaceRelationsHelperTest {
       String guid = GUID.create();
       String beforeGuid = GUID.create();
       String relationOrder = beforeGuid + "," + guid;
-      Assert.assertFalse(ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder).contains(guid));
+      Assert.assertFalse(ReplaceUtil.removeArtifactGuidFromRelationOrder(guid, relationOrder).contains(guid));
    }
 
    @org.junit.Test
@@ -45,7 +47,7 @@ public class ReplaceRelationsHelperTest {
       String guid = GUID.create();
       String beforeGuid = GUID.create();
       String relationOrder = "," + beforeGuid + guid;
-      String returnString = ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder);
+      String returnString = ReplaceUtil.removeArtifactGuidFromRelationOrder(guid, relationOrder);
       Assert.assertFalse(returnString.contains(guid));
       Assert.assertTrue(returnString.equals(beforeGuid));
    }
@@ -56,7 +58,7 @@ public class ReplaceRelationsHelperTest {
       String beforeGuid = GUID.create();
       String endGuid = GUID.create();
       String relationOrder = beforeGuid + guid + ", ," + endGuid;
-      String returnString = ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder);
+      String returnString = ReplaceUtil.removeArtifactGuidFromRelationOrder(guid, relationOrder);
       Assert.assertFalse(returnString.contains(guid));
       Assert.assertTrue(returnString.equals(beforeGuid + "," + endGuid));
    }
@@ -66,7 +68,7 @@ public class ReplaceRelationsHelperTest {
       String guid = GUID.create();
       String beforeGuid = GUID.create();
       String relationOrder = beforeGuid + "," + guid + ",";
-      String returnString = ReplaceRelationsHelper.removeArtifactGuidFromRelationOrder(guid, relationOrder);
+      String returnString = ReplaceUtil.removeArtifactGuidFromRelationOrder(guid, relationOrder);
       Assert.assertFalse(returnString.contains(guid));
       Assert.assertTrue(returnString.equals(beforeGuid));
    }
@@ -76,7 +78,7 @@ public class ReplaceRelationsHelperTest {
       String guid = GUID.create();
       String beforeGuid = GUID.create();
       String relationOrder = beforeGuid + "," + guid + ",";
-      String returnString = ReplaceRelationsHelper.getBeforeOrderGuid(relationOrder, guid);
+      String returnString = ReplaceUtil.getBeforeOrderGuid(relationOrder, guid).getFirst();
       Assert.assertTrue(returnString.equals(beforeGuid));
    }
 }
