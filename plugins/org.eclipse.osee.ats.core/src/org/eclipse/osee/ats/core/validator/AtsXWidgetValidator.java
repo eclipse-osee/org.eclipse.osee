@@ -46,7 +46,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "[%s] is required for transition",
             widgetDef.getName());
-      } else if (isTransitionToComplete(toStateDef) && isRequiredForCompletion(widgetDef)) {
+      } else if (isTransitionToComplete(toStateDef) && isRequiredForCompletion(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
             "[%s] is required for transition to [%s]", widgetDef.getName(), toStateDef.getName());
       }
