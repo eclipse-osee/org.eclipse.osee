@@ -53,7 +53,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
       columns.add("Name");
       columns.add("StorageState");
       if (!types.isEmpty()) {
-         AbstractOseeType type = (AbstractOseeType) types.iterator().next();
+         AbstractOseeType<?> type = (AbstractOseeType<?>) types.iterator().next();
          columns.addAll(type.getFieldNames());
       }
       return columns.toArray(new String[columns.size()]);

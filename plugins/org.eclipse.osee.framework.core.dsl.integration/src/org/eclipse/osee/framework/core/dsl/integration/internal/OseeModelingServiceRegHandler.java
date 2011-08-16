@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -25,8 +26,7 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class OseeModelingServiceRegHandler extends AbstractTrackingHandler {
 
-   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
-      //
+   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IOseeDatabaseService.class,//
       IOseeCachingService.class, //
       IOseeModelFactoryService.class, //
       IOseeCachingServiceFactory.class //
@@ -44,9 +44,10 @@ public class OseeModelingServiceRegHandler extends AbstractTrackingHandler {
       IOseeModelFactoryService modelFactoryService = getService(IOseeModelFactoryService.class, services);
       IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
       IOseeCachingServiceFactory cachingFactoryService = getService(IOseeCachingServiceFactory.class, services);
+      IOseeDatabaseService dbService = getService(IOseeDatabaseService.class, services);
 
       IOseeModelingService service =
-         new OseeModelingServiceImpl(modelFactoryService, cachingService, cachingFactoryService,
+         new OseeModelingServiceImpl(dbService, modelFactoryService, cachingService, cachingFactoryService,
             OseeDslFactory.eINSTANCE);
       registration = context.registerService(IOseeModelingService.class.getName(), service, null);
    }

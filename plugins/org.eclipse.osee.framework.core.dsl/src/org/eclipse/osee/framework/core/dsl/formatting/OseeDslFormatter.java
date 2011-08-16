@@ -37,6 +37,7 @@ public class OseeDslFormatter extends AbstractDeclarativeFormatter implements II
       "defaultValue",
       "entry",
       "guid",
+      "uuid",
       "add",
       "remove",
       "inheritsAll",

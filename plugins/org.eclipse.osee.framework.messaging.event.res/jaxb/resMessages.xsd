@@ -70,7 +70,7 @@
   <xsd:sequence>
     <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="relTypeGuid" type="xsd:string"/>
+    <xsd:element name="relTypeGuid" type="xsd:long"/>
     <xsd:element name="relationId" type="xsd:int"/>
     <xsd:element name="gammaId" type="xsd:int"/>
     <xsd:element name="artAId" type="xsd:int"/>
@@ -85,10 +85,10 @@
   <xsd:sequence>
     <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="artTypeGuid" type="xsd:string"/>
+    <xsd:element name="artTypeGuid" type="xsd:long"/>
     <xsd:element name="artGuid" type="xsd:string"/>
     <xsd:element name="attributes" type="RemoteAttributeChange1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="toArtTypeGuid" type="xsd:string"/>
+    <xsd:element name="toArtTypeGuid" type="xsd:long"/>
   </xsd:sequence>
     
 </xsd:complexType>
@@ -97,7 +97,7 @@
   <xsd:sequence>
     <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="relTypeGuid" type="xsd:string"/>
+    <xsd:element name="relTypeGuid" type="xsd:long"/>
     <xsd:element name="parentArt" type="RemoteBasicGuidArtifact1" maxOccurs="1" minOccurs="1"/>
   </xsd:sequence>
     
@@ -105,7 +105,7 @@
 
 <xsd:complexType name="RemoteAttributeChange1">
   <xsd:sequence>
-    <xsd:element name="attrTypeGuid" type="xsd:string"/>
+    <xsd:element name="attrTypeGuid" type="xsd:long"/>
     <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="attributeId" type="xsd:int"/>
     <xsd:element name="gammaId" type="xsd:int"/>

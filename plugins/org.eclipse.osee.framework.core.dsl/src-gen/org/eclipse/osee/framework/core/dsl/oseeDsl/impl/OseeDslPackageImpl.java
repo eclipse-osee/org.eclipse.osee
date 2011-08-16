@@ -491,6 +491,16 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getOseeType_Uuid()
+  {
+    return (EAttribute)oseeTypeEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getXArtifactType()
   {
     return xArtifactTypeEClass;
@@ -1354,6 +1364,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     oseeTypeEClass = createEClass(OSEE_TYPE);
     createEAttribute(oseeTypeEClass, OSEE_TYPE__NAME);
     createEAttribute(oseeTypeEClass, OSEE_TYPE__TYPE_GUID);
+    createEAttribute(oseeTypeEClass, OSEE_TYPE__UUID);
 
     xArtifactTypeEClass = createEClass(XARTIFACT_TYPE);
     createEAttribute(xArtifactTypeEClass, XARTIFACT_TYPE__ABSTRACT);
@@ -1524,6 +1535,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEClass(oseeTypeEClass, OseeType.class, "OseeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getOseeType_Name(), ecorePackage.getEString(), "name", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOseeType_TypeGuid(), ecorePackage.getEString(), "typeGuid", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOseeType_Uuid(), ecorePackage.getEString(), "uuid", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(xArtifactTypeEClass, XArtifactType.class, "XArtifactType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getXArtifactType_Abstract(), ecorePackage.getEBoolean(), "abstract", null, 0, 1, XArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

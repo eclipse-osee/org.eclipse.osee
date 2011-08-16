@@ -75,11 +75,44 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
    //      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    //   }
 
+   @Override
+   public void completeXArtifactType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXArtifactType_Uuid(model, assignment, context, acceptor);
+      completeRemoteTypeIdGeneration(context, acceptor);
+   }
+
+   @Override
+   public void completeXAttributeType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXAttributeType_Uuid(model, assignment, context, acceptor);
+      completeRemoteTypeIdGeneration(context, acceptor);
+   }
+
+   @Override
+   public void completeXOseeEnumType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXOseeEnumType_Uuid(model, assignment, context, acceptor);
+      completeRemoteTypeIdGeneration(context, acceptor);
+   }
+
+   @Override
+   public void completeXRelationType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXRelationType_Uuid(model, assignment, context, acceptor);
+      completeRemoteTypeIdGeneration(context, acceptor);
+   }
+
    private void completeGuidGeneration(RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {
          String generatedGUID = String.format("\"%s\"", GUID.create());
          String displayProposalAs = generatedGUID + "- GUID";
          ICompletionProposal proposal = createCompletionProposal(generatedGUID, displayProposalAs, null, context);
+         acceptor.accept(proposal);
+      }
+   }
+
+   private void completeRemoteTypeIdGeneration(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      if (acceptor.canAcceptMoreProposals()) {
+         String generatedRemoteId = "0x0000000000000000";
+         String displayProposalAs = generatedRemoteId + "- RemoteTypeId";
+         ICompletionProposal proposal = createCompletionProposal(generatedRemoteId, displayProposalAs, null, context);
          acceptor.accept(proposal);
       }
    }

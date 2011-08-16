@@ -5,94 +5,22 @@
 	<!-- __________________________________________________________ -->
 	<!--              Type Tables 					                   -->
 	<!-- __________________________________________________________ -->
-
-	<Table name="OSEE_ENUM_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ENUM_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ENUM_TYPE_NAME" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_G_IDX" type="UNIQUE" appliesTo="ENUM_TYPE_GUID" />
-	</Table>
-
-	<TableDescription referenceTable="OSEE_ENUM_TYPE">
-		<Note purpose="Core descriptions for OSEE enum constants."/>
-		<Column id="ENUM_TYPE_GUID" description="" />
-		<Column id="ENUM_TYPE_ID" description="" />
-		<Column id="ENUM_TYPE_NAME" description="" />
-	</TableDescription>
-
-	<Table name="OSEE_ENUM_TYPE_DEF" schema="OSEE" tablespace="osee_data">
-		<Column id="ENUM_ENTRY_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Column id="ORDINAL" defaultValue="not null" type="smallint" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_EO_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID, ORDINAL" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_G_IDX" type="UNIQUE" appliesTo="ENUM_ENTRY_GUID" />
-		<Constraint schema="OSEE" id="ENUM_TYPE_ID_FK1" type="FOREIGN KEY" appliesTo="ENUM_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ENUM_TYPE" column="ENUM_TYPE_ID" />
-		</Constraint>
-	</Table>
-
-	<TableDescription referenceTable="OSEE_ENUM_TYPE_DEF">
-		<Note purpose="Core descriptions for OSEE enum constants."/>
-		<Column id="ENUM_ENTRY_GUID" description=""/>
-		<Column id="ENUM_TYPE_ID" description="" />
-		<Column id="NAME" description="" />
-		<Column id="ORDINAL" description="" />
-	</TableDescription>
-
-	<Table name="OSEE_ATTRIBUTE_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ATTR_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="FILE_TYPE_EXTENSION" limits="20" type="VARCHAR" />
-		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Column id="DEFAULT_VALUE" limits="2000" type="VARCHAR" />
-		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="MIN_OCCURENCE" defaultValue="not null" type="INTEGER" />
-		<Column id="MAX_OCCURENCE" defaultValue="not null" type="INTEGER" />
-		<Column id="TIP_TEXT" limits="4000" type="VARCHAR" />
-		<Column id="TAGGER_ID" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_G_IDX" type="UNIQUE" appliesTo="ATTR_TYPE_GUID" />
-		<Constraint schema="OSEE" id="ATTR_BASE_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_BASE_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ATTRIBUTE_BASE_TYPE" column="ATTR_BASE_TYPE_ID"  />
-		</Constraint>
-		<Constraint schema="OSEE" id="ATTR_PROVIDER_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ATTRIBUTE_PROVIDER_TYPE" column="ATTR_PROVIDER_TYPE_ID"  />
-		</Constraint>
-		<Index id="OSEE_ATTRIBUTE_TYPE_N_IDX" tablespace="osee_index">
-			<AppliesTo id="NAME"/>
+	
+	<Table name="OSEE_TYPE_ID_MAP" schema="OSEE" tablespace="osee_data">
+		<Column id="LOCAL_ID" defaultValue="not null" type="smallint" />
+		<Column id="REMOTE_ID" defaultValue="not null" type="BIGINT" />
+		<Index id="OSEE_TYPE_ID_MAP_L_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="LOCAL_ID"/>
+		</Index>
+		<Index id="OSEE_TYPE_ID_MAP_R_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="REMOTE_ID"/>
 		</Index>
 	</Table>
-
-	<TableDescription referenceTable="OSEE_ATTRIBUTE_TYPE">
-		<Note purpose="Core descriptions for attribute types."/>
-		<Column id="ATTR_TYPE_GUID" description="" />
-		<Column id="ATTR_TYPE_ID" description="" />
-		<Column id="ATTR_BASE_TYPE_ID" description="" />
-		<Column id="ATTR_PROVIDER_TYPE_ID" description="" />
-		<Column id="FILE_TYPE_EXTENSION" description="" />
-		<Column id="NAME" description="" />
-		<Column id="DEFAULT_VALUE" description="" />
-		<Column id="ENUM_TYPE_ID" description="" />
-		<Column id="MIN_OCCURENCE" description="" />
-		<Column id="MAX_OCCURENCE" description="" />
-		<Column id="TIP_TEXT" description="" />
-		<Column id="TAGGER_ID" description="" />
-	</TableDescription>
-
-	<Table name="OSEE_ATTRIBUTE_BASE_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTRIBUTE_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ATTR_BASE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_BASE_TYPE_ID" />
-	</Table>
 	
-	<TableDescription referenceTable="OSEE_ATTRIBUTE_BASE_TYPE">
-		<Note purpose="Core descriptions for attibute base types. These are the most basic types of attributes OSEE operates on."/>
-		<Column id="ATTR_BASE_TYPE_ID" description="" example="1" />
-		<Column id="ATTRIBUTE_CLASS" description="" example="org.eclipse.osee.framework.skynet.core.BooleanAttribute" />
+	<TableDescription referenceTable="OSEE_TYPE_ID_MAP">
+		<Note purpose="Mapping of remote_id to local_id for type token lookups"/>
+		<Column id="LOCAL_ID" description="" />
+		<Column id="REMOTE_ID" description="" />
 	</TableDescription>
 
 	<Table name="OSEE_ATTRIBUTE_PROVIDER_TYPE" schema="OSEE" tablespace="osee_data">
@@ -108,81 +36,6 @@
 	</TableDescription>
 
 
-	<Table name="OSEE_RELATION_LINK_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="REL_LINK_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="A_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="B_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="A_ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="B_ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="MULTIPLICITY" defaultValue="not null" type="smallint" />
-		<Column id="DEFAULT_ORDER_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_G_IDX" type="UNIQUE" appliesTo="REL_LINK_TYPE_GUID" />
-	</Table>
-
-
-	<Table name="OSEE_ARTIFACT_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="IS_ABSTRACT" defaultValue="not null" type="smallint" />
-		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
-	    <Column id="IMAGE" type="BLOB" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_G_IDX" type="UNIQUE" appliesTo="ART_TYPE_GUID" />
-		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_index">
-			<AppliesTo id="NAME"/>
-		</Index>
-	</Table>
-
-	<TableDescription referenceTable="OSEE_ARTIFACT_TYPE">
-		<Note purpose="Core description of different artifact types"/>
-		<Column id="ART_TYPE_GUID" 		description=""/>
-		<Column id="ART_TYPE_ID" 			description=""/>
-		<Column id="IS_ABSTRACT" 			description="As in OOP, you cannot have an instance of Abstract Artifacts"/>
-		<Column id="NAME" 					description="Simple name." />
-		<Column id="IMAGE" 					description="BLOB" />
-	</TableDescription>
-
-	<Table name="OSEE_ARTIFACT_TYPE_INHERITANCE" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="SUPER_ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Constraint schema="OSEE" id="OSEE_ART_TYPE_INHERIT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, SUPER_ART_TYPE_ID" />
-		<Constraint schema="OSEE" id="OSEE_ART_TYPE_ITEM_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
-		</Constraint>
-		<Constraint schema="OSEE" id="OSEE_ART_SUPER_TYPE_FK" type="FOREIGN KEY" appliesTo="SUPER_ART_TYPE_ID">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
-		</Constraint>
-	</Table>
-	
-	<TableDescription referenceTable="OSEE_ARTIFACT_TYPE_INHERITANCE">
-		<Note purpose="Core descriptions of inheritance associated with artifact type."/>
-		<Column id="ART_TYPE_ID" description="" />
-		<Column id="SUPER_ART_TYPE_ID" description="" />
-	</TableDescription>
-
-	<Table name="OSEE_ARTIFACT_TYPE_ATTRIBUTES" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="BRANCH_GUID"  defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, ATTR_TYPE_ID, BRANCH_GUID" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_FK1" type="FOREIGN KEY" appliesTo="ATTR_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ATTRIBUTE_TYPE" column="ATTR_TYPE_ID" />
-		</Constraint>
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_FK2" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
-		</Constraint>
-	</Table>
-
-	<TableDescription referenceTable="OSEE_ARTIFACT_TYPE_ATTRIBUTES">
-		<Note purpose="Core descriptions of inheritance associated with artifact type."/>
-		<Column id="ART_TYPE_ID" description="" />
-		<Column id="ATTR_TYPE_ID" description="" />
-		<Column id="BRANCH_ID" description="" />
-	</TableDescription>
-
 	<!-- _____________________________________________________ -->
 	<!--                                                       -->
 	<!--              MAIN ARTIFACT TABLES                     -->
@@ -196,9 +49,10 @@
 		<Column id="GUID" defaultValue="not null" limits="22" type="VARCHAR" />
 		<Column id="HUMAN_READABLE_ID" defaultValue="not null" limits="5" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ART__G_A_PK" type="PRIMARY KEY" appliesTo="ART_ID, GAMMA_ID" />
-		<Constraint schema="OSEE" id="OSEE_ART__ART_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
+	 	<Constraint schema="OSEE" id="OSEE_ART__ART_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TYPE_ID_MAP" column="LOCAL_ID" />
 		</Constraint>
+
 		<Index id="OSEE_ART__ART_ID_IDX" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 		</Index>
@@ -274,8 +128,8 @@
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_RELATION__G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />	
-		<Constraint schema="OSEE" id="OSEE_RELATION__REL_TYPE_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_RELATION_LINK_TYPE" column="REL_LINK_TYPE_ID"  />
+	 	<Constraint schema="OSEE" id="OSEE_RELATION__REL_TYPE_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TYPE_ID_MAP" column="LOCAL_ID"  />
 		</Constraint>
 		<Index id="OSEE_RELATION__R_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>

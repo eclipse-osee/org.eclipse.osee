@@ -196,4 +196,9 @@ public class OseeSequenceImpl implements IOseeSequence {
       }
    }
 
+   @Override
+   public int getNextLocalTypeId() throws OseeCoreException {
+      return (int) getNextSequence(LOCAL_TYPE_ID_SEQ);
+   }
+
 }

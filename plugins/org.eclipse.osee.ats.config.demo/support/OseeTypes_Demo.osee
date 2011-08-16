@@ -1,6 +1,7 @@
 import "platform:/plugin/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
 artifactType "Demo Code Team Workflow" extends "Team Workflow" {
    guid "ABRNqDKnpGEKAyUm49gA"
+   uuid 0x000000000000004F
    attribute "demo.code.Change Type"
    attribute "demo.code.Action"
    attribute "demo.code.Category"
@@ -49,14 +50,17 @@ artifactType "Demo Code Team Workflow" extends "Team Workflow" {
 
 artifactType "Demo Req Team Workflow" extends "Team Workflow" {
    guid "ABRO5pC6kCmP35t06RwA"
+   uuid 0x0000000000000050
 }
 
 artifactType "Demo Test Team Workflow" extends "Team Workflow" {
    guid "ABRPeQO1qlCd4J7Bv5AA"
+   uuid 0x0000000000000051
 }
 
 oseeEnumType "enum.demo.code.category" {
    guid "ABRQJeuW4zJNV3RbrFgA"
+   uuid 0x3000000000000190
    entry "Code Problem" entryGuid "AHgPZbKmc3ysmzFjpZgA"
    entry "Design/Implementation" entryGuid "AHgPZbUNIwI2P31Om0gA"
    entry "Comment Change Only" entryGuid "AHgPZbadTBlE5CI67iwA"
@@ -66,6 +70,7 @@ oseeEnumType "enum.demo.code.category" {
 
 attributeType "demo.code.Category" extends EnumeratedAttribute {
    guid "ABRQ5humYCPEH5AYkWgA"
+   uuid 0x1000000000000106
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -74,6 +79,7 @@ attributeType "demo.code.Category" extends EnumeratedAttribute {
 
 attributeType "demo.code.Close Detection" extends StringAttribute {
    guid "ABRRhx_p7TW7l9plqgAA"
+   uuid 0x1000000000000107
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -82,6 +88,7 @@ attributeType "demo.code.Close Detection" extends StringAttribute {
 
 attributeType "demo.code.Code Change Req" extends StringAttribute {
    guid "ABRSFZmVcknSYAEyD9wA"
+   uuid 0x1000000000000108
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -90,6 +97,7 @@ attributeType "demo.code.Code Change Req" extends StringAttribute {
 
 attributeType "demo.code.CSCI" extends StringAttribute {
    guid "ABRTFh_tI33t10nIv+gA"
+   uuid 0x1000000000000109
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -98,6 +106,7 @@ attributeType "demo.code.CSCI" extends StringAttribute {
 
 oseeEnumType "enum.demo.code.defect.code" {
    guid "ABRTp7g+c3I+mmadl6AA"
+   uuid 0x3000000000000191
    entry "CL01 - Requirements Implemented Incorrectly" entryGuid "AHfrvF6LB3l2ASR0vEAA"
    entry "CL02 - Initialization Error" entryGuid "AHfrwIxoUhI9nSogT6QA"
    entry "CL03 - Out of Range Error" entryGuid "AHfzRJVB30_q_so4ppQA"
@@ -122,6 +131,7 @@ oseeEnumType "enum.demo.code.defect.code" {
 
 attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
    guid "ABRUvxesmjJdsuST9mAA"
+   uuid 0x100000000000010A
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -130,6 +140,7 @@ attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
 
 oseeEnumType "enum.demo.code.detection" {
    guid "ABRVcCZLEkYPujANarAA"
+   uuid 0x3000000000000192
    entry "Test Script(s)" entryGuid "AHfYTFIxP2WjivgIf5AA"
    entry "Inspection (Test)" entryGuid "AHfYUIExngyljHlV5NwA"
    entry "Hot Bench" entryGuid "AHfYUIIBaHndjAnnDVQA"
@@ -141,6 +152,7 @@ oseeEnumType "enum.demo.code.detection" {
 
 attributeType "demo.code.Detection" extends EnumeratedAttribute {
    guid "ABRWElm_M2vkSNxZxKAA"
+   uuid 0x100000000000010B
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -149,6 +161,7 @@ attributeType "demo.code.Detection" extends EnumeratedAttribute {
 
 attributeType "demo.code.Include Build" extends StringAttribute {
    guid "ABRW2eTRvXDMD9VHxWQA"
+   uuid 0x100000000000010C
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -157,6 +170,7 @@ attributeType "demo.code.Include Build" extends StringAttribute {
 
 attributeType "demo.code.LOC Affected" extends IntegerAttribute {
    guid "ABRXfMzSnHm3zaDVu2gA"
+   uuid 0x100000000000010D
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -164,6 +178,7 @@ attributeType "demo.code.LOC Affected" extends IntegerAttribute {
 
 attributeType "demo.code.Originating Build" extends StringAttribute {
    guid "ABRYXiY6_n0X62c1BHAA"
+   uuid 0x100000000000010E
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -172,6 +187,7 @@ attributeType "demo.code.Originating Build" extends StringAttribute {
 
 oseeEnumType "enum.demo.code.req.doc" {
    guid "ABRZKN5hR0dFQUAklKQA"
+   uuid 0x3000000000000193
    entry "Unknown" entryGuid "AHfFYLyC6lm5ycsW5SQA"
    entry "SubDD" entryGuid "AHfFYMLZl2C6DnGN8lgA"
    entry "CSID" entryGuid "AHfFYMOhyQ7tbByHMcgA"
@@ -181,6 +197,7 @@ oseeEnumType "enum.demo.code.req.doc" {
 
 attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
    guid "ABRZvuRbTBDJ0sTqPcwA"
+   uuid 0x100000000000010F
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -189,6 +206,7 @@ attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
 
 attributeType "demo.code.Subsystem" extends StringAttribute {
    guid "ABRbxVuSmy1WApUHDnwA"
+   uuid 0x1000000000000110
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -197,6 +215,7 @@ attributeType "demo.code.Subsystem" extends StringAttribute {
 
 attributeType "demo.code.Test Build" extends StringAttribute {
    guid "ABReOcmlLy3e5IYTV2gA"
+   uuid 0x1000000000000111
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -205,6 +224,7 @@ attributeType "demo.code.Test Build" extends StringAttribute {
 
 attributeType "demo.code.Test Mode" extends StringAttribute {
    guid "ABRfDcaDn3DrJdM34DgA"
+   uuid 0x1000000000000112
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -213,6 +233,7 @@ attributeType "demo.code.Test Mode" extends StringAttribute {
 
 attributeType "demo.code.Test Notes" extends StringAttribute {
    guid "ABRf1pY8MRiRGdE1zggA"
+   uuid 0x1000000000000113
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -221,6 +242,7 @@ attributeType "demo.code.Test Notes" extends StringAttribute {
 
 attributeType "demo.code.Test Script" extends StringAttribute {
    guid "ABRgW_jfy3u0j3WDf6AA"
+   uuid 0x1000000000000114
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -229,6 +251,7 @@ attributeType "demo.code.Test Script" extends StringAttribute {
 
 attributeType "demo.code.Change Type" extends StringAttribute {
    guid "ABRg2j6gg3_6OmOWBqgA"
+   uuid 0x1000000000000115
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -237,6 +260,7 @@ attributeType "demo.code.Change Type" extends StringAttribute {
 
 attributeType "demo.code.Action" extends StringAttribute {
    guid "ABRhr2WyvUsn9J_1VTAA"
+   uuid 0x1000000000000116
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -245,6 +269,7 @@ attributeType "demo.code.Action" extends StringAttribute {
 
 attributeType "demo.code.Volume" extends IntegerAttribute {
    guid "ABRiRvo9aBlJcoM8LTAA"
+   uuid 0x1000000000000117
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -253,6 +278,7 @@ attributeType "demo.code.Volume" extends IntegerAttribute {
 
 attributeType "demo.code.Verify Date" extends StringAttribute {
    guid "ABRizqne4EQcA7N5ZcAA"
+   uuid 0x1000000000000118
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -260,6 +286,7 @@ attributeType "demo.code.Verify Date" extends StringAttribute {
 
 attributeType "demo.code.Verifyer" extends StringAttribute {
    guid "ABRjTuu2Piq+nq1TSrgA"
+   uuid 0x1000000000000119
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -268,6 +295,7 @@ attributeType "demo.code.Verifyer" extends StringAttribute {
 
 attributeType "demo.code.Verify Note" extends StringAttribute {
    guid "ABRjwmY6egOOF8erYBwA"
+   uuid 0x100000000000011A
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -276,6 +304,7 @@ attributeType "demo.code.Verify Note" extends StringAttribute {
 
 attributeType "demo.code.Verify Detection" extends StringAttribute {
    guid "ABRkUcZZJWJ9fkoNZgQA"
+   uuid 0x100000000000011B
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -284,6 +313,7 @@ attributeType "demo.code.Verify Detection" extends StringAttribute {
 
 attributeType "demo.code.Hold Start" extends StringAttribute {
    guid "ABRlDUew92X89ymcZPgA"
+   uuid 0x100000000000011C
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -291,6 +321,7 @@ attributeType "demo.code.Hold Start" extends StringAttribute {
 
 attributeType "demo.code.Hold End" extends StringAttribute {
    guid "ABRll8ChAW78H7QCKIwA"
+   uuid 0x100000000000011D
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -298,6 +329,7 @@ attributeType "demo.code.Hold End" extends StringAttribute {
 
 attributeType "demo.code.Verify Mode" extends StringAttribute {
    guid "ABRmJgFbVnOpQCAHx7wA"
+   uuid 0x100000000000011E
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -306,6 +338,7 @@ attributeType "demo.code.Verify Mode" extends StringAttribute {
 
 attributeType "demo.code.Verified Build" extends StringAttribute {
    guid "ABRnYxlHAz5y9qbKqtAA"
+   uuid 0x100000000000011F
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -314,6 +347,7 @@ attributeType "demo.code.Verified Build" extends StringAttribute {
 
 attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
    guid "ABRoRaZy6Ak0R3okbuwA"
+   uuid 0x1000000000000120
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -321,6 +355,7 @@ attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
 
 attributeType "demo.code.Peer Review Id" extends StringAttribute {
    guid "ABRoy3Oj5D1qMO0UsjgA"
+   uuid 0x1000000000000121
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -328,6 +363,7 @@ attributeType "demo.code.Peer Review Id" extends StringAttribute {
 
 attributeType "demo.code.Ref PCR" extends StringAttribute {
    guid "ABRpVgGfiDOgRk_kYjQA"
+   uuid 0x1000000000000122
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -335,6 +371,7 @@ attributeType "demo.code.Ref PCR" extends StringAttribute {
 
 attributeType "demo.code.References" extends StringAttribute {
    guid "ABRp07vMy0Fm+Rmx0zAA"
+   uuid 0x1000000000000123
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -343,6 +380,7 @@ attributeType "demo.code.References" extends StringAttribute {
 
 attributeType "demo.code.Requirement Id" extends StringAttribute {
    guid "ABRzDPSHdHCSV+HKlfgA"
+   uuid 0x1000000000000124
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -350,6 +388,7 @@ attributeType "demo.code.Requirement Id" extends StringAttribute {
 
 attributeType "demo.code.Dup CPCR No" extends StringAttribute {
    guid "ABRqqRrPwhDA3wlufRwA"
+   uuid 0x1000000000000125
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -357,6 +396,7 @@ attributeType "demo.code.Dup CPCR No" extends StringAttribute {
 
 attributeType "demo.code.Dup CSCI" extends StringAttribute {
    guid "ABRrQury0TT0ewPrkdAA"
+   uuid 0x1000000000000126
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -364,6 +404,7 @@ attributeType "demo.code.Dup CSCI" extends StringAttribute {
 
 attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
    guid "ABRsC9QrXn_ZFc7XJGwA"
+   uuid 0x1000000000000127
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -371,6 +412,7 @@ attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
 
 attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
    guid "ABRsscEQlDjvm7LMw9wA"
+   uuid 0x1000000000000128
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -378,6 +420,7 @@ attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
 
 attributeType "demo.code.Librarian" extends StringAttribute {
    guid "ABRtoLTUgjGUAx38RSQA"
+   uuid 0x1000000000000129
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -386,6 +429,7 @@ attributeType "demo.code.Librarian" extends StringAttribute {
 
 attributeType "demo.code.Promote Date" extends StringAttribute {
    guid "ABRuMFVPKnk5dLTCHjAA"
+   uuid 0x100000000000012A
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -393,6 +437,7 @@ attributeType "demo.code.Promote Date" extends StringAttribute {
 
 attributeType "demo.code.Authorization Notes" extends StringAttribute {
    guid "ABRuqDcWHDzXnvbWy1AA"
+   uuid 0x100000000000012B
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -401,6 +446,7 @@ attributeType "demo.code.Authorization Notes" extends StringAttribute {
 
 attributeType "demo.code.Rework Letter" extends StringAttribute {
    guid "ABRvpbBrrU_jyRsYAIgA"
+   uuid 0x100000000000012C
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -408,6 +454,7 @@ attributeType "demo.code.Rework Letter" extends StringAttribute {
 
 attributeType "demo.code.Problem No" extends StringAttribute {
    guid "ABRwLk62FFNFKZD4JyQA"
+   uuid 0x100000000000012D
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -415,6 +462,7 @@ attributeType "demo.code.Problem No" extends StringAttribute {
 
 attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
    guid "ABRxUL5UADKw0RgtXzgA"
+   uuid 0x100000000000012E
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -422,6 +470,7 @@ attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
 
 attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
    guid "ABRw7cPf7DqrwZgaOcwA"
+   uuid 0x100000000000012F
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -429,6 +478,7 @@ attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
 
 attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
    guid "ABRyQVOyMkZKZPobp6QA"
+   uuid 0x1000000000000130
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

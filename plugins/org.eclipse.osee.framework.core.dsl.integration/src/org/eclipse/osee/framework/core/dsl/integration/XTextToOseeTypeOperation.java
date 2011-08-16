@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.database.core.RemoteIdManager;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -58,9 +59,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private final OseeDsl model;
    private final OseeTypeCache typeCache;
    private final BranchCache branchCache;
+   private final RemoteIdManager idManager;
 
-   public XTextToOseeTypeOperation(IOseeModelFactoryService provider, OseeTypeCache typeCache, BranchCache branchCache, OseeDsl model) {
+   public XTextToOseeTypeOperation(RemoteIdManager idManager, IOseeModelFactoryService provider, OseeTypeCache typeCache, BranchCache branchCache, OseeDsl model) {
       super("OSEE Text Model to OSEE", Activator.PLUGIN_ID);
+      this.idManager = idManager;
       this.provider = provider;
       this.typeCache = typeCache;
       this.branchCache = branchCache;
@@ -113,7 +116,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void handleXArtifactTypeCrossRef(XArtifactType xArtifactType) throws OseeCoreException {
-      ArtifactType targetArtifactType = typeCache.getArtifactTypeCache().getByGuid(xArtifactType.getTypeGuid());
+      ArtifactType targetArtifactType =
+         typeCache.getArtifactTypeCache().getByGuid(convertHexToLong(xArtifactType.getUuid()));
       translateSuperTypes(targetArtifactType, xArtifactType);
       Map<IOseeBranch, Collection<AttributeType>> validAttributesPerBranch = getOseeAttributes(xArtifactType);
       targetArtifactType.setAllAttributeTypes(validAttributesPerBranch);
@@ -138,7 +142,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          IOseeBranch branch = getAttributeBranch(xAttributeTypeRef);
-         AttributeType oseeAttributeType = typeCache.getAttributeTypeCache().getByGuid(xAttributeType.getTypeGuid());
+         AttributeType oseeAttributeType =
+            typeCache.getAttributeTypeCache().getByGuid(convertHexToLong(xAttributeType.getUuid()));
          if (oseeAttributeType != null) {
             Collection<AttributeType> listOfAllowedAttributes = validAttributes.get(branch);
             if (listOfAllowedAttributes == null) {
@@ -169,18 +174,18 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private void translateXArtifactType(XArtifactType xArtifactType) throws OseeCoreException {
       String artifactTypeName = xArtifactType.getName();
 
-      ArtifactType oseeArtifactType =
-         provider.getArtifactTypeFactory().createOrUpdate(typeCache.getArtifactTypeCache(),
-            xArtifactType.getTypeGuid(), xArtifactType.isAbstract(), artifactTypeName);
-      xArtifactType.setTypeGuid(oseeArtifactType.getGuid());
+      //      ArtifactType oseeArtifactType =
+      provider.getArtifactTypeFactory().createOrUpdate(typeCache.getArtifactTypeCache(),
+         convertHexToLong(xArtifactType.getUuid()), xArtifactType.isAbstract(), artifactTypeName);
+      //      xArtifactType.setUuid(String.valueOf(oseeArtifactType.getGuid()));
    }
 
    private void translateXEnumType(XOseeEnumType xEnumType) throws OseeCoreException {
       String enumTypeName = xEnumType.getName();
 
       OseeEnumType oseeEnumType =
-         provider.getOseeEnumTypeFactory().createOrUpdate(typeCache.getEnumTypeCache(), xEnumType.getTypeGuid(),
-            enumTypeName);
+         provider.getOseeEnumTypeFactory().createOrUpdate(typeCache.getEnumTypeCache(),
+            OseeUtil.convertHexStringToLong(xEnumType.getUuid()), enumTypeName);
 
       int lastOrdinal = 0;
       List<OseeEnumEntry> oseeEnumEntries = new ArrayList<OseeEnumEntry>();
@@ -230,12 +235,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       XOseeEnumType xEnumType = xAttributeType.getEnumType();
       OseeEnumType oseeEnumType = null;
       if (xEnumType != null) {
-         oseeEnumType = typeCache.getEnumTypeCache().getByGuid(xEnumType.getTypeGuid());
+         oseeEnumType = typeCache.getEnumTypeCache().getByGuid(convertHexToLong(xEnumType.getUuid()));
       }
 
       AttributeTypeCache cache = typeCache.getAttributeTypeCache();
       AttributeType oseeAttributeType = provider.getAttributeTypeFactory().createOrUpdate(cache, //
-         xAttributeType.getTypeGuid(), //
+         convertHexToLong(xAttributeType.getUuid()), //
          xAttributeType.getName(), //
          getQualifiedTypeName(xAttributeType.getBaseAttributeType()), //
          getQualifiedTypeName(xAttributeType.getDataProvider()), //
@@ -247,7 +252,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          xAttributeType.getDescription(), //
          xAttributeType.getTaggerId()//
       );
-      xAttributeType.setTypeGuid(oseeAttributeType.getGuid());
+      //      xAttributeType.setUuid(String.valueOf(oseeAttributeType.getGuid()));
    }
 
    private String getQualifiedTypeName(String id) {
@@ -270,7 +275,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
       RelationType oseeRelationType =
          provider.getRelationTypeFactory().createOrUpdate(typeCache.getRelationTypeCache(), //
-            xRelationType.getTypeGuid(), //
+            convertHexToLong(xRelationType.getUuid()), //
             xRelationType.getName(), //
             xRelationType.getSideAName(), //
             xRelationType.getSideBName(), //
@@ -280,7 +285,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             OseeUtil.orderTypeNameToGuid(xRelationType.getDefaultOrderType()) //
          );
 
-      xRelationType.setTypeGuid(oseeRelationType.getGuid());
+      //      xRelationType.setUuid(String.valueOf(oseeRelationType.getGuid()));
+   }
+
+   private long convertHexToLong(String hexString) throws OseeCoreException {
+      return OseeUtil.convertHexStringToLong(hexString);
    }
 
 }

@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.database.init;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DbInitConfiguration {
    private final boolean isBareBones;
@@ -47,12 +49,12 @@ public class DbInitConfiguration {
    }
 
    public List<String> getOseeTypeExtensionIds() {
-      List<String> oseeTypes = new ArrayList<String>();
+      Set<String> oseeTypes = new LinkedHashSet<String>();
       oseeTypes.add("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework");
       oseeTypes.add("org.eclipse.osee.ats.OseeTypes_ATS");
       oseeTypes.add("org.eclipse.osee.coverage.OseeTypes_Coverage");
       oseeTypes.add("org.eclipse.osee.ote.define.OseeTypesOTE");
       oseeTypes.addAll(oseeTypeIds);
-      return oseeTypes;
+      return new ArrayList<String>(oseeTypes);
    }
 }

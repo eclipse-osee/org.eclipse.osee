@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeTypeImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeTypeImpl#getTypeGuid <em>Type Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeTypeImpl#getUuid <em>Uuid</em>}</li>
  * </ul>
  * </p>
  *
@@ -70,6 +71,26 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * @ordered
    */
   protected String typeGuid = TYPE_GUID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUuid()
+   * @generated
+   * @ordered
+   */
+  protected static final String UUID_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUuid()
+   * @generated
+   * @ordered
+   */
+  protected String uuid = UUID_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -143,6 +164,29 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getUuid()
+  {
+    return uuid;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setUuid(String newUuid)
+  {
+    String oldUuid = uuid;
+    uuid = newUuid;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__UUID, oldUuid, uuid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -152,6 +196,8 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
         return getName();
       case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
         return getTypeGuid();
+      case OseeDslPackage.OSEE_TYPE__UUID:
+        return getUuid();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -171,6 +217,9 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
         return;
       case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
         setTypeGuid((String)newValue);
+        return;
+      case OseeDslPackage.OSEE_TYPE__UUID:
+        setUuid((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -192,6 +241,9 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
       case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
         setTypeGuid(TYPE_GUID_EDEFAULT);
         return;
+      case OseeDslPackage.OSEE_TYPE__UUID:
+        setUuid(UUID_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -210,6 +262,8 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
         return TYPE_GUID_EDEFAULT == null ? typeGuid != null : !TYPE_GUID_EDEFAULT.equals(typeGuid);
+      case OseeDslPackage.OSEE_TYPE__UUID:
+        return UUID_EDEFAULT == null ? uuid != null : !UUID_EDEFAULT.equals(uuid);
     }
     return super.eIsSet(featureID);
   }
@@ -229,6 +283,8 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
     result.append(name);
     result.append(", typeGuid: ");
     result.append(typeGuid);
+    result.append(", uuid: ");
+    result.append(uuid);
     result.append(')');
     return result.toString();
   }

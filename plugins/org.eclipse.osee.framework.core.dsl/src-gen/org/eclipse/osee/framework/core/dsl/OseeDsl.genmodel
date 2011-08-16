@@ -55,6 +55,7 @@
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeType/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeType/typeGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeType/uuid"/>
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactType/abstract"/>

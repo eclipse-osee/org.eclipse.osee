@@ -33,6 +33,7 @@ public interface IOseeSequence {
    static final String IMPORT_ID_SEQ = "SKYNET_IMPORT_ID_SEQ";
    static final String IMPORT_MAPPED_INDEX_SEQ = "SKYNET_IMPORT_MAPPED_INDEX_SEQ";
    static final String TTE_SESSION_SEQ = "TTE_SESSION_SEQ";
+   static final String LOCAL_TYPE_ID_SEQ = "LOCAL_TYPE_ID_SEQ";
 
    long getNextSequence(String sequenceName) throws OseeCoreException;
 
@@ -67,6 +68,8 @@ public interface IOseeSequence {
    int getNextImportId() throws OseeCoreException;
 
    int getNextImportMappedIndexId() throws OseeCoreException;
+
+   int getNextLocalTypeId() throws OseeCoreException;
 
    void clear();
 }
