@@ -66,35 +66,6 @@ public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
       return transactions != null ? transactions.values() : Collections.<SkynetTransaction> emptyList();
    }
 
-   public void doSomething() throws OseeCoreException {
-
-      for (Artifact artifact : artifacts) {
-         Branch branch = artifact.getBranch();
-         TransactionRecord baseTx = branch.getBaseTransaction();
-
-         Collection<Change> changes = ChangeManager.getChangesMadeOnCurrentBranch(artifact, new NullProgressMonitor());
-         new RelationChangeCombiner();
-         changes = RelationChangeCombiner.combine(changes, baseTx);
-
-         for (Change change : changes) {
-            if (change instanceof RelationChange) {
-               HandleAttributeOrderData orderData =
-                  new RelationHandler().handleRelations(artifact, baseTx, (RelationChange) change,
-                     getTransaction(artifact.getBranch()));
-               handleAttributeOrder(orderData);
-            }
-         }
-         SkynetTransaction transaction = getTransaction(branch);
-         artifact.persist(transaction);
-      }
-      for (SkynetTransaction transaction : getTransactions()) {
-         transaction.execute();
-      }
-      for (Artifact artifact : artifacts) {
-         artifact.reloadAttributesAndRelations();
-      }
-   }
-
    private void handleAttributeOrder(HandleAttributeOrderData orderData) throws OseeCoreException {
       //this is not correct but will work for now
       if (orderData.getLink().getRelationType().isOrdered()) {
@@ -127,8 +98,36 @@ public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      //do something
-      doSomething();
+      runDoWork();
+   }
+
+   public void runDoWork() throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         Branch branch = artifact.getBranch();
+         TransactionRecord baseTx;
+         baseTx = branch.getBaseTransaction();
+
+         Collection<Change> changes = ChangeManager.getChangesMadeOnCurrentBranch(artifact, new NullProgressMonitor());
+         new RelationChangeCombiner();
+         changes = RelationChangeCombiner.combine(changes, baseTx);
+
+         for (Change change : changes) {
+            if (change instanceof RelationChange) {
+               HandleAttributeOrderData orderData =
+                  new RelationHandler().handleRelations(artifact, baseTx, (RelationChange) change,
+                     getTransaction(artifact.getBranch()));
+               handleAttributeOrder(orderData);
+            }
+         }
+         SkynetTransaction transaction = getTransaction(branch);
+         artifact.persist(transaction);
+      }
+      for (SkynetTransaction transaction : getTransactions()) {
+         transaction.execute();
+      }
+      for (Artifact artifact : artifacts) {
+         artifact.reloadAttributesAndRelations();
+      }
    }
 
    @Override

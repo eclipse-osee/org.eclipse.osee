@@ -42,7 +42,7 @@ public class RelationHandler {
       if (isInBaselineTransaction) {
          if (link.getGammaId() != change.getGamma() || linkDeleted) {
             link.replaceWithVersion((int) change.getGamma());
-            skynetTransaction.addRelation(link);
+            skynetTransaction.addRelation(artifact, link);
          }
       } else {
          link.delete(false);

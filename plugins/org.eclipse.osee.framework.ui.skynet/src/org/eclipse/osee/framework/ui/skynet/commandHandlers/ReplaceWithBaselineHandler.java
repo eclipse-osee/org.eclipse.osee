@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.replace.ReplaceWithBaselineVersionDialog;
 
 /**
@@ -73,7 +73,7 @@ public class ReplaceWithBaselineHandler extends CommandHandler {
                   super.done(event);
                   IStatus status = event.getResult();
                   if (status.getSeverity() == IStatus.ERROR) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, status.getException());
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, status.getException());
                   }
                }
             });

@@ -290,7 +290,7 @@ public final class SkynetTransaction extends AbstractOperation {
       }
    }
 
-   private void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
+   public void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
       checkAccess(artifact, link);
       madeChanges = true;
       link.setNotDirty();

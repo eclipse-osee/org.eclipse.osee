@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -39,7 +39,7 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
    private Map<Branch, SkynetTransaction> transactions;
 
    public ReplaceAttributeWithBaselineOperation(Collection<Attribute<?>> attributes) {
-      super("Replace artifact with baseline values", SkynetGuiPlugin.PLUGIN_ID);
+      super("Replace artifact with baseline values", Activator.PLUGIN_ID);
       this.attributes = attributes;
    }
 
