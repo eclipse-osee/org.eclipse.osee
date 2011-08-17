@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 public class PurgeTransactionOperationWithListener {
-   public static IOperation getPurgeTransactionOperation(boolean force, final int... transactionIdNumbers) {
+   public static IOperation getPurgeTransactionOperation(final int... transactionIdNumbers) {
       final PurgeTransactionOperation op =
-         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), force, transactionIdNumbers);
+         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), transactionIdNumbers);
 
       PurgeTransactionListener listener = new PurgeTransactionListener() {
 

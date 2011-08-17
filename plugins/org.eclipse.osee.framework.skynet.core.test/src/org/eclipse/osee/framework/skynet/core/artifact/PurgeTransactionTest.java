@@ -101,7 +101,7 @@ public class PurgeTransactionTest {
    }
 
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
-      IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(true, transactionId);
+      IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactionId);
       Asserts.testOperation(operation, IStatus.OK);
       Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
       DbTestUtil.getTableRowCounts(dbCount, tables);

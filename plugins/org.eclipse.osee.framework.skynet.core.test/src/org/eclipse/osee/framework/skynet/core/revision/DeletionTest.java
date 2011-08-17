@@ -166,8 +166,7 @@ public class DeletionTest {
       //OK now lets delete the transaction and check for the same thing
 
       if (DELETE_TRANSACTION_TEST) {
-         IOperation operation =
-            PurgeTransactionOperationWithListener.getPurgeTransactionOperation(true, deletionTransaction);
+         IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(deletionTransaction);
          Asserts.testOperation(operation, IStatus.OK);
          if (DEBUG) {
             System.err.println("Deleting the Transaction");

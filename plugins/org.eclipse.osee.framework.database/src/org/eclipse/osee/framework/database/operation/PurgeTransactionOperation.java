@@ -74,7 +74,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<PurgeTransactionListener>();
    private Collection<TransactionRecord> changedTransactions;
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, boolean force, OperationLogger logger, int... txIdsToDelete) {
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, OperationLogger logger, int... txIdsToDelete) {
       super(databaseService, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
          Activator.PLUGIN_ID, logger);
       this.txIdsToDelete = txIdsToDelete;
@@ -82,8 +82,8 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       transactionCache = Activator.getOseeCachingService().getTransactionCache();
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, boolean force, int... txIdsToDelete) {
-      this(databaseService, force, NullOperationLogger.getSingleton(), txIdsToDelete);
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, int... txIdsToDelete) {
+      this(databaseService, NullOperationLogger.getSingleton(), txIdsToDelete);
    }
 
    public void addListener(PurgeTransactionListener listener) {

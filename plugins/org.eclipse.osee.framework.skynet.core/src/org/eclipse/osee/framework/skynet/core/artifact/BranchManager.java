@@ -312,16 +312,8 @@ public class BranchManager {
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
     */
-   public static void purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
-      purgeTransactions(jobChangeListener, false, transactionIdNumbers);
-   }
-
-   /**
-    * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    */
-   public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
-      final IOperation op =
-         PurgeTransactionOperationWithListener.getPurgeTransactionOperation(force, transactionIdNumbers);
+   public static Job purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
+      final IOperation op = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactionIdNumbers);
 
       return Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
    }
