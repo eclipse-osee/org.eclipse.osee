@@ -41,7 +41,7 @@
 		<pathconvert property="source.jars" setonempty="false"
 			pathsep=";">
 			<path>
-				<fileset dir="${tempSource}/plugins" includes="*source_*" />
+				<fileset dir="${tempSource}/plugins" includes="org.eclipse.osee.*source_*" />
 			</path>
 		</pathconvert>
 
