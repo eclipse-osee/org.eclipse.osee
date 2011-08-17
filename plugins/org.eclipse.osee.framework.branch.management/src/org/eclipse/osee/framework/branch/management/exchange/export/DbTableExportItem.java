@@ -15,12 +15,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -29,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 
@@ -99,6 +103,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
          for (int columnIndex = 1; columnIndex <= numberOfColumns; columnIndex++) {
             String columnName = chStmt.getColumnName(columnIndex).toLowerCase();
             Object value = chStmt.getObject(columnIndex);
+
             if (columnName.equals("uri")) {
                handleBinaryContent(binaryContentBuffer, value);
             } else if (columnName.equals("value")) {
@@ -116,8 +121,8 @@ public class DbTableExportItem extends AbstractDbExportItem {
             } else if (columnName.equals(ExportImportXml.REL_TYPE_ID)) {
                handleTypeId(appendable, value, services.getCachingService().getRelationTypeCache());
             } else {
-               if (value instanceof Timestamp) {
-                  Timestamp timestamp = (Timestamp) value;
+               Timestamp timestamp = asTimestamp(value);
+               if (timestamp != null) {
                   ExportImportXml.addXmlAttribute(appendable, columnName, timestamp);
                } else {
                   try {
@@ -157,6 +162,28 @@ public class DbTableExportItem extends AbstractDbExportItem {
             ExportImportXml.closePartialXmlNode(appendable);
          }
       }
+   }
+
+   private Timestamp asTimestamp(Object value) {
+      Timestamp toReturn = null;
+      if (value instanceof Timestamp) {
+         toReturn = (Timestamp) value;
+      } else if (value != null) {
+         try {
+            // Account for oracle driver issues
+            Class<?> clazz = value.getClass();
+            Method method = clazz.getMethod("timestampValue");
+            Object object = method.invoke(value);
+            if (object instanceof Timestamp) {
+               toReturn = (Timestamp) object;
+            }
+         } catch (NoSuchMethodException ex) {
+            // Do Nothing
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, ex);
+         }
+      }
+      return toReturn;
    }
 
    private void handleBinaryContent(Appendable appendable, Object value) throws OseeCoreException, IOException {
