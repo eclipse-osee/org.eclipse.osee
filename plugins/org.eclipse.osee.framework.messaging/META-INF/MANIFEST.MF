@@ -125,7 +125,7 @@ Import-Package: javax.jms,
  org.eclipse.osee.framework.plugin.core.util,
  org.eclipse.osgi.framework.console,
  org.osgi.framework,
- org.osgi.util.tracker;version="1.4.0"
+ org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.messaging,

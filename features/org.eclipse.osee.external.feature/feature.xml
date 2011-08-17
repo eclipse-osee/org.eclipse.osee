@@ -34,6 +34,7 @@
       <import feature="org.eclipse.nebula.widgets.cdatetime.feature" version="0.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.nebula.widgets.xviewer.feature" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.h2" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.slf4j.api" version="1.6.1" match="equivalent"/>
    </requires>
 
    <plugin
@@ -209,4 +210,39 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.slf4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.slf4j.jcl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="ch.qos.logback.slf4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="ch.qos.logback.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="ch.qos.logback.classic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 </feature>
