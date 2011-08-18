@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -64,12 +65,7 @@ public class ValidationReportOperation extends AbstractOperation {
       rd.log("<b>Artifact Validation Checks: </b> All Errors reported must be fixed.");
       rd.log("<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
       try {
-         ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
-         Collection<Artifact> changedArtifacts =
-            changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW, ModificationType.MODIFIED);
-
-         runOperations(changedArtifacts, rd);
-
+         performValidation();
          rd.log("Validation Complete");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -90,6 +86,15 @@ public class ValidationReportOperation extends AbstractOperation {
                Manipulations.ERROR_WARNING_HEADER, Manipulations.WARNING_YELLOW);
          }
       });
+   }
+
+   public String performValidation() throws OseeCoreException {
+      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
+      Collection<Artifact> changedArtifacts =
+         changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW, ModificationType.MODIFIED);
+
+      runOperations(changedArtifacts, rd);
+      return rd.toString();
    }
 
    private void runOperations(Collection<Artifact> itemsToCheck, XResultData rd) {

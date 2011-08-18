@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.validate;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -28,6 +29,13 @@ public class ValidateReqChangeReport {
       XResultData resultData = new XResultData(false);
       IOperation operation = new ValidationReportOperation(resultData, teamArt, attributeSetRules, relationSetRules);
       Operations.executeAsJob(operation, true);
+   }
+
+   public static String performValidation(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) throws OseeCoreException {
+      XResultData resultData = new XResultData(false);
+      ValidationReportOperation operation =
+         new ValidationReportOperation(resultData, teamArt, attributeSetRules, relationSetRules);
+      return operation.performValidation();
    }
 
    static void reportStatus(XResultData rd, IStatus status) {
