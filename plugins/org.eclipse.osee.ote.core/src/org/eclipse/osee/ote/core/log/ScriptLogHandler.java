@@ -110,10 +110,6 @@ public class ScriptLogHandler extends Handler {
    public void writeOutFile() {
       try {
          Jaxp.writeXmlDocument(document, outFile, format);
-      } catch (TransformerException ex) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
-      } catch (IOException ex) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       } catch (Throwable th) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, th);
       }
