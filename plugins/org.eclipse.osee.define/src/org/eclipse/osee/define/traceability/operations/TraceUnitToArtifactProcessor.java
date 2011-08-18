@@ -229,7 +229,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       if (hasChange || artifactWasCreated) {
          HierarchyHandler.addArtifact(transaction, traceUnitArtifact);
-         if (traceUnitArtifact.isOfType(CoreArtifactTypes.AbstractTestUnit)) {
+         if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
             TestRunHandler.linkWithTestUnit(transaction, traceUnitArtifact);
          }
          traceUnitArtifact.persist(transaction);

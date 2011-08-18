@@ -22,7 +22,6 @@ public final class CoreArtifactTypes {
    public static final IArtifactType AccessControlModel = TokenFactory.createArtifactType("CJr1bPfZQkbiuTA4FewA", "Access Control Model");
    public static final IArtifactType AbstractSoftwareRequirement = TokenFactory.createArtifactType("ABNAYPwV6H4EkjQ3+QQA", "Abstract Software Requirement");
    public static final IArtifactType AbstractTestResult = TokenFactory.createArtifactType("ATkaanWmHH3PkhGNVjwA", "Abstract Test Result");
-   public static final IArtifactType AbstractTestUnit = TokenFactory.createArtifactType("AISIbSI6wzEUfPdCQaAA", "Abstract Test Unit");
    public static final IArtifactType Artifact = TokenFactory.createArtifactType("AAMFDh6S7gRLupAMwywA", "Artifact");
    public static final IArtifactType CodeUnit = TokenFactory.createArtifactType("AAMFDkEh216dzK1mTZgA", "Code Unit");
    public static final IArtifactType Component = TokenFactory.createArtifactType("AAMFDkG6omAsD6dXPYgA", "Component");
@@ -57,7 +56,6 @@ public final class CoreArtifactTypes {
    public static final IArtifactType TestProcedure = TokenFactory.createArtifactType("AAMFDjsjiGhoWpqM4PQA", "Test Procedure");
    public static final IArtifactType TestProcedureNative = TokenFactory.createArtifactType("AAMFDiWs_HdDJTbPPQgA", "Test Procedure Native");
    public static final IArtifactType TestProcedureWML = TokenFactory.createArtifactType("AAMFDiUeCG3KWx5XqeQA", "Test Procedure WML");
-   public static final IArtifactType TestProcedureXL = TokenFactory.createArtifactType("AAn_QG1xVGGhvAzxVMQA", "Test Procedure XL");
    public static final IArtifactType TestResultNative = TokenFactory.createArtifactType("ATkaanWmHH3PkhGNVjwA", "Test Result Native");
    public static final IArtifactType TestResultWML = TokenFactory.createArtifactType("ATk6NKFFmD_zg1b_eaQA", "Test Result WML");
    public static final IArtifactType TestRun = TokenFactory.createArtifactType("AAMFDjqDHWo+orlSpaQA", "Test Run");
