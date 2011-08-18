@@ -118,7 +118,6 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.ui.ws,
  org.eclipse.osee.ote.define.artifacts,
- org.eclipse.osee.support.test.util,
  org.eclipse.xtext.resource,
  org.eclipse.zest.core.viewers,
  org.eclipse.zest.core.widgets

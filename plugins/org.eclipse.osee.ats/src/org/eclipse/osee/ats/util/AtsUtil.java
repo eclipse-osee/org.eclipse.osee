@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -108,7 +107,7 @@ public final class AtsUtil {
    }
 
    public static boolean isInTest() {
-      return TestUtil.isInTest();
+      return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
    public static Composite createCommonPageComposite(Composite parent) {
