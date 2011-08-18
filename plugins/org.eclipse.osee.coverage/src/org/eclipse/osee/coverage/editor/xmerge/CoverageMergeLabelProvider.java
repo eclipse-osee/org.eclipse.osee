@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.editor.xmerge;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
@@ -24,6 +26,8 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -98,18 +102,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       }
 
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof IMergeItem) {
-         if (!((IMergeItem) element).isImportAllowed()) {
-            return "";
-         }
-         if (element instanceof MergeItem && ((MergeItem) element).getMergeType() == MergeType.CI_Method_Update) {
-            MergeItem mergeItem = (MergeItem) element;
-            if (mergeItem.getPackageItem() instanceof CoverageItem) {
-               return String.format("%s from [%s] to [%s]", mergeItem.getMergeType().toString(),
-                  ((CoverageItem) mergeItem.getPackageItem()).getCoverageMethod().getName(),
-                  ((CoverageItem) mergeItem.getImportItem()).getCoverageMethod().getName());
-            }
-         }
-         return ((IMergeItem) element).getMergeType().toString();
+         return getMergeItemImportColumnText((IMergeItem) element);
       }
       if (coverage instanceof MergeItemGroup) {
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
@@ -119,6 +112,35 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       }
 
       return super.getColumnText(element, xCol, columnIndex);
+   }
+
+   public String getMergeItemImportColumnText(IMergeItem mergeItem) {
+      if (!mergeItem.isImportAllowed()) {
+         return "";
+      }
+      if (mergeItem instanceof MergeItem && ((MergeItem) mergeItem).getMergeType() == MergeType.CI_Method_Update) {
+         MergeItem fullMergeItem = (MergeItem) mergeItem;
+         if (fullMergeItem.getPackageItem() instanceof CoverageItem) {
+            return String.format("%s from [%s] to [%s]", fullMergeItem.getMergeType().toString(),
+               ((CoverageItem) fullMergeItem.getPackageItem()).getCoverageMethod().getName(),
+               ((CoverageItem) fullMergeItem.getImportItem()).getCoverageMethod().getName());
+         }
+      }
+      // Show all the children's import column so user can see what changes without having to expand
+      if (mergeItem instanceof MergeItemGroup && mergeItem.getMergeType() == MergeType.CI_Changes) {
+         MergeItemGroup group = (MergeItemGroup) mergeItem;
+         Set<String> childrenStrs = new HashSet<String>();
+         for (IMergeItem child : group.getMergeItems()) {
+            if (child instanceof MergeItem) {
+               String childImportStr = getMergeItemImportColumnText(child);
+               if (Strings.isValid(childImportStr)) {
+                  childrenStrs.add(childImportStr);
+               }
+            }
+         }
+         return group.getMergeType().name() + " - " + Collections.toString("; ", childrenStrs);
+      }
+      return mergeItem.getMergeType().toString();
    }
 
    @Override
