@@ -75,10 +75,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    public ReviewBlockType getReviewBlockType() throws OseeCoreException {
       String typeStr = getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, null);
       if (typeStr == null) {
-         // Check old attribute value
-         if (getSoleAttributeValue(AtsAttributeTypes.BlockingReview, false)) {
-            return ReviewBlockType.Transition;
-         }
          return ReviewBlockType.None;
       }
       return ReviewBlockType.valueOf(typeStr);

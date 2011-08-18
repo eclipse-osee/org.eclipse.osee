@@ -31,7 +31,6 @@ public final class AtsAttributeTypes {
    public static final IAttributeType AllowCommitBranch = createType("AAMFEbCZCkwgj73BsQgA", "Allow Commit Branch");
    public static final IAttributeType AllowCreateBranch = createType("AAMFEbARuQEvi6rtY5gA", "Allow Create Branch");
    public static final IAttributeType BaselineBranchGuid = createType("AAMFEdIjJ2za2fblEVgA", "Baseline Branch Guid", "Basline branch associated with ATS object.");
-   public static final IAttributeType BlockingReview = createType("AAMFEctKkjMRrIy1C7gA", "Blocking Review");
    
    public static final IAttributeType Category1 = createType("AAMFEdrYniOQYrYUKKQA", "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final IAttributeType Category2 = createType("AAMFEdthBkolbJKLXuAA", "Category2", Category1.getDescription());
