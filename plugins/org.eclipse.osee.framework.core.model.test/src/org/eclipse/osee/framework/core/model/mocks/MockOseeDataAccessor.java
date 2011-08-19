@@ -11,16 +11,16 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockOseeDataAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
+public class MockOseeDataAccessor<K, T extends IOseeStorable> implements IOseeDataAccessor<K, T> {
 
    private boolean wasLoadCalled = false;
    private boolean wasStoreCalled = false;
@@ -43,7 +43,7 @@ public class MockOseeDataAccessor<T extends IOseeStorable> implements IOseeDataA
 
    @SuppressWarnings("unused")
    @Override
-   public void load(IOseeCache<T> cache) throws OseeCoreException {
+   public void load(IOseeCache<K, T> cache) throws OseeCoreException {
       Assert.assertNotNull(cache);
       setLoadCalled(true);
    }

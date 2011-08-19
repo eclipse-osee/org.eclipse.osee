@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<ArtifactType> {
+public class DatabaseArtifactTypeAccessor extends AbstractTypeDatabaseAccessor<ArtifactType> {
    protected static final int ABSTRACT_TYPE_INDICATOR = 1;
    protected static final int CONCRETE_TYPE_INDICATOR = 0;
 
@@ -84,7 +84,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
    }
 
    @Override
-   public void load(IOseeCache<ArtifactType> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, ArtifactType> cache) throws OseeCoreException {
       attributeCache.ensurePopulated();
       Set<ArtifactType> loadedTypes = new HashSet<ArtifactType>();
       ArtifactTypeCache artCache = (ArtifactTypeCache) cache;

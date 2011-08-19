@@ -41,7 +41,7 @@ public final class ArtifactTypeFactory implements IOseeTypeFactory {
       return artifactType;
    }
 
-   public ArtifactType createOrUpdate(IOseeCache<ArtifactType> cache, int uniqueId, StorageState storageState, String guid, boolean isAbstract, String name) throws OseeCoreException {
+   public ArtifactType createOrUpdate(IOseeCache<String, ArtifactType> cache, int uniqueId, StorageState storageState, String guid, boolean isAbstract, String name) throws OseeCoreException {
       ArtifactType artifactType = cache.getById(uniqueId);
       if (artifactType == null) {
          artifactType = create(guid, isAbstract, name);

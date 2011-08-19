@@ -34,20 +34,20 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCache<T extends AbstractOseeType> implements IOseeCache<T> {
+public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>(true,
       HashCollection.DEFAULT_COLLECTION_TYPE);
    private final Map<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
-   private final Map<String, T> guidToTypeMap = new ConcurrentHashMap<String, T>();
+   private final Map<K, T> guidToTypeMap = new ConcurrentHashMap<K, T>();
 
-   private final IOseeDataAccessor<T> dataAccessor;
+   private final IOseeDataAccessor<K, T> dataAccessor;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
    private boolean ensurePopulatedRanOnce;
    private long lastLoaded;
    private boolean ignoreEnsurePopulateException;
 
-   protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
+   protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<K, T> dataAccessor, boolean uniqueName) {
       this.lastLoaded = 0;
       this.cacheId = cacheId;
       this.ensurePopulatedRanOnce = false;
@@ -87,11 +87,11 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       return guidToTypeMap.size();
    }
 
-   protected IOseeDataAccessor<T> getDataAccessor() {
+   protected IOseeDataAccessor<K, T> getDataAccessor() {
       return dataAccessor;
    }
 
-   public boolean existsByGuid(String guid) throws OseeCoreException {
+   public boolean existsByGuid(K guid) throws OseeCoreException {
       ensurePopulated();
       return guidToTypeMap.containsKey(guid);
    }
@@ -229,15 +229,17 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    }
 
    @Override
-   public T getByGuid(String guid) throws OseeCoreException {
+   public T getByGuid(Object guid) throws OseeCoreException {
       ensurePopulated();
-      if (!GUID.isValid(guid)) {
-         throw new OseeArgumentException("[%s] is not a valid guid", guid);
+      if (guid instanceof String) {
+         if (!GUID.isValid((String) guid)) {
+            throw new OseeArgumentException("[%s] is not a valid guid", guid);
+         }
       }
       return guidToTypeMap.get(guid);
    }
 
-   public T get(Identity token) throws OseeCoreException {
+   public T get(Identity<K> token) throws OseeCoreException {
       ensurePopulated();
       return getByGuid(token.getGuid());
    }
@@ -273,11 +275,11 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       }
    }
 
-   public void storeByGuid(Collection<String> guids) throws OseeCoreException {
+   public void storeByGuid(Collection<K> guids) throws OseeCoreException {
       ensurePopulated();
       Conditions.checkNotNull(guids, "guids to store");
       Collection<T> items = new HashSet<T>();
-      for (String guid : guids) {
+      for (K guid : guids) {
          T type = getByGuid(guid);
          if (type == null) {
             throw new OseeTypeDoesNotExist(String.format("Item was not found [%s]", guid));

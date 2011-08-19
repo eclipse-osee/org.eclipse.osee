@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeCache<T> {
+public interface IOseeCache<KEY, TYPE> {
 
    OseeCacheEnum getCacheId();
 
@@ -29,27 +29,27 @@ public interface IOseeCache<T> {
 
    void decacheAll();
 
-   void decache(T... types) throws OseeCoreException;
+   void decache(TYPE... types) throws OseeCoreException;
 
-   void decache(T type) throws OseeCoreException;
+   void decache(TYPE type) throws OseeCoreException;
 
-   void cache(T... types) throws OseeCoreException;
+   void cache(TYPE... types) throws OseeCoreException;
 
-   void cache(T type) throws OseeCoreException;
+   void cache(TYPE type) throws OseeCoreException;
 
-   Collection<T> getAll() throws OseeCoreException;
+   Collection<TYPE> getAll() throws OseeCoreException;
 
-   T getById(int typeId) throws OseeCoreException;
+   TYPE getById(int typeId) throws OseeCoreException;
 
-   T getByGuid(String guid) throws OseeCoreException;
+   TYPE getByGuid(KEY guid) throws OseeCoreException;
 
-   Collection<T> getAllDirty() throws OseeCoreException;
+   Collection<TYPE> getAllDirty() throws OseeCoreException;
 
    void storeAllModified() throws OseeCoreException;
 
    void ensurePopulated() throws OseeCoreException;
 
-   void storeItems(T... items) throws OseeCoreException;
+   void storeItems(TYPE... items) throws OseeCoreException;
 
-   void storeItems(Collection<T> toStore) throws OseeCoreException;
+   void storeItems(Collection<TYPE> toStore) throws OseeCoreException;
 }

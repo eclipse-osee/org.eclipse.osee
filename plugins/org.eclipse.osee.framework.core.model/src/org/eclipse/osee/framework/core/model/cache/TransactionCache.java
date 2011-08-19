@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionCache implements IOseeCache<TransactionRecord> {
+public class TransactionCache implements IOseeCache<String, TransactionRecord> {
    private ITransactionDataAccessor accessor;
 
    private final Map<Integer, TransactionRecord> transactionIdCache =

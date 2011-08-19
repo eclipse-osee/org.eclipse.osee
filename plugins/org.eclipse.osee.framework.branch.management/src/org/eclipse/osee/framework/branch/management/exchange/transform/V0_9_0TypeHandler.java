@@ -23,9 +23,9 @@ public class V0_9_0TypeHandler extends AbstractSaxHandler {
    private final HashMap<Integer, String> typeIdMap = new HashMap<Integer, String>(100);
    private final String typeIdColumn;
    private final String typeNameColumn;
-   private final AbstractOseeCache<?> cache;
+   private final AbstractOseeCache<?, ?> cache;
 
-   public V0_9_0TypeHandler(AbstractOseeCache<?> cache, String typeIdColumn, String typeNameColumn) {
+   public V0_9_0TypeHandler(AbstractOseeCache<?, ?> cache, String typeIdColumn, String typeNameColumn) {
       this.typeIdColumn = typeIdColumn;
       this.typeNameColumn = typeNameColumn;
       this.cache = cache;
@@ -46,7 +46,7 @@ public class V0_9_0TypeHandler extends AbstractSaxHandler {
          } else if (typeName.equals("ats.Parent Branch Id")) {
             typeName = "ats.Baseline Branch Guid";
          }
-         String guid = cache.getBySoleName(typeName).getGuid();
+         String guid = String.valueOf(cache.getBySoleName(typeName).getGuid());
          typeIdMap.put(Integer.parseInt(attributes.getValue(typeIdColumn)), guid);
       }
    }

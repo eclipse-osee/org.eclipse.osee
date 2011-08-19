@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.test.renderer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -31,7 +31,7 @@ import org.junit.Test;
 public class RenderingUtilTest {
    @Test
    public void testBranchToFileName() throws Exception {
-      AbstractOseeCache<Branch> cache = new TestCache();
+      AbstractOseeCache<String, Branch> cache = new TestCache();
       Branch branch = createBranch(cache, GUID.create(), "Test 1", 1);
       String actual = RenderingUtil.toFileName(branch);
       Assert.assertEquals(encode(branch.getShortName()), actual);
@@ -41,7 +41,7 @@ public class RenderingUtilTest {
       return URLEncoder.encode(guid, "UTF-8");
    }
 
-   private Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int id) throws OseeCoreException {
+   private Branch createBranch(AbstractOseeCache<String, Branch> cache, String guid, String name, int id) throws OseeCoreException {
       Branch branch = new BranchFactory().create(guid, name, BranchType.WORKING, BranchState.MODIFIED, false);
       Assert.assertNotNull(branch);
       branch.setId(id);
@@ -50,7 +50,7 @@ public class RenderingUtilTest {
 
    private final class TestCache extends BranchCache {
       public TestCache() {
-         super(new MockOseeDataAccessor<Branch>());
+         super(new MockOseeDataAccessor<String, Branch>());
       }
    }
 }

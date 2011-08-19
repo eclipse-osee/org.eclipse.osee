@@ -33,7 +33,7 @@ public class SessionManagerTest {
       SessionFactory factory = null;
       ISessionQuery query = null;
       IAuthenticationManager authenticator = null;
-      MockOseeDataAccessor<Session> accessor = new MockOseeDataAccessor<Session>();
+      MockOseeDataAccessor<String, Session> accessor = new MockOseeDataAccessor<String, Session>();
       SessionCache sessionCache = new SessionCache(accessor);
       new SessionManagerImpl("ABCD", factory, query, sessionCache, authenticator);
 

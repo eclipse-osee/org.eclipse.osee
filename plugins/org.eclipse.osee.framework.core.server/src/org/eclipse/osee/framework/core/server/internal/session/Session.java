@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.server.ISession;
 /**
  * @author Roberto E. Escobar
  */
-public final class Session extends AbstractOseeType implements ISession {
+public final class Session extends AbstractOseeType<String> implements ISession {
 
    public static final String SESSION_CREATION_DATE = "session.creation.date";
    public static final String SESSION_USER_ID = "session.user.id";

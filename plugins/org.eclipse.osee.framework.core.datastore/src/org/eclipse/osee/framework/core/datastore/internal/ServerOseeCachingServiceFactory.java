@@ -60,7 +60,7 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
          new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(databaseService,
             factoryService.getOseeEnumTypeFactory()));
 
-      IOseeDataAccessor<AttributeType> attrAccessor =
+      IOseeDataAccessor<String, AttributeType> attrAccessor =
          new DatabaseAttributeTypeAccessor(databaseService, oseeEnumTypeCache, factoryService.getAttributeTypeFactory());
 
       AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageTestUnit extends NamedIdentity implements ICoverage {
+public class CoverageTestUnit extends NamedIdentity<String> implements ICoverage {
    public CoverageTestUnit(String name) {
       super(null, name);
    }

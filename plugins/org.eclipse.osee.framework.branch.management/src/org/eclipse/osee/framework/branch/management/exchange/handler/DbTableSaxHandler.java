@@ -26,11 +26,11 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -85,7 +85,8 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
                services.getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
             IResourceLocator locator =
-               services.getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint), new PropertyStore());
+               services.getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint),
+                  new PropertyStore());
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {
@@ -96,10 +97,10 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private int getTypeId(AbstractOseeCache<? extends AbstractOseeType> cache, Map<String, String> fieldMap) throws OseeCoreException {
+   private int getTypeId(AbstractOseeCache<?, ? extends AbstractOseeType> cache, Map<String, String> fieldMap) throws OseeCoreException {
       Conditions.checkNotNull(cache, "cache");
       String guid = fieldMap.get(ExchangeDb.TYPE_GUID);
-      AbstractOseeType typeObject = cache.getByGuid(guid);
+      AbstractOseeType<?> typeObject = cache.getByGuid(guid);
       Conditions.checkNotNull(typeObject, "type", "type [%s] was not found in cache [%s]", guid, cache.getCacheId());
       return typeObject.getId();
    }
@@ -185,8 +186,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          }
       } catch (OseeCoreException ex) {
          cleanUpBinaryContent();
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error processing in [%s]", getMetaData().getTableName());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing in [%s]", getMetaData().getTableName());
          throw ex;
       }
    }

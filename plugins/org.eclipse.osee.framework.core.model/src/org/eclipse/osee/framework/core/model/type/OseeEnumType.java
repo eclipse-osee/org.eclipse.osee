@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.model.internal.fields.EnumEntryField;
  * 
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends AbstractOseeType {
+public class OseeEnumType extends AbstractOseeType<String> {
 
    public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 

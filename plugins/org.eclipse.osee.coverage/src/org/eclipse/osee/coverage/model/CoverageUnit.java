@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable, ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
+public class CoverageUnit extends NamedIdentity<String> implements IWorkProductRelatable, ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
 
    String namespace;
    boolean folder;

@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.core.model.cache;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -26,7 +24,7 @@ import org.junit.BeforeClass;
  * 
  * @author Roberto E. Escobar
  */
-public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
+public class ArtifactTypeCacheTest extends AbstractOseeTypeCacheTest<ArtifactType> {
 
    private static List<ArtifactType> artifactTypes;
    private static ArtifactTypeCache artCache;
@@ -46,7 +44,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       super(artifactTypes, artCache);
    }
 
-   private final static class ArtifactDataAccessor extends MockOseeDataAccessor<ArtifactType> {
+   private final static class ArtifactDataAccessor extends MockOseeDataAccessor<String, ArtifactType> {
       private final List<ArtifactType> artifactTypes;
 
       public ArtifactDataAccessor(List<ArtifactType> artifactTypes) {
@@ -55,7 +53,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       }
 
       @Override
-      public void load(IOseeCache<ArtifactType> cache) throws OseeCoreException {
+      public void load(IOseeCache<String, ArtifactType> cache) throws OseeCoreException {
          super.load(cache);
 
          int typeId = 100;

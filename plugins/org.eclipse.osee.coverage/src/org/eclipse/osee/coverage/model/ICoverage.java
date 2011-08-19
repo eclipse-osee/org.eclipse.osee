@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public interface ICoverage extends Named, Identity {
+public interface ICoverage extends Named, Identity<String> {
 
    public String getNotes();
 

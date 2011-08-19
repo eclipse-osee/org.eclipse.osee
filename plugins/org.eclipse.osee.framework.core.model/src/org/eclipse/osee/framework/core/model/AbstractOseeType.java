@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType extends NamedIdentity implements IOseeStorable {
+public abstract class AbstractOseeType<KEY> extends NamedIdentity<KEY> implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";
@@ -30,7 +30,7 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    private StorageState itemState;
    private final Map<String, IOseeField<?>> fieldMap;
 
-   protected AbstractOseeType(String guid, String name) {
+   protected AbstractOseeType(KEY guid, String name) {
       super(guid, name);
       this.fieldMap = new HashMap<String, IOseeField<?>>();
       this.itemState = StorageState.CREATED;

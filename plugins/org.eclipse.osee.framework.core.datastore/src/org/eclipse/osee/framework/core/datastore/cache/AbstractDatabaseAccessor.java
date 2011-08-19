@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.database.core.IOseeSequence;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractDatabaseAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
+public abstract class AbstractDatabaseAccessor<K, T extends IOseeStorable> implements IOseeDataAccessor<K, T> {
 
    private final IOseeDatabaseService databaseService;
 

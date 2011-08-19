@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -59,7 +58,7 @@ public class RelationOrderDataTest {
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
 
-      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
+      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<String, RelationType>());
 
       relationType1 = createRelationType(cache, "Rel 1", RelationOrderBaseTypes.USER_DEFINED.getGuid());
       relationType2 = createRelationType(cache, "Rel 2", RelationOrderBaseTypes.UNORDERED.getGuid());

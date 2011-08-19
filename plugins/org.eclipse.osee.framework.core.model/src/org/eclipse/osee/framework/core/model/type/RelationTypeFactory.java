@@ -51,7 +51,7 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       return relationType;
    }
 
-   public RelationType createOrUpdate(IOseeCache<RelationType> cache, int typeId, StorageState storageState, String guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType createOrUpdate(IOseeCache<String, RelationType> cache, int typeId, StorageState storageState, String guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationType relationType = cache.getById(typeId);
       if (relationType == null) {
          relationType =

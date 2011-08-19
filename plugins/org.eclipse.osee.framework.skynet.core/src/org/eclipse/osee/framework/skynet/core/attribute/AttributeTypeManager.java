@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class AttributeTypeManager {
 
-   public static AbstractOseeCache<AttributeType> getCache() {
+   public static AbstractOseeCache<String, AttributeType> getCache() {
       return Activator.getInstance().getOseeCacheService().getAttributeTypeCache();
    }
 

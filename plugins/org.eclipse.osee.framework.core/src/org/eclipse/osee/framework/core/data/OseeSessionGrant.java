@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.data;
 import java.io.InputStream;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Roberto E. Escobar
@@ -119,7 +120,7 @@ public class OseeSessionGrant extends BaseExchangeData {
    }
 
    private IUserToken getGrantedUserToken() {
-      return TokenFactory.createUserToken(null, getString(OSEE_USER_NAME), getString(OSEE_USER_EMAIL),
+      return TokenFactory.createUserToken(GUID.create(), getString(OSEE_USER_NAME), getString(OSEE_USER_EMAIL),
          getString(OSEE_USER_ID), backingData.getBoolean(OSEE_IS_USER_ACTIVE), false, false);
    }
 

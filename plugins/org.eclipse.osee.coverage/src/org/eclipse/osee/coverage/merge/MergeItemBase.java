@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 /**
  * @author Donald G. Dunne
  */
-public abstract class MergeItemBase extends NamedIdentity implements IMergeItem {
+public abstract class MergeItemBase extends NamedIdentity<String> implements IMergeItem {
 
    private final MergeType mergeType;
    private boolean checked = false;

@@ -37,7 +37,7 @@ public class OseeCachingService implements IOseeCachingService {
    private final AttributeTypeCache attributeTypeCache;
    private final RelationTypeCache relationTypeCache;
    private final OseeEnumTypeCache oseeEnumTypeCache;
-   private final Collection<IOseeCache<?>> caches;
+   private final Collection<IOseeCache<?, ?>> caches;
 
    public OseeCachingService(BranchCache branchCache, TransactionCache transactionCache, ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache, RelationTypeCache relationTypeCache, OseeEnumTypeCache oseeEnumTypeCache) {
       this.branchCache = branchCache;
@@ -46,7 +46,7 @@ public class OseeCachingService implements IOseeCachingService {
       this.attributeTypeCache = attributeTypeCache;
       this.relationTypeCache = relationTypeCache;
       this.oseeEnumTypeCache = oseeEnumTypeCache;
-      caches = new HashSet<IOseeCache<?>>();
+      caches = new HashSet<IOseeCache<?, ?>>();
       caches.add(branchCache);
       caches.add(transactionCache);
       caches.add(artifactTypeCache);
@@ -86,14 +86,14 @@ public class OseeCachingService implements IOseeCachingService {
    }
 
    @Override
-   public Collection<IOseeCache<?>> getCaches() {
+   public Collection<IOseeCache<?, ?>> getCaches() {
       return caches;
    }
 
    @Override
-   public IOseeCache<?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
+   public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
       Conditions.checkNotNull(cacheId, "cache id to find");
-      for (IOseeCache<?> cache : getCaches()) {
+      for (IOseeCache<?, ?> cache : getCaches()) {
          if (cache.getCacheId().equals(cacheId)) {
             return cache;
          }

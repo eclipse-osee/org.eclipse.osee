@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationOrderBaseTypes extends NamedIdentity implements IRelationSorterId {
+public class RelationOrderBaseTypes extends NamedIdentity<String> implements IRelationSorterId {
    public static final RelationOrderBaseTypes USER_DEFINED = new RelationOrderBaseTypes("AAT0xogoMjMBhARkBZQA",
       "User Defined");
    public static final RelationOrderBaseTypes LEXICOGRAPHICAL_ASC = new RelationOrderBaseTypes("AAT1QW4eVE+YuzsoHFAA",

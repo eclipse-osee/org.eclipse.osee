@@ -49,7 +49,7 @@ public class UpdateCachesOperation extends AbstractOperation {
             Arrays.deepToString(OseeCacheEnum.values()).replaceAll(", SESSION_CACHE", ""));
       } else {
          for (OseeCacheEnum cacheId : cacheIds) {
-            IOseeCache<?> cache = service.getCache(cacheId);
+            IOseeCache<?, ?> cache = service.getCache(cacheId);
             if (reload) {
                cache.reloadCache();
             } else {

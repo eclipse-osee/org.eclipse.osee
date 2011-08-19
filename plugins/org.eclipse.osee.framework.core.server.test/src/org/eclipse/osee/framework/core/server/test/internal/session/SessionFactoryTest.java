@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.server.test.internal.session;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.core.server.internal.session.Session;
 import org.eclipse.osee.framework.core.server.internal.session.SessionCache;
 import org.eclipse.osee.framework.core.server.internal.session.SessionFactory;
 import org.eclipse.osee.framework.core.server.test.mocks.MockBuildTypeIdentifier;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -157,10 +157,10 @@ public class SessionFactoryTest {
       return data;
    }
 
-   private static final class MockSessionAccessor implements IOseeDataAccessor<Session> {
+   private static final class MockSessionAccessor implements IOseeDataAccessor<String, Session> {
 
       @Override
-      public void load(IOseeCache<Session> cache) {
+      public void load(IOseeCache<String, Session> cache) {
          // Do Nothing
       }
 

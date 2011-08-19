@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeEnumType> {
+public class DatabaseOseeEnumTypeAccessor extends AbstractTypeDatabaseAccessor<OseeEnumType> {
 
    private static final String SELECT_OSEE_ENUM_TYPES = "select * from osee_enum_type oet";
    private static final String SELECT_OSEE_ENUM_ENTRIES =
@@ -79,7 +79,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
    }
 
    @Override
-   public void load(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, OseeEnumType> cache) throws OseeCoreException {
       HashCollection<Integer, OseeEnumEntry> entryTypes = new HashCollection<Integer, OseeEnumEntry>();
 
       loadEnumEntries(factory, entryTypes);

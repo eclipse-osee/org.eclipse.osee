@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 /**
  * @author Roberto E. Escobar
  */
-public final class RelationTypeCache extends AbstractOseeCache<RelationType> {
+public final class RelationTypeCache extends AbstractOseeCache<String, RelationType> {
 
-   public RelationTypeCache(IOseeDataAccessor<RelationType> dataAccessor) {
+   public RelationTypeCache(IOseeDataAccessor<String, RelationType> dataAccessor) {
       super(OseeCacheEnum.RELATION_TYPE_CACHE, dataAccessor, true);
    }
 }

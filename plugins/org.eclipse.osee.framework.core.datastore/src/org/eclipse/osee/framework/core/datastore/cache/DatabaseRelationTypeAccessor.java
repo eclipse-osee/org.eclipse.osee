@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<RelationType> {
+public class DatabaseRelationTypeAccessor extends AbstractTypeDatabaseAccessor<RelationType> {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_TYPE =
       "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
@@ -48,7 +48,7 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
    }
 
    @Override
-   public void load(IOseeCache<RelationType> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, RelationType> cache) throws OseeCoreException {
       artifactTypeCache.ensurePopulated();
       IOseeStatement chStmt = getDatabaseService().getStatement();
 

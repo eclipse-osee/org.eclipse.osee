@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumEntry extends AbstractOseeType {
+public class OseeEnumEntry extends AbstractOseeType<String> {
    private final static String ENUM_ENTRY_ORDINAL_FIELD = "osee.enum.entry.ordinal.field";
 
    public OseeEnumEntry(String guid, String name, int ordinal) {

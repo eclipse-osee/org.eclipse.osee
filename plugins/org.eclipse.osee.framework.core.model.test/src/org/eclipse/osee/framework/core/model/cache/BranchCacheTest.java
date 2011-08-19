@@ -14,10 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
@@ -26,7 +25,7 @@ import org.junit.BeforeClass;
  * 
  * @author Roberto E. Escobar
  */
-public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
+public class BranchCacheTest extends AbstractOseeCacheTest<String, Branch> {
 
    private static List<Branch> branchData;
    private static BranchCache cache;
@@ -47,7 +46,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       super(branchData, cache);
    }
 
-   private final static class BranchDataAccessor extends MockOseeDataAccessor<Branch> {
+   private final static class BranchDataAccessor extends MockOseeDataAccessor<String, Branch> {
 
       private final List<Branch> data;
 
@@ -57,7 +56,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       }
 
       @Override
-      public void load(IOseeCache<Branch> cache) throws OseeCoreException {
+      public void load(IOseeCache<String, Branch> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {
@@ -67,5 +66,10 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
             cache.cache(item);
          }
       }
+   }
+
+   @Override
+   protected String createKey() {
+      return GUID.create();
    }
 }

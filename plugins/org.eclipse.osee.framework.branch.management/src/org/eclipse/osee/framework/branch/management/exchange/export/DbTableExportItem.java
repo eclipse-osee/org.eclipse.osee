@@ -196,9 +196,9 @@ public class DbTableExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void handleTypeId(Appendable appendable, Object value, AbstractOseeCache<?> cache) throws IOException, OseeCoreException {
+   private void handleTypeId(Appendable appendable, Object value, AbstractOseeCache<?, ?> cache) throws IOException, OseeCoreException {
       int typeId = ((BigDecimal) value).intValueExact();
-      String guid = cache.getById(typeId).getGuid();
+      String guid = String.valueOf(cache.getById(typeId).getGuid());
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
    }
 

@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.core.model.cache;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -26,7 +24,7 @@ import org.junit.BeforeClass;
  * 
  * @author Roberto E. Escobar
  */
-public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
+public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationType> {
 
    private static List<RelationType> data;
    private static RelationTypeCache cache;
@@ -46,7 +44,7 @@ public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
       super(data, cache);
    }
 
-   private final static class RelationDataAccessor extends MockOseeDataAccessor<RelationType> {
+   private final static class RelationDataAccessor extends MockOseeDataAccessor<String, RelationType> {
       private final List<RelationType> relationTypes;
 
       public RelationDataAccessor(List<RelationType> relationTypes) {
@@ -55,7 +53,7 @@ public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
       }
 
       @Override
-      public void load(IOseeCache<RelationType> cache) throws OseeCoreException {
+      public void load(IOseeCache<String, RelationType> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

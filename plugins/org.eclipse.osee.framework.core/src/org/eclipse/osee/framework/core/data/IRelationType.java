@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface IRelationType extends Identity, FullyNamed {
+public interface IRelationType extends Identity<String>, FullyNamed {
    // composition interface requires no additional methods,fields
 }

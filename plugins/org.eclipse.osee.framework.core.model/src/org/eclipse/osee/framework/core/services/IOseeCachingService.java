@@ -40,7 +40,7 @@ public interface IOseeCachingService {
 
    Collection<?> getCaches();
 
-   IOseeCache<?> getCache(OseeCacheEnum cacheId) throws OseeCoreException;
+   IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException;
 
    void reloadAll() throws OseeCoreException;
 

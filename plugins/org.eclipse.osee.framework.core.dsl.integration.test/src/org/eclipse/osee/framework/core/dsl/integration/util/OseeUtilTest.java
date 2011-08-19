@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.core.dsl.integration.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -35,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -181,7 +180,7 @@ public class OseeUtilTest {
       }
    }
 
-   private static void setupToToken(OseeType typeToCheck, Identity expected) {
+   private static void setupToToken(OseeType typeToCheck, Identity<String> expected) {
       String name = "bogus name"; // This should not affect equality
       String guid = expected.getGuid();
       typeToCheck.setName(name);

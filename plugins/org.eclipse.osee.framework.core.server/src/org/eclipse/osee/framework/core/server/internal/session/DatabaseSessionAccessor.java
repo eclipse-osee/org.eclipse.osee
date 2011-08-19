@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 /**
  * @author Roberto E. Escobar
  */
-public final class DatabaseSessionAccessor implements IOseeDataAccessor<Session> {
+public final class DatabaseSessionAccessor implements IOseeDataAccessor<String, Session> {
 
    private static final String INSERT_SESSION =
       "INSERT INTO osee_session (managed_by_server_id, session_id, user_id, client_machine_name, client_address, client_port, client_version, created_on, last_interaction_date, last_interaction) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -89,7 +89,7 @@ public final class DatabaseSessionAccessor implements IOseeDataAccessor<Session>
    }
 
    @Override
-   public void load(IOseeCache<Session> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, Session> cache) throws OseeCoreException {
       CacheSessionCollector collector = new CacheSessionCollector(cache);
       getSessionQuery().selectServerManagedSessions(collector);
    }
@@ -126,9 +126,9 @@ public final class DatabaseSessionAccessor implements IOseeDataAccessor<Session>
    }
 
    private final class CacheSessionCollector implements ISessionCollector {
-      private final IOseeCache<Session> cache;
+      private final IOseeCache<String, Session> cache;
 
-      public CacheSessionCollector(IOseeCache<Session> cache) {
+      public CacheSessionCollector(IOseeCache<String, Session> cache) {
          this.cache = cache;
       }
 

@@ -30,9 +30,9 @@ import org.junit.BeforeClass;
  * 
  * @author Roberto E. Escobar
  */
-public class SessionCacheTest extends AbstractOseeCacheTest<Session> {
+public class SessionCacheTest extends AbstractOseeCacheTest<String, Session> {
 
-   private static AbstractOseeCache<Session> cache;
+   private static AbstractOseeCache<String, Session> cache;
    private static List<Session> sessionData;
 
    @BeforeClass
@@ -50,7 +50,7 @@ public class SessionCacheTest extends AbstractOseeCacheTest<Session> {
       super(sessionData, cache);
    }
 
-   private final static class SessionDataAccessor extends MockOseeDataAccessor<Session> {
+   private final static class SessionDataAccessor extends MockOseeDataAccessor<String, Session> {
 
       private final List<Session> data;
 
@@ -60,7 +60,7 @@ public class SessionCacheTest extends AbstractOseeCacheTest<Session> {
       }
 
       @Override
-      public void load(IOseeCache<Session> cache) throws OseeCoreException {
+      public void load(IOseeCache<String, Session> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {
@@ -75,5 +75,10 @@ public class SessionCacheTest extends AbstractOseeCacheTest<Session> {
             cache.cache(item);
          }
       }
+   }
+
+   @Override
+   protected String createKey() {
+      return GUID.create();
    }
 }

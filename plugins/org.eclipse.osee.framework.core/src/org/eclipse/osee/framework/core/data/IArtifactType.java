@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface IArtifactType extends Identity, FullyNamed {
+public interface IArtifactType extends Identity<String>, FullyNamed {
    // composition interface requires no additional methods,fields
 }

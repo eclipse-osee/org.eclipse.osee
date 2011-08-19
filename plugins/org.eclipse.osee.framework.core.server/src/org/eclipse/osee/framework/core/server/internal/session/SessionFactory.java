@@ -37,7 +37,7 @@ public final class SessionFactory implements IOseeTypeFactory {
       this.typeIdentifier = typeIdentifier;
    }
 
-   public Session createOrUpdate(IOseeCache<Session> cache, int uniqueId, StorageState storageState, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
+   public Session createOrUpdate(IOseeCache<String, Session> cache, int uniqueId, StorageState storageState, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
       Session session = cache.getById(uniqueId);
       if (session == null) {
          session =

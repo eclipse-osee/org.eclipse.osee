@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-public final class BranchToken extends NamedIdentity implements IOseeBranch {
+public final class BranchToken extends NamedIdentity<String> implements IOseeBranch {
    public BranchToken(String guid, String name) {
       super(guid, name);
    }

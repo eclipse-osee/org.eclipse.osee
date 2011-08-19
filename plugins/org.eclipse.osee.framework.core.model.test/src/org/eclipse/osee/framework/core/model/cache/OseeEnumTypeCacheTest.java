@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
@@ -28,7 +26,7 @@ import org.junit.BeforeClass;
  * 
  * @author Roberto E. Escobar
  */
-public class OseeEnumTypeCacheTest extends AbstractOseeCacheTest<OseeEnumType> {
+public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumType> {
 
    private static List<OseeEnumType> data;
    private static OseeEnumTypeCache cache;
@@ -53,7 +51,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeCacheTest<OseeEnumType> {
       ModelAsserts.checkEnumType(expected, actual);
    }
 
-   private final static class EnumDataAccessor extends MockOseeDataAccessor<OseeEnumType> {
+   private final static class EnumDataAccessor extends MockOseeDataAccessor<String, OseeEnumType> {
       private final List<OseeEnumType> oseeEnumTypes;
 
       public EnumDataAccessor(List<OseeEnumType> oseeEnumTypes) {
@@ -62,7 +60,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeCacheTest<OseeEnumType> {
       }
 
       @Override
-      public void load(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
+      public void load(IOseeCache<String, OseeEnumType> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

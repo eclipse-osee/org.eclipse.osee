@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<AttributeType> {
+public class DatabaseAttributeTypeAccessor extends AbstractTypeDatabaseAccessor<AttributeType> {
 
    private static final String SELECT_ATTRIBUTE_TYPES =
       "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
@@ -59,7 +59,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
    }
 
    @Override
-   public void load(IOseeCache<AttributeType> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, AttributeType> cache) throws OseeCoreException {
       enumCache.ensurePopulated();
 
       IOseeStatement chStmt = getDatabaseService().getStatement();

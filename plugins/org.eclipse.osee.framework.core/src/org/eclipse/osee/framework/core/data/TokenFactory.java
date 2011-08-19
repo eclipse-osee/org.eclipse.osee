@@ -55,19 +55,19 @@ public final class TokenFactory {
       return new BranchToken(guid, name);
    }
 
-   private final static class ArtifactTypeToken extends NamedIdentity implements IArtifactType {
+   private final static class ArtifactTypeToken extends NamedIdentity<String> implements IArtifactType {
       public ArtifactTypeToken(String guid, String name) {
          super(guid, name);
       }
    }
 
-   private static final class BranchToken extends NamedIdentity implements IOseeBranch {
+   private static final class BranchToken extends NamedIdentity<String> implements IOseeBranch {
       public BranchToken(String guid, String name) {
          super(guid, name);
       }
    }
 
-   private final static class AttributeTypeToken extends NamedIdentity implements IAttributeType {
+   private final static class AttributeTypeToken extends NamedIdentity<String> implements IAttributeType {
       public AttributeTypeToken(String guid, String name) {
          super(guid, name);
       }
@@ -77,13 +77,13 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeToken extends NamedIdentity implements IRelationType {
+   private final static class RelationTypeToken extends NamedIdentity<String> implements IRelationType {
       public RelationTypeToken(String guid, String name) {
          super(guid, name);
       }
    }
 
-   private static class ArtifactToken extends NamedIdentity implements IArtifactToken {
+   private static class ArtifactToken extends NamedIdentity<String> implements IArtifactToken {
       private final IArtifactType artifactType;
 
       public ArtifactToken(String guid, String name, IArtifactType artifactType) {
@@ -97,7 +97,7 @@ public final class TokenFactory {
       }
    }
 
-   private static class UserToken extends NamedIdentity implements IUserToken {
+   private static class UserToken extends NamedIdentity<String> implements IUserToken {
 
       private final String userId;
       private final boolean active;
@@ -146,7 +146,7 @@ public final class TokenFactory {
 
    }
 
-   private final static class AccessContextIdToken extends NamedIdentity implements IAccessContextId {
+   private final static class AccessContextIdToken extends NamedIdentity<String> implements IAccessContextId {
       public AccessContextIdToken(String guid, String name) {
          super(guid, name);
       }
@@ -157,7 +157,7 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeSideToken extends NamedIdentity implements IRelationTypeSide {
+   private final static class RelationTypeSideToken extends NamedIdentity<String> implements IRelationTypeSide {
       private final RelationSide relationSide;
 
       private RelationTypeSideToken(String guid, String name, RelationSide relationSide) {

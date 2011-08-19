@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public final class AttributeType extends AbstractOseeType implements IAttributeType {
+public final class AttributeType extends AbstractOseeType<String> implements IAttributeType {
 
    private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
    private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";

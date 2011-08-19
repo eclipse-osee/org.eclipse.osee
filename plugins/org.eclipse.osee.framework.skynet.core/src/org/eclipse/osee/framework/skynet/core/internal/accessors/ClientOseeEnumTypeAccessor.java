@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeEnumType> {
+public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<String, OseeEnumType> {
 
    private final OseeEnumTypeFactory enumTypeFactory;
 
@@ -38,7 +38,7 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeE
    }
 
    @Override
-   protected Collection<OseeEnumType> updateCache(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
+   protected Collection<OseeEnumType> updateCache(IOseeCache<String, OseeEnumType> cache) throws OseeCoreException {
       List<OseeEnumType> enumTypes = new ArrayList<OseeEnumType>();
       OseeEnumTypeCacheUpdateResponse response =
          requestUpdateMessage(cache, CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);

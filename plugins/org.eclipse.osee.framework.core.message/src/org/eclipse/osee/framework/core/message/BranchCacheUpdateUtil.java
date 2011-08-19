@@ -53,7 +53,7 @@ public final class BranchCacheUpdateUtil {
       this.txCache = txCache;
    }
 
-   public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<Branch> cache) throws OseeCoreException {
+   public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<String, Branch> cache) throws OseeCoreException {
       List<Branch> updatedItems = new ArrayList<Branch>();
 
       Map<Integer, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();

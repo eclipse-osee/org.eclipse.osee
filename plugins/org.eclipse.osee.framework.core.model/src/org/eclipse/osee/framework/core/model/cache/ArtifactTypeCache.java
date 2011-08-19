@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 /**
  * @author Roberto E. Escobar
  */
-public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
+public final class ArtifactTypeCache extends AbstractOseeCache<String, ArtifactType> {
 
-   public ArtifactTypeCache(IOseeDataAccessor<ArtifactType> dataAccessor) {
+   public ArtifactTypeCache(IOseeDataAccessor<String, ArtifactType> dataAccessor) {
       super(OseeCacheEnum.ARTIFACT_TYPE_CACHE, dataAccessor, true);
    }
 

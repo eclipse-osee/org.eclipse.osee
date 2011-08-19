@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class MessageCoverageItem extends NamedIdentity implements ICoverage {
+public class MessageCoverageItem extends NamedIdentity<String> implements ICoverage {
 
    public MessageCoverageItem(String message) {
       super(null, message);

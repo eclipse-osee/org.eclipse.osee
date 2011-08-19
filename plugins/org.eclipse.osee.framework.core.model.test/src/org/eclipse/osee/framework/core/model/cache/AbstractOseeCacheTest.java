@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,12 +29,12 @@ import org.junit.Test;
  * 
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
+public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
    private final List<T> data;
-   private final AbstractOseeCache<T> cache;
+   private final AbstractOseeCache<K, T> cache;
    private final TypeComparator comparator;
 
-   public AbstractOseeCacheTest(List<T> artifactTypes, AbstractOseeCache<T> typeCache) {
+   public AbstractOseeCacheTest(List<T> artifactTypes, AbstractOseeCache<K, T> typeCache) {
       this.comparator = new TypeComparator();
       this.data = artifactTypes;
       this.cache = typeCache;
@@ -59,7 +58,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
       for (T expected : data) {
          Assert.assertTrue(cache.existsByGuid(expected.getGuid()));
       }
-      Assert.assertFalse(cache.existsByGuid("notExist"));
+      Assert.assertFalse(cache.existsByGuid(createKey()));
    }
 
    @org.junit.Test
@@ -204,8 +203,10 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
 
    @Test(expected = OseeTypeDoesNotExist.class)
    public void testNonExistingPersist() throws OseeCoreException {
-      cache.storeByGuid(Collections.singleton(GUID.create()));
+      cache.storeByGuid(Collections.singleton(createKey()));
    }
+
+   protected abstract K createKey();
 
    @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)

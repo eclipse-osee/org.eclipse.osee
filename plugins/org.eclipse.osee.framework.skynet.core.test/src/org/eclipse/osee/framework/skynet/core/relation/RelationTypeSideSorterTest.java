@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -211,7 +210,7 @@ public class RelationTypeSideSorterTest {
       RelationSorterProvider provider = new RelationSorterProvider();
       IRelationOrderAccessor accessor = new DoNothingAccessor();
 
-      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
+      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<String, RelationType>());
 
       RelationType relationType1 =
          createRelationType(cache, "Rel 1", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());

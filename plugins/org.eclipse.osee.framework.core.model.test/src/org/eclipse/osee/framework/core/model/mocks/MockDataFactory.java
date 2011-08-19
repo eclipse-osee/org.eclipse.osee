@@ -134,13 +134,13 @@ public final class MockDataFactory {
    }
 
    public static IOseeCachingServiceProvider createCachingProvider() {
-      BranchCache brCache = new BranchCache(new MockOseeDataAccessor<Branch>());
+      BranchCache brCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
       TransactionCache txCache = new TransactionCache();
       txCache.setAccessor(new MockOseeTransactionDataAccessor());
-      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<ArtifactType>());
-      AttributeTypeCache attrCache = new AttributeTypeCache(new MockOseeDataAccessor<AttributeType>());
-      RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
-      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<OseeEnumType>());
+      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<String, ArtifactType>());
+      AttributeTypeCache attrCache = new AttributeTypeCache(new MockOseeDataAccessor<String, AttributeType>());
+      RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<String, RelationType>());
+      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<String, OseeEnumType>());
 
       IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
       return new MockOseeCachingServiceProvider(service);

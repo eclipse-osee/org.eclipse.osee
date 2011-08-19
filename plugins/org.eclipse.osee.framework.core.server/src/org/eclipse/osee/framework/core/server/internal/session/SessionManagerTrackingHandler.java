@@ -53,7 +53,7 @@ public final class SessionManagerTrackingHandler extends AbstractTrackingHandler
       SessionFactory sessionFactory = new SessionFactory(identifier);
 
       ISessionQuery sessionQuery = new DatabaseSessionQuery(serverId, databaseService);
-      IOseeDataAccessor<Session> accessor =
+      IOseeDataAccessor<String, Session> accessor =
          new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, databaseService);
       SessionCache sessionCache = new SessionCache(accessor);
 

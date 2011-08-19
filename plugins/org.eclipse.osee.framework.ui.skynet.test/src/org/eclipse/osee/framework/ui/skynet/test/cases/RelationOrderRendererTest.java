@@ -54,7 +54,8 @@ public class RelationOrderRendererTest {
    public static void prepareTest() throws Exception {
       MockArtifactGuidResolver resolver = new MockArtifactGuidResolver(null);
 
-      AbstractOseeCache<RelationType> typeCache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
+      AbstractOseeCache<String, RelationType> typeCache =
+         new RelationTypeCache(new MockOseeDataAccessor<String, RelationType>());
       addRelationTypeData(typeCache);
       sorterProvider = new RelationSorterProvider();
       renderer = new RelationOrderRenderer(typeCache, resolver, sorterProvider);
@@ -195,8 +196,8 @@ public class RelationOrderRendererTest {
       Assert.assertEquals(expected, builder.toString());
    }
 
-   private final static void addRelationTypeData(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
-      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<ArtifactType>());
+   private final static void addRelationTypeData(AbstractOseeCache<String, RelationType> cache) throws OseeCoreException {
+      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<String, ArtifactType>());
       IArtifactType artifactType1 = createArtifactType(artCache, "Artifact 2");
       IArtifactType artifactType2 = createArtifactType(artCache, "Artifact 1");
 
@@ -205,13 +206,13 @@ public class RelationOrderRendererTest {
       createRelationType(cache, "Relation 3", artifactType1, artifactType2);
    }
 
-   private final static ArtifactType createArtifactType(AbstractOseeCache<ArtifactType> artCache, String name) throws OseeCoreException {
+   private final static ArtifactType createArtifactType(AbstractOseeCache<String, ArtifactType> artCache, String name) throws OseeCoreException {
       ArtifactType artifactType = new ArtifactType(GUID.create(), name, false);
       artCache.cache(artifactType);
       return artifactType;
    }
 
-   private final static void createRelationType(AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
+   private final static void createRelationType(AbstractOseeCache<String, RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
       RelationType type =
          new RelationType(GUID.create(), name, name + "_A", name + "_B", artifactType1, artifactType2,
             RelationTypeMultiplicity.MANY_TO_MANY, "");

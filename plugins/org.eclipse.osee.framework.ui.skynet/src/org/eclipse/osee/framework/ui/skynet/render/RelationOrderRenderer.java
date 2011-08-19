@@ -34,9 +34,9 @@ public class RelationOrderRenderer {
    private static final String NO_DATA_TAG = "None";
    private final ArtifactGuidToWordML guidResolver;
    private final RelationSorterProvider sorterProvider;
-   private final AbstractOseeCache<RelationType> relationCache;
+   private final AbstractOseeCache<String, RelationType> relationCache;
 
-   public RelationOrderRenderer(AbstractOseeCache<RelationType> relationCache, ArtifactGuidToWordML guidResolver, RelationSorterProvider sorterProvider) {
+   public RelationOrderRenderer(AbstractOseeCache<String, RelationType> relationCache, ArtifactGuidToWordML guidResolver, RelationSorterProvider sorterProvider) {
       this.relationCache = relationCache;
       this.guidResolver = guidResolver;
       this.sorterProvider = sorterProvider;

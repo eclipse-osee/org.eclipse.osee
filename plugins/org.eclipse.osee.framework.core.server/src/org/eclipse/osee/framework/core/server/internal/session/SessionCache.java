@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 /**
  * @author Roberto E. Escobar
  */
-public final class SessionCache extends AbstractOseeCache<Session> {
+public final class SessionCache extends AbstractOseeCache<String, Session> {
 
-   public SessionCache(IOseeDataAccessor<Session> dataAccessor) {
+   public SessionCache(IOseeDataAccessor<String, Session> dataAccessor) {
       super(OseeCacheEnum.SESSION_CACHE, dataAccessor, false);
    }
 

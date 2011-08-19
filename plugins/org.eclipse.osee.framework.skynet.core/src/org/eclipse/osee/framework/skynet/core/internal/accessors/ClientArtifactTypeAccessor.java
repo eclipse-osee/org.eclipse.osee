@@ -34,14 +34,14 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<ArtifactType> {
+public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<String, ArtifactType> {
 
-   private final AbstractOseeCache<AttributeType> attrCache;
-   private final AbstractOseeCache<Branch> branchCache;
+   private final AbstractOseeCache<String, AttributeType> attrCache;
+   private final AbstractOseeCache<String, Branch> branchCache;
 
    private final ArtifactTypeFactory artifactTypeFactory;
 
-   public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
+   public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<String, AttributeType> attrCache, AbstractOseeCache<String, Branch> branchCache) {
       this.artifactTypeFactory = artifactTypeFactory;
       this.attrCache = attrCache;
       this.branchCache = branchCache;
@@ -52,14 +52,14 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
    }
 
    @Override
-   public void load(IOseeCache<ArtifactType> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, ArtifactType> cache) throws OseeCoreException {
       attrCache.ensurePopulated();
       branchCache.ensurePopulated();
       super.load(cache);
    }
 
    @Override
-   protected Collection<ArtifactType> updateCache(IOseeCache<ArtifactType> cache) throws OseeCoreException {
+   protected Collection<ArtifactType> updateCache(IOseeCache<String, ArtifactType> cache) throws OseeCoreException {
       List<ArtifactType> updatedItems = new ArrayList<ArtifactType>();
 
       ArtifactTypeCacheUpdateResponse response =

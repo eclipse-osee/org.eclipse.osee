@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -35,6 +34,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -45,7 +45,7 @@ public class ModelAsserts {
       // Utility Class
    }
 
-   public static void assertTypeSetGet(AbstractOseeType type, String fieldName, String getMethodName, String setMethodName, Object expectedValue, Object newValue) throws Exception {
+   public static void assertTypeSetGet(AbstractOseeType<?> type, String fieldName, String getMethodName, String setMethodName, Object expectedValue, Object newValue) throws Exception {
       Method getMethod = type.getClass().getMethod(getMethodName);
       Method setMethod = type.getClass().getMethod(setMethodName, expectedValue.getClass());
 
@@ -135,7 +135,7 @@ public class ModelAsserts {
       }
    }
 
-   public static RelationType createRelationType(AbstractOseeCache<ArtifactType> artCache, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
+   public static RelationType createRelationType(AbstractOseeCache<String, ArtifactType> artCache, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
       IArtifactType type1 = artCache.getByGuid(aGUID);
       IArtifactType type2 = artCache.getByGuid(bGUID);
       RelationType relationType =
@@ -220,7 +220,7 @@ public class ModelAsserts {
       Assert.assertEquals(expected.getGuid(), actual.getGuid());
    }
 
-   public static void checkInheritance(AbstractOseeCache<ArtifactType> artCache, String artTypeGuid, String... superTypeGuids) throws OseeCoreException {
+   public static void checkInheritance(AbstractOseeCache<String, ArtifactType> artCache, String artTypeGuid, String... superTypeGuids) throws OseeCoreException {
       ArtifactType target = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(target);
 
@@ -243,7 +243,7 @@ public class ModelAsserts {
       }
    }
 
-   public static void checkDescendants(AbstractOseeCache<ArtifactType> artCache, String artTypeGuid, boolean isAllLevels, String... descendantGuids) throws OseeCoreException {
+   public static void checkDescendants(AbstractOseeCache<String, ArtifactType> artCache, String artTypeGuid, boolean isAllLevels, String... descendantGuids) throws OseeCoreException {
       ArtifactType target = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(target);
 
@@ -272,7 +272,7 @@ public class ModelAsserts {
       }
    }
 
-   public static void checkAttributes(AbstractOseeCache<ArtifactType> artCache, AbstractOseeCache<AttributeType> attrCache, String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
+   public static void checkAttributes(AbstractOseeCache<String, ArtifactType> artCache, AbstractOseeCache<String, AttributeType> attrCache, String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
       ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(artifactType);
 
@@ -299,7 +299,7 @@ public class ModelAsserts {
          artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
    }
 
-   public static void checkRelationTypeInheritance(AbstractOseeCache<RelationType> cache, AbstractOseeCache<ArtifactType> artCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
+   public static void checkRelationTypeInheritance(AbstractOseeCache<String, RelationType> cache, AbstractOseeCache<String, ArtifactType> artCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
       RelationType relationType = cache.getByGuid(relGuid);
       Assert.assertNotNull(relationType);
 

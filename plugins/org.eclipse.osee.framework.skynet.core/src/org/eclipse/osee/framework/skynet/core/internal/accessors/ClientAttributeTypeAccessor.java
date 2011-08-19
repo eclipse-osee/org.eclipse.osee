@@ -26,12 +26,12 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<AttributeType> {
+public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<String, AttributeType> {
 
-   private final AbstractOseeCache<OseeEnumType> enumCache;
+   private final AbstractOseeCache<String, OseeEnumType> enumCache;
    private final AttributeTypeFactory attributeTypeFactory;
 
-   public ClientAttributeTypeAccessor(AttributeTypeFactory attributeTypeFactory, AbstractOseeCache<OseeEnumType> enumCache) {
+   public ClientAttributeTypeAccessor(AttributeTypeFactory attributeTypeFactory, AbstractOseeCache<String, OseeEnumType> enumCache) {
       super();
       this.attributeTypeFactory = attributeTypeFactory;
       this.enumCache = enumCache;
@@ -42,13 +42,13 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
    }
 
    @Override
-   public void load(IOseeCache<AttributeType> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, AttributeType> cache) throws OseeCoreException {
       enumCache.ensurePopulated();
       super.load(cache);
    }
 
    @Override
-   protected Collection<AttributeType> updateCache(IOseeCache<AttributeType> cache) throws OseeCoreException {
+   protected Collection<AttributeType> updateCache(IOseeCache<String, AttributeType> cache) throws OseeCoreException {
       List<AttributeType> updatedItems = new ArrayList<AttributeType>();
 
       AttributeTypeCacheUpdateResponse response =

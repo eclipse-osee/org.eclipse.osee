@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
+public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<String, Branch> {
 
    private static final String SELECT_BRANCHES = "SELECT * FROM osee_branch";
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
@@ -57,7 +57,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    }
 
    @Override
-   public void load(IOseeCache<Branch> cache) throws OseeCoreException {
+   public void load(IOseeCache<String, Branch> cache) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToBaseTx = new HashMap<Branch, Integer>();
@@ -74,8 +74,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       for (Branch branch : cache.getAll()) {
          branch.clearDirty();
       }
-      OseeLog.logf(Activator.class, Level.INFO,
-         "Branch Cache loaded [%s]", Lib.getElapseString(startTime));
+      OseeLog.logf(Activator.class, Level.INFO, "Branch Cache loaded [%s]", Lib.getElapseString(startTime));
    }
 
    private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {

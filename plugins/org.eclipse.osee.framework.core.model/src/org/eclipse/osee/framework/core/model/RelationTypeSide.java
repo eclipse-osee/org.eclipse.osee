@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide extends NamedIdentity implements IRelationTypeSide {
+public class RelationTypeSide extends NamedIdentity<String> implements IRelationTypeSide {
 
    private final IRelationType type;
    private final RelationSide side;

@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.core.util.Conditions;
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
-public class BranchCache extends AbstractOseeCache<Branch> {
+public class BranchCache extends AbstractOseeCache<String, Branch> {
 
-   public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
+   public BranchCache(IOseeDataAccessor<String, Branch> dataAccessor) {
       super(OseeCacheEnum.BRANCH_CACHE, dataAccessor, false);
    }
 

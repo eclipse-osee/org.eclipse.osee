@@ -15,6 +15,6 @@ import org.eclipse.osee.framework.core.data.Identity;
 /**
  * @author Donald G. Dunne
  */
-public interface IATSStateMachineArtifact extends Identity {
+public interface IATSStateMachineArtifact extends Identity<String> {
    // do nothing
 }

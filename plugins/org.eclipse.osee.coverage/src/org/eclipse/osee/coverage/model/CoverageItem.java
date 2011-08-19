@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProductRelatable {
+public class CoverageItem extends NamedIdentity<String> implements ICoverage, IWorkProductRelatable {
 
    CoverageOption coverageMethod = CoverageOptionManager.Not_Covered;
    String rationale;

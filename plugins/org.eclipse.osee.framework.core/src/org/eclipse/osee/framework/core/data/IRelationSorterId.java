@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IRelationSorterId extends Named, Identity {
+public interface IRelationSorterId extends Named, Identity<String> {
    // composition interface requires no additional methods,fields
 }

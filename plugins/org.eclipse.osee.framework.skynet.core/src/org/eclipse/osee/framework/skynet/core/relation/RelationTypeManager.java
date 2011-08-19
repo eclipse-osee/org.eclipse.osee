@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class RelationTypeManager {
 
-   public static AbstractOseeCache<RelationType> getCache() {
+   public static AbstractOseeCache<String, RelationType> getCache() {
       return Activator.getInstance().getOseeCacheService().getRelationTypeCache();
    }
 
-   public static AbstractOseeCache<ArtifactType> getArtifactTypeCache() {
+   public static AbstractOseeCache<String, ArtifactType> getArtifactTypeCache() {
       return Activator.getInstance().getOseeCacheService().getArtifactTypeCache();
    }
 

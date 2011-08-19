@@ -27,14 +27,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractClientDataAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
+public abstract class AbstractClientDataAccessor<K, T extends IOseeStorable> implements IOseeDataAccessor<K, T> {
 
    protected AbstractClientDataAccessor() {
       // Hide default constructor
    }
 
    @Override
-   public void load(IOseeCache<T> cache) throws OseeCoreException {
+   public void load(IOseeCache<K, T> cache) throws OseeCoreException {
       Collection<T> updatedItems = updateCache(cache);
       for (T item : updatedItems) {
          item.clearDirty();
@@ -47,7 +47,7 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorable> implem
       //do nothing
    }
 
-   protected <J> J requestUpdateMessage(IOseeCache<T> cache, ITranslatorId txId) throws OseeCoreException {
+   protected <J> J requestUpdateMessage(IOseeCache<K, T> cache, ITranslatorId txId) throws OseeCoreException {
       CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.UPDATE.name());
@@ -56,5 +56,5 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorable> implem
          CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, txId);
    }
 
-   protected abstract Collection<T> updateCache(IOseeCache<T> cache) throws OseeCoreException;
+   protected abstract Collection<T> updateCache(IOseeCache<K, T> cache) throws OseeCoreException;
 }

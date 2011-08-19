@@ -87,7 +87,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * {@link ArtifactTest}
  */
 
-public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IBasicGuidArtifact {
+public class Artifact extends NamedIdentity<String> implements IArtifact, IAdaptable, IBasicGuidArtifact {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
