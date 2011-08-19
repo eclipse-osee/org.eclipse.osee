@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * @author Donald G. Dunne
  */
 public abstract class CoveragePackageBase extends NamedIdentity implements ICoverage, ICoverageUnitProvider {
-   List<CoverageUnit> coverageUnits = new CopyOnWriteArrayList<CoverageUnit>();
+   List<CoverageUnit> coverageUnits = Collections.synchronizedList(new ArrayList<CoverageUnit>());
    final XResultDataFile logResultData = new XResultDataFile(false);
    boolean editable = true;
    protected final CoverageOptionManager coverageOptionManager;
@@ -47,22 +48,28 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
    @Override
    public void addCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnit.setParent(this);
-      if (!coverageUnits.contains(coverageUnit)) {
-         coverageUnits.add(coverageUnit);
+      synchronized (coverageUnits) {
+         if (!coverageUnits.contains(coverageUnit)) {
+            coverageUnits.add(coverageUnit);
+         }
       }
    }
 
    @Override
    public List<CoverageUnit> getCoverageUnits() {
-      return coverageUnits;
+      synchronized (coverageUnits) {
+         return coverageUnits;
+      }
    }
 
    public abstract void getOverviewHtmlHeader(XResultData xResultData);
 
    public List<CoverageItem> getCoverageItems() {
       List<CoverageItem> items = new ArrayList<CoverageItem>();
-      for (CoverageUnit coverageUnit : coverageUnits) {
-         items.addAll(coverageUnit.getCoverageItems(true));
+      synchronized (coverageUnits) {
+         for (CoverageUnit coverageUnit : coverageUnits) {
+            items.addAll(coverageUnit.getCoverageItems(true));
+         }
       }
       return items;
    }
@@ -103,10 +110,12 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
    @Override
    public Collection<? extends ICoverage> getChildren(boolean recurse) {
       Set<ICoverage> items = new HashSet<ICoverage>();
-      for (CoverageUnit coverageUnit : getCoverageUnits()) {
-         items.add(coverageUnit);
-         if (recurse) {
-            items.addAll(coverageUnit.getChildren(recurse));
+      synchronized (coverageUnits) {
+         for (CoverageUnit coverageUnit : coverageUnits) {
+            items.add(coverageUnit);
+            if (recurse) {
+               items.addAll(coverageUnit.getChildren(recurse));
+            }
          }
       }
       return items;
@@ -132,15 +141,17 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
          } else {
             nameStr = nameStr + "." + name;
          }
-         if (getCoverageUnits().isEmpty()) {
-            CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
-            newCoverageUnit.setFolder(true);
-            newCoverageUnit.setNamespace(nameStr);
-            addCoverageUnit(newCoverageUnit);
-            if (nameStr.equals(namespace)) {
-               return newCoverageUnit;
+         synchronized (coverageUnits) {
+            if (coverageUnits.isEmpty()) {
+               CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
+               newCoverageUnit.setFolder(true);
+               newCoverageUnit.setNamespace(nameStr);
+               addCoverageUnit(newCoverageUnit);
+               if (nameStr.equals(namespace)) {
+                  return newCoverageUnit;
+               }
+               continue;
             }
-            continue;
          }
 
          // Look for already existing CU
@@ -206,9 +217,11 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
 
    @Override
    public boolean isCovered() {
-      for (CoverageUnit coverageUnit : coverageUnits) {
-         if (!coverageUnit.isCovered()) {
-            return false;
+      synchronized (coverageUnits) {
+         for (CoverageUnit coverageUnit : coverageUnits) {
+            if (!coverageUnit.isCovered()) {
+               return false;
+            }
          }
       }
       return true;
@@ -229,7 +242,9 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
 
    @Override
    public void removeCoverageUnit(CoverageUnit coverageUnit) {
-      coverageUnits.remove(coverageUnit);
+      synchronized (coverageUnits) {
+         coverageUnits.remove(coverageUnit);
+      }
    }
 
    @Override
