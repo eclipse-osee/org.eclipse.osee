@@ -68,8 +68,8 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(Arrays.deepToString(protocols));
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error processing request for protocols [%s]", request.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing request for protocols [%s]",
+            request.toString());
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));
@@ -95,8 +95,8 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error processing session request [%s]", request.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing session request [%s]", request.toString());
+         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.getWriter().write(Lib.exceptionToString(ex));
          response.getWriter().flush();
          response.getWriter().close();
