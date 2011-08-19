@@ -325,4 +325,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
          }
       }
    }
+
+   public final int getLocalId(Identity token) throws OseeCoreException {
+      return get(token).getId();
+   }
 }

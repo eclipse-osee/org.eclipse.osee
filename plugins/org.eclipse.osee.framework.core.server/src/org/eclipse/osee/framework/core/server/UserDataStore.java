@@ -13,8 +13,13 @@ package org.eclipse.osee.framework.core.server;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.internal.ServerActivator;
+import org.eclipse.osee.framework.core.server.internal.ServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,7 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public final class UserDataStore {
    private static final String LOAD_OSEE_USER =
-      "select oa.value as user_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
+      "select att.value as user_id from osee_attribute att, osee_txs txs where att.attr_type_id = ? and txs.branch_id = ? and att.gamma_id = txs.gamma_id and txs.tx_current = ? and att.value = ?";
 
    private UserDataStore() {
       // private constructor
@@ -33,9 +38,13 @@ public final class UserDataStore {
    public static IUserToken getUserTokenFromOseeDb(String userId) {
       IUserToken toReturn = null;
       IOseeStatement chStmt = null;
+      IOseeCachingService cachingService = ServiceProvider.getCachingService();
       try {
+         int attributeTypeId = cachingService.getAttributeTypeCache().getLocalId(CoreAttributeTypes.UserId);
+         int branchId = cachingService.getBranchCache().get(CoreBranches.COMMON).getId();
+
          chStmt = ConnectionHandler.getStatement();
-         chStmt.runPreparedQuery(LOAD_OSEE_USER, userId);
+         chStmt.runPreparedQuery(LOAD_OSEE_USER, attributeTypeId, branchId, TxChange.CURRENT.getValue(), userId);
          if (chStmt.next()) {
             // Only need the userId all other fields will be loaded by the client
             toReturn = TokenFactory.createUserToken(null, "-", "-", chStmt.getString("user_id"), true, false, false);

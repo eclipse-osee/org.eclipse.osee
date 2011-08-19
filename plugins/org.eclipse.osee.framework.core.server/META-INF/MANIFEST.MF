@@ -16,6 +16,7 @@ Import-Package: javax.servlet,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
@@ -29,10 +30,5 @@ Import-Package: javax.servlet,
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.core.server
 Bundle-ActivationPolicy: lazy
-Service-Component:  OSGI-INF/authentication.manager.xml,
- OSGI-INF/authentication.provider.xml,
- OSGI-INF/authentication.provider.demo.xml,
- OSGI-INF/application.lookup.server.manager.xml,
- OSGI-INF/server.task.scheduler.xml,
- OSGI-INF/join.cleanup.task.provider.xml
+Service-Component: OSGI-INF/*.xml
 Bundle-Activator: org.eclipse.osee.framework.core.server.internal.ServerActivator
