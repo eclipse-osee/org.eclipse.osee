@@ -8,12 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.model;
+
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
+
+import org.eclipse.osee.ote.core.model.IModel;
+import org.eclipse.osee.ote.core.model.ModelKey;
 
 /**
  * @author Michael P. Masterson
@@ -29,18 +32,15 @@ public class ModelFinderService {
    }
 
    public void start() {
-      OseeLog.log(ModelFinderService.class, Level.INFO, "### Starting model finder");
       ModelFinderService.instance = this;
    }
 
    public void stop() {
-      OseeLog.log(ModelFinderService.class, Level.INFO, "### Stopping model finder");
       models.clear();
    }
 
    public void addModel(IModel newModel) {
       try {
-         OseeLog.logf(ModelFinderService.class, Level.INFO, "### Adding model %s\n", newModel.getKey());
          models.put(newModel.getKey(), newModel);
       } catch (RemoteException ex) {
          ex.printStackTrace();
@@ -49,7 +49,6 @@ public class ModelFinderService {
 
    public void removeModel(IModel newModel) {
       try {
-         OseeLog.logf(ModelFinderService.class, Level.INFO, "### Removing model %s\n", newModel.getKey());
          models.remove(newModel.getKey());
       } catch (RemoteException ex) {
          ex.printStackTrace();

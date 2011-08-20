@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.model;
+
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -19,6 +19,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import org.eclipse.osee.ote.core.model.IModel;
+import org.eclipse.osee.ote.core.model.IModelListener;
 
 /**
  * @author Michael P. Masterson

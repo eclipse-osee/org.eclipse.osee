@@ -1,3 +1,4 @@
+package org.eclipse.osee.ote.model.manager;
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
@@ -8,7 +9,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.model;
+
 
 import java.lang.ref.WeakReference;
 import java.rmi.RemoteException;
@@ -27,6 +28,11 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.console.ConsoleCommand;
 import org.eclipse.osee.ote.core.environment.console.ConsoleShell;
 import org.eclipse.osee.ote.core.framework.DestroyableService;
+import org.eclipse.osee.ote.core.model.IModel;
+import org.eclipse.osee.ote.core.model.IModelListener;
+import org.eclipse.osee.ote.core.model.IModelManager;
+import org.eclipse.osee.ote.core.model.ModelKey;
+import org.eclipse.osee.ote.core.model.ModelState;
 
 @SuppressWarnings("unchecked")
 /**
@@ -293,7 +299,7 @@ public class ModelManager implements IModelManager, DestroyableService {
          modelReferenceMap.get(cleanKey).notifyModelStateListener();
       }
    }
-   
+
    @Override
    public void notifyModeStateListener(ModelKey key, ModelState state) throws RemoteException {
 	   notifyModelStateListener(key, state);
