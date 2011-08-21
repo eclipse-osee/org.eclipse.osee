@@ -54,18 +54,18 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>(4);
 
-      if (pcrIds != null && pcrIds.size() > 0) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId, pcrIds));
-      } else {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId));
-      }
-
       if (teamDefs != null && teamDefs.size() > 0) {
          List<String> teamDefGuids = new ArrayList<String>(teamDefs.size());
          for (TeamDefinitionArtifact teamDef : teamDefs) {
             teamDefGuids.add(teamDef.getGuid());
          }
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefGuids));
+      }
+
+      if (pcrIds != null && pcrIds.size() > 0) {
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId, pcrIds));
+      } else {
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId));
       }
 
       if (returnActions) {
