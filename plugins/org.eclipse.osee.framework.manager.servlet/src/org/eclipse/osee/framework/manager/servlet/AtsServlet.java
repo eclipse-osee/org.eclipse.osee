@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsService;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsXmlMessages;
@@ -39,14 +40,13 @@ public class AtsServlet extends UnsecuredOseeHttpServlet {
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
 
-   public AtsServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
-      super();
+   public AtsServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       AtsService.IResourceProvider provider = new ResourceProvider();
       AtsXmlSearch xmlSearch = new AtsXmlSearch();
       AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage());
-      this.atsService = new AtsService(provider, xmlSearch, messages, locatorManager, resourceManager);
+      this.atsService = new AtsService(provider, xmlSearch, messages, locatorManager, resourceManager, cacheService);
    }
 
    @Override

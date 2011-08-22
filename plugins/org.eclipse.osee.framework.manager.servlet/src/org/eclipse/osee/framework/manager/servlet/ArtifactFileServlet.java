@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -43,11 +45,13 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
+   private final BranchCache branchCache;
 
-   public ArtifactFileServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+   public ArtifactFileServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cachingService) {
       super();
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
+      this.branchCache = cachingService.getBranchCache();
    }
 
    @Override
@@ -77,9 +81,11 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
          String uri = null;
          if (artifactFileInfo != null) {
             if (artifactFileInfo.isBranchNameValid()) {
-               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchName());
+               uri =
+                  ArtifactUtil.getUri(artifactFileInfo.getGuid(),
+                     branchCache.getBySoleName(artifactFileInfo.getBranchName()));
             } else {
-               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getId());
+               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branchCache.getById(artifactFileInfo.getId()));
             }
          }
          handleArtifactUri(locatorManager, resourceManager, request.getQueryString(), uri, response);

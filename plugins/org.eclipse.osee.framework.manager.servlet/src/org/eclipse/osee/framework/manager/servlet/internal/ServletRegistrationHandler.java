@@ -111,9 +111,9 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       register(new SystemManagerServlet(sessionManager), OseeServerContext.MANAGER_CONTEXT);
       register(new ResourceManagerServlet(sessionManager, locatorManager, resourceManager),
          OseeServerContext.RESOURCE_CONTEXT);
-      register(new ArtifactFileServlet(locatorManager, resourceManager), OseeServerContext.PROCESS_CONTEXT);
-      register(new ArtifactFileServlet(locatorManager, resourceManager), OseeServerContext.ARTIFACT_CONTEXT);
-      register(new ArtifactFileServlet(locatorManager, resourceManager), "index");
+      register(new ArtifactFileServlet(locatorManager, resourceManager, caching), OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(locatorManager, resourceManager, caching), OseeServerContext.ARTIFACT_CONTEXT);
+      register(new ArtifactFileServlet(locatorManager, resourceManager, caching), "index");
       register(new BranchExchangeServlet(sessionManager, branchExchangeService, locatorManager, resourceManager),
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       register(new BranchManagerServlet(sessionManager, branchService, translationService),
@@ -128,10 +128,10 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       register(new OseeModelServlet(sessionManager, translationService, modeling), OseeServerContext.OSEE_MODEL_CONTEXT);
       register(new UnsubscribeServlet(context, databaseService, caching), "osee/unsubscribe");
 
-      register(new AtsServlet(locatorManager, resourceManager), "osee/ats");
+      register(new AtsServlet(locatorManager, resourceManager, caching), "osee/ats");
       register(new ConfigurationServlet(appServerManager, translationService, databaseService, caching, branchService),
          OseeServerContext.OSEE_CONFIGURE_CONTEXT);
-      register(new DataServlet(locatorManager, resourceManager), "osee/data");
+      register(new DataServlet(locatorManager, resourceManager, caching), "osee/data");
       register(new AdminServlet(context), "osee/console");
    }
 

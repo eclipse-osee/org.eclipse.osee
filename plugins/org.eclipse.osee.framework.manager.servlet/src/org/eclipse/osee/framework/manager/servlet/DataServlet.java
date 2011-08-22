@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -35,18 +37,20 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
 
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
+   private final BranchCache branchCache;
 
-   public DataServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+   public DataServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cacheService) {
       super();
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
+      branchCache = cacheService.getBranchCache();
    }
 
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String urlRequest = request.getRequestURI();
       try {
-         handleUriRequest(locatorManager, resourceManager, urlRequest, response);
+         handleUriRequest(locatorManager, resourceManager, urlRequest, response, branchCache);
       } catch (OseeCoreException ex) {
          handleError(response, HttpURLConnection.HTTP_INTERNAL_ERROR, "", ex);
       }
@@ -58,15 +62,14 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
       response.sendError(status, Lib.exceptionToString(ex));
    }
 
-   public static void handleUriRequest(IResourceLocatorManager locatorManager, IResourceManager resourceManager, String urlRequest, HttpServletResponse response) throws OseeCoreException {
+   public static void handleUriRequest(IResourceLocatorManager locatorManager, IResourceManager resourceManager, String urlRequest, HttpServletResponse response, BranchCache branchCache) throws OseeCoreException {
       UrlParser parser = new UrlParser();
       parser.parse(urlRequest);
       String branchGuid = parser.getAttribute("branch");
       String artifactGuid = parser.getAttribute("artifact");
-      String uri = ArtifactUtil.getUriByGuids(branchGuid, artifactGuid);
+      String uri = ArtifactUtil.getUri(artifactGuid, branchCache.getByGuid(branchGuid));
       ArtifactFileServlet.handleArtifactUri(locatorManager, resourceManager, urlRequest, uri, response);
    }
-
    private static final class UrlParser {
       private final List<String> contexts;
 
