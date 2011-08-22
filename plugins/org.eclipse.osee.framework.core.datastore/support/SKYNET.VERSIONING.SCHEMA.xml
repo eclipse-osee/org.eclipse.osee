@@ -195,17 +195,17 @@
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
 		<Column id="GUID" defaultValue="not null" limits="22" type="VARCHAR" />
 		<Column id="HUMAN_READABLE_ID" defaultValue="not null" limits="5" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ARTS__G_A_PK" type="PRIMARY KEY" appliesTo="ART_ID, GAMMA_ID" />
-		<Constraint schema="OSEE" id="OSEE_ARTS__ART_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
+		<Constraint schema="OSEE" id="OSEE_ART__G_A_PK" type="PRIMARY KEY" appliesTo="ART_ID, GAMMA_ID" />
+		<Constraint schema="OSEE" id="OSEE_ART__ART_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" />
 		</Constraint>
-		<Index id="OSEE_ARTS__ART_ID_IDX" tablespace="osee_index">
+		<Index id="OSEE_ART__ART_ID_IDX" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 		</Index>
-		<Index id="OSEE_ARTS__GUID_IDX" tablespace="osee_index">
+		<Index id="OSEE_ART__GUID_IDX" tablespace="osee_index">
 			<AppliesTo id="GUID"/>
 		</Index>
-		<Index id="OSEE_ARTS__ART_TYPE_ID_IDX" tablespace="osee_index">
+		<Index id="OSEE_ART__ART_TYPE_ID_IDX" tablespace="osee_index">
 			<AppliesTo id="ART_TYPE_ID"/>
 		</Index>
 	</Table>
