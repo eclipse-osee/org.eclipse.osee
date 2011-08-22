@@ -33,3 +33,4 @@ plugin@ch.qos.logback.slf4j,0.9.27=GET,http://download.eclipse.org/tools/orbit/d
 plugin@ch.qos.logback.core,0.9.27=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/plugins/ch.qos.logback.core_0.9.27.v20110224-1110.jar
 plugin@ch.qos.logback.classic,0.9.27=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/plugins/ch.qos.logback.classic_0.9.27.v20110224-1110.jar
 
+fragment@org.eclipse.osee.logback.config=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.logback.config
