@@ -98,7 +98,7 @@ public enum OseeSql {
    }
 
    private static class Strings {
-      private static final String HINTS__ORDERED__FIRST_ROWS = " /*+ ordered FIRST_ROWS */";
+      private static final String HINTS__ORDERED__FIRST_ROWS = " /*+ ordered */";
       private static final String HINTS__THE_INDEX = "/*+ INDEX(txs OSEE_TXS_B_G_C_M_T_IDX) */";
 
       private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =
