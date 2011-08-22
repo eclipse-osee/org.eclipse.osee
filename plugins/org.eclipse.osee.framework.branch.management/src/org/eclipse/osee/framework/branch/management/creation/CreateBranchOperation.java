@@ -56,8 +56,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.tx_current <> ? AND txs.branch_id = ? ORDER BY txs.transaction_id DESC";
    private static final String INSERT_ADDRESSING =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
-   private static final String USER_ID_QUERY =
-      "SELECT oa.art_id FROM osee_attribute_type oat, osee_attribute oa, osee_txs txs WHERE oat.name = 'User Id' AND oat.attr_type_id = oa.attr_type_id AND oa.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND oa.value = ?";
+   private static final String USER_ID_QUERY = "SELECT art_id FROM osee_artifact WHERE guid = ?";
 
    private static final String MERGE_BRANCH_INSERT =
       "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES (?,?,?,?)";
@@ -95,7 +94,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       if (systemUserId == -1) {
          try {
             systemUserId =
-               getDatabaseService().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserId());
+               getDatabaseService().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getGuid());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.WARNING, "Unable to retrieve the system user");
          }
