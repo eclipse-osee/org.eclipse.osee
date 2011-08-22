@@ -5,19 +5,19 @@ Bundle-Version: 0.9.8.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext,
+Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
+ org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
+ org.apache.commons.logging;bundle-version="1.0.4";resolution:=optional;visibility:=reexport,
  org.eclipse.xtext.generator;resolution:=optional,
- org.apache.commons.logging;resolution:=optional,
  org.eclipse.emf.codegen.ecore;resolution:=optional,
  org.eclipse.emf.mwe.utils;resolution:=optional,
  org.eclipse.emf.mwe2.launch;resolution:=optional,
- com.ibm.icu;resolution:=optional,
- org.eclipse.xtext.xtend;resolution:=optional,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.antlr.runtime
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.apache.commons.logging
 Export-Package: org.eclipse.osee.framework.core.dsl,
  org.eclipse.osee.framework.core.dsl.services,
  org.eclipse.osee.framework.core.dsl.oseeDsl,
