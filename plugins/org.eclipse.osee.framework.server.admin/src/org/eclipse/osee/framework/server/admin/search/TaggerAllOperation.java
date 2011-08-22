@@ -33,64 +33,69 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
 public final class TaggerAllOperation extends AbstractOperation {
    private static final int BATCH_SIZE = 1000;
 
-   private static final String SELECT_BRANCHES = "SELECT branch_id FROM osee_branch ORDER BY branch_id";
-
    private static final String FIND_ALL_TAGGABLE_ATTRIBUTES =
-      "SELECT DISTINCT attr.gamma_id, type.tagger_id FROM osee_join_id jid, osee_txs txs, osee_attribute_type type, osee_attribute attr WHERE jid.query_id = ? AND jid.id = txs.branch_id AND txs.gamma_id = attr.gamma_id AND attr.attr_type_id = type.attr_type_id AND type.tagger_id IS NOT NULL";
+      "SELECT att.gamma_id FROM osee_attribute_type aty, osee_attribute att WHERE aty.tagger_id IS NOT NULL AND aty.attr_type_id = att.attr_type_id";
 
-   private static final String COUNT_TAGGABLE_ATTRIBUTES =
-      "SELECT count(DISTINCT attr.gamma_id) FROM osee_join_id jid, osee_txs txs, osee_attribute_type type, osee_attribute attr WHERE jid.query_id = ? AND jid.id = txs.branch_id AND txs.gamma_id = attr.gamma_id AND attr.attr_type_id = type.attr_type_id AND type.tagger_id IS NOT NULL";
+   private static final String COUNT_ALL_TAGGABLE_ATTRIBUTES = FIND_ALL_TAGGABLE_ATTRIBUTES.replace("att.gamma_id",
+      "count(1)");
 
-   private static final String COUNT_MISSING =
-      COUNT_TAGGABLE_ATTRIBUTES + " AND attr.gamma_id NOT IN (SELECT ost.gamma_id FROM osee_search_tags ost)";
+   private static final String FIND_MISSING =
+      FIND_ALL_TAGGABLE_ATTRIBUTES + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
 
-   private static final String FIND_TAGGABLE_MISSING =
-      FIND_ALL_TAGGABLE_ATTRIBUTES + " AND attr.gamma_id NOT IN (SELECT ost.gamma_id FROM osee_search_tags ost)";
+   private static final String COUNT_MISSING = FIND_MISSING.replaceFirst("att.gamma_id", "count(1)");
+
+   private static final String FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH =
+      "SELECT DISTINCT att.gamma_id FROM osee_join_id jid, osee_txs txs, osee_attribute_type type, osee_attribute att WHERE jid.query_id = ? AND jid.id = txs.branch_id AND txs.gamma_id = att.gamma_id AND att.attr_type_id = type.attr_type_id AND type.tagger_id IS NOT NULL";
+
+   private static final String COUNT_TAGGABLE_ATTRIBUTES_BY_BRANCH = FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH.replace(
+      "DISTINCT att.gamma_id", "count(DISTINCT att.gamma_id)");
+
+   private static final String FIND_MISSING_BY_BRANCH =
+      FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
+
+   private static final String COUNT_MISSING_BY_BRANCH =
+      COUNT_TAGGABLE_ATTRIBUTES_BY_BRANCH + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
 
    private final Set<Integer> branchIds;
    private final boolean tagOnlyMissingGammas;
    private TagProcessListener processor;
 
    public TaggerAllOperation(OperationLogger logger, Set<Integer> branchIds, boolean tagOnlyMissingGammas) {
-      super("Tag All Attributes", Activator.PLUGIN_ID, logger);
+      super("Tag Attributes", Activator.PLUGIN_ID, logger);
       this.branchIds = branchIds;
       this.tagOnlyMissingGammas = tagOnlyMissingGammas;
    }
 
    private TagProcessListener process(long startTime, Collection<Integer> branchIds, boolean tagOnlyMissingGammas) throws OseeCoreException {
-      StringBuilder builder = new StringBuilder();
-      builder.append("Tagging");
-      if (tagOnlyMissingGammas) {
-         builder.append(" (Only Missing)");
-      }
-      builder.append(" Attributes For: ");
-      if (branchIds.isEmpty()) {
-         builder.append("All Branches");
-      } else {
-         builder.append("Branch(es) ").append(branchIds);
-      }
-      log(builder.toString());
-
-      if (branchIds.isEmpty()) {
-         loadBranchIds(branchIds);
-      }
+      logTaggingStart();
 
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
-      for (Integer id : branchIds) {
-         idJoin.add(id);
-      }
-      idJoin.store();
-
-      Object[] params = new Object[] {idJoin.getQueryId()};
-
+      Object[] params;
       String countQuery;
       String searchQuery;
-      if (tagOnlyMissingGammas) {
-         countQuery = COUNT_MISSING;
-         searchQuery = FIND_TAGGABLE_MISSING;
+
+      if (branchIds.isEmpty()) {
+         params = new Object[0];
+         if (tagOnlyMissingGammas) {
+            countQuery = COUNT_MISSING;
+            searchQuery = FIND_MISSING;
+         } else {
+            countQuery = COUNT_ALL_TAGGABLE_ATTRIBUTES;
+            searchQuery = FIND_ALL_TAGGABLE_ATTRIBUTES;
+         }
       } else {
-         countQuery = COUNT_TAGGABLE_ATTRIBUTES;
-         searchQuery = FIND_ALL_TAGGABLE_ATTRIBUTES;
+         for (Integer id : branchIds) {
+            idJoin.add(id);
+         }
+         idJoin.store();
+         params = new Object[] {idJoin.getQueryId()};
+         if (tagOnlyMissingGammas) {
+            countQuery = COUNT_MISSING_BY_BRANCH;
+            searchQuery = FIND_MISSING_BY_BRANCH;
+         } else {
+            countQuery = COUNT_TAGGABLE_ATTRIBUTES_BY_BRANCH;
+            searchQuery = FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH;
+         }
       }
 
       int totalAttributes = ConnectionHandler.runPreparedQueryFetchInt(-1, countQuery, params);
@@ -103,17 +108,19 @@ public final class TaggerAllOperation extends AbstractOperation {
       return processor;
    }
 
-   private void loadBranchIds(Collection<Integer> branchIds) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         String query = String.format(SELECT_BRANCHES);
-         chStmt.runPreparedQuery(query);
-         while (chStmt.next()) {
-            branchIds.add(chStmt.getInt("branch_id"));
-         }
-      } finally {
-         chStmt.close();
+   private void logTaggingStart() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Tagging");
+      if (tagOnlyMissingGammas) {
+         builder.append(" (Only Missing)");
       }
+      builder.append(" Attributes for ");
+      if (branchIds.isEmpty()) {
+         builder.append("All Branches");
+      } else {
+         builder.append("Branch(es) ").append(branchIds);
+      }
+      log(builder.toString());
    }
 
    private void fetchAndProcessGammas(TagProcessListener processor, String query, Object... params) throws OseeCoreException {
@@ -201,5 +208,6 @@ public final class TaggerAllOperation extends AbstractOperation {
       long startTime = System.currentTimeMillis();
       processor = process(startTime, branchIds, tagOnlyMissingGammas);
       processor.printStats();
+      log("Tagging Complete");
    }
 }
