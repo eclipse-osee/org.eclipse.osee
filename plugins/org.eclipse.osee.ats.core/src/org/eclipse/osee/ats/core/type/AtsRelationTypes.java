@@ -73,12 +73,6 @@ public final class AtsRelationTypes {
       RelationSide.SIDE_A, "AAMFE9_i7zG3lR1kGWQA", "TeamDefinitionToVersion");
    public static final IRelationTypeSide TeamDefinitionToVersion_Version = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_B, "AAMFE9_i7zG3lR1kGWQA", "TeamDefinitionToVersion");
-   public static final IRelationTypeSide TeamDefinitionToWorkflowDiagram_TeamDefinition =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, "AAMFE+BpKTGewbN8c3gA",
-         "TeamDefinitionToWorkflowDiagram");
-   public static final IRelationTypeSide TeamDefinitionToWorkflowDiagram_WorkflowDiagram =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, "AAMFE+BpKTGewbN8c3gA",
-         "TeamDefinitionToWorkflowDiagram");
    public static final IRelationTypeSide TeamLead_Lead = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
       "AAMFE90HyTZPyHuQWOQA", "TeamLead");
    public static final IRelationTypeSide TeamLead_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
