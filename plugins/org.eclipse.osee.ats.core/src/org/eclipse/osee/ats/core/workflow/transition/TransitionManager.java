@@ -6,6 +6,7 @@ package org.eclipse.osee.ats.core.workflow.transition;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
@@ -338,7 +339,10 @@ public class TransitionManager {
       boolean isOverrideAttributeValidationState =
          helper.isOverrideTransitionValidityCheck() || awa.getStateDefinition().getOverrideAttributeValidationStates().contains(
             toStateDef);
-      if (!toStateDef.isCancelledPage() && !isOverrideAttributeValidationState) {
+      if (toStateDef.isCancelledPage()) {
+         validateTaskCompletion(results, awa, toStateDef);
+         validateReviewsCancelled(results, awa, toStateDef);
+      } else if (!toStateDef.isCancelledPage() && !isOverrideAttributeValidationState) {
 
          // Validate XWidgets for transition
          Collection<WidgetResult> widgetResults =
@@ -349,15 +353,7 @@ public class TransitionManager {
             }
          }
 
-         // Loop through this state's tasks to confirm complete
-         if (awa instanceof AbstractTaskableArtifact && !awa.isCompletedOrCancelled()) {
-            for (TaskArtifact taskArt : ((AbstractTaskableArtifact) awa).getTaskArtifactsFromCurrentState()) {
-               if (taskArt.isInWork()) {
-                  results.addResult(awa, TransitionResult.TASKS_NOT_COMPLETED);
-                  continue;
-               }
-            }
-         }
+         validateTaskCompletion(results, awa, toStateDef);
 
          // Don't transition without targeted version if so configured
          boolean teamDefRequiresTargetedVersion = awa.teamDefHasRule(RuleDefinitionOption.RequireTargetedVersion);
@@ -377,6 +373,43 @@ public class TransitionManager {
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCompletedOrCancelled()) {
                   results.addResult(awa, TransitionResult.COMPLETE_BLOCKING_REVIEWS);
                }
+            }
+         }
+      }
+   }
+
+   private void validateReviewsCancelled(TransitionResults results, AbstractWorkflowArtifact awa, StateDefinition toStateDef) throws OseeCoreException {
+      if (awa instanceof TeamWorkFlowArtifact && toStateDef.isCancelledPage()) {
+         for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) awa)) {
+            if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCompletedOrCancelled()) {
+               results.addResult(awa, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL);
+               break;
+            }
+         }
+      }
+   }
+
+   private void validateTaskCompletion(TransitionResults results, AbstractWorkflowArtifact awa, StateDefinition toStateDef) throws OseeCoreException {
+      // Loop through this state's tasks to confirm complete
+      boolean checkTasksCompletedForState = true;
+      // Don't check for task completion if transition to working state and AllowTransitionWithoutTaskCompletion rule is set
+      if (awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion) && toStateDef.isWorkingPage()) {
+         checkTasksCompletedForState = false;
+      }
+      if (checkTasksCompletedForState && awa instanceof AbstractTaskableArtifact && !awa.isCompletedOrCancelled()) {
+         Set<TaskArtifact> tasksToCheck = new HashSet<TaskArtifact>();
+         // If transitioning to completed/cancelled, all tasks must be completed/cancelled
+         if (toStateDef.isCompletedOrCancelledPage()) {
+            tasksToCheck.addAll(((AbstractTaskableArtifact) awa).getTaskArtifacts());
+         }
+         // Else, just check current state tasks
+         else {
+            tasksToCheck.addAll(((AbstractTaskableArtifact) awa).getTaskArtifactsFromCurrentState());
+         }
+         for (TaskArtifact taskArt : tasksToCheck) {
+            if (taskArt.isInWork()) {
+               results.addResult(awa, TransitionResult.TASKS_NOT_COMPLETED);
+               break;
             }
          }
       }

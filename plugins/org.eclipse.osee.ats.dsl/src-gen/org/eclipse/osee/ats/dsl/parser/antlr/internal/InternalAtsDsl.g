@@ -3658,11 +3658,18 @@ ruleRule returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()]
     }
 
     |
-    { 
-        newCompositeNode(grammarAccess.getRuleAccess().getRULE_NAMEParserRuleCall_11()); 
+	kw='AllowTransitionWithoutTaskCompletion' 
+    {
+        $current.merge(kw);
+        newLeafNode(kw, grammarAccess.getRuleAccess().getAllowTransitionWithoutTaskCompletionKeyword_11()); 
     }
-    this_RULE_NAME_11=ruleRULE_NAME    {
-		$current.merge(this_RULE_NAME_11);
+
+    |
+    { 
+        newCompositeNode(grammarAccess.getRuleAccess().getRULE_NAMEParserRuleCall_12()); 
+    }
+    this_RULE_NAME_12=ruleRULE_NAME    {
+		$current.merge(this_RULE_NAME_12);
     }
 
     { 

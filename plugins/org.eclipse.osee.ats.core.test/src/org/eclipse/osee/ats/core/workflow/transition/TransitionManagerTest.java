@@ -336,13 +336,41 @@ public class TransitionManagerTest {
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
 
-      // transition task to completed
-      results.clear();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
-      TaskManager.transitionToCompleted(taskArt, 0.0, 0.1, transaction);
-      transaction.execute();
-      transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.isEmpty());
+      StateDefinition teamCurrentState = teamArt.getStateDefinition();
+      RuleDefinition allowTransRule = new RuleDefinition(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion);
+
+      try {
+         // test that can transition with AllowTransitionWithoutTaskCompletion rule on state
+         teamCurrentState.addRule(allowTransRule, "TransitionManagerTest-3");
+         // transition task to completed
+         results.clear();
+
+         // should not get transition validation error now
+         results.clear();
+         transMgr.handleTransitionValidation(results);
+         Assert.assertTrue(results.isEmpty());
+
+         // attempt to transition parent to cancelled, should not be able to transition with un-completed/cancelled tasks
+         helper =
+            new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+               AtsTestUtil.getCancelledStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
+               TransitionOption.None);
+         transMgr = new TransitionManager(helper);
+         results.clear();
+         transMgr.handleTransitionValidation(results);
+         Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
+
+         // Cleanup task by completing and validate can transition
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+         TaskManager.transitionToCompleted(taskArt, 0.0, 0.1, transaction);
+         transaction.execute();
+         results.clear();
+         transMgr.handleTransitionValidation(results);
+         Assert.assertTrue(results.isEmpty());
+      } finally {
+         // just in case test goes bad, make sure we remove this rule
+         teamCurrentState.removeRule(allowTransRule);
+      }
 
    }
 

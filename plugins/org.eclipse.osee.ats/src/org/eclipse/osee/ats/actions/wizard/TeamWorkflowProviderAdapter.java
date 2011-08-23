@@ -59,7 +59,7 @@ public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvid
 
    @SuppressWarnings("unused")
    @Override
-   public String getRelatedTaskWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException {
+   public String getRelatedTaskWorkflowDefinitionId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       return null;
    }
 

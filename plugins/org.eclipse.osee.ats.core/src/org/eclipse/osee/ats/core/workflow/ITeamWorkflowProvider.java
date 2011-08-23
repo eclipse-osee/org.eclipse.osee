@@ -59,7 +59,7 @@ public interface ITeamWorkflowProvider {
 
    public String getWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
 
-   public String getRelatedTaskWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
+   public String getRelatedTaskWorkflowDefinitionId(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
    /**
     * Assigned or computed Id that will show at the top of the editor

@@ -111,7 +111,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public WorkFlowDefinitionMatch getWorkFlowDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       WorkFlowDefinitionMatch match = new WorkFlowDefinitionMatch();
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
-         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentAWA());
+         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentTeamWorkflow());
          if (Strings.isValid(workFlowDefId)) {
             match.setWorkFlowDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId));
             match.addTrace((String.format("from provider [%s] for id [%s] ", provider.getClass().getSimpleName(),

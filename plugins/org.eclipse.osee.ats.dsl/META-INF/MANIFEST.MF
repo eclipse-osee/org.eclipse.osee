@@ -5,24 +5,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-Version: 0.9.9.qualifier
 Bundle-SymbolicName: org.eclipse.osee.ats.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext,
- org.eclipse.xtext.generator;resolution:=optional,
- org.apache.commons.logging;resolution:=optional,
- org.eclipse.emf.codegen.ecore;resolution:=optional,
- org.eclipse.emf.mwe.utils;resolution:=optional,
- org.eclipse.emf.mwe2.launch;resolution:=optional,
- com.ibm.icu;resolution:=optional,
- org.eclipse.xtext.xtend;resolution:=optional,
- org.eclipse.xtext.util,
- org.eclipse.emf.ecore,
- org.eclipse.emf.common,
- org.antlr.runtime,
- org.eclipse.core.runtime
-Import-Package: org.apache.log4j,
- org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.core.model.type,
- org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.skynet.core.attribute
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.dsl,
  org.eclipse.osee.ats.dsl.parseTreeConstruction,
@@ -33,3 +15,21 @@ Export-Package: org.eclipse.osee.ats.dsl,
  org.eclipse.osee.ats.dsl.atsDsl,
  org.eclipse.osee.ats.dsl.atsDsl.impl,
  org.eclipse.osee.ats.dsl.atsDsl.util
+Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
+ org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
+ org.apache.commons.logging;resolution:=optional;visibility:=reexport,
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.antlr.runtime
+Import-Package: org.apache.commons.logging,
+ org.apache.log4j,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.skynet.core.attribute

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.workdef;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.WorkPageType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -265,5 +266,13 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       }
       return false;
 
+   }
+
+   public void removeRule(RuleDefinition ruleToRemove) {
+      for (RuleDefinition rule : new CopyOnWriteArrayList<RuleDefinition>(rules)) {
+         if (rule.getName().equals(ruleToRemove.getName())) {
+            rules.remove(rule);
+         }
+      }
    }
 }

@@ -1893,9 +1893,17 @@ rule__Rule__Alternatives
 )
 
     |(
-{ before(grammarAccess.getRuleAccess().getRULE_NAMEParserRuleCall_11()); }
+{ before(grammarAccess.getRuleAccess().getAllowTransitionWithoutTaskCompletionKeyword_11()); }
+
+	'AllowTransitionWithoutTaskCompletion' 
+
+{ after(grammarAccess.getRuleAccess().getAllowTransitionWithoutTaskCompletionKeyword_11()); }
+)
+
+    |(
+{ before(grammarAccess.getRuleAccess().getRULE_NAMEParserRuleCall_12()); }
 	ruleRULE_NAME
-{ after(grammarAccess.getRuleAccess().getRULE_NAMEParserRuleCall_11()); }
+{ after(grammarAccess.getRuleAccess().getRULE_NAMEParserRuleCall_12()); }
 )
 
 ;

@@ -979,6 +979,7 @@
         <elements xsi:type="xtext:Keyword" value="AllowPriviledgedEditToAll"/>
         <elements xsi:type="xtext:Keyword" value="AllowEditToAll"/>
         <elements xsi:type="xtext:Keyword" value="AllowAssigneeToAll"/>
+        <elements xsi:type="xtext:Keyword" value="AllowTransitionWithoutTaskCompletion"/>
         <elements xsi:type="xtext:RuleCall" rule="/0/@rules.48"/>
       </alternatives>
     </rules>

@@ -780,6 +780,7 @@ public class ArtifactEventTest {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeEventManager.removeAllListeners();
       Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
+      clearEventCollections();
 
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -852,6 +853,7 @@ public class ArtifactEventTest {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       OseeEventManager.removeAllListeners();
       Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
+      clearEventCollections();
 
       // Add new Artifact for Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());

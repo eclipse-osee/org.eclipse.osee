@@ -273,6 +273,7 @@ Rule:
 	'AllowPriviledgedEditToAll' |
 	'AllowEditToAll' |
 	'AllowAssigneeToAll' |
+	'AllowTransitionWithoutTaskCompletion' |
 	RULE_NAME;
 
 WIDGET_OPTION_NAME:

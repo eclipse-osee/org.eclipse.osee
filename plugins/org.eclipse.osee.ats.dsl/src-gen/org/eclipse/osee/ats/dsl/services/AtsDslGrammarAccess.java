@@ -2256,7 +2256,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cAllowPriviledgedEditToAllKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
 		private final Keyword cAllowEditToAllKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
 		private final Keyword cAllowAssigneeToAllKeyword_10 = (Keyword)cAlternatives.eContents().get(10);
-		private final RuleCall cRULE_NAMEParserRuleCall_11 = (RuleCall)cAlternatives.eContents().get(11);
+		private final Keyword cAllowTransitionWithoutTaskCompletionKeyword_11 = (Keyword)cAlternatives.eContents().get(11);
+		private final RuleCall cRULE_NAMEParserRuleCall_12 = (RuleCall)cAlternatives.eContents().get(12);
 		
 		//// STRING is for future expansion
 		//// WARNING: Any new rules need to be added to AtsDslProposalProvider for content assist
@@ -2264,13 +2265,13 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//	"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 		//	"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
 		//	"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
-		//	"AllowEditToAll" | "AllowAssigneeToAll" | RULE_NAME;
+		//	"AllowEditToAll" | "AllowAssigneeToAll" | "AllowTransitionWithoutTaskCompletion" | RULE_NAME;
 		public ParserRule getRule() { return rule; }
 
 		//"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 		//"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
 		//"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
-		//"AllowEditToAll" | "AllowAssigneeToAll" | RULE_NAME
+		//"AllowEditToAll" | "AllowAssigneeToAll" | "AllowTransitionWithoutTaskCompletion" | RULE_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"RequireStateHourSpentPrompt"
@@ -2306,8 +2307,11 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"AllowAssigneeToAll"
 		public Keyword getAllowAssigneeToAllKeyword_10() { return cAllowAssigneeToAllKeyword_10; }
 
+		//"AllowTransitionWithoutTaskCompletion"
+		public Keyword getAllowTransitionWithoutTaskCompletionKeyword_11() { return cAllowTransitionWithoutTaskCompletionKeyword_11; }
+
 		//RULE_NAME
-		public RuleCall getRULE_NAMEParserRuleCall_11() { return cRULE_NAMEParserRuleCall_11; }
+		public RuleCall getRULE_NAMEParserRuleCall_12() { return cRULE_NAMEParserRuleCall_12; }
 	}
 
 	public class WIDGET_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
@@ -3315,7 +3319,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//	"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 	//	"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
 	//	"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
-	//	"AllowEditToAll" | "AllowAssigneeToAll" | RULE_NAME;
+	//	"AllowEditToAll" | "AllowAssigneeToAll" | "AllowTransitionWithoutTaskCompletion" | RULE_NAME;
 	public RuleElements getRuleAccess() {
 		return (pRule != null) ? pRule : (pRule = new RuleElements());
 	}

@@ -36,7 +36,10 @@ public class TransitionResult implements ITransitionResult {
       "Can not transition as \"Guest\", or \"OseeSystem\".");
    public static TransitionResult COMPLETE_BLOCKING_REVIEWS = new TransitionResult(
       "All Blocking Reviews must be completed before transition.");
-   public static TransitionResult TASKS_NOT_COMPLETED = new TransitionResult("Tasks Not Completed");
+   public static TransitionResult CANCEL_REVIEWS_BEFORE_CANCEL = new TransitionResult(
+      "All Reviews must be cancelled before Cancelling Workflow.");
+   public static TransitionResult TASKS_NOT_COMPLETED = new TransitionResult(
+      "Tasks Must be Completed/Cancelled to Transition");
 
    private final String details;
    private final Exception exception;

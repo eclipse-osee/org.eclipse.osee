@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
@@ -151,11 +152,11 @@ public class WorkDefinitionFactory {
       return new WorkDefinitionMatch();
    }
 
-   private static WorkDefinitionMatch getWorkDefinitionForTask(Artifact taskArt) throws OseeCoreException {
+   private static WorkDefinitionMatch getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
-      AbstractWorkflowArtifact parentAwa = WorkflowManagerCore.getParentAWA(taskArt);
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) WorkflowManagerCore.getParentTeamWorkflow(taskArt);
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
-         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(parentAwa);
+         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
          if (Strings.isValid(workFlowDefId)) {
             String translatedId = getOverrideWorkDefId(workFlowDefId);
             match = WorkDefinitionFactory.getWorkDefinition(translatedId);
@@ -170,9 +171,9 @@ public class WorkDefinitionFactory {
       }
       if (!match.isMatched()) {
          // Else If parent SMA has a related task definition workflow id specified, use it
-         WorkDefinitionMatch match2 = getTaskWorkDefinitionFromArtifactsAttributeValue(parentAwa);
+         WorkDefinitionMatch match2 = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf);
          if (match2.isMatched()) {
-            match2.addTrace(String.format("from task parent SMA [%s]", parentAwa));
+            match2.addTrace(String.format("from task parent SMA [%s]", teamWf));
             match = match2;
          }
       }
@@ -189,8 +190,8 @@ public class WorkDefinitionFactory {
 
    private static WorkDefinitionMatch getWorkDefinitionNew(Artifact artifact) throws OseeCoreException {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
-      if (artifact.isOfType(AtsArtifactTypes.Task)) {
-         match = getWorkDefinitionForTask(artifact);
+      if (artifact instanceof TaskArtifact) {
+         match = getWorkDefinitionForTask((TaskArtifact) artifact);
       }
       if (!match.isMatched() && artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
@@ -238,8 +239,7 @@ public class WorkDefinitionFactory {
       if (Strings.isValid(overrideId)) {
          // Only display this override once in log
          if (!errorDisplayed.contains(overrideId)) {
-            OseeLog.logf(Activator.class, Level.INFO,
-               "Override WorkDefinition [%s] with [%s]", id, overrideId);
+            OseeLog.logf(Activator.class, Level.INFO, "Override WorkDefinition [%s] with [%s]", id, overrideId);
             errorDisplayed.add(overrideId);
          }
          return overrideId;

@@ -31,6 +31,7 @@ public class InternalAtsDslLexer extends Lexer {
     public static final int T__91=91;
     public static final int T__92=92;
     public static final int T__16=16;
+    public static final int T__148=148;
     public static final int T__90=90;
     public static final int T__15=15;
     public static final int T__147=147;
@@ -491,10 +492,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__26;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:26:7: ( 'REQUIRED_FOR_TRANSITION' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:26:9: 'REQUIRED_FOR_TRANSITION'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:26:7: ( 'AllowTransitionWithoutTaskCompletion' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:26:9: 'AllowTransitionWithoutTaskCompletion'
             {
-            match("REQUIRED_FOR_TRANSITION"); 
+            match("AllowTransitionWithoutTaskCompletion"); 
 
 
             }
@@ -512,10 +513,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__27;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:27:7: ( 'NOT_REQUIRED_FOR_TRANSITION' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:27:9: 'NOT_REQUIRED_FOR_TRANSITION'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:27:7: ( 'REQUIRED_FOR_TRANSITION' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:27:9: 'REQUIRED_FOR_TRANSITION'
             {
-            match("NOT_REQUIRED_FOR_TRANSITION"); 
+            match("REQUIRED_FOR_TRANSITION"); 
 
 
             }
@@ -533,10 +534,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__28;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:28:7: ( 'REQUIRED_FOR_COMPLETION' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:28:9: 'REQUIRED_FOR_COMPLETION'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:28:7: ( 'NOT_REQUIRED_FOR_TRANSITION' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:28:9: 'NOT_REQUIRED_FOR_TRANSITION'
             {
-            match("REQUIRED_FOR_COMPLETION"); 
+            match("NOT_REQUIRED_FOR_TRANSITION"); 
 
 
             }
@@ -554,10 +555,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__29;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:29:7: ( 'NOT_REQUIRED_FOR_COMPLETION' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:29:9: 'NOT_REQUIRED_FOR_COMPLETION'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:29:7: ( 'REQUIRED_FOR_COMPLETION' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:29:9: 'REQUIRED_FOR_COMPLETION'
             {
-            match("NOT_REQUIRED_FOR_COMPLETION"); 
+            match("REQUIRED_FOR_COMPLETION"); 
 
 
             }
@@ -575,10 +576,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__30;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:30:7: ( 'ENABLED' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:30:9: 'ENABLED'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:30:7: ( 'NOT_REQUIRED_FOR_COMPLETION' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:30:9: 'NOT_REQUIRED_FOR_COMPLETION'
             {
-            match("ENABLED"); 
+            match("NOT_REQUIRED_FOR_COMPLETION"); 
 
 
             }
@@ -596,10 +597,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__31;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:31:7: ( 'NOT_ENABLED' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:31:9: 'NOT_ENABLED'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:31:7: ( 'ENABLED' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:31:9: 'ENABLED'
             {
-            match("NOT_ENABLED"); 
+            match("ENABLED"); 
 
 
             }
@@ -617,10 +618,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:32:7: ( 'EDITABLE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:32:9: 'EDITABLE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:32:7: ( 'NOT_ENABLED' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:32:9: 'NOT_ENABLED'
             {
-            match("EDITABLE"); 
+            match("NOT_ENABLED"); 
 
 
             }
@@ -638,10 +639,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__33;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:33:7: ( 'NOT_EDITABLE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:33:9: 'NOT_EDITABLE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:33:7: ( 'EDITABLE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:33:9: 'EDITABLE'
             {
-            match("NOT_EDITABLE"); 
+            match("EDITABLE"); 
 
 
             }
@@ -659,10 +660,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__34;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:34:7: ( 'FUTURE_DATE_REQUIRED' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:34:9: 'FUTURE_DATE_REQUIRED'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:34:7: ( 'NOT_EDITABLE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:34:9: 'NOT_EDITABLE'
             {
-            match("FUTURE_DATE_REQUIRED"); 
+            match("NOT_EDITABLE"); 
 
 
             }
@@ -680,10 +681,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__35;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:35:7: ( 'NOT_FUTURE_DATE_REQUIRED' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:35:9: 'NOT_FUTURE_DATE_REQUIRED'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:35:7: ( 'FUTURE_DATE_REQUIRED' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:35:9: 'FUTURE_DATE_REQUIRED'
             {
-            match("NOT_FUTURE_DATE_REQUIRED"); 
+            match("FUTURE_DATE_REQUIRED"); 
 
 
             }
@@ -701,10 +702,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__36;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:36:7: ( 'MULTI_SELECT' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:36:9: 'MULTI_SELECT'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:36:7: ( 'NOT_FUTURE_DATE_REQUIRED' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:36:9: 'NOT_FUTURE_DATE_REQUIRED'
             {
-            match("MULTI_SELECT"); 
+            match("NOT_FUTURE_DATE_REQUIRED"); 
 
 
             }
@@ -722,10 +723,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__37;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:37:7: ( 'HORIZONTAL_LABEL' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:37:9: 'HORIZONTAL_LABEL'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:37:7: ( 'MULTI_SELECT' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:37:9: 'MULTI_SELECT'
             {
-            match("HORIZONTAL_LABEL"); 
+            match("MULTI_SELECT"); 
 
 
             }
@@ -743,10 +744,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__38;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:38:7: ( 'VERTICAL_LABEL' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:38:9: 'VERTICAL_LABEL'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:38:7: ( 'HORIZONTAL_LABEL' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:38:9: 'HORIZONTAL_LABEL'
             {
-            match("VERTICAL_LABEL"); 
+            match("HORIZONTAL_LABEL"); 
 
 
             }
@@ -764,10 +765,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__39;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:39:7: ( 'LABEL_AFTER' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:39:9: 'LABEL_AFTER'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:39:7: ( 'VERTICAL_LABEL' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:39:9: 'VERTICAL_LABEL'
             {
-            match("LABEL_AFTER"); 
+            match("VERTICAL_LABEL"); 
 
 
             }
@@ -785,10 +786,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:40:7: ( 'LABEL_BEFORE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:40:9: 'LABEL_BEFORE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:40:7: ( 'LABEL_AFTER' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:40:9: 'LABEL_AFTER'
             {
-            match("LABEL_BEFORE"); 
+            match("LABEL_AFTER"); 
 
 
             }
@@ -806,10 +807,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:41:7: ( 'NO_LABEL' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:41:9: 'NO_LABEL'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:41:7: ( 'LABEL_BEFORE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:41:9: 'LABEL_BEFORE'
             {
-            match("NO_LABEL"); 
+            match("LABEL_BEFORE"); 
 
 
             }
@@ -827,10 +828,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:42:7: ( 'SORTED' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:42:9: 'SORTED'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:42:7: ( 'NO_LABEL' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:42:9: 'NO_LABEL'
             {
-            match("SORTED"); 
+            match("NO_LABEL"); 
 
 
             }
@@ -848,10 +849,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:43:7: ( 'ADD_DEFAULT_VALUE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:43:9: 'ADD_DEFAULT_VALUE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:43:7: ( 'SORTED' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:43:9: 'SORTED'
             {
-            match("ADD_DEFAULT_VALUE"); 
+            match("SORTED"); 
 
 
             }
@@ -869,10 +870,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:44:7: ( 'NO_DEFAULT_VALUE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:44:9: 'NO_DEFAULT_VALUE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:44:7: ( 'ADD_DEFAULT_VALUE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:44:9: 'ADD_DEFAULT_VALUE'
             {
-            match("NO_DEFAULT_VALUE"); 
+            match("ADD_DEFAULT_VALUE"); 
 
 
             }
@@ -890,10 +891,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:45:7: ( 'BEGIN_COMPOSITE_4' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:45:9: 'BEGIN_COMPOSITE_4'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:45:7: ( 'NO_DEFAULT_VALUE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:45:9: 'NO_DEFAULT_VALUE'
             {
-            match("BEGIN_COMPOSITE_4"); 
+            match("NO_DEFAULT_VALUE"); 
 
 
             }
@@ -911,10 +912,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:46:7: ( 'BEGIN_COMPOSITE_6' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:46:9: 'BEGIN_COMPOSITE_6'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:46:7: ( 'BEGIN_COMPOSITE_4' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:46:9: 'BEGIN_COMPOSITE_4'
             {
-            match("BEGIN_COMPOSITE_6"); 
+            match("BEGIN_COMPOSITE_4"); 
 
 
             }
@@ -932,10 +933,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:47:7: ( 'BEGIN_COMPOSITE_8' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:47:9: 'BEGIN_COMPOSITE_8'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:47:7: ( 'BEGIN_COMPOSITE_6' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:47:9: 'BEGIN_COMPOSITE_6'
             {
-            match("BEGIN_COMPOSITE_8"); 
+            match("BEGIN_COMPOSITE_6"); 
 
 
             }
@@ -953,10 +954,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:48:7: ( 'BEGIN_COMPOSITE_10' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:48:9: 'BEGIN_COMPOSITE_10'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:48:7: ( 'BEGIN_COMPOSITE_8' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:48:9: 'BEGIN_COMPOSITE_8'
             {
-            match("BEGIN_COMPOSITE_10"); 
+            match("BEGIN_COMPOSITE_8"); 
 
 
             }
@@ -974,10 +975,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:49:7: ( 'END_COMPOSITE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:49:9: 'END_COMPOSITE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:49:7: ( 'BEGIN_COMPOSITE_10' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:49:9: 'BEGIN_COMPOSITE_10'
             {
-            match("END_COMPOSITE"); 
+            match("BEGIN_COMPOSITE_10"); 
 
 
             }
@@ -995,10 +996,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:50:7: ( 'FILL_NONE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:50:9: 'FILL_NONE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:50:7: ( 'END_COMPOSITE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:50:9: 'END_COMPOSITE'
             {
-            match("FILL_NONE"); 
+            match("END_COMPOSITE"); 
 
 
             }
@@ -1016,10 +1017,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:51:7: ( 'FILL_HORIZONTALLY' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:51:9: 'FILL_HORIZONTALLY'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:51:7: ( 'FILL_NONE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:51:9: 'FILL_NONE'
             {
-            match("FILL_HORIZONTALLY"); 
+            match("FILL_NONE"); 
 
 
             }
@@ -1037,10 +1038,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:52:7: ( 'FILL_VERTICALLY' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:52:9: 'FILL_VERTICALLY'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:52:7: ( 'FILL_HORIZONTALLY' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:52:9: 'FILL_HORIZONTALLY'
             {
-            match("FILL_VERTICALLY"); 
+            match("FILL_HORIZONTALLY"); 
 
 
             }
@@ -1058,10 +1059,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:53:7: ( 'ALIGN_LEFT' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:53:9: 'ALIGN_LEFT'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:53:7: ( 'FILL_VERTICALLY' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:53:9: 'FILL_VERTICALLY'
             {
-            match("ALIGN_LEFT"); 
+            match("FILL_VERTICALLY"); 
 
 
             }
@@ -1079,10 +1080,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:54:7: ( 'ALIGN_RIGHT' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:54:9: 'ALIGN_RIGHT'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:54:7: ( 'ALIGN_LEFT' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:54:9: 'ALIGN_LEFT'
             {
-            match("ALIGN_RIGHT"); 
+            match("ALIGN_LEFT"); 
 
 
             }
@@ -1100,10 +1101,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:55:7: ( 'ALIGN_CENTER' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:55:9: 'ALIGN_CENTER'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:55:7: ( 'ALIGN_RIGHT' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:55:9: 'ALIGN_RIGHT'
             {
-            match("ALIGN_CENTER"); 
+            match("ALIGN_RIGHT"); 
 
 
             }
@@ -1121,10 +1122,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:56:7: ( 'Working' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:56:9: 'Working'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:56:7: ( 'ALIGN_CENTER' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:56:9: 'ALIGN_CENTER'
             {
-            match("Working"); 
+            match("ALIGN_CENTER"); 
 
 
             }
@@ -1142,10 +1143,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:57:7: ( 'Completed' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:57:9: 'Completed'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:57:7: ( 'Working' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:57:9: 'Working'
             {
-            match("Completed"); 
+            match("Working"); 
 
 
             }
@@ -1163,10 +1164,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:58:7: ( 'Cancelled' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:58:9: 'Cancelled'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:58:7: ( 'Completed' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:58:9: 'Completed'
             {
-            match("Cancelled"); 
+            match("Completed"); 
 
 
             }
@@ -1184,10 +1185,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:59:7: ( 'BLACK' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:59:9: 'BLACK'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:59:7: ( 'Cancelled' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:59:9: 'Cancelled'
             {
-            match("BLACK"); 
+            match("Cancelled"); 
 
 
             }
@@ -1205,10 +1206,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__60;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:60:7: ( 'WHITE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:60:9: 'WHITE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:60:7: ( 'BLACK' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:60:9: 'BLACK'
             {
-            match("WHITE"); 
+            match("BLACK"); 
 
 
             }
@@ -1226,10 +1227,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__61;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:61:7: ( 'RED' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:61:9: 'RED'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:61:7: ( 'WHITE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:61:9: 'WHITE'
             {
-            match("RED"); 
+            match("WHITE"); 
 
 
             }
@@ -1247,10 +1248,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__62;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:62:7: ( 'DARK_RED' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:62:9: 'DARK_RED'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:62:7: ( 'RED' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:62:9: 'RED'
             {
-            match("DARK_RED"); 
+            match("RED"); 
 
 
             }
@@ -1268,10 +1269,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__63;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:63:7: ( 'GREEN' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:63:9: 'GREEN'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:63:7: ( 'DARK_RED' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:63:9: 'DARK_RED'
             {
-            match("GREEN"); 
+            match("DARK_RED"); 
 
 
             }
@@ -1289,10 +1290,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:64:7: ( 'DARK_GREEN' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:64:9: 'DARK_GREEN'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:64:7: ( 'GREEN' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:64:9: 'GREEN'
             {
-            match("DARK_GREEN"); 
+            match("GREEN"); 
 
 
             }
@@ -1310,10 +1311,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__65;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:65:7: ( 'YELLOW' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:65:9: 'YELLOW'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:65:7: ( 'DARK_GREEN' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:65:9: 'DARK_GREEN'
             {
-            match("YELLOW"); 
+            match("DARK_GREEN"); 
 
 
             }
@@ -1331,10 +1332,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__66;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:66:7: ( 'DARK_YELLOW' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:66:9: 'DARK_YELLOW'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:66:7: ( 'YELLOW' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:66:9: 'YELLOW'
             {
-            match("DARK_YELLOW"); 
+            match("YELLOW"); 
 
 
             }
@@ -1352,10 +1353,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__67;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:67:7: ( 'BLUE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:67:9: 'BLUE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:67:7: ( 'DARK_YELLOW' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:67:9: 'DARK_YELLOW'
             {
-            match("BLUE"); 
+            match("DARK_YELLOW"); 
 
 
             }
@@ -1373,10 +1374,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__68;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:68:7: ( 'DARK_BLUE' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:68:9: 'DARK_BLUE'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:68:7: ( 'BLUE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:68:9: 'BLUE'
             {
-            match("DARK_BLUE"); 
+            match("BLUE"); 
 
 
             }
@@ -1394,10 +1395,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__69;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:69:7: ( 'MAGENTA' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:69:9: 'MAGENTA'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:69:7: ( 'DARK_BLUE' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:69:9: 'DARK_BLUE'
             {
-            match("MAGENTA"); 
+            match("DARK_BLUE"); 
 
 
             }
@@ -1415,10 +1416,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__70;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:70:7: ( 'DARK_MAGENTA' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:70:9: 'DARK_MAGENTA'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:70:7: ( 'MAGENTA' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:70:9: 'MAGENTA'
             {
-            match("DARK_MAGENTA"); 
+            match("MAGENTA"); 
 
 
             }
@@ -1436,10 +1437,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__71;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:71:7: ( 'CYAN' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:71:9: 'CYAN'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:71:7: ( 'DARK_MAGENTA' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:71:9: 'DARK_MAGENTA'
             {
-            match("CYAN"); 
+            match("DARK_MAGENTA"); 
 
 
             }
@@ -1457,10 +1458,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__72;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:72:7: ( 'DARK_CYAN' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:72:9: 'DARK_CYAN'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:72:7: ( 'CYAN' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:72:9: 'CYAN'
             {
-            match("DARK_CYAN"); 
+            match("CYAN"); 
 
 
             }
@@ -1478,10 +1479,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__73;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:73:7: ( 'GRAY' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:73:9: 'GRAY'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:73:7: ( 'DARK_CYAN' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:73:9: 'DARK_CYAN'
             {
-            match("GRAY"); 
+            match("DARK_CYAN"); 
 
 
             }
@@ -1499,10 +1500,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__74;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:74:7: ( 'DARK_GRAY' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:74:9: 'DARK_GRAY'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:74:7: ( 'GRAY' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:74:9: 'GRAY'
             {
-            match("DARK_GRAY"); 
+            match("GRAY"); 
 
 
             }
@@ -1520,10 +1521,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__75;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:75:7: ( 'True' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:75:9: 'True'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:75:7: ( 'DARK_GRAY' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:75:9: 'DARK_GRAY'
             {
-            match("True"); 
+            match("DARK_GRAY"); 
 
 
             }
@@ -1541,10 +1542,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__76;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:76:7: ( 'False' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:76:9: 'False'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:76:7: ( 'True' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:76:9: 'True'
             {
-            match("False"); 
+            match("True"); 
 
 
             }
@@ -1562,10 +1563,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__77;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:77:7: ( 'TransitionTo' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:77:9: 'TransitionTo'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:77:7: ( 'False' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:77:9: 'False'
             {
-            match("TransitionTo"); 
+            match("False"); 
 
 
             }
@@ -1583,10 +1584,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__78;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:78:7: ( 'CreateBranch' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:78:9: 'CreateBranch'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:78:7: ( 'TransitionTo' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:78:9: 'TransitionTo'
             {
-            match("CreateBranch"); 
+            match("TransitionTo"); 
 
 
             }
@@ -1604,10 +1605,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__79;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:79:7: ( 'CommitBranch' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:79:9: 'CommitBranch'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:79:7: ( 'CreateBranch' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:79:9: 'CreateBranch'
             {
-            match("CommitBranch"); 
+            match("CreateBranch"); 
 
 
             }
@@ -1625,10 +1626,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__80;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:80:7: ( 'Transition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:80:9: 'Transition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:80:7: ( 'CommitBranch' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:80:9: 'CommitBranch'
             {
-            match("Transition"); 
+            match("CommitBranch"); 
 
 
             }
@@ -1646,10 +1647,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__81;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:81:7: ( 'Commit' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:81:9: 'Commit'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:81:7: ( 'Transition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:81:9: 'Transition'
             {
-            match("Commit"); 
+            match("Transition"); 
 
 
             }
@@ -1667,10 +1668,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__82;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:82:7: ( 'workDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:82:9: 'workDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:82:7: ( 'Commit' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:82:9: 'Commit'
             {
-            match("workDefinition"); 
+            match("Commit"); 
 
 
             }
@@ -1688,10 +1689,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__83;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:83:7: ( 'userDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:83:9: 'userDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:83:7: ( 'workDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:83:9: 'workDefinition'
             {
-            match("userDefinition"); 
+            match("workDefinition"); 
 
 
             }
@@ -1709,10 +1710,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__84;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:84:7: ( 'teamDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:84:9: 'teamDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:84:7: ( 'userDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:84:9: 'userDefinition'
             {
-            match("teamDefinition"); 
+            match("userDefinition"); 
 
 
             }
@@ -1730,10 +1731,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__85;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:85:7: ( 'actionableItem' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:85:9: 'actionableItem'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:85:7: ( 'teamDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:85:9: 'teamDefinition'
             {
-            match("actionableItem"); 
+            match("teamDefinition"); 
 
 
             }
@@ -1751,10 +1752,11 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__86;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:86:7: ( '{' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:86:9: '{'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:86:7: ( 'actionableItem' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:86:9: 'actionableItem'
             {
-            match('{'); 
+            match("actionableItem"); 
+
 
             }
 
@@ -1771,10 +1773,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__87;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:87:7: ( '}' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:87:9: '}'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:87:7: ( '{' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:87:9: '{'
             {
-            match('}'); 
+            match('{'); 
 
             }
 
@@ -1791,11 +1793,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__88;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:88:7: ( 'active' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:88:9: 'active'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:88:7: ( '}' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:88:9: '}'
             {
-            match("active"); 
-
+            match('}'); 
 
             }
 
@@ -1812,10 +1813,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__89;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:89:7: ( 'userId' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:89:9: 'userId'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:89:7: ( 'active' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:89:9: 'active'
             {
-            match("userId"); 
+            match("active"); 
 
 
             }
@@ -1833,10 +1834,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__90;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:90:7: ( 'email' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:90:9: 'email'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:90:7: ( 'userId' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:90:9: 'userId'
             {
-            match("email"); 
+            match("userId"); 
 
 
             }
@@ -1854,10 +1855,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__91;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:91:7: ( 'isAdmin' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:91:9: 'isAdmin'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:91:7: ( 'email' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:91:9: 'email'
             {
-            match("isAdmin"); 
+            match("email"); 
 
 
             }
@@ -1875,10 +1876,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__92;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:92:7: ( 'usesVersions' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:92:9: 'usesVersions'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:92:7: ( 'isAdmin' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:92:9: 'isAdmin'
             {
-            match("usesVersions"); 
+            match("isAdmin"); 
 
 
             }
@@ -1896,10 +1897,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__93;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:93:7: ( 'staticId' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:93:9: 'staticId'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:93:7: ( 'usesVersions' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:93:9: 'usesVersions'
             {
-            match("staticId"); 
+            match("usesVersions"); 
 
 
             }
@@ -1917,10 +1918,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__94;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:94:7: ( 'lead' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:94:9: 'lead'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:94:7: ( 'staticId' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:94:9: 'staticId'
             {
-            match("lead"); 
+            match("staticId"); 
 
 
             }
@@ -1938,10 +1939,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__95;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:95:7: ( 'member' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:95:9: 'member'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:95:7: ( 'lead' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:95:9: 'lead'
             {
-            match("member"); 
+            match("lead"); 
 
 
             }
@@ -1959,10 +1960,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__96;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:96:7: ( 'priviledged' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:96:9: 'priviledged'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:96:7: ( 'member' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:96:9: 'member'
             {
-            match("priviledged"); 
+            match("member"); 
 
 
             }
@@ -1980,10 +1981,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__97;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:97:7: ( 'relatedTaskWorkDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:97:9: 'relatedTaskWorkDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:97:7: ( 'priviledged' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:97:9: 'priviledged'
             {
-            match("relatedTaskWorkDefinition"); 
+            match("priviledged"); 
 
 
             }
@@ -2001,10 +2002,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__98;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:98:7: ( 'accessContextId' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:98:9: 'accessContextId'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:98:7: ( 'relatedTaskWorkDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:98:9: 'relatedTaskWorkDefinition'
             {
-            match("accessContextId"); 
+            match("relatedTaskWorkDefinition"); 
 
 
             }
@@ -2022,10 +2023,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__99;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:99:7: ( 'version' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:99:9: 'version'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:99:7: ( 'accessContextId' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:99:9: 'accessContextId'
             {
-            match("version"); 
+            match("accessContextId"); 
 
 
             }
@@ -2043,10 +2044,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__100;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:100:8: ( 'children' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:100:10: 'children'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:100:8: ( 'version' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:100:10: 'version'
             {
-            match("children"); 
+            match("version"); 
 
 
             }
@@ -2064,10 +2065,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__101;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:101:8: ( 'actionable' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:101:10: 'actionable'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:101:8: ( 'children' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:101:10: 'children'
             {
-            match("actionable"); 
+            match("children"); 
 
 
             }
@@ -2085,10 +2086,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__102;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:102:8: ( 'team' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:102:10: 'team'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:102:8: ( 'actionable' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:102:10: 'actionable'
             {
-            match("team"); 
+            match("actionable"); 
 
 
             }
@@ -2106,10 +2107,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__103;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:103:8: ( 'next' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:103:10: 'next'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:103:8: ( 'team' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:103:10: 'team'
             {
-            match("next"); 
+            match("team"); 
 
 
             }
@@ -2127,10 +2128,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__104;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:104:8: ( 'released' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:104:10: 'released'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:104:8: ( 'next' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:104:10: 'next'
             {
-            match("released"); 
+            match("next"); 
 
 
             }
@@ -2148,10 +2149,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__105;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:105:8: ( 'allowCreateBranch' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:105:10: 'allowCreateBranch'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:105:8: ( 'released' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:105:10: 'released'
             {
-            match("allowCreateBranch"); 
+            match("released"); 
 
 
             }
@@ -2169,10 +2170,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__106;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:106:8: ( 'allowCommitBranch' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:106:10: 'allowCommitBranch'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:106:8: ( 'allowCreateBranch' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:106:10: 'allowCreateBranch'
             {
-            match("allowCommitBranch"); 
+            match("allowCreateBranch"); 
 
 
             }
@@ -2190,10 +2191,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__107;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:107:8: ( 'baslineBranchGuid' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:107:10: 'baslineBranchGuid'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:107:8: ( 'allowCommitBranch' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:107:10: 'allowCommitBranch'
             {
-            match("baslineBranchGuid"); 
+            match("allowCommitBranch"); 
 
 
             }
@@ -2211,10 +2212,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__108;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:108:8: ( 'parallelVersion' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:108:10: 'parallelVersion'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:108:8: ( 'baslineBranchGuid' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:108:10: 'baslineBranchGuid'
             {
-            match("parallelVersion"); 
+            match("baslineBranchGuid"); 
 
 
             }
@@ -2232,10 +2233,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__109;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:109:8: ( 'id' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:109:10: 'id'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:109:8: ( 'parallelVersion' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:109:10: 'parallelVersion'
             {
-            match("id"); 
+            match("parallelVersion"); 
 
 
             }
@@ -2253,10 +2254,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__110;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:110:8: ( 'startState' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:110:10: 'startState'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:110:8: ( 'id' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:110:10: 'id'
             {
-            match("startState"); 
+            match("id"); 
 
 
             }
@@ -2274,10 +2275,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__111;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:111:8: ( 'widgetDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:111:10: 'widgetDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:111:8: ( 'startState' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:111:10: 'startState'
             {
-            match("widgetDefinition"); 
+            match("startState"); 
 
 
             }
@@ -2295,10 +2296,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__112;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:112:8: ( 'attributeName' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:112:10: 'attributeName'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:112:8: ( 'widgetDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:112:10: 'widgetDefinition'
             {
-            match("attributeName"); 
+            match("widgetDefinition"); 
 
 
             }
@@ -2316,10 +2317,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__113;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:113:8: ( 'description' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:113:10: 'description'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:113:8: ( 'attributeName' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:113:10: 'attributeName'
             {
-            match("description"); 
+            match("attributeName"); 
 
 
             }
@@ -2337,10 +2338,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__114;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:114:8: ( 'xWidgetName' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:114:10: 'xWidgetName'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:114:8: ( 'description' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:114:10: 'description'
             {
-            match("xWidgetName"); 
+            match("description"); 
 
 
             }
@@ -2358,10 +2359,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__115;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:115:8: ( 'defaultValue' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:115:10: 'defaultValue'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:115:8: ( 'xWidgetName' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:115:10: 'xWidgetName'
             {
-            match("defaultValue"); 
+            match("xWidgetName"); 
 
 
             }
@@ -2379,10 +2380,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__116;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:116:8: ( 'height' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:116:10: 'height'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:116:8: ( 'defaultValue' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:116:10: 'defaultValue'
             {
-            match("height"); 
+            match("defaultValue"); 
 
 
             }
@@ -2400,10 +2401,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__117;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:117:8: ( 'option' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:117:10: 'option'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:117:8: ( 'height' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:117:10: 'height'
             {
-            match("option"); 
+            match("height"); 
 
 
             }
@@ -2421,10 +2422,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__118;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:118:8: ( 'minConstraint' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:118:10: 'minConstraint'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:118:8: ( 'option' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:118:10: 'option'
             {
-            match("minConstraint"); 
+            match("option"); 
 
 
             }
@@ -2442,10 +2443,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__119;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:119:8: ( 'maxConstraint' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:119:10: 'maxConstraint'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:119:8: ( 'minConstraint' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:119:10: 'minConstraint'
             {
-            match("maxConstraint"); 
+            match("minConstraint"); 
 
 
             }
@@ -2463,10 +2464,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__120;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:120:8: ( 'widget' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:120:10: 'widget'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:120:8: ( 'maxConstraint' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:120:10: 'maxConstraint'
             {
-            match("widget"); 
+            match("maxConstraint"); 
 
 
             }
@@ -2484,10 +2485,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__121;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:121:8: ( 'attributeWidget' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:121:10: 'attributeWidget'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:121:8: ( 'widget' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:121:10: 'widget'
             {
-            match("attributeWidget"); 
+            match("widget"); 
 
 
             }
@@ -2505,10 +2506,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__122;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:122:8: ( 'with' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:122:10: 'with'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:122:8: ( 'attributeWidget' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:122:10: 'attributeWidget'
             {
-            match("with"); 
+            match("attributeWidget"); 
 
 
             }
@@ -2526,10 +2527,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__123;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:123:8: ( 'state' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:123:10: 'state'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:123:8: ( 'with' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:123:10: 'with'
             {
-            match("state"); 
+            match("with"); 
 
 
             }
@@ -2547,10 +2548,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__124;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:124:8: ( 'type' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:124:10: 'type'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:124:8: ( 'state' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:124:10: 'state'
             {
-            match("type"); 
+            match("state"); 
 
 
             }
@@ -2568,10 +2569,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__125;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:125:8: ( 'ordinal' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:125:10: 'ordinal'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:125:8: ( 'type' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:125:10: 'type'
             {
-            match("ordinal"); 
+            match("type"); 
 
 
             }
@@ -2589,10 +2590,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__126;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:126:8: ( 'rule' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:126:10: 'rule'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:126:8: ( 'ordinal' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:126:10: 'ordinal'
             {
-            match("rule"); 
+            match("ordinal"); 
 
 
             }
@@ -2610,10 +2611,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__127;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:127:8: ( 'percentWeight' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:127:10: 'percentWeight'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:127:8: ( 'rule' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:127:10: 'rule'
             {
-            match("percentWeight"); 
+            match("rule"); 
 
 
             }
@@ -2631,10 +2632,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__128;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:128:8: ( 'recommendedPercentComplete' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:128:10: 'recommendedPercentComplete'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:128:8: ( 'percentWeight' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:128:10: 'percentWeight'
             {
-            match("recommendedPercentComplete"); 
+            match("percentWeight"); 
 
 
             }
@@ -2652,10 +2653,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__129;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:129:8: ( 'color' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:129:10: 'color'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:129:8: ( 'recommendedPercentComplete' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:129:10: 'recommendedPercentComplete'
             {
-            match("color"); 
+            match("recommendedPercentComplete"); 
 
 
             }
@@ -2673,10 +2674,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__130;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:130:8: ( 'decisionReview' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:130:10: 'decisionReview'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:130:8: ( 'color' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:130:10: 'color'
             {
-            match("decisionReview"); 
+            match("color"); 
 
 
             }
@@ -2694,10 +2695,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__131;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:131:8: ( 'decisionReviewDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:131:10: 'decisionReviewDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:131:8: ( 'decisionReview' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:131:10: 'decisionReview'
             {
-            match("decisionReviewDefinition"); 
+            match("decisionReview"); 
 
 
             }
@@ -2715,10 +2716,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__132;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:132:8: ( 'title' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:132:10: 'title'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:132:8: ( 'decisionReviewDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:132:10: 'decisionReviewDefinition'
             {
-            match("title"); 
+            match("decisionReviewDefinition"); 
 
 
             }
@@ -2736,10 +2737,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__133;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:133:8: ( 'blockingType' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:133:10: 'blockingType'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:133:8: ( 'title' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:133:10: 'title'
             {
-            match("blockingType"); 
+            match("title"); 
 
 
             }
@@ -2757,10 +2758,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__134;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:134:8: ( 'onEvent' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:134:10: 'onEvent'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:134:8: ( 'blockingType' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:134:10: 'blockingType'
             {
-            match("onEvent"); 
+            match("blockingType"); 
 
 
             }
@@ -2778,10 +2779,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__135;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:135:8: ( 'relatedToState' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:135:10: 'relatedToState'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:135:8: ( 'onEvent' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:135:10: 'onEvent'
             {
-            match("relatedToState"); 
+            match("onEvent"); 
 
 
             }
@@ -2799,10 +2800,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__136;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:136:8: ( 'assignee' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:136:10: 'assignee'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:136:8: ( 'relatedToState' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:136:10: 'relatedToState'
             {
-            match("assignee"); 
+            match("relatedToState"); 
 
 
             }
@@ -2820,10 +2821,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__137;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:137:8: ( 'autoTransitionToDecision' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:137:10: 'autoTransitionToDecision'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:137:8: ( 'assignee' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:137:10: 'assignee'
             {
-            match("autoTransitionToDecision"); 
+            match("assignee"); 
 
 
             }
@@ -2841,10 +2842,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__138;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:138:8: ( 'peerReview' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:138:10: 'peerReview'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:138:8: ( 'autoTransitionToDecision' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:138:10: 'autoTransitionToDecision'
             {
-            match("peerReview"); 
+            match("autoTransitionToDecision"); 
 
 
             }
@@ -2862,10 +2863,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__139;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:139:8: ( 'peerReviewDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:139:10: 'peerReviewDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:139:8: ( 'peerReview' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:139:10: 'peerReview'
             {
-            match("peerReviewDefinition"); 
+            match("peerReview"); 
 
 
             }
@@ -2883,10 +2884,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__140;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:140:8: ( 'location' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:140:10: 'location'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:140:8: ( 'peerReviewDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:140:10: 'peerReviewDefinition'
             {
-            match("location"); 
+            match("peerReviewDefinition"); 
 
 
             }
@@ -2904,10 +2905,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__141;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:141:8: ( 'followup by' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:141:10: 'followup by'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:141:8: ( 'location' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:141:10: 'location'
             {
-            match("followup by"); 
+            match("location"); 
 
 
             }
@@ -2925,10 +2926,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__142;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:142:8: ( 'named' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:142:10: 'named'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:142:8: ( 'followup by' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:142:10: 'followup by'
             {
-            match("named"); 
+            match("followup by"); 
 
 
             }
@@ -2946,10 +2947,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__143;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:143:8: ( 'to' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:143:10: 'to'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:143:8: ( 'named' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:143:10: 'named'
             {
-            match("to"); 
+            match("named"); 
 
 
             }
@@ -2967,10 +2968,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__144;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:144:8: ( 'layout' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:144:10: 'layout'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:144:8: ( 'to' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:144:10: 'to'
             {
-            match("layout"); 
+            match("to"); 
 
 
             }
@@ -2988,10 +2989,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__145;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:145:8: ( 'layoutCopyFrom' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:145:10: 'layoutCopyFrom'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:145:8: ( 'layout' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:145:10: 'layout'
             {
-            match("layoutCopyFrom"); 
+            match("layout"); 
 
 
             }
@@ -3009,10 +3010,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__146;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:146:8: ( 'composite' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:146:10: 'composite'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:146:8: ( 'layoutCopyFrom' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:146:10: 'layoutCopyFrom'
             {
-            match("composite"); 
+            match("layoutCopyFrom"); 
 
 
             }
@@ -3030,10 +3031,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = T__147;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:147:8: ( 'numColumns' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:147:10: 'numColumns'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:147:8: ( 'composite' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:147:10: 'composite'
             {
-            match("numColumns"); 
+            match("composite"); 
 
 
             }
@@ -3046,15 +3047,36 @@ public class InternalAtsDslLexer extends Lexer {
     }
     // $ANTLR end "T__147"
 
+    // $ANTLR start "T__148"
+    public final void mT__148() throws RecognitionException {
+        try {
+            int _type = T__148;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:148:8: ( 'numColumns' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:148:10: 'numColumns'
+            {
+            match("numColumns"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__148"
+
     // $ANTLR start "RULE_ID"
     public final void mRULE_ID() throws RecognitionException {
         try {
             int _type = RULE_ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12750:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12750:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12750:11: ( '^' )?
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:11: ( '^' )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -3063,7 +3085,7 @@ public class InternalAtsDslLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12750:11: '^'
+                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:11: '^'
                     {
                     match('^'); 
 
@@ -3081,7 +3103,7 @@ public class InternalAtsDslLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12750:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -3130,10 +3152,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = RULE_INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12752:10: ( ( '0' .. '9' )+ )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12752:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12760:10: ( ( '0' .. '9' )+ )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12760:12: ( '0' .. '9' )+
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12752:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12760:12: ( '0' .. '9' )+
             int cnt3=0;
             loop3:
             do {
@@ -3147,7 +3169,7 @@ public class InternalAtsDslLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12752:13: '0' .. '9'
+            	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12760:13: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -3179,10 +3201,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = RULE_STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -3200,10 +3222,10 @@ public class InternalAtsDslLexer extends Lexer {
             }
             switch (alt6) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
+                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
                     {
                     match('\"'); 
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
+                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
                     loop4:
                     do {
                         int alt4=3;
@@ -3219,7 +3241,7 @@ public class InternalAtsDslLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||(input.LA(1)>='t' && input.LA(1)<='u') ) {
@@ -3235,7 +3257,7 @@ public class InternalAtsDslLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:66: ~ ( ( '\\\\' | '\"' ) )
+                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:66: ~ ( ( '\\\\' | '\"' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -3260,10 +3282,10 @@ public class InternalAtsDslLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:86: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
+                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:86: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
                     {
                     match('\''); 
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:91: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
+                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:91: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
                     loop5:
                     do {
                         int alt5=3;
@@ -3279,7 +3301,7 @@ public class InternalAtsDslLexer extends Lexer {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:92: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:92: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||(input.LA(1)>='t' && input.LA(1)<='u') ) {
@@ -3295,7 +3317,7 @@ public class InternalAtsDslLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12754:137: ~ ( ( '\\\\' | '\\'' ) )
+                    	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:137: ~ ( ( '\\\\' | '\\'' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -3338,12 +3360,12 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = RULE_ML_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12756:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12756:19: '/*' ( options {greedy=false; } : . )* '*/'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12764:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12764:19: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12756:24: ( options {greedy=false; } : . )*
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12764:24: ( options {greedy=false; } : . )*
             loop7:
             do {
                 int alt7=2;
@@ -3368,7 +3390,7 @@ public class InternalAtsDslLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12756:52: .
+            	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12764:52: .
             	    {
             	    matchAny(); 
 
@@ -3398,12 +3420,12 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = RULE_SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
             {
             match("//"); 
 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:24: (~ ( ( '\\n' | '\\r' ) ) )*
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:24: (~ ( ( '\\n' | '\\r' ) ) )*
             loop8:
             do {
                 int alt8=2;
@@ -3416,7 +3438,7 @@ public class InternalAtsDslLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:24: ~ ( ( '\\n' | '\\r' ) )
+            	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:24: ~ ( ( '\\n' | '\\r' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -3436,7 +3458,7 @@ public class InternalAtsDslLexer extends Lexer {
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:40: ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:40: ( ( '\\r' )? '\\n' )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -3445,9 +3467,9 @@ public class InternalAtsDslLexer extends Lexer {
             }
             switch (alt10) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:41: ( '\\r' )? '\\n'
+                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:41: ( '\\r' )? '\\n'
                     {
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:41: ( '\\r' )?
+                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:41: ( '\\r' )?
                     int alt9=2;
                     int LA9_0 = input.LA(1);
 
@@ -3456,7 +3478,7 @@ public class InternalAtsDslLexer extends Lexer {
                     }
                     switch (alt9) {
                         case 1 :
-                            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12758:41: '\\r'
+                            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12766:41: '\\r'
                             {
                             match('\r'); 
 
@@ -3488,10 +3510,10 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = RULE_WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12760:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12760:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12768:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12768:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12760:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12768:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt11=0;
             loop11:
             do {
@@ -3545,8 +3567,8 @@ public class InternalAtsDslLexer extends Lexer {
         try {
             int _type = RULE_ANY_OTHER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:16: ( . )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12762:18: .
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12770:16: ( . )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:12770:18: .
             {
             matchAny(); 
 
@@ -3561,8 +3583,8 @@ public class InternalAtsDslLexer extends Lexer {
     // $ANTLR end "RULE_ANY_OTHER"
 
     public void mTokens() throws RecognitionException {
-        // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:8: ( T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
-        int alt12=144;
+        // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:8: ( T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | T__148 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
+        int alt12=145;
         alt12 = dfa12.predict(input);
         switch (alt12) {
             case 1 :
@@ -4525,49 +4547,56 @@ public class InternalAtsDslLexer extends Lexer {
                 }
                 break;
             case 138 :
-                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:880: RULE_ID
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:880: T__148
+                {
+                mT__148(); 
+
+                }
+                break;
+            case 139 :
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:887: RULE_ID
                 {
                 mRULE_ID(); 
 
                 }
                 break;
-            case 139 :
-                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:888: RULE_INT
+            case 140 :
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:895: RULE_INT
                 {
                 mRULE_INT(); 
 
                 }
                 break;
-            case 140 :
-                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:897: RULE_STRING
+            case 141 :
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:904: RULE_STRING
                 {
                 mRULE_STRING(); 
 
                 }
                 break;
-            case 141 :
-                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:909: RULE_ML_COMMENT
+            case 142 :
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:916: RULE_ML_COMMENT
                 {
                 mRULE_ML_COMMENT(); 
 
                 }
                 break;
-            case 142 :
-                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:925: RULE_SL_COMMENT
+            case 143 :
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:932: RULE_SL_COMMENT
                 {
                 mRULE_SL_COMMENT(); 
 
                 }
                 break;
-            case 143 :
-                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:941: RULE_WS
+            case 144 :
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:948: RULE_WS
                 {
                 mRULE_WS(); 
 
                 }
                 break;
-            case 144 :
-                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:949: RULE_ANY_OTHER
+            case 145 :
+                // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:1:956: RULE_ANY_OTHER
                 {
                 mRULE_ANY_OTHER(); 
 
@@ -4621,16 +4650,16 @@ public class InternalAtsDslLexer extends Lexer {
         "\63\1\u0496\1\uffff\2\63\1\uffff\1\63\1\uffff\7\63\1\uffff\4\63"+
         "\1\u04a6\7\63\1\u04ae\1\uffff\1\u04af\1\u04b0\1\u04b1\1\63\1\uffff"+
         "\1\u04b3\1\u04b4\4\63\1\u04b9\7\63\1\u04c1\1\uffff\7\63\4\uffff"+
-        "\1\u04c9\2\uffff\4\63\1\uffff\7\63\1\uffff\7\63\1\uffff\22\63\1"+
-        "\u04ef\1\63\1\u04f1\20\63\1\uffff\1\63\1\uffff\14\63\1\u0510\21"+
-        "\63\1\uffff\1\u0522\1\u0523\7\63\1\u052b\7\63\2\uffff\1\63\1\u0534"+
-        "\2\63\1\u0537\2\63\1\uffff\4\63\1\u053e\2\63\1\u0541\1\uffff\1\u0542"+
-        "\1\63\1\uffff\6\63\1\uffff\2\63\2\uffff\1\u054c\1\u054d\1\u054e"+
-        "\4\63\1\u0553\1\u0554\3\uffff\4\63\2\uffff\16\63\1\u0567\1\u0569"+
-        "\1\u056a\1\63\1\uffff\1\63\2\uffff\4\63\1\u0571\1\63\1\uffff\10"+
-        "\63\1\u057b\1\uffff";
+        "\1\u04c9\2\uffff\4\63\1\uffff\7\63\1\uffff\7\63\1\uffff\23\63\1"+
+        "\u04f1\1\63\1\u04f3\21\63\1\uffff\1\63\1\uffff\15\63\1\u0514\22"+
+        "\63\1\uffff\1\u0527\1\u0528\7\63\1\u0530\10\63\2\uffff\1\63\1\u053a"+
+        "\2\63\1\u053d\2\63\1\uffff\5\63\1\u0545\2\63\1\u0548\1\uffff\1\u0549"+
+        "\1\63\1\uffff\7\63\1\uffff\2\63\2\uffff\1\u0554\1\u0555\1\u0556"+
+        "\5\63\1\u055c\1\u055d\3\uffff\5\63\2\uffff\21\63\1\u0574\1\63\1"+
+        "\u0577\1\u0578\1\63\1\uffff\2\63\2\uffff\6\63\1\u0582\1\u0583\1"+
+        "\63\2\uffff\10\63\1\u058d\1\uffff";
     static final String DFA12_eofS =
-        "\u057c\uffff";
+        "\u058e\uffff";
     static final String DFA12_minS =
         "\1\0\1\122\1\117\1\104\1\166\1\105\1\111\1\104\1\101\1\117\1\105"+
         "\1\101\1\117\1\105\1\110\1\131\1\101\1\105\1\162\1\151\1\163\1\145"+
@@ -4739,21 +4768,22 @@ public class InternalAtsDslLexer extends Lexer {
         "\105\1\141\1\105\4\uffff\1\60\2\uffff\1\143\1\157\1\151\1\103\1"+
         "\uffff\1\156\1\101\1\115\1\125\1\102\1\127\1\164\1\uffff\1\154\1"+
         "\156\1\151\2\124\1\155\1\104\1\uffff\1\151\2\156\1\157\1\151\1\116"+
-        "\1\120\1\111\1\154\2\157\1\124\1\151\1\164\1\157\2\111\1\114\1\60"+
-        "\1\163\1\60\1\151\1\155\1\164\1\123\1\114\1\122\1\157\1\156\1\162"+
-        "\1\157\1\144\1\120\1\156\2\117\1\145\1\uffff\1\151\1\uffff\1\164"+
-        "\1\160\1\151\1\111\2\105\1\143\1\102\1\153\1\101\1\141\1\162\1\60"+
-        "\2\116\1\141\1\157\1\151\1\154\1\157\2\124\1\104\1\153\1\154\1\151"+
-        "\1\145\1\154\1\164\1\157\1\uffff\2\60\1\144\1\156\1\157\1\145\1"+
-        "\156\2\111\1\60\1\151\1\157\1\156\1\141\1\154\1\151\1\155\2\uffff"+
-        "\1\163\1\60\1\156\1\164\1\60\2\117\1\uffff\1\156\1\143\1\147\1\155"+
-        "\1\60\1\157\1\160\1\60\1\uffff\1\60\1\145\1\uffff\2\116\1\147\1"+
-        "\153\1\102\1\115\1\uffff\1\156\1\164\2\uffff\3\60\1\122\1\151\1"+
-        "\162\1\145\2\60\3\uffff\1\145\1\156\1\141\1\155\2\uffff\1\166\1"+
-        "\147\1\156\1\142\1\151\1\122\1\143\3\145\1\150\1\162\1\167\1\166"+
-        "\3\60\1\151\1\uffff\1\156\2\uffff\1\145\1\144\1\167\1\117\1\60\1"+
-        "\162\1\uffff\1\151\1\147\1\151\1\156\1\141\1\164\1\157\1\162\1\60"+
-        "\1\uffff";
+        "\1\120\1\111\1\154\2\157\1\165\1\124\1\151\1\164\1\157\2\111\1\114"+
+        "\1\60\1\163\1\60\1\151\1\155\1\164\1\123\1\114\1\122\1\157\1\156"+
+        "\1\162\1\164\1\157\1\144\1\120\1\156\2\117\1\145\1\uffff\1\151\1"+
+        "\uffff\1\164\1\160\1\151\1\111\2\105\1\143\1\102\1\153\1\124\1\101"+
+        "\1\141\1\162\1\60\2\116\1\141\1\157\1\151\1\154\1\157\2\124\1\104"+
+        "\1\153\1\154\1\151\1\141\1\145\1\154\1\164\1\157\1\uffff\2\60\1"+
+        "\144\1\156\1\157\1\145\1\156\2\111\1\60\1\151\1\157\1\156\1\163"+
+        "\1\141\1\154\1\151\1\155\2\uffff\1\163\1\60\1\156\1\164\1\60\2\117"+
+        "\1\uffff\1\156\1\143\1\147\1\153\1\155\1\60\1\157\1\160\1\60\1\uffff"+
+        "\1\60\1\145\1\uffff\2\116\1\147\1\153\1\102\1\103\1\115\1\uffff"+
+        "\1\156\1\164\2\uffff\3\60\1\122\1\151\1\162\1\157\1\145\2\60\3\uffff"+
+        "\1\145\1\156\1\141\2\155\2\uffff\1\166\1\147\1\156\1\160\1\142\1"+
+        "\151\1\122\1\143\1\154\3\145\1\150\1\145\1\162\1\167\1\166\1\60"+
+        "\1\164\2\60\1\151\1\uffff\1\151\1\156\2\uffff\1\145\1\157\1\144"+
+        "\1\167\1\156\1\117\2\60\1\162\2\uffff\1\151\1\147\1\151\1\156\1"+
+        "\141\1\164\1\157\1\162\1\60\1\uffff";
     static final String DFA12_maxS =
         "\1\uffff\1\145\1\157\1\163\1\166\1\145\1\157\1\116\1\125\1\117"+
         "\1\105\1\101\1\117\1\114\1\157\1\162\1\101\1\105\1\162\1\157\1\163"+
@@ -4861,56 +4891,57 @@ public class InternalAtsDslLexer extends Lexer {
         "\1\uffff\3\172\1\60\1\uffff\2\172\1\145\1\151\1\146\1\164\1\172"+
         "\1\151\1\122\1\117\1\121\1\145\1\150\1\151\1\172\1\uffff\1\141\1"+
         "\145\1\163\1\111\1\105\1\141\1\105\4\uffff\1\172\2\uffff\1\143\1"+
-        "\157\1\151\1\103\1\uffff\1\156\1\101\1\115\1\125\1\116\1\127\1\164"+
+        "\157\1\151\1\103\1\uffff\1\156\1\101\1\115\1\125\1\116\1\157\1\164"+
         "\1\uffff\1\154\1\156\1\151\2\124\1\155\1\104\1\uffff\1\151\2\156"+
-        "\1\157\1\151\1\116\1\120\1\111\1\154\2\157\1\124\1\151\1\164\1\157"+
-        "\2\111\1\114\1\172\1\163\1\172\1\151\1\155\1\164\1\123\1\114\1\122"+
-        "\1\157\1\156\1\162\1\157\1\144\1\120\1\156\2\117\1\145\1\uffff\1"+
-        "\151\1\uffff\1\164\1\160\1\151\1\111\2\105\1\143\1\102\1\153\1\124"+
-        "\1\141\1\162\1\172\2\116\1\141\1\157\1\151\1\154\1\157\2\124\1\104"+
-        "\1\153\1\154\1\151\1\145\1\154\1\164\1\157\1\uffff\2\172\1\144\1"+
-        "\156\1\157\1\145\1\156\2\111\1\172\1\151\1\157\1\156\1\141\1\154"+
-        "\1\151\1\155\2\uffff\1\163\1\172\1\156\1\164\1\172\2\117\1\uffff"+
-        "\1\156\1\143\1\147\1\155\1\172\1\157\1\160\1\172\1\uffff\1\172\1"+
-        "\145\1\uffff\2\116\1\147\1\153\1\102\1\115\1\uffff\1\156\1\164\2"+
-        "\uffff\3\172\1\122\1\151\1\162\1\145\2\172\3\uffff\1\145\1\156\1"+
-        "\141\1\155\2\uffff\1\166\1\147\1\156\1\142\1\151\1\122\1\143\3\145"+
-        "\1\150\1\162\1\167\1\166\3\172\1\151\1\uffff\1\156\2\uffff\1\145"+
-        "\1\144\1\167\1\117\1\172\1\162\1\uffff\1\151\1\147\1\151\1\156\1"+
-        "\141\1\164\1\157\1\162\1\172\1\uffff";
+        "\1\157\1\151\1\116\1\120\1\111\1\154\2\157\1\165\1\124\1\151\1\164"+
+        "\1\157\2\111\1\114\1\172\1\163\1\172\1\151\1\155\1\164\1\123\1\114"+
+        "\1\122\1\157\1\156\1\162\1\164\1\157\1\144\1\120\1\156\2\117\1\145"+
+        "\1\uffff\1\151\1\uffff\1\164\1\160\1\151\1\111\2\105\1\143\1\102"+
+        "\1\153\2\124\1\141\1\162\1\172\2\116\1\141\1\157\1\151\1\154\1\157"+
+        "\2\124\1\104\1\153\1\154\1\151\1\141\1\145\1\154\1\164\1\157\1\uffff"+
+        "\2\172\1\144\1\156\1\157\1\145\1\156\2\111\1\172\1\151\1\157\1\156"+
+        "\1\163\1\141\1\154\1\151\1\155\2\uffff\1\163\1\172\1\156\1\164\1"+
+        "\172\2\117\1\uffff\1\156\1\143\1\147\1\153\1\155\1\172\1\157\1\160"+
+        "\1\172\1\uffff\1\172\1\145\1\uffff\2\116\1\147\1\153\1\102\1\103"+
+        "\1\115\1\uffff\1\156\1\164\2\uffff\3\172\1\122\1\151\1\162\1\157"+
+        "\1\145\2\172\3\uffff\1\145\1\156\1\141\2\155\2\uffff\1\166\1\147"+
+        "\1\156\1\160\1\142\1\151\1\122\1\143\1\154\3\145\1\150\1\145\1\162"+
+        "\1\167\1\166\1\172\1\164\2\172\1\151\1\uffff\1\151\1\156\2\uffff"+
+        "\1\145\1\157\1\144\1\167\1\156\1\117\2\172\1\162\2\uffff\1\151\1"+
+        "\147\1\151\1\156\1\141\1\164\1\157\1\162\1\172\1\uffff";
     static final String DFA12_acceptS =
-        "\27\uffff\1\114\1\115\21\uffff\1\u008a\1\u008b\3\uffff\1\u008f"+
-        "\1\u0090\2\uffff\1\u008a\55\uffff\1\114\1\115\36\uffff\1\u008b\1"+
-        "\u008c\1\u008d\1\u008e\1\u008f\60\uffff\1\u0085\10\uffff\1\143\57"+
-        "\uffff\1\63\117\uffff\1\77\1\2\34\uffff\1\71\5\uffff\1\75\3\uffff"+
-        "\1\101\3\uffff\1\160\4\uffff\1\134\1\162\15\uffff\1\124\14\uffff"+
-        "\1\164\4\uffff\1\135\16\uffff\1\65\26\uffff\1\102\12\uffff\1\61"+
-        "\1\uffff\1\62\22\uffff\1\172\7\uffff\1\120\2\uffff\1\161\17\uffff"+
-        "\1\167\1\uffff\1\u0084\56\uffff\1\40\4\uffff\1\107\10\uffff\1\67"+
-        "\3\uffff\1\156\1\uffff\1\117\3\uffff\1\116\13\uffff\1\u0086\1\125"+
-        "\23\uffff\1\152\1\153\35\uffff\1\24\3\uffff\1\73\5\uffff\1\56\30"+
-        "\uffff\1\121\15\uffff\1\131\11\uffff\1\163\1\174\6\uffff\1\37\25"+
-        "\uffff\1\26\12\uffff\1\64\21\uffff\1\176\1\uffff\1\123\1\uffff\1"+
-        "\u0082\11\uffff\1\136\1\uffff\1\132\10\uffff\1\u0083\6\uffff\1\3"+
-        "\17\uffff\1\50\11\uffff\1\57\1\uffff\1\60\2\uffff\1\100\1\uffff"+
-        "\1\72\1\uffff\1\76\30\uffff\1\u0088\23\uffff\1\53\23\uffff\1\66"+
-        "\3\uffff\1\106\6\uffff\1\133\6\uffff\1\144\7\uffff\1\u0080\3\uffff"+
-        "\1\u0089\6\uffff\1\1\1\uffff\1\25\11\uffff\1\54\15\uffff\1\35\4"+
-        "\uffff\1\70\21\uffff\1\126\10\uffff\1\147\2\uffff\1\150\1\uffff"+
-        "\1\27\10\uffff\1\55\11\uffff\1\32\2\uffff\1\36\1\uffff\1\105\1\104"+
-        "\1\74\1\103\3\uffff\1\122\22\uffff\1\173\1\151\23\uffff\1\47\13"+
-        "\uffff\1\146\3\uffff\1\154\1\155\1\uffff\1\165\14\uffff\1\16\14"+
-        "\uffff\1\34\1\uffff\1\110\1\uffff\1\111\1\112\1\113\5\uffff\1\u0087"+
-        "\3\uffff\1\175\3\uffff\1\170\20\uffff\1\52\3\uffff\1\130\2\uffff"+
-        "\1\157\1\uffff\1\142\7\uffff\1\42\15\uffff\1\33\4\uffff\1\145\17"+
-        "\uffff\1\41\7\uffff\1\51\1\43\1\44\1\45\1\uffff\1\137\1\140\4\uffff"+
-        "\1\141\7\uffff\1\17\7\uffff\1\46\45\uffff\1\30\1\uffff\1\u0081\36"+
-        "\uffff\1\12\21\uffff\1\20\1\22\7\uffff\1\31\10\uffff\1\177\2\uffff"+
-        "\1\171\6\uffff\1\15\2\uffff\1\11\1\127\11\uffff\1\166\1\21\1\23"+
-        "\4\uffff\1\4\1\5\22\uffff\1\10\1\uffff\1\13\1\6\6\uffff\1\7\11\uffff"+
-        "\1\14";
+        "\27\uffff\1\115\1\116\21\uffff\1\u008b\1\u008c\3\uffff\1\u0090"+
+        "\1\u0091\2\uffff\1\u008b\55\uffff\1\115\1\116\36\uffff\1\u008c\1"+
+        "\u008d\1\u008e\1\u008f\1\u0090\60\uffff\1\u0086\10\uffff\1\144\57"+
+        "\uffff\1\64\117\uffff\1\100\1\2\34\uffff\1\72\5\uffff\1\76\3\uffff"+
+        "\1\102\3\uffff\1\161\4\uffff\1\135\1\163\15\uffff\1\125\14\uffff"+
+        "\1\165\4\uffff\1\136\16\uffff\1\66\26\uffff\1\103\12\uffff\1\62"+
+        "\1\uffff\1\63\22\uffff\1\173\7\uffff\1\121\2\uffff\1\162\17\uffff"+
+        "\1\170\1\uffff\1\u0085\56\uffff\1\41\4\uffff\1\110\10\uffff\1\70"+
+        "\3\uffff\1\157\1\uffff\1\120\3\uffff\1\117\13\uffff\1\u0087\1\126"+
+        "\23\uffff\1\153\1\154\35\uffff\1\25\3\uffff\1\74\5\uffff\1\57\30"+
+        "\uffff\1\122\15\uffff\1\132\11\uffff\1\164\1\175\6\uffff\1\40\25"+
+        "\uffff\1\27\12\uffff\1\65\21\uffff\1\177\1\uffff\1\124\1\uffff\1"+
+        "\u0083\11\uffff\1\137\1\uffff\1\133\10\uffff\1\u0084\6\uffff\1\3"+
+        "\17\uffff\1\51\11\uffff\1\60\1\uffff\1\61\2\uffff\1\101\1\uffff"+
+        "\1\73\1\uffff\1\77\30\uffff\1\u0089\23\uffff\1\54\23\uffff\1\67"+
+        "\3\uffff\1\107\6\uffff\1\134\6\uffff\1\145\7\uffff\1\u0081\3\uffff"+
+        "\1\u008a\6\uffff\1\1\1\uffff\1\26\11\uffff\1\55\15\uffff\1\36\4"+
+        "\uffff\1\71\21\uffff\1\127\10\uffff\1\150\2\uffff\1\151\1\uffff"+
+        "\1\30\10\uffff\1\56\11\uffff\1\33\2\uffff\1\37\1\uffff\1\106\1\105"+
+        "\1\75\1\104\3\uffff\1\123\22\uffff\1\174\1\152\23\uffff\1\50\13"+
+        "\uffff\1\147\3\uffff\1\155\1\156\1\uffff\1\166\14\uffff\1\16\14"+
+        "\uffff\1\35\1\uffff\1\111\1\uffff\1\112\1\113\1\114\5\uffff\1\u0088"+
+        "\3\uffff\1\176\3\uffff\1\171\20\uffff\1\53\3\uffff\1\131\2\uffff"+
+        "\1\160\1\uffff\1\143\7\uffff\1\43\15\uffff\1\34\4\uffff\1\146\17"+
+        "\uffff\1\42\7\uffff\1\52\1\44\1\45\1\46\1\uffff\1\140\1\141\4\uffff"+
+        "\1\142\7\uffff\1\17\7\uffff\1\47\47\uffff\1\31\1\uffff\1\u0082\40"+
+        "\uffff\1\12\22\uffff\1\21\1\23\7\uffff\1\32\11\uffff\1\u0080\2\uffff"+
+        "\1\172\7\uffff\1\15\2\uffff\1\11\1\130\12\uffff\1\167\1\22\1\24"+
+        "\5\uffff\1\4\1\5\26\uffff\1\10\2\uffff\1\13\1\6\11\uffff\1\7\1\20"+
+        "\11\uffff\1\14";
     static final String DFA12_specialS =
-        "\1\2\53\uffff\1\0\1\1\u054e\uffff}>";
+        "\1\0\53\uffff\1\2\1\1\u0560\uffff}>";
     static final String[] DFA12_transitionS = {
             "\11\60\2\57\2\60\1\57\22\60\1\57\1\60\1\54\4\60\1\55\7\60\1"+
             "\56\12\53\7\60\1\3\1\15\1\17\1\20\1\7\1\6\1\1\1\11\3\52\1\13"+
@@ -6141,18 +6172,17 @@ public class InternalAtsDslLexer extends Lexer {
             "\1\u04d0",
             "\1\u04d1",
             "\1\u04d2\13\uffff\1\u04d3",
-            "\1\u04d4",
-            "\1\u04d5",
-            "",
+            "\1\u04d4\27\uffff\1\u04d5",
             "\1\u04d6",
+            "",
             "\1\u04d7",
             "\1\u04d8",
             "\1\u04d9",
             "\1\u04da",
             "\1\u04db",
             "\1\u04dc",
-            "",
             "\1\u04dd",
+            "",
             "\1\u04de",
             "\1\u04df",
             "\1\u04e0",
@@ -6170,11 +6200,11 @@ public class InternalAtsDslLexer extends Lexer {
             "\1\u04ec",
             "\1\u04ed",
             "\1\u04ee",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u04ef",
             "\1\u04f0",
             "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u04f2",
-            "\1\u04f3",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u04f4",
             "\1\u04f5",
             "\1\u04f6",
@@ -6189,26 +6219,26 @@ public class InternalAtsDslLexer extends Lexer {
             "\1\u04ff",
             "\1\u0500",
             "\1\u0501",
-            "",
             "\1\u0502",
-            "",
             "\1\u0503",
             "\1\u0504",
+            "",
             "\1\u0505",
+            "",
             "\1\u0506",
             "\1\u0507",
             "\1\u0508",
             "\1\u0509",
             "\1\u050a",
             "\1\u050b",
-            "\1\u050d\22\uffff\1\u050c",
+            "\1\u050c",
+            "\1\u050d",
             "\1\u050e",
             "\1\u050f",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
-            "\1\u0511",
+            "\1\u0511\22\uffff\1\u0510",
             "\1\u0512",
             "\1\u0513",
-            "\1\u0514",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u0515",
             "\1\u0516",
             "\1\u0517",
@@ -6222,112 +6252,131 @@ public class InternalAtsDslLexer extends Lexer {
             "\1\u051f",
             "\1\u0520",
             "\1\u0521",
-            "",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u0522",
+            "\1\u0523",
             "\1\u0524",
             "\1\u0525",
             "\1\u0526",
-            "\1\u0527",
-            "\1\u0528",
+            "",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u0529",
             "\1\u052a",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u052b",
             "\1\u052c",
             "\1\u052d",
             "\1\u052e",
             "\1\u052f",
-            "\1\u0530",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u0531",
             "\1\u0532",
-            "",
-            "",
             "\1\u0533",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u0534",
             "\1\u0535",
             "\1\u0536",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u0537",
             "\1\u0538",
-            "\1\u0539",
             "",
-            "\1\u053a",
+            "",
+            "\1\u0539",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u053b",
             "\1\u053c",
-            "\1\u053d",
             "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u053e",
             "\1\u053f",
+            "",
             "\1\u0540",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
-            "",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u0541",
+            "\1\u0542",
             "\1\u0543",
-            "",
             "\1\u0544",
-            "\1\u0545",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u0546",
             "\1\u0547",
-            "\1\u0548",
-            "\1\u0549",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u054a",
+            "",
             "\1\u054b",
-            "",
-            "",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u054c",
+            "\1\u054d",
+            "\1\u054e",
             "\1\u054f",
             "\1\u0550",
             "\1\u0551",
+            "",
             "\1\u0552",
+            "\1\u0553",
+            "",
+            "",
             "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
-            "",
-            "",
-            "",
-            "\1\u0555",
-            "\1\u0556",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u0557",
             "\1\u0558",
-            "",
-            "",
             "\1\u0559",
             "\1\u055a",
             "\1\u055b",
-            "\1\u055c",
-            "\1\u055d",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "",
+            "",
+            "",
             "\1\u055e",
             "\1\u055f",
             "\1\u0560",
             "\1\u0561",
             "\1\u0562",
+            "",
+            "",
             "\1\u0563",
             "\1\u0564",
             "\1\u0565",
             "\1\u0566",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
-            "\12\63\7\uffff\1\u0568\31\63\4\uffff\1\63\1\uffff\32\63",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u0567",
+            "\1\u0568",
+            "\1\u0569",
+            "\1\u056a",
             "\1\u056b",
-            "",
             "\1\u056c",
-            "",
-            "",
             "\1\u056d",
             "\1\u056e",
             "\1\u056f",
             "\1\u0570",
-            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u0571",
             "\1\u0572",
-            "",
             "\1\u0573",
-            "\1\u0574",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u0575",
-            "\1\u0576",
-            "\1\u0577",
-            "\1\u0578",
+            "\12\63\7\uffff\1\u0576\31\63\4\uffff\1\63\1\uffff\32\63",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             "\1\u0579",
+            "",
             "\1\u057a",
+            "\1\u057b",
+            "",
+            "",
+            "\1\u057c",
+            "\1\u057d",
+            "\1\u057e",
+            "\1\u057f",
+            "\1\u0580",
+            "\1\u0581",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
+            "\1\u0584",
+            "",
+            "",
+            "\1\u0585",
+            "\1\u0586",
+            "\1\u0587",
+            "\1\u0588",
+            "\1\u0589",
+            "\1\u058a",
+            "\1\u058b",
+            "\1\u058c",
             "\12\63\7\uffff\32\63\4\uffff\1\63\1\uffff\32\63",
             ""
     };
@@ -6362,33 +6411,13 @@ public class InternalAtsDslLexer extends Lexer {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );";
+            return "1:1: Tokens : ( T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | T__120 | T__121 | T__122 | T__123 | T__124 | T__125 | T__126 | T__127 | T__128 | T__129 | T__130 | T__131 | T__132 | T__133 | T__134 | T__135 | T__136 | T__137 | T__138 | T__139 | T__140 | T__141 | T__142 | T__143 | T__144 | T__145 | T__146 | T__147 | T__148 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA12_44 = input.LA(1);
-
-                        s = -1;
-                        if ( ((LA12_44>='\u0000' && LA12_44<='\uFFFF')) ) {s = 130;}
-
-                        else s = 48;
-
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA12_45 = input.LA(1);
-
-                        s = -1;
-                        if ( ((LA12_45>='\u0000' && LA12_45<='\uFFFF')) ) {s = 130;}
-
-                        else s = 48;
-
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
                         int LA12_0 = input.LA(1);
 
                         s = -1;
@@ -6487,6 +6516,26 @@ public class InternalAtsDslLexer extends Lexer {
                         else if ( ((LA12_0>='\t' && LA12_0<='\n')||LA12_0=='\r'||LA12_0==' ') ) {s = 47;}
 
                         else if ( ((LA12_0>='\u0000' && LA12_0<='\b')||(LA12_0>='\u000B' && LA12_0<='\f')||(LA12_0>='\u000E' && LA12_0<='\u001F')||LA12_0=='!'||(LA12_0>='#' && LA12_0<='&')||(LA12_0>='(' && LA12_0<='.')||(LA12_0>=':' && LA12_0<='@')||(LA12_0>='[' && LA12_0<=']')||LA12_0=='`'||LA12_0=='|'||(LA12_0>='~' && LA12_0<='\uFFFF')) ) {s = 48;}
+
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA12_45 = input.LA(1);
+
+                        s = -1;
+                        if ( ((LA12_45>='\u0000' && LA12_45<='\uFFFF')) ) {s = 130;}
+
+                        else s = 48;
+
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA12_44 = input.LA(1);
+
+                        s = -1;
+                        if ( ((LA12_44>='\u0000' && LA12_44<='\uFFFF')) ) {s = 130;}
+
+                        else s = 48;
 
                         if ( s>=0 ) return s;
                         break;
