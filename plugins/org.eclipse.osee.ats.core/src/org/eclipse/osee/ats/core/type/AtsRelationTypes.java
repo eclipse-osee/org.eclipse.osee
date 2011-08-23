@@ -51,24 +51,6 @@ public final class AtsRelationTypes {
       RelationSide.SIDE_B, "AAMFE939Ul9Oenq9wWgA", "TeamActionableItem");
    public static final IRelationTypeSide TeamActionableItem_Team = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_A, "AAMFE939Ul9Oenq9wWgA", "TeamActionableItem");
-   public static final IRelationTypeSide TeamDefinitionToDecisionReviewWorkflowDiagram_TeamDefinition =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, "AAMFE+Fg4RmKrda_jJQA",
-         "TeamDefinitionToDecisionReviewWorkflowDiagram");
-   public static final IRelationTypeSide TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, "AAMFE+Fg4RmKrda_jJQA",
-         "TeamDefinitionToDecisionReviewWorkflowDiagram");
-   public static final IRelationTypeSide TeamDefinitionToPeerToPeerReviewWorkflowDiagram_TeamDefinition =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, "AAMFE+HqYUG262IxMFwA",
-         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram");
-   public static final IRelationTypeSide TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, "AAMFE+HqYUG262IxMFwA",
-         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram");
-   public static final IRelationTypeSide TeamDefinitionToTaskWorkflowDiagram_TeamDefinition =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, "AAMFE+DkeQ9mRBPca0QA",
-         "TeamDefinitionToTaskWorkflowDiagram");
-   public static final IRelationTypeSide TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, "AAMFE+DkeQ9mRBPca0QA",
-         "TeamDefinitionToTaskWorkflowDiagram");
    public static final IRelationTypeSide TeamDefinitionToVersion_TeamDefinition = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_A, "AAMFE9_i7zG3lR1kGWQA", "TeamDefinitionToVersion");
    public static final IRelationTypeSide TeamDefinitionToVersion_Version = TokenFactory.createRelationTypeSide(
