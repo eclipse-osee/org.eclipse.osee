@@ -111,7 +111,9 @@ public class TaskManager {
          taskArt.getStateMgr().updateMetrics(additionalHours, percentComplete, true);
          taskArt.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }
-      taskArt.persist(transaction);
+      if (transaction != null) {
+         taskArt.persist(transaction);
+      }
       return Result.TrueResult;
    }
 
