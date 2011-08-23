@@ -16,6 +16,7 @@ import java.util.Collection;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MergeType;
@@ -139,6 +140,16 @@ public class VectorCastImportTest {
          new CoveragePackage("Test Coverage Package", CoverageOptionManagerDefault.instance(),
             new SimpleWorkProductTaskProvider());
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
+
+      // Add printout to catch intermittent failure
+      if (mergeManager.getMergeItems(null).size() > 1) {
+         int x = 0;
+         System.err.println("Unexpected multiple merge items...");
+         for (IMergeItem mergeItem : mergeManager.getMergeItems(null)) {
+            System.err.println("MergeItem: " + x + " - " + mergeItem);
+            x++;
+         }
+      }
       Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
       Assert.assertEquals(MergeType.Add, mergeManager.getMergeItems(null).iterator().next().getMergeType());
 
