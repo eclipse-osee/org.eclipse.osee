@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.action;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 public interface INewActionListener {
 
@@ -24,7 +25,7 @@ public interface INewActionListener {
    /**
     * Called after team workflow and initialized and before persist of Action
     */
-   public void teamCreated(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public void teamCreated(ActionArtifact actionArt, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException;
 
    /**
     * @return workflow id to use instead of default configured id

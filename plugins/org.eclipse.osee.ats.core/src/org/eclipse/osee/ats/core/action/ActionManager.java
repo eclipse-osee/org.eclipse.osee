@@ -144,7 +144,7 @@ public class ActionManager {
 
       // Notify listener of team creation
       if (newActionListener != null) {
-         newActionListener.teamCreated(teamArt);
+         newActionListener.teamCreated((ActionArtifact) actionArt, teamArt, transaction);
       }
 
       // Relate Action to WorkFlow
