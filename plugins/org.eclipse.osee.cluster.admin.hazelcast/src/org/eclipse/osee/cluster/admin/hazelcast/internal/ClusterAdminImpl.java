@@ -32,7 +32,7 @@ import org.eclipse.osee.distributed.DistributedMap;
 import org.eclipse.osee.distributed.DistributedMultiMap;
 import org.eclipse.osee.distributed.DistributedObject;
 import org.eclipse.osee.distributed.InstanceManager;
-import org.eclipse.osee.log.admin.Logger;
+import org.eclipse.osee.logger.Log;
 import org.osgi.service.event.EventAdmin;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.UrlXmlConfig;
@@ -59,7 +59,7 @@ public class ClusterAdminImpl implements ClusterAdmin, InstanceManager {
 
    private final Map<Object, DistributedObject> distributedObjects = new ConcurrentHashMap<Object, DistributedObject>();
    private final ProxyCleaner proxyCleaner = new ProxyCleaner();
-   private Logger logger;
+   private Log logger;
    private EventAdmin eventAdmin;
    private HazelcastInstance instance;
    private Thread thread;
@@ -75,11 +75,11 @@ public class ClusterAdminImpl implements ClusterAdmin, InstanceManager {
       return eventAdmin;
    }
 
-   public void setLogger(Logger logger) {
+   public void setLogger(Log logger) {
       this.logger = logger;
    }
 
-   private Logger getLogger() {
+   private Log getLogger() {
       return logger;
    }
 

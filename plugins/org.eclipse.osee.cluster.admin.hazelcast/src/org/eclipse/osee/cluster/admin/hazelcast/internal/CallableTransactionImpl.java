@@ -13,18 +13,18 @@ package org.eclipse.osee.cluster.admin.hazelcast.internal;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.cluster.admin.Transaction;
 import org.eclipse.osee.cluster.admin.TransactionWork;
-import org.eclipse.osee.log.admin.Logger;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CallableTransactionImpl<T> implements Callable<T> {
 
-   private final Logger logger;
+   private final Log logger;
    private final Transaction txn;
    private final TransactionWork<T> work;
 
-   public CallableTransactionImpl(Logger logger, Transaction txn, TransactionWork<T> work) {
+   public CallableTransactionImpl(Log logger, Transaction txn, TransactionWork<T> work) {
       super();
       this.logger = logger;
       this.txn = txn;
@@ -37,10 +37,10 @@ public class CallableTransactionImpl<T> implements Callable<T> {
       T result = null;
       try {
          txn.begin();
-         logger.debug(this, "Start Transaction: [%s]", work.getName());
+         logger.debug("Start Transaction: [%s]", work.getName());
          result = work.doWork();
          txn.commit();
-         logger.debug(this, "End Transaction: [%s]", work.getName());
+         logger.debug("End Transaction: [%s]", work.getName());
       } catch (Throwable throwable) {
          saveThrowable = throwable;
          try {
@@ -52,7 +52,7 @@ public class CallableTransactionImpl<T> implements Callable<T> {
          try {
             work.handleTxFinally();
          } catch (Throwable ex) {
-            logger.error(this, ex, "Error in Transaction: [%s] ", work.getName());
+            logger.error(ex, "Error in Transaction: [%s] ", work.getName());
             if (saveThrowable != null) {
                throw new Exception(ex);
             }
