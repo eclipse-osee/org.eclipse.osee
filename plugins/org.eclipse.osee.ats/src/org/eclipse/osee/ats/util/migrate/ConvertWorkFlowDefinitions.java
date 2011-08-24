@@ -50,20 +50,6 @@ public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
       }
 
       Map<String, String> idToName = new HashMap<String, String>();
-      idToName.put("ah6.common", "WorkDef_Team_Ah6i_Common.ats");
-      idToName.put("ah6.issue", "WorkDef_Team_Ah6i_Issue.ats");
-      idToName.put("lba.common.code", "WorkDef_Team_LbaCode.ats");
-      idToName.put("lba.common.pids.req", "WorkDef_Team_LbaPids.ats");
-      idToName.put("lba.common.req", "WorkDef_Team_Lba_Req.ats");
-      idToName.put("lba.common.sw_ta", "WorkDef_Team_Lba_SwTechAppr.ats");
-      idToName.put("lba.common.sw_techappr", "WorkDef_Team_Lba_SwTechAppr.ats");
-      idToName.put("lba.common.swdesign", "WorkDef_Team_Lba_SwDesign.ats");
-      idToName.put("lba.common.test", "WorkDef_Team_Lba_Test_Default.ats");
-      idToName.put("lba.common.test.tpcr", "WorkDef_Team_Lba_Test_Tpcr.ats");
-      idToName.put("lba.common.test_procedures", "WorkDef_Team_Lba_Procedures.ats");
-      idToName.put("lba.cte", "WorkDef_Team_Cte.ats");
-      idToName.put("lba.deliverable", "WorkDef_Team_Deliverable.ats");
-      idToName.put("lba.processTeam", "WorkDef_Team_Processes.ats");
       idToName.put("osee.ats.decisionReview", "WorkDef_Review_Decision.ats");
       idToName.put("osee.ats.goalWorkflow", "WorkDef_Goal.ats");
       idToName.put("osee.ats.peerToPeerReview", "WorkDef_Review_PeerToPeer.ats");
@@ -81,7 +67,7 @@ public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
             String filename = idToName.get(selectedWorkFlowDef.getName());
             convert(selectedWorkFlowDef, resultData, filename);
          }
-         XResultDataUI.report(resultData,getName());
+         XResultDataUI.report(resultData, getName());
       }
    }
 
