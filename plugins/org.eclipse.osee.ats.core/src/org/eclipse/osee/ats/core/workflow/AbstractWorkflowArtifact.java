@@ -762,7 +762,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public CmAccessControl getAccessControl() {
       Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
       BundleContext context = bundle.getBundleContext();
-      ServiceReference reference = context.getServiceReference(CmAccessControl.class.getName());
+      ServiceReference<?> reference = context.getServiceReference(CmAccessControl.class.getName());
       return (CmAccessControl) context.getService(reference);
    }
 
