@@ -10,14 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.validate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public final class AttributeSetRule {
+public final class AttributeSetRule extends AbstractValidationRule {
    private final IArtifactType baseArtifactType;
    private final IAttributeType attributeType;
    private final Integer minimumValues;
@@ -49,5 +56,30 @@ public final class AttributeSetRule {
    @Override
    public String toString() {
       return "For \"" + baseArtifactType + "\", ensure \"" + attributeType + "\" attribute has at least " + minimumValues + " value(s)" + (invalidValue != null ? " and does NOT have \"" + invalidValue + "\" values" : "");
+   }
+
+   @Override
+   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
+      Collection<String> errorMessages = new ArrayList<String>();
+      boolean validationPassed = true;
+      if (hasArtifactType(artToValidate.getArtifactType())) {
+         // validate attribute is set and not invalidValue
+         List<String> attributeValues = artToValidate.getAttributesToStringList(attributeType);
+         int validValueFound = 0;
+         for (String attributeValue : attributeValues) {
+            AbstractOperation.checkForCancelledStatus(monitor);
+            if (attributeValue.equals(invalidValue)) {
+               errorMessages.add(ValidateReqChangeReport.getRequirementHyperlink(artToValidate) + " has invalid " + invalidValue + " \"" + attributeType + "\" attribute");
+               validationPassed = false;
+            } else {
+               validValueFound++;
+            }
+         }
+         if (validValueFound < minimumValues) {
+            errorMessages.add(ValidateReqChangeReport.getRequirementHyperlink(artToValidate) + " has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"");
+            validationPassed = false;
+         }
+      }
+      return new ValidationResult(errorMessages, validationPassed);
    }
 }

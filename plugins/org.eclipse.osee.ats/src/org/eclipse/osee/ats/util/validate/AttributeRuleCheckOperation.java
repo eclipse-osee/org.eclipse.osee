@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.util.validate;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -43,24 +42,13 @@ final class AttributeRuleCheckOperation extends AbstractOperation {
          for (Artifact art : itemsToCheck) {
             for (AttributeSetRule attributeSetRule : attributeSetRules) {
                checkForCancelledStatus(monitor);
-               if (attributeSetRule.hasArtifactType(art.getArtifactType())) {
-                  // validate attribute is set and not invalidValue
-                  List<String> attributeValues = art.getAttributesToStringList(attributeSetRule.getAttributeName());
-                  int validValueFound = 0;
-                  for (String attributeValue : attributeValues) {
-                     checkForCancelledStatus(monitor);
-                     String invalidValue = attributeSetRule.getInvalidValue();
-                     if (attributeValue.equals(invalidValue)) {
-                        rd.logError(ValidateReqChangeReport.getRequirementHyperlink(art) + " has invalid " + invalidValue + " \"" + attributeSetRule.getAttributeName() + "\" attribute");
-                     } else {
-                        validValueFound++;
-                     }
+               ValidationResult result = attributeSetRule.validate(art, monitor);
+               if (!result.didValidationPass()) {
+                  for (String errorMsg : result.getErrorMessages()) {
+                     rd.logError(errorMsg);
                   }
-                  if (validValueFound < attributeSetRule.getMinimumValues()) {
-                     rd.logError(ValidateReqChangeReport.getRequirementHyperlink(art) + " has less than minimum " + attributeSetRule.getMinimumValues() + " values set for attribute \"" + attributeSetRule.getAttributeName() + "\"");
-                  }
-                  monitor.worked(workAmount);
                }
+               monitor.worked(workAmount);
             }
          }
       }

@@ -46,14 +46,13 @@ final class RelationRuleCheckOperation extends AbstractOperation {
             // Validate relations set
             for (RelationSetRule relationSetRule : relationSetRules) {
                checkForCancelledStatus(monitor);
-               if (relationSetRule.hasArtifactType(art.getArtifactType())) {
-                  // validate that artifact has one "Requirement Trace" relation to a Subsystem Requirement
-                  Collection<Artifact> arts = art.getRelatedArtifacts(relationSetRule.getRelationEnum());
-                  if (arts.size() < relationSetRule.getMinimumRelations()) {
+               ValidationResult result = relationSetRule.validate(art, monitor);
+               if (!result.didValidationPass()) {
+                  for (String errorMsg : result.getErrorMessages()) {
                      if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement)) {
-                        rd.logError(ValidateReqChangeReport.getRequirementHyperlink(art) + " (" + art.getGammaId() + ") has less than minimum " + relationSetRule.getMinimumRelations() + " relation for type \"" + relationSetRule.getRelationEnum() + "\"");
+                        rd.logError(errorMsg);
                      } else {
-                        warnings.add(ValidateReqChangeReport.getRequirementHyperlink(art) + " (" + art.getGammaId() + ") has less than minimum " + relationSetRule.getMinimumRelations() + " relation for type \"" + relationSetRule.getRelationEnum() + "\"");
+                        warnings.add(errorMsg);
                      }
                   }
                }

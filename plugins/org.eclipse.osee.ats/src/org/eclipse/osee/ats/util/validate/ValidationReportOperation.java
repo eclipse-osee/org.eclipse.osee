@@ -42,8 +42,18 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class ValidationReportOperation extends AbstractOperation {
    final Set<AttributeSetRule> attributeSetRules;
    final Set<RelationSetRule> relationSetRules;
+   final Set<UniqueNameRule> uniqueNameRules;
    final TeamWorkFlowArtifact teamArt;
    final XResultData rd;
+
+   public ValidationReportOperation(XResultData rd, TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules, Set<UniqueNameRule> uniqueNameRules) {
+      super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID);
+      this.rd = rd;
+      this.teamArt = teamArt;
+      this.attributeSetRules = attributeSetRules;
+      this.relationSetRules = relationSetRules;
+      this.uniqueNameRules = uniqueNameRules;
+   }
 
    public ValidationReportOperation(XResultData rd, TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) {
       super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID);
@@ -51,6 +61,7 @@ public class ValidationReportOperation extends AbstractOperation {
       this.teamArt = teamArt;
       this.attributeSetRules = attributeSetRules;
       this.relationSetRules = relationSetRules;
+      this.uniqueNameRules = null;
    }
 
    @Override
@@ -61,6 +72,9 @@ public class ValidationReportOperation extends AbstractOperation {
       }
       for (RelationSetRule relationSetRule : relationSetRules) {
          rd.log("<b>Relations Check: </b>" + relationSetRule.toString());
+      }
+      for (UniqueNameRule uniqueNameRule : uniqueNameRules) {
+         rd.log("<b>Unique Names Check: </b>" + uniqueNameRule.toString());
       }
       rd.log("<b>Artifact Validation Checks: </b> All Errors reported must be fixed.");
       rd.log("<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
@@ -101,6 +115,7 @@ public class ValidationReportOperation extends AbstractOperation {
       List<IOperation> operations = new ArrayList<IOperation>();
       operations.add(new AttributeRuleCheckOperation(itemsToCheck, rd, attributeSetRules));
       operations.add(new RelationRuleCheckOperation(itemsToCheck, rd, relationSetRules));
+      operations.add(new UniqueNameRuleCheckOperation(itemsToCheck, rd, uniqueNameRules));
       operations.add(new ArtifactValidationCheckOperation(itemsToCheck, false));
       CompositeOperation operation = new CompositeOperation(getName(), Activator.PLUGIN_ID, operations);
 

@@ -303,6 +303,15 @@ public class ArtifactQuery {
       return getArtifactListFromType(artifactTypeToken, null, allowDeleted);
    }
 
+   /**
+    * Does not return any inherited artifacts. Use getArtifactListFromTypeWithInheritence instead.
+    * 
+    * @param artifactTypeToken
+    * @param branch
+    * @param allowDeleted
+    * @return
+    * @throws OseeCoreException
+    */
    public static List<Artifact> getArtifactListFromType(IArtifactType artifactTypeToken, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactTypeToken, branch, FULL, allowDeleted).getArtifacts(1000, null);
    }

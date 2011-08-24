@@ -25,17 +25,30 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class ValidateReqChangeReport {
 
-   public static void run(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) {
+   private static ValidationReportOperation prepareValidationOperation(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules, Set<UniqueNameRule> uniqueNameRules) {
       XResultData resultData = new XResultData(false);
-      IOperation operation = new ValidationReportOperation(resultData, teamArt, attributeSetRules, relationSetRules);
+      ValidationReportOperation operation =
+         new ValidationReportOperation(resultData, teamArt, attributeSetRules, relationSetRules, uniqueNameRules);
+      return operation;
+   }
+
+   public static void run(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules, Set<UniqueNameRule> uniqueNameRules) {
+      IOperation operation = prepareValidationOperation(teamArt, attributeSetRules, relationSetRules, uniqueNameRules);
       Operations.executeAsJob(operation, true);
    }
 
-   public static String performValidation(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) throws OseeCoreException {
-      XResultData resultData = new XResultData(false);
+   public static void run(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) {
+      run(teamArt, attributeSetRules, relationSetRules, null);
+   }
+
+   public static String performValidation(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules, Set<UniqueNameRule> uniqueNameRules) throws OseeCoreException {
       ValidationReportOperation operation =
-         new ValidationReportOperation(resultData, teamArt, attributeSetRules, relationSetRules);
+         prepareValidationOperation(teamArt, attributeSetRules, relationSetRules, uniqueNameRules);
       return operation.performValidation();
+   }
+
+   public static String performValidation(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) throws OseeCoreException {
+      return performValidation(teamArt, attributeSetRules, relationSetRules, null);
    }
 
    static void reportStatus(XResultData rd, IStatus status) {
