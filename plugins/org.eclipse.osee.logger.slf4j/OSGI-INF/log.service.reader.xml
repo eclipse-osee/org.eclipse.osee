@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true" name="org.eclipse.osee.logger.slf4j.internal.OsgiSlf4jLogger">
+   <implementation class="org.eclipse.osee.logger.slf4j.internal.OsgiSlf4jLogger"/>
+
+   <reference bind="setLoggingService" 
+   cardinality="1..1" 
+   interface="org.osgi.service.log.LogReaderService" 
+   name="LogReaderService" 
+   policy="static" 
+   target="(objectClass=org.osgi.service.log.LogReaderService)"/>
+    
+    
+</scr:component>
