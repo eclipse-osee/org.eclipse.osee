@@ -5,7 +5,7 @@
    	cardinality="1..1"  
    	policy="static" 
    	bind="setEventAdmin" />
-     <reference interface="org.eclipse.osee.logger.Log" name="Logger" 
+     <reference interface="org.eclipse.osee.logger.Log" name="Log" 
    	cardinality="1..1"  
    	policy="static" 
    	bind="setLogger" />
