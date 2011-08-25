@@ -7,11 +7,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.hazelcast.config,
  com.hazelcast.core,
  com.hazelcast.impl,
- com.hazelcast.partition,
  com.hazelcast.query,
  org.eclipse.osee.cluster.admin,
  org.eclipse.osee.distributed,
  org.eclipse.osee.logger,
- org.eclipse.osgi.framework.console,
  org.osgi.service.event
 Service-Component: OSGI-INF/*.xml
