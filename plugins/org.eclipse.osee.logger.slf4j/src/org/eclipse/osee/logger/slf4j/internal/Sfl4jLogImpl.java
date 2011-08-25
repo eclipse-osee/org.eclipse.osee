@@ -43,7 +43,7 @@ public class Sfl4jLogImpl implements Log {
          }
          logger = LoggerFactory.getLogger(symbolicName);
          marker = MarkerFactory.getMarker(symbolicName);
-         error(new Exception("hello"), "Logger setup for [%s]", logger.getName());
+         debug("Logger setup for [%s]", logger.getName());
       }
    }
 

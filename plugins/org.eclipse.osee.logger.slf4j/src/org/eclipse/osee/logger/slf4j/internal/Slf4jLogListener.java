@@ -23,6 +23,7 @@ import org.slf4j.MarkerFactory;
  */
 public class Slf4jLogListener implements LogListener {
    private static final Logger logger = LoggerFactory.getLogger(Slf4jLogListener.class);
+   private static final String[] remapMessages = new String[] {"Bundle Event", "Service Event"};
 
    @Override
    public void logged(LogEntry entry) {
@@ -37,22 +38,41 @@ public class Slf4jLogListener implements LogListener {
    }
 
    private void logLogEntry(Logger logger, int level, Marker marker, String message, Throwable throwable) {
-      switch (level) {
-         case LogService.LOG_DEBUG:
-            logger.debug(marker, message, throwable);
-            break;
-         case LogService.LOG_ERROR:
-            logger.error(marker, message, throwable);
-            break;
-         case LogService.LOG_WARNING:
-            logger.warn(marker, message, throwable);
-            break;
-         case LogService.LOG_INFO:
-            logger.info(marker, message, throwable);
-            break;
-         default:
-            logger.trace(marker, message, throwable);
-            break;
+      int theLevel = level;
+      if (throwable == null || isOSGIMessage(message)) {
+         theLevel = LogService.LOG_DEBUG;
       }
+      String originalName = Thread.currentThread().getName();
+      try {
+         Thread.currentThread().setName("Osgi Log Service");
+         switch (theLevel) {
+            case LogService.LOG_DEBUG:
+               logger.debug(marker, message, throwable);
+               break;
+            case LogService.LOG_ERROR:
+               logger.error(marker, message, throwable);
+               break;
+            case LogService.LOG_WARNING:
+               logger.warn(marker, message, throwable);
+               break;
+            case LogService.LOG_INFO:
+               logger.info(marker, message, throwable);
+               break;
+            default:
+               logger.trace(marker, message, throwable);
+               break;
+         }
+      } finally {
+         Thread.currentThread().setName(originalName);
+      }
+   }
+
+   private boolean isOSGIMessage(String message) {
+      for (String toCheck : remapMessages) {
+         if (message.startsWith(toCheck)) {
+            return true;
+         }
+      }
+      return false;
    }
 }
