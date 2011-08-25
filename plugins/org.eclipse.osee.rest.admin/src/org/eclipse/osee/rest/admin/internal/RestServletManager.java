@@ -31,7 +31,8 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 public class RestServletManager {
 
    private final Map<String, ServletContainer> registeredServlets = new ConcurrentHashMap<String, ServletContainer>();
-   private final List<ServiceReference> pending = new CopyOnWriteArrayList<ServiceReference>();
+   private final List<ServiceReference<Application>> pending =
+      new CopyOnWriteArrayList<ServiceReference<Application>>();
 
    private HttpService httpService;
    private EventAdmin eventAdmin;
@@ -49,7 +50,7 @@ public class RestServletManager {
       thread = new Thread("Register Pending Rest Services") {
          @Override
          public void run() {
-            for (ServiceReference reference : pending) {
+            for (ServiceReference<Application> reference : pending) {
                register(reference);
             }
             pending.clear();
@@ -68,7 +69,7 @@ public class RestServletManager {
       return httpService != null && eventAdmin != null;
    }
 
-   public void addApplication(ServiceReference reference) {
+   public void addApplication(ServiceReference<Application> reference) {
       if (isReady()) {
          register(reference);
       } else {
@@ -76,7 +77,7 @@ public class RestServletManager {
       }
    }
 
-   public void removeApplication(ServiceReference reference) {
+   public void removeApplication(ServiceReference<Application> reference) {
       if (isReady()) {
          unregister(reference);
       } else {
@@ -84,7 +85,7 @@ public class RestServletManager {
       }
    }
 
-   private void unregister(ServiceReference reference) {
+   private void unregister(ServiceReference<Application> reference) {
       String componentName = RestServiceUtils.getComponentName(reference);
       String contextName = RestServiceUtils.getContextName(reference);
 
@@ -97,7 +98,7 @@ public class RestServletManager {
       notifyDeRegistration(componentName, contextName);
    }
 
-   private void register(ServiceReference reference) {
+   private void register(ServiceReference<Application> reference) {
       String componentName = RestServiceUtils.getComponentName(reference);
       String contextName = RestServiceUtils.getContextName(reference);
 
@@ -113,14 +114,14 @@ public class RestServletManager {
       }
    }
 
-   private HttpContext createHttpContext(ServiceReference reference) {
+   private HttpContext createHttpContext(ServiceReference<Application> reference) {
       Bundle bundle = reference.getBundle();
       return new BundleHttpContext(bundle);
    }
 
-   private ServletContainer createContainer(ServiceReference reference) throws Exception {
+   private ServletContainer createContainer(ServiceReference<Application> reference) throws Exception {
       Bundle bundle = reference.getBundle();
-      Application application = (Application) bundle.getBundleContext().getService(reference);
+      Application application = bundle.getBundleContext().getService(reference);
       RestServiceUtils.checkValid(application);
       return new ServletContainer(application);
    }

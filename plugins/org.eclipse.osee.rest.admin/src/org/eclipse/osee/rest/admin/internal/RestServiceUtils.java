@@ -25,7 +25,7 @@ public final class RestServiceUtils {
       // Utility class
    }
 
-   public static String getContextName(ServiceReference reference) {
+   public static String getContextName(ServiceReference<?> reference) {
       String contextName = (String) reference.getProperty("context.name");
       if (!isValid(contextName)) {
          contextName = getComponentName(reference);
@@ -33,7 +33,7 @@ public final class RestServiceUtils {
       return normalize(contextName);
    }
 
-   public static String getComponentName(ServiceReference reference) {
+   public static String getComponentName(ServiceReference<?> reference) {
       return (String) reference.getProperty("component.name");
    }
 
