@@ -85,6 +85,14 @@ public class ClusterAdminImpl implements ClusterAdmin, InstanceManager {
 
    private Config getConfiguration(Map<String, Object> properties) {
       Config config = null;
+
+      String loggerClass = System.getProperty("hazelcast.logging.class");
+      if (loggerClass == null) {
+         String loggerType = System.getProperty("hazelcast.logging.type");
+         if (loggerType == null) {
+            System.setProperty("hazelcast.logging.type", "slf4j");
+         }
+      }
       String configPath = ClusterServiceUtils.getConfigurationURL(properties);
       if (configPath != null && configPath.length() > 0) {
          config = loadConfiguration(configPath);
@@ -94,8 +102,8 @@ public class ClusterAdminImpl implements ClusterAdmin, InstanceManager {
       Properties props = config.getProperties();
       props.put(GroupProperties.PROP_VERSION_CHECK_ENABLED, "false");
       //      props.put(GroupProperties.PROP_REST_ENABLED, "true");
-      props.put(GroupProperties.PROP_ENABLE_JMX, "true");
-      props.put(GroupProperties.PROP_ENABLE_JMX_DETAILED, "true");
+      props.put(GroupProperties.PROP_ENABLE_JMX, "false");
+      props.put(GroupProperties.PROP_ENABLE_JMX_DETAILED, "false");
       return config;
    }
 
@@ -146,9 +154,9 @@ public class ClusterAdminImpl implements ClusterAdmin, InstanceManager {
       }
       distributedObjects.clear();
       if (instance != null) {
+         deregisterEventListeners();
          LifecycleService service = instance.getLifecycleService();
          service.shutdown();
-         deregisterEventListeners();
          instance = null;
       }
       eventNotifier.notifyDeRegistration();
