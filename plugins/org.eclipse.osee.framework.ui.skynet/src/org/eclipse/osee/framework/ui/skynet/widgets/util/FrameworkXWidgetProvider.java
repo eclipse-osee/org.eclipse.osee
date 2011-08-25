@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -327,7 +328,7 @@ public final class FrameworkXWidgetProvider {
             widget.setToolTip(xWidgetLayoutData.getToolTip());
             try {
                String branchGuid = xWidgetLayoutData.getDefaultValue();
-               if (branchGuid != null) {
+               if (GUID.isValid(branchGuid)) {
                   widget.setSelection(BranchManager.getBranchByGuid(branchGuid));
                }
             } catch (OseeCoreException ex) {
@@ -385,8 +386,8 @@ public final class FrameworkXWidgetProvider {
 
    private static Collection<IXWidgetProvider> getXWidgetProviders() {
       ExtensionDefinedObjects<IXWidgetProvider> contributions =
-         new ExtensionDefinedObjects<IXWidgetProvider>(Activator.PLUGIN_ID + ".XWidgetProvider",
-            "XWidgetProvider", "classname");
+         new ExtensionDefinedObjects<IXWidgetProvider>(Activator.PLUGIN_ID + ".XWidgetProvider", "XWidgetProvider",
+            "classname");
       return contributions.getObjects();
    }
 }

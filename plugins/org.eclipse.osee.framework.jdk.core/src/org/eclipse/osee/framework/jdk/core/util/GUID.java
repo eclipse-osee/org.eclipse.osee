@@ -47,6 +47,14 @@ public final class GUID {
       return Strings.isValid(guid) && pattern.matcher(guid).matches();
    }
 
+   public static String checkOrCreate(String guid) {
+      if (isValid(guid)) {
+         return guid;
+      } else {
+         return create();
+      }
+   }
+
    private static byte[] chopMostSignificantByte(long high, long low) {
       byte[] writeBuffer = threadLocalBytes.get();
       // Omit the first byte (high >>> 56);

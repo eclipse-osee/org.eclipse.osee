@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -111,7 +112,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    private EditState objectEditState;
 
    public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, "");
+      super(GUID.checkOrCreate(guid), "");
       objectEditState = EditState.NO_CHANGE;
       modType = ModificationType.NEW;
 
