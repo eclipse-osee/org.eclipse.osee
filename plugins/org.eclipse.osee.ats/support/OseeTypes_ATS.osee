@@ -424,7 +424,7 @@ oseeEnumType "enum.ats.review.formalType" {
 
 oseeEnumType "enum.ats.point" {
    guid "AYyqLF5WrgvoWwAJhbAA"
-   entry "1" entryGuid "AYyqLF5WrgvoWwAJhbAA"
+   entry "1" entryGuid "AYyqLF5WrgvoWwAJhb12"
    entry "2" entryGuid "AYyqLWfS+S+58gmCmOQA"
    entry "4" entryGuid "AYyqLY8_ChxManvFc6QA"
    entry "8" entryGuid "AYyqLbRYXECHjlLzQ+QA"
