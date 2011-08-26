@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
@@ -23,6 +25,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
@@ -45,6 +48,35 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    public static final String NON_UNIQUE_ARTIFACT_TYPE_RESTRICTION = "non_unique_artifact_type_restriction";
    public static final String NON_UNIQUE_ATTRIBUTE_TYPE_RESTRICTION = "non_unique_attribute_type_restriction";
    public static final String NON_UNIQUE_RELATION_TYPE_RESTRICTION = "non_unique_relation_type_restriction";
+
+   @Check
+   public void checkUuidValidity(OseeDsl oseeDsl) {
+      Map<String, OseeType> uuids = new HashMap<String, OseeType>();
+      EStructuralFeature feature = OseeDslPackage.Literals.OSEE_TYPE__UUID;
+      int index = OseeDslPackage.OSEE_TYPE__UUID;
+      for (EObject object : oseeDsl.eContents()) {
+         if (object instanceof OseeType) {
+            OseeType type = (OseeType) object;
+            uuidValidityHelper(uuids, type, feature, index);
+         }
+      }
+   }
+
+   private void uuidValidityHelper(Map<String, OseeType> uuids, OseeType type, EStructuralFeature feature, int index) {
+      String key = type.getUuid();
+      OseeType duplicate = uuids.put(key, type);
+      if (duplicate != null) {
+         String message =
+            String.format("Duplicate uuids detected:\nname:[%s] uuid:[%s]\nname:[%s] uuid:[%s]", type.getName(),
+               type.getUuid(), duplicate.getName(), duplicate.getUuid());
+         error(message, type, feature, index);
+
+         message =
+            String.format("Duplicate uuids detected:\nname:[%s] uuid:[%s]\nname:[%s] uuid:[%s]", duplicate.getName(),
+               duplicate.getUuid(), type.getName(), type.getUuid());
+         error(message, duplicate, feature, index);
+      }
+   }
 
    @Check
    public void checkTypeNameValidity(OseeDsl oseeDsl) {
