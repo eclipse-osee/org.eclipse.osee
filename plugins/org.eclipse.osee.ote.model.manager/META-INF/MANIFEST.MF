@@ -6,8 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.ote.core.environment,
+ org.eclipse.osee.ote.core.model
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: org.eclipse.osee.ote.core;bundle-version="0.9.8"
 Export-Package: org.eclipse.osee.ote.model.manager
