@@ -58,7 +58,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
 
    @Override
    public String getStorageString() {
-      return artifactType + TOKEN + operation.name();
+      return artifactType.getGuid().toString() + TOKEN + operation.name();
    }
 
    public static ArtifactTypeSearch getPrimitive(String storageString) {

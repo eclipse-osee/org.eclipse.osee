@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,23 +27,29 @@ public class WholeAttributeUpdateOperation extends AbstractOperation {
    private final Artifact artifact;
    private final IAttributeType attributeType;
    private final File file;
+   private final AttributeModifier modifier;
 
-   public WholeAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType) {
+   public WholeAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType, AttributeModifier validator) {
       super("Native Artifact Update", Activator.PLUGIN_ID);
       this.artifact = artifact;
       this.attributeType = attributeType;
       this.file = file;
+      this.modifier = validator;
+   }
+
+   public WholeAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType) {
+      this(file, artifact, attributeType, null);
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      InputStream stream = null;
-      try {
-         stream = new BufferedInputStream(new FileInputStream(file));
-         artifact.setSoleAttributeFromStream(attributeType, stream);
-         artifact.persist(getClass().getSimpleName());
-      } finally {
-         Lib.close(stream);
+   protected void doWork(IProgressMonitor monitor) throws OseeCoreException, IOException {
+      String data = null;
+      data = Lib.fileToString(file);
+
+      if (modifier != null) {
+         data = modifier.modifyForSave(artifact, data);
       }
+      artifact.setSoleAttributeFromString(attributeType, data);
+      artifact.persist(getClass().getSimpleName());
    }
 }
