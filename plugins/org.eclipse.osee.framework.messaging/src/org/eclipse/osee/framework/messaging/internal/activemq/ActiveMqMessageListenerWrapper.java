@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal.activemq;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
+
 import org.apache.activemq.command.ActiveMQDestination;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -68,6 +71,14 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
 
    private void process(javax.jms.Message message, ReplyConnection replyConnection) throws JMSException, OseeCoreException {
       Map<String, Object> headers = new HashMap<String, Object>();
+      Enumeration propertyNames = message.getPropertyNames();
+      while( propertyNames.hasMoreElements() )
+      {
+
+         String name = (String) propertyNames.nextElement();
+         Object element = message.getObjectProperty(name);
+         headers.put(name, element);
+      }
       listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
       OseeLog.logf(Activator.class, Level.FINE,
          "recieved message %s - %s", message.getJMSDestination().toString(), message.toString());
