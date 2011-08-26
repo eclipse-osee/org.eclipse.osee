@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -77,6 +78,7 @@ public class ReturnFormatter implements Xmlizable, XmlizableStream {
 
    @Override
    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
-      XMLStreamWriterUtil.writeElement(writer, "ReturnValue", variableValue);
+	  String toLog = variableValue != null ? XmlSupport.format(variableValue) : "null";
+      XMLStreamWriterUtil.writeElement(writer, "ReturnValue", toLog);
    }
 }
