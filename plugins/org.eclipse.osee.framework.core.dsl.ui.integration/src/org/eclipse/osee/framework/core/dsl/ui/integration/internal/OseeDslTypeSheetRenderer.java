@@ -20,8 +20,8 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.framework.core.dsl.integration.util.HexUtil;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
-import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
@@ -188,16 +188,16 @@ public class OseeDslTypeSheetRenderer extends FileSystemRenderer {
          EList<XRelationType> relationTypes = model.getRelationTypes();
 
          for (XArtifactType type : artifactTypes) {
-            addUuid(OseeUtil.convertHexStringToLong(type.getUuid()), uuids);
+            addUuid(HexUtil.toLong(type.getUuid()), uuids);
          }
          for (XAttributeType type : attributeTypes) {
-            addUuid(OseeUtil.convertHexStringToLong(type.getUuid()), uuids);
+            addUuid(HexUtil.toLong(type.getUuid()), uuids);
          }
          for (XOseeEnumType type : enumTypes) {
-            addUuid(OseeUtil.convertHexStringToLong(type.getUuid()), uuids);
+            addUuid(HexUtil.toLong(type.getUuid()), uuids);
          }
          for (XRelationType type : relationTypes) {
-            addUuid(OseeUtil.convertHexStringToLong(type.getUuid()), uuids);
+            addUuid(HexUtil.toLong(type.getUuid()), uuids);
          }
 
          if (uuids.contains(0L)) {

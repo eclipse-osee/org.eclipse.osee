@@ -90,6 +90,9 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long,
 
       for (Triplet<Long, String, Long> entry : response.getAttributeTypes()) {
          ArtifactType key1 = cache.getByGuid(entry.getFirst());
+         if (key1 == null) {
+            System.out.printf("Null ArtType [%s]\n", entry.getFirst());
+         }
          IOseeBranch key2 = branchCache.getByGuid(entry.getSecond());
          Collection<AttributeType> types = attrs.get(key1, key2);
          if (types == null) {
@@ -100,7 +103,10 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long,
       }
 
       for (Entry<Pair<ArtifactType, IOseeBranch>, Collection<AttributeType>> entry : attrs.entrySet()) {
-         entry.getKey().getFirst().setAttributeTypes(entry.getValue(), entry.getKey().getSecond());
+         ArtifactType type = entry.getKey().getFirst();
+         IOseeBranch branch = entry.getKey().getSecond();
+         Collection<AttributeType> attrTypes = entry.getValue();
+         type.setAttributeTypes(attrTypes, branch);
       }
       return updatedItems;
    }

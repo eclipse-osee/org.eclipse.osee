@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.integration.util.HexUtil;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -185,7 +186,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
       OseeEnumType oseeEnumType =
          provider.getOseeEnumTypeFactory().createOrUpdate(typeCache.getEnumTypeCache(),
-            OseeUtil.convertHexStringToLong(xEnumType.getUuid()), enumTypeName);
+            HexUtil.toLong(xEnumType.getUuid()), enumTypeName);
 
       int lastOrdinal = 0;
       List<OseeEnumEntry> oseeEnumEntries = new ArrayList<OseeEnumEntry>();
@@ -289,7 +290,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private long convertHexToLong(String hexString) throws OseeCoreException {
-      return OseeUtil.convertHexStringToLong(hexString);
+      return HexUtil.toLong(hexString);
    }
 
 }

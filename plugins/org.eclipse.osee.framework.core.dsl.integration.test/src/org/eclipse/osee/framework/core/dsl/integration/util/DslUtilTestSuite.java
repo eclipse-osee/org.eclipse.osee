@@ -17,8 +17,10 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-ModelUtilTest.class, //
+@Suite.SuiteClasses({
+//
+   HexUtilTest.class, //
+   ModelUtilTest.class, //
    OseeDslSegmentParserTest.class, //
    OseeUtilTest.class, //
 })

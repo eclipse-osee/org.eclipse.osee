@@ -37,15 +37,18 @@ public final class OseeUtil {
    }
 
    public static IArtifactType toToken(XArtifactType model) throws OseeCoreException {
-      return TokenFactory.createArtifactType(convertHexStringToLong(model.getUuid()), Strings.unquote(model.getName()));
+      return TokenFactory.createArtifactType(HexUtil.toLong(model.getUuid()),
+         Strings.unquote(model.getName()));
    }
 
    public static IAttributeType toToken(XAttributeType model) throws OseeCoreException {
-      return TokenFactory.createAttributeType(convertHexStringToLong(model.getUuid()), Strings.unquote(model.getName()));
+      return TokenFactory.createAttributeType(HexUtil.toLong(model.getUuid()),
+         Strings.unquote(model.getName()));
    }
 
    public static IRelationType toToken(XRelationType model) throws OseeCoreException {
-      return TokenFactory.createRelationType(convertHexStringToLong(model.getUuid()), Strings.unquote(model.getName()));
+      return TokenFactory.createRelationType(HexUtil.toLong(model.getUuid()),
+         Strings.unquote(model.getName()));
    }
 
    public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) throws OseeCoreException {
@@ -90,20 +93,5 @@ public final class OseeUtil {
    public static String orderTypeNameToGuid(String orderTypeName) throws OseeCoreException {
       Conditions.checkNotNull(orderTypeName, "orderTypeName");
       return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
-   }
-
-   public static long convertHexStringToLong(String hexString) throws OseeCoreException {
-      Long toReturn = -1L;
-      try {
-         String hex = hexString;
-         if (hexString.startsWith("0x")) {
-            hex = hexString.substring(2);
-         }
-         toReturn = Long.parseLong(hex, 16);
-      } catch (Exception ex) {
-         throw new OseeCoreException(String.format("Error converting [%s] to java.util.Long", hexString), ex);
-      }
-      return toReturn;
-
    }
 }

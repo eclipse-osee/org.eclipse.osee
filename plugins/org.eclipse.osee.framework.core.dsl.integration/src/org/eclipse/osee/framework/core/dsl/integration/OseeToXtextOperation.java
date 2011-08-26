@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
+import org.eclipse.osee.framework.core.dsl.integration.util.HexUtil;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -97,7 +98,8 @@ public class OseeToXtextOperation extends AbstractOperation {
          model.getEnumTypes().add(modelType);
 
          modelType.setName(enumType.getName());
-         modelType.setUuid(String.valueOf(enumType.getGuid()));
+         modelType.setUuid(HexUtil.toString(enumType.getGuid()));
+         modelType.setTypeGuid(modelType.getUuid());
 
          for (OseeEnumEntry entry : enumType.values()) {
             checkForCancelledStatus(monitor);
@@ -122,7 +124,10 @@ public class OseeToXtextOperation extends AbstractOperation {
          model.getAttributeTypes().add(modelType);
 
          modelType.setName(attributeType.getName());
-         modelType.setUuid(String.valueOf(attributeType.getGuid()));
+
+         modelType.setUuid(HexUtil.toString(attributeType.getGuid()));
+         modelType.setTypeGuid(modelType.getUuid());
+
          modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
          modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
          modelType.setMax(String.valueOf(attributeType.getMaxOccurrences()));
@@ -152,8 +157,8 @@ public class OseeToXtextOperation extends AbstractOperation {
          model.getArtifactTypes().add(modelType);
 
          modelType.setName(artifactType.getName());
-         modelType.setUuid(String.valueOf(artifactType.getGuid()));
-
+         modelType.setUuid(HexUtil.toString(artifactType.getGuid()));
+         modelType.setTypeGuid(modelType.getUuid());
       }
       monitor.worked(calculateWork(workPercentage));
    }
@@ -223,7 +228,8 @@ public class OseeToXtextOperation extends AbstractOperation {
          model.getRelationTypes().add(modelType);
 
          modelType.setName(relationType.getName());
-         modelType.setUuid(String.valueOf(relationType.getGuid()));
+         modelType.setUuid(HexUtil.toString(relationType.getGuid()));
+         modelType.setTypeGuid(modelType.getUuid());
 
          modelType.setDefaultOrderType(OseeUtil.getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
          modelType.setMultiplicity(RelationMultiplicityEnum.getByName(relationType.getMultiplicity().name()));
@@ -239,7 +245,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private XArtifactType getArtifactType(OseeDsl model, Long guid) throws OseeCoreException {
       for (XArtifactType type : model.getArtifactTypes()) {
-         Long normalizedGuid = OseeUtil.convertHexStringToLong(type.getUuid());
+         Long normalizedGuid = HexUtil.toLong(type.getUuid());
          if (guid.equals(normalizedGuid)) {
             return type;
          }
@@ -249,7 +255,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private XAttributeType getAttributeType(OseeDsl model, Long guid) throws OseeCoreException {
       for (XAttributeType type : model.getAttributeTypes()) {
-         Long normalizedGuid = OseeUtil.convertHexStringToLong(type.getUuid());
+         Long normalizedGuid = HexUtil.toLong(type.getUuid());
          if (guid.equals(normalizedGuid)) {
             return type;
          }
@@ -260,7 +266,7 @@ public class OseeToXtextOperation extends AbstractOperation {
    private XOseeEnumType toModelEnumType(OseeDsl model, OseeEnumType oseeEnumType) throws OseeCoreException {
       Long guid = oseeEnumType.getGuid();
       for (XOseeEnumType type : model.getEnumTypes()) {
-         Long normalizedGuid = OseeUtil.convertHexStringToLong(type.getUuid());
+         Long normalizedGuid = HexUtil.toLong(type.getUuid());
          if (guid.equals(normalizedGuid)) {
             return type;
          }
