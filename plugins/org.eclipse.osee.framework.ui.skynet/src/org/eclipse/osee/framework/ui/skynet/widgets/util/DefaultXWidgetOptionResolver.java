@@ -8,13 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
+package org.eclipse.osee.framework.ui.skynet.widgets.util;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IXWidgetOptionResolver {
+public class DefaultXWidgetOptionResolver implements IXWidgetOptionResolver {
 
-   public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData);
+   @Override
+   public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData) {
+      Matcher m = Pattern.compile("\\((.*?)\\)$").matcher(xWidgetData.getXWidgetName());
+
+      if (m.find()) {
+         String data = m.group(1);
+         return data.split(",");
+      }
+      return new String[] {};
+   }
 
 }

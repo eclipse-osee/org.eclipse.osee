@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.UserCommunity;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.UserCommunity;
 
 /**
  * @author Donald G. Dunne

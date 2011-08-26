@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -89,7 +89,7 @@ public class BlamInputSection extends BaseBlamSection {
    private void createWidgets(Composite parent) {
       try {
          List<DynamicXWidgetLayoutData> layoutDatas = getDynamicXWidgetLayouts();
-         WorkPage workPage = new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver(), getAbstractBlam());
+         XWidgetPage workPage = new XWidgetPage(layoutDatas, new DefaultXWidgetOptionResolver(), getAbstractBlam());
          workPage.createBody(getManagedForm(), parent, null, null, true);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

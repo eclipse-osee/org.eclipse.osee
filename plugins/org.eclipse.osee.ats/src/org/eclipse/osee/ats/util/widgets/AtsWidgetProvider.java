@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
 
 /**
  * @author Donald G. Dunne

@@ -41,9 +41,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**

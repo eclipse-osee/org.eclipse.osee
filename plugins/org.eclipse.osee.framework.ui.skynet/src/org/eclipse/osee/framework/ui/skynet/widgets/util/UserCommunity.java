@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
+package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -17,30 +17,22 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
-import org.eclipse.osee.ats.core.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class ActionableItemManager {
 
@@ -141,110 +133,6 @@ public class ActionableItemManager {
 
    public static Result editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       return ActionableItemManager.editActionableItems(teamArt.getParentActionArtifact());
-   }
-
-   public static Result convertActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Result toReturn = Result.FalseResult;
-      AICheckTreeDialog diag =
-         new AICheckTreeDialog(
-            "Convert Impacted Actionable Items",
-            "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has " +
-            //
-            "determined " + "that there is NO impact and that another actionable items IS impacted:\n" +
-            //
-            "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove " +
-            //
-            "impacted items \n" + "      which will create new teams as needed.\n" +
-            //
-            "   3) Then cancel the team that has no impacts.\n   Doing this will show that the original " +
-            //
-            "team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, " +
-            //
-            "there are some cases where an impacted item was incorrectly chosen\n" + "and the original team " +
-            //
-            "does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was " +
-            //
-            "never chosen.\n\n" + "Current Actionable Item(s): " + ActionableItemsColumn.getActionableItemsStr(teamArt) + "\n" +
-            //
-            "Current Team: " + teamArt.getTeamDefinition().getName() + "\n" +
-            //
-            "Select SINGLE Actionable Item below to convert this workflow to.\n\n" +
-            //
-            "You will be prompted to confirm this conversion.", Active.Both);
-
-      diag.setInput(ActionableItemManagerCore.getTopLevelActionableItems(Active.Both));
-      if (diag.open() != 0) {
-         return Result.FalseResult;
-      }
-      if (diag.getChecked().isEmpty()) {
-         return new Result("At least one actionable item must must be selected.");
-      }
-      if (diag.getChecked().size() > 1) {
-         return new Result("Only ONE actionable item can be selected for converts");
-      }
-      ActionableItemArtifact selectedAia = diag.getChecked().iterator().next();
-      Collection<TeamDefinitionArtifact> teamDefs =
-         ActionableItemManagerCore.getImpactedTeamDefs(Arrays.asList(selectedAia));
-      if (teamDefs.size() == 1) {
-         TeamDefinitionArtifact newTeamDef = teamDefs.iterator().next();
-         if (newTeamDef.equals(teamArt.getTeamDefinition())) {
-            toReturn =
-               new Result(
-                  "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instead.");
-         } else if (!newTeamDef.getWorkDefinition().equals(teamArt.getTeamDefinition())) {
-            toReturn =
-               new Result(
-                  "Work Definitions configuration is not the same for these teams.  Use \"Edit Actionable Items\" instead.");
-         }
-         Result result = isResultingArtifactTypesSame(newTeamDef, teamArt, selectedAia);
-         if (result.isFalse()) {
-            return result;
-         }
-         StringBuffer sb = new StringBuffer("Converting...\nActionable Item(s): ");
-         sb.append(ActionableItemsColumn.getActionableItemsStr(teamArt));
-         sb.append("\nTeam: ");
-         sb.append(teamArt.getTeamDefinition().getName());
-         sb.append("\nto\nActionable Item(s): ");
-         sb.append(selectedAia);
-         sb.append("\nTeam: ");
-         sb.append(newTeamDef.getName());
-         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Convert", sb.toString())) {
-            Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
-            toProcess.add(selectedAia);
-            toReturn = actionableItemsTx(teamArt, AtsUtil.getAtsBranch(), toProcess, newTeamDef);
-         }
-
-      } else {
-         toReturn = new Result("Single team can not retrieved for " + selectedAia.getName());
-      }
-      return toReturn;
-   }
-
-   private static Result isResultingArtifactTypesSame(TeamDefinitionArtifact newTeamDef, TeamWorkFlowArtifact teamArt, ActionableItemArtifact newAI) throws OseeCoreException {
-      IArtifactType newTeamWorkflowArtifactType =
-         TeamWorkFlowManager.getTeamWorkflowArtifactType(newTeamDef, Arrays.asList(newAI));
-      if (!newTeamWorkflowArtifactType.equals(teamArt.getArtifactType())) {
-         return new Result(
-            String.format(
-               "Can not convert because new workflow type [%s] does not match old type [%s].  Use \"Edit Actionable Items\" instead.",
-               newTeamWorkflowArtifactType, teamArt.getArtifactType()));
-      }
-      return Result.TrueResult;
-   }
-
-   private static Result actionableItemsTx(TeamWorkFlowArtifact teamArt, Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
-      Result workResult = teamArt.getActionableItemsDam().setActionableItems(selectedAlias);
-      if (workResult.isTrue()) {
-         if (teamDefinition != null) {
-            teamArt.setTeamDefinition(teamDefinition);
-         }
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Convert Actionable Item");
-         ActionArtifactRollup rollup = new ActionArtifactRollup(teamArt.getParentActionArtifact(), transaction);
-         rollup.resetAttributesOffChildren();
-         teamArt.persist(transaction);
-         transaction.execute();
-      }
-      return workResult;
    }
 
    public static Set<ActionableItemArtifact> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {

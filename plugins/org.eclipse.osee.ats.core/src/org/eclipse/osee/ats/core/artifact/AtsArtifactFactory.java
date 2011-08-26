@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -89,10 +88,6 @@ public class AtsArtifactFactory extends ArtifactFactory {
       artifactTypes.add(AtsArtifactTypes.TeamDefinition);
       artifactTypes.add(AtsArtifactTypes.ActionableItem);
       artifactTypes.add(AtsArtifactTypes.WorkDefinition);
-      artifactTypes.add(CoreArtifactTypes.WorkRuleDefinition);
-      artifactTypes.add(CoreArtifactTypes.WorkFlowDefinition);
-      artifactTypes.add(CoreArtifactTypes.WorkWidgetDefinition);
-      artifactTypes.add(CoreArtifactTypes.WorkPageDefinition);
       return artifactTypes;
    }
 

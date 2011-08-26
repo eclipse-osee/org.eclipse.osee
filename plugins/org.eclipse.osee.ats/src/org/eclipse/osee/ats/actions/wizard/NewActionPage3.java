@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -43,7 +43,7 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public class NewActionPage3 extends WizardPage {
-   private WorkPage page;
+   private XWidgetPage page;
    private Composite comp;
    protected final NewActionWizard wizard;
    private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<IAtsWizardItem>();
@@ -104,7 +104,7 @@ public class NewActionPage3 extends WizardPage {
             }
             stringBuffer.append("</WorkPage>");
 
-            page = new WorkPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance());
+            page = new XWidgetPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance());
             page.createBody(null, comp, null, xModListener, true);
 
             comp.layout();

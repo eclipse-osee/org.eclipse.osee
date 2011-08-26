@@ -12,23 +12,26 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCheck;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Check for certain conditions that must be met to delete an ATS object or User artifact.
@@ -48,7 +51,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
          return createStatus(result);
       }
 
-      result = checkAtsWorkflows(artifacts);
+      result = checkAtsWorkDefinitions(artifacts);
       if (result != null) {
          return createStatus(result);
       }
@@ -100,25 +103,17 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return null;
    }
 
-   private String checkAtsWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
+   private String checkAtsWorkDefinitions(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact art : artifacts) {
-         if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition) && art.getRelatedArtifacts(
-            CoreRelationTypes.WorkItem__Parent).size() > 0) {
-            return String.format(
-               "ATS WorkFlowDefinition  [%s] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.",
-               art);
-         }
-         if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition) && art.getRelatedArtifacts(
-            CoreRelationTypes.WorkItem__Parent).size() > 0) {
-            return String.format(
-               "ATS WorkRuleDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
-               art);
-         }
-         if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition) && art.getRelatedArtifacts(
-            CoreRelationTypes.WorkItem__Parent).size() > 0) {
-            return String.format(
-               "ATS WorkWidgetDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
-               art);
+         if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
+            List<Artifact> artifactListFromTypeAndAttribute =
+               ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
+                  AtsAttributeTypes.WorkflowDefinition, art.getName(), AtsUtilCore.getAtsBranchToken());
+            if (artifactListFromTypeAndAttribute.size() > 0) {
+               return String.format(
+                  "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinition attributes set to it's name in %d artifact.  These must be changed first.",
+                  art, artifactListFromTypeAndAttribute.size());
+            }
          }
       }
       return null;

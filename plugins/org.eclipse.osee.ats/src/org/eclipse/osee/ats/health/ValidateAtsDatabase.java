@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.SMAState;
 import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
@@ -203,7 +202,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testStateMachineAssignees(artifacts);
             testAtsLogs(artifacts);
             testActionableItemToTeamDefinition(testNameToResultsMap, artifacts);
-            testTeamDefinitionHasWorkflow(testNameToResultsMap, artifacts);
             for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
                atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
             }
@@ -664,27 +662,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testActionableItemToTeamDefinition",
                "Error: Exception: " + ex.getLocalizedMessage());
-         }
-      }
-   }
-
-   public static void testTeamDefinitionHasWorkflow(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts) {
-      for (Artifact artifact : artifacts) {
-         try {
-            if (artifact instanceof TeamDefinitionArtifact) {
-               TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-               if (teamDef.isActionable()) {
-                  WorkDefinitionMatch match = teamDef.getWorkDefinition();
-                  if (!match.isMatched()) {
-                     testNameToResultsMap.put(
-                        "testTeamDefinitionHasWorkflow",
-                        "Error: TeamDefintion " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has NO defined WorkDefinition and is set to Actionable");
-                  }
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-            testNameToResultsMap.put("testTeamDefinitionHasWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
    }

@@ -29,11 +29,7 @@ import org.eclipse.osee.ats.core.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.workdef.RuleDefinition;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.RuleManager;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -143,26 +139,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   /**
-    * This method will walk up the TeamDefinition tree until a def is found that configured with work flow.
-    * 
-    * @return parent TeamDefinition that holds the work flow id attribute
-    */
-   public TeamDefinitionArtifact getTeamDefinitionHoldingWorkFlow() throws OseeCoreException {
-      for (Artifact artifact : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child, Artifact.class)) {
-         if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-            return this;
-         }
-      }
-      if (getParent() instanceof TeamDefinitionArtifact) {
-         TeamDefinitionArtifact parentTda = (TeamDefinitionArtifact) getParent();
-         if (parentTda != null) {
-            return parentTda.getTeamDefinitionHoldingWorkFlow();
-         }
-      }
-      return null;
-   }
-
    public Artifact getNextReleaseVersion() throws OseeCoreException {
       for (Artifact verArt : getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
          if (verArt.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false)) {
@@ -182,38 +158,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public double getManDayHrsFromItemAndChildren() {
       return getHoursPerWorkDayFromItemAndChildren(this);
-   }
-
-   public Artifact getWorkflowArtifact(Artifact teamDef) throws OseeCoreException {
-      Artifact workFlowArt = null;
-      for (Artifact artifact : teamDef.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child, Artifact.class)) {
-         if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-            if (workFlowArt != null) {
-               OseeLog.log(
-                  Activator.class,
-                  Level.SEVERE,
-                  "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getName());
-            }
-            workFlowArt = artifact;
-         }
-      }
-      return workFlowArt;
-   }
-
-   public WorkDefinitionMatch getWorkDefinition() throws OseeCoreException {
-      Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
-      if (teamDef == null) {
-         return new WorkDefinitionMatch();
-      }
-      Artifact workFlowArt = getWorkflowArtifact(teamDef);
-      if (workFlowArt == null) {
-         return new WorkDefinitionMatch();
-      }
-      WorkDefinitionMatch match = WorkDefinitionFactory.getWorkDefinition(workFlowArt.getName());
-      if (match.isMatched()) {
-         match.addTrace(String.format("from teamDef [%s] related work child [%s]", teamDef, workFlowArt.getName()));
-      }
-      return match;
    }
 
    /**

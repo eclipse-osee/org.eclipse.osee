@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Listener;
  * @author Donald G. Dunne
  */
 public class NewActionPage2 extends WizardPage {
-   private WorkPage page;
+   private XWidgetPage page;
    private final NewActionWizard wizard;
    private boolean debugPopulated = false;
    private final static String DESCRIPTION = "Description";
@@ -89,7 +89,7 @@ public class NewActionPage2 extends WizardPage {
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new WorkPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance());
+         page = new XWidgetPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
 
          ((XText) getXWidget(DESCRIPTION)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {

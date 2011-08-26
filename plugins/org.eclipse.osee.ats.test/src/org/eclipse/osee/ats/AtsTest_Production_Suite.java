@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.osee.ats.util.AtsImageTest;
-import org.eclipse.osee.ats.workflow.AtsWorkItemDefinitionTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -19,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsImageTest.class, AtsWorkItemDefinitionTest.class})
+@Suite.SuiteClasses({AtsImageTest.class})
 /**
  * @author Donald G. Dunne
  */

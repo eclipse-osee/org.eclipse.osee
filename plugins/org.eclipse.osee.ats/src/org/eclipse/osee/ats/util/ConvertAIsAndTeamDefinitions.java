@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.migrate;
+package org.eclipse.osee.ats.util;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;

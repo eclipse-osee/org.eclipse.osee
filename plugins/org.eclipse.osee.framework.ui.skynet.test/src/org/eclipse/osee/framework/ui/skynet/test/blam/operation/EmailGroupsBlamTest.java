@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;

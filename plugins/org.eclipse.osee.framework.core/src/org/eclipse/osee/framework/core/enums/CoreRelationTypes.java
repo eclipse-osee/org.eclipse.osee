@@ -85,10 +85,6 @@ public final class CoreRelationTypes {
       "ATmJsVc28wU57zFAi7AA", "Verification Plan");
    public static final IRelationTypeSide Verification_Plan__Test_Plan_Element = TokenFactory.createRelationTypeSide(
       SIDE_B, "ATmJsVc28wU57zFAi7AA", "Verification Plan");
-   public static final IRelationTypeSide WorkItem__Parent = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE9jvEzcbzwAfjzwA", "Work Item");
-   public static final IRelationTypeSide WorkItem__Child = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE9jvEzcbzwAfjzwA", "Work Item");
 
    private CoreRelationTypes() {
       // Constants

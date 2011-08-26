@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 

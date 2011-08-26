@@ -41,13 +41,9 @@ import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.util.AtsEditor;
+import org.eclipse.osee.ats.util.ConvertAIsAndTeamDefinitions;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
-import org.eclipse.osee.ats.util.migrate.ConvertAIsAndTeamDefinitions;
-import org.eclipse.osee.ats.util.migrate.ConvertAtsFor096Database;
-import org.eclipse.osee.ats.util.migrate.ConvertAtsFor097Database;
-import org.eclipse.osee.ats.util.migrate.ConvertAtsSingleFor097Database;
-import org.eclipse.osee.ats.util.migrate.ConvertWorkFlowDefinitions;
 import org.eclipse.osee.ats.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.version.GenerateFullVersionReportItem;
 import org.eclipse.osee.ats.version.GenerateVersionReportItem;
@@ -193,10 +189,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          XNavigateItem adminItems = new XNavigateItem(parent, "Admin", PluginUiImage.ADMIN);
 
          XNavigateItem dbConvertItems = new XNavigateItem(adminItems, "Database Conversions", PluginUiImage.ADMIN);
-         new ConvertAtsFor096Database(dbConvertItems);
-         new ConvertAtsFor097Database(dbConvertItems);
-         new ConvertAtsSingleFor097Database(dbConvertItems);
-         new ConvertWorkFlowDefinitions(dbConvertItems);
          new ConvertAIsAndTeamDefinitions(dbConvertItems);
          new ImportAIsAndTeamDefinitionsItem(dbConvertItems);
          new ImportWorkDefinitionsItem(dbConvertItems);

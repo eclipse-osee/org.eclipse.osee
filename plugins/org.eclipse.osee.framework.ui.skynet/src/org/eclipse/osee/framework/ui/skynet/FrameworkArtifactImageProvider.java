@@ -33,10 +33,6 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.User, FrameworkImage.USER, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.GlobalPreferences, FrameworkImage.GEAR, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UserGroup, FrameworkImage.USERS, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkFlowDefinition, FrameworkImage.WORKFLOW, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkPageDefinition, FrameworkImage.PAGE, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkRuleDefinition, FrameworkImage.RULE, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkWidgetDefinition, FrameworkImage.WIDGET, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UniversalGroup, FrameworkImage.GROUP, this);
 
       ArtifactImageManager.registerOverrideImageProvider(this, CoreArtifactTypes.User);

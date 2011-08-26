@@ -33,7 +33,7 @@ teamDefinition "Teams" GetOrCreate {
 			member named "Steven Kohn"
 			member named "Maichael Johnson"
 			member named "Kay Jason"
-			workDefinition "osee.ats.teamWorkflow"
+			workDefinition "WorkDef_Team_Default"
 			version "CIS_Bld_1" {
 				staticId "cis.teamDefHoldingVersions"
 				released True
@@ -53,7 +53,7 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "cis.code"
 					lead named "Jason Michael"
 					member named "Jason Michael"
-					workDefinition "demo.code"
+					workDefinition "WorkDef_Team_Demo_Code"
 				}
 
 				teamDefinition "CIS Requirements" {
@@ -61,7 +61,7 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "cis.requirements"
 					lead named "Joe Smith"
 					member named "Joe Smith"
-					workDefinition "demo.req"
+					workDefinition "WorkDef_Team_Demo_Req"
 				}
 
 				teamDefinition "CIS SW Design" {
@@ -69,7 +69,7 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "cis.sw_design"
 					lead named "Kay Jones"
 					member named "Kay Jones"
-					workDefinition "demo.swdesign"
+					workDefinition "WorkDef_Team_Demo_SwDesign"
 				}
 
 				teamDefinition "CIS Test" {
@@ -77,7 +77,7 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "cis.test"
 					lead named "Kay Jones"
 					member named "Kay Jones"
-					workDefinition "demo.test"
+					workDefinition "WorkDef_Team_Demo_Test"
 				}
 			}
 		}
@@ -88,7 +88,7 @@ teamDefinition "Teams" GetOrCreate {
 			member named "Steven Michael"
 			member named "Michael John"
 			member named "Jason Stevens"
-			workDefinition "osee.ats.simpleTeamWorkflow"
+			workDefinition "WorkDef_Team_Simple"
 			children {
 
 				teamDefinition "IT Team" {
@@ -97,7 +97,7 @@ teamDefinition "Teams" GetOrCreate {
 					member named "Michael John"
 					member named "Jason Stevens"
 					member named "Kay Wheeler"
-					workDefinition "osee.ats.simpleTeamWorkflow"
+					workDefinition "WorkDef_Team_Simple"
 				}
 			}
 		}
@@ -108,7 +108,7 @@ teamDefinition "Teams" GetOrCreate {
 			member named "Michael Alex"
 			member named "Janice Michael"
 			member named "Alex Kay"
-			workDefinition "osee.ats.teamWorkflow"
+			workDefinition "WorkDef_Team_Default"
 		}
 
 		teamDefinition "SAW SW" {
@@ -117,7 +117,7 @@ teamDefinition "Teams" GetOrCreate {
 			member named "Maichael Johnson"
 			member named "Steven Kohn"
 			member named "Kay Jason"
-			workDefinition "osee.ats.teamWorkflow"
+			workDefinition "WorkDef_Team_Default"
 			version "SAW_Bld_1" {
 				staticId "saw.teamDefHoldingVersions"
 				released True
@@ -138,14 +138,14 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "saw.code"
 					lead named "Joe Smith"
 					member named "Joe Smith"
-					workDefinition "demo.code"
+					workDefinition "WorkDef_Team_Demo_Code"
 				}
 
 				teamDefinition "SAW HW" {
 					usesVersions True
 					lead named "Jason Michael"
 					member named "Jason Michael"
-					workDefinition "osee.ats.teamWorkflow"
+					workDefinition "WorkDef_Team_Default"
 				}
 
 				teamDefinition "SAW Requirements" {
@@ -153,7 +153,7 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "saw.requirements"
 					lead named "Joe Smith"
 					member named "Joe Smith"
-					workDefinition "demo.req"
+					workDefinition "WorkDef_Team_Demo_Req"
 				}
 
 				teamDefinition "SAW SW Design" {
@@ -161,7 +161,7 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "saw.sw_design"
 					lead named "Kay Jones"
 					member named "Kay Jones"
-					workDefinition "demo.swdesign"
+					workDefinition "WorkDef_Team_Demo_SwDesign"
 				}
 
 				teamDefinition "SAW Test" {
@@ -169,7 +169,7 @@ teamDefinition "Teams" GetOrCreate {
 					staticId "saw.test"
 					lead named "Kay Jones"
 					member named "Kay Jones" priviledged named "Joe Smith"
-					workDefinition "demo.test"
+					workDefinition "WorkDef_Team_Demo_Test"
 				}
 			}
 		}
@@ -178,7 +178,7 @@ teamDefinition "Teams" GetOrCreate {
 			lead named "Jeffery Kay"
 			member named "Jeffery Kay"
 			member named "Roland Stevens"
-			workDefinition "osee.ats.teamWorkflow"
+			workDefinition "WorkDef_Team_Default"
 			children {
 
 				teamDefinition "Web Team" {
@@ -186,7 +186,7 @@ teamDefinition "Teams" GetOrCreate {
 					member named "Jeffery Kay"
 					member named "Karmen John"
 					member named "Roland Stevens"
-					workDefinition "osee.ats.simpleTeamWorkflow"
+					workDefinition "WorkDef_Team_Simple"
 				}
 			}
 		}

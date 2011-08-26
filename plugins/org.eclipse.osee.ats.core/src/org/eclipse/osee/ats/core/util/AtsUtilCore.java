@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -48,8 +47,6 @@ public class AtsUtilCore {
       AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
    private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow);
-   private static ArtifactTypeEventFilter workItemArtifactTypesFilter = new ArtifactTypeEventFilter(
-      CoreArtifactTypes.WorkItemDefinition);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
    private static boolean emailEnabled = true;
 
@@ -167,10 +164,6 @@ public class AtsUtilCore {
 
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
       return reviewArtifactTypesFilter;
-   }
-
-   public static ArtifactTypeEventFilter getWorkItemArtifactTypeEventFilter() {
-      return workItemArtifactTypesFilter;
    }
 
 }

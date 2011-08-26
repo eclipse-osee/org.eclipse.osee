@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 

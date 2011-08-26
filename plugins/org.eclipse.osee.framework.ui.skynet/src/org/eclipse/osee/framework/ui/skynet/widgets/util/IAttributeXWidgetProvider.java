@@ -8,25 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package org.eclipse.osee.framework.ui.skynet.widgets.util;
+
+import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public class DefaultXWidgetOptionResolver implements IXWidgetOptionResolver {
+public interface IAttributeXWidgetProvider {
 
-   @Override
-   public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData) {
-      Matcher m = Pattern.compile("\\((.*?)\\)$").matcher(xWidgetData.getXWidgetName());
-
-      if (m.find()) {
-         String data = m.group(1);
-         return data.split(",");
-      }
-      return new String[] {};
-   }
-
+   /**
+    * Return widget layout data or empty list if this provider doesn't provide for this attribute type
+    */
+   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException;
 }

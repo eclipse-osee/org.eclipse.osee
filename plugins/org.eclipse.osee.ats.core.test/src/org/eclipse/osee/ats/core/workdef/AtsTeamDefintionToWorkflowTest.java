@@ -30,7 +30,8 @@ public class AtsTeamDefintionToWorkflowTest {
          AtsUtilCore.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
          if (teamDef.isActionable()) {
-            WorkDefinitionMatch match = teamDef.getWorkDefinition();
+            WorkDefinitionMatch match =
+               WorkDefinitionFactory.getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
             if (!match.isMatched()) {
                sb.append("[" + teamDef + "]");
             }
@@ -39,5 +40,4 @@ public class AtsTeamDefintionToWorkflowTest {
       }
       assertFalse(sb.toString(), error);
    }
-
 }

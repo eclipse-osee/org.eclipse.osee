@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -43,14 +42,6 @@ public class AtsAddDecisionReviewRule {
       TransitionToDecision
    }
 
-   public static void setDecisionParameterValue(WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter, String value) {
-      workRuleDefinition.addWorkDataKeyValue(decisionParameter.name(), value);
-   }
-
-   public static String getDecisionParameterValue(WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter) {
-      return workRuleDefinition.getWorkDataValue(decisionParameter.name());
-   }
-
    public static String getDecisionParameterValue(RuleDefinition ruleDefinition, DecisionParameter decisionParameter) {
       return ruleDefinition.getWorkDataValue(decisionParameter.name());
    }
@@ -61,35 +52,6 @@ public class AtsAddDecisionReviewRule {
          return null;
       }
       return ReviewBlockType.valueOf(value);
-   }
-
-   public static ReviewBlockType getReviewBlockTypeOrDefault(WorkRuleDefinition workRuleDefinition) {
-      String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.reviewBlockingType);
-      if (!Strings.isValid(value)) {
-         return null;
-      }
-      return ReviewBlockType.valueOf(value);
-   }
-
-   public static String getDecisionOptionString(WorkRuleDefinition workRuleDefinition) {
-      return getDecisionParameterValue(workRuleDefinition, DecisionParameter.options);
-      // TODO May need to return default if none specified?
-   }
-
-   public static StateEventType getStateEventType(WorkRuleDefinition workRuleDefinition) {
-      String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.forEvent);
-      if (!Strings.isValid(value)) {
-         return null;
-      }
-      return StateEventType.valueOf(value);
-   }
-
-   public static String getReviewTitle(WorkRuleDefinition workRuleDefinition) {
-      return getDecisionParameterValue(workRuleDefinition, DecisionParameter.title);
-   }
-
-   public static String getRelatedToState(WorkRuleDefinition workRuleDefinition) {
-      return getDecisionParameterValue(workRuleDefinition, DecisionParameter.forState);
    }
 
    public static StateEventType getStateEventType(RuleDefinition ruleDefinition) {
@@ -112,15 +74,4 @@ public class AtsAddDecisionReviewRule {
       return users;
    }
 
-   public static Collection<IBasicUser> getAssigneesOrDefault(WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
-      String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.assignees);
-      if (!Strings.isValid(value)) {
-         return Arrays.asList(new IBasicUser[] {UserManager.getUser()});
-      }
-      Collection<IBasicUser> users = UsersByIds.getUsers(value);
-      if (users.isEmpty()) {
-         users.add(UserManager.getUser());
-      }
-      return users;
-   }
 }

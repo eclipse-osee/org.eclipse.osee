@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.UserCommunity;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.UserCommunity;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

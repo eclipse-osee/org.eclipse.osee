@@ -38,12 +38,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetAccessDecorationProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.AttributeXWidgetManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IAttributeXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.AttributeXWidgetManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IAttributeXWidgetProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -191,7 +191,7 @@ public class AttributeFormPart extends AbstractFormPart {
                data.getXOptionHandler().add(XOption.NO_LABEL);
             }
          }
-         WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
+         XWidgetPage workPage = new XWidgetPage(concreteWidgets, new DefaultXWidgetOptionResolver());
 
          DynamicXWidgetLayout xWidgetLayout =
             workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);

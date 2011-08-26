@@ -66,11 +66,6 @@ public final class CoreArtifactTypes {
    public static final IArtifactType UniversalGroup = TokenFactory.createArtifactType("AAMFDhLY2TnADPA_EQQA", "Universal Group");
    public static final IArtifactType User = TokenFactory.createArtifactType("AAMFDhmr+Dqqe5pn3kAA", "User");
    public static final IArtifactType UserGroup = TokenFactory.createArtifactType("AAMFDhrEbXqZKPfWkwAA", "User Group");
-   public static final IArtifactType WorkFlowDefinition = TokenFactory.createArtifactType("AAMFDh16eQ1GIHPWlYQA", "Work Flow Definition");
-   public static final IArtifactType WorkItemDefinition = TokenFactory.createArtifactType("ABNM6pIn_x_3e6a3aIgA", "Work Item Definition");
-   public static final IArtifactType WorkPageDefinition = TokenFactory.createArtifactType("AAMFDhzuyizN4qu7tXgA", "Work Page Definition");
-   public static final IArtifactType WorkRuleDefinition = TokenFactory.createArtifactType("AAMFDhxjHC2RUV2RkcQA", "Work Rule Definition");
-   public static final IArtifactType WorkWidgetDefinition = TokenFactory.createArtifactType("AAMFDh4IVzqPgVTpLrwA", "Work Widget Definition");
    public static final IArtifactType XViewerGlobalCustomization = TokenFactory.createArtifactType("AAMFDhtN7T4of30iYhAA", "XViewer Global Customization");
    // @formatter:on
 

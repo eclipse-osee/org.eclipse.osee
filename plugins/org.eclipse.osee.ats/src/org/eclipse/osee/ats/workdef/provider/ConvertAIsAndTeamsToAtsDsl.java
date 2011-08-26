@@ -17,8 +17,6 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactoryLegacyMgr;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
@@ -131,10 +129,6 @@ public class ConvertAIsAndTeamsToAtsDsl {
       }
       for (User user : teamDef.getPrivilegedMembers()) {
          dslTeamDef.getPriviledged().add(getUserByName(user));
-      }
-      WorkDefinitionMatch match = WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromTeamDefinition(teamDef);
-      if (match.isMatched()) {
-         dslTeamDef.setWorkDefinition(match.getWorkDefinition().getName());
       }
       for (Artifact verArt : teamDef.getVersionsArtifacts()) {
          convertVersionArtifact(dslTeamDef, verArt, teamDef);

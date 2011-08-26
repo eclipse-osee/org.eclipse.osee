@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.workdef.WorkDefinitionFactoryLegacy;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -31,7 +30,6 @@ public class ClearAtsWorkDefinitionCache extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       WorkDefinitionFactory.clearCaches();
-      WorkDefinitionFactoryLegacy.clearCaches();
       AWorkbench.popup("Completed");
    }
 }

@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.config.copy.CopyAtsUtilTest;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidationTest;
 import org.eclipse.osee.ats.core.config.AtsCore_Config_Demo_PT_Suite;
 import org.eclipse.osee.ats.core.workdef.AtsCore_WorkDef_Demo_PT_Suite;
-import org.eclipse.osee.ats.workflow.AtsWorkItemDefinitionTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.junit.AfterClass;
@@ -30,7 +29,6 @@ import org.junit.runners.Suite;
    CopyAtsUtilTest.class,
    CopyAtsValidationTest.class,
    CopyAtsConfigurationOperationTest.class,
-   AtsWorkItemDefinitionTest.class,
    AtsCore_Config_Demo_PT_Suite.class,
    AtsCore_WorkDef_Demo_PT_Suite.class})
 /**

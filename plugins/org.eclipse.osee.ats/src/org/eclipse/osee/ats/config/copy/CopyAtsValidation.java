@@ -58,7 +58,6 @@ public class CopyAtsValidation {
       // Validate TeamDefs have Workflow Definitions
       Set<Artifact> teamDefs = new HashSet<Artifact>();
       teamDefs.addAll(TeamDefinitionManager.getTeamsFromItemAndChildren(configData.getTeamDef()));
-      ValidateAtsDatabase.testTeamDefinitionHasWorkflow(testNameToResultsMap, teamDefs);
 
       ValidateAtsDatabase.addResultsMapToResultData(resultData, testNameToResultsMap);
    }

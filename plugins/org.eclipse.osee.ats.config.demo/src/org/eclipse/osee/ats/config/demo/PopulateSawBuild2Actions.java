@@ -63,10 +63,18 @@ public class PopulateSawBuild2Actions {
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - PopulateSawBuild2Actions");
 
-      ActionArtifact committedAction = createCommittedAction(transaction);
-      ActionArtifact unCommittedAction = createUnCommittedAction(transaction);
-      createNoBranchAction(transaction);
-      ActionArtifact conflictedAction = createUnCommittedConflictedAction(transaction);
+      // SawBuild2Action1
+      ActionArtifact committedAction = sawBuild2Action1_createCommittedAction(transaction);
+
+      // SawBuild2Action2
+      ActionArtifact unCommittedAction = sawBuild2Action2_createUnCommittedAction(transaction);
+
+      // SawBuild2Action3
+      sawBuild2Action3_createNoBranchAction(transaction);
+
+      // SawBuild2Action4
+      ActionArtifact conflictedAction = sawBuild2Action4_createUnCommittedConflictedAction(transaction);
+
       transaction.execute();
 
       // Sleep to wait for the persist of the actions
@@ -83,7 +91,7 @@ public class PopulateSawBuild2Actions {
 
    }
 
-   private static ActionArtifact createUnCommittedConflictedAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action4_createUnCommittedConflictedAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
       Collection<ActionableItemArtifact> aias =
          DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
@@ -121,7 +129,7 @@ public class PopulateSawBuild2Actions {
       return actionArt;
    }
 
-   private static ActionArtifact createNoBranchAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action3_createNoBranchAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (no-branch) Even More Requirement Changes for Diagram View";
       Collection<ActionableItemArtifact> aias =
          DemoDbUtil.getActionableItems(new String[] {
@@ -149,6 +157,10 @@ public class PopulateSawBuild2Actions {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
                   toState.getPageName(), result.getText());
             }
+            if (ReviewManager.getReviews(teamWf).size() != 1) {
+               throw new OseeCoreException(
+                  "Error, 1 review should have been created instead of " + ReviewManager.getReviews(teamWf).size());
+            }
             // set reviews to non-blocking
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamWf)) {
                reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
@@ -160,6 +172,11 @@ public class PopulateSawBuild2Actions {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
                   teamWf.toStringWithId(), toState.getPageName(), result.getText());
             }
+            if (ReviewManager.getReviews(teamWf).size() != 2) {
+               throw new OseeCoreException("Error, 2 reviews should exist instead of " + ReviewManager.getReviews(
+                  teamWf).size());
+            }
+
             // set reviews to non-blocking
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamWf)) {
                reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
@@ -186,7 +203,7 @@ public class PopulateSawBuild2Actions {
       return actionArt;
    }
 
-   private static ActionArtifact createUnCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action2_createUnCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (uncommitted) More Reqt Changes for Diagram View";
       Collection<ActionableItemArtifact> aias =
          DemoDbUtil.getActionableItems(new String[] {
@@ -215,6 +232,10 @@ public class PopulateSawBuild2Actions {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
                   toState.getPageName(), result.getText());
             }
+            if (ReviewManager.getReviews(teamWf).size() != 1) {
+               throw new OseeCoreException(
+                  "Error, 1 review should have been created instead of " + ReviewManager.getReviews(teamWf).size());
+            }
             // set reviews to non-blocking
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamWf)) {
                reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
@@ -226,6 +247,11 @@ public class PopulateSawBuild2Actions {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
                   teamWf.toStringWithId(), toState.getPageName(), result.getText());
             }
+            if (ReviewManager.getReviews(teamWf).size() != 2) {
+               throw new OseeCoreException("Error, 2 reviews should exist instead of " + ReviewManager.getReviews(
+                  teamWf).size());
+            }
+
             // set reviews to non-blocking
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamWf)) {
                reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
@@ -254,7 +280,7 @@ public class PopulateSawBuild2Actions {
       return actionArt;
    }
 
-   private static ActionArtifact createCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action1_createCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
       String title = "SAW (committed) Reqt Changes for Diagram View";
       Collection<ActionableItemArtifact> aias =
          DemoDbUtil.getActionableItems(new String[] {
@@ -269,6 +295,24 @@ public class PopulateSawBuild2Actions {
          ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
             null, aias, createdDate, createdBy, null, transaction);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
+
+         if (teamWf.getTeamDefinition().getName().contains("Req") && !teamWf.getWorkDefinition().getName().equals(
+            "WorkDef_Team_Demo_Req")) {
+            throw new OseeCoreException("Req workflow expected work def [WorkDef_Team_Demo_Req] actual [%s]",
+               teamWf.getWorkDefinition().getName());
+         } else if (teamWf.getTeamDefinition().getName().contains("Code") && !teamWf.getWorkDefinition().getName().equals(
+            "WorkDef_Team_Demo_Code")) {
+            throw new OseeCoreException("Code workflow expected work def [WorkDef_Team_Demo_Code] actual [%s]",
+               teamWf.getWorkDefinition().getName());
+         } else if (teamWf.getTeamDefinition().getName().contains("Test") && !teamWf.getWorkDefinition().getName().equals(
+            "WorkDef_Team_Demo_Test")) {
+            throw new OseeCoreException("Test workflow expected work def [WorkDef_Team_Demo_Test] actual [%s]",
+               teamWf.getWorkDefinition().getName());
+         } else if (teamWf.getTeamDefinition().getName().contains("Design") && !teamWf.getWorkDefinition().getName().equals(
+            "WorkDef_Team_Demo_SwDesign")) {
+            throw new OseeCoreException("SwDesign workflow expected work def [WorkDef_Team_Demo_SwDesign] actual [%s]",
+               teamWf.getWorkDefinition().getName());
+         }
 
          TeamWorkFlowManager dtwm =
             new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,

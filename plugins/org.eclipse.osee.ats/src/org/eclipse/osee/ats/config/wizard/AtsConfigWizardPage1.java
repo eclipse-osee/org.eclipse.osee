@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class AtsConfigWizardPage1 extends WizardPage {
-   private WorkPage page;
+   private XWidgetPage page;
 
    public AtsConfigWizardPage1() {
       super("Create New ATS Configuration", "Create ATS Configuration", null);
@@ -107,7 +107,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new WorkPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
+         page = new XWidgetPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
 
          Button populateExampleButton = new Button(comp, SWT.PUSH);

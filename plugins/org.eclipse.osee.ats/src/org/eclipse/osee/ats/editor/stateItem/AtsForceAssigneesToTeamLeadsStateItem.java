@@ -12,10 +12,11 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.IWorkPage;
@@ -37,13 +38,17 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implemen
 
    @Override
    public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<? extends IBasicUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      if (sma.isTeamWorkflow() && AtsWorkDefinitions.isForceAssigneesToTeamLeads(sma.getStateDefinitionByName(toState.getPageName()))) {
+      if (sma.isTeamWorkflow() && isForceAssigneesToTeamLeads(sma.getStateDefinitionByName(toState.getPageName()))) {
          Collection<IBasicUser> teamLeads = ((TeamWorkFlowArtifact) sma).getTeamDefinition().getLeads();
          if (!teamLeads.isEmpty()) {
             sma.getStateMgr().setAssignees(teamLeads);
             sma.persist(transaction);
          }
       }
+   }
+
+   private boolean isForceAssigneesToTeamLeads(StateDefinition stateDefinition) {
+      return stateDefinition.hasRule(RuleDefinitionOption.ForceAssigneesToTeamLeads);
    }
 
    @Override

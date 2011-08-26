@@ -83,7 +83,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -151,7 +150,6 @@ public class PopulateDemoActions extends XNavigateItemAction {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Populate Demo Database");
 
          AtsBulkLoad.reloadConfig(true);
-         WorkItemDefinitionFactory.loadDefinitions(true);
 
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
@@ -366,8 +364,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void importRequirements(IOseeBranch branch, String rootArtifactName, IArtifactType requirementType, String filename) throws Exception {
 
       if (DEBUG) {
-         OseeLog.logf(OseeAtsConfigDemoActivator.class, Level.INFO,
-            "Importing \"%s\" requirements on branch \"%s\"", rootArtifactName, branch);
+         OseeLog.logf(OseeAtsConfigDemoActivator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
+            rootArtifactName, branch);
       }
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, rootArtifactName, branch);
 

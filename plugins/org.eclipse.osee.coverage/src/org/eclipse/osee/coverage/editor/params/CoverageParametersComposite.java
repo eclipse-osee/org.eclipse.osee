@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -44,7 +44,7 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class CoverageParametersComposite extends Composite {
 
-   private WorkPage page;
+   private XWidgetPage page;
    private final CoverageParameters coverageParameters;
 
    public CoverageParametersComposite(Composite mainComp, IManagedForm managedForm, CoverageEditor coverageEditor, final CoverageParameters coverageParameters, final SelectionListener selectionListener) {
@@ -99,7 +99,7 @@ public class CoverageParametersComposite extends Composite {
       coverageEditor.getToolkit().adapt(paramComp);
 
       try {
-         page = new WorkPage(getWidgetXml(), new DefaultXWidgetOptionResolver());
+         page = new XWidgetPage(getWidgetXml(), new DefaultXWidgetOptionResolver());
          page.createBody(managedForm, paramComp, null, null, true);
 
          if (getAssigeeCombo() != null) {

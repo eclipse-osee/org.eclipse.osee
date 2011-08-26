@@ -65,9 +65,6 @@ public class WorkDefinitionFactory {
    public static WorkDefinitionMatch getWorkDefinition(Artifact artifact) throws OseeCoreException {
       if (!awaHridToWorkDefinitions.containsKey(artifact.getHumanReadableId())) {
          WorkDefinitionMatch match = getWorkDefinitionNew(artifact);
-         if (!match.isMatched()) {
-            match = WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromArtifact(artifact);
-         }
          awaHridToWorkDefinitions.put(artifact.getHumanReadableId(), match);
       }
       return awaHridToWorkDefinitions.get(artifact.getHumanReadableId());
@@ -76,28 +73,19 @@ public class WorkDefinitionFactory {
    public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
       if (!workDefIdToWorkDefintion.containsKey(id)) {
          WorkDefinitionMatch match = new WorkDefinitionMatch();
-         String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
          // Try to get from new DSL provider if configured to use it
          if (!match.isMatched()) {
-            WorkDefinition workDef = AtsWorkDefinitionProviderCore.get().getWorkFlowDefinition(translatedId);
+            WorkDefinition workDef = AtsWorkDefinitionProviderCore.get().getWorkFlowDefinition(id);
             if (workDef != null) {
                match.setWorkDefinition(workDef);
-               match.addTrace((String.format("from DSL provider loaded id [%s] and override translated Id [%s]", id,
-                  translatedId)));
+               match.addTrace((String.format("from DSL provider loaded id [%s]", id)));
             }
-         }
-         // Otherwise, just translate legacy WorkFlowDefinition from artifact
-         if (!match.isMatched()) {
-            match = WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromId(id);
-         }
-         // If still no match, configuration may have new workdef id but not set to use them
-         // Attempt to get back to original id and load through WorkFlowDefinition translate
-         if (!match.isMatched()) {
-            match = WorkDefinitionFactoryLegacyMgr.getWorkFlowDefinitionFromReverseId(id);
          }
          if (match.isMatched()) {
             OseeLog.logf(Activator.class, Level.INFO, "Loaded Work Definition [%s]", match);
             workDefIdToWorkDefintion.put(id, match);
+         } else {
+            OseeLog.logf(Activator.class, Level.SEVERE, "Unable to load Work Definition [%s]", id);
          }
       }
       WorkDefinitionMatch match = workDefIdToWorkDefintion.get(id);
@@ -111,11 +99,9 @@ public class WorkDefinitionFactory {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, null);
       if (Strings.isValid(workFlowDefId)) {
-         String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId);
-         WorkDefinitionMatch match = getWorkDefinition(translatedId);
+         WorkDefinitionMatch match = getWorkDefinition(workFlowDefId);
          if (match.isMatched()) {
-            match.addTrace(String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact,
-               workFlowDefId, translatedId));
+            match.addTrace(String.format("from artifact [%s] for id [%s]", artifact, workFlowDefId));
             return match;
          }
       }
@@ -126,11 +112,9 @@ public class WorkDefinitionFactory {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition, null);
       if (Strings.isValid(workFlowDefId)) {
-         String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId);
-         WorkDefinitionMatch match = getWorkDefinition(translatedId);
+         WorkDefinitionMatch match = getWorkDefinition(workFlowDefId);
          if (match.isMatched()) {
-            match.addTrace(String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact,
-               workFlowDefId, translatedId));
+            match.addTrace(String.format("from artifact [%s] for id [%s]", artifact, workFlowDefId));
             return match;
          }
       }
@@ -158,10 +142,9 @@ public class WorkDefinitionFactory {
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
          if (Strings.isValid(workFlowDefId)) {
-            String translatedId = getOverrideWorkDefId(workFlowDefId);
-            match = WorkDefinitionFactory.getWorkDefinition(translatedId);
-            match.addTrace((String.format("from provider [%s] for id [%s] and override translated Id [%s]",
-               provider.getClass().getSimpleName(), workFlowDefId, translatedId)));
+            match = WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
+            match.addTrace((String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(),
+               workFlowDefId)));
             break;
          }
       }
@@ -199,8 +182,7 @@ public class WorkDefinitionFactory {
          for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(aba);
             if (Strings.isValid(workFlowDefId)) {
-               match =
-                  WorkDefinitionFactory.getWorkDefinition(WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId));
+               match = WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
             }
          }
          if (!match.isMatched()) {
@@ -212,9 +194,6 @@ public class WorkDefinitionFactory {
                if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) artifact).getTeamDefinition();
                   match = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
-                  if (!match.isMatched()) {
-                     match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
-                  }
                } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                   match = getWorkDefinition(GoalWorkflowDefinitionId);
                   match.addTrace("WorkDefinitionFactory - GoalWorkflowDefinitionId");
@@ -232,20 +211,6 @@ public class WorkDefinitionFactory {
    }
 
    public static Set<String> errorDisplayed = new HashSet<String>();
-
-   public static String getOverrideWorkDefId(String id) {
-      // Don't override if no providers available (dsl plugins not released)
-      String overrideId = WorkDefinitionFactoryLegacyMgr.getOverrideId(id);
-      if (Strings.isValid(overrideId)) {
-         // Only display this override once in log
-         if (!errorDisplayed.contains(overrideId)) {
-            OseeLog.logf(Activator.class, Level.INFO, "Override WorkDefinition [%s] with [%s]", id, overrideId);
-            errorDisplayed.add(overrideId);
-         }
-         return overrideId;
-      }
-      return id;
-   }
 
    public static Set<WorkDefinition> loadAllDefinitions() throws OseeCoreException {
       Set<WorkDefinition> workDefs = new HashSet<WorkDefinition>();

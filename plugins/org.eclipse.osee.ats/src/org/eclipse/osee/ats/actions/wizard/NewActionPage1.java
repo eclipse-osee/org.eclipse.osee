@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFiltere
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -66,7 +66,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
  */
 public class NewActionPage1 extends WizardPage {
    private final NewActionWizard wizard;
-   private WorkPage page;
+   private XWidgetPage page;
    protected OSEECheckedFilteredTree treeViewer;
    private static PatternFilter patternFilter = new PatternFilter();
    private Text descriptionLabel;
@@ -96,7 +96,7 @@ public class NewActionPage1 extends WizardPage {
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new WorkPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
+         page = new XWidgetPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
 
          ((XText) getXWidget("Title")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {

@@ -107,7 +107,7 @@ public class ArtifactQueryPerformanceTests {
    public void testGetArtifactsByArtType() throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       List<Artifact> result =
-         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.WorkFlowDefinition, BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, BranchManager.getCommonBranch());
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByArtType took %dms for %d artifacts", elapsedTime,
          result.size()));
@@ -125,9 +125,8 @@ public class ArtifactQueryPerformanceTests {
    private void internalTestGetArtifactsByArtTypes(boolean allowDeleted, long expectedElapseTime) throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
       List<? extends IArtifactType> artTypes =
-         Arrays.asList(CoreArtifactTypes.GeneralDocument, CoreArtifactTypes.Folder,
-            CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.User, CoreArtifactTypes.WorkPageDefinition,
-            CoreArtifactTypes.WorkRuleDefinition);
+         Arrays.asList(CoreArtifactTypes.GeneralDocument, CoreArtifactTypes.Folder, CoreArtifactTypes.User,
+            CoreArtifactTypes.GeneralData, CoreArtifactTypes.Heading);
 
       long startTime = System.currentTimeMillis();
       List<Artifact> result = ArtifactQuery.getArtifactListFromTypes(artTypes, common, EXCLUDE_DELETED);

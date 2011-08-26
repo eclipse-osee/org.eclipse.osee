@@ -74,7 +74,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.swt.program.Program;

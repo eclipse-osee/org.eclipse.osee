@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionHelper;
@@ -38,7 +39,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -340,7 +340,7 @@ public class WETransitionComposite extends Composite {
    }
 
    private boolean isRequireStateHoursSpentPrompt(StateDefinition stateDefinition) {
-      return AtsWorkDefinitions.isRequireStateHoursSpentPrompt(stateDefinition);
+      return stateDefinition.hasRule(RuleDefinitionOption.RequireStateHourSpentPrompt);
    }
 
    public void updateTransitionToAssignees() throws OseeCoreException {

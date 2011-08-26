@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.IWorkPage;
@@ -55,10 +54,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -452,26 +451,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       }
       addLayoutData(data);
       return data;
-   }
-
-   public boolean isValidatePage() {
-      return AtsWorkDefinitions.isValidatePage(stateDefinition);
-   }
-
-   public boolean isValidateReviewBlocking() {
-      return AtsWorkDefinitions.isValidateReviewBlocking(stateDefinition);
-   }
-
-   public boolean isForceAssigneesToTeamLeads() {
-      return AtsWorkDefinitions.isForceAssigneesToTeamLeads(stateDefinition);
-   }
-
-   public boolean isAllowCreateBranch() {
-      return AtsWorkDefinitions.isAllowCreateBranch(stateDefinition);
-   }
-
-   public boolean isAllowCommitBranch() {
-      return AtsWorkDefinitions.isAllowCommitBranch(stateDefinition);
    }
 
 }

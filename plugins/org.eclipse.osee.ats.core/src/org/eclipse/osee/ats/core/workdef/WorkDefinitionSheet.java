@@ -16,13 +16,11 @@ public class WorkDefinitionSheet {
 
    public File file;
    public String name;
-   public String legacyOverrideId;
 
-   public WorkDefinitionSheet(String name, String legacyOverrideId, File file) {
+   public WorkDefinitionSheet(String name, File file) {
       super();
       this.file = file;
       this.name = name;
-      this.legacyOverrideId = legacyOverrideId;
    }
 
    public File getFile() {
@@ -33,12 +31,8 @@ public class WorkDefinitionSheet {
       return name;
    }
 
-   public String getLegacyOverrideId() {
-      return legacyOverrideId;
-   }
-
    @Override
    public String toString() {
-      return String.format("%s filename[%s] overrideId[%s]", name, file, legacyOverrideId);
+      return String.format("%s Filename[%s]", name, file);
    }
 }

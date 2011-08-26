@@ -51,15 +51,10 @@ public class CopyAtsConfigurationOperationTest {
       Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManager.getTeamDefinitionsNameStartsWith("CISv2%");
       Assert.assertEquals(5, teamDefs.size());
 
-      HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>();
-      Collection<Artifact> teamDefArts = Collections.castAll(teamDefs);
-      ValidateAtsDatabase.testTeamDefinitionHasWorkflow(testNameToResultsMap, teamDefArts);
-      Assert.assertEquals(0, testNameToResultsMap.size());
-
       Collection<ActionableItemArtifact> ais = ActionableItemManager.getActionableItemsNameStartsWith("CISv2%");
       Assert.assertEquals(5, ais.size());
 
-      testNameToResultsMap = new HashCollection<String, String>();
+      HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>();
       Collection<Artifact> aiaArts = Collections.castAll(ais);
       ValidateAtsDatabase.testActionableItemToTeamDefinition(testNameToResultsMap, aiaArts);
       Assert.assertEquals(0, testNameToResultsMap.size());

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -142,7 +141,6 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       if (data.isRetainTeamLeads()) {
          duplicateTeamLeadsAndMembers(fromTeamDef, newTeamDef);
       }
-      duplicateWorkItems(fromTeamDef, newTeamDef);
       // handle all children
       for (Artifact childFromTeamDef : fromTeamDef.getChildren()) {
          if (childFromTeamDef instanceof TeamDefinitionArtifact) {
@@ -150,17 +148,6 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          }
       }
       return newTeamDef;
-   }
-
-   private void duplicateWorkItems(TeamDefinitionArtifact fromTeamDef, TeamDefinitionArtifact newTeamDef) throws OseeCoreException {
-      Collection<Artifact> workItems = newTeamDef.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child);
-      for (Artifact workChild : fromTeamDef.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
-         if (!workItems.contains(workChild)) {
-            existingArtifacts.add(workChild);
-            newTeamDef.addRelation(CoreRelationTypes.WorkItem__Child, workChild);
-            resultData.log("   - Adding work child " + workChild);
-         }
-      }
    }
 
    private void duplicateTeamLeadsAndMembers(TeamDefinitionArtifact fromTeamDef, TeamDefinitionArtifact newTeamDef) throws OseeCoreException {
