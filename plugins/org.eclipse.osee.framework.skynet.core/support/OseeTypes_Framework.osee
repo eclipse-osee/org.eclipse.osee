@@ -1080,7 +1080,7 @@ relationType "Component-Requirement" {
 }
 
 relationType "Design" {
-   guid "AAMFE+XjcSaqnXfOXVQA"
+   guid "AAMFE1XjcSaqnXfOXVQA"
    sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "design"
