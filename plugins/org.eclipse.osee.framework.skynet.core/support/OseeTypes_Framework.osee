@@ -1482,3 +1482,16 @@ relationType "Results Data" {
    defaultOrderType Lexicographical_Ascending
    multiplicity MANY_TO_MANY
 }
+
+attributeType "Uri General String Data" extends StringAttribute {
+   guid "AFnIJbPBoQFQpTP2jfQA"
+   dataProvider UriAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+artifactType "Osee Type Definition" extends "Artifact"{
+      guid "AFGVEpSssxutyEAP0twA"
+      attribute "Active"
+      attribute "Uri General String Data"
+}

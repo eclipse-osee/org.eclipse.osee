@@ -80,6 +80,7 @@ public final class CoreAttributeTypes {
    public static final IAttributeType TisTestNumber = TokenFactory.createAttributeType("AAMFERjRSDDgyyBh+OAA", "TIS Test Number");
    public static final IAttributeType TisTestType = TokenFactory.createAttributeType("AAMFEVXVuFcy8wCED5AA", "TIS Test Type");
    public static final IAttributeType TrainingEffectivity = TokenFactory.createAttributeType("AAMFERFJAm0_WZ0WQaQA", "Training Effectivity");
+   public static final IAttributeType UriGeneralStringData = TokenFactory.createAttributeType("AFnIJbPBoQFQpTP2jfQA", "Uri General String Data");
    public static final IAttributeType UserId = TokenFactory.createAttributeType("AAMFEbKl8RCQr17bDAQA", "User Id");
    public static final IAttributeType UserSettings = TokenFactory.createAttributeType("AAMFEbOnewRpnYFgnHQA", "User Settings");
    public static final IAttributeType VerificationEvent = TokenFactory.createAttributeType("AAMFEXlt02WfQ0jcQtAA", "Verification Event");

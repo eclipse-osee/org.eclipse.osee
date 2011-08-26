@@ -35,6 +35,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType IndirectSoftwareRequirement = TokenFactory.createArtifactType("AAMFDiC7HRQMqr5S0QwA", "Indirect Software Requirement");
    public static final IArtifactType InterfaceRequirement = TokenFactory.createArtifactType("AAMFDjgcukv7xEsPf2QA", "Interface Requirement");
    public static final IArtifactType ImplementationDetails = TokenFactory.createArtifactType("AMyewS0I5ADnjgL63tQA", "Implementation Details");
+   public static final IArtifactType OseeTypeDefinition = TokenFactory.createArtifactType("AFGVEpSssxutyEAP0twA", "Osee Type Definition");
    public static final IArtifactType RendererTemplate = TokenFactory.createArtifactType("AAMFDhvZnHKgSeFKMXgA", "Renderer Template");
    public static final IArtifactType Requirement = TokenFactory.createArtifactType("ABM_vxEEowY+8i2_q9gA", "Requirement");
    public static final IArtifactType RootArtifact = TokenFactory.createArtifactType("AAMFDhHDqlbzKcIxcsAA", "Root Artifact");
