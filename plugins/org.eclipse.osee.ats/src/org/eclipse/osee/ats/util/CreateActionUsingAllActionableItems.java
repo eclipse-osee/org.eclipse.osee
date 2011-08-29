@@ -10,12 +10,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -42,22 +45,27 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
          return;
       }
       try {
-         Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
-         for (ActionableItemArtifact aia : ActionableItemManagerCore.getActionableItems(Active.Active)) {
-            if (aia.isActionable()) {
-               aias.add(aia);
-            }
-         }
-
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
-         ActionManager.createAction(null, "Big Action", "Description", ChangeType.Improvement, "1", false, null, aias,
-            new Date(), UserManager.getUser(), null, transaction);
-         transaction.execute();
-
+         ActionArtifact action = createActionWithAllAis();
          AWorkbench.popup("Completed", "Completed");
-
+         AtsUtil.openATSAction(action, AtsOpenOption.OpenAll);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   public static ActionArtifact createActionWithAllAis() throws OseeCoreException {
+      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      for (ActionableItemArtifact aia : ActionableItemManagerCore.getActionableItems(Active.Active)) {
+         if (aia.isActionable()) {
+            aias.add(aia);
+         }
+      }
+
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
+      ActionArtifact action =
+         ActionManager.createAction(null, "Big Action", "Description", ChangeType.Improvement, "1", false, null, aias,
+            new Date(), UserManager.getUser(), null, transaction);
+      transaction.execute();
+      return action;
    }
 }

@@ -44,6 +44,7 @@ import org.junit.runners.Suite;
    AtsNavigateItemsToWorldViewTest.class,
    ImportActionsViaSpreadsheetTest.class,
    AtsTest_Demo_Column_Suite.class,
+   AtsTest_Demo_Util_Suite.class,
    LogItemTest.class,
    AtsLogTest.class,
    NoteItemTest.class,
