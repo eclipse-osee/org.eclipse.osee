@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.xscript;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
@@ -81,6 +82,10 @@ public class XScriptTable extends XViewer {
          runs.add((ScriptTask) obj);
       }
       return runs;
+   }
+   
+   public boolean isRemoveItemsMenuOptionEnabled() {
+      return false;
    }
 
 }
