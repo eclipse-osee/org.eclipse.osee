@@ -20,13 +20,19 @@ import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class HttpUrlBuilderClient {
+
+   public static final String USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS =
+      CoreClientActivator.PLUGIN_ID + "osee.use.connected.server.url.for.perm.links";
+
    private static final String urlPrefixFormat = "http://%s:%s/";
    private static final HttpUrlBuilderClient instance = new HttpUrlBuilderClient();
 
@@ -57,18 +63,44 @@ public final class HttpUrlBuilderClient {
 
    public String getApplicationServerPrefix() throws OseeCoreException {
       String address = OseeApplicationServer.getOseeApplicationServer();
-      if (address.endsWith("/") != true) {
-         address += "/";
-      }
-      return address;
+      return normalize(address);
    }
 
    public String getArbitrationServerPrefix() {
       String address = OseeClientProperties.getOseeArbitrationServer();
-      if (address.endsWith("/") != true) {
-         address += "/";
+      return normalize(address);
+   }
+
+   public String getPermanentBaseUrl() throws OseeCoreException {
+      String address = OseeInfo.getValue("osee.permanent.base.url");
+      return normalize(address);
+   }
+
+   public String getSelectedPermanenrLinkUrl() throws OseeCoreException {
+      boolean isUseConnectedServerUrl =
+         CoreClientActivator.getInstance().getPluginPreferences().getBoolean(USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
+      String address = null;
+      if (isUseConnectedServerUrl) {
+         address = getApplicationServerPrefix();
+      } else {
+         try {
+            address = getPermanentBaseUrl();
+         } catch (Exception ex) {
+            OseeLog.log(CoreClientActivator.class, Level.WARNING, ex);
+         }
+         if (!Strings.isValid(address)) {
+            address = getApplicationServerPrefix();
+         }
       }
-      return address;
+      return normalize(address);
+   }
+
+   private static String normalize(String address) {
+      String toReturn = address;
+      if (Strings.isValid(toReturn) && !toReturn.endsWith("/")) {
+         toReturn += "/";
+      }
+      return toReturn;
    }
 
    public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
@@ -83,6 +115,15 @@ public final class HttpUrlBuilderClient {
    public String getOsgiArbitrationServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
       try {
          return HttpUrlBuilder.createURL(getArbitrationServerPrefix(), context, parameters);
+      } catch (UnsupportedEncodingException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
+      }
+   }
+
+   public String getPermanentLinkBaseUrl(String context, Map<String, String> parameters) throws OseeCoreException {
+      try {
+         return HttpUrlBuilder.createURL(getSelectedPermanenrLinkUrl(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
          OseeExceptions.wrapAndThrow(ex);
          return null; // unreachable since wrapAndThrow() always throws an exception

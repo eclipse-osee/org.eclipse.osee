@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,6 +47,8 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    public static String PAGE_ID = "org.eclipse.osee.framework.ui.skynet.OseePreferencePage";
    private HashMap<InetAddress, Button> networkButtons;
    private Button wordWrapChkBox;
+   private Button baseUrlCheckBox;
+   private Button connectedUrlCheckBox;
 
    private void createNetworkAdapterArea(Composite parent) {
       addDialogControls(parent);
@@ -52,30 +56,24 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    }
 
    private void addDialogControls(Composite parent) {
-      Group group = new Group(parent, SWT.NONE);
-      group.setLayout(new GridLayout(2, false));
-
-      GridData gd = new GridData();
-      gd.verticalAlignment = GridData.FILL;
-      gd.horizontalAlignment = GridData.FILL;
-      gd.grabExcessHorizontalSpace = true;
-      group.setLayoutData(gd);
-
-      wordWrapChkBox = new Button(group, SWT.CHECK);
-      wordWrapChkBox.setText("Use alternate hyperlink drag method");
-
-      // setup the default network selection
       Group networkAdapter = new Group(parent, SWT.NONE);
       networkAdapter.setLayout(new GridLayout());
+      networkAdapter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       networkAdapter.setText("Select a Default Network Adaptor");
 
-      gd = new GridData();
-      gd.verticalAlignment = GridData.FILL;
-      gd.horizontalAlignment = GridData.FILL;
-      gd.grabExcessHorizontalSpace = true;
-      networkAdapter.setLayoutData(gd);
-
       setupInetAddressButtons(networkAdapter);
+
+      Group linksGroup = new Group(parent, SWT.NONE);
+      linksGroup.setLayout(new GridLayout());
+      linksGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      linksGroup.setText("Select a Permanent Hyperlink Base Url");
+      setupUrlLinkButtons(linksGroup);
+
+      Group group = new Group(parent, SWT.NONE);
+      group.setLayout(new GridLayout());
+      group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      wordWrapChkBox = new Button(group, SWT.CHECK);
+      wordWrapChkBox.setText("Use alternate hyperlink drag method");
    }
 
    private void setupInetAddressButtons(Group group) {
@@ -118,6 +116,29 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       IPreferenceStore prefStore = Activator.getInstance().getPreferenceStore();
       wordWrapChkBox.setSelection(prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
          PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE));
+   }
+
+   private void setupUrlLinkButtons(Group group) {
+      HttpUrlBuilderClient builder = HttpUrlBuilderClient.getInstance();
+
+      baseUrlCheckBox = new Button(group, SWT.RADIO);
+      try {
+         baseUrlCheckBox.setText("Permanent Link: " + builder.getPermanentBaseUrl());
+      } catch (OseeCoreException ex) {
+         baseUrlCheckBox.setText("Permanent Link");
+      }
+
+      connectedUrlCheckBox = new Button(group, SWT.RADIO);
+      try {
+         connectedUrlCheckBox.setText("Temporary Server Link: " + builder.getApplicationServerPrefix());
+      } catch (OseeCoreException ex) {
+         connectedUrlCheckBox.setText("Temporary Server Link");
+      }
+
+      Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
+      boolean useConnected = prefStore.getBoolean(HttpUrlBuilderClient.USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
+      connectedUrlCheckBox.setSelection(useConnected);
+      baseUrlCheckBox.setSelection(!useConnected);
    }
 
    private void createBlankArea(Composite parent, int height, boolean allVertical) {
@@ -168,6 +189,9 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
             break;
          }
       }
+
+      prefStore.setValue(HttpUrlBuilderClient.USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS,
+         connectedUrlCheckBox.getSelection());
 
       Activator.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
          wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);

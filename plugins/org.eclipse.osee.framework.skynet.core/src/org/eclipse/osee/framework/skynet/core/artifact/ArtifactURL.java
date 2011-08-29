@@ -27,9 +27,9 @@ public class ArtifactURL {
    public static URL getExternalArtifactLink(final Artifact artifact) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("guid", artifact.getGuid());
-      parameters.put("branchId", String.valueOf(artifact.getBranch().getId()));
+      parameters.put("branchGuid", artifact.getBranch().getGuid());
       String urlString =
-         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
+         HttpUrlBuilderClient.getInstance().getPermanentLinkBaseUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
       URL url = null;
       try {
          url = new URL(urlString);
@@ -44,14 +44,14 @@ public class ArtifactURL {
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("context", "osee/loopback");
       parameters.put("guid", artifact.getGuid());
-      parameters.put("branchId", String.valueOf(artifact.getBranch().getId()));
+      parameters.put("branchGuid", artifact.getBranch().getGuid());
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
       if (artifact.isHistorical()) {
          parameters.put("transactionId", String.valueOf(artifact.getTransactionNumber()));
       }
       parameters.put("cmd", cmd);
       String urlString =
-         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT,
+         HttpUrlBuilderClient.getInstance().getPermanentLinkBaseUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT,
             parameters);
       URL url = null;
       try {
