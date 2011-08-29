@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
 import org.eclipse.osee.framework.core.operation.MutexSchedulingRule;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -53,8 +54,11 @@ public final class SearchTaggerCommandProvider implements CommandProvider {
          arg = ci.nextArgument();
       }
 
+      AttributeTypeCache attTypeCache = Activator.getOseeCachingService().getAttributeTypeCache();
+
       tagAllJob =
-         Operations.executeAsJob(new TaggerAllOperation(logger, branchIds, tagOnlyMissingGammas), false, tagMutex);
+         Operations.executeAsJob(new TaggerAllOperation(logger, attTypeCache, branchIds, tagOnlyMissingGammas), false,
+            tagMutex);
       return tagAllJob;
    }
 

@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -34,7 +36,7 @@ public final class TaggerAllOperation extends AbstractOperation {
    private static final int BATCH_SIZE = 1000;
 
    private static final String FIND_ALL_TAGGABLE_ATTRIBUTES =
-      "SELECT att.gamma_id FROM osee_attribute_type aty, osee_attribute att WHERE aty.tagger_id IS NOT NULL AND aty.attr_type_id = att.attr_type_id";
+      "SELECT att.gamma_id FROM osee_join_id oji, osee_attribute att WHERE oji.query_id = ? AND oji.id = att.attr_type_id";
 
    private static final String COUNT_ALL_TAGGABLE_ATTRIBUTES = FIND_ALL_TAGGABLE_ATTRIBUTES.replace("att.gamma_id",
       "count(1)");
@@ -45,7 +47,7 @@ public final class TaggerAllOperation extends AbstractOperation {
    private static final String COUNT_MISSING = FIND_MISSING.replaceFirst("att.gamma_id", "count(1)");
 
    private static final String FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH =
-      "SELECT DISTINCT att.gamma_id FROM osee_join_id jid, osee_txs txs, osee_attribute_type type, osee_attribute att WHERE jid.query_id = ? AND jid.id = txs.branch_id AND txs.gamma_id = att.gamma_id AND att.attr_type_id = type.attr_type_id AND type.tagger_id IS NOT NULL";
+      "SELECT DISTINCT att.gamma_id FROM osee_join_id jid1, osee_join_id jid2, osee_txs txs, osee_attribute att WHERE jid1.query_id = ? AND jid1.id = txs.branch_id AND txs.gamma_id = att.gamma_id AND att.attr_type_id = jid2.id and jid2.query_id = ?";
 
    private static final String COUNT_TAGGABLE_ATTRIBUTES_BY_BRANCH = FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH.replace(
       "DISTINCT att.gamma_id", "count(DISTINCT att.gamma_id)");
@@ -58,24 +60,27 @@ public final class TaggerAllOperation extends AbstractOperation {
 
    private final Set<Integer> branchIds;
    private final boolean tagOnlyMissingGammas;
+   private final AttributeTypeCache attTypeCache;
    private TagProcessListener processor;
 
-   public TaggerAllOperation(OperationLogger logger, Set<Integer> branchIds, boolean tagOnlyMissingGammas) {
+   public TaggerAllOperation(OperationLogger logger, AttributeTypeCache attTypeCache, Set<Integer> branchIds, boolean tagOnlyMissingGammas) {
       super("Tag Attributes", Activator.PLUGIN_ID, logger);
       this.branchIds = branchIds;
       this.tagOnlyMissingGammas = tagOnlyMissingGammas;
+      this.attTypeCache = attTypeCache;
    }
 
    private TagProcessListener process(long startTime, Collection<Integer> branchIds, boolean tagOnlyMissingGammas) throws OseeCoreException {
       logTaggingStart();
 
-      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
+      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
+      IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery();
       Object[] params;
       String countQuery;
       String searchQuery;
 
       if (branchIds.isEmpty()) {
-         params = new Object[0];
+         params = new Object[] {typeJoin.getQueryId()};
          if (tagOnlyMissingGammas) {
             countQuery = COUNT_MISSING;
             searchQuery = FIND_MISSING;
@@ -85,10 +90,10 @@ public final class TaggerAllOperation extends AbstractOperation {
          }
       } else {
          for (Integer id : branchIds) {
-            idJoin.add(id);
+            branchJoin.add(id);
          }
-         idJoin.store();
-         params = new Object[] {idJoin.getQueryId()};
+         branchJoin.store();
+         params = new Object[] {branchJoin.getQueryId(), typeJoin.getQueryId()};
          if (tagOnlyMissingGammas) {
             countQuery = COUNT_MISSING_BY_BRANCH;
             searchQuery = FIND_MISSING_BY_BRANCH;
@@ -98,12 +103,14 @@ public final class TaggerAllOperation extends AbstractOperation {
          }
       }
 
+      populateAttributeTypeJoin(typeJoin);
+
       int totalAttributes = ConnectionHandler.runPreparedQueryFetchInt(-1, countQuery, params);
       TagProcessListener processor = new TagProcessListener(startTime, totalAttributes);
       try {
          fetchAndProcessGammas(processor, searchQuery, params);
       } finally {
-         idJoin.delete();
+         branchJoin.delete();
       }
       return processor;
    }
@@ -209,5 +216,14 @@ public final class TaggerAllOperation extends AbstractOperation {
       processor = process(startTime, branchIds, tagOnlyMissingGammas);
       processor.printStats();
       log("Tagging Complete");
+   }
+
+   private void populateAttributeTypeJoin(IdJoinQuery typeJoin) throws OseeCoreException {
+      for (AttributeType attributeType : attTypeCache.getAll()) {
+         if (attributeType.isTaggable()) {
+            typeJoin.add(attributeType.getId());
+         }
+      }
+      typeJoin.store();
    }
 }
