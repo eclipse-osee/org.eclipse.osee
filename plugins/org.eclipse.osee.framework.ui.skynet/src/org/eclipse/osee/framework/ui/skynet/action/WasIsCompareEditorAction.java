@@ -68,8 +68,8 @@ public class WasIsCompareEditorAction extends Action {
                return;
             }
             CompareHandler compareHandler =
-               new CompareHandler(new CompareItem("Was", was, System.currentTimeMillis()), new CompareItem("Is", is,
-                  System.currentTimeMillis()), null);
+               new CompareHandler(null, new CompareItem("Was", was, System.currentTimeMillis()), new CompareItem("Is", is,
+                     System.currentTimeMillis()), null);
             compareHandler.compare();
          }
       } catch (Exception ex) {

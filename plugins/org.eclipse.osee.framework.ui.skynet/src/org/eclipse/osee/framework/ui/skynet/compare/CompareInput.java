@@ -15,6 +15,7 @@ import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Jeff C. Phillips
@@ -25,9 +26,11 @@ public class CompareInput extends CompareEditorInput {
    private final CompareItem rightCompareItem;
    private final CompareItem parentCompareItem;
    private Object differences;
+   private final String title;
 
-   public CompareInput(CompareConfiguration compareConfiguration, CompareItem leftCompareItem, CompareItem rightCompareItem, CompareItem parentCompareItem) {
+   public CompareInput(String title, CompareConfiguration compareConfiguration, CompareItem leftCompareItem, CompareItem rightCompareItem, CompareItem parentCompareItem) {
       super(compareConfiguration);
+      this.title = title;
 
       this.leftCompareItem = leftCompareItem;
       this.rightCompareItem = rightCompareItem;
@@ -58,7 +61,11 @@ public class CompareInput extends CompareEditorInput {
 
       configuration.setRightLabel(nameRight);
       configuration.setRightImage(rightCompareItem.getImage());
-      setTitle("Compare (" + nameLeft + " - " + nameRight + ")");
+      if (Strings.isValid(title)) {
+         setTitle(title);
+      } else {
+         setTitle("Compare (" + nameLeft + " - " + nameRight + ")");
+      }
    }
 
    @Override

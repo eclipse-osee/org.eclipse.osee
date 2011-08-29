@@ -169,6 +169,4 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       to "Review" OverrideAttributeValidation
       to "Meeting" OverrideAttributeValidation
    }
-
-   
 }

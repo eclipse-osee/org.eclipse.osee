@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsItem;
 import org.eclipse.osee.ats.workdef.config.ImportWorkDefinitionsItem;
+import org.eclipse.osee.ats.workdef.config.ValidateWorkspaceToDatabaseWorkDefinitions;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
@@ -214,6 +215,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new ValidateAtsDatabase(healthItems);
          new ValidateChangeReports(healthItems);
          new ValidateChangeReportByHrid(healthItems);
+         new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
 
          // new ActionNavigateItem(adminItems, new XViewerViewAction());
          // new ActionNavigateItem(adminItems, new OpenEditorAction());

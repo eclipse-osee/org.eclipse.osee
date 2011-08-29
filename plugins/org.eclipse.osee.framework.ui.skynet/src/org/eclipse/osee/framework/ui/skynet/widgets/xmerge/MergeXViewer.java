@@ -223,7 +223,7 @@ public class MergeXViewer extends XViewer {
             attributeConflict.getDestDisplayData(), false,
             ArtifactImageManager.getImage(attributeConflict.getArtifact()));
 
-      return new CompareHandler(leftContributionItem, rightContributionItem, null);
+      return new CompareHandler(null, leftContributionItem, rightContributionItem, null);
    }
 
    private static void nativeContentAlert(Shell shell) {
