@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -27,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -145,7 +148,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public void updateParentTransactionId(int[] branchesStored) throws OseeCoreException {
+   public void updateBaselineAndParentTransactionId(int[] branchesStored) throws OseeCoreException {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<Object[]>();
       for (BranchData branchData : branches) {
@@ -154,10 +157,25 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          if (parentTransactionId == 0) {
             parentTransactionId = 1;
          }
-         data.add(new Object[] {parentTransactionId, branchId});
+
+         int baselineTransactionId = translateId(ExchangeDb.TRANSACTION_ID, branchData.getBaselineTransactionId());
+         if (baselineTransactionId == 0) {
+            baselineTransactionId = 1;
+         }
+         data.add(new Object[] {parentTransactionId, baselineTransactionId, branchId});
       }
-      String query = "update osee_branch set parent_transaction_id = ? where branch_id = ?";
-      getDatabaseService().runBatchUpdate(query, data);
+      if (!data.isEmpty()) {
+         String query =
+            "update osee_branch set parent_transaction_id = ?, baseline_transaction_id = ? where branch_id = ?";
+         int updateCount = getDatabaseService().runBatchUpdate(query, data);
+         OseeLog.logf(this.getClass(), Level.INFO,
+            "Updated [%s] baseline and parent transaction id info on branches [%s]", updateCount,
+            Arrays.toString(branchesStored));
+      } else {
+         OseeLog.logf(this.getClass(), Level.INFO,
+            "No branches found to update baseline and parent txs: branches - [%s] - skipping",
+            Arrays.toString(branchesStored));
+      }
    }
 
    private int translateId(String id, int originalValue) throws OseeCoreException {

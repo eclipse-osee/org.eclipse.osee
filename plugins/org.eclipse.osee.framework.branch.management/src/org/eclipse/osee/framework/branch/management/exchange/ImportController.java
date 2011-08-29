@@ -153,10 +153,11 @@ public final class ImportController {
          ImportBranchesTx importBranchesTx = new ImportBranchesTx();
          importBranchesTx.execute();
 
-         currentSavePoint = "init.relational.objects";
+         currentSavePoint = "init_relational_objects";
+         addSavePoint(currentSavePoint);
          processImportFiles(manifestHandler.getImportFiles());
 
-         importBranchesTx.updateBranchParentTransactionId();
+         importBranchesTx.updateBaselineAndParentTransactionId();
 
          exchangeTransformer.applyFinalTransforms(logger);
 
@@ -220,8 +221,7 @@ public final class ImportController {
             handler.reset();
             addSavePoint(currentSavePoint);
          } else {
-            OseeLog.logf(Activator.class, Level.INFO,
-               "Save point found for: [%s] - skipping", item.getSource());
+            OseeLog.logf(Activator.class, Level.INFO, "Save point found for: [%s] - skipping", item.getSource());
          }
       }
    }
@@ -280,15 +280,13 @@ public final class ImportController {
          branchesStored = new int[0];
       }
 
-      public void updateBranchParentTransactionId() throws OseeCoreException {
-         currentSavePoint = "update branch parent transaction id";
+      public void updateBaselineAndParentTransactionId() throws OseeCoreException {
+         currentSavePoint = "update_branch_baseline_parent_tx_ids";
          if (!doesSavePointExist(currentSavePoint)) {
-            if (branchesStored.length > 0) {
-               branchHandler.updateParentTransactionId(branchesStored);
-            }
+            branchHandler.updateBaselineAndParentTransactionId(branchesStored);
+            addSavePoint(currentSavePoint);
          } else {
-            OseeLog.logf(this.getClass(), Level.INFO,
-               "Save point found for: [%s] - skipping", currentSavePoint);
+            OseeLog.logf(this.getClass(), Level.INFO, "Save point found for: [%s] - skipping", currentSavePoint);
          }
       }
 
@@ -303,8 +301,7 @@ public final class ImportController {
             addSavePoint(currentSavePoint);
          } else {
             // This step has already been performed - only get branches needed for remaining operations
-            OseeLog.logf(this.getClass(), Level.INFO,
-               "Save point found for: [%s] - skipping", currentSavePoint);
+            OseeLog.logf(this.getClass(), Level.INFO, "Save point found for: [%s] - skipping", currentSavePoint);
             branchesStored = branchHandler.store(false, branchesToImport);
          }
       }
