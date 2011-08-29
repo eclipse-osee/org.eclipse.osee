@@ -118,6 +118,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.workflow.tab";
    private final SMAEditor editor;
+   private WEUndefinedStateSection undefinedStateSection;
 
    public SMAWorkFlowTab(SMAEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, "Workflow");
@@ -262,6 +263,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       createHeaderSection(WorkflowManager.getCurrentAtsWorkPage(awa));
       createGoalSection();
       createPageSections();
+      createUndefinedStatesSection();
       createHistorySection();
       createRelationsSection();
       createOperationsSection();
@@ -302,6 +304,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          smaRelationsSection = new SMARelationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaRelationsSection);
 
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void createUndefinedStatesSection() {
+      try {
+         if (WEUndefinedStateSection.hasUndefinedStates(editor.getAwa())) {
+            undefinedStateSection = new WEUndefinedStateSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
+            managedForm.addPart(undefinedStateSection);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -519,6 +532,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       if (smaDetailsSection != null) {
          smaDetailsSection.dispose();
+      }
+      if (undefinedStateSection != null) {
+         undefinedStateSection.dispose();
       }
       if (smaHistorySection != null) {
          smaHistorySection.dispose();

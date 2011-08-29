@@ -203,6 +203,18 @@ public class StateManager {
       return Artifacts.toString("; ", sma.getStateMgr().getAssignees());
    }
 
+   public String getAssigneesStr(IWorkPage state, int length) throws OseeCoreException {
+      String str = getAssigneesStr(state);
+      if (str.length() > length) {
+         return str.substring(0, length - 1) + "...";
+      }
+      return str;
+   }
+
+   public String getAssigneesStr(IWorkPage state) throws OseeCoreException {
+      return Artifacts.toString("; ", sma.getStateMgr().getAssignees(state));
+   }
+
    public String getAssigneesStr(int length) throws OseeCoreException {
       String str = getAssigneesStr();
       if (str.length() > length) {
@@ -538,4 +550,5 @@ public class StateManager {
       }
       return "";
    }
+
 }
