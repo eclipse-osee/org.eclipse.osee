@@ -73,7 +73,7 @@ public class XTextUrlListener implements ModifyListener {
       int loc = 0;
       while (st.hasMoreTokens()) {
          String string = st.nextToken();
-         if (string.matches("\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]")) {
+         if (string.matches("\\(?\\b(http[s]{0,1}://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]")) {
             //            System.out.println(String.format("url found [%s]", string));
             UrlWord sw = new UrlWord(string, loc);
             urls.add(sw);
