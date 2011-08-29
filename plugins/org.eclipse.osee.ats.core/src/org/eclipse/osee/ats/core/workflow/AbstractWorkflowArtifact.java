@@ -174,6 +174,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void clearCaches() {
       implementersStr = null;
+      parentAction = null;
+      parentAwa = null;
+      parentTeamArt = null;
    }
 
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {

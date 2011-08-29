@@ -309,6 +309,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             for (Artifact art : artsToRelate) {
                if (art.isOfType(AtsArtifactTypes.Task)) {
                   TaskArtifact taskArt = (TaskArtifact) art;
+                  taskArt.clearCaches();
                   // task dropped on same awa as current parent; do nothing
                   if (taskArt.getParentAWA().equals(iXTaskViewer.getAwa())) {
                      return;
@@ -318,6 +319,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
                   }
                   taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, iXTaskViewer.getAwa());
                   taskArt.persist(transaction);
+                  taskArt.clearCaches();
                }
             }
             transaction.execute();
