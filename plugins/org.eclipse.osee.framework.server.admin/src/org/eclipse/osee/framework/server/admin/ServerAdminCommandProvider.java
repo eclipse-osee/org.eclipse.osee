@@ -216,23 +216,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(operation, false);
    }
 
-   public Job _purge_attribute_type(CommandInterpreter ci) {
-      OperationLogger logger = new CommandInterpreterLogger(ci);
-
-      //to be purged
-      final Collection<String> attributeTypes = new ArrayList<String>();
-
-      for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
-         attributeTypes.add(arg);
-      }
-
-      IOperation operation =
-         new PurgeAttributeType(Activator.getOseeDatabaseService(), logger,
-            attributeTypes.toArray(new String[attributeTypes.size()]));
-
-      return Operations.executeAsJob(operation, false);
-   }
-
    public Job _purge_transactions(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
       final List<Integer> transactions = new ArrayList<Integer>();
@@ -264,7 +247,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        purge_relation_type -force excute the operation, relationType1 ...\n");
       sb.append("        parse_dir - converts the given file into a formatted CSV file\n");
       sb.append("        purge_transactions <transaction ids> - ");
-      sb.append("        purge_attribute_type <attr ids> - deletes specified rows from osee_artifact_type_attributes and osee_attribute_type\n");
       sb.append("        prune_workspace [preserve_file_pattern] workspace_path purge_file_pattern - delete files that are found in workspace_path and whose filenames match purge_file_pattern.  Any filename that matches the optional preserve_file_pattern are not deleted\n");
       sb.append("        find_invalid_utf8 - finds invalid UTF8 chars in table osee_attribute\n");
       sb.append("        consolidate_relations - consolidate rows of relations\n");

@@ -19,6 +19,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.type,

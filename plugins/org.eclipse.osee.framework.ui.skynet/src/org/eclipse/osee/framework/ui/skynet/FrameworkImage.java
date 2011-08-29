@@ -97,6 +97,7 @@ public enum FrameworkImage implements KeyedImage {
    GROUP("group.gif"),
    HEADING("heading.gif"),
    HELP("help.gif"),
+   IMPLEMENTATION_DETAILS("implementationDetails.gif"),
    IMPORT("import.gif"),
    INCOMING_ARTIFACT_DELETED("INCOMING_Deleted.gif"),
    INCOMING_DELETED("INCOMING_Deleted.gif"),

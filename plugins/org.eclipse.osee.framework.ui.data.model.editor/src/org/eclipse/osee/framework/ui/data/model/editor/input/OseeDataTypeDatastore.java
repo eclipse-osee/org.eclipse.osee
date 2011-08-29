@@ -11,20 +11,19 @@
 package org.eclipse.osee.framework.ui.data.model.editor.input;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
  * @author Roberto E. Escobar
  */
 public class OseeDataTypeDatastore {
-   private static final String SELECT_ATTRIBUTE_VALIDITY = "SELECT * FROM osee_artifact_type_attributes";
 
    public static List<AttributeDataType> getAttributeTypes() throws OseeCoreException {
       List<AttributeDataType> attributeDataTypes = new ArrayList<AttributeDataType>();
@@ -75,18 +73,14 @@ public class OseeDataTypeDatastore {
 
    public static HashCollection<String, String> getArtifactToAttributeEntries() throws OseeCoreException {
       HashCollection<String, String> toReturn = new HashCollection<String, String>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
-         while (chStmt.next()) {
-            try {
-               toReturn.put(chStmt.getString("art_type_id"), chStmt.getString("attr_type_id"));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
+      for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
+         Collection<IAttributeType> attributeTypes =
+            artifactType.getAttributeTypes(BranchManager.getBranch(CoreBranches.SYSTEM_ROOT));
+
+         for (IAttributeType attrType : attributeTypes) {
+            int typeId = AttributeTypeManager.getTypeId(attrType);
+            toReturn.put(String.valueOf(artifactType.getId()), String.valueOf(typeId));
          }
-      } finally {
-         chStmt.close();
       }
       return toReturn;
    }

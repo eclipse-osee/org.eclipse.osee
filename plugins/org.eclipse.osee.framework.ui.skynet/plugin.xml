@@ -1076,12 +1076,6 @@
   </image>
 	</extension>
  <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateArtifactTypeImage">
-    </Operation>
- </extension>
- <extension
        id="ValidateArtifactsToDelete"
        name="ValidateArtifactsToDelete"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +22,9 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
@@ -51,11 +45,6 @@ public final class ArtifactImageManager {
    private static final String EXTENSION_ELEMENT = "ArtifactImageProvider";
    private static final String EXTENSION_ID = Activator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
 
-   private static final String SELECT_ARTIFACT_TYPES_IMAGE_QUERY =
-      "SELECT art_type_id, image FROM osee_artifact_type where image is not null";
-   private static final String UPDATE_ARTIFACT_TYPE_IMAGE =
-      "UPDATE osee_artifact_type SET image = ? where art_type_id = ?";
-
    private static final Map<IArtifactType, ArtifactImageProvider> providersOverrideImageMap =
       new ConcurrentHashMap<IArtifactType, ArtifactImageProvider>();
    private static final Map<IArtifactType, KeyedImage> artifactTypeImageMap =
@@ -65,7 +54,6 @@ public final class ArtifactImageManager {
 
    private static final String OSEE_DATABASE_PROVIDER = "OSEE Database Provider";
 
-   private static boolean artifactTypeImagesLoaded;
    private static KeyedImage overrideImageEnum;
 
    static {
@@ -73,7 +61,6 @@ public final class ArtifactImageManager {
    }
 
    public synchronized static void loadCache() {
-      artifactTypeImagesLoaded = false;
 
       Set<IArtifactType> imageKeys = new HashSet<IArtifactType>();
       imageKeys.addAll(providersOverrideImageMap.keySet());
@@ -97,31 +84,6 @@ public final class ArtifactImageManager {
          } catch (Exception ex) {
             // prevent an exception in one provider from affecting the initialization of other providers
             OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
-   private synchronized static void ensureArtifactTypeImagesLoaded() throws OseeCoreException {
-      if (!artifactTypeImagesLoaded) {
-         artifactTypeImagesLoaded = true;
-         // Load base images from database (which can override the ImageManager.registerImage() calls provided
-         // through the ArtifactImageProviders
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
-         try {
-            chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES_IMAGE_QUERY);
-
-            while (chStmt.next()) {
-               try {
-                  IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-                  artifactTypeImageMap.put(artifactType,
-                     BaseImage.getBaseImageEnum(artifactType, Lib.inputStreamToBytes(chStmt.getBinaryStream("image"))));
-                  artifactTypeImageProviderMap.put(artifactType, OSEE_DATABASE_PROVIDER);
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         } finally {
-            chStmt.close();
          }
       }
    }
@@ -222,8 +184,6 @@ public final class ArtifactImageManager {
    }
 
    public synchronized static void registerBaseImage(IArtifactType artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeCoreException {
-      ensureArtifactTypeImagesLoaded();
-
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactType);
 
       String providerId = artifactTypeImageProviderMap.get(artifactType);
@@ -297,15 +257,6 @@ public final class ArtifactImageManager {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return ImageManager.setupImage(baseImageEnum);
-   }
-
-   public static void setArtifactTypeImageInDb(IArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeCoreException {
-      Object imageData = byteInput != null ? byteInput : SQL3DataType.BLOB;
-      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE_IMAGE, imageData,
-         ArtifactTypeManager.getTypeId(artifactType));
-      loadCache();
-
-      // TODO Need remote event kick to tell other clients of artifact type image changes
    }
 
    public static KeyedImage getArtifactTypeImage(IArtifactType artifactType) {

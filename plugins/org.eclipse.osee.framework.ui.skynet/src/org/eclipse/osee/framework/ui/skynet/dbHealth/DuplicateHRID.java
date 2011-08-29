@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -56,7 +57,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
    }
 
    private static final String GET_DUPLICATE_HRIDS =
-      "SELECT DISTINCT(t1.art_id), t1.guid, t1.human_readable_id, t3.name FROM osee_artifact t1, osee_artifact_type t3 WHERE t1.human_readable_id IN (SELECT t2.human_readable_id FROM osee_artifact t2 GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1) AND t3.art_type_id = t1.art_type_id ORDER BY t1.human_readable_id";
+      "SELECT DISTINCT(t1.art_id), t1.guid, t1.human_readable_id, t1.art_type_id FROM osee_artifact t1 WHERE t1.human_readable_id IN (SELECT t2.human_readable_id FROM osee_artifact t2 GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1) ORDER BY t1.human_readable_id";
 
    private static final String COUNT_ATTRIBUTE_VALUES_CONTAINING =
       "SELECT count(1) from osee_attribute where value like ?"; // TODO value not necessarily in database
@@ -135,7 +136,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
          rd.addRaw(AHTML.endMultiColumnTable());
 
       } finally {
-         XResultDataUI.report(rd,getName());
+         XResultDataUI.report(rd, getName());
       }
    }
 
@@ -149,7 +150,8 @@ public class DuplicateHRID extends DatabaseHealthOperation {
             ArtifactData duplicateHrid = new ArtifactData();
             duplicateHrid.guid = chStmt1.getString("guid");
             duplicateHrid.hrid = chStmt1.getString("human_readable_id");
-            duplicateHrid.artTypeName = chStmt1.getString("name");
+            int typeId = chStmt1.getInt("art_type_id");
+            duplicateHrid.artTypeName = ArtifactTypeManager.getType(typeId).getName();
             duplicateItems.add(duplicateHrid);
          }
          Collections.sort(duplicateItems, new DuplicateHridSorter());

@@ -218,7 +218,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationTypeList.setSorter(new SearchSorter());
       final ComboViewer relationSideList = new ComboViewer(relationControls, SWT.DROP_DOWN | SWT.READ_ONLY);
       relationSideList.setContentProvider(new SearchContentProvider());
-      relationSideList.setLabelProvider(new SearchLabelProvider());
+      relationSideList.setLabelProvider(new StringSearchLabelProvider());
       relationSideList.setSorter(new SearchSorter());
 
       try {

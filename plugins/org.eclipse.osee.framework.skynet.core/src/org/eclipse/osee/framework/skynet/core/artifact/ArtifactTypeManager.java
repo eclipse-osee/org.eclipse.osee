@@ -33,8 +33,6 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -181,11 +179,8 @@ public class ArtifactTypeManager {
          artifactToken.getName(), artifactToken.getGuid(), null);
    }
 
-   private static final String DELETE_VALID_ATTRIBUTE =
-      "delete from osee_artifact_type_attributes where art_type_id = ?";
    private static final String COUNT_ARTIFACT_OCCURRENCE =
       "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
-   private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
    public static void purgeArtifactType(IArtifactType artifactType) throws OseeCoreException {
       final int artifactTypeId = getTypeId(artifactType);
@@ -196,15 +191,6 @@ public class ArtifactTypeManager {
             "Can not delete artifact type [%s] because there are %d existing artifacts of this type.", artifactType,
             artifactCount);
       }
-      new DbTransaction() {
-
-         @Override
-         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, artifactTypeId);
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARIFACT_TYPE, artifactTypeId);
-         }
-
-      }.execute();
    }
 
    /**

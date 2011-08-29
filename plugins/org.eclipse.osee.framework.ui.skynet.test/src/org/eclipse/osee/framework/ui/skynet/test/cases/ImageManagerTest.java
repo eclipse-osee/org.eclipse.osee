@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -56,8 +55,6 @@ public abstract class ImageManagerTest {
    @org.junit.BeforeClass
    public static void testSetup() throws Exception {
       monitorLog = new SevereLoggingMonitor();
-      // Clear db image
-      ArtifactImageManager.setArtifactTypeImageInDb(CoreArtifactTypes.Folder, null);
       OseeLog.registerLoggerListener(monitorLog);
    }
 
@@ -126,39 +123,6 @@ public abstract class ImageManagerTest {
             "user.groups", BranchManager.getCommonBranch());
       assertTrue("Image returned not a folder image.",
          ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
-   }
-
-   @org.junit.Test
-   public void testSetArtifactTypeImageInDb() throws Exception {
-
-      Artifact folder =
-         ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.Folder, CoreAttributeTypes.StaticId,
-            "user.groups", BranchManager.getCommonBranch());
-
-      // Check folder image
-      assertTrue("Image returned not a \"Folder\" image.",
-         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
-
-      // Set different image for folder
-      ArtifactImageManager.setArtifactTypeImageInDb(CoreArtifactTypes.Folder, getByteArrayInputStream("heading.gif"));
-
-      // Test that different image overrides folder image
-      assertFalse("Image returned should be \"Heading\" image.",
-         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
-
-      // Clear db image
-      ArtifactImageManager.setArtifactTypeImageInDb(CoreArtifactTypes.Folder, null);
-
-      // Reload cache
-      ArtifactImageManager.loadCache();
-      TestUtil.sleep(2000);
-
-      // Test that folder image is back
-      assertTrue("Image returned not a \"Folder\" image.",
-         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
-
-      // Cleanup folder artifact
-      folder.purgeFromBranch();
    }
 
    public static ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {
