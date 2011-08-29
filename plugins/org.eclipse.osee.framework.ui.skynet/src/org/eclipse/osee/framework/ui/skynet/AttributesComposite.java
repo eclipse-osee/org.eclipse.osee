@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
+import java.util.Collection;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -32,12 +32,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEditor;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.ArmEvent;
-import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -241,40 +240,40 @@ public class AttributesComposite extends Composite {
    }
 
    private void createAddMenuItem(Menu parentMenu) {
-      MenuItem addItem = new MenuItem(parentMenu, SWT.CASCADE);
+      MenuItem addItem = new MenuItem(parentMenu, SWT.PUSH);
       addItem.setText("Add");
       addItem.setEnabled(true && !artifact.isReadOnly());
-
-      // Update the enabled values for the popup menu each time it comes up
-      addItem.addArmListener(new ArmListener() {
-
+      addItem.addSelectionListener(new SelectionAdapter() {
          @Override
-         public void widgetArmed(ArmEvent e) {
-            MenuItem addItem = (MenuItem) e.getSource();
-            for (MenuItem attrItem : addItem.getMenu().getItems()) {
-               try {
-                  attrItem.setEnabled(artifact.getRemainingAttributeCount((IAttributeType) attrItem.getData()) > 0);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+         public void widgetSelected(SelectionEvent e) {
+            Collection<IAttributeType> selectableTypes = new ArrayList<IAttributeType>();
+            try {
+               for (IAttributeType attrType : artifact.getAttributeTypes()) {
+                  if (artifact.getRemainingAttributeCount(attrType) > 0) {
+                     selectableTypes.add(attrType);
+                  }
                }
+               AttributeTypeFilteredCheckTreeDialog dialog =
+                  new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types",
+                     "Select attribute types to display.");
+               dialog.setSelectableTypes(selectableTypes);
+               if (dialog.open() == 0) {
+                  for (Object obj : dialog.getResult()) {
+                     getArtifact().addAttribute((IAttributeType) obj);
+                  }
+                  tableViewer.refresh();
+                  layout();
+                  getParent().layout();
+                  editor.onDirtied();
+                  notifyModifyAttribuesListeners();
+               }
+
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
 
-      Menu attributesMenu = new Menu(parentMenu);
-
-      try {
-         SelectionAdapter listener = new AttributeMenuSelectionListener(this, tableViewer, editor);
-         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
-            MenuItem item = new MenuItem(attributesMenu, SWT.CASCADE);
-            item.setText(attributeType.getName() + " Attribute");
-            item.setData(attributeType);
-            item.addSelectionListener(listener);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      addItem.setMenu(attributesMenu);
    }
 
    private void createDeleteMenuItem(Menu parentMenu) {
