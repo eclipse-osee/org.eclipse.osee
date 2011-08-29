@@ -23,24 +23,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class DefaultOseeArtifact {
 
    private static String OSEE_DEFAULT_SERVER_PAGE_GUID_KEY = "osee.default.server.page.guid";
-   private static String OSEE_DEFAULT_SERVER_PAGE_BRANCH_ID = "osee.default.server.page.branch.id";
+   private static String OSEE_DEFAULT_SERVER_PAGE_BRANCH_GUID = "osee.default.server.page.branch.guid";
 
    public static Pair<String, String> get() throws Exception {
 
       final String artifactGuid = OseeInfo.getValue(OSEE_DEFAULT_SERVER_PAGE_GUID_KEY);
-      String defaultBranchId = OseeInfo.getValue(OSEE_DEFAULT_SERVER_PAGE_BRANCH_ID);
-      int artifactBranchId = -1;
-      try {
-         artifactBranchId = Integer.parseInt(defaultBranchId);
-      } catch (Exception ex) {
-         // Do Nothing
-      }
+      final String defaultBranchGuidId = OseeInfo.getValue(OSEE_DEFAULT_SERVER_PAGE_BRANCH_GUID);
 
-      if (!Strings.isValid(artifactGuid) || artifactBranchId < 1) {
+      if (!Strings.isValid(artifactGuid) || !Strings.isValid(defaultBranchGuidId)) {
          throw new OseeStateException(
             "OSEE default server page not found. Ensure values exist in OseeInfo table for [%s] and [%s] keys.",
-            OSEE_DEFAULT_SERVER_PAGE_GUID_KEY, OSEE_DEFAULT_SERVER_PAGE_BRANCH_ID);
+            OSEE_DEFAULT_SERVER_PAGE_GUID_KEY, OSEE_DEFAULT_SERVER_PAGE_BRANCH_GUID);
       }
-      return new Pair<String, String>(artifactGuid, String.valueOf(artifactBranchId));
+      return new Pair<String, String>(artifactGuid, defaultBranchGuidId);
    }
 }

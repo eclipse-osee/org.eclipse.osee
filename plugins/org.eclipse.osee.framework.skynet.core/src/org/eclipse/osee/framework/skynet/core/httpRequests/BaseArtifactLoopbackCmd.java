@@ -31,13 +31,15 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
 
    @Override
    public void execute(final Map<String, String> parameters, final HttpResponse httpResponse) {
+      final String branchGuid = parameters.get("branchGuid");
       final String branchId = parameters.get("branchId");
       final String guid = parameters.get("guid");
       final boolean isDeleted = Boolean.valueOf(parameters.get("isDeleted"));
       final DeletionFlag searchDeleted = isDeleted ? INCLUDE_DELETED : EXCLUDE_DELETED;
       final String transactionIdStr = parameters.get("transactionId");
 
-      if (!Strings.isValid(branchId) || !Strings.isValid(guid)) {
+      boolean haveAValidBranchIdentifier = Strings.isValid(branchGuid) || Strings.isValid(branchId);
+      if (!Strings.isValid(guid) || !haveAValidBranchIdentifier) {
          httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST,
             String.format("Unable to process [%s]", parameters));
       } else {
@@ -50,7 +52,11 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
                branch = transactionId.getBranch();
                artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, searchDeleted);
             } else {
-               branch = BranchManager.getBranch(Integer.parseInt(branchId));
+               if (Strings.isValid(branchGuid)) {
+                  branch = BranchManager.getBranchByGuid(branchGuid);
+               } else {
+                  branch = BranchManager.getBranch(Integer.parseInt(branchId));
+               }
                artifact = ArtifactQuery.getArtifactFromId(guid, branch, searchDeleted);
             }
             if (artifact == null) {

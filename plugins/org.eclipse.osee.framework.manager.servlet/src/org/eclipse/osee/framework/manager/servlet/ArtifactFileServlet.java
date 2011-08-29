@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -72,7 +73,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
             Pair<String, String> defaultArtifact = DefaultOseeArtifact.get();
             if (defaultArtifact != null) {
                artifactFileInfo =
-                  new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
+                  new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, null, defaultArtifact.getSecond());
             }
          } else {
             artifactFileInfo = new HttpArtifactFileInfo(request);
@@ -80,13 +81,15 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
          String uri = null;
          if (artifactFileInfo != null) {
+            Branch branch = null;
             if (artifactFileInfo.isBranchNameValid()) {
-               uri =
-                  ArtifactUtil.getUri(artifactFileInfo.getGuid(),
-                     branchCache.getBySoleName(artifactFileInfo.getBranchName()));
+               branch = branchCache.getBySoleName(artifactFileInfo.getBranchName());
+            } else if (artifactFileInfo.isBranchGuidValid()) {
+               branch = branchCache.getByGuid(artifactFileInfo.getBranchGuid());
             } else {
-               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branchCache.getById(artifactFileInfo.getId()));
+               branch = branchCache.getById(artifactFileInfo.getId());
             }
+            uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branch);
          }
          handleArtifactUri(locatorManager, resourceManager, request.getQueryString(), uri, response);
       } catch (NumberFormatException ex) {
