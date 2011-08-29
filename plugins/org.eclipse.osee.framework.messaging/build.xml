@@ -7,7 +7,7 @@
 	<property name="basearch" value="${arch}"/>
 	<property name="basenl" value="${nl}"/>
 	<property name="bundleId" value="org.eclipse.osee.framework.messaging"/>
-	<property name="bundleVersion" value="0.9.4.201003300913"/>
+	<property name="bundleVersion" value="0.9.8.201108300834"/>
 	<property name="p2.publishonerror" value="false"/>
 
 	<available property="customBuildCallbacks" file="./customBuildCallbacks.xml" value="customBuildCallbacks.xml"/>
@@ -18,6 +18,7 @@
 	<property name="javacVerbose" value="false"/>
 	<property name="logExtension" value=".log"/>
 	<property name="compilerArg" value=""/>
+	<property name="compilation.prereq.log" value="${buildDirectory}/prereqErrors.log"/>
 	<property name="javacSource" value="1.3"/>
 	<property name="javacTarget" value="1.2"/>
 	<condition property="dir_bootclasspath" value="${java.home}/../Classes">
@@ -48,7 +49,7 @@
 			<isset property="buildTempFolder"/>
 		</condition>
 		<property name="pluginTemp" value="${basedir}"/>
-		<condition property="build.result.folder" value="${pluginTemp}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"		>
+		<condition property="build.result.folder" value="${pluginTemp}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"		>
 			<isset property="buildTempFolder"/>
 		</condition>
 		<property name="build.result.folder" value="${basedir}"/>
@@ -61,7 +62,7 @@
 		<condition property="compilation.problem.marker.exists" value="true"		>
 			<and>
 			<available file="${compilation.problem.marker}"/>
-			<isfalse value="p2.publishonerror"/>
+			<isfalse value="${p2.publishonerror}"/>
 			</and>
 		</condition>
 	</target>
@@ -78,53 +79,86 @@
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<jar destfile="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.4.201003300913.jar" basedir="${temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" filesetmanifest="merge"/>
+		<jar destfile="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.8.201108300834.jar" basedir="${temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" filesetmanifest="merge"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
-	<target name="@dot" depends="init" unless="@dot" description="Create jar: org.eclipse.osee.framework.messaging @dot.">
+	<target name="@dot.nestedJars">
+		<mkdir dir="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417"/>
+		<unzip src="../../../../../Program Files/OSEE/dropins/jms.libraries_0.9.9.201108291417.jar" dest="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417" overwrite="false">
+			<patternset includes="libs/geronimo-jms_1.1_spec-1.1.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417"/>
+		<unzip src="../../../../../Program Files/OSEE/dropins/jms.libraries_0.9.9.201108291417.jar" dest="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417" overwrite="false">
+			<patternset includes="libs/geronimo-j2ee-management_1.1_spec-1.0.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417"/>
+		<unzip src="../../../../../Program Files/OSEE/dropins/jms.libraries_0.9.9.201108291417.jar" dest="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417" overwrite="false">
+			<patternset includes="libs/activemq-core-5.5.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.100.v20110502"/>
+		<unzip src="../../../../OSEE/plugins/org.eclipse.equinox.registry_3.5.100.v20110502.jar" dest="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.100.v20110502" overwrite="false">
+			<patternset includes="runtime_registry_compatibility.jar"/>
+		</unzip>
+	</target>
+	<target name="@dot" depends="init,@dot.nestedJars" unless="@dot" description="Create jar: org.eclipse.osee.framework.messaging @dot.">
 		<delete dir="${build.result.folder}/@dot"/>
 		<mkdir dir="${build.result.folder}/@dot"/>
 		<path id="@dot.classpath">
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/jms.libraries_1.0.0.v201003220102/libs/geronimo-j2ee-management_1.0_spec-1.0.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/jms.libraries_1.0.0.v201003220102/libs/geronimo-jms_1.1_spec-1.1.1.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/jms.libraries_1.0.0.v201003220102/libs/activemq-core-5.3.0.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/javax.xml_1.3.4.v200902170245.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.osgi_3.5.2.R35x_v20100126.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.apache.commons.logging_1.1.1.v200904062255.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.runtime_3.5.0.v20090525.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.jobs_3.4.100.v20090429-1800.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.200.v20090429-1800/runtime_registry_compatibility.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.200.v20090429-1800"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.equinox.registry_3.4.100.v20090520-1800.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.equinox.preferences_3.2.301.R35x_v20091117.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.contenttype_3.4.1.R35x_v20090826-0451.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.100.v20090413.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.equinox.app_1.2.1.R35x_v20091203.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.osgi.services_3.2.0.v20090520-1800.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/javax.servlet_2.5.0.v200806031605.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.osee.framework.core_0.9.3.v201003220102.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/com.lowagie.text_1.5.4.v200908052355.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417/libs/geronimo-jms_1.1_spec-1.1.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417/libs/geronimo-j2ee-management_1.1_spec-1.0.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/jms.libraries_0.9.9.201108291417/libs/activemq-core-5.5.0.jar"/>
+			<pathelement path="../../../../OSEE/plugins/javax.xml_1.3.4.v201005080400.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.osgi_3.7.0.v20110613.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.weaving.hook_1.0.100.v20110502.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.servletbridge.extensionbundle_1.2.0.v20100503.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.transforms.hook_1.0.300.v20100719.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.slf4j.jcl_1.6.1.v20100831-0715.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.slf4j.api_1.6.1.v20100831-0715.jar"/>
+			<pathelement path="../../../../OSEE/plugins/ch.qos.logback.slf4j_0.9.27.v20110224-1110.jar"/>
+			<pathelement path="../../../../OSEE/plugins/ch.qos.logback.classic_0.9.27.v20110224-1110.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.osee.logback.config_0.9.8.v201108230041.jar"/>
+			<pathelement path="../../../../OSEE/plugins/ch.qos.logback.core_0.9.27.v20110224-1110.jar"/>
+			<pathelement path="../../../../OSEE/plugins/javax.servlet_2.5.0.v201103041518.jar"/>
+			<pathelement path="../../../../OSEE/plugins/javax.mail.glassfish_1.4.1.v201005082020.jar"/>
+			<pathelement path="../../../../OSEE/plugins/javax.activation_1.1.0.v201105071233.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.jobs_3.5.100.v20110404.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505/runtime_registry_compatibility.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.100.v20110502/runtime_registry_compatibility.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.registry_3.5.100.v20110502.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.preferences_3.4.0.v20110502.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.contenttype_3.4.100.v20110423-0524.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.200.v20110110.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.app_1.3.100.v20110321.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.osgi.services_3.3.0.v20110513.jar"/>
+			<pathelement path="../org.eclipse.osee.framework.core/bin/"/>
+			<pathelement path="../org.eclipse.osee.framework.core/@dot"/>
+			<pathelement path="../../../../OSEE/plugins/com.lowagie.text_2.1.7.v201004222200.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.apache.commons.httpclient_3.1.0.v201012070820.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.apache.commons.codec_1.3.0.v201101211617.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.net_1.2.100.I20110511-0800.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.net.win32.x86_1.0.100.I20110331-0827.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.security_1.1.0.v20110502.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.security.win32.x86_1.0.200.v20100503.jar"/>
 			<pathelement path="../org.eclipse.osee.framework.jdk.core/bin/"/>
-			<pathelement path="${build.result.folder}/../org.eclipse.osee.framework.jdk.core_0.9.4.201003300913/bin/"/>
-			<pathelement path="${build.result.folder}/../org.eclipse.osee.framework.jdk.core/@dot"/>
-			<pathelement path="${build.result.folder}/../org.eclipse.osee.framework.jdk.core_0.9.4.201003300913/@dot"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.apache.commons.codec_1.3.0.v20080530-1600.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.apache.commons.httpclient_3.1.0.v20080605-1935.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.apache.xerces_2.9.0.v200909240008.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.apache.xml.resolver_1.2.0.v200902170519.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.apache.xml.serializer_2.7.1.v200902170519.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.osee.framework.logging_0.9.3.v201003220102.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.osee.framework.plugin.core_0.9.3.v201003220102.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.resources_3.5.2.R35x_v20091203-1235.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.resources.compatibility_3.4.1.R35x_v20100113-0530.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.resources.win32.x86_3.5.0.v20081020.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.ant.core_3.2.101.v20091110_r352.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.variables_3.2.200.v20090521.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.expressions_3.4.101.R35x_v20100209.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.filesystem_1.2.1.R35x_v20091203-1235.jar"/>
-			<pathelement path="../../../../Program Files/OSEE_3.5.2/plugins/org.eclipse.core.filesystem.win32.x86_1.1.0.v20080604-1400.jar"/>
+			<pathelement path="../org.eclipse.osee.framework.jdk.core/@dot"/>
+			<pathelement path="../../../../OSEE/plugins/org.apache.xerces_2.9.0.v201101211617.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.apache.xml.resolver_1.2.0.v201005080400.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.apache.xml.serializer_2.7.1.v201005080400.jar"/>
+			<pathelement path="../org.eclipse.osee.framework.logging/bin/"/>
+			<pathelement path="../org.eclipse.osee.framework.logging/@dot"/>
+			<pathelement path="../org.eclipse.osee.framework.plugin.core/bin/"/>
+			<pathelement path="../org.eclipse.osee.framework.plugin.core/@dot"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.resources.win32.x86_3.5.100.v20110423-0524.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.ant.core_3.2.300.v20110511.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.variables_3.2.500.v20110511.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.expressions_3.4.300.v20110228.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.filesystem_1.3.100.v20110423-0524.jar"/>
+			<pathelement path="../../../../OSEE/plugins/org.eclipse.core.filesystem.win32.x86_1.1.300.v20110423-0524.jar"/>
 		</path>
 		<subant antfile="${customBuildCallbacks}" target="pre.@dot" failonerror="true " buildpath="." inheritall="true">
 			<property name="source.folder1" value="src/"/>
@@ -138,8 +172,8 @@
 			<classpath refid="@dot.classpath" />
 			<src path="src/"			/>
 			<src path="src-gen/"			/>
-			<compilerarg value="@${basedir}/javaCompiler...args" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-			<compilerarg line="-log '${build.result.folder}/@dot${logExtension}'" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+			<compilerarg value="@${basedir}/javaCompiler...args" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"			/>
+			<compilerarg line="-log &apos;${build.result.folder}/@dot${logExtension}&apos;" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"			/>
 		</javac>
 		<antcall target="checkCompilationResults"/>
 		<!-- Copy necessary resources -->
@@ -203,7 +237,17 @@
 	</target>
 
 	<target name="checkCompilationResults" if="compilation.error.occured">
-		<echo file="${compilation.problem.marker}" message="org.eclipse.osee.framework.messaging : compilation.error.occured=${compilation.error.occured}"/>
+		<echo file="${compilation.problem.marker}" message="org.eclipse.osee.framework.messaging_0.9.8.201108300834${line.separator}compilation.error.occured=${compilation.error.occured}"/>
+		<eclipse.logCompileError bundle="org.eclipse.osee.framework.messaging_0.9.8.201108300834" log="${compilation.prereq.log}">
+			<include name="C:/UserData/GIT/org.eclipse.osee/plugins/org.eclipse.osee.framework.core/compilation.problem"/>
+			<include name="${pluginTemp}/org.eclipse.osee.framework.core_0.9.8.201108300834/compilation.problem"/>
+			<include name="C:/UserData/GIT/org.eclipse.osee/plugins/org.eclipse.osee.framework.jdk.core/compilation.problem"/>
+			<include name="${pluginTemp}/org.eclipse.osee.framework.jdk.core_0.9.8.201108300834/compilation.problem"/>
+			<include name="C:/UserData/GIT/org.eclipse.osee/plugins/org.eclipse.osee.framework.logging/compilation.problem"/>
+			<include name="${pluginTemp}/org.eclipse.osee.framework.logging_0.9.8.201108300834/compilation.problem"/>
+			<include name="C:/UserData/GIT/org.eclipse.osee/plugins/org.eclipse.osee.framework.plugin.core/compilation.problem"/>
+			<include name="${pluginTemp}/org.eclipse.osee.framework.plugin.core_0.9.8.201108300834/compilation.problem"/>
+		</eclipse.logCompileError>
 	</target>
 
 	<target name="build.sources" depends="init">
@@ -218,17 +262,17 @@
 	</target>
 
 	<target name="publish.bin.parts" depends="init" if="p2.publish.parts" unless="compilation.problem.marker.exists">
-		<mkdir dir="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+		<mkdir dir="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		<subant antfile="${customBuildCallbacks}" target="pre.gather.bin.parts" failonerror="true " buildpath="." inheritall="true">
 			<property name="build.result.folder" value="${build.result.folder}"/>
-			<property name="target.folder" value="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="target.folder" value="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
-		<copy todir="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" failonerror="true" overwrite="false">
+		<copy todir="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" failonerror="true" overwrite="false">
 			<fileset dir="${build.result.folder}/@dot">
 				<include name="**"/>
 			</fileset>
 		</copy>
-		<copy todir="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" failonerror="true" overwrite="true">
+		<copy todir="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" failonerror="true" overwrite="true">
 			<fileset dir="${basedir}">
 				<include name="META-INF/"/>
 				<include name="customBuildCallbacks.xml"/>
@@ -236,38 +280,38 @@
 				<include name="build.properties"/>
 			</fileset>
 		</copy>
-		<eclipse.versionReplacer path="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" version="0.9.4.201003300913"/>
+		<eclipse.versionReplacer path="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" version="0.9.8.201108300834"/>
 		<antcall target="apitools.generation">
-			<param name="target.folder" value="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<param name="target.folder" value="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 			<param name="projectLocation" value="${basedir}"/>
 			<param name="binary.folders" value="${build.result.folder}/@dot"/>
 			<param name="projectName" value="${bundleId}_${bundleVersion}"/>
 		</antcall>
 		<subant antfile="${customBuildCallbacks}" target="post.gather.bin.parts" failonerror="true " buildpath="." inheritall="true">
 			<property name="build.result.folder" value="${build.result.folder}"/>
-			<property name="target.folder" value="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="target.folder" value="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
 		<eclipse.gatherBundle 
 		   metadataRepository="${p2.build.repo}"
 		   artifactRepository="${p2.build.repo}"
 		   buildResultFolder="${build.result.folder}"
 		   unpack="false"
-		   targetFolder="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"
+		   targetFolder="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"
 		/>
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+		<mkdir dir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		<subant antfile="${customBuildCallbacks}" target="pre.gather.bin.parts" failonerror="true " buildpath="." inheritall="true">
 			<property name="build.result.folder" value="${build.result.folder}"/>
-			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
-		<copy todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" failonerror="true" overwrite="false">
+		<copy todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" failonerror="true" overwrite="false">
 			<fileset dir="${build.result.folder}/@dot">
 				<include name="**"/>
 			</fileset>
 		</copy>
-		<copy todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" failonerror="true" overwrite="true">
+		<copy todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" failonerror="true" overwrite="true">
 			<fileset dir="${basedir}">
 				<include name="META-INF/"/>
 				<include name="customBuildCallbacks.xml"/>
@@ -275,16 +319,16 @@
 				<include name="build.properties"/>
 			</fileset>
 		</copy>
-		<eclipse.versionReplacer path="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" version="0.9.4.201003300913"/>
+		<eclipse.versionReplacer path="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" version="0.9.8.201108300834"/>
 		<antcall target="apitools.generation">
-			<param name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<param name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 			<param name="projectLocation" value="${basedir}"/>
 			<param name="binary.folders" value="${build.result.folder}/@dot"/>
 			<param name="projectName" value="${bundleId}_${bundleVersion}"/>
 		</antcall>
 		<subant antfile="${customBuildCallbacks}" target="post.gather.bin.parts" failonerror="true " buildpath="." inheritall="true">
 			<property name="build.result.folder" value="${build.result.folder}"/>
-			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
 	</target>
 
@@ -293,15 +337,15 @@
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
 		<subant antfile="${customBuildCallbacks}" target="pre.gather.sources" failonerror="true " buildpath="." inheritall="true">
-			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
-		<mkdir dir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
-		<copy file="${build.result.folder}/src.zip" todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" failonerror="false" overwrite="false"/>
+		<mkdir dir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
+		<copy file="${build.result.folder}/src.zip" todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" failonerror="false" overwrite="false"/>
 		<antcall target="copy.src.includes">
-			<param name="source.destination.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<param name="source.destination.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</antcall>
 		<subant antfile="${customBuildCallbacks}" target="post.gather.sources" failonerror="true " buildpath="." inheritall="true">
-			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="target.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
 	</target>
 
@@ -325,16 +369,16 @@
 
 	<target name="gather.logs" depends="init" if="destination.temp.folder">
 		<subant antfile="${customBuildCallbacks}" target="pre.gather.logs" failonerror="true " buildpath="." inheritall="true">
-			<property name="destination.temp.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="destination.temp.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
-		<mkdir dir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
-		<copy todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913" failonerror="false" overwrite="false">
+		<mkdir dir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
+		<copy todir="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834" failonerror="false" overwrite="false">
 			<fileset dir="${build.result.folder}">
 				<include name="@dot${logExtension}"/>
 			</fileset>
 		</copy>
 		<subant antfile="${customBuildCallbacks}" target="post.gather.logs" failonerror="true " buildpath="." inheritall="true">
-			<property name="destination.temp.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.4.201003300913"/>
+			<property name="destination.temp.folder" value="${destination.temp.folder}/org.eclipse.osee.framework.messaging_0.9.8.201108300834"/>
 		</subant>
 	</target>
 
@@ -346,8 +390,8 @@
 		</subant>
 		<delete dir="${build.result.folder}/@dot"/>
 		<delete file="${build.result.folder}/src.zip"/>
-		<delete file="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.4.201003300913.jar"/>
-		<delete file="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.4.201003300913.zip"/>
+		<delete file="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.8.201108300834.jar"/>
+		<delete file="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.8.201108300834.zip"/>
 		<delete dir="${temp.folder}"/>
 		<delete file="${compilation.problem.marker}" quiet="true"/>
 		<subant antfile="${customBuildCallbacks}" target="post.clean" failonerror="true " buildpath="." inheritall="true">
@@ -358,7 +402,7 @@
 	</target>
 
 	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
-		<eclipse.convertPath fileSystemPath="C:/UserData/workspaces/aircraftConnect/org.eclipse.osee.framework.messaging" property="resourcePath"/>
+		<eclipse.convertPath fileSystemPath="C:/UserData/GIT/org.eclipse.osee/plugins/org.eclipse.osee.framework.messaging" property="resourcePath"/>
 		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
 	</target>
 
@@ -378,12 +422,12 @@
 				<include name="**/*.bin${logExtension}"/>
 			</fileset>
 		</delete>
-		<zip destfile="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.4.201003300913.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/org.eclipse.osee.framework.messaging_0.9.8.201108300834.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
 	<target name="apitools.generation" if="generateAPIDescription">
-		<apitooling.apigeneration  projectName="${projectName}" project="${projectLocation}" binary="${binary.folders}" target="${target.folder}"		/>
+		<apitooling.apigeneration  projectName="${projectName}" project="${projectLocation}" binary="${binary.folders}" target="${target.folder}" extramanifests="${extraManifests}" allownonapiproject="${allowNonApiProject}"		/>
 	</target>
 
 </project>

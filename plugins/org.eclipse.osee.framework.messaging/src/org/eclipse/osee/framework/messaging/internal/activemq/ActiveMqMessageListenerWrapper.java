@@ -13,10 +13,13 @@ package org.eclipse.osee.framework.messaging.internal.activemq;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
@@ -37,12 +40,14 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
    private final MessageProducer producer;
    private final Session session;
    private final ActiveMqUtil activeMqUtil;
+   private ExecutorService executor;
 
    ActiveMqMessageListenerWrapper(ActiveMqUtil activeMqUtil, MessageProducer producer, Session session, OseeMessagingListener listener) {
       this.producer = producer;
       this.session = session;
       this.listener = listener;
       this.activeMqUtil = activeMqUtil;
+      executor = Executors.newSingleThreadExecutor();
    }
 
    @Override
@@ -70,18 +75,42 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
    }
 
    private void process(javax.jms.Message message, ReplyConnection replyConnection) throws JMSException, OseeCoreException {
-      Map<String, Object> headers = new HashMap<String, Object>();
-      Enumeration propertyNames = message.getPropertyNames();
-      while( propertyNames.hasMoreElements() )
-      {
+      executor.submit(new ListenerProcessRunnable(message, replyConnection));
+   }
 
-         String name = (String) propertyNames.nextElement();
-         Object element = message.getObjectProperty(name);
-         headers.put(name, element);
+
+   class ListenerProcessRunnable implements Runnable {
+
+      private javax.jms.Message message;
+      private ReplyConnection replyConnection;
+
+
+      public ListenerProcessRunnable(Message message, ReplyConnection replyConnection) {
+         this.message = message;
+         this.replyConnection = replyConnection;
       }
-      listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
-      OseeLog.logf(Activator.class, Level.FINE,
-         "recieved message %s - %s", message.getJMSDestination().toString(), message.toString());
+
+
+      @Override
+      public void run() {
+         try {
+            Map<String, Object> headers = new HashMap<String, Object>();
+            Enumeration<?> propertyNames = message.getPropertyNames();
+            while( propertyNames.hasMoreElements() )
+            {
+               String name = (String) propertyNames.nextElement();
+               Object element = message.getObjectProperty(name);
+               headers.put(name, element);
+            }
+            listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
+            OseeLog.log(Activator.class, Level.FINE,
+               String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
+         }
+         catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, "Exception ", ex);
+         }
+      }
+
    }
 
 }
