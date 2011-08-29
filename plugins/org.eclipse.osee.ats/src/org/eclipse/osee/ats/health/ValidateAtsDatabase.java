@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.health;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.SMAState;
 import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
@@ -94,6 +96,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private boolean fixAttributeValues = true;
    private final Set<String> hrids = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>();
+   private final Map<String, Long> testNameToTimeSpentMap = new HashMap<String, Long>();
+   private HashCollection<String, String> testNameToResultsMap = null;
    private String emailOnComplete = null;
    private static Artifact tempParentAction;
 
@@ -149,8 +153,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private HashCollection<String, String> testNameToResultsMap = null;
-
    public void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
@@ -176,6 +178,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       try {
 
          testNameToResultsMap = new HashCollection<String, String>();
+         hrids.clear();
+         legacyPcrIdToParentHrid.clear();
+
          //         int artSetNum = 1;
          for (Collection<Integer> artIdList : artIdLists) {
             // Don't process all lists if just trying to test this report
@@ -189,6 +194,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testArtifactIds(artifacts);
             testAtsAttributeValues(artifacts);
             testStateInWorkDefinition(artifacts);
+            testAttributeSetWorkDefinitionsExist(artifacts);
             testAtsActionsHaveTeamWorkflow(artifacts);
             testAtsWorkflowsHaveAction(artifacts);
             testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
@@ -201,16 +207,19 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testVersionArtifacts(artifacts);
             testStateMachineAssignees(artifacts);
             testAtsLogs(artifacts);
-            testActionableItemToTeamDefinition(testNameToResultsMap, artifacts);
+            testActionableItemToTeamDefinition(artifacts);
+
             for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
+               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap, testNameToTimeSpentMap);
             }
+
             if (monitor != null) {
                monitor.worked(1);
             }
          }
          // Log resultMap data into xResultData
          addResultsMapToResultData(xResultData, testNameToResultsMap);
+         addTestTimeMapToResultData(xResultData);
       } finally {
          OseeEventManager.setDisableEvents(false);
       }
@@ -220,7 +229,42 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
+   private void addTestTimeMapToResultData(XResultData xResultData) {
+      xResultData.log("\n\nTime Spent in Tests");
+      long totalTime = 0;
+      for (String testName : testNameToTimeSpentMap.keySet()) {
+         xResultData.log(testName + " - " + testNameToTimeSpentMap.get(testName) + " ms");
+         totalTime += testNameToTimeSpentMap.get(testName);
+      }
+      xResultData.log("TOTAL - " + totalTime + " ms");
+
+      xResultData.log("\n");
+   }
+
+   private void testAttributeSetWorkDefinitionsExist(Collection<Artifact> artifacts) {
+      Date date = new Date();
+      for (Artifact artifact : artifacts) {
+         try {
+            for (String workDefName : artifact.getAttributesToStringList(AtsAttributeTypes.WorkflowDefinition)) {
+               if (WorkDefinitionFactory.getWorkDefinition(workDefName) == null) {
+                  testNameToResultsMap.put(
+                     "testAttributeSetWorkDefinitionsExist",
+                     String.format(
+                        "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(artifact),
+                        workDefName));
+               }
+            }
+         } catch (Exception ex) {
+            testNameToResultsMap.put(
+               "testAttributeSetWorkDefinitionsExist",
+               "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+         }
+      }
+      logTestTimeSpent(date, "testAttributeSetWorkDefinitionsExist", testNameToTimeSpentMap);
+   }
+
    private void testStateInWorkDefinition(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
             if (artifact instanceof AbstractWorkflowArtifact) {
@@ -243,6 +287,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
          }
       }
+      logTestTimeSpent(date, "testStateInWorkDefinition", testNameToTimeSpentMap);
    }
 
    public static void addResultsMapToResultData(XResultData xResultData, HashCollection<String, String> testNameToResultsMap) {
@@ -257,8 +302,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private void testArtifactIds(Collection<Artifact> artifacts) {
-      this.hrids.clear();
-      this.legacyPcrIdToParentHrid.clear();
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
             // Check that HRIDs not duplicated on Common branch
@@ -288,9 +332,22 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
          }
       }
+      logTestTimeSpent(date, "testArtifactIds", testNameToTimeSpentMap);
+   }
+
+   public static void logTestTimeSpent(Date date, String testName, Map<String, Long> testNameToTimeSpentMap) {
+      Date now = new Date();
+      long spent = now.getTime() - date.getTime();
+      Long total = testNameToTimeSpentMap.get(testName);
+      if (total == null) {
+         total = new Long(0);
+         testNameToTimeSpentMap.put(testName, total);
+      }
+      total += spent;
    }
 
    private void testVersionArtifacts(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
             Artifact verArt = artifact;
@@ -307,9 +364,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      logTestTimeSpent(date, "testVersionArtifacts", testNameToTimeSpentMap);
    }
 
    private void testTeamDefinitions(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact art : artifacts) {
          if (art instanceof TeamDefinitionArtifact) {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
@@ -326,9 +385,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      logTestTimeSpent(date, "testTeamDefinitions", testNameToTimeSpentMap);
    }
 
    private void testTeamWorkflows(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
@@ -348,9 +409,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      logTestTimeSpent(date, "testTeamWorkflows", testNameToTimeSpentMap);
    }
 
    private void testAtsBranchManager(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
@@ -383,9 +446,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      logTestTimeSpent(date, "testAtsBranchManager", testNameToTimeSpentMap);
    }
 
    private void validateBranchGuid(Artifact artifact, String parentBranchGuid) {
+      Date date = new Date();
       try {
          Branch branch = BranchManager.getBranchByGuid(parentBranchGuid);
          if (branch.getArchiveState().isArchived()) {
@@ -412,6 +477,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             "validateBranchGuid",
             "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
       }
+      logTestTimeSpent(date, "validateBranchGuid", testNameToTimeSpentMap);
    }
 
    public static List<Collection<Integer>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor) throws OseeCoreException {
@@ -429,6 +495,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private void testAtsAttributeValues(Collection<Artifact> artifacts) {
+      Date date = new Date();
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
          for (Artifact artifact : artifacts) {
@@ -498,6 +565,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          testNameToResultsMap.put("testAtsAttributeValues", "Error: Exception: " + ex.getLocalizedMessage());
       }
+      logTestTimeSpent(date, "testAtsAttributeValues", testNameToTimeSpentMap);
    }
 
    public static void checkAndResolveDuplicateAttributesForAttributeNameContains(String nameContainsStr, Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
@@ -542,6 +610,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
             if (artifact.isOfType(AtsArtifactTypes.Action) && ActionManager.getTeams(artifact).isEmpty()) {
@@ -553,9 +622,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
+      logTestTimeSpent(date, "testAtsActionsHaveTeamWorkflow", testNameToTimeSpentMap);
    }
 
    private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
@@ -594,9 +665,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       if (tempParentAction != null) {
          AtsUtil.openATSAction(tempParentAction, AtsOpenOption.AtsWorld);
       }
+      logTestTimeSpent(date, "testAtsWorkflowsHaveAction", testNameToTimeSpentMap);
    }
 
    private void testAtsWorkflowsHaveZeroOrOneVersion(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
@@ -614,10 +687,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
-
+      logTestTimeSpent(date, "testAtsWorkflowsHaveZeroOrOneVersion", testNameToTimeSpentMap);
    }
 
    private void testTasksHaveParentWorkflow(Collection<Artifact> artifacts) {
+      Date date = new Date();
       Set<Artifact> badTasks = new HashSet<Artifact>(30);
       for (Artifact artifact : artifacts) {
          try {
@@ -645,6 +719,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          testNameToResultsMap.put("testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
       }
+      logTestTimeSpent(date, "testTasksHaveParentWorkflow", testNameToTimeSpentMap);
+   }
+
+   public void testActionableItemToTeamDefinition(Collection<Artifact> artifacts) {
+      Date date = new Date();
+      testActionableItemToTeamDefinition(testNameToResultsMap, artifacts);
+      logTestTimeSpent(date, "testActionableItemToTeamDefinition", testNameToTimeSpentMap);
    }
 
    public static void testActionableItemToTeamDefinition(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts) {
@@ -667,6 +748,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private void testReviewsHaveValidDefectAndRoleXml(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          if (artifact instanceof AbstractReviewArtifact) {
             AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
@@ -690,9 +772,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      logTestTimeSpent(date, "testReviewsHaveValidDefectAndRoleXml", testNameToTimeSpentMap);
    }
 
    private void testReviewsHaveParentWorkflowOrActionableItems(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
             if (artifact instanceof AbstractReviewArtifact) {
@@ -708,9 +792,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testNameToResultsMap.put("testTeamDefinitionHasWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
+      logTestTimeSpent(date, "testReviewsHaveParentWorkflowOrActionableItems", testNameToTimeSpentMap);
    }
 
    private void testAtsLogs(Collection<Artifact> artifacts) {
+      Date date = new Date();
       for (Artifact art : artifacts) {
          if (art instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
@@ -772,12 +858,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      logTestTimeSpent(date, "testAtsLogs", testNameToTimeSpentMap);
    }
 
    private static User unAssignedUser;
    private static User oseeSystemUser;
 
    private void testStateMachineAssignees(Collection<Artifact> artifacts) {
+      Date date = new Date();
       if (unAssignedUser == null) {
          try {
             unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
@@ -830,25 +918,17 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      logTestTimeSpent(date, "testStateMachineAssignees", testNameToTimeSpentMap);
    }
 
-   /**
-    * @param fixAssignees the fixAssignees to set
-    */
    public void setFixAssignees(boolean fixAssignees) {
       this.fixAssignees = fixAssignees;
    }
 
-   /**
-    * @param fixAttributeValues the fixAttributeValues to set
-    */
    public void setFixAttributeValues(boolean fixAttributeValues) {
       this.fixAttributeValues = fixAttributeValues;
    }
 
-   /**
-    * set to email if desire email on completion
-    */
    public void setEmailOnComplete(String emailOnComplete) {
       this.emailOnComplete = emailOnComplete;
    }

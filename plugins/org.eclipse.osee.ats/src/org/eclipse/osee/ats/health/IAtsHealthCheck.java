@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.health;
 
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -27,8 +28,9 @@ public interface IAtsHealthCheck {
    /**
     * Check artifacts for problems. Log results in resultsMap indexed by test name as key (they will be organized by key
     * in report). Insert "Error: " at beginning of resultMap value if log item is an error. This will be highlighted.
+    * @param testNameToTimeSpentMap JavaTip
     */
-   public void validateAtsDatabase(Collection<Artifact> artifacts, HashCollection<String, String> resultsMap) throws OseeCoreException;
+   public void validateAtsDatabase(Collection<Artifact> artifacts, HashCollection<String, String> resultsMap, Map<String, Long> testNameToTimeSpentMap) throws OseeCoreException;
 
    public Result validateChangeReports(ChangeData currentChangeData, TeamWorkFlowArtifact teamArt, XResultData resultData) throws OseeCoreException;
 
