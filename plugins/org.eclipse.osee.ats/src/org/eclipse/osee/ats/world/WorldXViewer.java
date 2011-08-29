@@ -450,7 +450,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            if (Artifacts.isOfType(item, AtsArtifactTypes.Task)) {
+            if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Task)) {
                arts.add((TaskArtifact) item.getData());
             }
          }
