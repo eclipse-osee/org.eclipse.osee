@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.ConvertAIsAndTeamDefinitions;
+import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.version.CreateNewVersionItem;
@@ -208,6 +209,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             AtsArtifactTypes.TeamWorkflow));
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
          new CreateGoalTestArtifacts(adminItems);
+         new CreateActionUsingAllActionableItems(adminItems);
 
          new DoesNotWorkItemAts(adminItems);
 
