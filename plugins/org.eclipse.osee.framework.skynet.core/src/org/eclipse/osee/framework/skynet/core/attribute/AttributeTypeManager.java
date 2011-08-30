@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -35,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class AttributeTypeManager {
 
-   public static AbstractOseeCache<String, AttributeType> getCache() {
+   public static AbstractOseeCache<Long, AttributeType> getCache() {
       return Activator.getInstance().getOseeCacheService().getAttributeTypeCache();
    }
 
@@ -74,8 +73,8 @@ public class AttributeTypeManager {
     * @return Returns the attribute type matching the guid
     * @param guid attribute type guid to match
     */
-   public static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
-      if (!GUID.isValid(guid)) {
+   public static AttributeType getTypeByGuid(Long guid) throws OseeCoreException {
+      if (guid == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
       AttributeType attributeType = getCache().getByGuid(guid);

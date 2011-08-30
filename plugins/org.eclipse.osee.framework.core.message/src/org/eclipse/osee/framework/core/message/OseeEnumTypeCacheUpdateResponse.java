@@ -45,11 +45,11 @@ public class OseeEnumTypeCacheUpdateResponse {
          enumTypeRows.add(new String[] {
             String.valueOf(type.getId()),
             type.getStorageState().toString(),
-            type.getGuid(),
+            String.valueOf(type.getGuid()),
             type.getName()});
          for (OseeEnumEntry entry : type.values()) {
             enumEntryRows.add(new String[] {
-               type.getGuid(),
+               String.valueOf(type.getGuid()),
                entry.getGuid(),
                entry.getName(),
                String.valueOf(entry.ordinal())});

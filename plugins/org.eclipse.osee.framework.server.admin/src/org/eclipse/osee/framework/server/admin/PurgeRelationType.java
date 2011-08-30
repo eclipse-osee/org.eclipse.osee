@@ -68,14 +68,14 @@ public final class PurgeRelationType extends AbstractDbTxOperation {
    private final RelationTypeCache cache;
    private final String[] typesToPurge;
    private final boolean forcePurge;
-   private final List<String[]> relationTypeGuids;
+   private final List<Long[]> relationTypeGuids;
 
    public PurgeRelationType(IOseeDatabaseService databaseService, IOseeCachingService cachingService, OperationLogger logger, boolean force, String... typesToPurge) {
       super(databaseService, "Purge Relation Type", Activator.PLUGIN_ID, logger);
       this.cache = cachingService.getRelationTypeCache();
       this.forcePurge = force;
       this.typesToPurge = typesToPurge;
-      this.relationTypeGuids = new ArrayList<String[]>(typesToPurge.length);
+      this.relationTypeGuids = new ArrayList<Long[]>(typesToPurge.length);
    }
 
    @Override
@@ -97,13 +97,13 @@ public final class PurgeRelationType extends AbstractDbTxOperation {
    private boolean collectInfo() throws OseeCoreException {
       for (int i = 0; i < typesToPurge.length; i++) {
 
-         String guid;
+         Long guid;
 
          try {
             RelationType type = cache.getBySoleName(typesToPurge[i]);
             guid = type.getGuid();
             logf("Type [%s] found. Guid: [%s]\n", typesToPurge[i], guid);
-            relationTypeGuids.add(new String[] {guid});
+            relationTypeGuids.add(new Long[] {guid});
          } catch (OseeArgumentException ex) {
             logf("Type [%s] NOT found. \n", typesToPurge[i]);
             log(ex);
@@ -119,7 +119,7 @@ public final class PurgeRelationType extends AbstractDbTxOperation {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
-         for (String[] relationTypeId : relationTypeGuids) {
+         for (Long[] relationTypeId : relationTypeGuids) {
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, cache.getByGuid(relationTypeId[0]).getId());
             while (chStmt.next()) {
                gammas.add(new Integer[] {chStmt.getInt("gamma_id")});

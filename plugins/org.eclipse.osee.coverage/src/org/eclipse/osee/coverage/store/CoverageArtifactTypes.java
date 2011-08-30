@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class CoverageArtifactTypes {
 
    // @formatter:off
-   public static final IArtifactType CoveragePackage = TokenFactory.createArtifactType("AARFcyA9zyD3uEK8akgA", "Coverage Package");
-   public static final IArtifactType CoverageUnit = TokenFactory.createArtifactType("ALZS3MQdCCIUvEYlZeAA", "Coverage Unit");
-   public static final IArtifactType CoverageFolder = TokenFactory.createArtifactType("ALZR_AbpJTTf6QQn2iAA", "Coverage Folder");
+   public static final IArtifactType CoveragePackage = TokenFactory.createArtifactType(0x000000000000004B, "Coverage Package");
+   public static final IArtifactType CoverageUnit = TokenFactory.createArtifactType(0x000000000000004E, "Coverage Unit");
+   public static final IArtifactType CoverageFolder = TokenFactory.createArtifactType(0x000000000000004D, "Coverage Folder");
    // @formatter:on
 
    private CoverageArtifactTypes() {

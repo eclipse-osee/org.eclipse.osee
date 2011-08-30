@@ -19,11 +19,11 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
 
    DefaultBasicGuidArtifact artA, artB;
    String branchGuid;
-   String relTypeGuid;
+   Long relTypeGuid;
    int gammaId;
    int relationId;
 
-   public DefaultBasicGuidRelation(String branchGuid, String relTypeGuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
+   public DefaultBasicGuidRelation(String branchGuid, Long relTypeGuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
       this.branchGuid = branchGuid;
       this.relTypeGuid = relTypeGuid;
       this.relationId = relationId;
@@ -53,7 +53,7 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
    }
 
    @Override
-   public String getRelTypeGuid() {
+   public Long getRelTypeGuid() {
       return relTypeGuid;
    }
 
@@ -69,7 +69,7 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
       this.branchGuid = branchGuid;
    }
 
-   public void setRelTypeGuid(String relTypeGuid) {
+   public void setRelTypeGuid(Long relTypeGuid) {
       this.relTypeGuid = relTypeGuid;
    }
 

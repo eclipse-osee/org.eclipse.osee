@@ -259,11 +259,6 @@ public class ArtifactMatchInterpreterTest {
       return new ArtifactProxy() {
 
          @Override
-         public boolean matches(Identity... identities) {
-            return false;
-         }
-
-         @Override
          public String getUnqualifiedName() {
             return null;
          }
@@ -311,6 +306,11 @@ public class ArtifactMatchInterpreterTest {
          @Override
          public IBasicArtifact<?> getObject() {
             return null;
+         }
+
+         @Override
+         public boolean matches(Identity<?>... identities) {
+            return false;
          }
 
       };

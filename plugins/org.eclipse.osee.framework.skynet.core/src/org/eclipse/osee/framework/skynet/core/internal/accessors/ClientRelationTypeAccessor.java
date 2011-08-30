@@ -27,12 +27,12 @@ import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<String, RelationType> {
+public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Long, RelationType> {
 
-   private final AbstractOseeCache<String, ArtifactType> artCache;
+   private final AbstractOseeCache<Long, ArtifactType> artCache;
    private final RelationTypeFactory relationTypeFactory;
 
-   public ClientRelationTypeAccessor(RelationTypeFactory relationTypeFactory, AbstractOseeCache<String, ArtifactType> artCache) {
+   public ClientRelationTypeAccessor(RelationTypeFactory relationTypeFactory, AbstractOseeCache<Long, ArtifactType> artCache) {
       super();
       this.relationTypeFactory = relationTypeFactory;
       this.artCache = artCache;
@@ -43,13 +43,13 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Strin
    }
 
    @Override
-   public void load(IOseeCache<String, RelationType> cache) throws OseeCoreException {
+   public void load(IOseeCache<Long, RelationType> cache) throws OseeCoreException {
       artCache.ensurePopulated();
       super.load(cache);
    }
 
    @Override
-   protected Collection<RelationType> updateCache(IOseeCache<String, RelationType> cache) throws OseeCoreException {
+   protected Collection<RelationType> updateCache(IOseeCache<Long, RelationType> cache) throws OseeCoreException {
       List<RelationType> updatedItems = new ArrayList<RelationType>();
 
       RelationTypeCacheUpdateResponse response =

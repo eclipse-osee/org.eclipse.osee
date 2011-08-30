@@ -29,7 +29,7 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
          guidRel.getGammaId(), artAId, guidRel.getArtA(), artBId, guidRel.getArtB());
    }
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, String branchGuid, String relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
+   public EventBasicGuidRelation(RelationEventType relationEventType, String branchGuid, Long relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
       super(branchGuid, relTypeGuid, relationId, gammaId, artA, artB);
       this.relationEventType = relationEventType;
       this.artAId = artAId;

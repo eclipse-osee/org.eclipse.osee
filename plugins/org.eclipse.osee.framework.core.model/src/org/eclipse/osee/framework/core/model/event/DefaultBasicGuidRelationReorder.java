@@ -19,10 +19,10 @@ public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
 
    private DefaultBasicGuidArtifact parentArt;
    private String branchGuid;
-   private String relTypeGuid;
+   private Long relTypeGuid;
    private RelationOrderModType modType;
 
-   public DefaultBasicGuidRelationReorder(RelationOrderModType modType, String branchGuid, String relTypeGuid, DefaultBasicGuidArtifact artA) {
+   public DefaultBasicGuidRelationReorder(RelationOrderModType modType, String branchGuid, Long relTypeGuid, DefaultBasicGuidArtifact artA) {
       this.modType = modType;
       this.branchGuid = branchGuid;
       this.relTypeGuid = relTypeGuid;
@@ -40,7 +40,7 @@ public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
    }
 
    @Override
-   public String getRelTypeGuid() {
+   public Long getRelTypeGuid() {
       return relTypeGuid;
    }
 
@@ -52,7 +52,7 @@ public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
       this.branchGuid = branchGuid;
    }
 
-   public void setRelTypeGuid(String relTypeGuid) {
+   public void setRelTypeGuid(Long relTypeGuid) {
       this.relTypeGuid = relTypeGuid;
    }
 

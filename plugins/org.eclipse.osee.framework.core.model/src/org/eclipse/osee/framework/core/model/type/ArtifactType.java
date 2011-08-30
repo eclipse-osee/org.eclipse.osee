@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttribu
 /**
  * @author Robert A. Fisher
  */
-public final class ArtifactType extends AbstractOseeType<String> implements IArtifactType {
+public final class ArtifactType extends AbstractOseeType<Long> implements IArtifactType {
 
    public static final String ARTIFACT_IS_ABSTRACT_FIELD_KEY = "osee.artifact.type.is.abstract.field";
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
@@ -41,7 +41,7 @@ public final class ArtifactType extends AbstractOseeType<String> implements IArt
    private final Map<IOseeBranch, Collection<AttributeType>> attributes =
       new HashMap<IOseeBranch, Collection<AttributeType>>();
 
-   public ArtifactType(String guid, String name, boolean isAbstract) {
+   public ArtifactType(Long guid, String name, boolean isAbstract) {
       super(guid, name);
       initializeFields();
       setAbstract(isAbstract);

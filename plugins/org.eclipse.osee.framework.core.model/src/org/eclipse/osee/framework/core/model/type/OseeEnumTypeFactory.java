@@ -24,10 +24,9 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public class OseeEnumTypeFactory implements IOseeTypeFactory {
 
-   public OseeEnumType createEnumType(String guid, String name) throws OseeCoreException {
+   public OseeEnumType createEnumType(Long guid, String name) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "osee enum type name");
-      String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new OseeEnumType(checkedGuid, name);
+      return new OseeEnumType(guid, name);
    }
 
    public OseeEnumEntry createEnumEntry(String guid, String name, int ordinal) throws OseeCoreException {
@@ -37,7 +36,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return new OseeEnumEntry(checkedGuid, name, ordinal);
    }
 
-   public OseeEnumType createOrUpdate(IOseeCache<String, OseeEnumType> cache, int enumTypeId, StorageState storageState, String guid, String enumTypeName) throws OseeCoreException {
+   public OseeEnumType createOrUpdate(IOseeCache<Long, OseeEnumType> cache, int enumTypeId, StorageState storageState, Long guid, String enumTypeName) throws OseeCoreException {
       OseeEnumType oseeEnumType = cache.getById(enumTypeId);
       if (oseeEnumType == null) {
          oseeEnumType = createEnumType(guid, enumTypeName);
@@ -51,7 +50,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return oseeEnumType;
    }
 
-   public OseeEnumType createOrUpdate(OseeEnumTypeCache cache, String guid, String enumTypeName) throws OseeCoreException {
+   public OseeEnumType createOrUpdate(OseeEnumTypeCache cache, Long guid, String enumTypeName) throws OseeCoreException {
       OseeEnumType oseeEnumType = cache.getByGuid(guid);
       if (oseeEnumType == null) {
          oseeEnumType = createEnumType(guid, enumTypeName);
@@ -63,8 +62,8 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return oseeEnumType;
    }
 
-   public OseeEnumEntry createOrUpdate(IOseeCache<String, OseeEnumType> cache, String enumTypeGuid, String enumEntryGuid, String enumEntryName, int ordinal) throws OseeCoreException {
-      OseeEnumType oseeEnumType = ((AbstractOseeCache<String, OseeEnumType>) cache).getByGuid(enumTypeGuid);
+   public OseeEnumEntry createOrUpdate(IOseeCache<Long, OseeEnumType> cache, Long enumTypeGuid, String enumEntryGuid, String enumEntryName, int ordinal) throws OseeCoreException {
+      OseeEnumType oseeEnumType = ((AbstractOseeCache<Long, OseeEnumType>) cache).getByGuid(enumTypeGuid);
       OseeEnumEntry enumEntry = oseeEnumType.getEntryByGuid(enumEntryGuid);
       if (enumEntry == null) {
          enumEntry = createEnumEntry(enumEntryGuid, enumEntryName, ordinal);

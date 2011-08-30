@@ -360,8 +360,8 @@ public class RelationCacheTest {
       IArtifact artifactB = createArtifact(55, testBranch);
 
       RelationType type =
-         new RelationType(GUID.create(), "type name", artifactA.getName(), artifactB.getName(),
-            CoreArtifactTypes.Artifact, CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
+         new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(), CoreArtifactTypes.Artifact,
+            CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
       RelationLink link =
          new RelationLink(new MockLinker("linker"), artifactA.getArtId(), artifactB.getArtId(), testBranch, type, 77,
             88, "", ModificationType.MODIFIED);

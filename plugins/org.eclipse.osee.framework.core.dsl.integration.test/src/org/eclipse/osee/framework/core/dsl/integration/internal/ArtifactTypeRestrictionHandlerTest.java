@@ -42,13 +42,14 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataNotMatchesRestriction() throws OseeCoreException {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef =
+         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      ArtifactType artifactType2 = new ArtifactType(GUID.create(), "Some Artifact Type", false);
+      ArtifactType artifactType2 = new ArtifactType(0L, "Some Artifact Type", false);
       MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), artifactType2);
       Scope expectedScope = new Scope().add("fail");
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
@@ -57,7 +58,8 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessCreateAccessDetail() throws OseeCoreException {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef =
+         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -74,7 +76,8 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessArtifactTypeInheritance() throws OseeCoreException {
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef =
+         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);

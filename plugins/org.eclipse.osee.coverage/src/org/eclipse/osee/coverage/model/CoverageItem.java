@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -42,7 +43,7 @@ public class CoverageItem extends NamedIdentity<String> implements ICoverage, IW
    private ITestUnitProvider testUnitProvider;
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageOption coverageMethod, String orderNumber) {
-      this(null, coverageUnit, coverageMethod, orderNumber);
+      this(GUID.create(), coverageUnit, coverageMethod, orderNumber);
    }
 
    public CoverageItem(String guid, CoverageUnit coverageUnit, CoverageOption coverageMethod, String orderNumber) {

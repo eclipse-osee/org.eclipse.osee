@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Date;
+import java.util.Random;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -51,6 +52,8 @@ import org.junit.Assert;
  */
 public final class MockDataFactory {
 
+   private static final Random random = new Random();
+
    private MockDataFactory() {
       // Utility Class
    }
@@ -79,8 +82,9 @@ public final class MockDataFactory {
    public static AttributeType createAttributeType() throws OseeCoreException {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
       AttributeType attributeType =
-         new AttributeType(GUID.create(), "name", "baseType", "providerName", ".xml", "", 1, 1, "description", "tagger");
-      attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(GUID.create(), "enum type name"));
+         new AttributeType(random.nextLong(), "name", "baseType", "providerName", ".xml", "", 1, 1, "description",
+            "tagger");
+      attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(0x01L, "enum type name"));
       return attributeType;
    }
 
@@ -106,19 +110,19 @@ public final class MockDataFactory {
    }
 
    public static OseeEnumType createEnumType(int index) {
-      return new OseeEnumType(GUID.create(), "enum_" + index);
+      return new OseeEnumType(random.nextLong(), "enum_" + index);
    }
 
    public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) throws OseeCoreException {
       AttributeType type =
-         new AttributeType(GUID.create(), "attrType_" + index, "baseClass_" + index, "providerId_" + index,
+         new AttributeType(random.nextLong(), "attrType_" + index, "baseClass_" + index, "providerId_" + index,
             "ext_" + index, "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index);
       type.setOseeEnumType(oseeEnumType);
       return type;
    }
 
    public static ArtifactType createArtifactType(int index) {
-      return new ArtifactType(GUID.create(), "art_" + index, index % 2 == 0);
+      return new ArtifactType(random.nextLong(), "art_" + index, index % 2 == 0);
    }
 
    public static ArtifactType createBaseArtifactType() {
@@ -129,7 +133,7 @@ public final class MockDataFactory {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
       String order = RelationOrderBaseTypes.values[index % RelationTypeMultiplicity.values().length].getGuid();
-      return new RelationType(GUID.create(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
+      return new RelationType(random.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
          artTypeB, multiplicity, order);
    }
 
@@ -137,10 +141,10 @@ public final class MockDataFactory {
       BranchCache brCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
       TransactionCache txCache = new TransactionCache();
       txCache.setAccessor(new MockOseeTransactionDataAccessor());
-      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<String, ArtifactType>());
-      AttributeTypeCache attrCache = new AttributeTypeCache(new MockOseeDataAccessor<String, AttributeType>());
-      RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<String, RelationType>());
-      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<String, OseeEnumType>());
+      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<Long, ArtifactType>());
+      AttributeTypeCache attrCache = new AttributeTypeCache(new MockOseeDataAccessor<Long, AttributeType>());
+      RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
+      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<Long, OseeEnumType>());
 
       IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
       return new MockOseeCachingServiceProvider(service);

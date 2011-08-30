@@ -83,7 +83,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
          type.getDefaultValue(),
          type.getDescription(),
          type.getFileTypeExtension(),
-         type.getGuid(),
+         String.valueOf(type.getGuid()),
          String.valueOf(type.getId()),
          String.valueOf(type.getMaxOccurrences()),
          String.valueOf(type.getMinOccurrences()),
@@ -98,7 +98,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       String defaultValue = data[2];
       String description = data[3];
       String fileTypeExtension = data[4];
-      String guid = data[5];
+      long remoteId = Long.valueOf(data[5]);
       int uniqueId = Integer.valueOf(data[6]);
       int maxOccurrences = Integer.valueOf(data[7]);
       int minOccurrences = Integer.valueOf(data[8]);
@@ -107,7 +107,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       String taggerId = data[11];
 
       AttributeType type =
-         factory.create(guid, name, baseAttributeTypeId, attributeProviderId, fileTypeExtension, defaultValue,
+         factory.create(remoteId, name, baseAttributeTypeId, attributeProviderId, fileTypeExtension, defaultValue,
             minOccurrences, maxOccurrences, description, taggerId);
       type.setId(uniqueId);
       type.setStorageState(storageState);

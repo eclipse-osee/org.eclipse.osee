@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 public final class OteRelationTypes {
 
    public static final IRelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
+      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000176L, "Test Case to Run Relation");
    public static final IRelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
+      RelationSide.SIDE_B, 0x2000000000000176L, "Test Case to Run Relation");
 
    private OteRelationTypes() {
       // Constants

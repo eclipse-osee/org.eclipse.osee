@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class DemoArtifactTypes {
 
    // @formatter:off
-   public static final IArtifactType DemoCodeTeamWorkflow = TokenFactory.createArtifactType("ABRNqDKnpGEKAyUm49gA", "Demo Code Team Workflow");
-   public static final IArtifactType DemoReqTeamWorkflow = TokenFactory.createArtifactType("ABRO5pC6kCmP35t06RwA", "Demo Req Team Workflow");
-   public static final IArtifactType DemoTestTeamWorkflow = TokenFactory.createArtifactType("ABRPeQO1qlCd4J7Bv5AA", "Demo Test Team Workflow");
+   public static final IArtifactType DemoCodeTeamWorkflow = TokenFactory.createArtifactType(0x000000000000004FL, "Demo Code Team Workflow");
+   public static final IArtifactType DemoReqTeamWorkflow = TokenFactory.createArtifactType(0x0000000000000050L, "Demo Req Team Workflow");
+   public static final IArtifactType DemoTestTeamWorkflow = TokenFactory.createArtifactType(0x0000000000000051L, "Demo Test Team Workflow");
    // @formatter:on
 
    private DemoArtifactTypes() {

@@ -24,107 +24,107 @@ public final class AtsAttributeTypes {
 
    public static final Map<String, IAttributeType> nameToTypeMap = new HashMap<String, IAttributeType>();
    // @formatter:off
-   public static final IAttributeType Actionable = createType("AAMFEcvDtBiaJ3TMatAA", "Actionable", "True if item can have Action written against or assigned to.");
-   public static final IAttributeType ActionableItem = createType("AAMFEdbcR2zpGzFOLOQA", "Actionable Item", "Actionable Items that are impacted by this change.");
-   public static final IAttributeType ActionDetailsFormat = createType("Aij_PfM7wCsEA2Z720wA", "Action Details Format", "Format of string when push Action Details Copy button on SMA Workflow Editor.");
-   public static final IAttributeType Active = createType("AAMFEclQOVmzkIvzyWwA", "Active", "Active ATS configuration object.");
-   public static final IAttributeType AllowCommitBranch = createType("AAMFEbCZCkwgj73BsQgA", "Allow Commit Branch");
-   public static final IAttributeType AllowCreateBranch = createType("AAMFEbARuQEvi6rtY5gA", "Allow Create Branch");
-   public static final IAttributeType BaselineBranchGuid = createType("AAMFEdIjJ2za2fblEVgA", "Baseline Branch Guid", "Basline branch associated with ATS object.");
+   public static final IAttributeType Actionable = createType(0x10000000000000B8L, "Actionable", "True if item can have Action written against or assigned to.");
+   public static final IAttributeType ActionableItem = createType(0x10000000000000E0L, "Actionable Item", "Actionable Items that are impacted by this change.");
+   public static final IAttributeType ActionDetailsFormat = createType(0x10000000000000DFL, "Action Details Format", "Format of string when push Action Details Copy button on SMA Workflow Editor.");
+   public static final IAttributeType Active = createType(0x10000000000000B1L, "Active", "Active ATS configuration object.");
+   public static final IAttributeType AllowCommitBranch = createType(0x10000000000000BAL, "Allow Commit Branch");
+   public static final IAttributeType AllowCreateBranch = createType(0x10000000000000B9L, "Allow Create Branch");
+   public static final IAttributeType BaselineBranchGuid = createType(0x10000000000000A9L, "Baseline Branch Guid", "Basline branch associated with ATS object.");
    
-   public static final IAttributeType Category1 = createType("AAMFEdrYniOQYrYUKKQA", "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
-   public static final IAttributeType Category2 = createType("AAMFEdthBkolbJKLXuAA", "Category2", Category1.getDescription());
-   public static final IAttributeType Category3 = createType("AAMFEd06oxr8LMzZxdgA", "Category3", Category1.getDescription());
+   public static final IAttributeType Category1 = createType(0x10000000000000ECL, "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
+   public static final IAttributeType Category2 = createType(0x10000000000000F1L, "Category2", Category1.getDescription());
+   public static final IAttributeType Category3 = createType(0x10000000000000F2L, "Category3", Category1.getDescription());
 
-   public static final IAttributeType ChangeType = createType("AAMFEc+MwGHnPCv7HlgA", "Change Type", "Type of change.");
+   public static final IAttributeType ChangeType = createType(0x10000000000000CCL, "Change Type", "Type of change.");
    
-   public static final IAttributeType CancelledDate = createType("AXnyKG1waCcPPHHGEFQA", "Cancelled Date", "Date the workflow was cancelled.");
-   public static final IAttributeType CancelledBy = createType("AXpNsieBHnqaJJfduGgA", "Cancelled By", "UserId of the user who cancelled workflow.");
-   public static final IAttributeType CancelledReason = createType("AXqJE0SmwRQzvzlqC9gA", "Cancelled Reason", "Explanation of why worklfow was cancelled.");
-   public static final IAttributeType CancelledFromState = createType("AXrxlXOwGiAnlaUNX6AA", "Cancelled From State", "State workflow was in when cancelled.");
+   public static final IAttributeType CancelledDate = createType(0x10000000000000C1L, "Cancelled Date", "Date the workflow was cancelled.");
+   public static final IAttributeType CancelledBy = createType(0x10000000000000C2L, "Cancelled By", "UserId of the user who cancelled workflow.");
+   public static final IAttributeType CancelledReason = createType(0x10000000000000C3L, "Cancelled Reason", "Explanation of why worklfow was cancelled.");
+   public static final IAttributeType CancelledFromState = createType(0x10000000000000C4L, "Cancelled From State", "State workflow was in when cancelled.");
    
-   public static final IAttributeType CreatedDate = createType("AXny90bBpmfNkLpNhqwA", "Created Date", "Date the workflow was created.");
-   public static final IAttributeType CreatedBy = createType("AXpTVIExV1p0kp9IKKQA", "Created By", "UserId of the user who created the workflow.");
+   public static final IAttributeType CreatedDate = createType(0x10000000000000C5L, "Created Date", "Date the workflow was created.");
+   public static final IAttributeType CreatedBy = createType(0x10000000000000C6L, "Created By", "UserId of the user who created the workflow.");
 
-   public static final IAttributeType CompletedDate = createType("AXnxSfRg6UhirNzaZnQA", "Completed Date", "Date the workflow was completed.");
-   public static final IAttributeType CompletedBy = createType("AXo6tqxrOStgd9P16XQA", "Completed By", "UserId of the user who completed workflow.");
-   public static final IAttributeType CompletedFromState = createType("AXr9OO909xRiI3MFNOwA", "Completed From State", "State workflow was in when completed.");
+   public static final IAttributeType CompletedDate = createType(0x10000000000000BEL, "Completed Date", "Date the workflow was completed.");
+   public static final IAttributeType CompletedBy = createType(0x10000000000000BFL, "Completed By", "UserId of the user who completed workflow.");
+   public static final IAttributeType CompletedFromState = createType(0x10000000000000C0L, "Completed From State", "State workflow was in when completed.");
 
-   public static final IAttributeType CurrentState = createType("AAMFEdOWL3u6hmX2VbwA", "Current State", "Current state of workflow state machine.");
-   public static final IAttributeType CurrentStateType = createType("ATOWheEyGUJmPmPuqyAA", "Current State Type", "Type of Current State: InWork, Completed or Cancelled.");
-   public static final IAttributeType Decision = createType("AAMFEd7uDXcmqq_FrCQA", "Decision", "Option selected during decision review.");
+   public static final IAttributeType CurrentState = createType(0x10000000000000D8L, "Current State", "Current state of workflow state machine.");
+   public static final IAttributeType CurrentStateType = createType(0x10000000000000ABL, "Current State Type", "Type of Current State: InWork, Completed or Cancelled.");
+   public static final IAttributeType Decision = createType(0x10000000000000F5L, "Decision", "Option selected during decision review.");
 
-   public static final IAttributeType DecisionReviewOptions = createType("AAMFEd5hRy1+SRJRqfwA", "Decision Review Options", "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
-   public static final IAttributeType Description = createType("AAMFEdWJ_ChxX6+YKbwA", "Description", "Detailed explanation.");
-   public static final IAttributeType DslSheet = createType("AGrqojZDowPDaLh4kBAA", "DSL Sheet", "XText DSL Sheet for ATS");
-   public static final IAttributeType EstimatedCompletionDate = createType("AAMFEc18k3Gh+GP7zqAA", "Estimated Completion Date", "Date the changes will be completed.");
-   public static final IAttributeType EstimatedHours = createType("AAMFEdCSqBh+cPyadiwA", "Estimated Hours", "Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
-   public static final IAttributeType EstimatedReleaseDate = createType("AAMFEcy6VB7Ble5SP1QA", "Estimated Release Date", "Date the changes will be made available to the users.");
-   public static final IAttributeType FullName = createType("AAMFEdZI9XLT34cTonAA", "Full Name", "Expanded and descriptive name.");
-   public static final IAttributeType GoalOrderVote = createType("Aiecsz9pP1CRoQdaYRAA", "Goal Order Vote", "Vote for order item belongs to within goal.");
-   public static final IAttributeType HoursPerWorkDay = createType("AAMFEdGlqFsZp22RMdAA", "Hours Per Work Day");
-   public static final IAttributeType LegacyPcrId = createType("AAMFEd3TakphMtQX1zgA", "Legacy PCR Id", "Field to register problem change report id from legacy items imported into ATS.");
-   public static final IAttributeType Location = createType("AAMFEeAW4QBlesdfacwA", "Location", "Enter location of materials to review.");
-   public static final IAttributeType LocChanged= createType("AQR27biJiQlOKTEKCvwA", "LOC Changed", "Total Lines of Code Changed");
-   public static final IAttributeType LocReviewed = createType("AQR5ckRsrh4PpayYGAgA", "LOC Reviewed", "Total Lines of Code Reviewed");
-   public static final IAttributeType Log = createType("AAMFEdgB1DX3eJSZb0wA", "Log");
+   public static final IAttributeType DecisionReviewOptions = createType(0x10000000000000F4L, "Decision Review Options", "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
+   public static final IAttributeType Description = createType(0x10000000000000DCL, "Description", "Detailed explanation.");
+   public static final IAttributeType DslSheet = createType(0x10000000000000DDL, "DSL Sheet", "XText DSL Sheet for ATS");
+   public static final IAttributeType EstimatedCompletionDate = createType(0x10000000000000BDL, "Estimated Completion Date", "Date the changes will be completed.");
+   public static final IAttributeType EstimatedHours = createType(0x10000000000000CEL, "Estimated Hours", "Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
+   public static final IAttributeType EstimatedReleaseDate = createType(0x10000000000000BCL, "Estimated Release Date", "Date the changes will be made available to the users.");
+   public static final IAttributeType FullName = createType(0x10000000000000DEL, "Full Name", "Expanded and descriptive name.");
+   public static final IAttributeType GoalOrderVote = createType(0x10000000000000EBL, "Goal Order Vote", "Vote for order item belongs to within goal.");
+   public static final IAttributeType HoursPerWorkDay = createType(0x10000000000000D3L, "Hours Per Work Day");
+   public static final IAttributeType LegacyPcrId = createType(0x10000000000000F3L, "Legacy PCR Id", "Field to register problem change report id from legacy items imported into ATS.");
+   public static final IAttributeType Location = createType(0x10000000000000F7L, "Location", "Enter location of materials to review.");
+   public static final IAttributeType LocChanged= createType(0x10000000000000E7L, "LOC Changed", "Total Lines of Code Changed");
+   public static final IAttributeType LocReviewed = createType(0x10000000000000E8L, "LOC Reviewed", "Total Lines of Code Reviewed");
+   public static final IAttributeType Log = createType(0x10000000000000E2L, "Log");
    
-   public static final IAttributeType MeetingLocation = createType("APom8wytSX0G3mcb3qQA", "Meeting Location", "Location meeting is held.");
-   public static final IAttributeType MeetingAttendee = createType("APrZQQaOlFcX1CxbO6QA", "Meeting Attendee", "Attendee of meeting.");
-   public static final IAttributeType MeetingLength = createType("APoxOFjXzV49ZmO3CfwA", "Meeting Length", "Length of meeting.");
+   public static final IAttributeType MeetingLocation = createType(0x10000000000000F8L, "Meeting Location", "Location meeting is held.");
+   public static final IAttributeType MeetingAttendee = createType(0x10000000000000F9L, "Meeting Attendee", "Attendee of meeting.");
+   public static final IAttributeType MeetingLength = createType(0x10000000000000D4L, "Meeting Length", "Length of meeting.");
 
-   public static final IAttributeType NeedBy = createType("AAMFEcxAGzHAKfDNAIwA", "Need By", "Hard schedule date that workflow must be completed.");
-   public static final IAttributeType NextVersion = createType("AAMFEcpH8Xb72hsF5AwA", "Next Version", "True if version artifact is \"Next\" version to be released.");
-   public static final IAttributeType Numeric1 = createType("AABY2xxQsDm811kCViwA", "Numeric1", "Open field for user to be able to enter numbers for sorting.");
-   public static final IAttributeType Numeric2 = createType("AABiRtvZsAEkU4BS9qwA", "Numeric2", Numeric1.getDescription());
-   public static final IAttributeType OperationalImpact = createType("ADTfjCBpFxlyV3o1wLwA", "Operational Impact");
-   public static final IAttributeType OperationalImpactDescription = createType("ADTfjCDvUF5PtiKdQ3wA", "Operational Impact Description");
-   public static final IAttributeType OperationalImpactWorkaround = createType("AbMqFfIwQHRbmzT_VTAA", "Operational Impact Workaround");
-   public static final IAttributeType OperationalImpactWorkaroundDescription = createType("AbMo7PoIukFDhQFJxKwA", "Operational Impact Workaround Description");
-   public static final IAttributeType PagesChanged= createType("AQR8yMuv4W84UwvSJAQA", "Pages Changed", "Total Pages of Changed");
-   public static final IAttributeType PagesReviewed = createType("AQR9qM8TTyCMb7sf4cQA", "Pages Reviewed", "Total Pages Reviewed");
-   public static final IAttributeType PercentRework = createType("AAMFEdKfjl2TII9+tuwA", "Percent Rework");
-   public static final IAttributeType PercentComplete = createType("AALLbOZiBBDN39YsRSAA", "Percent Complete");
+   public static final IAttributeType NeedBy = createType(0x10000000000000BBL, "Need By", "Hard schedule date that workflow must be completed.");
+   public static final IAttributeType NextVersion = createType(0x10000000000000B5L, "Next Version", "True if version artifact is \"Next\" version to be released.");
+   public static final IAttributeType Numeric1 = createType(0x10000000000000D0L, "Numeric1", "Open field for user to be able to enter numbers for sorting.");
+   public static final IAttributeType Numeric2 = createType(0x10000000000000D1L, "Numeric2", Numeric1.getDescription());
+   public static final IAttributeType OperationalImpact = createType(0x10000000000000EDL, "Operational Impact");
+   public static final IAttributeType OperationalImpactDescription = createType(0x10000000000000EEL, "Operational Impact Description");
+   public static final IAttributeType OperationalImpactWorkaround = createType(0x10000000000000EFL, "Operational Impact Workaround");
+   public static final IAttributeType OperationalImpactWorkaroundDescription = createType(0x10000000000000F0L, "Operational Impact Workaround Description");
+   public static final IAttributeType PagesChanged= createType(0x10000000000000E9L, "Pages Changed", "Total Pages of Changed");
+   public static final IAttributeType PagesReviewed = createType(0x10000000000000EAL, "Pages Reviewed", "Total Pages Reviewed");
+   public static final IAttributeType PercentRework = createType(0x10000000000000D5L, "Percent Rework");
+   public static final IAttributeType PercentComplete = createType(0x10000000000000CFL, "Percent Complete");
    
-   public static final IAttributeType Points = createType("AY2EeqhzcDEGtXtREkAA", "Points", "Abstract value that describes risk, complexity, and size of Actions.");
-   public static final IAttributeType PriorityType = createType("AAMFEc8JzH1U6XGD59QA", "Priority", "1 = High; 5 = Low");
-   public static final IAttributeType Problem = createType("AAMFEdQUxRyevvTu+bwA", "Problem", "Problem found during analysis.");
-   public static final IAttributeType ProposedResolution = createType("AAMFEdSSRDGgBQ5tctAA", "Proposed Resolution", "Recommended resolution.");
-   public static final IAttributeType RelatedToState = createType("AAMFEdkwHULOmHbMbGgA", "Related To State", "State of parent workflow this object is related to.");
-   public static final IAttributeType Released = createType("AAMFEcnMoUZMLA2zB1AA", "Released", "True if object is in a released state.");
-   public static final IAttributeType ReleaseDate = createType("AAMFEc3+cGcMDOCdmdAA", "Release Date", "Date the changes were made available to the users.");
-   public static final IAttributeType Resolution = createType("AAMFEdUMfV1KdbQNaKwA", "Resolution", "Implementation details.");
-   public static final IAttributeType ReviewBlocks = createType("AAMFEc6G2A8jmRWJgagA", "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
-   public static final IAttributeType ReviewDefect = createType("AAMFEd+MSVAb8JQ6f5gA", "Review Defect");
-   public static final IAttributeType ReviewFormalType = createType("AOwrClAkonFC_UKqyJAA", "Review Formal Type");
-   public static final IAttributeType Role = createType("AAMFEeCqMz0XCSBJ+IQA", "Role");
-   public static final IAttributeType RuleDefinition = createType("AEqAJNnkyW4_d5_WhpgA", "Rule Definition");
-   public static final IAttributeType SmaNote = createType("AAMFEdm7ywte8qayfbAA", "SMA Note", "Notes applicable to ATS object");
-   public static final IAttributeType State = createType("AAMFEdMa3wzVvp60xLQA", "State", "States of workflow state machine.");
-   public static final IAttributeType StateNotes = createType("AAMFEdiWPm7M_xV1EswA", "State Notes");
-   public static final IAttributeType SwEnhancement = createType("AAMFEgVmxCgOdP+DuNwA", "SW Enhancement");
-   public static final IAttributeType TeamDefinition = createType("AAMFEdd5bFEe18bd0lQA", "Team Definition");
-   public static final IAttributeType TeamUsesVersions = createType("AAMFEcrHnzPxQ7w3ligA", "Team Uses Versions", "True if Team Workflow uses versioning/releasing option.");
+   public static final IAttributeType Points = createType(0x10000000000000CAL, "Points", "Abstract value that describes risk, complexity, and size of Actions.");
+   public static final IAttributeType PriorityType = createType(0x10000000000000CBL, "Priority", "1 = High; 5 = Low");
+   public static final IAttributeType Problem = createType(0x10000000000000D9L, "Problem", "Problem found during analysis.");
+   public static final IAttributeType ProposedResolution = createType(0x10000000000000DAL, "Proposed Resolution", "Recommended resolution.");
+   public static final IAttributeType RelatedToState = createType(0x10000000000000E4L, "Related To State", "State of parent workflow this object is related to.");
+   public static final IAttributeType Released = createType(0x10000000000000B3L, "Released", "True if object is in a released state.");
+   public static final IAttributeType ReleaseDate = createType(0x10000000000000C7L, "Release Date", "Date the changes were made available to the users.");
+   public static final IAttributeType Resolution = createType(0x10000000000000DBL, "Resolution", "Implementation details.");
+   public static final IAttributeType ReviewBlocks = createType(0x10000000000000C8L, "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
+   public static final IAttributeType ReviewDefect = createType(0x10000000000000F6L, "Review Defect");
+   public static final IAttributeType ReviewFormalType = createType(0x10000000000000C9L, "Review Formal Type");
+   public static final IAttributeType Role = createType(0x10000000000000FAL, "Role");
+   public static final IAttributeType RuleDefinition = createType(0x10000000000000AEL, "Rule Definition");
+   public static final IAttributeType SmaNote = createType(0x10000000000000E5L, "SMA Note", "Notes applicable to ATS object");
+   public static final IAttributeType State = createType(0x10000000000000D7L, "State", "States of workflow state machine.");
+   public static final IAttributeType StateNotes = createType(0x10000000000000E3L, "State Notes");
+   public static final IAttributeType SwEnhancement = createType(0x10000000000000FBL, "SW Enhancement");
+   public static final IAttributeType TeamDefinition = createType(0x10000000000000E1L, "Team Definition");
+   public static final IAttributeType TeamUsesVersions = createType(0x10000000000000B6L, "Team Uses Versions", "True if Team Workflow uses versioning/releasing option.");
    public static final IAttributeType Title = createType(CoreAttributeTypes.Name.getGuid(), CoreAttributeTypes.Name.getName(), "Enter clear and consise title that can be generally understood.");
-   public static final IAttributeType UserCommunity = createType("AAMFEdAPtAq1IEwiCQAA", "User Community", "If working in one of these communities resulted in the creation of this Action, please select.  Otherwise, select Other.");
-   public static final IAttributeType ValidationRequired = createType("AAMFEcjT0TwkD2R4w1QA", "Validation Required", "If selected, originator will be asked to validate the implementation.");
-   public static final IAttributeType VersionLocked = createType("AAzRtEJXbjzR5jySOZgA", "Version Locked", "True if version artifact is locked.");
-   public static final IAttributeType WeeklyBenefit = createType("AAMFEdEnEU9AecOHMOwA", "Weekly Benefit", "Estimated number of hours that will be saved over a single year if this change is completed.");
-   public static final IAttributeType WorkflowDefinition = createType("AbksV06OrBP_ceKCeSQA", "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
-   public static final IAttributeType RelatedTaskWorkflowDefinitionOld = createType("AdR02A0xcUq4arK58BAA", "Used in 0.9.8 - Unused in 0.9.9 - Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
-   public static final IAttributeType RelatedTaskWorkDefinition = createType("AblApNMuhjVuyDRq6VgA", "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
-   public static final IAttributeType WorkPackage = createType("AAMFEdpJqRp2wvA2qvAA", "Work Package", "Designated accounting work package for completing workflow.");
+   public static final IAttributeType UserCommunity = createType(0x10000000000000CDL, "User Community", "If working in one of these communities resulted in the creation of this Action, please select.  Otherwise, select Other.");
+   public static final IAttributeType ValidationRequired = createType(0x10000000000000AAL, "Validation Required", "If selected, originator will be asked to validate the implementation.");
+   public static final IAttributeType VersionLocked = createType(0x10000000000000B4L, "Version Locked", "True if version artifact is locked.");
+   public static final IAttributeType WeeklyBenefit = createType(0x10000000000000D2L, "Weekly Benefit", "Estimated number of hours that will be saved over a single year if this change is completed.");
+   public static final IAttributeType WorkflowDefinition = createType(0x10000000000000ADL, "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
+   public static final IAttributeType RelatedTaskWorkflowDefinitionOld = createType(0x10000000000000AFL, "Used in 0.9.8 - Unused in 0.9.9 - Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
+   public static final IAttributeType RelatedTaskWorkDefinition = createType(0x10000000000000B0L, "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
+   public static final IAttributeType WorkPackage = createType(0x10000000000000E6L, "Work Package", "Designated accounting work package for completing workflow.");
    
    
    // @formatter:on
 
-   private static IAttributeType createType(String guid, String name) {
+   private static IAttributeType createType(Long guid, String name) {
       IAttributeType type = TokenFactory.createAttributeType(guid, "ats." + name);
       nameToTypeMap.put(type.getName(), type);
       return type;
    }
 
-   private static IAttributeType createType(String guid, String name, String description) {
+   private static IAttributeType createType(Long guid, String name, String description) {
       IAttributeType type = TokenFactory.createAttributeType(guid, "ats." + name, description);
       nameToTypeMap.put(type.getName(), type);
       return type;

@@ -7,17 +7,16 @@ package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
-public class AbstractOseeTypeCacheTest<T extends AbstractOseeType<String>> extends AbstractOseeCacheTest<String, T> {
+public class AbstractOseeTypeCacheTest<T extends AbstractOseeType<Long>> extends AbstractOseeCacheTest<Long, T> {
 
-   // john chage String in template area
-   public AbstractOseeTypeCacheTest(List<T> artifactTypes, AbstractOseeCache<String, T> typeCache) {
+   public AbstractOseeTypeCacheTest(List<T> artifactTypes, AbstractOseeCache<Long, T> typeCache) {
       super(artifactTypes, typeCache);
    }
 
    @Override
-   protected String createKey() {
-      return GUID.create();
+   protected Long createKey() {
+      // john check what needs to happen here.
+      return 0x00L;
    }
 }

@@ -25,7 +25,7 @@ public class EventModifiedBasicGuidArtifact extends EventBasicGuidArtifact {
       this.attributeChanges = attributeChanges;
    }
 
-   public EventModifiedBasicGuidArtifact(String branchGuid, String artTypeGuid, String guid, Collection<AttributeChange> attributeChanges) {
+   public EventModifiedBasicGuidArtifact(String branchGuid, Long artTypeGuid, String guid, Collection<AttributeChange> attributeChanges) {
       super(EventModType.Modified, branchGuid, artTypeGuid, guid);
       this.attributeChanges = attributeChanges;
    }

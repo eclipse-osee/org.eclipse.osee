@@ -44,7 +44,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeTypeCacheTest<ArtifactTyp
       super(artifactTypes, artCache);
    }
 
-   private final static class ArtifactDataAccessor extends MockOseeDataAccessor<String, ArtifactType> {
+   private final static class ArtifactDataAccessor extends MockOseeDataAccessor<Long, ArtifactType> {
       private final List<ArtifactType> artifactTypes;
 
       public ArtifactDataAccessor(List<ArtifactType> artifactTypes) {
@@ -53,7 +53,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeTypeCacheTest<ArtifactTyp
       }
 
       @Override
-      public void load(IOseeCache<String, ArtifactType> cache) throws OseeCoreException {
+      public void load(IOseeCache<Long, ArtifactType> cache) throws OseeCoreException {
          super.load(cache);
 
          int typeId = 100;

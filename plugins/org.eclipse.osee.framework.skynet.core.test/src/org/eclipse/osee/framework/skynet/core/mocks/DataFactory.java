@@ -37,7 +37,7 @@ public final class DataFactory {
 
    public static ArtifactType fromToken(IArtifactType artifactType) {
       String name = artifactType.getName();
-      String guid = artifactType.getGuid();
+      Long guid = artifactType.getGuid();
       return new ArtifactType(guid, name, true);
    }
 

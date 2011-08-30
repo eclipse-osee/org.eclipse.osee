@@ -29,13 +29,13 @@ import org.eclipse.osee.framework.core.model.internal.fields.EnumEntryField;
  * 
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends AbstractOseeType<String> {
+public class OseeEnumType extends AbstractOseeType<Long> {
 
    public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 
    private final Collection<OseeEnumEntry> enumEntries = new HashSet<OseeEnumEntry>();
 
-   public OseeEnumType(String guid, String enumTypeName) {
+   public OseeEnumType(Long guid, String enumTypeName) {
       super(guid, enumTypeName);
       addField(OSEE_ENUM_TYPE_ENTRIES_FIELD, new EnumEntryField(enumEntries));
    }

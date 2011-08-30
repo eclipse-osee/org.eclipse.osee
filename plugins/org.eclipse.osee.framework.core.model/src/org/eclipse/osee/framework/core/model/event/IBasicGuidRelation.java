@@ -19,7 +19,7 @@ public interface IBasicGuidRelation {
 
    DefaultBasicGuidArtifact getArtB();
 
-   String getRelTypeGuid();
+   Long getRelTypeGuid();
 
    String getBranchGuid();
 

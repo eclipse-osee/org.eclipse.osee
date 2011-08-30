@@ -17,11 +17,14 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.server.internal.ServerActivator;
 import org.eclipse.osee.framework.core.server.internal.ServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -40,25 +43,30 @@ public final class UserDataStore {
       IOseeStatement chStmt = null;
       IOseeCachingService cachingService = ServiceProvider.getCachingService();
       try {
-         int attributeTypeId = cachingService.getAttributeTypeCache().getLocalId(CoreAttributeTypes.UserId);
-         int branchId = cachingService.getBranchCache().get(CoreBranches.COMMON).getId();
 
-         chStmt = ConnectionHandler.getStatement();
-         chStmt.runPreparedQuery(LOAD_OSEE_USER, attributeTypeId, branchId, TxChange.CURRENT.getValue(), userId);
-         if (chStmt.next()) {
-            // Only need the userId all other fields will be loaded by the client
-            toReturn = TokenFactory.createUserToken(null, "-", "-", chStmt.getString("user_id"), true, false, false);
+         int attributeTypeId = cachingService.getAttributeTypeCache().getLocalId(CoreAttributeTypes.UserId);
+         Branch branch = cachingService.getBranchCache().get(CoreBranches.COMMON);
+         if (branch != null) {
+            int branchId = branch.getId();
+
+            chStmt = ConnectionHandler.getStatement();
+            chStmt.runPreparedQuery(LOAD_OSEE_USER, attributeTypeId, branchId, TxChange.CURRENT.getValue(), userId);
+            if (chStmt.next()) {
+               toReturn =
+                  TokenFactory.createUserToken(GUID.create(), "-", "-", chStmt.getString("user_id"), true, false, false);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.logf(ServerActivator.class, Level.SEVERE, ex, "Unable to find userId [%s] in OSEE database.", userId);
       } finally {
-         chStmt.close();
+         Lib.close(chStmt);
       }
       return toReturn;
    }
 
    public static IUserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-      return TokenFactory.createUserToken(null, userName, userEmail, userId, isActive, false, isCreationRequired);
+      return TokenFactory.createUserToken(GUID.create(), userName, userEmail, userId, isActive, false,
+         isCreationRequired);
    }
 
 }

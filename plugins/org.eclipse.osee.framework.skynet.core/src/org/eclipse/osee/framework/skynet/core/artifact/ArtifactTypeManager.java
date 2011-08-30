@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -101,8 +100,8 @@ public class ArtifactTypeManager {
     * @return Returns the artifact type matching the guid
     * @param guid artifact type guid to match
     */
-   public static ArtifactType getTypeByGuid(String guid) throws OseeCoreException {
-      if (!GUID.isValid(guid)) {
+   public static ArtifactType getTypeByGuid(Long guid) throws OseeCoreException {
+      if (guid == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
       ArtifactType artifactType = getCache().getByGuid(guid);

@@ -51,7 +51,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
       ModelAsserts.checkEnumType(expected, actual);
    }
 
-   private final static class EnumDataAccessor extends MockOseeDataAccessor<String, OseeEnumType> {
+   private final static class EnumDataAccessor extends MockOseeDataAccessor<Long, OseeEnumType> {
       private final List<OseeEnumType> oseeEnumTypes;
 
       public EnumDataAccessor(List<OseeEnumType> oseeEnumTypes) {
@@ -60,7 +60,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
       }
 
       @Override
-      public void load(IOseeCache<String, OseeEnumType> cache) throws OseeCoreException {
+      public void load(IOseeCache<Long, OseeEnumType> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

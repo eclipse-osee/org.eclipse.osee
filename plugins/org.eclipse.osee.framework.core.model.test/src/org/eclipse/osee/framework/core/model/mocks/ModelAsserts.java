@@ -135,7 +135,7 @@ public class ModelAsserts {
       }
    }
 
-   public static RelationType createRelationType(AbstractOseeCache<String, ArtifactType> artCache, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
+   public static RelationType createRelationType(AbstractOseeCache<Long, ArtifactType> artCache, Long guid, String name, Long aGUID, Long bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
       IArtifactType type1 = artCache.getByGuid(aGUID);
       IArtifactType type2 = artCache.getByGuid(bGUID);
       RelationType relationType =
@@ -155,7 +155,7 @@ public class ModelAsserts {
       return branch;
    }
 
-   public static AttributeType createAttributeType(String guid, String name) {
+   public static AttributeType createAttributeType(Long guid, String name) {
       AttributeType attributeType =
          new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", 1, 1, "test data", null);
       Assert.assertNotNull(attributeType);
@@ -174,7 +174,7 @@ public class ModelAsserts {
       }
    }
 
-   public static OseeEnumType createEnumType(IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
+   public static OseeEnumType createEnumType(IOseeTypeFactory factory, Long guid, String name, Object... entries) throws OseeCoreException {
       OseeEnumType type = new OseeEnumType(guid, name);
       if (entries != null && entries.length > 0) {
          List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
@@ -220,12 +220,12 @@ public class ModelAsserts {
       Assert.assertEquals(expected.getGuid(), actual.getGuid());
    }
 
-   public static void checkInheritance(AbstractOseeCache<String, ArtifactType> artCache, String artTypeGuid, String... superTypeGuids) throws OseeCoreException {
+   public static void checkInheritance(AbstractOseeCache<Long, ArtifactType> artCache, Long artTypeGuid, Long... superTypeGuids) throws OseeCoreException {
       ArtifactType target = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(target);
 
       List<ArtifactType> expectedSuperTypes = new ArrayList<ArtifactType>();
-      for (String superTyperGuid : superTypeGuids) {
+      for (Long superTyperGuid : superTypeGuids) {
          ArtifactType superArtifactType = artCache.getByGuid(superTyperGuid);
          Assert.assertNotNull(superArtifactType);
          expectedSuperTypes.add(superArtifactType);
@@ -243,12 +243,12 @@ public class ModelAsserts {
       }
    }
 
-   public static void checkDescendants(AbstractOseeCache<String, ArtifactType> artCache, String artTypeGuid, boolean isAllLevels, String... descendantGuids) throws OseeCoreException {
+   public static void checkDescendants(AbstractOseeCache<Long, ArtifactType> artCache, Long artTypeGuid, boolean isAllLevels, Long... descendantGuids) throws OseeCoreException {
       ArtifactType target = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(target);
 
       List<ArtifactType> expectedDescendants = new ArrayList<ArtifactType>();
-      for (String type : descendantGuids) {
+      for (Long type : descendantGuids) {
          ArtifactType childType = artCache.getByGuid(type);
          Assert.assertNotNull(childType);
          expectedDescendants.add(childType);
@@ -272,12 +272,12 @@ public class ModelAsserts {
       }
    }
 
-   public static void checkAttributes(AbstractOseeCache<String, ArtifactType> artCache, AbstractOseeCache<String, AttributeType> attrCache, String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
+   public static void checkAttributes(AbstractOseeCache<Long, ArtifactType> artCache, AbstractOseeCache<Long, AttributeType> attrCache, Long artTypeGuid, Branch branch, Long... attributeGuids) throws OseeCoreException {
       ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(artifactType);
 
       List<IAttributeType> expectedAttributes = new ArrayList<IAttributeType>();
-      for (String attrGuid : attributeGuids) {
+      for (Long attrGuid : attributeGuids) {
          IAttributeType attributeType = attrCache.getByGuid(attrGuid);
          Assert.assertNotNull(attributeType);
          expectedAttributes.add(attributeType);
@@ -299,7 +299,7 @@ public class ModelAsserts {
          artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
    }
 
-   public static void checkRelationTypeInheritance(AbstractOseeCache<String, RelationType> cache, AbstractOseeCache<String, ArtifactType> artCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
+   public static void checkRelationTypeInheritance(AbstractOseeCache<Long, RelationType> cache, AbstractOseeCache<Long, ArtifactType> artCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
       RelationType relationType = cache.getByGuid(relGuid);
       Assert.assertNotNull(relationType);
 

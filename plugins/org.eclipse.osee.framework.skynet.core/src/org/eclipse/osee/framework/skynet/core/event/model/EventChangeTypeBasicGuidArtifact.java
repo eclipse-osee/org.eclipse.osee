@@ -18,14 +18,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  */
 public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
 
-   private final String fromArtTypeGuid;
+   private final Long fromArtTypeGuid;
 
-   public EventChangeTypeBasicGuidArtifact(String branchGuid, String fromArtTypeGuid, String artTypeGuid, String guid) {
+   public EventChangeTypeBasicGuidArtifact(String branchGuid, Long fromArtTypeGuid, Long artTypeGuid, String guid) {
       super(EventModType.ChangeType, branchGuid, artTypeGuid, guid);
       this.fromArtTypeGuid = fromArtTypeGuid;
    }
 
-   public String getFromArtTypeGuid() {
+   public Long getFromArtTypeGuid() {
       return fromArtTypeGuid;
    }
 

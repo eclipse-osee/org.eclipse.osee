@@ -19,23 +19,23 @@ public final class TokenFactory {
       // Utility Class
    }
 
-   public static IArtifactType createArtifactType(String guid, String name) {
+   public static IArtifactType createArtifactType(long guid, String name) {
       return new ArtifactTypeToken(guid, name);
    }
 
-   public static IAttributeType createAttributeType(String guid, String name) {
+   public static IAttributeType createAttributeType(long guid, String name) {
       return new AttributeTypeToken(guid, name);
    }
 
-   public static IAttributeType createAttributeType(String guid, String name, String description) {
+   public static IAttributeType createAttributeType(long guid, String name, String description) {
       return new AttributeTypeToken(guid, name, description);
    }
 
-   public static IRelationType createRelationType(String guid, String name) {
+   public static IRelationType createRelationType(long guid, String name) {
       return new RelationTypeToken(guid, name);
    }
 
-   public static IRelationTypeSide createRelationTypeSide(RelationSide relationSide, String guid, String name) {
+   public static IRelationTypeSide createRelationTypeSide(RelationSide relationSide, long guid, String name) {
       return new RelationTypeSideToken(guid, name, relationSide);
    }
 
@@ -55,8 +55,8 @@ public final class TokenFactory {
       return new BranchToken(guid, name);
    }
 
-   private final static class ArtifactTypeToken extends NamedIdentity<String> implements IArtifactType {
-      public ArtifactTypeToken(String guid, String name) {
+   private final static class ArtifactTypeToken extends NamedIdentity<Long> implements IArtifactType {
+      public ArtifactTypeToken(Long guid, String name) {
          super(guid, name);
       }
    }
@@ -67,18 +67,18 @@ public final class TokenFactory {
       }
    }
 
-   private final static class AttributeTypeToken extends NamedIdentity<String> implements IAttributeType {
-      public AttributeTypeToken(String guid, String name) {
+   private final static class AttributeTypeToken extends NamedIdentity<Long> implements IAttributeType {
+      public AttributeTypeToken(Long guid, String name) {
          super(guid, name);
       }
 
-      public AttributeTypeToken(String guid, String name, String description) {
+      public AttributeTypeToken(Long guid, String name, String description) {
          super(guid, name, description);
       }
    }
 
-   private final static class RelationTypeToken extends NamedIdentity<String> implements IRelationType {
-      public RelationTypeToken(String guid, String name) {
+   private final static class RelationTypeToken extends NamedIdentity<Long> implements IRelationType {
+      public RelationTypeToken(Long guid, String name) {
          super(guid, name);
       }
    }
@@ -157,10 +157,10 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeSideToken extends NamedIdentity<String> implements IRelationTypeSide {
+   private final static class RelationTypeSideToken extends NamedIdentity<Long> implements IRelationTypeSide {
       private final RelationSide relationSide;
 
-      private RelationTypeSideToken(String guid, String name, RelationSide relationSide) {
+      private RelationTypeSideToken(Long guid, String name, RelationSide relationSide) {
          super(guid, name);
          this.relationSide = relationSide;
       }

@@ -510,9 +510,10 @@ public class QuickSearchOptionComposite extends Composite {
             configuration.clear();
             for (String entry : items) {
                try {
-                  AttributeType type = AttributeTypeManager.getTypeByGuid(entry);
+                  Long id = Long.parseLong(entry);
+                  AttributeType type = AttributeTypeManager.getTypeByGuid(id);
                   configuration.add(type);
-               } catch (OseeCoreException ex) {
+               } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
@@ -541,7 +542,7 @@ public class QuickSearchOptionComposite extends Composite {
          String[] guids = new String[configuration.size()];
          int index = 0;
          for (IAttributeType type : configuration) {
-            guids[index++] = type.getGuid();
+            guids[index++] = String.valueOf(type.getGuid());
          }
          return guids;
       }

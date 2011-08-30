@@ -425,7 +425,7 @@ public class ArtifactEventTest {
       DefaultBasicGuidRelationReorder guidReorder = resultEventReorders.iterator().next();
       Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
       Assert.assertEquals(parentRemGuidArt.getArtGuid(), guidReorder.getParentArt().getGuid());
-      Assert.assertEquals(parentRemGuidArt.getArtTypeGuid(), guidReorder.getParentArt().getArtTypeGuid());
+      Assert.assertEquals(parentRemGuidArt.getArtTypeGuid(), (long) guidReorder.getParentArt().getArtTypeGuid());
       Assert.assertEquals(parentRemGuidArt.getBranchGuid(), guidReorder.getParentArt().getBranchGuid());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
       Assert.assertEquals(injectArt.getBranch().getGuid(), guidReorder.getBranchGuid());

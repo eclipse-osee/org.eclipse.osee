@@ -67,7 +67,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    private final Map<String, Collection<IAccessContextId>> branchGuidToContextIdCache =
       new HashMap<String, Collection<IAccessContextId>>(50);
    long cacheUpdated = 0;
-   private static List<String> atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(),
+   private static List<Long> atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(),
       AtsArtifactTypes.TeamDefinition.getGuid());
 
    public AtsBranchAccessManager() {

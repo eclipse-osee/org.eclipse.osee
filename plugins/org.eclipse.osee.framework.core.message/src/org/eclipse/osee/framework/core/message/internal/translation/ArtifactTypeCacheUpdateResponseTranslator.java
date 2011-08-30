@@ -37,7 +37,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
    public ArtifactTypeCacheUpdateResponse convert(PropertyStore store) {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
-      List<Triplet<String, String, String>> artAttrs = new ArrayList<Triplet<String, String, String>>();
+      List<Triplet<Long, String, Long>> artAttrs = new ArrayList<Triplet<Long, String, Long>>();
 
       int rowCount = store.getInt(Fields.ITEM_COUNT.name());
       for (int index = 0; index < rowCount; index++) {
@@ -46,7 +46,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
       }
 
       TranslationUtil.loadIntArrayMap(baseToSuper, store, Fields.BASE_TO_SUPER_TYPES);
-      TranslationUtil.loadTripletList(artAttrs, store, Fields.BASE_BRANCH_ATTR);
+      TranslationUtil.loadTripletLongList(artAttrs, store, Fields.BASE_BRANCH_ATTR);
       return new ArtifactTypeCacheUpdateResponse(rows, baseToSuper, artAttrs);
    }
 
@@ -61,7 +61,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
       store.put(Fields.ITEM_COUNT.name(), rows.size());
 
       TranslationUtil.putIntArrayMap(store, Fields.BASE_TO_SUPER_TYPES, object.getBaseToSuperTypes());
-      TranslationUtil.putTripletList(store, Fields.BASE_BRANCH_ATTR, object.getAttributeTypes());
+      TranslationUtil.putTripletLongList(store, Fields.BASE_BRANCH_ATTR, object.getAttributeTypes());
       return store;
    }
 

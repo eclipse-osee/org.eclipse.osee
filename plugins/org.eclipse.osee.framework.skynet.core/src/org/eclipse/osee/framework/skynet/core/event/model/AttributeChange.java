@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 public class AttributeChange extends FrameworkEvent {
 
    @XmlElement(required = true)
-   protected String attrTypeGuid;
+   protected Long attrTypeGuid;
    @XmlElement(required = true)
    protected String modTypeGuid;
    protected int attributeId;
@@ -55,18 +55,18 @@ public class AttributeChange extends FrameworkEvent {
    /**
     * Gets the value of the attrTypeGuid property.
     * 
-    * @return possible object is {@link String }
+    * @return possible object is {@link Long }
     */
-   public String getAttrTypeGuid() {
+   public Long getAttrTypeGuid() {
       return attrTypeGuid;
    }
 
    /**
     * Sets the value of the attrTypeGuid property.
     * 
-    * @param value allowed object is {@link String }
+    * @param value allowed object is {@link Long }
     */
-   public void setAttrTypeGuid(String value) {
+   public void setAttrTypeGuid(Long value) {
       this.attrTypeGuid = value;
    }
 

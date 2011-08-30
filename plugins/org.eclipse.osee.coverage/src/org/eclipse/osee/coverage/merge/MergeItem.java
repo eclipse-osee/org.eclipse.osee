@@ -15,6 +15,7 @@ import java.util.Collections;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -27,14 +28,14 @@ public class MergeItem extends MergeItemBase {
    private final ICoverage importItem;
 
    public MergeItem(MergeType mergeType, ICoverage packageItem, ICoverage importItem, boolean isCheckable) {
-      super(importItem == null ? null : importItem.getGuid(), importItem == null ? String.format("Package [%s]",
-         packageItem.getName()) : importItem.getName(), mergeType, isCheckable);
+      super(importItem == null ? GUID.create() : importItem.getGuid(), importItem == null ? String.format(
+         "Package [%s]", packageItem.getName()) : importItem.getName(), mergeType, isCheckable);
       this.packageItem = packageItem;
       this.importItem = importItem;
    }
 
    public MergeItem(MergeType mergeType, String name) {
-      super(null, name, mergeType, false);
+      super(GUID.create(), name, mergeType, false);
       this.packageItem = null;
       this.importItem = null;
    }

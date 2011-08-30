@@ -24,19 +24,18 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public class RelationTypeFactory implements IOseeTypeFactory {
 
-   public RelationType create(String guid, String name, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType create(Long guid, String name, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "relation type name");
       Conditions.checkNotNullOrEmpty(sideAName, "side A name");
       Conditions.checkNotNullOrEmpty(sideBName, "side B name");
       Conditions.checkNotNull(artifactTypeSideA, "artifact type A");
       Conditions.checkNotNull(artifactTypeSideB, "relation type B");
       Conditions.checkNotNull(multiplicity, "multiplicity");
-      String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new RelationType(checkedGuid, name, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
-         multiplicity, defaultOrderTypeGuid);
+      return new RelationType(guid, name, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
+         defaultOrderTypeGuid);
    }
 
-   public RelationType createOrUpdate(RelationTypeCache cache, String guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType createOrUpdate(RelationTypeCache cache, Long guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationType relationType = cache.getByGuid(guid);
       if (relationType == null) {
          relationType =
@@ -51,7 +50,7 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       return relationType;
    }
 
-   public RelationType createOrUpdate(IOseeCache<String, RelationType> cache, int typeId, StorageState storageState, String guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType createOrUpdate(IOseeCache<Long, RelationType> cache, int typeId, StorageState storageState, Long guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationType relationType = cache.getById(typeId);
       if (relationType == null) {
          relationType =

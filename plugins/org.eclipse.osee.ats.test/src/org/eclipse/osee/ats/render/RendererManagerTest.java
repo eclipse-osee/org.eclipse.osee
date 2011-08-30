@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.editor.AtsWorkflowRenderer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -76,7 +77,7 @@ public class RendererManagerTest {
 
    @Test
    public void testGetBestRenderer() throws OseeCoreException {
-      Artifact artifact = new Artifact(null, null, null, BranchManager.getCommonBranch(), artifactType);
+      Artifact artifact = new Artifact(null, GUID.create(), null, BranchManager.getCommonBranch(), artifactType);
 
       if (defaultOption == Both) {
          testGetBestRendererWithOption(artifact, On);

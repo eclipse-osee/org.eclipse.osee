@@ -1628,7 +1628,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    @Override
-   public final String getArtTypeGuid() {
+   public final Long getArtTypeGuid() {
       return getArtifactType().getGuid();
    }
 

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public final class AttributeType extends AbstractOseeType<String> implements IAttributeType {
+public final class AttributeType extends AbstractOseeType<Long> implements IAttributeType {
 
    private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
    private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";
@@ -34,7 +34,7 @@ public final class AttributeType extends AbstractOseeType<String> implements IAt
    private static final String ATTRIBUTE_FILE_EXTENSION_FIELD_KEY = "osee.attribute.file.type.extension.field";
    private static final String ATTRIBUTE_TAGGER_ID_FIELD_KEY = "osee.attribute.tagger.id.field";
 
-   public AttributeType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+   public AttributeType(Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String description, String taggerId) {
       super(guid, typeName);
       initializeFields();
       setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, null,

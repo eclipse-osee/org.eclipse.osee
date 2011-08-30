@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<String, OseeEnumType> {
+public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<Long, OseeEnumType> {
 
    private final OseeEnumTypeFactory enumTypeFactory;
 
@@ -38,7 +38,7 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<Strin
    }
 
    @Override
-   protected Collection<OseeEnumType> updateCache(IOseeCache<String, OseeEnumType> cache) throws OseeCoreException {
+   protected Collection<OseeEnumType> updateCache(IOseeCache<Long, OseeEnumType> cache) throws OseeCoreException {
       List<OseeEnumType> enumTypes = new ArrayList<OseeEnumType>();
       OseeEnumTypeCacheUpdateResponse response =
          requestUpdateMessage(cache, CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
@@ -47,11 +47,11 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<Strin
 
       for (String[] enumTypeRow : response.getEnumTypeRows()) {
          enumTypes.add(factory.createOrUpdate(cache, Integer.parseInt(enumTypeRow[0]),
-            StorageState.valueOf(enumTypeRow[1]), enumTypeRow[2], enumTypeRow[3]));
+            StorageState.valueOf(enumTypeRow[1]), Long.valueOf(enumTypeRow[2]), enumTypeRow[3]));
       }
 
       for (String[] enumEntryRow : response.getEnumEntryRows()) {
-         factory.createOrUpdate(cache, enumEntryRow[0], enumEntryRow[1], enumEntryRow[2],
+         factory.createOrUpdate(cache, Long.valueOf(enumEntryRow[0]), enumEntryRow[1], enumEntryRow[2],
             Integer.parseInt(enumEntryRow[3]));
       }
       return enumTypes;

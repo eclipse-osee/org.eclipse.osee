@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 public final class CoverageRelationTypes {
 
    public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Version = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
+      RelationSide.SIDE_B, 0x200000000000016FL, "TeamWorkflowTargetedForVersion");
    public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Workflow = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
+      RelationSide.SIDE_A, 0x200000000000016FL, "TeamWorkflowTargetedForVersion");
    public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+      RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide ActionToWorkflow_WorkFlow = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+      RelationSide.SIDE_B, 0x200000000000016DL, "ActionToWorkflow");
 
    private CoverageRelationTypes() {
       // Constants

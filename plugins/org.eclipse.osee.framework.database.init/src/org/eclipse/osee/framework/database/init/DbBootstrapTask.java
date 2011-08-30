@@ -69,6 +69,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       IOseeDatabaseService databaseService = DatabaseInitActivator.getInstance().getDatabaseService();
       databaseService.getSequence().clear();
+      databaseService.getRemoteIdManager().clear();
 
       Branch systemRoot = BranchManager.getSystemRootBranch();
       Conditions.checkNotNull(systemRoot, "System root was not created - ");
@@ -89,6 +90,8 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       OseeTypesSetup oseeTypesSetup = new OseeTypesSetup();
       oseeTypesSetup.execute(oseeTypes);
+
+      service.clearAll();
    }
 
    private void createOseeDatastore() throws OseeCoreException {

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -328,7 +329,14 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       }
    }
 
-   public final int getLocalId(Identity token) throws OseeCoreException {
-      return get(token).getId();
+   public final int getLocalId(Identity<K> token) throws OseeCoreException {
+      T type = get(token);
+      return type != null ? type.getId() : IOseeStorable.UNPERSISTED_VALUE;
+   }
+
+   public void cacheFrom(AbstractOseeCache<K, T> source) throws OseeCoreException {
+      for (T type : source.getAll()) {
+         cache(type);
+      }
    }
 }

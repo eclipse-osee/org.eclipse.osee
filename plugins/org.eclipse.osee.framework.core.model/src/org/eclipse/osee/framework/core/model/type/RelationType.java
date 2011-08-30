@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.OseeField;
 /**
  * @author Robert A. Fisher
  */
-public final class RelationType extends AbstractOseeType<String> implements IRelationType {
+public final class RelationType extends AbstractOseeType<Long> implements IRelationType {
 
    private static final String RELATION_SIDE_A_NAME_FIELD_KEY = "osee.relation.type.side.a.name.field";
    private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";
@@ -32,7 +32,7 @@ public final class RelationType extends AbstractOseeType<String> implements IRel
       "osee.relation.type.default.order.type.guid.field";
    private static final String RELATION_MULTIPLICITY_FIELD_KEY = "osee.relation.type.multiplicity.field";
 
-   public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+   public RelationType(Long guid, String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
       super(guid, relationTypeName);
       initializeFields();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,

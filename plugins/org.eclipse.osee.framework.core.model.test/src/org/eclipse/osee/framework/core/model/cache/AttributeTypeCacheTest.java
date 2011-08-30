@@ -44,7 +44,7 @@ public class AttributeTypeCacheTest extends AbstractOseeTypeCacheTest<AttributeT
       super(attributeTypes, attrCache);
    }
 
-   private final static class AttributeDataAccessor extends MockOseeDataAccessor<String, AttributeType> {
+   private final static class AttributeDataAccessor extends MockOseeDataAccessor<Long, AttributeType> {
 
       private final List<AttributeType> attributeTypes;
 
@@ -54,7 +54,7 @@ public class AttributeTypeCacheTest extends AbstractOseeTypeCacheTest<AttributeT
       }
 
       @Override
-      public void load(IOseeCache<String, AttributeType> cache) throws OseeCoreException {
+      public void load(IOseeCache<Long, AttributeType> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

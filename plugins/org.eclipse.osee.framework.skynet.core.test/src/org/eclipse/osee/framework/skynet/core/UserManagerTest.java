@@ -21,8 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -41,8 +40,8 @@ public final class UserManagerTest {
 
    private User createUser(SkynetTransaction transaction, int index) throws OseeCoreException {
       IUserToken token =
-         TokenFactory.createUserToken(null, NEW_USER_NAMES[index], "this" + index + "@that.com", "9999999" + index,
-            true, index % 2 == 0, true);
+         TokenFactory.createUserToken(GUID.create(), NEW_USER_NAMES[index], "this" + index + "@that.com",
+            "9999999" + index, true, index % 2 == 0, true);
       User user = UserManager.createUser(token, transaction);
       user.persist(transaction);
       return user;

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.type;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -18,18 +17,19 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AbstractOseeTypeTest<T extends AbstractOseeType> {
+public class AbstractOseeTypeTest<K, T extends AbstractOseeType<K>> {
 
    private final T type;
    private final String name;
-   private final String guid;
+   private final K guid;
 
-   protected AbstractOseeTypeTest(T type, String guid, String name) {
+   protected AbstractOseeTypeTest(T type, K guid, String name) {
       this.type = type;
       this.name = name;
       this.guid = guid;
@@ -43,7 +43,7 @@ public class AbstractOseeTypeTest<T extends AbstractOseeType> {
       return name;
    }
 
-   protected String getExpectedGuid() {
+   protected K getExpectedGuid() {
       return guid;
    }
 

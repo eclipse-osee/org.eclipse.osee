@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
-public class SessionTest extends AbstractOseeTypeTest<Session> {
+public class SessionTest extends AbstractOseeTypeTest<String, Session> {
 
    private final int expectedId;
    private final String expectedClientAddress;

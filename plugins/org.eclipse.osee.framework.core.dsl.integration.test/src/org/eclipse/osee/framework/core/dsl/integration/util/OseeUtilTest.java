@@ -78,7 +78,7 @@ public class OseeUtilTest {
    }
 
    @Test
-   public void testToTokenArtifactType() {
+   public void testToTokenArtifactType() throws OseeCoreException {
       XArtifactType type = OseeDslFactory.eINSTANCE.createXArtifactType();
       IArtifactType expected = CoreArtifactTypes.GlobalPreferences;
 
@@ -93,7 +93,7 @@ public class OseeUtilTest {
    }
 
    @Test
-   public void testToTokenAttributeType() {
+   public void testToTokenAttributeType() throws OseeCoreException {
       XAttributeType type = OseeDslFactory.eINSTANCE.createXAttributeType();
       IAttributeType expected = CoreAttributeTypes.Description;
 
@@ -108,7 +108,7 @@ public class OseeUtilTest {
    }
 
    @Test
-   public void testToTokenRelationType() {
+   public void testToTokenRelationType() throws OseeCoreException {
       XRelationType type = OseeDslFactory.eINSTANCE.createXRelationType();
       IRelationType expected = CoreRelationTypes.Allocation__Component;
 
@@ -180,11 +180,11 @@ public class OseeUtilTest {
       }
    }
 
-   private static void setupToToken(OseeType typeToCheck, Identity<String> expected) {
+   private static void setupToToken(OseeType typeToCheck, Identity<Long> expected) {
       String name = "bogus name"; // This should not affect equality
-      String guid = expected.getGuid();
+      Long guid = expected.getGuid();
       typeToCheck.setName(name);
-      typeToCheck.setTypeGuid(guid);
+      typeToCheck.setUuid(String.valueOf(guid));
 
       Assert.assertEquals(name, typeToCheck.getName());
       Assert.assertEquals(guid, typeToCheck.getTypeGuid());

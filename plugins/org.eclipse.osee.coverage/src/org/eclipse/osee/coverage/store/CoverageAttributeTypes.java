@@ -19,16 +19,16 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class CoverageAttributeTypes {
 
    // @formatter:off
-   public static final IAttributeType Assignees = TokenFactory.createAttributeType("AARCA+XjSyKjnh3sweQA", "coverage.Assignees");
-   public static final IAttributeType Item = TokenFactory.createAttributeType("AARr8BmsQHKLOHNzOcQA", "coverage.Coverage Item");
-   public static final IAttributeType Options = TokenFactory.createAttributeType("AAF+8+sqyELZ2mdVV_AA", "coverage.Coverage Options");
-   public static final IAttributeType FileContents = TokenFactory.createAttributeType("AARDJK8YAT3SDnghjQgA", "coverage.File Contents");
-   public static final IAttributeType Location = TokenFactory.createAttributeType("AARA2XwhNRddgQrd0iwA", "coverage.Location");
-   public static final IAttributeType Namespace = TokenFactory.createAttributeType("AAQ_v6uUrh0j39+4D5gA", "coverage.Namespace");
-   public static final IAttributeType WorkProductTaskGuid = TokenFactory.createAttributeType("A+m7Y2sV2z83QUlkzIAA", "coverage.WorkProductTaskGuid");
-   public static final IAttributeType WorkProductPcrGuid = TokenFactory.createAttributeType("AWuQmRuq1gwrejEWRgAA", "coverage.WorkProductPcrGuid");
-   public static final IAttributeType Notes = TokenFactory.createAttributeType("AARERmIjazD1udUwfLgA", "coverage.Notes");
-   public static final IAttributeType Order = TokenFactory.createAttributeType("AD72opMBR1pFxB0hVpQA", "coverage.Order");
+   public static final IAttributeType Assignees = TokenFactory.createAttributeType(0x1000000000000101L, "coverage.Assignees");
+   public static final IAttributeType Item = TokenFactory.createAttributeType(0x1000000000000104L, "coverage.Coverage Item");
+   public static final IAttributeType Options = TokenFactory.createAttributeType(0x10000000000000FDL, "coverage.Coverage Options");
+   public static final IAttributeType FileContents = TokenFactory.createAttributeType(0x10000000000000FEL, "coverage.File Contents");
+   public static final IAttributeType Location = TokenFactory.createAttributeType(0x1000000000000103L, "coverage.Location");
+   public static final IAttributeType Namespace = TokenFactory.createAttributeType(0x1000000000000105L, "coverage.Namespace");
+   public static final IAttributeType WorkProductTaskGuid = TokenFactory.createAttributeType(0x10000000000000FFL, "coverage.WorkProductTaskGuid");
+   public static final IAttributeType WorkProductPcrGuid = TokenFactory.createAttributeType(0x1000000000000100L, "coverage.WorkProductPcrGuid");
+   public static final IAttributeType Notes = TokenFactory.createAttributeType(0x10000000000000FCL, "coverage.Notes");
+   public static final IAttributeType Order = TokenFactory.createAttributeType(0x1000000000000102L, "coverage.Order");
    // @formatter:on
 
    private CoverageAttributeTypes() {

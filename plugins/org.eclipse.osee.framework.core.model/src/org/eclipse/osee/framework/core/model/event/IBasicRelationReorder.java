@@ -17,7 +17,7 @@ public interface IBasicRelationReorder {
 
    DefaultBasicGuidArtifact getParentArt();
 
-   String getRelTypeGuid();
+   Long getRelTypeGuid();
 
    String getBranchGuid();
 

@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.core.datastore.internal;
 
 import java.util.Map;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.message.IOseeModelingService;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -19,8 +22,11 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Roberto E. Escobar
@@ -33,7 +39,10 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
       IOseeModelFactoryService.class,
       IDataTranslationService.class,
       IApplicationServerLookup.class,
-      IApplicationServerManager.class
+      IApplicationServerManager.class,
+//      IOseeModelingService.class,
+      IResourceLocatorManager.class,
+      IResourceManager.class, 
       };
    //@formatter:on
 
@@ -47,7 +56,7 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
 
    @Override
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-      IOseeCachingServiceFactory factory = createCachingFactoryService(services);
+      IOseeCachingServiceFactory factory = createCachingFactoryService(context, services);
       IOseeCachingService cachingService = factory.createCachingService();
 
       factoryRegistration = context.registerService(IOseeCachingServiceFactory.class.getName(), factory, null);
@@ -64,13 +73,32 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
       }
    }
 
-   private IOseeCachingServiceFactory createCachingFactoryService(Map<Class<?>, Object> services) {
+   private IOseeCachingServiceFactory createCachingFactoryService(final BundleContext context, Map<Class<?>, Object> services) {
       final IOseeDatabaseService dbService = getService(IOseeDatabaseService.class, services);
-      final IOseeModelFactoryService modelService = getService(IOseeModelFactoryService.class, services);
+      final IOseeModelFactoryService modelFactoryService = getService(IOseeModelFactoryService.class, services);
       final IDataTranslationService translationService = getService(IDataTranslationService.class, services);
       final IApplicationServerLookup lookupService = getService(IApplicationServerLookup.class, services);
       final IApplicationServerManager appManager = getService(IApplicationServerManager.class, services);
+      final IResourceManager resourceManager = getService(IResourceManager.class, services);
+      final IResourceLocatorManager resourceLocatorManager = getService(IResourceLocatorManager.class, services);
 
-      return new ServerOseeCachingServiceFactory(dbService, modelService, translationService, lookupService, appManager);
+      ModelingServiceProvider provider = new ModelingServiceProvider() {
+
+         @Override
+         public IOseeModelingService getIOseeModelingService() throws OseeCoreException {
+            ServiceTracker<IOseeModelingService, Object> tracker =
+               new ServiceTracker<IOseeModelingService, Object>(context, IOseeModelingService.class, null);
+            tracker.open(true);
+
+            IOseeModelingService toReturn = (IOseeModelingService) tracker.getService();
+            if (toReturn == null) {
+               throw new OseeStateException("IOseeModelingService could not be found");
+            }
+            return toReturn;
+         }
+      };
+
+      return new ServerOseeCachingServiceFactory(dbService, modelFactoryService, translationService, lookupService,
+         appManager, provider, resourceLocatorManager, resourceManager);
    }
 }

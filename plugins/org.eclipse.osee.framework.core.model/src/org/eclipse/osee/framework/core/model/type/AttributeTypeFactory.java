@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeTypeFactory implements IOseeTypeFactory {
 
-   public AttributeType create(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
+   public AttributeType create(long guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "attribute type name");
       //      checkNameUnique(cache, name);
       Conditions.checkNotNullOrEmpty(baseAttributeTypeId, "attribute base type id");
@@ -35,14 +35,13 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       Conditions.checkExpressionFailOnTrue(maxOccurrences < minOccurrences,
          "maxOccurences can not be less than minOccurences");
 
-      String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new AttributeType(checkedGuid, name, Strings.intern(baseAttributeTypeId),
+      return new AttributeType(guid, name, Strings.intern(baseAttributeTypeId),
          Strings.intern(attributeProviderNameId), Strings.intern(fileTypeExtension), defaultValue, minOccurrences,
          maxOccurrences, tipText, Strings.intern(taggerId));
 
    }
 
-   public AttributeType createOrUpdate(AttributeTypeCache cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+   public AttributeType createOrUpdate(AttributeTypeCache cache, long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
       AttributeType attributeType = cache.getByGuid(guid);
 
       if (attributeType == null) {
@@ -59,7 +58,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       return attributeType;
    }
 
-   public AttributeType createOrUpdate(IOseeCache<String, AttributeType> cache, int uniqueId, StorageState storageState, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+   public AttributeType createOrUpdate(IOseeCache<Long, AttributeType> cache, int uniqueId, StorageState storageState, Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
       AttributeType attributeType = cache.getById(uniqueId);
       if (attributeType == null) {
          attributeType =

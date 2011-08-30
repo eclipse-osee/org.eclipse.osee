@@ -70,6 +70,8 @@ public class OseeTypesSetup {
          processOseeTypeData(combinedFile.toURI());
          // Only delete file if no problems processing
          combinedFile.delete();
+
+         //john - for each in map, create artifact (OseeTypeDefinition) and store xtext data in artifact
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -117,14 +119,13 @@ public class OseeTypesSetup {
       for (String idsToImport : uniqueIdsToImport) {
          URL urlEntry = extensions.get(idsToImport);
          if (urlEntry == null) {
-            OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE,
-               "ExtensionUniqueId [%s] was not found", idsToImport);
+            OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, "ExtensionUniqueId [%s] was not found", idsToImport);
          } else {
             items.put(idsToImport, urlEntry);
          }
       }
-      OseeLog.logf(DatabaseInitActivator.class, Level.INFO,
-         "Importing:\n\t%s", items.keySet().toString().replaceAll(",", ",\n\t"));
+      OseeLog.logf(DatabaseInitActivator.class, Level.INFO, "Importing:\n\t%s",
+         items.keySet().toString().replaceAll(",", ",\n\t"));
       return items;
    }
 
@@ -133,11 +134,8 @@ public class OseeTypesSetup {
       if (handler != null) {
          handler.execute(new NullProgressMonitor(), uri);
       } else {
-         OseeLog.logf(
-            DatabaseInitActivator.class,
-            Level.SEVERE,
-            "Unable to find handler for [%s] - handlers - %s", uri.toASCIIString(),
-               this.extensionObjects.getObjects());
+         OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, "Unable to find handler for [%s] - handlers - %s",
+            uri.toASCIIString(), this.extensionObjects.getObjects());
       }
    }
 

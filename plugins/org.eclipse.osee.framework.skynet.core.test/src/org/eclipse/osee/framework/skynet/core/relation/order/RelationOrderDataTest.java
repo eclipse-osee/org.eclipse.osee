@@ -58,7 +58,7 @@ public class RelationOrderDataTest {
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
 
-      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<String, RelationType>());
+      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
 
       relationType1 = createRelationType(cache, "Rel 1", RelationOrderBaseTypes.USER_DEFINED.getGuid());
       relationType2 = createRelationType(cache, "Rel 2", RelationOrderBaseTypes.UNORDERED.getGuid());
@@ -275,11 +275,11 @@ public class RelationOrderDataTest {
    }
 
    private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {
-      IArtifactType type1 = new ArtifactType(GUID.create(), "1", false);
-      IArtifactType type2 = new ArtifactType(GUID.create(), "2", false);
+      IArtifactType type1 = new ArtifactType(0x01L, "1", false);
+      IArtifactType type2 = new ArtifactType(0x02L, "2", false);
       RelationType relationType =
-         new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
-            RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
+         new RelationType(0x03L, name, name + "_A", name + "_B", type1, type2, RelationTypeMultiplicity.MANY_TO_MANY,
+            delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
       cache.cache(relationType);
       return relationType;

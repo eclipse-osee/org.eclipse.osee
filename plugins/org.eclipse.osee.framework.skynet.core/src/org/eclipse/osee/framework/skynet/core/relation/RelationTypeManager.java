@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class RelationTypeManager {
 
-   public static AbstractOseeCache<String, RelationType> getCache() {
+   public static AbstractOseeCache<Long, RelationType> getCache() {
       return Activator.getInstance().getOseeCacheService().getRelationTypeCache();
    }
 
-   public static AbstractOseeCache<String, ArtifactType> getArtifactTypeCache() {
+   public static AbstractOseeCache<Long, ArtifactType> getArtifactTypeCache() {
       return Activator.getInstance().getOseeCacheService().getArtifactTypeCache();
    }
 
@@ -84,7 +84,7 @@ public class RelationTypeManager {
       return relationType;
    }
 
-   public static RelationType getTypeByGuid(String guid) throws OseeCoreException {
+   public static RelationType getTypeByGuid(Long guid) throws OseeCoreException {
       RelationType relationType = getCache().getByGuid(guid);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation with type guid [%s] does not exist", guid);

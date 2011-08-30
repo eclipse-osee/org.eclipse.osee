@@ -34,14 +34,14 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<String, ArtifactType> {
+public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long, ArtifactType> {
 
-   private final AbstractOseeCache<String, AttributeType> attrCache;
+   private final AbstractOseeCache<Long, AttributeType> attrCache;
    private final AbstractOseeCache<String, Branch> branchCache;
 
    private final ArtifactTypeFactory artifactTypeFactory;
 
-   public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<String, AttributeType> attrCache, AbstractOseeCache<String, Branch> branchCache) {
+   public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<Long, AttributeType> attrCache, AbstractOseeCache<String, Branch> branchCache) {
       this.artifactTypeFactory = artifactTypeFactory;
       this.attrCache = attrCache;
       this.branchCache = branchCache;
@@ -52,14 +52,14 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Strin
    }
 
    @Override
-   public void load(IOseeCache<String, ArtifactType> cache) throws OseeCoreException {
+   public void load(IOseeCache<Long, ArtifactType> cache) throws OseeCoreException {
       attrCache.ensurePopulated();
       branchCache.ensurePopulated();
       super.load(cache);
    }
 
    @Override
-   protected Collection<ArtifactType> updateCache(IOseeCache<String, ArtifactType> cache) throws OseeCoreException {
+   protected Collection<ArtifactType> updateCache(IOseeCache<Long, ArtifactType> cache) throws OseeCoreException {
       List<ArtifactType> updatedItems = new ArrayList<ArtifactType>();
 
       ArtifactTypeCacheUpdateResponse response =
@@ -88,7 +88,7 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Strin
       CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>> attrs =
          new CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>>();
 
-      for (Triplet<String, String, String> entry : response.getAttributeTypes()) {
+      for (Triplet<Long, String, Long> entry : response.getAttributeTypes()) {
          ArtifactType key1 = cache.getByGuid(entry.getFirst());
          IOseeBranch key2 = branchCache.getByGuid(entry.getSecond());
          Collection<AttributeType> types = attrs.get(key1, key2);

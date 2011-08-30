@@ -61,9 +61,9 @@ public class CrossBranchLink {
 
    public String toXml() throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relationEnum);
-      StringBuffer sb = new StringBuffer(AXml.addTagData("relTypeGuid", relationType.getGuid()));
+      StringBuffer sb = new StringBuffer(AXml.addTagData("relTypeGuid", String.valueOf(relationType.getGuid())));
       sb.append(AXml.addTagData("artGuid", artifact.getGuid()));
-      sb.append(AXml.addTagData("artTypeGuid", artifact.getArtTypeGuid()));
+      sb.append(AXml.addTagData("artTypeGuid", String.valueOf(artifact.getArtTypeGuid())));
       sb.append(AXml.addTagData("branchGuid", artifact.getBranchGuid()));
       sb.append(AXml.addTagData("aSide", String.valueOf(relationEnum.getSide().isSideA())));
       return sb.toString();
@@ -77,13 +77,13 @@ public class CrossBranchLink {
       String artGuid = AXml.getTagData(xmlStr, "artGuid");
       String branchGuid = AXml.getTagData(xmlStr, "branchGuid");
       String artTypeGuid = AXml.getTagData(xmlStr, "artTypeGuid");
-      String relTypeGuid = AXml.getTagData(xmlStr, "relTypeGuid");
+      Long relTypeGuid = Long.parseLong(AXml.getTagData(xmlStr, "relTypeGuid"));
       aSide = AXml.getTagBooleanData(xmlStr, "aSide");
       final RelationType relationType = RelationTypeManager.getTypeByGuid(relTypeGuid);
 
       RelationSide side = aSide ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       relationEnum = TokenFactory.createRelationTypeSide(side, relationType.getGuid(), relationType.getName());
-      guidArt = new DefaultBasicGuidArtifact(branchGuid, artTypeGuid, artGuid);
+      guidArt = new DefaultBasicGuidArtifact(branchGuid, Long.valueOf(artTypeGuid), artGuid);
    }
 
    private void unPack() throws OseeCoreException {

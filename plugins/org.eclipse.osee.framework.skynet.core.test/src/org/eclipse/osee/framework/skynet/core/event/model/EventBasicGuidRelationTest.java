@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -26,13 +25,13 @@ public class EventBasicGuidRelationTest {
 
    @Test
    public void testEqualsEventBasicGuidRelation() {
-      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), GUID.create(), GUID.create());
+      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), 0x01L, GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
          new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 =
-         new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), GUID.create(), 234, 333, 34,
-            eventArt1, 33, eventArt2);
+         new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), 0x02L, 234, 333, 34, eventArt1,
+            33, eventArt2);
       EventBasicGuidRelation eventRel2 =
          new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
             eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(),
@@ -100,13 +99,13 @@ public class EventBasicGuidRelationTest {
 
    @Test
    public void testEventBasicGuidRelationIs() {
-      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), GUID.create(), GUID.create());
+      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), 0x03L, GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
          new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 =
-         new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), GUID.create(), 234, 333, 34,
-            eventArt1, 33, eventArt2);
+         new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), 0x04L, 234, 333, 34, eventArt1,
+            33, eventArt2);
       Assert.assertTrue(eventRel1.is(RelationEventType.Added));
       Assert.assertTrue(eventRel1.is(RelationEventType.Added, RelationEventType.Purged));
       Assert.assertFalse(eventRel1.is(RelationEventType.Purged));

@@ -18,73 +18,73 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class CoreRelationTypes {
 
    public static final IRelationTypeSide Allocation__Requirement = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE+RS8gRV2BXaCtQA", "Allocation");
+      0x2000000000000157L, "Allocation");
    public static final IRelationTypeSide Allocation__Component = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE+RS8gRV2BXaCtQA", "Allocation");
+      0x2000000000000157L, "Allocation");
    public static final IRelationTypeSide CodeRequirement_Requirement = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE+TNKxG5ytcGHqgA", "Code-Requirement");
+      0x2000000000000158L, "Code-Requirement");
    public static final IRelationTypeSide CodeRequirement_CodeUnit = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE+TNKxG5ytcGHqgA", "Code-Requirement");
+      0x2000000000000158L, "Code-Requirement");
    public static final IRelationTypeSide Default_Hierarchical__Parent = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE9skWhPMi6I1WdAA", "Default Hierarchical");
+      0x2000000000000154L, "Default Hierarchical");
    public static final IRelationTypeSide Default_Hierarchical__Child = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE9skWhPMi6I1WdAA", "Default Hierarchical");
+      0x2000000000000154L, "Default Hierarchical");
    public static final IRelationTypeSide Dependency__Dependency = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE9uek34jqArVRuAA", "Dependency");
+      0x2000000000000155L, "Dependency");
    public static final IRelationTypeSide Dependency__Artifact = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE9uek34jqArVRuAA", "Dependency");
+      0x2000000000000155L, "Dependency");
    public static final IRelationTypeSide Design__Design = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE+XjcSaqnXfOXVQA", "Design");
+      0x200000000000015AL, "Design");
    public static final IRelationTypeSide Design__Requirement = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE+XjcSaqnXfOXVQA", "Design");
+      0x200000000000015AL, "Design");
    public static final IRelationTypeSide Executes__Test_Plan_Element = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AWo0+Hkh+2qNMeAlUwQA", "Executes");
+      0x200000000000015EL, "Executes");
    public static final IRelationTypeSide Executes__Test_Procedure = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AWo0+Hkh+2qNMeAlUwQA", "Executes");
+      0x200000000000015EL, "Executes");
    public static final IRelationTypeSide Requirement_Trace__Higher_Level = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE+dRBVFN6fAPXdwA", "Requirement Trace");
+      0x200000000000015FL, "Requirement Trace");
    public static final IRelationTypeSide Requirement_Trace__Lower_Level = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE+dRBVFN6fAPXdwA", "Requirement Trace");
+      0x200000000000015FL, "Requirement Trace");
    public static final IRelationTypeSide Supercedes_Supercedes = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE9qJZC_qegaByjgA", "Supercedes");
+      0x2000000000000165L, "Supercedes");
    public static final IRelationTypeSide Supercedes_Superceded = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE9qJZC_qegaByjgA", "Supercedes");
+      0x2000000000000165L, "Supercedes");
    public static final IRelationTypeSide SupportingInfo_SupportedBy = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE9wWnVhFW0wtOPAA", "Supporting Info");
+      0x2000000000000166L, "Supporting Info");
    public static final IRelationTypeSide SupportingInfo_SupportingInfo = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE9wWnVhFW0wtOPAA", "Supporting Info");
+      0x2000000000000166L, "Supporting Info");
    public static final IRelationTypeSide TeamMember_Team = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+      0x200000000000016AL, "TeamMember");
    public static final IRelationTypeSide TeamMember_Member = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+      0x200000000000016AL, "TeamMember");
    public static final IRelationTypeSide Test_Unit_Result__Test_Unit = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AQm9ouX6JwBD29WrFoAA", "Results Data");
+      0x2000000000000168L, "Results Data");
    public static final IRelationTypeSide Test_Unit_Result__Test_Result = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AQm9ouX6JwBD29WrFoAA", "Results Data");
+      0x2000000000000168L, "Results Data");
    public static final IRelationTypeSide Universal_Grouping__Members = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE9yOp2hIrXwZ13wA", "Universal Grouping");
+      0x2000000000000156L, "Universal Grouping");
    public static final IRelationTypeSide Universal_Grouping__Group = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE9yOp2hIrXwZ13wA", "Universal Grouping");
+      0x2000000000000156L, "Universal Grouping");
    public static final IRelationTypeSide Users_Artifact = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE9nibXSCqcoXkMAA", "Users");
-   public static final IRelationTypeSide Users_User = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE9nibXSCqcoXkMAA", "Users");
+      0x2000000000000164L, "Users");
+   public static final IRelationTypeSide Users_User = TokenFactory.createRelationTypeSide(SIDE_B, 0x2000000000000164L,
+      "Users");
    public static final IRelationTypeSide Uses__Requirement = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE_GV43rvba32QqwA", "Uses");
+      0x2000000000000177L, "Uses");
    public static final IRelationTypeSide Uses__TestUnit = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE_GV43rvba32QqwA", "Uses");
+      0x2000000000000177L, "Uses");
    public static final IRelationTypeSide Validation__Requirement = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE+fMVRM8f9BUD0AA", "Validation");
+      0x2000000000000160L, "Validation");
    public static final IRelationTypeSide Validation__Validator = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE+fMVRM8f9BUD0AA", "Validation");
+      0x2000000000000160L, "Validation");
    public static final IRelationTypeSide Verification__Requirement = TokenFactory.createRelationTypeSide(SIDE_A,
-      "AAMFE+ZdqgB+D5zP5+gA", "Verification");
+      0x200000000000015BL, "Verification");
    public static final IRelationTypeSide Verification__Verifier = TokenFactory.createRelationTypeSide(SIDE_B,
-      "AAMFE+ZdqgB+D5zP5+gA", "Verification");
+      0x200000000000015BL, "Verification");
    public static final IRelationTypeSide Verification_Plan__Requirement = TokenFactory.createRelationTypeSide(SIDE_A,
-      "ATmJsVc28wU57zFAi7AA", "Verification Plan");
+      0x200000000000015CL, "Verification Plan");
    public static final IRelationTypeSide Verification_Plan__Test_Plan_Element = TokenFactory.createRelationTypeSide(
-      SIDE_B, "ATmJsVc28wU57zFAi7AA", "Verification Plan");
+      SIDE_B, 0x200000000000015CL, "Verification Plan");
 
    private CoreRelationTypes() {
       // Constants

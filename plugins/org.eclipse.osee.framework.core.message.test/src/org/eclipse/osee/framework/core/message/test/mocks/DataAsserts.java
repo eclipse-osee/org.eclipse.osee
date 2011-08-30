@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.message.test.mocks;
 
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
@@ -39,6 +38,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -82,7 +82,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         assertEquals((AbstractOseeType) expected, (AbstractOseeType) actual);
+         assertEquals((AbstractOseeType<String>) expected, (AbstractOseeType<String>) actual);
          Assert.assertEquals(expected.getShortName(), actual.getShortName());
          Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
          Assert.assertEquals(expected.getAncestors(), actual.getAncestors());
@@ -151,7 +151,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         assertEquals((AbstractOseeType) expected, (AbstractOseeType) actual);
+         assertEquals((AbstractOseeType<Long>) expected, (AbstractOseeType<Long>) actual);
          Assert.assertEquals(expected.getSideAName(), actual.getSideAName());
          Assert.assertEquals(expected.getSideBName(), actual.getSideBName());
          Assert.assertEquals(expected.getMultiplicity(), actual.getMultiplicity());
@@ -161,7 +161,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(AbstractOseeType expected, AbstractOseeType actual) {
+   public static void assertEquals(AbstractOseeType<?> expected, AbstractOseeType<?> actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {

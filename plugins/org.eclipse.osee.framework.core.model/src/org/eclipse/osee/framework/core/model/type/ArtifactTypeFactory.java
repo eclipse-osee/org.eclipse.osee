@@ -22,13 +22,12 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public final class ArtifactTypeFactory implements IOseeTypeFactory {
 
-   public ArtifactType create(String guid, boolean isAbstract, String name) throws OseeCoreException {
+   public ArtifactType create(Long guid, boolean isAbstract, String name) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "artifact type name");
-      String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new ArtifactType(checkedGuid, name, isAbstract);
+      return new ArtifactType(guid, name, isAbstract);
    }
 
-   public ArtifactType createOrUpdate(ArtifactTypeCache cache, String guid, boolean isAbstract, String name) throws OseeCoreException {
+   public ArtifactType createOrUpdate(ArtifactTypeCache cache, Long guid, boolean isAbstract, String name) throws OseeCoreException {
       ArtifactType artifactType = cache.getByGuid(guid);
       if (artifactType == null) {
          artifactType = create(guid, isAbstract, name);
@@ -41,7 +40,7 @@ public final class ArtifactTypeFactory implements IOseeTypeFactory {
       return artifactType;
    }
 
-   public ArtifactType createOrUpdate(IOseeCache<String, ArtifactType> cache, int uniqueId, StorageState storageState, String guid, boolean isAbstract, String name) throws OseeCoreException {
+   public ArtifactType createOrUpdate(IOseeCache<Long, ArtifactType> cache, int uniqueId, StorageState storageState, Long guid, boolean isAbstract, String name) throws OseeCoreException {
       ArtifactType artifactType = cache.getById(uniqueId);
       if (artifactType == null) {
          artifactType = create(guid, isAbstract, name);

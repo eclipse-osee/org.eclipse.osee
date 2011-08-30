@@ -50,7 +50,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+         MockModel.createXAttributeType(String.valueOf(attributeType.getGuid()), attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -68,7 +68,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+         MockModel.createXAttributeType(String.valueOf(attributeType.getGuid()), attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -87,14 +87,15 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+         MockModel.createXAttributeType(String.valueOf(attributeType.getGuid()), attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef =
+         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       IArtifactType artifactType2 = CoreArtifactTypes.Requirement;
@@ -113,14 +114,15 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+         MockModel.createXAttributeType(String.valueOf(attributeType.getGuid()), attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef =
+         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactType artArtifactType = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
@@ -139,14 +141,15 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+         MockModel.createXAttributeType(String.valueOf(attributeType.getGuid()), attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
+      XArtifactType artifactTypeRef =
+         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       IArtifactType artifactType2 = CoreArtifactTypes.Requirement;

@@ -64,6 +64,7 @@ public class DatastoreInitOperation extends AbstractOperation {
       doSubWork(subOp, monitor, 0.30);
 
       dbService.getSequence().clear();
+      dbService.getRemoteIdManager().clear();
 
       appServerManager.executeLookupRegistration();
 
@@ -74,7 +75,7 @@ public class DatastoreInitOperation extends AbstractOperation {
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       addDefaultPermissions();
 
-      cachingService.clearAll();
+      //      cachingService.clearAll();
 
       subOp = branchService.createSystemRootBranch(monitor);
       doSubWork(subOp, monitor, 0.30);
@@ -89,8 +90,7 @@ public class DatastoreInitOperation extends AbstractOperation {
 
    private static void deleteBinaryBackingData() {
       String binaryDataPath = OseeServerProperties.getOseeApplicationServerData();
-      OseeLog.logf(Activator.class, Level.INFO,
-         "Deleting application server binary data [%s]...", binaryDataPath);
+      OseeLog.logf(Activator.class, Level.INFO, "Deleting application server binary data [%s]...", binaryDataPath);
       Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
    }
 }

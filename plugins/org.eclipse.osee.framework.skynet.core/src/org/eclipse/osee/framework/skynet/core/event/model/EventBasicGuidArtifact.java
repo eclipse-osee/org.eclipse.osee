@@ -40,7 +40,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
          basicGuidArtifact.getGuid());
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, String branchGuid, String artTypeGuid, String guid) {
+   public EventBasicGuidArtifact(EventModType eventModType, String branchGuid, Long artTypeGuid, String guid) {
       super(branchGuid, artTypeGuid, guid);
       this.eventModType = eventModType;
    }

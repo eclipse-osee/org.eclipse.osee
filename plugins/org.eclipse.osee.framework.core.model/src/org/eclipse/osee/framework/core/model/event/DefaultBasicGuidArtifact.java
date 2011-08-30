@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
    private static final long serialVersionUID = -4997763989583925345L;
    private final String branchGuid;
-   private String artTypeGuid;
+   private Long artTypeGuid;
    private final String artGuid;
 
-   public DefaultBasicGuidArtifact(String branchGuid, String artTypeGuid, String guid) {
+   public DefaultBasicGuidArtifact(String branchGuid, Long artTypeGuid, String guid) {
       this.branchGuid = branchGuid;
       this.artTypeGuid = artTypeGuid;
       this.artGuid = guid;
@@ -33,7 +33,7 @@ public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
    }
 
    @Override
-   public String getArtTypeGuid() {
+   public Long getArtTypeGuid() {
       return artTypeGuid;
    }
 
@@ -82,7 +82,7 @@ public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
       return artGuid;
    }
 
-   public void setArtTypeGuid(String artTypeGuid) {
+   public void setArtTypeGuid(Long artTypeGuid) {
       this.artTypeGuid = artTypeGuid;
    }
 

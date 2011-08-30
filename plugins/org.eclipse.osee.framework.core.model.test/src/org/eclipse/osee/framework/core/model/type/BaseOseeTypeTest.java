@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model.type;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.mocks.MockAbstractOseeType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -24,9 +23,9 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
-public class BaseOseeTypeTest extends AbstractOseeTypeTest<MockAbstractOseeType> {
+public class BaseOseeTypeTest extends AbstractOseeTypeTest<Long, MockAbstractOseeType> {
 
-   public BaseOseeTypeTest(MockAbstractOseeType type, String guid, String name) {
+   public BaseOseeTypeTest(MockAbstractOseeType type, Long guid, String name) {
       super(type, guid, name);
    }
 
@@ -34,7 +33,7 @@ public class BaseOseeTypeTest extends AbstractOseeTypeTest<MockAbstractOseeType>
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
-         String guid = GUID.create();
+         Long guid = (long) index;
          String name = "index: " + index;
          data.add(new Object[] {new MockAbstractOseeType(guid, name), guid, name});
       }

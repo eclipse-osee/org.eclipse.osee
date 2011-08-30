@@ -20,57 +20,57 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 public final class AtsRelationTypes {
 
    public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+      RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide ActionToWorkflow_WorkFlow = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+      RelationSide.SIDE_B, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide FavoriteUser_Artifact = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE+NegDLK1g2ph+AA", "FavoriteUser");
+      RelationSide.SIDE_A, 0x2000000000000173L, "FavoriteUser");
    public static final IRelationTypeSide FavoriteUser_User = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      "AAMFE+NegDLK1g2ph+AA", "FavoriteUser");
+      0x2000000000000173L, "FavoriteUser");
    public static final IRelationTypeSide Goal_Goal = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      "ABMn0wPKdyN+Mfo5nwgA", "Goal");
+      0x2000000000000175L, "Goal");
    public static final IRelationTypeSide Goal_Member = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      "ABMn0wPKdyN+Mfo5nwgA", "Goal");
+      0x2000000000000175L, "Goal");
    public static final IRelationTypeSide ParallelVersion_Child = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE_EJHSBGb9msPXQA", "ParallelVersion");
+      RelationSide.SIDE_B, 0x2000000000000174L, "ParallelVersion");
    public static final IRelationTypeSide ParallelVersion_Parent = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE_EJHSBGb9msPXQA", "ParallelVersion");
+      RelationSide.SIDE_A, 0x2000000000000174L, "ParallelVersion");
    public static final IRelationTypeSide PrivilegedMember_Member = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE9XfiibyK1x2FiwA", "PrivilegedMember");
+      RelationSide.SIDE_B, 0x200000000000016BL, "PrivilegedMember");
    public static final IRelationTypeSide PrivilegedMember_Team = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE9XfiibyK1x2FiwA", "PrivilegedMember");
+      RelationSide.SIDE_A, 0x200000000000016BL, "PrivilegedMember");
    public static final IRelationTypeSide SmaToTask_Sma = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      "AAMFE97xw1BM5l+GxKAA", "SmaToTask");
+      0x200000000000016EL, "SmaToTask");
    public static final IRelationTypeSide SmaToTask_Task = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      "AAMFE97xw1BM5l+GxKAA", "SmaToTask");
+      0x200000000000016EL, "SmaToTask");
    public static final IRelationTypeSide SubscribedUser_Artifact = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE+LkSAkfUWoTHdwA", "SubscribedUser");
+      RelationSide.SIDE_A, 0x2000000000000172L, "SubscribedUser");
    public static final IRelationTypeSide SubscribedUser_User = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      "AAMFE+LkSAkfUWoTHdwA", "SubscribedUser");
+      0x2000000000000172L, "SubscribedUser");
    public static final IRelationTypeSide TeamActionableItem_ActionableItem = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE939Ul9Oenq9wWgA", "TeamActionableItem");
+      RelationSide.SIDE_B, 0x200000000000016CL, "TeamActionableItem");
    public static final IRelationTypeSide TeamActionableItem_Team = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE939Ul9Oenq9wWgA", "TeamActionableItem");
+      RelationSide.SIDE_A, 0x200000000000016CL, "TeamActionableItem");
    public static final IRelationTypeSide TeamDefinitionToVersion_TeamDefinition = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE9_i7zG3lR1kGWQA", "TeamDefinitionToVersion");
+      RelationSide.SIDE_A, 0x2000000000000170L, "TeamDefinitionToVersion");
    public static final IRelationTypeSide TeamDefinitionToVersion_Version = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE9_i7zG3lR1kGWQA", "TeamDefinitionToVersion");
+      RelationSide.SIDE_B, 0x2000000000000170L, "TeamDefinitionToVersion");
    public static final IRelationTypeSide TeamLead_Lead = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      "AAMFE90HyTZPyHuQWOQA", "TeamLead");
+      0x2000000000000169L, "TeamLead");
    public static final IRelationTypeSide TeamLead_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      "AAMFE90HyTZPyHuQWOQA", "TeamLead");
+      0x2000000000000169L, "TeamLead");
    public static final IRelationTypeSide TeamMember_Member = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-      "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+      0x200000000000016AL, "TeamMember");
    public static final IRelationTypeSide TeamMember_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-      "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+      0x200000000000016AL, "TeamMember");
    public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Version = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
+      RelationSide.SIDE_B, 0x200000000000016FL, "TeamWorkflowTargetedForVersion");
    public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Workflow = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
+      RelationSide.SIDE_A, 0x200000000000016FL, "TeamWorkflowTargetedForVersion");
    public static final IRelationTypeSide TeamWorkflowToReview_Review = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_B, "AAMFE+JqDz+8tuRDdIwA", "TeamWorkflowToReview");
+      RelationSide.SIDE_B, 0x2000000000000171L, "TeamWorkflowToReview");
    public static final IRelationTypeSide TeamWorkflowToReview_Team = TokenFactory.createRelationTypeSide(
-      RelationSide.SIDE_A, "AAMFE+JqDz+8tuRDdIwA", "TeamWorkflowToReview");
+      RelationSide.SIDE_A, 0x2000000000000171L, "TeamWorkflowToReview");
 
    private AtsRelationTypes() {
       // Constants

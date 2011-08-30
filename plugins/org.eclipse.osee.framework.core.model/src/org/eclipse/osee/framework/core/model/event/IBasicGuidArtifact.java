@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.core.model.event;
 public interface IBasicGuidArtifact {
    public abstract String getGuid();
 
-   public abstract String getArtTypeGuid();
+   public abstract Long getArtTypeGuid();
 
    public abstract String getBranchGuid();
 }

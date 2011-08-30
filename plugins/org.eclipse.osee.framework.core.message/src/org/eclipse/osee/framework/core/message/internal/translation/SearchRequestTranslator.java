@@ -58,9 +58,9 @@ public class SearchRequestTranslator implements ITranslator<SearchRequest> {
       String[] typeFilterNames = store.getArray(Entry.OPTION_ATTRIBUTE_TYPE_FILTER_NAMES.name());
       if (typeFilterGuids.length > 0 && typeFilterNames.length > 0) {
          for (int index = 0; index < typeFilterGuids.length; index++) {
-            guid = typeFilterGuids[index];
+            long id = Long.valueOf(typeFilterGuids[index]);
             name = index < typeFilterNames.length ? typeFilterNames[index] : Strings.emptyString();
-            IAttributeType type = TokenFactory.createAttributeType(guid, name);
+            IAttributeType type = TokenFactory.createAttributeType(id, name);
             options.addAttributeTypeFilter(type);
          }
       }
@@ -89,7 +89,7 @@ public class SearchRequestTranslator implements ITranslator<SearchRequest> {
             String[] names = new String[types.size()];
             int index = 0;
             for (IAttributeType type : types) {
-               guids[index] = type.getGuid();
+               guids[index] = String.valueOf(type.getGuid());
                names[index] = type.getName();
                index++;
             }

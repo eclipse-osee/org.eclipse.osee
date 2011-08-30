@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 
@@ -39,7 +40,7 @@ public class CoverageImport extends CoveragePackageBase {
    }
 
    public CoverageImport(String name, Date runDate) {
-      super(null, name, CoverageOptionManagerDefault.instance());
+      super(GUID.create(), name, CoverageOptionManagerDefault.instance());
       this.runDate = runDate;
    }
 

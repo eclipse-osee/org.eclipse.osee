@@ -38,7 +38,7 @@ public class RelationTypeCacheUpdateResponse {
    public static final class RelationTypeRow {
       private final int id;
       private final String name;
-      private final String guid;
+      private final long guid;
       private StorageState storageState;
 
       private final String sideAName;
@@ -48,7 +48,7 @@ public class RelationTypeCacheUpdateResponse {
       private final RelationTypeMultiplicity multiplicity;
       private final String defaultOrderTypeGuid;
 
-      public RelationTypeRow(int id, String name, String guid, StorageState storageState, String sideAName, String sideBName, int artifactTypeSideA, int artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+      public RelationTypeRow(int id, String name, long guid, StorageState storageState, String sideAName, String sideBName, int artifactTypeSideA, int artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
          super();
          this.id = id;
          this.name = name;
@@ -78,7 +78,7 @@ public class RelationTypeCacheUpdateResponse {
          return name;
       }
 
-      public String getGuid() {
+      public long getGuid() {
          return guid;
       }
 
@@ -109,7 +109,7 @@ public class RelationTypeCacheUpdateResponse {
       public String[] toArray() {
          return new String[] {
             String.valueOf(getId()),
-            getGuid(),
+            String.valueOf(getGuid()),
             getName(),
             getStorageState().name(),
             getSideAName(),
@@ -124,7 +124,7 @@ public class RelationTypeCacheUpdateResponse {
          int index = 0;
 
          int id = Integer.valueOf(data[index++]);
-         String guid = data[index++];
+         long guid = Long.valueOf(data[index++]);
          String name = data[index++];
          StorageState storageState = StorageState.valueOf(data[index++]);
 

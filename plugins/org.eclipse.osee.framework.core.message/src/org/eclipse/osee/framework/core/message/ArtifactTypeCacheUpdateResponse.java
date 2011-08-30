@@ -30,9 +30,9 @@ public class ArtifactTypeCacheUpdateResponse {
 
    private final List<ArtifactTypeRow> rows;
    private final Map<Integer, Integer[]> baseToSuper;
-   private final List<Triplet<String, String, String>> artAttrs;
+   private final List<Triplet<Long, String, Long>> artAttrs;
 
-   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer[]> baseToSuper, List<Triplet<String, String, String>> artAttrs) {
+   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer[]> baseToSuper, List<Triplet<Long, String, Long>> artAttrs) {
       this.rows = rows;
       this.baseToSuper = baseToSuper;
       this.artAttrs = artAttrs;
@@ -46,18 +46,18 @@ public class ArtifactTypeCacheUpdateResponse {
       return baseToSuper;
    }
 
-   public List<Triplet<String, String, String>> getAttributeTypes() {
+   public List<Triplet<Long, String, Long>> getAttributeTypes() {
       return artAttrs;
    }
 
    public static final class ArtifactTypeRow {
       private final int id;
       private final String name;
-      private final String guid;
+      private final Long guid;
       private final boolean isAbstract;
       private StorageState storageState;
 
-      protected ArtifactTypeRow(int id, String guid, String name, boolean isAbstract, StorageState storageState) {
+      protected ArtifactTypeRow(int id, Long guid, String name, boolean isAbstract, StorageState storageState) {
          this.id = id;
          this.guid = guid;
          this.name = name;
@@ -73,7 +73,7 @@ public class ArtifactTypeCacheUpdateResponse {
          return name;
       }
 
-      public String getGuid() {
+      public Long getGuid() {
          return guid;
       }
 
@@ -92,7 +92,7 @@ public class ArtifactTypeCacheUpdateResponse {
       public String[] toArray() {
          return new String[] {
             String.valueOf(getId()),
-            getGuid(),
+            String.valueOf(getGuid()),
             getName(),
             String.valueOf(isAbstract()),
             getStorageState().name()};
@@ -100,11 +100,11 @@ public class ArtifactTypeCacheUpdateResponse {
 
       public static ArtifactTypeRow fromArray(String[] data) {
          int id = Integer.valueOf(data[0]);
-         String guid = data[1];
+         long remoteId = Long.parseLong(data[1]);
          String name = data[2];
          boolean isAbstract = Boolean.valueOf(data[3]);
          StorageState storageState = StorageState.valueOf(data[4]);
-         return new ArtifactTypeRow(id, guid, name, isAbstract, storageState);
+         return new ArtifactTypeRow(id, remoteId, name, isAbstract, storageState);
       }
 
       @Override
@@ -116,7 +116,7 @@ public class ArtifactTypeCacheUpdateResponse {
    public static ArtifactTypeCacheUpdateResponse fromCache(Collection<ArtifactType> types) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
-      List<Triplet<String, String, String>> artAttrs = new ArrayList<Triplet<String, String, String>>();
+      List<Triplet<Long, String, Long>> artAttrs = new ArrayList<Triplet<Long, String, Long>>();
       for (ArtifactType artType : types) {
          rows.add(new ArtifactTypeRow(artType.getId(), artType.getGuid(), artType.getName(), artType.isAbstract(),
             artType.getStorageState()));
@@ -137,7 +137,7 @@ public class ArtifactTypeCacheUpdateResponse {
             IOseeBranch branch = entry.getKey();
             Collection<AttributeType> attrTypes = entry.getValue();
             for (AttributeType type : attrTypes) {
-               artAttrs.add(new Triplet<String, String, String>(artType.getGuid(), branch.getGuid(), type.getGuid()));
+               artAttrs.add(new Triplet<Long, String, Long>(artType.getGuid(), branch.getGuid(), type.getGuid()));
             }
 
          }

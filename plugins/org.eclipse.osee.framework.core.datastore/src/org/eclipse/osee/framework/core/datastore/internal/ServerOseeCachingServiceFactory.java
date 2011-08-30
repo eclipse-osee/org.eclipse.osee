@@ -11,22 +11,20 @@
 package org.eclipse.osee.framework.core.datastore.internal;
 
 import org.eclipse.osee.framework.core.datastore.cache.BranchUpdateEventImpl;
-import org.eclipse.osee.framework.core.datastore.cache.DatabaseArtifactTypeAccessor;
-import org.eclipse.osee.framework.core.datastore.cache.DatabaseAttributeTypeAccessor;
 import org.eclipse.osee.framework.core.datastore.cache.DatabaseBranchAccessor;
-import org.eclipse.osee.framework.core.datastore.cache.DatabaseOseeEnumTypeAccessor;
-import org.eclipse.osee.framework.core.datastore.cache.DatabaseRelationTypeAccessor;
 import org.eclipse.osee.framework.core.datastore.cache.DatabaseTransactionRecordAccessor;
 import org.eclipse.osee.framework.core.datastore.cache.IBranchUpdateEvent;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.model.type.OseeEnumType;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -34,6 +32,8 @@ import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 
 /**
  * @author Roberto E. Escobar
@@ -45,26 +45,23 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
    private final IDataTranslationService translationService;
    private final IApplicationServerLookup serverLookUp;
    private final IApplicationServerManager appManager;
+   private final ModelingServiceProvider modelingService;
+   private final IResourceLocatorManager locatorManager;
+   private final IResourceManager resourceManager;
 
-   public ServerOseeCachingServiceFactory(IOseeDatabaseService databaseService, IOseeModelFactoryService factoryService, IDataTranslationService translationService, IApplicationServerLookup serverLookUp, IApplicationServerManager appManager) {
+   public ServerOseeCachingServiceFactory(IOseeDatabaseService databaseService, IOseeModelFactoryService factoryService, IDataTranslationService translationService, IApplicationServerLookup serverLookUp, IApplicationServerManager appManager, ModelingServiceProvider modelingService, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
       this.databaseService = databaseService;
       this.factoryService = factoryService;
       this.translationService = translationService;
       this.serverLookUp = serverLookUp;
       this.appManager = appManager;
+      this.modelingService = modelingService;
+      this.locatorManager = locatorManager;
+      this.resourceManager = resourceManager;
    }
 
    @Override
    public IOseeCachingService createCachingService() {
-      OseeEnumTypeCache oseeEnumTypeCache =
-         new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(databaseService,
-            factoryService.getOseeEnumTypeFactory()));
-
-      IOseeDataAccessor<String, AttributeType> attrAccessor =
-         new DatabaseAttributeTypeAccessor(databaseService, oseeEnumTypeCache, factoryService.getAttributeTypeFactory());
-
-      AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
-
       TransactionCache txCache = new TransactionCache();
       IBranchUpdateEvent branchEventSender = new BranchUpdateEventImpl(translationService, appManager, serverLookUp);
       BranchCache branchCache =
@@ -73,13 +70,18 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(databaseService, branchCache,
          factoryService.getTransactionFactory()));
 
+      OseeEnumTypeCache oseeEnumTypeCache =
+         new OseeEnumTypeCache(new ArtifactTypeDataAccessor<OseeEnumType>(modelingService, databaseService,
+            locatorManager, resourceManager, branchCache));
+      AttributeTypeCache attributeCache =
+         new AttributeTypeCache(new ArtifactTypeDataAccessor<AttributeType>(modelingService, databaseService,
+            locatorManager, resourceManager, branchCache));
       ArtifactTypeCache artifactCache =
-         new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(databaseService, branchCache, attributeCache,
-            factoryService.getArtifactTypeFactory()));
-
+         new ArtifactTypeCache(new ArtifactTypeDataAccessor<ArtifactType>(modelingService, databaseService,
+            locatorManager, resourceManager, branchCache));
       RelationTypeCache relationCache =
-         new RelationTypeCache(new DatabaseRelationTypeAccessor(databaseService, artifactCache,
-            factoryService.getRelationTypeFactory()));
+         new RelationTypeCache(new ArtifactTypeDataAccessor<RelationType>(modelingService, databaseService,
+            locatorManager, resourceManager, branchCache));
 
       return new OseeCachingService(branchCache, txCache, artifactCache, attributeCache, relationCache,
          oseeEnumTypeCache);

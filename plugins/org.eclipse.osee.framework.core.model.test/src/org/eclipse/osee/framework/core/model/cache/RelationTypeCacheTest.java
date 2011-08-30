@@ -44,7 +44,7 @@ public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationTyp
       super(data, cache);
    }
 
-   private final static class RelationDataAccessor extends MockOseeDataAccessor<String, RelationType> {
+   private final static class RelationDataAccessor extends MockOseeDataAccessor<Long, RelationType> {
       private final List<RelationType> relationTypes;
 
       public RelationDataAccessor(List<RelationType> relationTypes) {
@@ -53,7 +53,7 @@ public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationTyp
       }
 
       @Override
-      public void load(IOseeCache<String, RelationType> cache) throws OseeCoreException {
+      public void load(IOseeCache<Long, RelationType> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

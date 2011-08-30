@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.core.model.type;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,11 +26,11 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
-public class ArtifactTypeTest extends AbstractOseeTypeTest<ArtifactType> {
+public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
 
    private final boolean isAbstract;
 
-   public ArtifactTypeTest(ArtifactType type, String guid, String name, boolean isAbstract) {
+   public ArtifactTypeTest(ArtifactType type, Long guid, String name, boolean isAbstract) {
       super(type, guid, name);
       this.isAbstract = isAbstract;
    }
@@ -88,7 +86,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<ArtifactType> {
       Collection<Object[]> data = new ArrayList<Object[]>();
       boolean isAbstract = true;
       for (int index = 1; index <= 3; index++) {
-         String guid = GUID.create();
+         Long guid = 0x00L;
          String name = "index: " + index;
          isAbstract ^= isAbstract;
          data.add(new Object[] {new ArtifactType(guid, name, isAbstract), guid, name, isAbstract});
