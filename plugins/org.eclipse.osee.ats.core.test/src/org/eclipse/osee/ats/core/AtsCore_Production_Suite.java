@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core;
 
 import org.eclipse.osee.ats.core.config.AtsCore_Config_Production_PT_Suite;
-import org.eclipse.osee.ats.core.workdef.AtsCore_WorkDef_Production_PT_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -19,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsCore_Config_Production_PT_Suite.class, AtsCore_WorkDef_Production_PT_Suite.class})
+@Suite.SuiteClasses({AtsCore_Config_Production_PT_Suite.class})
 /**
  * This test suite contains tests that must be run as PDE Junit (PT) through test launch config
  * 
