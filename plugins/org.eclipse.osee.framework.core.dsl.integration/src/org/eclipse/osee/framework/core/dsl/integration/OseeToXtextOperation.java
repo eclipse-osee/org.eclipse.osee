@@ -99,7 +99,6 @@ public class OseeToXtextOperation extends AbstractOperation {
 
          modelType.setName(enumType.getName());
          modelType.setUuid(HexUtil.toString(enumType.getGuid()));
-         modelType.setTypeGuid(modelType.getUuid());
 
          for (OseeEnumEntry entry : enumType.values()) {
             checkForCancelledStatus(monitor);
@@ -126,7 +125,6 @@ public class OseeToXtextOperation extends AbstractOperation {
          modelType.setName(attributeType.getName());
 
          modelType.setUuid(HexUtil.toString(attributeType.getGuid()));
-         modelType.setTypeGuid(modelType.getUuid());
 
          modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
          modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
@@ -139,7 +137,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
          OseeEnumType oseeEnumType = attributeType.getOseeEnumType();
          if (oseeEnumType != null) {
-            XOseeEnumType enumType = toModelEnumType(model, oseeEnumType);
+            XOseeEnumType enumType = toModelEnumType(model, oseeEnumType.getGuid());
             modelType.setEnumType(enumType);
          }
       }
@@ -158,7 +156,6 @@ public class OseeToXtextOperation extends AbstractOperation {
 
          modelType.setName(artifactType.getName());
          modelType.setUuid(HexUtil.toString(artifactType.getGuid()));
-         modelType.setTypeGuid(modelType.getUuid());
       }
       monitor.worked(calculateWork(workPercentage));
    }
@@ -229,7 +226,6 @@ public class OseeToXtextOperation extends AbstractOperation {
 
          modelType.setName(relationType.getName());
          modelType.setUuid(HexUtil.toString(relationType.getGuid()));
-         modelType.setTypeGuid(modelType.getUuid());
 
          modelType.setDefaultOrderType(OseeUtil.getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
          modelType.setMultiplicity(RelationMultiplicityEnum.getByName(relationType.getMultiplicity().name()));
@@ -243,31 +239,30 @@ public class OseeToXtextOperation extends AbstractOperation {
       monitor.worked(calculateWork(workPercentage));
    }
 
-   private XArtifactType getArtifactType(OseeDsl model, Long guid) throws OseeCoreException {
+   private XArtifactType getArtifactType(OseeDsl model, Long uuid) throws OseeCoreException {
       for (XArtifactType type : model.getArtifactTypes()) {
          Long normalizedGuid = HexUtil.toLong(type.getUuid());
-         if (guid.equals(normalizedGuid)) {
+         if (uuid.equals(normalizedGuid)) {
             return type;
          }
       }
       return null;
    }
 
-   private XAttributeType getAttributeType(OseeDsl model, Long guid) throws OseeCoreException {
+   private XAttributeType getAttributeType(OseeDsl model, Long uuid) throws OseeCoreException {
       for (XAttributeType type : model.getAttributeTypes()) {
          Long normalizedGuid = HexUtil.toLong(type.getUuid());
-         if (guid.equals(normalizedGuid)) {
+         if (uuid.equals(normalizedGuid)) {
             return type;
          }
       }
       return null;
    }
 
-   private XOseeEnumType toModelEnumType(OseeDsl model, OseeEnumType oseeEnumType) throws OseeCoreException {
-      Long guid = oseeEnumType.getGuid();
+   private XOseeEnumType toModelEnumType(OseeDsl model, Long uuid) throws OseeCoreException {
       for (XOseeEnumType type : model.getEnumTypes()) {
          Long normalizedGuid = HexUtil.toLong(type.getUuid());
-         if (guid.equals(normalizedGuid)) {
+         if (uuid.equals(normalizedGuid)) {
             return type;
          }
       }
