@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -50,10 +49,8 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
    private final IOseeCachingService systemCachingService;
    private final IOseeCachingServiceFactory cachingFactoryService;
    private final OseeDslFactory modelFactory;
-   private final IOseeDatabaseService dbService;
 
-   public OseeModelingServiceImpl(IOseeDatabaseService dbService, IOseeModelFactoryService modelFactoryService, IOseeCachingService systemCachingService, IOseeCachingServiceFactory cachingFactoryService, OseeDslFactory dslFactory) {
-      this.dbService = dbService;
+   public OseeModelingServiceImpl(IOseeModelFactoryService modelFactoryService, IOseeCachingService systemCachingService, IOseeCachingServiceFactory cachingFactoryService, OseeDslFactory dslFactory) {
       this.modelFactoryService = modelFactoryService;
       this.systemCachingService = systemCachingService;
       this.cachingFactoryService = cachingFactoryService;
@@ -101,8 +98,8 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
          ops.add(new OseeToXtextOperation(tempCache, modelFactory, baseModel));
       }
 
-      ops.add(new XTextToOseeTypeOperation(dbService.getRemoteIdManager(), modelFactoryService, tempCache,
-         tempCacheService.getBranchCache(), inputModel));
+      ops.add(new XTextToOseeTypeOperation(modelFactoryService, tempCache, tempCacheService.getBranchCache(),
+         inputModel));
       if (request.isCreateTypeChangeReport()) {
          ops.add(new CreateOseeTypeChangesReportOperation(tempCache, reportData));
       }
@@ -139,21 +136,4 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
          response.setComparisonSnapshotModel(modelString);
       }
    }
-
-   //      Map<String, OseeTypeModel> changedModels = new HashMap<String, OseeTypeModel>();
-   //      doSubWork(new OseeToXtextOperation(modifiedCache, changedModels), monitor, 0.20);
-   //
-   //      OseeTypeCache storeCache = createEmptyCache();
-   //      storeCache.ensurePopulated();
-   //      Map<String, OseeTypeModel> baseModels = new HashMap<String, OseeTypeModel>();
-   //      doSubWork(new OseeToXtextOperation(storeCache, baseModels), monitor, 0.20);
-   //
-   //      OseeTypeModel changedModel = null;
-   //      OseeTypeModel baseModel = null;
-   //      for (String key : changedModels.keySet()) {
-   //         changedModel = changedModels.get(key);
-   //         baseModel = baseModels.get(key);
-   //      }
-   //   }
-
 }
