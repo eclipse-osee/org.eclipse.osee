@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -112,6 +113,11 @@ public class RemoteIdManagerImpl implements RemoteIdManager {
       }
       service.runBatchUpdate(INSERT_SQL, data);
       persistedIds.addAll(toPersist);
+   }
+
+   @Override
+   public int getLocalId(Identity<Long> identity) throws OseeCoreException {
+      return getLocalId(identity.getGuid());
    }
 
 }

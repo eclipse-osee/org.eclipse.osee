@@ -1664,8 +1664,17 @@ relationType "Results Data" {
    multiplicity MANY_TO_MANY
 }
 
-artifactType "Osee Type Definition" extends "Native Artifact"{
+attributeType "Uri General String Data" extends StringAttribute {
+   guid "AFnIJbPBoQFQpTP2jfQA"
+   uuid 0x1000000000000195
+   dataProvider UriAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+artifactType "Osee Type Definition" extends "Artifact"{
 	guid "AFGVEpSssxutyEAP0twA"
    uuid 0x000000000000003C
 	attribute "Active"
+	attribute "Uri General String Data"
 }

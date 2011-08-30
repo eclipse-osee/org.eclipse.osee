@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.WholeAttributeUpdateOperation;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IWorkbench;
@@ -110,7 +111,7 @@ public class OseeDslTypeSheetRenderer extends FileSystemRenderer {
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       Artifact artifact = artifacts.iterator().next();
       StringBuilder builder = new StringBuilder();
-      builder.append(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, ""));
+      builder.append(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.UriGeneralStringData, ""));
       InputStream inputStream = null;
       try {
          inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
@@ -127,7 +128,7 @@ public class OseeDslTypeSheetRenderer extends FileSystemRenderer {
 
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) {
-      return null;
+      return new WholeAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.UriGeneralStringData);
    }
 
 }

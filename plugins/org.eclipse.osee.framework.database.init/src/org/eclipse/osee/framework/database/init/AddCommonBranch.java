@@ -73,12 +73,11 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
             Artifact artifact =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition, BranchManager.getCommonBranch(),
                   entry.getKey(), GUID.create(), HumanReadableId.generate());
-            artifact.setSoleAttributeFromString(CoreAttributeTypes.Extension, ".osee");
             artifact.setSoleAttributeValue(CoreAttributeTypes.Active, true);
             InputStream inputStream = null;
             try {
                inputStream = new BufferedInputStream(entry.getValue().openStream());
-               artifact.setSoleAttributeFromStream(CoreAttributeTypes.NativeContent, inputStream);
+               artifact.setSoleAttributeFromStream(CoreAttributeTypes.UriGeneralStringData, inputStream);
             } catch (IOException ex) {
                OseeExceptions.wrap(ex);
             } finally {

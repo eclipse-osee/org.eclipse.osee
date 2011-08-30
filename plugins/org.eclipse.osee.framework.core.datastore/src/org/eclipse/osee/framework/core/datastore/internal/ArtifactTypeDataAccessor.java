@@ -94,7 +94,7 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
 
       // john: Which attribute type store type def binary data
       Integer artifactTypeId = manager.getLocalId(CoreArtifactTypes.OseeTypeDefinition.getGuid());
-      Integer attributeTypeId = manager.getLocalId(CoreAttributeTypes.NativeContent.getGuid());
+      Integer attributeTypeId = manager.getLocalId(CoreAttributeTypes.UriGeneralStringData.getGuid());
 
       Branch commonBranch = branchCache.get(CoreBranches.COMMON);
 
