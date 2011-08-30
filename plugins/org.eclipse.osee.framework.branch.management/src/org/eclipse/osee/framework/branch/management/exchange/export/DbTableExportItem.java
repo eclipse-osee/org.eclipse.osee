@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
@@ -197,7 +196,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
    }
 
    private void handleTypeId(Appendable appendable, Object value, AbstractOseeCache<?, ?> cache) throws IOException, OseeCoreException {
-      int typeId = ((BigDecimal) value).intValueExact();
+      int typeId = (Integer) value;
       String guid = String.valueOf(cache.getById(typeId).getGuid());
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
    }
