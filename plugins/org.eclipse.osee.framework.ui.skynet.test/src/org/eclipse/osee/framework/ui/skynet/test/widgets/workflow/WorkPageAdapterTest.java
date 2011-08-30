@@ -10,20 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.widgets.workflow;
 
-import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.MethodRule;
 
 /**
  * @link WorkPageAdapter
  * @author Donald G. Dunne
  */
 public class WorkPageAdapterTest {
-
-   @Rule
-   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    @Test
    public void ordered() {
