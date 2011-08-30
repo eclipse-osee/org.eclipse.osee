@@ -37,8 +37,11 @@ public final class HexUtil {
    }
 
    public static String toString(long value) throws OseeCoreException {
-      //      String hexString = Long.toHexString(value).toUpperCase();
-      return String.format("0x%016X", value);
+      try {
+         return String.format("0x%016X", value);
+      } catch (Exception ex) {
+         throw new OseeCoreException(String.format("Error converting [%s] to java.util.String", value), ex);
+      }
    }
 
 }
