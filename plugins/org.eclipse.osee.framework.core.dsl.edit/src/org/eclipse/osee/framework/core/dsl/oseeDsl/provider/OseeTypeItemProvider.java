@@ -63,6 +63,7 @@ public class OseeTypeItemProvider
 
          addNamePropertyDescriptor(object);
          addTypeGuidPropertyDescriptor(object);
+         addUuidPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -112,6 +113,28 @@ public class OseeTypeItemProvider
    }
 
    /**
+    * This adds a property descriptor for the Uuid feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addUuidPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_OseeType_uuid_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_OseeType_uuid_feature", "_UI_OseeType_type"),
+             OseeDslPackage.Literals.OSEE_TYPE__UUID,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
     * This returns OseeType.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -150,6 +173,7 @@ public class OseeTypeItemProvider
       switch (notification.getFeatureID(OseeType.class)) {
          case OseeDslPackage.OSEE_TYPE__NAME:
          case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
+         case OseeDslPackage.OSEE_TYPE__UUID:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

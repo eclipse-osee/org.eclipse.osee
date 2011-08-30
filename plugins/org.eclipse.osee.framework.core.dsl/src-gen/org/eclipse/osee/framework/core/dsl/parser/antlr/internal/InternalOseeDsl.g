@@ -468,15 +468,15 @@ ruleXArtifactType returns [EObject current=null]
     {
     	newLeafNode(otherlv_7, grammarAccess.getXArtifactTypeAccess().getLeftCurlyBracketKeyword_4());
     }
-	otherlv_8='guid' 
+(	otherlv_8='guid' 
     {
-    	newLeafNode(otherlv_8, grammarAccess.getXArtifactTypeAccess().getGuidKeyword_5());
+    	newLeafNode(otherlv_8, grammarAccess.getXArtifactTypeAccess().getGuidKeyword_5_0());
     }
 (
 (
 		lv_typeGuid_9_0=RULE_STRING
 		{
-			newLeafNode(lv_typeGuid_9_0, grammarAccess.getXArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0()); 
+			newLeafNode(lv_typeGuid_9_0, grammarAccess.getXArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -490,15 +490,15 @@ ruleXArtifactType returns [EObject current=null]
 	    }
 
 )
-)	otherlv_10='uuid' 
+))?	otherlv_10='uuid' 
     {
-    	newLeafNode(otherlv_10, grammarAccess.getXArtifactTypeAccess().getUuidKeyword_7());
+    	newLeafNode(otherlv_10, grammarAccess.getXArtifactTypeAccess().getUuidKeyword_6());
     }
 (
 (
 		lv_uuid_11_0=RULE_HEX_INT
 		{
-			newLeafNode(lv_uuid_11_0, grammarAccess.getXArtifactTypeAccess().getUuidHEX_INTTerminalRuleCall_8_0()); 
+			newLeafNode(lv_uuid_11_0, grammarAccess.getXArtifactTypeAccess().getUuidHEX_INTTerminalRuleCall_7_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -515,7 +515,7 @@ ruleXArtifactType returns [EObject current=null]
 )(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_9_0()); 
+	        newCompositeNode(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_8_0()); 
 	    }
 		lv_validAttributeTypes_12_0=ruleXAttributeTypeRef		{
 	        if ($current==null) {
@@ -532,7 +532,7 @@ ruleXArtifactType returns [EObject current=null]
 )
 )*	otherlv_13='}' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_10());
+    	newLeafNode(otherlv_13, grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_9());
     }
 )
 ;
@@ -680,15 +680,15 @@ ruleXAttributeType returns [EObject current=null]
     {
     	newLeafNode(otherlv_6, grammarAccess.getXAttributeTypeAccess().getLeftCurlyBracketKeyword_4());
     }
-	otherlv_7='guid' 
+(	otherlv_7='guid' 
     {
-    	newLeafNode(otherlv_7, grammarAccess.getXAttributeTypeAccess().getGuidKeyword_5());
+    	newLeafNode(otherlv_7, grammarAccess.getXAttributeTypeAccess().getGuidKeyword_5_0());
     }
 (
 (
 		lv_typeGuid_8_0=RULE_STRING
 		{
-			newLeafNode(lv_typeGuid_8_0, grammarAccess.getXAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0()); 
+			newLeafNode(lv_typeGuid_8_0, grammarAccess.getXAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -702,15 +702,15 @@ ruleXAttributeType returns [EObject current=null]
 	    }
 
 )
-)	otherlv_9='uuid' 
+))?	otherlv_9='uuid' 
     {
-    	newLeafNode(otherlv_9, grammarAccess.getXAttributeTypeAccess().getUuidKeyword_7());
+    	newLeafNode(otherlv_9, grammarAccess.getXAttributeTypeAccess().getUuidKeyword_6());
     }
 (
 (
 		lv_uuid_10_0=RULE_HEX_INT
 		{
-			newLeafNode(lv_uuid_10_0, grammarAccess.getXAttributeTypeAccess().getUuidHEX_INTTerminalRuleCall_8_0()); 
+			newLeafNode(lv_uuid_10_0, grammarAccess.getXAttributeTypeAccess().getUuidHEX_INTTerminalRuleCall_7_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -726,14 +726,14 @@ ruleXAttributeType returns [EObject current=null]
 )
 )	otherlv_11='dataProvider' 
     {
-    	newLeafNode(otherlv_11, grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_9());
+    	newLeafNode(otherlv_11, grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_8());
     }
 (
 (
 (
 		lv_dataProvider_12_1=	'DefaultAttributeDataProvider' 
     {
-        newLeafNode(lv_dataProvider_12_1, grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_10_0_0());
+        newLeafNode(lv_dataProvider_12_1, grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_9_0_0());
     }
  
 	    {
@@ -745,7 +745,7 @@ ruleXAttributeType returns [EObject current=null]
 
     |		lv_dataProvider_12_2=	'UriAttributeDataProvider' 
     {
-        newLeafNode(lv_dataProvider_12_2, grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_10_0_1());
+        newLeafNode(lv_dataProvider_12_2, grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_9_0_1());
     }
  
 	    {
@@ -756,7 +756,7 @@ ruleXAttributeType returns [EObject current=null]
 	    }
 
     |		{ 
-	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_10_0_2()); 
+	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_9_0_2()); 
 	    }
 		lv_dataProvider_12_3=ruleQUALIFIED_NAME		{
 	        if ($current==null) {
@@ -775,13 +775,13 @@ ruleXAttributeType returns [EObject current=null]
 )
 )	otherlv_13='min' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getXAttributeTypeAccess().getMinKeyword_11());
+    	newLeafNode(otherlv_13, grammarAccess.getXAttributeTypeAccess().getMinKeyword_10());
     }
 (
 (
 		lv_min_14_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_min_14_0, grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_12_0()); 
+			newLeafNode(lv_min_14_0, grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_11_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -797,14 +797,14 @@ ruleXAttributeType returns [EObject current=null]
 )
 )	otherlv_15='max' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getXAttributeTypeAccess().getMaxKeyword_13());
+    	newLeafNode(otherlv_15, grammarAccess.getXAttributeTypeAccess().getMaxKeyword_12());
     }
 (
 (
 (
 		lv_max_16_1=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_max_16_1, grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_14_0_0()); 
+			newLeafNode(lv_max_16_1, grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_13_0_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -819,7 +819,7 @@ ruleXAttributeType returns [EObject current=null]
 
     |		lv_max_16_2=	'unlimited' 
     {
-        newLeafNode(lv_max_16_2, grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_14_0_1());
+        newLeafNode(lv_max_16_2, grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_13_0_1());
     }
  
 	    {
@@ -834,14 +834,14 @@ ruleXAttributeType returns [EObject current=null]
 )
 )(	otherlv_17='taggerId' 
     {
-    	newLeafNode(otherlv_17, grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_15_0());
+    	newLeafNode(otherlv_17, grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_14_0());
     }
 (
 (
 (
 		lv_taggerId_18_1=	'DefaultAttributeTaggerProvider' 
     {
-        newLeafNode(lv_taggerId_18_1, grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_15_1_0_0());
+        newLeafNode(lv_taggerId_18_1, grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_14_1_0_0());
     }
  
 	    {
@@ -852,7 +852,7 @@ ruleXAttributeType returns [EObject current=null]
 	    }
 
     |		{ 
-	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_15_1_0_1()); 
+	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_14_1_0_1()); 
 	    }
 		lv_taggerId_18_2=ruleQUALIFIED_NAME		{
 	        if ($current==null) {
@@ -871,7 +871,7 @@ ruleXAttributeType returns [EObject current=null]
 )
 ))?(	otherlv_19='enumType' 
     {
-    	newLeafNode(otherlv_19, grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_16_0());
+    	newLeafNode(otherlv_19, grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_15_0());
     }
 (
 (
@@ -882,19 +882,19 @@ ruleXAttributeType returns [EObject current=null]
         }
 	otherlv_20=RULE_STRING
 	{
-		newLeafNode(otherlv_20, grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_16_1_0()); 
+		newLeafNode(otherlv_20, grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_15_1_0()); 
 	}
 
 )
 ))?(	otherlv_21='description' 
     {
-    	newLeafNode(otherlv_21, grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_17_0());
+    	newLeafNode(otherlv_21, grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_16_0());
     }
 (
 (
 		lv_description_22_0=RULE_STRING
 		{
-			newLeafNode(lv_description_22_0, grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_17_1_0()); 
+			newLeafNode(lv_description_22_0, grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_16_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -910,13 +910,13 @@ ruleXAttributeType returns [EObject current=null]
 )
 ))?(	otherlv_23='defaultValue' 
     {
-    	newLeafNode(otherlv_23, grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_18_0());
+    	newLeafNode(otherlv_23, grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_17_0());
     }
 (
 (
 		lv_defaultValue_24_0=RULE_STRING
 		{
-			newLeafNode(lv_defaultValue_24_0, grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_18_1_0()); 
+			newLeafNode(lv_defaultValue_24_0, grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_17_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -932,13 +932,13 @@ ruleXAttributeType returns [EObject current=null]
 )
 ))?(	otherlv_25='fileExtension' 
     {
-    	newLeafNode(otherlv_25, grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_19_0());
+    	newLeafNode(otherlv_25, grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_18_0());
     }
 (
 (
 		lv_fileExtension_26_0=RULE_STRING
 		{
-			newLeafNode(lv_fileExtension_26_0, grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_19_1_0()); 
+			newLeafNode(lv_fileExtension_26_0, grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_18_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -954,7 +954,7 @@ ruleXAttributeType returns [EObject current=null]
 )
 ))?	otherlv_27='}' 
     {
-    	newLeafNode(otherlv_27, grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_20());
+    	newLeafNode(otherlv_27, grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_19());
     }
 )
 ;
@@ -1098,15 +1098,15 @@ ruleXOseeEnumType returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getXOseeEnumTypeAccess().getLeftCurlyBracketKeyword_2());
     }
-	otherlv_3='guid' 
+(	otherlv_3='guid' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getXOseeEnumTypeAccess().getGuidKeyword_3());
+    	newLeafNode(otherlv_3, grammarAccess.getXOseeEnumTypeAccess().getGuidKeyword_3_0());
     }
 (
 (
 		lv_typeGuid_4_0=RULE_STRING
 		{
-			newLeafNode(lv_typeGuid_4_0, grammarAccess.getXOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0()); 
+			newLeafNode(lv_typeGuid_4_0, grammarAccess.getXOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1120,15 +1120,15 @@ ruleXOseeEnumType returns [EObject current=null]
 	    }
 
 )
-)	otherlv_5='uuid' 
+))?	otherlv_5='uuid' 
     {
-    	newLeafNode(otherlv_5, grammarAccess.getXOseeEnumTypeAccess().getUuidKeyword_5());
+    	newLeafNode(otherlv_5, grammarAccess.getXOseeEnumTypeAccess().getUuidKeyword_4());
     }
 (
 (
 		lv_uuid_6_0=RULE_HEX_INT
 		{
-			newLeafNode(lv_uuid_6_0, grammarAccess.getXOseeEnumTypeAccess().getUuidHEX_INTTerminalRuleCall_6_0()); 
+			newLeafNode(lv_uuid_6_0, grammarAccess.getXOseeEnumTypeAccess().getUuidHEX_INTTerminalRuleCall_5_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1145,7 +1145,7 @@ ruleXOseeEnumType returns [EObject current=null]
 )(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_7_0()); 
+	        newCompositeNode(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_6_0()); 
 	    }
 		lv_enumEntries_7_0=ruleXOseeEnumEntry		{
 	        if ($current==null) {
@@ -1162,7 +1162,7 @@ ruleXOseeEnumType returns [EObject current=null]
 )
 )*	otherlv_8='}' 
     {
-    	newLeafNode(otherlv_8, grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_8());
+    	newLeafNode(otherlv_8, grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_7());
     }
 )
 ;
@@ -1534,15 +1534,15 @@ ruleXRelationType returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getXRelationTypeAccess().getLeftCurlyBracketKeyword_2());
     }
-	otherlv_3='guid' 
+(	otherlv_3='guid' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getXRelationTypeAccess().getGuidKeyword_3());
+    	newLeafNode(otherlv_3, grammarAccess.getXRelationTypeAccess().getGuidKeyword_3_0());
     }
 (
 (
 		lv_typeGuid_4_0=RULE_STRING
 		{
-			newLeafNode(lv_typeGuid_4_0, grammarAccess.getXRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0()); 
+			newLeafNode(lv_typeGuid_4_0, grammarAccess.getXRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1556,15 +1556,15 @@ ruleXRelationType returns [EObject current=null]
 	    }
 
 )
-)	otherlv_5='uuid' 
+))?	otherlv_5='uuid' 
     {
-    	newLeafNode(otherlv_5, grammarAccess.getXRelationTypeAccess().getUuidKeyword_5());
+    	newLeafNode(otherlv_5, grammarAccess.getXRelationTypeAccess().getUuidKeyword_4());
     }
 (
 (
 		lv_uuid_6_0=RULE_HEX_INT
 		{
-			newLeafNode(lv_uuid_6_0, grammarAccess.getXRelationTypeAccess().getUuidHEX_INTTerminalRuleCall_6_0()); 
+			newLeafNode(lv_uuid_6_0, grammarAccess.getXRelationTypeAccess().getUuidHEX_INTTerminalRuleCall_5_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1580,13 +1580,13 @@ ruleXRelationType returns [EObject current=null]
 )
 )	otherlv_7='sideAName' 
     {
-    	newLeafNode(otherlv_7, grammarAccess.getXRelationTypeAccess().getSideANameKeyword_7());
+    	newLeafNode(otherlv_7, grammarAccess.getXRelationTypeAccess().getSideANameKeyword_6());
     }
 (
 (
 		lv_sideAName_8_0=RULE_STRING
 		{
-			newLeafNode(lv_sideAName_8_0, grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_8_0()); 
+			newLeafNode(lv_sideAName_8_0, grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_7_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1602,7 +1602,7 @@ ruleXRelationType returns [EObject current=null]
 )
 )	otherlv_9='sideAArtifactType' 
     {
-    	newLeafNode(otherlv_9, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_9());
+    	newLeafNode(otherlv_9, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_8());
     }
 (
 (
@@ -1613,19 +1613,19 @@ ruleXRelationType returns [EObject current=null]
         }
 	otherlv_10=RULE_STRING
 	{
-		newLeafNode(otherlv_10, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_10_0()); 
+		newLeafNode(otherlv_10, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_9_0()); 
 	}
 
 )
 )	otherlv_11='sideBName' 
     {
-    	newLeafNode(otherlv_11, grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_11());
+    	newLeafNode(otherlv_11, grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_10());
     }
 (
 (
 		lv_sideBName_12_0=RULE_STRING
 		{
-			newLeafNode(lv_sideBName_12_0, grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_12_0()); 
+			newLeafNode(lv_sideBName_12_0, grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_11_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1641,7 +1641,7 @@ ruleXRelationType returns [EObject current=null]
 )
 )	otherlv_13='sideBArtifactType' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_13());
+    	newLeafNode(otherlv_13, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_12());
     }
 (
 (
@@ -1652,18 +1652,18 @@ ruleXRelationType returns [EObject current=null]
         }
 	otherlv_14=RULE_STRING
 	{
-		newLeafNode(otherlv_14, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_14_0()); 
+		newLeafNode(otherlv_14, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_13_0()); 
 	}
 
 )
 )	otherlv_15='defaultOrderType' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_15());
+    	newLeafNode(otherlv_15, grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_14());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_16_0()); 
+	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_15_0()); 
 	    }
 		lv_defaultOrderType_16_0=ruleRelationOrderType		{
 	        if ($current==null) {
@@ -1680,12 +1680,12 @@ ruleXRelationType returns [EObject current=null]
 )
 )	otherlv_17='multiplicity' 
     {
-    	newLeafNode(otherlv_17, grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_17());
+    	newLeafNode(otherlv_17, grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_16());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_18_0()); 
+	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_17_0()); 
 	    }
 		lv_multiplicity_18_0=ruleRelationMultiplicityEnum		{
 	        if ($current==null) {
@@ -1702,7 +1702,7 @@ ruleXRelationType returns [EObject current=null]
 )
 )	otherlv_19='}' 
     {
-    	newLeafNode(otherlv_19, grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_19());
+    	newLeafNode(otherlv_19, grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_18());
     }
 )
 ;
