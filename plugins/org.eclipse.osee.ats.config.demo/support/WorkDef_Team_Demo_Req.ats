@@ -27,12 +27,6 @@ workDefinition "WorkDef_Team_Demo_Req" {
       option REQUIRED_FOR_TRANSITION
    }
 
-   widgetDefinition "User Community" {
-      attributeName "ats.User Community"
-      xWidgetName "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
-      option HORIZONTAL_LABEL
-   }
-
    widgetDefinition "Working Branch" {
       xWidgetName "XWorkingBranch"
    }
@@ -45,6 +39,27 @@ workDefinition "WorkDef_Team_Demo_Req" {
       attributeName "ats.Resolution"
       xWidgetName "XTextDam"
       option FILL_VERTICALLY
+   }
+
+   state "Endorse" {
+      type Working
+      ordinal 1
+      to "Cancelled"
+      to "Analyze" AsDefault
+      rule RequireStateHourSpentPrompt
+      layout {
+         widget "Title"
+         widget "Description"
+         widget "Proposed Resolution"
+         composite {
+            numColumns 6
+            attributeWidget "ats.Change Type"
+            attributeWidget "ats.Priority"
+            attributeWidget "ats.Need By"
+         }
+         attributeWidget "ats.Validation Required"
+         attributeWidget "ats.Work Package"
+      }
    }
 
    state "Analyze" {
@@ -66,37 +81,6 @@ workDefinition "WorkDef_Team_Demo_Req" {
          }
          attributeWidget "ats.Estimated Hours"
       }
-   }
-
-   state "Endorse" {
-      type Working
-      ordinal 1
-      to "Cancelled"
-      to "Analyze" AsDefault
-      rule RequireStateHourSpentPrompt
-      layout {
-         widget "Title"
-         widget "Description"
-         widget "Proposed Resolution"
-         composite {
-            numColumns 6
-            attributeWidget "ats.Change Type"
-            attributeWidget "ats.Priority"
-            attributeWidget "ats.Need By"
-         }
-         attributeWidget "ats.Validation Required"
-         attributeWidget "ats.Work Package"
-         widget "User Community"
-      }
-   }
-
-   state "Cancelled" {
-      type Cancelled
-      ordinal 6
-      to "Analyze" OverrideAttributeValidation
-      to "Implement" OverrideAttributeValidation
-      to "Endorse" OverrideAttributeValidation
-      to "Authorize" OverrideAttributeValidation
    }
 
    state "Authorize" {
@@ -134,4 +118,14 @@ workDefinition "WorkDef_Team_Demo_Req" {
       to "Implement" OverrideAttributeValidation
       rule AddDecisionValidateBlockingReview
    }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 6
+      to "Analyze" OverrideAttributeValidation
+      to "Implement" OverrideAttributeValidation
+      to "Endorse" OverrideAttributeValidation
+      to "Authorize" OverrideAttributeValidation
+   }
+
 }

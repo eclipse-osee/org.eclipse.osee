@@ -27,12 +27,6 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
       option FILL_VERTICALLY
    }
 
-   widgetDefinition "User Community" {
-      attributeName "ats.User Community"
-      xWidgetName "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
-      option HORIZONTAL_LABEL
-   }
-
    widgetDefinition "Working Branch" {
       xWidgetName "XWorkingBranch"
    }
@@ -86,6 +80,27 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
       assignee named "UnAssigned"
    }
 
+   state "Endorse" {
+      type Working
+      ordinal 1
+      to "Cancelled"
+      to "Analyze" AsDefault
+      rule RequireStateHourSpentPrompt
+      layout {
+         widget "Title"
+         widget "Description"
+         widget "Proposed Resolution"
+         composite {
+            numColumns 6
+            attributeWidget "ats.Change Type"
+            attributeWidget "ats.Priority"
+            attributeWidget "ats.Need By"
+         }
+         attributeWidget "ats.Validation Required"
+         attributeWidget "ats.Work Package"
+      }
+   }
+
    state "Analyze" {
       type Working
       ordinal 2
@@ -108,37 +123,6 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
       }
    }
 
-   state "Endorse" {
-      type Working
-      ordinal 1
-      to "Cancelled"
-      to "Analyze" AsDefault
-      rule RequireStateHourSpentPrompt
-      layout {
-         widget "Title"
-         widget "Description"
-         widget "Proposed Resolution"
-         composite {
-            numColumns 6
-            attributeWidget "ats.Change Type"
-            attributeWidget "ats.Priority"
-            attributeWidget "ats.Need By"
-         }
-         attributeWidget "ats.Validation Required"
-         attributeWidget "ats.Work Package"
-         widget "User Community"
-      }
-   }
-
-   state "Cancelled" {
-      type Cancelled
-      ordinal 6
-      to "Analyze" OverrideAttributeValidation
-      to "Endorse" OverrideAttributeValidation
-      to "Authorize" OverrideAttributeValidation
-      to "Implement" OverrideAttributeValidation
-   }
-
    state "Authorize" {
       type Working
       ordinal 3
@@ -150,13 +134,6 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
          attributeWidget "ats.Work Package"
          attributeWidget "ats.Estimated Completion Date"
       }
-   }
-
-   state "Completed" {
-      type Completed
-      ordinal 5
-      to "Implement" OverrideAttributeValidation
-      rule AddDecisionValidateBlockingReview
    }
 
    state "Implement" {
@@ -177,4 +154,21 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
          widget "Resolution"
       }
    }
+
+   state "Completed" {
+      type Completed
+      ordinal 5
+      to "Implement" OverrideAttributeValidation
+      rule AddDecisionValidateBlockingReview
+   }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 6
+      to "Analyze" OverrideAttributeValidation
+      to "Endorse" OverrideAttributeValidation
+      to "Authorize" OverrideAttributeValidation
+      to "Implement" OverrideAttributeValidation
+   }
+
 }

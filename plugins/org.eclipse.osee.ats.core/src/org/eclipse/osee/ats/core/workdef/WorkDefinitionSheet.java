@@ -33,6 +33,6 @@ public class WorkDefinitionSheet {
 
    @Override
    public String toString() {
-      return String.format("%s Filename[%s]", name, file);
+      return String.format("%s   - file[%s]", name, file);
    }
 }

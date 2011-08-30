@@ -33,43 +33,24 @@ workDefinition "WorkDef_Team_Demo_Code" {
       option REQUIRED_FOR_TRANSITION
    }
 
-   widgetDefinition "User Community" {
-      attributeName "ats.User Community"
-      xWidgetName "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
-      option HORIZONTAL_LABEL
-   }
-
-   state "Completed" {
-      type Completed
-      ordinal 5
-      to "Implement" OverrideAttributeValidation
-      rule AddDecisionValidateBlockingReview
-   }
-
-   state "Implement" {
+   state "Endorse" {
       type Working
-      ordinal 4
+      ordinal 1
       to "Cancelled"
-      to "Completed" AsDefault
-      to "Authorize" OverrideAttributeValidation
-      to "Analyze" OverrideAttributeValidation
+      to "Analyze" AsDefault
       rule RequireStateHourSpentPrompt
       layout {
+         widget "Title"
+         widget "Description"
+         widget "Proposed Resolution"
+         composite {
+            numColumns 6
+            attributeWidget "ats.Change Type"
+            attributeWidget "ats.Priority"
+            attributeWidget "ats.Need By"
+         }
+         attributeWidget "ats.Validation Required"
          attributeWidget "ats.Work Package"
-         attributeWidget "ats.Estimated Completion Date"
-         widget "Resolution"
-      }
-   }
-
-   state "Authorize" {
-      type Working
-      ordinal 3
-      to "Cancelled"
-      to "Implement" AsDefault
-      to "Analyze" OverrideAttributeValidation
-      layout {
-         attributeWidget "ats.Work Package"
-         attributeWidget "ats.Estimated Completion Date"
       }
    }
 
@@ -94,6 +75,40 @@ workDefinition "WorkDef_Team_Demo_Code" {
       }
    }
 
+   state "Authorize" {
+      type Working
+      ordinal 3
+      to "Cancelled"
+      to "Implement" AsDefault
+      to "Analyze" OverrideAttributeValidation
+      layout {
+         attributeWidget "ats.Work Package"
+         attributeWidget "ats.Estimated Completion Date"
+      }
+   }
+
+   state "Implement" {
+      type Working
+      ordinal 4
+      to "Cancelled"
+      to "Completed" AsDefault
+      to "Authorize" OverrideAttributeValidation
+      to "Analyze" OverrideAttributeValidation
+      rule RequireStateHourSpentPrompt
+      layout {
+         attributeWidget "ats.Work Package"
+         attributeWidget "ats.Estimated Completion Date"
+         widget "Resolution"
+      }
+   }
+
+   state "Completed" {
+      type Completed
+      ordinal 5
+      to "Implement" OverrideAttributeValidation
+      rule AddDecisionValidateBlockingReview
+   }
+   
    state "Cancelled" {
       type Cancelled
       ordinal 6
@@ -103,25 +118,5 @@ workDefinition "WorkDef_Team_Demo_Code" {
       to "Endorse" OverrideAttributeValidation
    }
 
-   state "Endorse" {
-      type Working
-      ordinal 1
-      to "Cancelled"
-      to "Analyze" AsDefault
-      rule RequireStateHourSpentPrompt
-      layout {
-         widget "Title"
-         widget "Description"
-         widget "Proposed Resolution"
-         composite {
-            numColumns 6
-            attributeWidget "ats.Change Type"
-            attributeWidget "ats.Priority"
-            attributeWidget "ats.Need By"
-         }
-         attributeWidget "ats.Validation Required"
-         attributeWidget "ats.Work Package"
-         widget "User Community"
-      }
-   }
+
 }

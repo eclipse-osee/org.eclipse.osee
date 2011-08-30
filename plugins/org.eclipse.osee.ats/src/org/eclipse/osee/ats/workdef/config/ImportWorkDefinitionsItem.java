@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workdef.config;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
@@ -33,8 +34,13 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      Collection<WorkDefinitionSheet> sheets = AtsWorkDefinitionSheetProviders.getWorkDefinitionSheets();
-      WorkDefinitionCheckTreeDialog dialog = new WorkDefinitionCheckTreeDialog(sheets);
+      List<WorkDefinitionSheet> importSheets = new ArrayList<WorkDefinitionSheet>();
+      for (WorkDefinitionSheet sheet : AtsWorkDefinitionSheetProviders.getWorkDefinitionSheets()) {
+         if (!sheet.getName().endsWith("AIs_And_Teams")) {
+            importSheets.add(sheet);
+         }
+      }
+      WorkDefinitionCheckTreeDialog dialog = new WorkDefinitionCheckTreeDialog(importSheets);
       dialog.setTitle(getName());
       dialog.setMessage("Select Work Definition Sheet(s) to import");
       if (dialog.open() == 0) {
@@ -48,7 +54,7 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
          if (!resultData.isErrors()) {
             transaction.execute();
          }
-         XResultDataUI.report(resultData,getName());
+         XResultDataUI.report(resultData, getName());
       }
    }
 }

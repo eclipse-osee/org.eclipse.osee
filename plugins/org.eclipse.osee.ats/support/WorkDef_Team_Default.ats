@@ -63,12 +63,6 @@ workDefinition "WorkDef_Team_Default" {
       option HORIZONTAL_LABEL
    }
 
-   widgetDefinition "User Community" {
-      attributeName "ats.User Community"
-      xWidgetName "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
-      option HORIZONTAL_LABEL
-   }
-
    widgetDefinition "Estimated Completion Date" {
       attributeName "ats.Estimated Completion Date"
       xWidgetName "XDateDam"
@@ -79,6 +73,28 @@ workDefinition "WorkDef_Team_Default" {
       attributeName "ats.Resolution"
       xWidgetName "XTextDam"
       option FILL_VERTICALLY
+   }
+
+   state "Endorse" {
+      type Working
+      ordinal 1
+      to "Cancelled"
+      to "Analyze" AsDefault
+      rule RequireStateHourSpentPrompt
+      percentWeight 5
+      layout {
+         widget "Title"
+         widget "Description"
+         widget "Proposed Resolution"
+         composite {
+            numColumns 6
+            widget "Change Type"
+            widget "Priority"
+            widget "Need By"
+         }
+         widget "Validation Required"
+         widget "Work Package"
+      }
    }
 
    state "Analyze" {
@@ -101,38 +117,6 @@ workDefinition "WorkDef_Team_Default" {
          }
          widget "Estimated Hours"
       }
-   }
-
-   state "Endorse" {
-      type Working
-      ordinal 1
-      to "Cancelled"
-      to "Analyze" AsDefault
-      rule RequireStateHourSpentPrompt
-      percentWeight 5
-      layout {
-         widget "Title"
-         widget "Description"
-         widget "Proposed Resolution"
-         composite {
-            numColumns 6
-            widget "Change Type"
-            widget "Priority"
-            widget "Need By"
-         }
-         widget "Validation Required"
-         widget "Work Package"
-         widget "User Community"
-      }
-   }
-
-   state "Cancelled" {
-      type Cancelled
-      ordinal 6
-      to "Analyze" OverrideAttributeValidation
-      to "Authorize" OverrideAttributeValidation
-      to "Implement" OverrideAttributeValidation
-      to "Endorse" OverrideAttributeValidation
    }
 
    state "Authorize" {
@@ -171,4 +155,14 @@ workDefinition "WorkDef_Team_Default" {
       rule AddDecisionValidateBlockingReview
       percentWeight 1
    }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 6
+      to "Analyze" OverrideAttributeValidation
+      to "Authorize" OverrideAttributeValidation
+      to "Implement" OverrideAttributeValidation
+      to "Endorse" OverrideAttributeValidation
+   }
+
 }
