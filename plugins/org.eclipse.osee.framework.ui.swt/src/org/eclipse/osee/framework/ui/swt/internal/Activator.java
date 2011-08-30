@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
    // The plug-in ID
-   public static final String PLUGIN_ID = "osee.swt";
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.swt";
 
    // The shared instance
    private static Activator plugin;

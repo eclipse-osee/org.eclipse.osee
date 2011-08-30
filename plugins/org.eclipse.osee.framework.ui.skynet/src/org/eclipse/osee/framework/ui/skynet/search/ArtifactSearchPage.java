@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -185,13 +186,13 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.setSorter(new SearchSorter());
 
       try {
-         for (IArtifactType descriptor : ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch())) {
-            artifactTypeList.add(descriptor.getName());
-            artifactTypeList.setData(descriptor.getName(), descriptor);
+         for (IArtifactType artType : ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch())) {
+            artifactTypeList.add(artType);
+            artifactTypeList.setData(artType.getName(), artType);
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-            "Error encountered while getting list of artifact types", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error encountered while getting list of artifact types",
+            ex);
       }
       addToSearchTypeList(new ArtifactTypeFilter(artifactTypeControls, artifactTypeList));
    }
@@ -222,7 +223,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       try {
          for (RelationType linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
-            relationTypeList.add(linkDescriptor.getName());
+            relationTypeList.add(linkDescriptor);
             relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
          }
       } catch (OseeCoreException ex) {
@@ -300,7 +301,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       try {
          for (IAttributeType type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
-            attributeTypeList.add(type.getName());
+            attributeTypeList.add(type);
             attributeTypeList.setData(type.getName(), type);
          }
       } catch (Exception ex) {
@@ -344,7 +345,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       searchTypeList = new ComboViewer(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
       searchTypeList.setContentProvider(new SearchContentProvider());
-      searchTypeList.setLabelProvider(new SearchLabelProvider());
+      searchTypeList.setLabelProvider(new StringSearchLabelProvider());
       searchTypeList.setSorter(new SearchSorter());
 
       notButton = new Button(composite, SWT.CHECK);
@@ -572,8 +573,47 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       }
 
       @Override
-      public String getText(Object arg0) {
-         return (String) arg0;
+      public String getText(Object obj) {
+         try {
+            NamedIdentity<Long> identity = (NamedIdentity<Long>) obj;
+            return identity.getName();
+         } catch (Exception ex) {
+            ;
+            return "";
+         }
+      }
+
+      @Override
+      public void addListener(ILabelProviderListener arg0) {
+         // do nothing
+      }
+
+      @Override
+      public void dispose() {
+         // do nothing
+      }
+
+      @Override
+      public boolean isLabelProperty(Object arg0, String arg1) {
+         return false;
+      }
+
+      @Override
+      public void removeListener(ILabelProviderListener arg0) {
+         // do nothing
+      }
+   }
+
+   public class StringSearchLabelProvider implements ILabelProvider {
+
+      @Override
+      public Image getImage(Object arg0) {
+         return null;
+      }
+
+      @Override
+      public String getText(Object obj) {
+         return (String) obj;
       }
 
       @Override
@@ -618,7 +658,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       @SuppressWarnings("unchecked")
       @Override
       public int compare(Viewer viewer, Object e1, Object e2) {
-         return getComparator().compare(e1, e2);
+         return getComparator().compare(e1.toString(), e2.toString());
       }
    }
 }

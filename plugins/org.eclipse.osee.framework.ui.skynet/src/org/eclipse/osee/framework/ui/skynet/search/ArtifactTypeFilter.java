@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
@@ -32,7 +33,8 @@ public class ArtifactTypeFilter extends SearchFilter {
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
       for (String type : searchTypeList.getList().getSelection()) {
-         ISearchPrimitive primitive = new ArtifactTypeSearch(type, EQUAL);
+         IArtifactType artType = (IArtifactType) searchTypeList.getData(type);
+         ISearchPrimitive primitive = new ArtifactTypeSearch(artType, EQUAL);
          if (not) {
             primitive = new NotSearch(primitive);
          }

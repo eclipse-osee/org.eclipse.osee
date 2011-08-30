@@ -12,19 +12,24 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.RemoteIdManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Robert A. Fisher
  */
 public class ArtifactTypeSearch implements ISearchPrimitive {
-   private final String typeName;
+   private final Identity<Long> artifactType;
    private final DeprecatedOperator operation;
-   private static final String tables = "osee_artifact, osee_artifact_type";
+   private static final String tables = "osee_artifact";
    private final static String TOKEN = ";";
 
-   public ArtifactTypeSearch(String typeName, DeprecatedOperator operation) {
+   public ArtifactTypeSearch(Identity<Long> type, DeprecatedOperator operation) {
       super();
-      this.typeName = typeName;
+      this.artifactType = type;
       this.operation = operation;
    }
 
@@ -34,11 +39,10 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    }
 
    @Override
-   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) {
-      String sql =
-         "osee_artifact_type.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_artifact.art_type_id";
-      dataList.add(typeName);
-
+   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
+      String sql = "osee_artifact.art_type_id = ?";
+      RemoteIdManager remoteIdManager = Activator.getInstance().getOseeDatabaseService().getRemoteIdManager();
+      dataList.add(remoteIdManager.getLocalId(artifactType));
       return sql;
    }
 
@@ -49,12 +53,12 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
 
    @Override
    public String toString() {
-      return "Artifact type: " + typeName;
+      return "Artifact type: " + artifactType;
    }
 
    @Override
    public String getStorageString() {
-      return typeName + TOKEN + operation.name();
+      return artifactType + TOKEN + operation.name();
    }
 
    public static ArtifactTypeSearch getPrimitive(String storageString) {
@@ -63,7 +67,9 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
          throw new IllegalStateException("Value for " + ArtifactTypeSearch.class.getSimpleName() + " not parsable");
       }
 
-      return new ArtifactTypeSearch(values[0], DeprecatedOperator.valueOf(values[1]));
+      NamedIdentity<Long> identity = new NamedIdentity<Long>(Long.valueOf(values[0]), "");
+
+      return new ArtifactTypeSearch(identity, DeprecatedOperator.valueOf(values[1]));
    }
 
 }
