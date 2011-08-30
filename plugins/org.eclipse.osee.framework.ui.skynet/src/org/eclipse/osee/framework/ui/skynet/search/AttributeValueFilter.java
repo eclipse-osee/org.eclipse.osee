@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
@@ -33,15 +34,16 @@ public class AttributeValueFilter extends SearchFilter {
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      String type = attributeTypeList.getCombo().getText();
+      String typeName = attributeTypeList.getCombo().getText();
       String value = attributeValue.getText();
 
       OperatorAndValue result = handleWildCard(value);
-      ISearchPrimitive primitive = new AttributeValueSearch(type, result.value, result.operator);
+      IAttributeType attributeType = (IAttributeType) attributeTypeList.getData(typeName);
+      ISearchPrimitive primitive = new AttributeValueSearch(attributeType, result.value, result.operator);
       if (not) {
          primitive = new NotSearch(primitive);
       }
-      filterViewer.addItem(primitive, getFilterName(), type, result.value);
+      filterViewer.addItem(primitive, getFilterName(), typeName, result.value);
    }
 
    @Override

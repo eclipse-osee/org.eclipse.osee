@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.MutexSchedulingRule;
@@ -147,8 +148,9 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
    public Job _duplicate_attr(CommandInterpreter ci) throws OseeDataStoreException {
       OperationLogger logger = new CommandInterpreterLogger(ci);
-      return Operations.executeAsJob(new DuplicateAttributesOperation(logger, Activator.getOseeDatabaseService()),
-         false);
+      AttributeTypeCache attTypeCache = Activator.getOseeCachingService().getAttributeTypeCache();
+      return Operations.executeAsJob(
+         new DuplicateAttributesOperation(logger, attTypeCache, Activator.getOseeDatabaseService()), false);
    }
 
    public Job _osee_shutdown(CommandInterpreter ci) {
