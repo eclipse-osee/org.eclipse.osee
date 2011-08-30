@@ -14,15 +14,20 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -44,7 +49,8 @@ public class PurgeTransactionHandler extends CommandHandler {
 
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Transaction",
          "Are you sure you want to purge the transaction: " + selectedTransaction.getId())) {
-         BranchManager.purgeTransactions(new JobChangeAdapter() {
+
+         IJobChangeListener jobChangeListener = new JobChangeAdapter() {
 
             @Override
             public void done(IJobChangeEvent event) {
@@ -62,7 +68,11 @@ public class PurgeTransactionHandler extends CommandHandler {
                }
             }
 
-         }, selectedTransaction.getId());
+         };
+
+         IOperation op =
+            PurgeTransactionOperationWithListener.getPurgeTransactionOperation(selectedTransaction.getId());
+         return Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
       }
 
       return null;

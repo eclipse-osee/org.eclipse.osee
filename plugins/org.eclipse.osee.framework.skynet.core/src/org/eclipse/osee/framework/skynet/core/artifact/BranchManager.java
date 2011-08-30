@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -65,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchStateHttp
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchTypeHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
@@ -300,22 +298,6 @@ public class BranchManager {
       for (CommitAction commitAction : extensions.getObjects()) {
          commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
       }
-   }
-
-   /**
-    * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    */
-   public static void purgeTransactions(final int... transactionIdNumbers) {
-      purgeTransactions(null, transactionIdNumbers);
-   }
-
-   /**
-    * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    */
-   public static Job purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
-      final IOperation op = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactionIdNumbers);
-
-      return Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
    }
 
    /**
