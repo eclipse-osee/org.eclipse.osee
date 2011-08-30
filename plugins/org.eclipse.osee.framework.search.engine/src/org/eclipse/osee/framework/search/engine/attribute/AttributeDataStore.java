@@ -34,16 +34,6 @@ public final class AttributeDataStore {
    private static final String LOAD_ATTRIBUTE =
       "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attr1.attr_type_id FROM osee_attribute attr1, osee_tag_gamma_queue tgq1 WHERE attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
 
-   private static final String GET_TAGGABLE_SQL_BODY =
-      " FROM osee_attribute attr1, osee_attribute_type type1, osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
-
-   private static final String FIND_ALL_TAGGABLE_ATTRIBUTES =
-      "SELECT DISTINCT attr1.gamma_id, type1.tagger_id" + GET_TAGGABLE_SQL_BODY;
-   private static final String COUNT_TAGGABLE_ATTRIBUTES =
-      "SELECT count(DISTINCT attr1.gamma_id)" + GET_TAGGABLE_SQL_BODY;
-
-   private static final String RESTRICT_BY_BRANCH = " AND txs1.branch_id = ?";
-
    private static final SearchTagQueryBuilder searchTagQueryBuilder = new SearchTagQueryBuilder();
 
    private AttributeDataStore() {
@@ -112,22 +102,5 @@ public final class AttributeDataStore {
          }
       }
       return toReturn;
-   }
-
-   public static String getAllTaggableGammasByBranchQuery(final int branchId) {
-      return getBranchTaggingQueries(branchId, false);
-   }
-
-   public static Object[] getAllTaggableGammasByBranchQueryData(final int branchId) {
-      return branchId > -1 ? new Object[] {branchId} : new Object[0];
-   }
-
-   private static String getBranchTaggingQueries(final int branchId, final boolean isCountQuery) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
-      if (branchId > -1) {
-         builder.append(RESTRICT_BY_BRANCH);
-      }
-      return builder.toString();
    }
 }

@@ -12,27 +12,11 @@ package org.eclipse.osee.framework.search.engine;
 
 import java.io.InputStream;
 import java.util.concurrent.FutureTask;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface ISearchEngineTagger {
-
-   /**
-    * Create tags for a particular branch.
-    * 
-    * @param branchId of branch to tag
-    */
-   public void tagByBranchId(int branchId) throws OseeCoreException;
-
-   /**
-    * Create tags for a particular branch. Notifies listener of tagging events.
-    * 
-    * @param listener object listening for tag events
-    * @param branchId of branch to tag
-    */
-   public void tagByBranchId(ITagListener listener, int queryId) throws OseeCoreException;
 
    /**
     * Create tags for queue query id.

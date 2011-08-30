@@ -74,16 +74,6 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    }
 
    @Override
-   public void tagByBranchId(ITagListener listener, int branchId) {
-      this.executor.submit(new BranchTaggerRunnable(this, listener, branchId, false, CACHE_LIMIT));
-   }
-
-   @Override
-   public void tagByBranchId(int branchId) {
-      tagByBranchId(null, branchId);
-   }
-
-   @Override
    public void tagFromXmlStream(ITagListener listener, InputStream inputStream) throws Exception {
       InputStreamTagProcessor inputStreamTagProcessor =
          new InputStreamTagProcessor(this, listener, inputStream, false, CACHE_LIMIT);

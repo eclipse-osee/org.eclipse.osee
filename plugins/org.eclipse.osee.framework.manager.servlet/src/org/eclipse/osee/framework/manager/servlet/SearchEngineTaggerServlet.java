@@ -37,41 +37,6 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      long start = System.currentTimeMillis();
-      try {
-         StringBuffer message = new StringBuffer();
-         int branchId = Integer.parseInt(request.getParameter("branchId"));
-         boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
-         if (waitForTags) {
-            TagListener listener = new TagListener();
-            searchTaggerService.tagByBranchId(listener, branchId);
-            if (listener.wasProcessed() != true) {
-               synchronized (listener) {
-                  listener.wait();
-               }
-            }
-            message.append(String.format("Processed %d queries containing %d attributes in %d ms.",
-               listener.getQueryCount(), listener.getAttributeCount(), System.currentTimeMillis() - start));
-         } else {
-            searchTaggerService.tagByBranchId(branchId);
-         }
-         response.setContentType("text/plain");
-         response.setCharacterEncoding("UTF-8");
-         response.setStatus(HttpServletResponse.SC_ACCEPTED);
-         response.getWriter().write(message.toString());
-      } catch (Exception ex) {
-         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         response.setContentType("text/plain");
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error submitting for tagging - [%s]", request.toString());
-         response.getWriter().write(Lib.exceptionToString(ex));
-      }
-      response.getWriter().flush();
-      response.getWriter().close();
-   }
-
-   @Override
    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
       InputStream inputStream = null;
       try {
@@ -94,8 +59,7 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error submitting for tagging - [%s]", request.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error submitting for tagging - [%s]", request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
       } finally {
          if (inputStream != null) {
@@ -121,8 +85,7 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            ex, "Error submitting for tagging - [%s]", request.toString());
+         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error submitting for tagging - [%s]", request.toString());
          response.getWriter().write(Lib.exceptionToString(ex));
       } finally {
          response.getWriter().flush();
