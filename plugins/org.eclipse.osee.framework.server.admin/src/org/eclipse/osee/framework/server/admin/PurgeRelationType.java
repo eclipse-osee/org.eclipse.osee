@@ -33,19 +33,6 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
  * <li>osee_txs</li>
  * <li>osee_txs_archived</li>
  * <li>osee_relation_link</li>
- * <li>osee_relation_link_type</li>
- * </p>
- * <br/>
- * <p>
- * To confirm/test results, you can run the following SQL post operation completion: <br/>
- * <br/>
- * <code>
- * SELECT rel_link.rel_link_type_id, rel_link_t.type_name, COUNT(*)
- * FROM osee_relation_link_type rel_link_t, osee_relation_link rel_link
- * WHERE rel_link_t.rel_link_type_id = rel_link.rel_link_type_id GROUP BY rel_link.rel_link_type_id, rel_link_t.type_name;
- * </code> <br/>
- * <br/>
- * should not list your deleted type.
  * </p>
  * <br/>
  * 
@@ -61,9 +48,6 @@ public final class PurgeRelationType extends AbstractDbTxOperation {
       "DELETE FROM osee_conflict WHERE source_gamma_id = ?";
    private static final String DELETE_FROM_CONFLICT_TABLE_DEST_SIDE =
       "DELETE FROM osee_conflict WHERE dest_gamma_id = ?";
-
-   private static final String DELETE_REL_LINK_TYPE =
-      "DELETE FROM osee_relation_link_type type WHERE type.rel_link_type_guid = ?";
 
    private final RelationTypeCache cache;
    private final String[] typesToPurge;
@@ -138,6 +122,5 @@ public final class PurgeRelationType extends AbstractDbTxOperation {
       ConnectionHandler.runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_relation_link"), gammas);
       ConnectionHandler.runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_SOURCE_SIDE), gammas);
       ConnectionHandler.runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_DEST_SIDE), gammas);
-      ConnectionHandler.runBatchUpdate(connection, DELETE_REL_LINK_TYPE, relationTypeGuids);
    }
 }

@@ -12,82 +12,26 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.database.core.RemoteIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Robert A. Fisher
  */
 public class InRelationSearch implements ISearchPrimitive {
-   private static final String relationTables =
-      "osee_relation_link_type rel_type_1,osee_relation_link rel_1, osee_txs txs1";
+   private static final String relationTables = "osee_relation_link rel_1, osee_txs txs1";
    private final static String TOKEN = ";";
-   private final String[] typeNames;
+   private final Identity<Long> relationType;
    private final boolean sideA;
-   private final FromArtifactsSearch otherArtifactsCriteria;
 
-   /**
-    * @param typeName The type of relation for the artifact to be in.
-    * @param sideA The side of the relation the artifact should be on.
-    */
-   public InRelationSearch(String typeName, boolean sideA) {
-      this(typeName, sideA, null);
-   }
-
-   /**
-    * Search for an artifact on at least one of several different types of relations. All of the
-    * <code>RelationSide</code>'s must be for the same side, that is all sideB or all sideA. This restriction is in
-    * place to optimize SQL performance.
-    * 
-    * @throws IllegalArgumentException if the sides are a mixture of sideA and sideB relation sides.
-    */
-   public InRelationSearch(IRelationTypeSide firstSide, IRelationTypeSide... sides) {
-      this(null, firstSide, sides);
-   }
-
-   /**
-    * Search for an artifact on at least one of several different types of relations. All of the
-    * <code>RelationSide</code>'s must be for the same side, that is all sideB or all sideA. This restriction is in
-    * place to optimize SQL performance.
-    * 
-    * @throws IllegalArgumentException if the sides are a mixture of sideA and sideB relation sides.
-    */
-   public InRelationSearch(FromArtifactsSearch otherArtifacts, IRelationTypeSide firstSide, IRelationTypeSide... sides) {
-      this.typeNames = new String[sides.length + 1];
-      this.sideA = firstSide.getSide().isSideA();
-      this.otherArtifactsCriteria = otherArtifacts;
-
-      int count = 0;
-      typeNames[count++] = firstSide.getName();
-      for (IRelationTypeSide side : sides) {
-         if (side != firstSide) {
-            throw new IllegalArgumentException("All links must be for the same side.");
-         }
-
-         typeNames[count++] = side.getName();
-      }
-   }
-
-   /**
-    * @param typeName The type of relation for the artifact to be in.
-    * @param sideA The side of the relation the artifact should be on.
-    * @param otherArtifacts The search describing what the related artifacts should be like.
-    */
-   public InRelationSearch(String typeName, boolean sideA, FromArtifactsSearch otherArtifacts) {
-      this(new String[] {typeName}, sideA, otherArtifacts);
-   }
-
-   public InRelationSearch(String[] typeNames, boolean sideA) {
-      this(typeNames, sideA, null);
-   }
-
-   public InRelationSearch(String[] typeNames, boolean sideA, FromArtifactsSearch otherArtifacts) {
-      this.typeNames = typeNames;
+   public InRelationSearch(Identity<Long> relationType, boolean sideA) {
+      this.relationType = relationType;
       this.sideA = sideA;
-      this.otherArtifactsCriteria = otherArtifacts;
    }
 
    @Override
@@ -97,42 +41,11 @@ public class InRelationSearch implements ISearchPrimitive {
 
    @Override
    public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
-      StringBuffer sql = new StringBuffer();
-
-      boolean first = true;
-
-      sql.append("rel_type_1.rel_link_type_id = rel_1.rel_link_type_id");
-
-      sql.append(" AND ");
-
-      if (typeNames.length > 1) {
-         sql.append("(");
-      }
-      for (String typeName : typeNames) {
-         if (!first) {
-            sql.append(" OR ");
-         } else {
-            first = false;
-         }
-
-         sql.append("rel_type_1.type_name = ?");
-         dataList.add(typeName);
-      }
-      if (typeNames.length > 1) {
-         sql.append(")");
-      }
-
-      if (otherArtifactsCriteria != null) {
-         sql.append(" AND ");
-         sql.append(!sideA ? "rel_1.a_art_id" : "rel_1.b_art_id");
-         sql.append(" IN (" + ArtifactPersistenceManager.getSelectArtIdSql(otherArtifactsCriteria, dataList, branch) + ")");
-      }
-      sql.append(" AND rel_1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs1.transaction_id) FROM osee_relation_link rel2, osee_txs txs1 WHERE rel2.rel_link_id = rel_1.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.branch_id = ? AND txs1.mod_type <>?)");
-
+      RemoteIdManager remoteIdManager = Activator.getInstance().getOseeDatabaseService().getRemoteIdManager();
+      dataList.add(remoteIdManager.getLocalId(relationType));
       dataList.add(BranchManager.getBranchId(branch));
       dataList.add(ModificationType.DELETED.getValue());
-
-      return sql.toString();
+      return "rel_1.rel_link_type_id = ? AND rel_1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs1.transaction_id) FROM osee_relation_link rel2, osee_txs txs1 WHERE rel2.rel_link_id = rel_1.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.branch_id = ? AND txs1.mod_type <>?)";
    }
 
    @Override
@@ -142,20 +55,12 @@ public class InRelationSearch implements ISearchPrimitive {
 
    @Override
    public String toString() {
-      return "In Relation: " + typeNames + " from";
+      return "In Relation: " + relationType + " from";
    }
 
    @Override
    public String getStorageString() {
-      StringBuffer storage = new StringBuffer();
-
-      storage.append(Boolean.toString(sideA));
-      for (String typeName : typeNames) {
-         storage.append(TOKEN);
-         storage.append(typeName);
-      }
-
-      return storage.toString();
+      return sideA + TOKEN + relationType.getGuid().toString();
    }
 
    public static InRelationSearch getPrimitive(String storageString) {
@@ -164,11 +69,7 @@ public class InRelationSearch implements ISearchPrimitive {
          throw new IllegalStateException("Value for " + InRelationSearch.class.getSimpleName() + " not parsable");
       }
 
-      String[] names = new String[values.length - 1];
-      for (int x = 0; x < names.length; x++) {
-         names[x] = values[x + 1];
-      }
-
-      return new InRelationSearch(names, Boolean.parseBoolean(values[0]), null);
+      NamedIdentity<Long> identity = new NamedIdentity<Long>(Long.valueOf(values[1]), "");
+      return new InRelationSearch(identity, Boolean.parseBoolean(values[0]));
    }
 }

@@ -37,17 +37,17 @@ public class InRelationFilter extends SearchFilter {
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      String type = relationTypeList.getCombo().getText();
+      String typeName = relationTypeList.getCombo().getText();
       String sideName = relationSideList.getCombo().getText();
 
-      RelationType linkDescriptor = (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
+      RelationType relationType = (RelationType) relationTypeList.getData(typeName);
       try {
-         ISearchPrimitive primitive = new InRelationSearch(type, linkDescriptor.isSideAName(sideName));
+         ISearchPrimitive primitive = new InRelationSearch(relationType, relationType.isSideAName(sideName));
          if (not) {
             primitive = new NotSearch(primitive);
          }
 
-         filterViewer.addItem(primitive, getFilterName(), type, sideName);
+         filterViewer.addItem(primitive, getFilterName(), typeName, sideName);
       } catch (OseeArgumentException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
