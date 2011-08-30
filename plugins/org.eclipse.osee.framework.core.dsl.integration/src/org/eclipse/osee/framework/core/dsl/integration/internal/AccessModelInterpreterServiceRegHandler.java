@@ -25,7 +25,7 @@ public class AccessModelInterpreterServiceRegHandler extends AbstractTrackingHan
 
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {ArtifactDataProvider.class};
 
-   private ServiceRegistration registration;
+   private ServiceRegistration<?> registration;
 
    @Override
    public Class<?>[] getDependencies() {
