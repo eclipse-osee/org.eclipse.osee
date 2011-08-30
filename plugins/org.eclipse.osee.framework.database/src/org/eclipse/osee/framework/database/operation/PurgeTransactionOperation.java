@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.database.operation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +63,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private static final String UPDATE_TX_CURRENT =
       "update osee_txs set tx_current = ? where branch_id = ? and transaction_id = ? and gamma_id = ?";
 
-   private final int[] txIdsToDelete;
+   private final List<Integer> txIdsToDelete;
    private boolean success;
    private final TransactionCache transactionCache;
    public static interface PurgeTransactionListener {
@@ -74,16 +73,15 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<PurgeTransactionListener>();
    private Collection<TransactionRecord> changedTransactions;
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, OperationLogger logger, int... txIdsToDelete) {
-      super(databaseService, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
-         Activator.PLUGIN_ID, logger);
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, OperationLogger logger, List<Integer> txIdsToDelete) {
+      super(databaseService, "Delete transactions " + txIdsToDelete, Activator.PLUGIN_ID, logger);
       this.txIdsToDelete = txIdsToDelete;
       this.success = false;
       transactionCache = Activator.getOseeCachingService().getTransactionCache();
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, int... txIdsToDelete) {
-      this(databaseService, NullOperationLogger.getSingleton(), txIdsToDelete);
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, Integer txIdToDelete) {
+      this(databaseService, NullOperationLogger.getSingleton(), java.util.Collections.singletonList(txIdToDelete));
    }
 
    public void addListener(PurgeTransactionListener listener) {
@@ -103,9 +101,11 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       log();
       log("Purging Transactions...");
       Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
-      Conditions.checkExpressionFailOnTrue(txIdsToDelete.length <= 0, "transaction ids to delete cannot be empty");
+      Conditions.checkExpressionFailOnTrue(txIdsToDelete.isEmpty(), "transaction ids to delete cannot be empty");
 
-      Arrays.sort(txIdsToDelete);
+      if (txIdsToDelete.size() > 1) {
+         java.util.Collections.sort(txIdsToDelete);
+      }
 
       TransactionJoinQuery txsToDeleteQuery = JoinUtility.createTransactionJoinQuery();
 
@@ -232,10 +232,8 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private Map<TransactionRecord, TransactionRecord> findPriorTransactions(IProgressMonitor monitor, TransactionJoinQuery txsToDeleteQuery, double workPercentage) throws OseeCoreException {
       Map<TransactionRecord, TransactionRecord> deleteToPreviousTx =
          new HashMap<TransactionRecord, TransactionRecord>();
-      double workStep = workPercentage / txIdsToDelete.length;
-      for (int index = 0; index < txIdsToDelete.length; index++) {
-         monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txIdsToDelete.length));
-         int fromTx = txIdsToDelete[index];
+      double workStep = workPercentage / txIdsToDelete.size();
+      for (Integer fromTx : txIdsToDelete) {
          TransactionRecord fromTransaction = transactionCache.getOrLoad(fromTx);
          TransactionRecord previousTransaction;
          try {

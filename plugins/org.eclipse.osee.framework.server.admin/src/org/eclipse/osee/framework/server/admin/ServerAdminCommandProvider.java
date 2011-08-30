@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
@@ -234,22 +235,13 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
    public Job _purge_transactions(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
-
-      //to be purged
-      final Collection<String> transactions = new ArrayList<String>();
+      final List<Integer> transactions = new ArrayList<Integer>();
 
       for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
-         transactions.add(arg);
-      }
-      int transactions_int[] = new int[transactions.size()];
-      int index = 0;
-      for (String tx : transactions) {
-         transactions_int[index++] = Integer.parseInt(tx);
+         transactions.add(Integer.parseInt(arg));
       }
 
-      IOperation operation =
-         new PurgeTransactionOperation(Activator.getOseeDatabaseService(), logger, transactions_int);
-
+      IOperation operation = new PurgeTransactionOperation(Activator.getOseeDatabaseService(), logger, transactions);
       return Operations.executeAsJob(operation, false);
    }
 
