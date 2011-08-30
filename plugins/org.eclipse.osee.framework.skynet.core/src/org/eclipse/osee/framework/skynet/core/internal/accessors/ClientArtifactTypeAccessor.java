@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
@@ -90,14 +91,15 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long,
 
       for (Triplet<Long, String, Long> entry : response.getAttributeTypes()) {
          ArtifactType key1 = cache.getByGuid(entry.getFirst());
-         if (key1 == null) {
-            System.out.printf("Null ArtType [%s]\n", entry.getFirst());
+         String branchGuid = entry.getSecond();
+         IOseeBranch branchToken = branchCache.getByGuid(branchGuid);
+         if (branchToken == null) {
+            branchToken = TokenFactory.createBranch(branchGuid, branchGuid);
          }
-         IOseeBranch key2 = branchCache.getByGuid(entry.getSecond());
-         Collection<AttributeType> types = attrs.get(key1, key2);
+         Collection<AttributeType> types = attrs.get(key1, branchToken);
          if (types == null) {
             types = new HashSet<AttributeType>();
-            attrs.put(key1, key2, types);
+            attrs.put(key1, branchToken, types);
          }
          types.add(attrCache.getByGuid(entry.getThird()));
       }

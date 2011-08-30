@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.integration.util.HexUtil;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
@@ -162,7 +162,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       } else {
          IOseeBranch branch = branchCache.getByGuid(branchGuid);
          if (branch == null) {
-            branch = new BranchToken(branchGuid, branchGuid);
+            branch = TokenFactory.createBranch(branchGuid, branchGuid);
          }
          return branch;
       }
