@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.internal.core;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -118,6 +119,9 @@ public final class StatementUtil {
                java.util.Date javaDate = (java.util.Date) dataValue;
                java.sql.Timestamp date = new java.sql.Timestamp(javaDate.getTime());
                preparedStatement.setTimestamp(preparedIndex, date);
+            } else if (dataValue instanceof BigInteger) {
+               BigInteger bigInt = (BigInteger) dataValue;
+               preparedStatement.setLong(preparedIndex, bigInt.longValue());
             } else {
                preparedStatement.setObject(preparedIndex, dataValue);
             }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,6 +67,8 @@ public class IdTranslator {
          originalLong = ((Integer) original).longValue();
       } else if (original instanceof Long) {
          originalLong = ((Long) original).longValue();
+      } else if (original instanceof BigInteger) {
+         originalLong = ((BigInteger) original).longValue();
       } else {
          System.out.println("Error here: " + original.getClass().getName());
       }
@@ -77,6 +80,8 @@ public class IdTranslator {
          toReturn = newVersion.intValue();
       } else if (original instanceof Long) {
          toReturn = newVersion;
+      } else if (original instanceof BigInteger) {
+         toReturn = BigInteger.valueOf(newVersion);
       } else {
          System.out.println("Error here: " + original.getClass().getName());
       }

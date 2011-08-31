@@ -178,7 +178,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
                }
             }
 
-            Object[] objectData = DataToSql.toDataArray(getConnection(), getMetaData(), getTranslator(), fieldMap);
+            Object[] objectData = DataToSql.toDataArray(getMetaData(), getTranslator(), fieldMap);
             if (objectData != null) {
                addData(objectData);
                if (isStorageNeeded()) {
