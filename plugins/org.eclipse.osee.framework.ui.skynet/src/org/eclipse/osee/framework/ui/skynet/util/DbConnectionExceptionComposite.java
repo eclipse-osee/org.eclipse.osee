@@ -36,7 +36,7 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
       //      }
       Result result = OseeUiActivator.areOSEEServicesAvailable();
       if (result.isFalse()) {
-         new DbConnectionExceptionComposite(parent, new IllegalStateException(
+         new DbConnectionExceptionComposite(parent, new Exception(
             "OSEE Service(s) Unavailable:\n\t" + result.getText().replaceAll("\n", "\n\t")));
       }
       return result.isTrue();

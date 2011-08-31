@@ -126,7 +126,8 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
                   if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
                      parent.getParent().layout(true);
                      parent.layout(true);
-                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
+
+                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Osee Services are NOT available");
                   } else {
 
                      xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
