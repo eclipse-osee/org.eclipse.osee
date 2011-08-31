@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,14 +44,9 @@ import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workdef.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.SMAState;
-import org.eclipse.osee.ats.core.workflow.XCurrentStateDam;
-import org.eclipse.osee.ats.core.workflow.XStateDam;
 import org.eclipse.osee.ats.core.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.task.TaskEditor;
-import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -62,7 +58,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -76,7 +74,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -96,7 +93,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private boolean fixAttributeValues = true;
    private final Set<String> hrids = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>();
-   private final Map<String, Long> testNameToTimeSpentMap = new HashMap<String, Long>();
+   private final CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
    private HashCollection<String, String> testNameToResultsMap = null;
    private String emailOnComplete = null;
    private static Artifact tempParentAction;
@@ -232,9 +229,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void addTestTimeMapToResultData(XResultData xResultData) {
       xResultData.log("\n\nTime Spent in Tests");
       long totalTime = 0;
-      for (String testName : testNameToTimeSpentMap.keySet()) {
-         xResultData.log(testName + " - " + testNameToTimeSpentMap.get(testName) + " ms");
-         totalTime += testNameToTimeSpentMap.get(testName);
+      for (Entry<String, MutableInteger> entry : testNameToTimeSpentMap.getCounts()) {
+         xResultData.log(entry.getKey() + " - " + entry.getValue() + " ms");
+         totalTime += entry.getValue().getValue();
       }
       xResultData.log("TOTAL - " + totalTime + " ms");
 
@@ -245,14 +242,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
-            for (String workDefName : artifact.getAttributesToStringList(AtsAttributeTypes.WorkflowDefinition)) {
-               if (WorkDefinitionFactory.getWorkDefinition(workDefName) == null) {
-                  testNameToResultsMap.put(
-                     "testAttributeSetWorkDefinitionsExist",
-                     String.format(
-                        "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(artifact),
-                        workDefName));
-               }
+            String workDefName = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
+            if (Strings.isValid(workDefName) && WorkDefinitionFactory.getWorkDefinition(workDefName) == null) {
+               testNameToResultsMap.put(
+                  "testAttributeSetWorkDefinitionsExist",
+                  String.format(
+                     "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(artifact),
+                     workDefName));
             }
          } catch (Exception ex) {
             testNameToResultsMap.put(
@@ -335,15 +331,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testArtifactIds", testNameToTimeSpentMap);
    }
 
-   public static void logTestTimeSpent(Date date, String testName, Map<String, Long> testNameToTimeSpentMap) {
+   public static void logTestTimeSpent(Date date, String testName, CountingMap<String> testNameToTimeSpentMap) {
       Date now = new Date();
-      long spent = now.getTime() - date.getTime();
-      Long total = testNameToTimeSpentMap.get(testName);
-      if (total == null) {
-         total = new Long(0);
-         testNameToTimeSpentMap.put(testName, total);
-      }
-      total += spent;
+      int spent = new Long(now.getTime() - date.getTime()).intValue();
+      testNameToTimeSpentMap.put(testName, spent);
    }
 
    private void testVersionArtifacts(Collection<Artifact> artifacts) {
@@ -427,18 +418,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
                   }
                }
-               // Check if working branch can be archived
-               //               if (workingBranch != null && workingBranch.getBranchState() == BranchState.COMMITTED && workingBranch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
-               //                  String fixStr = "";
-               //                  if (teamArt.isCompleted()) {
-               //                     fixStr = " - Fix: Workflow Completed, Branch can be Archived";
-               //                  } else {
-               //                     fixStr = " - Workflow not completed, verify manually";
-               //                  }
-               //                  testNameToResultsMap.put(
-               //                     "testAtsBranchManagerB",
-               //                     "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed working branch [" + workingBranch.getGuid() + "] but not archived" + fixStr);
-               //               }
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testAtsBranchManager",
@@ -514,42 +493,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
 
                if (artifact instanceof AbstractWorkflowArtifact) {
-                  checkAndResolveDuplicateAttributesForAttributeNameContains("ats", artifact, fixAttributeValues,
+                  checkAndResolveDuplicateAttributes(artifact, fixAttributeValues,
                      testNameToResultsMap, transaction);
                }
 
-               // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
-               if (artifact instanceof AbstractWorkflowArtifact) {
-                  XStateDam stateDam = new XStateDam((AbstractWorkflowArtifact) artifact);
-                  for (SMAState state : stateDam.getStates()) {
-                     if ((state.getName().equals("Completed") || state.getName().equals("Cancelled")) && state.getPercentComplete() != 0) {
-                        testNameToResultsMap.put(
-                           "testAtsAttributeValues",
-                           "Error: ats.State error for SMA: " + XResultDataUI.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
-                        if (fixAttributeValues) {
-                           state.setPercentComplete(0);
-                           stateDam.setState(state);
-                           testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
-                        }
-                     }
-                  }
-               }
-
-               // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
-               if (artifact instanceof AbstractWorkflowArtifact) {
-                  XCurrentStateDam currentStateDam = new XCurrentStateDam((AbstractWorkflowArtifact) artifact);
-                  SMAState state = currentStateDam.getState();
-                  if ((state.getName().equals("Completed") || state.getName().equals("Cancelled")) && state.getPercentComplete() != 0) {
-                     testNameToResultsMap.put(
-                        "testAtsAttributeValues",
-                        "Error: ats.CurrentState error for SMA: " + XResultDataUI.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
-                     if (fixAttributeValues) {
-                        state.setPercentComplete(0);
-                        currentStateDam.setState(state);
-                        testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
-                     }
-                  }
-               }
                if (artifact.hasDirtyAttributes()) {
                   artifact.persist(transaction);
                }
@@ -568,43 +515,41 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       logTestTimeSpent(date, "testAtsAttributeValues", testNameToTimeSpentMap);
    }
 
-   public static void checkAndResolveDuplicateAttributesForAttributeNameContains(String nameContainsStr, Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
-      for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
-         if (attrType.getName().contains(nameContainsStr)) {
-            int count = artifact.getAttributeCount(attrType);
-            if (count > attrType.getMaxOccurrences()) {
-               String result =
-                  String.format(
-                     "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
-                     artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
-                     artifact.getAttributesToString(attrType));
-               Map<String, Attribute<?>> valuesAttrMap = new HashMap<String, Attribute<?>>();
-               int latestGamma = 0;
-               StringBuffer fixInfo = new StringBuffer(" - FIX AVAILABLE");
-               for (Attribute<?> attr : artifact.getAttributes(attrType)) {
-                  if (attr.getGammaId() > latestGamma) {
-                     latestGamma = attr.getGammaId();
-                  }
-                  String info = String.format("[Gamma [%s] Value [%s]]", attr.getGammaId(), attr.getValue());
-                  valuesAttrMap.put(info, attr);
-                  fixInfo.append(info);
+   private void checkAndResolveDuplicateAttributes(Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
+      for (AttributeType attrType : artifact.getAttributeTypesUsed()) {
+         int count = artifact.getAttributeCount(attrType);
+         if (count > attrType.getMaxOccurrences()) {
+            String result =
+               String.format(
+                  "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
+                  artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
+                  artifact.getAttributesToString(attrType));
+            Map<String, Attribute<?>> valuesAttrMap = new HashMap<String, Attribute<?>>();
+            int latestGamma = 0;
+            StringBuffer fixInfo = new StringBuffer(" - FIX AVAILABLE");
+            for (Attribute<?> attr : artifact.getAttributes(attrType)) {
+               if (attr.getGammaId() > latestGamma) {
+                  latestGamma = attr.getGammaId();
                }
-               fixInfo.append(" - KEEP Gamma");
-               fixInfo.append(latestGamma);
-               if (latestGamma != 0) {
-                  result += fixInfo;
-                  if (fixAttributeValues) {
-                     for (Attribute<?> attr : artifact.getAttributes(attrType)) {
-                        if (attr.getGammaId() != latestGamma) {
-                           attr.delete();
-                        }
-                     }
-                     artifact.persist(transaction);
-                     resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", "Fixed");
-                  }
-               }
-               resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", result);
+               String info = String.format("[Gamma [%s] Value [%s]]", attr.getGammaId(), attr.getValue());
+               valuesAttrMap.put(info, attr);
+               fixInfo.append(info);
             }
+            fixInfo.append(" - KEEP Gamma");
+            fixInfo.append(latestGamma);
+            if (latestGamma != 0) {
+               result += fixInfo;
+               if (fixAttributeValues) {
+                  for (Attribute<?> attr : artifact.getAttributes(attrType)) {
+                     if (attr.getGammaId() != latestGamma) {
+                        attr.delete();
+                     }
+                  }
+                  artifact.persist(transaction);
+                  resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", "Fixed");
+               }
+            }
+            resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", result);
          }
       }
    }
@@ -692,32 +637,21 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testTasksHaveParentWorkflow(Collection<Artifact> artifacts) {
       Date date = new Date();
-      Set<Artifact> badTasks = new HashSet<Artifact>(30);
       for (Artifact artifact : artifacts) {
          try {
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
                TaskArtifact taskArtifact = (TaskArtifact) artifact;
-               if (taskArtifact.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma).size() != 1) {
+               if (taskArtifact.getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Sma) != 1) {
                   testNameToResultsMap.put(
                      "testTasksHaveParentWorkflow",
                      "Error: Task " + XResultDataUI.getHyperlink(taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
                         AtsRelationTypes.SmaToTask_Sma).size() + " parents.");
-                  badTasks.add(taskArtifact);
                }
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
-      }
-      try {
-         if (badTasks.size() > 0) {
-            TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.",
-               badTasks));
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         testNameToResultsMap.put("testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
       }
       logTestTimeSpent(date, "testTasksHaveParentWorkflow", testNameToTimeSpentMap);
    }
@@ -798,65 +732,73 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsLogs(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact art : artifacts) {
-         if (art instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
-            try {
-               AtsLog log = awa.getLog();
-               if (awa.getCreatedBy() == null) {
-                  try {
-                     testNameToResultsMap.put(
-                        "testAtsLogs",
-                        "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " originator == null");
-                  } catch (Exception ex) {
-                     testNameToResultsMap.put(
-                        "testAtsLogs",
-                        "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing originator: " + ex.getLocalizedMessage());
+         try {
+            if (art instanceof AbstractWorkflowArtifact) {
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
+               try {
+                  AtsLog log = awa.getLog();
+                  if (awa.getCreatedBy() == null) {
+                     try {
+                        testNameToResultsMap.put(
+                           "testAtsLogs",
+                           "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " originator == null");
+                     } catch (Exception ex) {
+                        testNameToResultsMap.put(
+                           "testAtsLogs",
+                           "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing originator: " + ex.getLocalizedMessage());
+                     }
                   }
-               }
-               for (IWorkPage state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
-                  if (awa.isInState(state)) {
-                     LogItem logItem = awa.getStateStartedData(state);
-                     if (logItem == null) {
-                        try {
-                           testNameToResultsMap.put(
-                              "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem == null");
-                        } catch (Exception ex) {
-                           testNameToResultsMap.put(
-                              "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem: " + ex.getLocalizedMessage());
+                  for (IWorkPage state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
+                     if (awa.isInState(state)) {
+                        LogItem logItem = awa.getStateStartedData(state);
+                        if (logItem == null) {
+                           try {
+                              testNameToResultsMap.put(
+                                 "testAtsLogs",
+                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem == null");
+                           } catch (Exception ex) {
+                              testNameToResultsMap.put(
+                                 "testAtsLogs",
+                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem: " + ex.getLocalizedMessage());
 
-                        }
-                     } else if (logItem.getDate() == null) {
-                        try {
-                           testNameToResultsMap.put(
-                              "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem.date == null");
-                        } catch (Exception ex) {
-                           testNameToResultsMap.put(
-                              "testAtsLogs",
-                              "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
+                           }
+                        } else if (logItem.getDate() == null) {
+                           try {
+                              testNameToResultsMap.put(
+                                 "testAtsLogs",
+                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem.date == null");
+                           } catch (Exception ex) {
+                              testNameToResultsMap.put(
+                                 "testAtsLogs",
+                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
 
+                           }
                         }
                      }
                   }
-               }
-               // Generate html log which will exercise all the conversions
-               log.getHtml();
-               // Verify that all users are resolved
-               for (LogItem logItem : awa.getLog().getLogItems()) {
-                  if (logItem.getUser() == null) {
-                     testNameToResultsMap.put(
-                        "testAtsLogs",
-                        "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " user == null for userId \"" + logItem.getUserId() + "\"");
+                  // Generate html log which will exercise all the conversions
+                  log.getHtml();
+                  // Verify that all users are resolved
+                  for (LogItem logItem : awa.getLog().getLogItems()) {
+                     if (logItem.getUser() == null) {
+                        testNameToResultsMap.put(
+                           "testAtsLogs",
+                           "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " user == null for userId \"" + logItem.getUserId() + "\"");
+                     }
                   }
+               } catch (Exception ex) {
+                  testNameToResultsMap.put(
+                     "testAtsLogs",
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
                }
-            } catch (Exception ex) {
-               testNameToResultsMap.put(
-                  "testAtsLogs",
-                  "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
             }
+         } catch (Exception ex) {
+            testNameToResultsMap.put(
+               "testAtsLogs",
+               "Error: " + art.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(art) + " exception accessing logItem: " + ex.getLocalizedMessage());
+
          }
+
       }
       logTestTimeSpent(date, "testAtsLogs", testNameToTimeSpentMap);
    }

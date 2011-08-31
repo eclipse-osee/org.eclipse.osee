@@ -1641,4 +1641,13 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    public final Set<DefaultBasicGuidRelationReorder> getRelationOrderRecords() {
       return relationOrderRecords;
    }
+
+   public Set<AttributeType> getAttributeTypesUsed() throws OseeCoreException {
+      Set<AttributeType> types = new HashSet<AttributeType>();
+      for (Attribute<?> attr : getAttributes()) {
+         types.add(attr.getAttributeType());
+      }
+      return types;
+   }
+
 }

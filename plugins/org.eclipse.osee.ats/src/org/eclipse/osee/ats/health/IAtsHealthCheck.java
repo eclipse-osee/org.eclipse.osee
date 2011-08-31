@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.health;
 
 import java.util.Collection;
-import java.util.Map;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
@@ -30,7 +30,7 @@ public interface IAtsHealthCheck {
     * in report). Insert "Error: " at beginning of resultMap value if log item is an error. This will be highlighted.
     * @param testNameToTimeSpentMap JavaTip
     */
-   public void validateAtsDatabase(Collection<Artifact> artifacts, HashCollection<String, String> resultsMap, Map<String, Long> testNameToTimeSpentMap) throws OseeCoreException;
+   public void validateAtsDatabase(Collection<Artifact> artifacts, HashCollection<String, String> resultsMap, CountingMap<String> testNameToTimeSpentMap) throws OseeCoreException;
 
    public Result validateChangeReports(ChangeData currentChangeData, TeamWorkFlowArtifact teamArt, XResultData resultData) throws OseeCoreException;
 
