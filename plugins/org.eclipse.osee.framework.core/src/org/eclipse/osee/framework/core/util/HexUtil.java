@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.util;
+package org.eclipse.osee.framework.core.util;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
