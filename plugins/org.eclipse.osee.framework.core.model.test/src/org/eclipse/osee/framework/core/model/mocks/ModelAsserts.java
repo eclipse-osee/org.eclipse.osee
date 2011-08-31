@@ -299,7 +299,7 @@ public class ModelAsserts {
          artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
    }
 
-   public static void checkRelationTypeInheritance(AbstractOseeCache<Long, RelationType> cache, AbstractOseeCache<Long, ArtifactType> artCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
+   public static void checkRelationTypeInheritance(AbstractOseeCache<Long, RelationType> cache, AbstractOseeCache<Long, ArtifactType> artCache, Long relGuid, RelationSide relationSide, int maxValue, Long... artifactTypesAllowed) throws OseeCoreException {
       RelationType relationType = cache.getByGuid(relGuid);
       Assert.assertNotNull(relationType);
 
@@ -308,7 +308,7 @@ public class ModelAsserts {
          relationType.getMultiplicity().asLimitLabel(relationSide));
 
       List<ArtifactType> allowedTypes = new ArrayList<ArtifactType>();
-      for (String guid : artifactTypesAllowed) {
+      for (Long guid : artifactTypesAllowed) {
          ArtifactType type = artCache.getByGuid(guid);
          Assert.assertNotNull(type);
          allowedTypes.add(type);

@@ -230,7 +230,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    }
 
    @Override
-   public T getByGuid(Object guid) throws OseeCoreException {
+   public T getByGuid(K guid) throws OseeCoreException {
       ensurePopulated();
       if (guid instanceof String) {
          if (!GUID.isValid((String) guid)) {

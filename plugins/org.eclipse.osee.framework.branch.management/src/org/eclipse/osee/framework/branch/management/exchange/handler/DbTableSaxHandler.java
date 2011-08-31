@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -97,11 +98,12 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private int getTypeId(AbstractOseeCache<?, ? extends AbstractOseeType> cache, Map<String, String> fieldMap) throws OseeCoreException {
+   private int getTypeId(AbstractOseeCache<Long, ? extends AbstractOseeType<Long>> cache, Map<String, String> fieldMap) throws OseeCoreException {
       Conditions.checkNotNull(cache, "cache");
-      String guid = fieldMap.get(ExchangeDb.TYPE_GUID);
-      AbstractOseeType<?> typeObject = cache.getByGuid(guid);
-      Conditions.checkNotNull(typeObject, "type", "type [%s] was not found in cache [%s]", guid, cache.getCacheId());
+      String hexString = fieldMap.get(ExchangeDb.TYPE_GUID);
+      Long uuid = HexUtil.toLong(hexString);
+      AbstractOseeType<Long> typeObject = cache.getByGuid(uuid);
+      Conditions.checkNotNull(typeObject, "type", "type [%s] was not found in cache [%s]", uuid, cache.getCacheId());
       return typeObject.getId();
    }
 
