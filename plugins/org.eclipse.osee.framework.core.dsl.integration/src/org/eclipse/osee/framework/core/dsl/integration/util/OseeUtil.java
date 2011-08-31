@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
@@ -36,19 +37,22 @@ public final class OseeUtil {
       // Utility Class
    }
 
+   private static long checkAndGetUuid(OseeType type) throws OseeCoreException {
+      String uuid = type.getUuid();
+      Conditions.checkNotNull(uuid, "uuid", "for type [%s]", type.getName());
+      return HexUtil.toLong(uuid);
+   }
+
    public static IArtifactType toToken(XArtifactType model) throws OseeCoreException {
-      return TokenFactory.createArtifactType(HexUtil.toLong(model.getUuid()),
-         Strings.unquote(model.getName()));
+      return TokenFactory.createArtifactType(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
    public static IAttributeType toToken(XAttributeType model) throws OseeCoreException {
-      return TokenFactory.createAttributeType(HexUtil.toLong(model.getUuid()),
-         Strings.unquote(model.getName()));
+      return TokenFactory.createAttributeType(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
    public static IRelationType toToken(XRelationType model) throws OseeCoreException {
-      return TokenFactory.createRelationType(HexUtil.toLong(model.getUuid()),
-         Strings.unquote(model.getName()));
+      return TokenFactory.createRelationType(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
    public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) throws OseeCoreException {
