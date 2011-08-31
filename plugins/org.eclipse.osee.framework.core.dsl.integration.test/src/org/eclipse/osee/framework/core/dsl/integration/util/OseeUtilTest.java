@@ -87,7 +87,7 @@ public class OseeUtilTest {
       Object actual = OseeUtil.toToken(type);
       Assert.assertEquals(expected, actual);
 
-      type.setTypeGuid("x");
+      type.setUuid("0x1111111111111111");
       actual = OseeUtil.toToken(type);
       Assert.assertFalse(expected.equals(actual));
    }
@@ -102,7 +102,7 @@ public class OseeUtilTest {
       Object actual = OseeUtil.toToken(type);
       Assert.assertEquals(expected, actual);
 
-      type.setTypeGuid("x");
+      type.setUuid("0x1111111111111111");
       actual = OseeUtil.toToken(type);
       Assert.assertFalse(expected.equals(actual));
    }
@@ -117,7 +117,7 @@ public class OseeUtilTest {
       Object actual = OseeUtil.toToken(type);
       Assert.assertEquals(expected, actual);
 
-      type.setTypeGuid("x");
+      type.setUuid("0x1111111111111111");
       actual = OseeUtil.toToken(type);
       Assert.assertFalse(expected.equals(actual));
    }
@@ -180,14 +180,16 @@ public class OseeUtilTest {
       }
    }
 
-   private static void setupToToken(OseeType typeToCheck, Identity<Long> expected) {
+   private static void setupToToken(OseeType typeToCheck, Identity<Long> expected) throws OseeCoreException {
       String name = "bogus name"; // This should not affect equality
-      Long guid = expected.getGuid();
       typeToCheck.setName(name);
-      typeToCheck.setUuid(String.valueOf(guid));
+      String uuid = HexUtil.toString(expected.getGuid());
+      typeToCheck.setUuid(uuid);
+      typeToCheck.setTypeGuid(uuid);
 
       Assert.assertEquals(name, typeToCheck.getName());
-      Assert.assertEquals(guid, typeToCheck.getTypeGuid());
+      Assert.assertEquals(expected.getGuid().longValue(), HexUtil.toLong(typeToCheck.getUuid()));
+      Assert.assertEquals(uuid, typeToCheck.getTypeGuid());
    }
 
    private static void checkIsRestricted(XRelationSideEnum side, boolean expectedSideA, boolean expectedSideB) throws OseeCoreException {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
+import org.eclipse.osee.framework.core.dsl.integration.util.HexUtil;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
@@ -94,32 +95,32 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XArtifactType createXArtifactType(String guid, String name) {
+   public static XArtifactType createXArtifactType(long uuid, String name) throws OseeCoreException {
       XArtifactType toReturn = OseeDslFactory.eINSTANCE.createXArtifactType();
       Assert.assertNotNull(toReturn);
-      toReturn.setTypeGuid(guid);
+      toReturn.setUuid(HexUtil.toString(uuid));
       toReturn.setName(name);
-      Assert.assertEquals(guid, toReturn.getTypeGuid());
+      Assert.assertEquals(uuid, HexUtil.toLong(toReturn.getUuid()));
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }
 
-   public static XAttributeType createXAttributeType(String guid, String name) {
+   public static XAttributeType createXAttributeType(long uuid, String name) throws OseeCoreException {
       XAttributeType toReturn = OseeDslFactory.eINSTANCE.createXAttributeType();
       Assert.assertNotNull(toReturn);
-      toReturn.setTypeGuid(guid);
+      toReturn.setUuid(HexUtil.toString(uuid));
       toReturn.setName(name);
-      Assert.assertEquals(guid, toReturn.getTypeGuid());
+      Assert.assertEquals(uuid, HexUtil.toLong(toReturn.getUuid()));
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }
 
-   public static XRelationType createXRelationType(String guid, String name) {
+   public static XRelationType createXRelationType(long uuid, String name) throws OseeCoreException {
       XRelationType toReturn = OseeDslFactory.eINSTANCE.createXRelationType();
       Assert.assertNotNull(toReturn);
-      toReturn.setTypeGuid(guid);
+      toReturn.setUuid(HexUtil.toString(uuid));
       toReturn.setName(name);
-      Assert.assertEquals(guid, toReturn.getTypeGuid());
+      Assert.assertEquals(uuid, HexUtil.toLong(toReturn.getUuid()));
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }

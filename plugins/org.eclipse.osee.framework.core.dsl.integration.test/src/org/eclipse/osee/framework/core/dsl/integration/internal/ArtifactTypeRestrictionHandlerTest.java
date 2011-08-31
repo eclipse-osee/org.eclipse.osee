@@ -42,8 +42,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataNotMatchesRestriction() throws OseeCoreException {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef =
-         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -58,8 +57,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessCreateAccessDetail() throws OseeCoreException {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
-      XArtifactType artifactTypeRef =
-         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -76,8 +74,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessArtifactTypeInheritance() throws OseeCoreException {
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef =
-         MockModel.createXArtifactType(String.valueOf(artifactType.getGuid()), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);

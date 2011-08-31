@@ -1,5 +1,6 @@
 attributeType "Qualification Method" extends StringAttribute {
 	guid "BZPB25t9fRVnLuII6+wA"
+	uuid 0x1000000000000056
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -8,6 +9,7 @@ attributeType "Qualification Method" extends StringAttribute {
 
 relationType "Requirement Relation" {
 	guid "BOkzi3U9VTe2fcUz_9gA"
+	uuid 0x2000000000000163
 	sideAName "requirement-sideA"
 	sideAArtifactType "Software Requirement"
 	sideBName "artifact-sideB"
@@ -18,10 +20,12 @@ relationType "Requirement Relation" {
 
 artifactType "Artifact" {
 	guid "BZOUrxO35x+LBZkEYzAA"
+	uuid 0x0000000000000001
 }
 
 artifactType "Software Requirement" extends "Artifact" {
 	guid "BZO4PuM+Oz58hpAcTGwA"
+	uuid 0x0000000000000002
 }
 
 artifactMatcher "Software Items" where artifactGuid EQ "AAMFEcWy0xc4e3tcem99";
