@@ -24,7 +24,6 @@ userDefinition "Inactive Steve" GetOrCreate {
 }
 
 teamDefinition "Teams" GetOrCreate {
-	staticId "osee.ats.TopTeamDefinition"
 	children {
 
 		teamDefinition "CIS SW" {
@@ -193,7 +192,6 @@ teamDefinition "Teams" GetOrCreate {
 	}
 }
 actionableItem "Actionable Items" GetOrCreate {
-	staticId "osee.ats.TopActionableItem"
 	children {
 		actionableItem "CIS CSCI" {
 			actionable False
