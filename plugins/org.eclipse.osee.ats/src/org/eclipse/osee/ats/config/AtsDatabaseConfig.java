@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.config;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.core.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
@@ -33,6 +35,11 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       createAtsFolders();
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);
+
+      Artifact topTeam = TeamDefinitionManager.getTopTeamDefinition();
+      topTeam.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition,
+         WorkDefinitionFactory.TeamWorkflowDefaultDefinitionId);
+      topTeam.persist("Set Top Team Work Definition");
 
       Artifact topAi = ActionableItemManagerCore.getTopActionableItem();
       topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
