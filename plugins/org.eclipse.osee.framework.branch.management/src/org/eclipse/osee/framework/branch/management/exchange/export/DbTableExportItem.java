@@ -24,7 +24,9 @@ import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -195,10 +197,21 @@ public class DbTableExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void handleTypeId(Appendable appendable, Object value, AbstractOseeCache<?, ?> cache) throws IOException, OseeCoreException {
-      int typeId = (Integer) value;
-      String guid = String.valueOf(cache.getById(typeId).getGuid());
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
+   private void handleTypeId(Appendable appendable, Object value, AbstractOseeCache<Long, ? extends AbstractOseeType<Long>> cache) throws IOException, OseeCoreException {
+      int typeId = -1;
+      if (value instanceof Short) {
+         Short xShort = (Short) value;
+         typeId = xShort.intValue();
+      } else if (value instanceof Integer) {
+         typeId = (Integer) value;
+      } else if (value instanceof Long) {
+         typeId = ((Long) value).intValue();
+      } else {
+         throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
+      }
+      AbstractOseeType<Long> type = cache.getById(typeId);
+      String uuid = HexUtil.toString(type.getGuid());
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, uuid);
    }
 
    private void handleStringContent(Appendable appendable, Object value, String tag) throws IOException {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
+import java.net.URI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataS
 import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ImportOseeModelHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSaxHandler;
@@ -38,7 +40,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -150,6 +152,11 @@ public final class ImportController {
 
          setup();
 
+         URI modelUri = exportDataProvider.getFile(manifestHandler.getTypeModel()).toURI();
+         ImportOseeModelHandler modelHandler =
+            new ImportOseeModelHandler(oseeServices.getModelingService(), logger, modelUri);
+         Operations.executeWorkAndCheckStatus(modelHandler);
+
          ImportBranchesTx importBranchesTx = new ImportBranchesTx();
          importBranchesTx.execute();
 
@@ -171,16 +178,15 @@ public final class ImportController {
       }
    }
 
-   private void initializeHandler(OseeConnection connection, BaseDbSaxHandler handler, MetaData metadata) {
-      handler.setConnection(connection);
+   private void initializeHandler(BaseDbSaxHandler handler, MetaData metadata) {
       handler.setMetaData(metadata);
       handler.setOptions(options);
       handler.setTranslator(translator);
    }
 
-   private void process(BaseDbSaxHandler handler, OseeConnection connection, IExportItem exportItem) throws OseeCoreException {
+   private void process(BaseDbSaxHandler handler, IExportItem exportItem) throws OseeCoreException {
       MetaData metadata = checkMetadata(exportItem);
-      initializeHandler(connection, handler, metadata);
+      initializeHandler(handler, metadata);
       boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
       cleanDataTable &= !doesSavePointExist(currentSavePoint);
       OseeLog.logf(this.getClass(), Level.INFO, "Importing: [%s] %s Meta: %s", exportItem.getSource(),
@@ -216,7 +222,7 @@ public final class ImportController {
          currentSavePoint = item.getSource();
          handler.setExportItem(item);
          if (!doesSavePointExist(currentSavePoint)) {
-            process(handler, ConnectionHandler.getConnection(), item);
+            process(handler, item);
             handler.store();
             handler.reset();
             addSavePoint(currentSavePoint);
@@ -294,16 +300,23 @@ public final class ImportController {
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          // Import Branches
          currentSavePoint = manifestHandler.getBranchFile().getSource();
-         process(branchHandler, connection, manifestHandler.getBranchFile());
+         branchHandler.setConnection(connection);
+         process(branchHandler, manifestHandler.getBranchFile());
 
          if (!doesSavePointExist(currentSavePoint)) {
-            branchesStored = branchHandler.store(true, branchesToImport);
+            branchesStored = branchHandler.store(connection, true, branchesToImport);
             addSavePoint(currentSavePoint);
          } else {
             // This step has already been performed - only get branches needed for remaining operations
             OseeLog.logf(this.getClass(), Level.INFO, "Save point found for: [%s] - skipping", currentSavePoint);
-            branchesStored = branchHandler.store(false, branchesToImport);
+            branchesStored = branchHandler.store(connection, false, branchesToImport);
          }
+      }
+
+      @Override
+      protected void handleTxFinally() throws OseeCoreException {
+         super.handleTxFinally();
+         branchHandler.setConnection(null);
       }
    }
 

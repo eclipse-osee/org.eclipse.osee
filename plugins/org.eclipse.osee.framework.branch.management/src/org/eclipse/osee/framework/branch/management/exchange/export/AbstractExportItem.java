@@ -11,14 +11,10 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
-import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
-import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -36,7 +32,7 @@ public abstract class AbstractExportItem implements Runnable {
 
    public AbstractExportItem(ExportItem id) {
       this.id = id;
-      this.fileName = id.toString() + ExportImportXml.XML_EXTENSION;
+      this.fileName = id.getFileName();
       this.options = null;
       this.cancel = false;
       this.exportListeners = Collections.synchronizedSet(new HashSet<IExchangeTaskListener>());
@@ -101,28 +97,13 @@ public abstract class AbstractExportItem implements Runnable {
    @Override
    public final void run() {
       long startTime = System.currentTimeMillis();
-      Writer writer = null;
       try {
-         writer = ExchangeUtil.createXmlWriter(getWriteLocation(), getFileName(), getBufferSize());
-         ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
-         if (isCancel() != true) {
-            try {
-               doWork(writer);
-            } catch (Exception ex) {
-               notifyOnExportException(ex);
-            }
+         if (!isCancel()) {
+            executeWork();
          }
-         ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          notifyOnExportException(ex);
       } finally {
-         if (writer != null) {
-            try {
-               writer.close();
-            } catch (IOException ex) {
-               notifyOnExportException(ex);
-            }
-         }
          notifyOnExportItemCompleted(System.currentTimeMillis() - startTime);
       }
    }
@@ -139,7 +120,7 @@ public abstract class AbstractExportItem implements Runnable {
       }
    }
 
-   protected abstract void doWork(Appendable appendable) throws Exception;
+   protected abstract void executeWork() throws Exception;
 
    public void setCancel(boolean cancel) {
       this.cancel = cancel;

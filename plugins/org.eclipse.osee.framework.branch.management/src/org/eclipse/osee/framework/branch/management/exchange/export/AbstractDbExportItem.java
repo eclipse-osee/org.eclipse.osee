@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractDbExportItem extends AbstractExportItem {
+public abstract class AbstractDbExportItem extends AbstractXmlExportItem {
 
    private int joinQueryId;
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,7 +19,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
@@ -136,12 +134,10 @@ final class ExportController implements IExchangeTaskListener {
 
          String zipTargetName = getExchangeFileName() + ZIP_EXTENSION;
          if (this.options.getBoolean(ExportOptions.COMPRESS.name())) {
-            OseeLog.logf(this.getClass(), Level.INFO,
-               "Compressing Branch Export Data - [%s]", zipTargetName);
+            OseeLog.logf(this.getClass(), Level.INFO, "Compressing Branch Export Data - [%s]", zipTargetName);
             File zipTarget = new File(tempFolder.getParent(), zipTargetName);
             Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
-            OseeLog.logf(this.getClass(), Level.INFO,
-               "Deleting Branch Export Temp Folder - [%s]", tempFolder);
+            OseeLog.logf(this.getClass(), Level.INFO, "Deleting Branch Export Temp Folder - [%s]", tempFolder);
             Lib.deleteDir(tempFolder);
          } else {
             File target = new File(tempFolder.getParent(), getExchangeFileName());
@@ -157,11 +153,8 @@ final class ExportController implements IExchangeTaskListener {
       } finally {
          cleanUp(taskList);
       }
-      OseeLog.logf(
-         this.getClass(),
-         Level.INFO,
-         "Exported [%s] branch%s in [%s]", branchIds.size(), branchIds.size() != 1 ? "es" : "",
-            Lib.getElapseString(startTime));
+      OseeLog.logf(this.getClass(), Level.INFO, "Exported [%s] branch%s in [%s]", branchIds.size(),
+         branchIds.size() != 1 ? "es" : "", Lib.getElapseString(startTime));
    }
 
    private void sendTasksToExecutor(List<AbstractExportItem> taskList, final File exportFolder) throws InterruptedException, ExecutionException, OseeCoreException {
@@ -169,18 +162,6 @@ final class ExportController implements IExchangeTaskListener {
       for (AbstractExportItem exportItem : taskList) {
          futures.add(this.executorService.submit(exportItem));
       }
-
-      futures.add(this.executorService.submit(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               oseeServices.getModelingService().exportOseeTypes(new NullProgressMonitor(),
-                  new FileOutputStream(new File(exportFolder, "OseeModel.osee")));
-            } catch (Exception ex) {
-               onException("model export", ex);
-            }
-         }
-      }));
 
       for (Future<?> future : futures) {
          future.get();

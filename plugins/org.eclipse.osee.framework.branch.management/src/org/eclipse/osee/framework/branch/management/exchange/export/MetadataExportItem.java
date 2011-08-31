@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class MetadataExportItem extends AbstractDbExportItem {
+public class MetadataExportItem extends AbstractXmlExportItem {
    private final List<AbstractExportItem> exportItems;
    private final DatabaseMetaData metaData;
 

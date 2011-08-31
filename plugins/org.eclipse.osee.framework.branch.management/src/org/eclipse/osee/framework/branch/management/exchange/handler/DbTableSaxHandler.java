@@ -70,10 +70,6 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public void store() throws OseeCoreException {
-      super.store(this.getConnection());
-   }
-
    private String importBinaryContent(String uriValue, String gammaId) throws OseeCoreException {
       String relativePath = Lib.isWindows() ? uriValue : uriValue.replaceAll("\\\\", File.separator);
       String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + relativePath;

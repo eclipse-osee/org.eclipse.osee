@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
    private final List<IExportItem> filesToImport;
+   private String typeModelFile;
    private String metadataFile;
    private IExportItem branchFile;
    private String sourceDatabaseId;
@@ -36,6 +37,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    public ManifestSaxHandler() {
       super();
       this.filesToImport = new ArrayList<IExportItem>();
+      this.typeModelFile = null;
       this.metadataFile = null;
       this.branchFile = null;
       this.sourceExportDate = null;
@@ -59,7 +61,9 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       String source = fieldMap.get(ExportImportXml.SOURCE);
 
       if (Strings.isValid(fileName) && Strings.isValid(source)) {
-         if (source.equals(ExportImportXml.DB_SCHEMA)) {
+         if (source.equals(ExportImportXml.TYPE_MODEL)) {
+            typeModelFile = fileName;
+         } else if (source.equals(ExportImportXml.DB_SCHEMA)) {
             this.metadataFile = fileName;
          } else {
             ImportFile importFile = new ImportFile(fileName, source, priority);
@@ -101,6 +105,10 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
       });
       return filesToImport;
+   }
+
+   public String getTypeModel() {
+      return typeModelFile;
    }
 
    public class ImportFile implements IExportItem {
@@ -151,4 +159,5 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          return String.format("ImportFile [fileName=%s, source=%s, priority=%d]", fileName, source, priority);
       }
    }
+
 }

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    private final Map<Integer, BranchData> idToImportFileBranchData;
+   private OseeConnection connection;
 
    public static BranchDataSaxHandler createWithCacheAll(IOseeDatabaseService service) {
       return new BranchDataSaxHandler(service, true, 0);
@@ -49,6 +51,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    private BranchDataSaxHandler(IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
       super(service, isCacheAll, cacheLimit);
       this.idToImportFileBranchData = new HashMap<Integer, BranchData>();
+      this.connection = null;
    }
 
    @Override
@@ -113,11 +116,11 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public int[] store(boolean writeToDb, int... branchesToImport) throws OseeCoreException {
+   public int[] store(OseeConnection connection, boolean writeToDb, int... branchesToImport) throws OseeCoreException {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
 
-      branchesToStore = checkTargetDbBranches(branchesToStore);
+      branchesToStore = checkTargetDbBranches(connection, branchesToStore);
       int[] toReturn = new int[branchesToStore.size()];
       int index = 0;
       for (BranchData branchData : branchesToStore) {
@@ -143,7 +146,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          index++;
       }
       if (writeToDb) {
-         super.store(getConnection());
+         super.store(connection);
       }
       return toReturn;
    }
@@ -184,13 +187,13 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return newValue.intValue();
    }
 
-   private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws OseeCoreException {
+   private Collection<BranchData> checkTargetDbBranches(OseeConnection connection, Collection<BranchData> selectedBranches) throws OseeCoreException {
       Map<String, BranchData> guidToImportFileBranchData = new HashMap<String, BranchData>();
       for (BranchData data : selectedBranches) {
          guidToImportFileBranchData.put(data.getBranchGuid(), data);
       }
 
-      IOseeStatement chStmt = getDatabaseService().getStatement(getConnection());
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
@@ -216,4 +219,24 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          String.format("DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(),
             getMetaData().getTableName()));
    }
+
+   public void setConnection(OseeConnection connection) {
+      this.connection = connection;
+   }
+
+   public OseeConnection getConnection() {
+      return connection;
+   }
+
+   @Override
+   public void reset() {
+      super.reset();
+      setConnection(null);
+   }
+
+   @Override
+   public void store() throws OseeCoreException {
+      super.store(getConnection());
+   }
+
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.DbTableExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
+import org.eclipse.osee.framework.branch.management.exchange.export.OseeTypeModelExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -136,6 +137,7 @@ public final class ExchangeDb {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(items));
       items.add(new MetadataExportItem(items, services.getDatabaseService().getConnection().getMetaData()));
+      items.add(new OseeTypeModelExportItem(services.getModelingService()));
       items.add(new DbTableExportItem(services, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
       items.add(new DbTableExportItem(services, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
       items.add(new DbTableExportItem(services, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));

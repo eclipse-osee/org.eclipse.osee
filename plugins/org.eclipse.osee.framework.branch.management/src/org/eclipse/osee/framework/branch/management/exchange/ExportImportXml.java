@@ -49,6 +49,7 @@ public class ExportImportXml {
    public static final String ART_TYPE_ID = "art_type_id";
    public static final String REL_TYPE_ID = "rel_link_type_id";
    public static final String ATTR_TYPE_ID = "attr_type_id";
+   public static final String TYPE_MODEL = "osee_type_model";
 
    private ExportImportXml() {
    }

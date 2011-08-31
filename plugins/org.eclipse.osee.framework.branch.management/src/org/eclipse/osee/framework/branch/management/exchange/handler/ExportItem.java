@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
  */
 public enum ExportItem implements IExportItem {
    EXPORT_MANIFEST(""),
+   EXPORT_TYPE_MODEL("osee_type_model"),
    EXPORT_DB_SCHEMA("db.metadata"),
    OSEE_BRANCH_DATA("osee_branch"),
    OSEE_TX_DETAILS_DATA("osee_tx_details"),
@@ -41,7 +42,8 @@ public enum ExportItem implements IExportItem {
 
    @Override
    public String getFileName() {
-      return this + ".xml";
+      String extension = this != EXPORT_TYPE_MODEL ? ".xml" : ".osee";
+      return this + extension;
    }
 
    @Override

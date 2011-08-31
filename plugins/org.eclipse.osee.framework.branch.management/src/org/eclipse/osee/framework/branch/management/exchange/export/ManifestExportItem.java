@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.database.core.OseeInfo;
 /**
  * @author Roberto E. Escobar
  */
-public class ManifestExportItem extends AbstractExportItem {
+public class ManifestExportItem extends AbstractXmlExportItem {
    private final List<AbstractExportItem> exportItems;
 
    public ManifestExportItem(List<AbstractExportItem> exportItems) {

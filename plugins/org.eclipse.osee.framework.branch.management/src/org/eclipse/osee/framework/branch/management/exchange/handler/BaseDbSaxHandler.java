@@ -21,8 +21,9 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -33,7 +34,6 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private final int cacheLimit;
    private final boolean isCacheAll;
 
-   private OseeConnection connection;
    private MetaData metadata;
    private TranslationManager translator;
    private PropertyStore options;
@@ -49,7 +49,6 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.options = new PropertyStore();
       this.translator = null;
       this.metadata = null;
-      this.connection = null;
       this.isCacheAll = isCacheAll;
       this.cacheLimit = cacheLimit;
       this.data = new ArrayList<Object[]>();
@@ -69,16 +68,8 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.metadata = metadata;
    }
 
-   public void setConnection(OseeConnection connection) {
-      this.connection = connection;
-   }
-
    public void setTranslator(TranslationManager translator) {
       this.translator = translator;
-   }
-
-   protected OseeConnection getConnection() {
-      return this.connection;
    }
 
    protected MetaData getMetaData() {
@@ -97,7 +88,11 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.data.add(objects);
    }
 
-   protected void store(OseeConnection connection) throws OseeCoreException {
+   public void store() throws OseeCoreException {
+      store(null);
+   }
+
+   public void store(OseeConnection connection) throws OseeCoreException {
       if (!data.isEmpty()) {
          getDatabaseService().runBatchUpdate(connection, getMetaData().getQuery(), data);
          data.clear();
@@ -106,27 +101,32 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
 
    private boolean isTruncateSupported() throws OseeCoreException {
       boolean isTruncateSupported = false;
-      DatabaseMetaData metaData = connection.getMetaData();
-      ResultSet resultSet = null;
+      OseeConnection connection = service.getConnection();
       try {
-         resultSet = metaData.getTablePrivileges(null, null, getMetaData().getTableName().toUpperCase());
-         while (resultSet.next()) {
-            String value = resultSet.getString("PRIVILEGE");
-            if ("TRUNCATE".equalsIgnoreCase(value)) {
-               isTruncateSupported = true;
-               break;
+         DatabaseMetaData metaData = connection.getMetaData();
+         ResultSet resultSet = null;
+         try {
+            resultSet = metaData.getTablePrivileges(null, null, getMetaData().getTableName().toUpperCase());
+            while (resultSet.next()) {
+               String value = resultSet.getString("PRIVILEGE");
+               if ("TRUNCATE".equalsIgnoreCase(value)) {
+                  isTruncateSupported = true;
+                  break;
+               }
+            }
+         } catch (SQLException ex1) {
+            OseeLog.log(Activator.class, Level.INFO, ex1);
+         } finally {
+            if (resultSet != null) {
+               try {
+                  resultSet.close();
+               } catch (SQLException ex) {
+                  // Do Nothing
+               }
             }
          }
-      } catch (SQLException ex1) {
-         OseeLog.log(Activator.class, Level.INFO, ex1);
       } finally {
-         if (resultSet != null) {
-            try {
-               resultSet.close();
-            } catch (SQLException ex) {
-               // Do Nothing
-            }
-         }
+         Lib.close(connection);
       }
       return isTruncateSupported;
    }
@@ -135,7 +135,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       String cmd = isTruncateSupported() ? "TRUNCATE TABLE" : "DELETE FROM";
       String deleteSql = String.format("%s %s", cmd, getMetaData().getTableName());
       try {
-         getDatabaseService().runPreparedUpdate(connection, deleteSql);
+         getDatabaseService().runPreparedUpdate(deleteSql);
       } catch (OseeCoreException ex) {
          OseeLog.logf(Activator.class, Level.INFO, ex, "Error clearing: %s", deleteSql);
          throw ex;
@@ -147,7 +147,6 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    }
 
    public void reset() {
-      this.connection = null;
       this.translator = null;
       this.options = null;
       this.metadata = null;
