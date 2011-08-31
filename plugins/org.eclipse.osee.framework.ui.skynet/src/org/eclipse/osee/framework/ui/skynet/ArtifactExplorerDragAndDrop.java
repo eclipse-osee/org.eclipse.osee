@@ -100,7 +100,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
          Artifact dropTarget = getSelectedArtifact(event);
          ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-         if (dropTarget != null && toBeDropped.getSource().equals(viewId)) {
+         if (dropTarget != null) {
             try {
                AccessPolicy policy = Activator.getInstance().getAccessPolicy();
                valid =
