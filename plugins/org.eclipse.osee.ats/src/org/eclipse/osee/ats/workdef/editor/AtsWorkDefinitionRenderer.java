@@ -18,7 +18,7 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.editor.AtsRenderer;
+import org.eclipse.osee.ats.editor.renderer.AbstractAtsRenderer;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class AtsWorkDefinitionRenderer extends AtsRenderer {
+public class AtsWorkDefinitionRenderer extends AbstractAtsRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworkdef.command";
 
    @Override

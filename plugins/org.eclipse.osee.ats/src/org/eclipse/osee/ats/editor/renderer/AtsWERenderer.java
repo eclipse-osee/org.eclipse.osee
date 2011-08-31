@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.editor.renderer;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,30 +27,10 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
- * @author Jeff C. Phillips
+ * @author Ryan D. Brooks
  */
-public class AtsTaskEditorRenderer extends AtsRenderer {
-   private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getImageDescriptor(AtsImage.TASK);
-   }
-
-   @Override
-   public String getName() {
-      return "ATS Task Editor";
-   }
-
-   @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
-      if (aArtifact.isOfType(AtsArtifactTypes.Task) && !aArtifact.isHistorical() && !presentationType.matches(
-         GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
-         return PRESENTATION_SUBTYPE_MATCH;
-      }
-      return NO_MATCH;
-   }
+public class AtsWERenderer extends AbstractAtsRenderer {
+   private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atseditor.command";
 
    @Override
    public List<String> getCommandIds(CommandGroup commandGroup) {
@@ -63,12 +44,33 @@ public class AtsTaskEditorRenderer extends AtsRenderer {
    }
 
    @Override
-   public AtsTaskEditorRenderer newInstance() {
-      return new AtsTaskEditorRenderer();
+   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
+      return ImageManager.getImageDescriptor(AtsImage.ACTION);
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      AtsUtil.openInAtsTaskEditor("Tasks", artifacts);
+   public String getName() {
+      return "ATS Workflow Editor";
+   }
+
+   @Override
+   public AtsWERenderer newInstance() {
+      return new AtsWERenderer();
+   }
+
+   @Override
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+      Artifact aArtifact = artifact.getFullArtifact();
+      if (!aArtifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
+         return PRESENTATION_SUBTYPE_MATCH;
+      }
+      return NO_MATCH;
+   }
+
+   @Override
+   public void open(List<Artifact> artifacts, PresentationType presentationType) {
+      for (Artifact artifact : artifacts) {
+         AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+      }
    }
 }

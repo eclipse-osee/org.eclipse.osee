@@ -174,13 +174,13 @@
    <extension
          id="ats"
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-      <Renderer classname="org.eclipse.osee.ats.editor.AtsWorkflowRenderer"/>
+      <Renderer classname="org.eclipse.osee.ats.editor.renderer.AtsWERenderer"/>
       <Renderer classname="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionRenderer"/>
       <Renderer
-            classname="org.eclipse.osee.ats.editor.AtsTaskEditorRenderer">
+            classname="org.eclipse.osee.ats.task.AtsTaskEditorRenderer">
       </Renderer>
       <Renderer
-            classname="org.eclipse.osee.ats.editor.AtsWorldEditorRenderer">
+            classname="org.eclipse.osee.ats.world.AtsWorldEditorRenderer">
       </Renderer>
       <Renderer
             classname="org.eclipse.osee.ats.export.AtsExportRenderer">
@@ -222,14 +222,6 @@
       </Operation>
    </extension>
    <extension
-         id="AtsWorkDefinitions"
-         name="AtsWorkDefinitions"
-         point="org.eclipse.osee.framework.ui.skynet.WorkDefinitionProvider">
-      <WorkDefinitionProvider
-            classname="org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions">
-      </WorkDefinitionProvider>
-   </extension>
-   <extension
          id="AtsWidgetProvider"
          name="AtsWidgetProvider"
          point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
@@ -250,10 +242,6 @@
       <command
             id="org.eclipse.osee.framework.ui.skynet.atseditor.command"
             name="ATS Workflow Editor">
-      </command>
-      <command
-            id="org.eclipse.osee.framework.ui.skynet.atsworkflowconfigeditor.command"
-            name="ATS Workflow Config Editor">
       </command>
       <command
             id="org.eclipse.osee.framework.ui.skynet.atsworkdef.command"
@@ -279,8 +267,8 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.eclipse.osee.ats.handlers.AtsEditorHandler"
-            commandId="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command">
+            class="org.eclipse.osee.ats.editor.renderer.AtsWEHandler"
+            commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command">
          <enabledWhen>
             <with
                   variable="selection">
@@ -315,19 +303,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.eclipse.osee.ats.handlers.AtsWorkflowConfigEditorHandler"
-            commandId="org.eclipse.osee.framework.ui.skynet.atsworkflowconfigeditor.command">
-         <enabledWhen>
-            <with
-                  variable="selection">
-               <count
-                     value="+">
-               </count>
-            </with>
-         </enabledWhen>
-      </handler>
-      <handler
-            class="org.eclipse.osee.ats.handlers.AtsTaskEditorHandler"
+            class="org.eclipse.osee.ats.task.AtsTaskEditorHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.atstaskeditor.command">
          <enabledWhen>
             <with
@@ -339,7 +315,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.eclipse.osee.ats.handlers.AtsWorldEditorHandler"
+            class="org.eclipse.osee.ats.world.AtsWorldEditorHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command">
          <enabledWhen>
             <with
@@ -351,7 +327,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.eclipse.osee.ats.handlers.AtsExportHandler"
+            class="org.eclipse.osee.ats.export.AtsExportHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.atsexport.command">
          <enabledWhen>
             <with

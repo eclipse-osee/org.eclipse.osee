@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.editor.renderer;
 
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 
-public abstract class AtsRenderer extends DefaultArtifactRenderer {
+public abstract class AbstractAtsRenderer extends DefaultArtifactRenderer {
 
-   protected AtsRenderer() {
+   protected AbstractAtsRenderer() {
       super();
    }
 

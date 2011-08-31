@@ -8,22 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.handlers;
+package org.eclipse.osee.ats.export;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.osee.ats.editor.AtsWorkflowRenderer;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
- * @author Donald G. Dunne
+ * @author Jeff C. Phillips
  */
-public class AtsWorkflowConfigEditorHandler extends AbstractEditorHandler {
+public class AtsExportHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
-         AtsWorkflowRenderer renderer = new AtsWorkflowRenderer();
+         AtsExportRenderer renderer = new AtsExportRenderer();
          renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);
       }
       return null;

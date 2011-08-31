@@ -28,7 +28,7 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODU
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.ats.editor.AtsWorkflowRenderer;
+import org.eclipse.osee.ats.editor.renderer.AtsWERenderer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -137,12 +137,12 @@ public class RendererManagerTest {
       addTest(data, SoftwareRequirement, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
 
       addTest(data, Action, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
-      addTest(data, Action, SPECIALIZED_EDIT, AtsWorkflowRenderer.class, Both);
-      addTest(data, Action, DIFF, AtsWorkflowRenderer.class, Both);
-      addTest(data, Action, PREVIEW, AtsWorkflowRenderer.class, Both);
-      addTest(data, Action, MERGE, AtsWorkflowRenderer.class, Both);
-      addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, Off);
-      addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, On);
+      addTest(data, Action, SPECIALIZED_EDIT, AtsWERenderer.class, Both);
+      addTest(data, Action, DIFF, AtsWERenderer.class, Both);
+      addTest(data, Action, PREVIEW, AtsWERenderer.class, Both);
+      addTest(data, Action, MERGE, AtsWERenderer.class, Both);
+      addTest(data, Action, DEFAULT_OPEN, AtsWERenderer.class, Off);
+      addTest(data, Action, DEFAULT_OPEN, AtsWERenderer.class, On);
       addTest(data, Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
       addTest(data, TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
