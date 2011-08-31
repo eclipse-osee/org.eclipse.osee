@@ -148,6 +148,7 @@ public class QuickSearchOptionComposite extends Composite {
                optionsButtons.get(SearchOption.All_Match_Locations.asLabel()).getSelection());
          }
          optionGroup.getParent().layout();
+         optionGroup.getParent().getParent().getParent().layout();
       }
    }
 
