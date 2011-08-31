@@ -21,7 +21,7 @@ public class CreateActionUsingAllActionableItemsTest {
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       ActionArtifact action = CreateActionUsingAllActionableItems.createActionWithAllAis();
-      Assert.assertTrue(action.getTeams().size() > 15);
+      Assert.assertEquals("Should be 14 workflows created", 14, action.getTeams().size());
       TestUtil.severeLoggingEnd(monitor);
    }
 

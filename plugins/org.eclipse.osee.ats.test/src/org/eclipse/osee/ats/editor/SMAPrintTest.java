@@ -48,7 +48,7 @@ public class SMAPrintTest {
       XResultData resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 7000);
+      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 5800);
 
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
       smaPrint = new SMAPrint(peerArt);
