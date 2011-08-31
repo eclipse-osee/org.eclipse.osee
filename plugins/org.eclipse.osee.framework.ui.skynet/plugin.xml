@@ -363,9 +363,6 @@
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
        </command>
-       <command
-             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertRelation.command">
-       </command>
        <separator
              name="xChngSeparator5"
              visible="true">
