@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.purge.BranchOperation;
@@ -37,6 +40,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.admin.branch.BranchExportOperation;
 import org.eclipse.osee.framework.server.admin.branch.BranchImportOperation;
@@ -93,7 +97,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
       OperationLogger logger = new CommandInterpreterLogger(ci);
       IOperation op =
          new BranchExportOperation(logger, propertyStore, exportFileName, includeArchivedBranches, branchIds);
-      return Operations.executeAsJob(op, false, branchMutex);
+      return Operations.executeAsJob(op, false, Job.LONG, new JobStatusListener(logger), branchMutex);
    }
 
    public Job _import_branch(CommandInterpreter ci) {
@@ -133,9 +137,9 @@ public class BranchManagementCommandProvider implements CommandProvider {
          }
       } while (Strings.isValid(arg));
 
-      OperationLogger logger = new CommandInterpreterLogger(ci);
+      final OperationLogger logger = new CommandInterpreterLogger(ci);
       IOperation op = new BranchImportOperation(logger, propertyStore, importFiles, branchIds);
-      return Operations.executeAsJob(op, false, branchMutex);
+      return Operations.executeAsJob(op, false, Job.LONG, new JobStatusListener(logger), branchMutex);
    }
 
    public Job _check_exchange(CommandInterpreter ci) throws OseeArgumentException {
@@ -148,7 +152,8 @@ public class BranchManagementCommandProvider implements CommandProvider {
       }
 
       OperationLogger logger = new CommandInterpreterLogger(ci);
-      return Operations.executeAsJob(new ExchangeIntegrityOperation(logger, importFiles), false, branchMutex);
+      IOperation op = new ExchangeIntegrityOperation(logger, importFiles);
+      return Operations.executeAsJob(op, false, Job.LONG, new JobStatusListener(logger), branchMutex);
    }
 
    public Job _purge_deleted_branches(CommandInterpreter ci) {
@@ -205,5 +210,69 @@ public class BranchManagementCommandProvider implements CommandProvider {
       sb.append("\tpurge_deleted_branches - permenatly remove all branches that are both archived and deleted \n");
       sb.append("\tpurge_branch <guids...> [-recursive] - removes branches defined by guids, if recursive all its children excluding baseline branches are removed\n");
       return sb.toString();
+   }
+
+   private final class JobStatusListener extends JobChangeAdapter {
+
+      private final OperationLogger logger;
+      private long startTime;
+
+      public JobStatusListener(OperationLogger logger) {
+         super();
+         this.logger = logger;
+         this.startTime = 0L;
+      }
+
+      @Override
+      public void aboutToRun(IJobChangeEvent event) {
+         super.aboutToRun(event);
+         startTime = System.currentTimeMillis();
+         logger.logf("Starting [%s]", event.getJob().getName());
+      }
+
+      private String toStatus(IStatus status) {
+         boolean addDetails = true;
+         StringBuilder builder = new StringBuilder();
+         switch (status.getSeverity()) {
+            case IStatus.OK:
+               addDetails = false;
+               builder.append("[Ok]");
+               break;
+            case IStatus.CANCEL:
+               addDetails = false;
+               builder.append("[Cancelled]");
+               break;
+            case IStatus.INFO:
+               builder.append("[Info]");
+               break;
+            case IStatus.ERROR:
+               builder.append("[Error]");
+               break;
+            case IStatus.WARNING:
+               builder.append("[Warning]");
+               break;
+            default:
+               builder.append("[Unknown]");
+               break;
+         }
+
+         if (addDetails) {
+            builder.append("\n");
+            builder.append(status.getMessage());
+            builder.append("\n");
+            Throwable th = status.getException();
+            if (th != null) {
+               builder.append(th.getLocalizedMessage());
+            }
+         }
+         return builder.toString();
+      }
+
+      @Override
+      public void done(IJobChangeEvent event) {
+         super.done(event);
+         logger.logf("Completed [%s] in [%s] - status:%s", event.getJob().getName(), Lib.getElapseString(startTime),
+            toStatus(event.getResult()));
+      }
    }
 }
