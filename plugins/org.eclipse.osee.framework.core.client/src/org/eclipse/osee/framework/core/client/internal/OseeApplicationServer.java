@@ -11,13 +11,18 @@
 
 package org.eclipse.osee.framework.core.client.internal;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -25,9 +30,8 @@ import org.eclipse.osee.framework.core.util.HttpProcessor;
  */
 public class OseeApplicationServer {
 
-   public static ArbitrationServer arbitrationServer = new ArbitrationServer();
-   public static ApplicationServer applicationServer = new ApplicationServer();
-   private static DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+   private static final ArbitrationServer arbitrationServer = new ArbitrationServer();
+   private static final ApplicationServer applicationServer = new ApplicationServer();
 
    private OseeApplicationServer() {
       // private constructor
@@ -35,8 +39,9 @@ public class OseeApplicationServer {
 
    public static String getOseeApplicationServer() throws OseeCoreException {
       checkAndUpdateStatus();
-      applicationServer.validate();
-      return applicationServer.getOseeServer();
+      String serverAddress = applicationServer.getServerAddress();
+      Conditions.checkNotNull(serverAddress, "resource server address");
+      return serverAddress;
    }
 
    public static boolean isApplicationServerAlive() {
@@ -44,29 +49,48 @@ public class OseeApplicationServer {
       return applicationServer.isAlive();
    }
 
-   private static void checkAndUpdateStatus() {
-      applicationServer.reset();
-      if (!applicationServer.hasServerInfo()) {
-         arbitrationServer.acquireApplicationServer(applicationServer);
-      } else if (applicationServer.isOverrideArbitration()) {
-         arbitrationServer.set(Level.INFO, null, "Arbitration Overridden");
-      }
-      OseeServerInfo serverInfo = applicationServer.getServerInfo();
-      if (serverInfo != null) {
-         boolean alive = HttpProcessor.isAlive(serverInfo.getServerAddress(), serverInfo.getPort());
-         applicationServer.setAlive(alive);
-         if (alive) {
-            applicationServer.set(
-               Level.INFO,
-               null,
-               String.format("%s %s Running Since: %s", applicationServer.getOseeServer(),
-                  Arrays.deepToString(serverInfo.getVersion()), format.format(serverInfo.getDateStarted())));
+   private synchronized static void checkAndUpdateStatus() {
+      if (!applicationServer.isServerInfoValid()) {
+         applicationServer.resetStatus();
+         OseeServerInfo serverInfo = null;
+         String overrideValue = OseeClientProperties.getOseeApplicationServer();
+         if (Strings.isValid(overrideValue)) {
+            arbitrationServer.set(Level.INFO, null, "Arbitration Overridden");
+            try {
+               serverInfo = parseServerInfo(overrideValue);
+            } catch (Exception ex) {
+               OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+               applicationServer.set(Level.SEVERE, ex, "Error parsing arbitration server override [%s]", overrideValue);
+            }
          } else {
-            applicationServer.set(Level.SEVERE, null,
-               String.format("Unable to Connect to [%s]", applicationServer.getOseeServer()));
+            serverInfo = arbitrationServer.getViaArbitration();
+            if (serverInfo == null) {
+               applicationServer.set(Level.SEVERE, null, "Arbitration Server Error");
+            }
          }
+         applicationServer.setServerInfo(serverInfo);
       }
+      applicationServer.checkAlive();
+
       arbitrationServer.report();
       applicationServer.report();
+   }
+
+   private static OseeServerInfo parseServerInfo(String value) throws Exception {
+      OseeServerInfo toReturn = null;
+      String rawAddress = value;
+      if (rawAddress.startsWith("http")) {
+         rawAddress = value.replace("http://", "");
+      }
+      Pattern pattern = Pattern.compile("(.*):(\\d+)");
+      Matcher matcher = pattern.matcher(rawAddress);
+      if (matcher.find()) {
+         String address = matcher.group(1);
+         int port = Integer.valueOf(matcher.group(2));
+         toReturn =
+            new OseeServerInfo("OVERRIDE", address, port, new String[] {"OVERRIDE"},
+               new Timestamp(new Date().getTime()), true);
+      }
+      return toReturn;
    }
 }

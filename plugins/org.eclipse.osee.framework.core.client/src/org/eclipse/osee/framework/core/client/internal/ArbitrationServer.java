@@ -1,14 +1,17 @@
-/*
- * Created on Aug 3, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.core.client.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -21,23 +24,20 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-class ArbitrationServer extends OseeServer {
+public class ArbitrationServer extends OseeServer {
 
    public ArbitrationServer() {
       super("Arbitration Server");
    }
 
-   public void acquireApplicationServer(ApplicationServer applicationServer) {
-      if (applicationServer.isOverrideArbitration()) {
-         set(Level.INFO, null, "Arbitration Overridden");
-         setAlive(true);
-      }
-      reset();
+   public OseeServerInfo getViaArbitration() {
+      OseeServerInfo serverInfo = null;
+      resetStatus();
       ByteArrayOutputStream outputStream = null;
-      InputStream inputStream = null;
       AcquireResult result = null;
       try {
          Map<String, String> parameters = new HashMap<String, String>();
@@ -48,55 +48,38 @@ class ArbitrationServer extends OseeServer {
 
          outputStream = new ByteArrayOutputStream();
          result = HttpProcessor.acquire(new URL(url), outputStream);
-      } catch (Exception ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-         set(Level.SEVERE, ex, "Error connecting - " + ex.getLocalizedMessage());
-         applicationServer.reset();
-         applicationServer.set(Level.SEVERE, null, "Arbitration Server Unavailable");
-         return;
-      }
-      try {
+         setAlive(true);
          set(Level.INFO, null, HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix());
          if (result.getCode() == HttpURLConnection.HTTP_OK) {
-            inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            applicationServer.setServerInfo(OseeServerInfo.fromXml(inputStream));
-            set(Level.INFO, null, HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix());
+            serverInfo = getServerInfo(outputStream, result);
          } else {
             String arbitrationServerMessage = result.getResult();
-            if (!Strings.isValid(arbitrationServerMessage)) {
-               arbitrationServerMessage =
-                  String.format("Error requesting application server for version [%s]", OseeCodeVersion.getVersion());
+            if (Strings.isValid(arbitrationServerMessage)) {
+               set(Level.SEVERE, null, arbitrationServerMessage);
+            } else {
+               set(Level.SEVERE, null, "Error requesting application server for version [%s]",
+                  OseeCodeVersion.getVersion());
             }
-            applicationServer.set(Level.SEVERE, null, arbitrationServerMessage);
          }
       } catch (Exception ex) {
-         set(Level.SEVERE, ex, "Error retrieving application server  - " + ex.getLocalizedMessage());
-         applicationServer.reset();
-         applicationServer.set(Level.SEVERE, null, "Arbitration Server Error");
+         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         set(Level.SEVERE, ex, "Error connecting to arbitration server - [%s]", ex.getLocalizedMessage());
       } finally {
-         if (inputStream != null) {
-            try {
-               inputStream.close();
-            } catch (IOException ex) {
-               OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-            }
-         }
-         try {
-            outputStream.close();
-         } catch (IOException ex) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-         }
+         Lib.close(outputStream);
       }
+      return serverInfo;
    }
 
-   @Override
-   public String report() {
-      String errorStr = super.report();
-      if (!Strings.isValid(errorStr)) {
-         errorStr = "";
+   private OseeServerInfo getServerInfo(ByteArrayOutputStream outputStream, AcquireResult result) {
+      OseeServerInfo serverInfo = null;
+      try {
+         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+         serverInfo = OseeServerInfo.fromXml(inputStream);
+      } catch (Exception ex) {
+         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         set(Level.SEVERE, ex, "Error parsing arbitration server response - [%s]", ex.getLocalizedMessage());
       }
-      System.setProperty("osee.arbitration.server.error", errorStr);
-      return errorStr;
+      return serverInfo;
    }
 
 }
