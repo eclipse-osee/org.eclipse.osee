@@ -46,8 +46,14 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
       }
       try {
          ActionArtifact action = createActionWithAllAis();
-         AWorkbench.popup("Completed", "Completed");
-         AtsUtil.openATSAction(action, AtsOpenOption.OpenAll);
+         int numWfs = action.getTeams().size();
+         if (numWfs > 30) {
+            AWorkbench.popup(numWfs + " Workflows were created.  Only opening one.");
+            AtsUtil.openATSAction(action.getTeams().iterator().next(), AtsOpenOption.OpenOneOrPopupSelect);
+         } else {
+            AWorkbench.popup("Completed", "Completed");
+            AtsUtil.openATSAction(action, AtsOpenOption.OpenAll);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -63,8 +69,8 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
       ActionArtifact action =
-         ActionManager.createAction(null, "Big Action", "Description", ChangeType.Improvement, "1", false, null, aias,
-            new Date(), UserManager.getUser(), null, transaction);
+         ActionManager.createAction(null, "Big Action Test - Delete Me", "Description", ChangeType.Improvement, "1",
+            false, null, aias, new Date(), UserManager.getUser(), null, transaction);
       transaction.execute();
       return action;
    }
