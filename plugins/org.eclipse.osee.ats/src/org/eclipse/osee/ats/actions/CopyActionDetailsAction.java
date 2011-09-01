@@ -63,10 +63,11 @@ public class CopyActionDetailsAction extends Action {
                detailsStr = detailsStr.replaceAll("<name>", sma.getName());
                detailsStr = detailsStr.replaceAll("<artType>", sma.getArtifactTypeName());
                detailsStr = detailsStr.replaceAll("<changeType>", getChangeTypeOrObjectType(sma));
-            } else {
-               detailsStr =
-                  "\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\"";
             }
+         }
+         if (!Strings.isValid(detailsStr)) {
+            detailsStr =
+               "\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\"";
          }
          clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
       } catch (Exception ex) {
