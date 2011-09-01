@@ -482,7 +482,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          toolBarMgr.add(new OpenInArtifactEditorAction(editor));
       }
       toolBarMgr.add(new OpenVersionArtifactAction(awa));
-      toolBarMgr.add(new OpenTeamDefinitionAction(awa));
+      if (awa instanceof TeamWorkFlowArtifact) {
+         toolBarMgr.add(new OpenTeamDefinitionAction((TeamWorkFlowArtifact) awa));
+      }
       toolBarMgr.add(new CopyActionDetailsAction(awa));
       toolBarMgr.add(new PrivilegedEditAction(awa, editor));
       toolBarMgr.add(new ResourceHistoryAction(awa));
