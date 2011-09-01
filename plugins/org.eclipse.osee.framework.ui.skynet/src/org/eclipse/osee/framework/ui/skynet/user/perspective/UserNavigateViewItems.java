@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.UniqueNumberOfCurrentOseeUsers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
@@ -78,7 +77,6 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
             items.add(new XNavigateItemBlam(parentItem, new CreateNewUser(), FrameworkImage.ADD_GREEN));
             items.add(new XNavigateItemBlam(parentItem, new PopulateUserGroupBlam(), FrameworkImage.GROUP));
-            items.add(new XNavigateItemBlam(parentItem, new UniqueNumberOfCurrentOseeUsers(), FrameworkImage.USERS));
          }
 
          ExtensionDefinedObjects<IUserNavigateItem> objects =
