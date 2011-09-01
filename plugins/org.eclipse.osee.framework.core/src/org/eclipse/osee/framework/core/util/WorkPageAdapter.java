@@ -117,4 +117,8 @@ public abstract class WorkPageAdapter implements IWorkPage {
       this.description = description;
    }
 
+   @Override
+   public String toString() {
+      return String.format("[%s][%s]", getPageName(), getWorkPageType().name());
+   }
 }
