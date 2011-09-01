@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.internal.core;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -122,6 +123,9 @@ public final class StatementUtil {
             } else if (dataValue instanceof BigInteger) {
                BigInteger bigInt = (BigInteger) dataValue;
                preparedStatement.setLong(preparedIndex, bigInt.longValue());
+            } else if (dataValue instanceof BigDecimal) {
+               BigDecimal bigDec = (BigDecimal) dataValue;
+               preparedStatement.setLong(preparedIndex, bigDec.longValue());
             } else {
                preparedStatement.setObject(preparedIndex, dataValue);
             }

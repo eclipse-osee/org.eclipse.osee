@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,8 +70,11 @@ public class IdTranslator {
          originalLong = ((Long) original).longValue();
       } else if (original instanceof BigInteger) {
          originalLong = ((BigInteger) original).longValue();
+      } else if (original instanceof BigDecimal) {
+         originalLong = ((BigDecimal) original).longValue();
       } else {
-         System.out.println("Error here: " + original.getClass().getName());
+         throw new OseeCoreException("Undefined Type [%s]",
+            original != null ? original.getClass().getSimpleName() : original);
       }
       Long newVersion = transalateId(originalLong);
       Object toReturn = newVersion;
@@ -82,8 +86,10 @@ public class IdTranslator {
          toReturn = newVersion;
       } else if (original instanceof BigInteger) {
          toReturn = BigInteger.valueOf(newVersion);
+      } else if (original instanceof BigDecimal) {
+         toReturn = BigDecimal.valueOf(newVersion);
       } else {
-         System.out.println("Error here: " + original.getClass().getName());
+         throw new OseeCoreException("Undefined Type [%s]", original.getClass().getSimpleName());
       }
       return toReturn;
    }

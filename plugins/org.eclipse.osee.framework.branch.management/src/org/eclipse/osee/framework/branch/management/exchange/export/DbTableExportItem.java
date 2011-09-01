@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
@@ -206,6 +208,10 @@ public class DbTableExportItem extends AbstractDbExportItem {
          typeId = (Integer) value;
       } else if (value instanceof Long) {
          typeId = ((Long) value).intValue();
+      } else if (value instanceof BigInteger) {
+         typeId = ((BigInteger) value).intValue();
+      } else if (value instanceof BigDecimal) {
+         typeId = ((BigDecimal) value).intValue();
       } else {
          throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
       }

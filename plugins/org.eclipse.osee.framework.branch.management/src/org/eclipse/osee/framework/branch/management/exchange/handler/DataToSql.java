@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
@@ -74,6 +75,8 @@ public class DataToSql {
       if (clazz != null) {
          if (clazz == BigInteger.class) {
             convertedObject = new BigInteger(value);
+         } else if (clazz == BigDecimal.class) {
+            convertedObject = new BigDecimal(value);
          } else {
             try {
                Method mainMethod = clazz.getMethod("valueOf", new Class[] {String.class});
