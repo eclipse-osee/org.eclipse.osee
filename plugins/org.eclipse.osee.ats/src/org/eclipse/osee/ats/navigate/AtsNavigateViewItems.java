@@ -263,7 +263,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createReportItems(XNavigateItem parent, List<XNavigateItem> items) {
       XNavigateItem reportItems = new XNavigateItem(parent, "Reports", AtsImage.REPORT);
       new FirstTimeQualityMetricReportItem(reportItems);
-      new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World", AtsImage.REPORT);
       new BarChartExample(reportItems);
       new ResultsEditorExample(reportItems);
       new CompareEditorExample(reportItems);
