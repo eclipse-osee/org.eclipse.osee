@@ -25,8 +25,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.replace.ChangeCombiner;
 
 /**
  * @author Jeff C. Phillips
@@ -67,7 +68,9 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
             Branch branch = artifact.getBranch();
 
             TransactionRecord baseTx = branch.getBaseTransaction();
-            Collection<Change> changes = ChangeManager.getChangesMadeOnCurrentBranch(artifact, monitor);
+            Collection<Change> changes =
+               ChangeCombiner.combine(ChangeManager.getChangesMadeOnCurrentBranch(artifact, monitor), baseTx);
+
             for (Change change : changes) {
                if (change instanceof AttributeChange) {
                   processAttribute(artifact, baseTx, (AttributeChange) change);

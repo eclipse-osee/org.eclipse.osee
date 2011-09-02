@@ -13,21 +13,21 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 /**
  * @author Jeff C. Phillips
  */
-public class RelationChangeCombiner {
+public class ChangeCombiner {
 
    public static Collection<Change> combine(Collection<Change> changes, TransactionRecord baselineTransaction) {
-      HashMap<Integer, Change> relationChanges = new HashMap<Integer, Change>();
+      HashMap<Integer, Change> attributeChanges = new HashMap<Integer, Change>();
 
       for (Change change : changes) {
-         Change storedChange = relationChanges.get(change.getItemId());
+         Change storedChange = attributeChanges.get(change.getItemId());
          if (storedChange != null) {
             if (!storedChange.getTxDelta().getStartTx().equals(baselineTransaction)) {
-               relationChanges.put(change.getItemId(), change);
+               attributeChanges.put(change.getItemId(), change);
             }
          } else {
-            relationChanges.put(change.getItemId(), change);
+            attributeChanges.put(change.getItemId(), change);
          }
       }
-      return relationChanges.values();
+      return attributeChanges.values();
    }
 }

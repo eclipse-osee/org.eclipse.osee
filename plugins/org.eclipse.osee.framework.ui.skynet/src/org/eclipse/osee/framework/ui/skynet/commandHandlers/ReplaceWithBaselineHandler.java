@@ -57,11 +57,11 @@ public class ReplaceWithBaselineHandler extends CommandHandler {
          duplicateArtCheck.add(changeArtifact);
       }
 
-      scheduelReplaceWithBaseline(duplicateArtCheck, duplicateAttrCheck);
+      scheduleReplaceWithBaseline(duplicateArtCheck, duplicateAttrCheck);
       return null;
    }
 
-   private void scheduelReplaceWithBaseline(final Collection<Artifact> artifacts, final Collection<Attribute<?>> attributes) {
+   private void scheduleReplaceWithBaseline(final Collection<Artifact> artifacts, final Collection<Attribute<?>> attributes) {
       ReplaceWithBaselineVersionDialog baselineVersionDialog =
          new ReplaceWithBaselineVersionDialog("Replace with Baseline Version", artifacts, attributes);
 

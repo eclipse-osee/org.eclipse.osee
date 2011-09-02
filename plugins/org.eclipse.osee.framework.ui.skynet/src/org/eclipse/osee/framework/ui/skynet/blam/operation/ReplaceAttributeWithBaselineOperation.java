@@ -83,6 +83,7 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Attribute<?> attribute : attributes) {
+         boolean itemFoundInBaseline = false;
          try {
             TransactionRecord baselineTransactionRecord = attribute.getArtifact().getBranch().getBaseTransaction();
             for (Change change : ChangeManager.getChangesPerArtifact(attribute.getArtifact(), new NullProgressMonitor())) {
@@ -91,8 +92,15 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
                      attribute.replaceWithVersion((int) change.getGamma());
                      attribute.getArtifact().persist(getTransaction(attribute.getArtifact().getBranch()));
                      artifacts.add(attribute.getArtifact());
+                     itemFoundInBaseline = true;
                   }
                }
+            }
+
+            if (!itemFoundInBaseline) {
+               attribute.delete();
+               attribute.getArtifact().persist(getTransaction(attribute.getArtifact().getBranch()));
+               artifacts.add(attribute.getArtifact());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

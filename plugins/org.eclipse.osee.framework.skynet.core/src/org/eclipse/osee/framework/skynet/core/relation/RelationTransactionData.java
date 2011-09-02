@@ -80,6 +80,7 @@ public class RelationTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
+      //      try {
       DefaultBasicGuidRelation defaultBasicGuidRelation =
          new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
             relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
@@ -91,5 +92,8 @@ public class RelationTransactionData extends BaseTransactionData {
          event.setRationale(relation.getRationale());
       }
       artifactEvent.getRelations().add(event);
+      //      } catch (Exception ex) {
+
+      //      }
    }
 }

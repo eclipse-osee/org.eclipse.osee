@@ -58,22 +58,22 @@ public class ReplaceUtil {
       for (int i = 0; i < relationOrderArray.length; i++) {
          char chr = relationOrderArray[i];
 
-         if (chr != ' ') {
-            if (chr == ',') {
-               if (firstTime) {
-                  continue;
-               } else if (previousCommaChar) {
-                  continue;
-               } else if (i == relationOrderArray.length - 1) {
-                  continue;
-               }
-               previousCommaChar = true;
-            } else {
-               previousCommaChar = false;
+         //         if (chr != ' ') {
+         if (chr == ',') {
+            if (firstTime) {
+               continue;
+            } else if (previousCommaChar) {
+               continue;
+            } else if (i == relationOrderArray.length - 1) {
+               continue;
             }
-            firstTime = false;
-            newRelationOrderArray.append(chr);
+            previousCommaChar = true;
+         } else {
+            previousCommaChar = false;
          }
+         firstTime = false;
+         newRelationOrderArray.append(chr);
+         //         }
       }
 
       String returnString = newRelationOrderArray.toString();

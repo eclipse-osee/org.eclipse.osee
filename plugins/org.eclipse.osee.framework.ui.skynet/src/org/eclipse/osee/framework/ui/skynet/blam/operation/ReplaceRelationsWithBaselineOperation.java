@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.replace.AttributeOrderHandlerContainedGuid;
 import org.eclipse.osee.framework.ui.skynet.replace.AttributeOrderHandlerNotContainedGuid;
+import org.eclipse.osee.framework.ui.skynet.replace.ChangeCombiner;
 import org.eclipse.osee.framework.ui.skynet.replace.HandleAttributeOrderData;
-import org.eclipse.osee.framework.ui.skynet.replace.RelationChangeCombiner;
 import org.eclipse.osee.framework.ui.skynet.replace.RelationHandler;
 import org.eclipse.osee.framework.ui.skynet.replace.ReplaceUtil;
 
@@ -108,8 +108,7 @@ public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
          baseTx = branch.getBaseTransaction();
 
          Collection<Change> changes = ChangeManager.getChangesMadeOnCurrentBranch(artifact, new NullProgressMonitor());
-         new RelationChangeCombiner();
-         changes = RelationChangeCombiner.combine(changes, baseTx);
+         changes = ChangeCombiner.combine(changes, baseTx);
 
          for (Change change : changes) {
             if (change instanceof RelationChange) {
