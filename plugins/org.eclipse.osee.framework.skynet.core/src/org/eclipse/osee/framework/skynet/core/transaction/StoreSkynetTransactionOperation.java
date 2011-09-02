@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DatabaseTransactions;
@@ -48,9 +47,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.In
  * @author Jeff C. Phillips
  */
 public final class StoreSkynetTransactionOperation extends AbstractOperation implements IDbTransactionWork, InsertDataCollector {
-
-   private static final String GET_EXISTING_ATTRIBUTE_IDS =
-      "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact art1, osee_txs txs1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = art1.art_id AND art1.gamma_id = txs1.gamma_id AND txs1.branch_id <> ?";
 
    private static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
@@ -207,26 +203,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    }
 
    protected static int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      AttributeType attributeType = attribute.getAttributeType();
-      int attrId = -1;
-      // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch
-      if (attributeType.getMaxOccurrences() == 1) {
-         try {
-            chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getId(), artifact.getArtId(),
-               artifact.getBranch().getId());
-
-            if (chStmt.next()) {
-               attrId = chStmt.getInt("attr_id");
-            }
-         } finally {
-            chStmt.close();
-         }
-      }
-      if (attrId < 1) {
-         attrId = ConnectionHandler.getSequence().getNextAttributeId();
-      }
-      return attrId;
+      return ConnectionHandler.getSequence().getNextAttributeId();
    }
 
 }
