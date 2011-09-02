@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -143,9 +144,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
       // Else, get workflows from teamdefs
       else if (teamDefs.size() > 0) {
+         ElapsedTime time = new ElapsedTime("Task Search - Load Team Workflows by Team Defs");
          TeamWorldSearchItem teamWorldSearchItem =
             new TeamWorldSearchItem("", teamDefs, true, true, false, false, null, null, ReleasedOption.Both, null);
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
+         time.end();
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          for (Artifact groupArt : groups) {
@@ -160,12 +163,18 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          return filterByCompletedAndStateAndSelectedUser(taskArts);
       }
 
+      ElapsedTime time = new ElapsedTime("Task Search - Bulk Load related tasks");
       // Bulk load tasks related to workflows
       Collection<Artifact> artifacts =
          RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
+      time.end();
 
       // Apply the remaining criteria
-      return filterByCompletedAndStateAndSelectedUser(artifacts);
+      time = new ElapsedTime("Task Search - Filter by remaining criteria");
+      Collection<TaskArtifact> tasks = filterByCompletedAndStateAndSelectedUser(artifacts);
+      time.end();
+
+      return tasks;
    }
 
    private Set<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {

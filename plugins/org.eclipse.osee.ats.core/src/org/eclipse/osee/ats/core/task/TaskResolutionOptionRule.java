@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -41,13 +43,19 @@ public class TaskResolutionOptionRule {
    public final static String WORK_TYPE = "AtsTaskResolutionOptions";
    public final static List<TaskResOptionDefinition> EMPTY_TASK_RESOLUTION_OPTIONS =
       new ArrayList<TaskResOptionDefinition>();
+   public final static Map<StateDefinition, List<TaskResOptionDefinition>> stateDefToTaskResOptDefCache =
+      new HashMap<StateDefinition, List<TaskResOptionDefinition>>();
 
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(StateDefinition stateDefinition) throws OseeCoreException {
-      TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(stateDefinition);
-      if (taskResolutionOptionRule != null) {
-         return taskResolutionOptionRule.getOptions();
+      if (!stateDefToTaskResOptDefCache.containsKey(stateDefinition)) {
+         TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(stateDefinition);
+         if (taskResolutionOptionRule != null) {
+            stateDefToTaskResOptDefCache.put(stateDefinition, taskResolutionOptionRule.getOptions());
+         } else {
+            stateDefToTaskResOptDefCache.put(stateDefinition, EMPTY_TASK_RESOLUTION_OPTIONS);
+         }
       }
-      return EMPTY_TASK_RESOLUTION_OPTIONS;
+      return stateDefToTaskResOptDefCache.get(stateDefinition);
    }
 
    public static TaskResolutionOptionRule getTaskResolutionOptionRule(StateDefinition stateDefinition) throws OseeCoreException {
@@ -55,6 +63,7 @@ public class TaskResolutionOptionRule {
       for (RuleDefinition ruleDef : stateDefinition.getRules()) {
          if (ruleDef.getName().contains("taskResolutionOptions")) {
             wids.add(ruleDef);
+            break;
          }
       }
       if (wids.isEmpty()) {
@@ -69,7 +78,7 @@ public class TaskResolutionOptionRule {
       return null;
    }
 
-   public static String getTaskResolutionRuleXml(RuleDefinition ruleDefinition) throws OseeCoreException {
+   private static String getTaskResolutionRuleXml(RuleDefinition ruleDefinition) throws OseeCoreException {
       // If this rule was converted from WorkRuleDefinition, it will have task options
       String xml = ruleDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG);
       if (Strings.isValid(xml)) {
@@ -89,7 +98,7 @@ public class TaskResolutionOptionRule {
       return "";
    }
 
-   public void setFromDoc(Document doc) throws OseeCoreException {
+   private void setFromDoc(Document doc) throws OseeCoreException {
       NodeList nodes = doc.getElementsByTagName(TaskResOptionDefinition.ATS_TASK_OPTION_TAG);
       if (nodes.getLength() > 0) {
          for (int x = 0; x < nodes.getLength(); x++) {
@@ -101,7 +110,7 @@ public class TaskResolutionOptionRule {
       }
    }
 
-   public void fromXml(String xmlStr) throws OseeCoreException {
+   private void fromXml(String xmlStr) throws OseeCoreException {
       try {
          setFromDoc(Jaxp.readXmlDocument(xmlStr));
       } catch (Exception ex) {
@@ -109,7 +118,7 @@ public class TaskResolutionOptionRule {
       }
    }
 
-   public String toXml() throws OseeCoreException {
+   private String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append("<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">\n");
       for (TaskResOptionDefinition def : options) {
@@ -141,5 +150,11 @@ public class TaskResolutionOptionRule {
          x++;
       }
       return null;
+   }
+
+   public static void clearCaches() {
+      if (stateDefToTaskResOptDefCache != null) {
+         stateDefToTaskResOptDefCache.clear();
+      }
    }
 }

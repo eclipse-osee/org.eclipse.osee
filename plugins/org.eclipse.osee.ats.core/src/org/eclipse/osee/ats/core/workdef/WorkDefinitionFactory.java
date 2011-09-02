@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
+import org.eclipse.osee.ats.core.task.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
@@ -52,6 +53,7 @@ public class WorkDefinitionFactory {
    public static void clearCaches() {
       awaArtIdToWorkDefinition.clear();
       workDefIdToWorkDefintion.clear();
+      TaskResolutionOptionRule.clearCaches();
    }
 
    public static void addWorkDefinition(WorkDefinition workDef) {
