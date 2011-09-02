@@ -98,7 +98,6 @@ public class OseeData {
    }
 
    private static boolean createProject() {
-      ensureProjectOpen();
       IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
       project = workspaceRoot.getProject(oseeDataPathName);
       if (!project.exists()) {
@@ -108,8 +107,9 @@ public class OseeData {
             OseeLog.log(PluginCoreActivator.class, Level.SEVERE, ex);
             return false;
          }
-         openProject();
       }
+      openProject();
+      ensureProjectOpen();
       return true;
    }
 
