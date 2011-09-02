@@ -123,6 +123,6 @@ public class NativeRenderer extends FileSystemRenderer {
 
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) {
-      return new WholeAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.NativeContent);
+      return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.NativeContent);
    }
 }

@@ -22,9 +22,6 @@
       <Renderer
             classname="org.eclipse.osee.framework.core.dsl.ui.integration.internal.OseeDslRenderer">
       </Renderer>
-      <Renderer
-            classname="org.eclipse.osee.framework.core.dsl.ui.integration.internal.OseeDslTypeSheetRenderer">
-      </Renderer>
    </extension>
   <extension
          point="org.eclipse.ui.commands">

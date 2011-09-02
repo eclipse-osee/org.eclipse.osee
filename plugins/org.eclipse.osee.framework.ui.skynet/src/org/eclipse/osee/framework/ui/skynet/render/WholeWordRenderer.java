@@ -108,6 +108,6 @@ public class WholeWordRenderer extends WordRenderer {
 
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) {
-      return new WholeAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.WholeWordContent);
+      return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.WholeWordContent);
    }
 }

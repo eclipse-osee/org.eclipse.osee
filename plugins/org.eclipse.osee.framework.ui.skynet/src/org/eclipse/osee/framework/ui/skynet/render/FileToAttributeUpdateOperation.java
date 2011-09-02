@@ -23,21 +23,21 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Ryan D. Brooks
  */
-public class WholeAttributeUpdateOperation extends AbstractOperation {
+public class FileToAttributeUpdateOperation extends AbstractOperation {
    private final Artifact artifact;
    private final IAttributeType attributeType;
    private final File file;
    private final AttributeModifier modifier;
 
-   public WholeAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType, AttributeModifier validator) {
-      super("Native Artifact Update", Activator.PLUGIN_ID);
+   public FileToAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType, AttributeModifier validator) {
+      super("File To Artifact Update", Activator.PLUGIN_ID);
       this.artifact = artifact;
       this.attributeType = attributeType;
       this.file = file;
       this.modifier = validator;
    }
 
-   public WholeAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType) {
+   public FileToAttributeUpdateOperation(File file, Artifact artifact, IAttributeType attributeType) {
       this(file, artifact, attributeType, null);
    }
 
@@ -52,4 +52,5 @@ public class WholeAttributeUpdateOperation extends AbstractOperation {
       artifact.setSoleAttributeFromString(attributeType, data);
       artifact.persist(getClass().getSimpleName());
    }
+
 }

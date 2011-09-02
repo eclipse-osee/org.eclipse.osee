@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileToAttributeUpdateOperation;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
@@ -64,7 +65,7 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
       if (!presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && !aArtifact.isHistorical()) {
-         if (aArtifact.isOfType(CoreArtifactTypes.AccessControlModel)) {
+         if (aArtifact.isOfType(CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.OseeTypeDefinition)) {
             return ARTIFACT_TYPE_MATCH;
          }
       }
@@ -119,15 +120,23 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       Artifact artifact = artifacts.iterator().next();
-      StringBuilder builder = new StringBuilder();
-      builder.append(parser.getStartTag(artifact));
-      builder.append("\n");
-      builder.append(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, ""));
-      builder.append("\n");
-      builder.append(parser.getEndTag(artifact));
+
+      String data;
+      if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition)) {
+         data = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.UriGeneralStringData, "");
+      } else {
+         StringBuilder builder = new StringBuilder();
+         builder.append(parser.getStartTag(artifact));
+         builder.append("\n");
+         builder.append(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, ""));
+         builder.append("\n");
+         builder.append(parser.getEndTag(artifact));
+         data = builder.toString();
+      }
+
       InputStream inputStream = null;
       try {
-         inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
+         inputStream = new ByteArrayInputStream(data.getBytes("UTF-8"));
       } catch (UnsupportedEncodingException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -141,6 +150,16 @@ public final class OseeDslRenderer extends FileSystemRenderer {
 
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) {
-      return new OseeDslArtifactUpdateOperation(parser, file);
+      IOperation op;
+      Artifact artifact = artifacts.iterator().next();
+      if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition)) {
+         OseeTypeModifier modifier = new OseeTypeModifier();
+         op =
+            new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.UriGeneralStringData,
+               modifier);
+      } else {
+         op = new OseeDslArtifactUpdateOperation(parser, file);
+      }
+      return op;
    }
 }
