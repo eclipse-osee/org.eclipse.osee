@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class WorkDefinitionFactory {
 
    // Cache the WorkDefinition used for each AbstractWorkflowId so don't have to recompute each time
-   private static final Map<String, WorkDefinitionMatch> awaHridToWorkDefinitions =
-      new HashMap<String, WorkDefinitionMatch>();
+   private static final Map<Integer, WorkDefinitionMatch> awaArtIdToWorkDefinition =
+      new HashMap<Integer, WorkDefinitionMatch>();
    // Cache the WorkDefinition object for each WorkDefinition id so don't have to reload
    // This grows as WorkDefinitions are requested/loaded
    private static final Map<String, WorkDefinitionMatch> workDefIdToWorkDefintion =
@@ -50,7 +50,7 @@ public class WorkDefinitionFactory {
    public static final String TeamWorkflowDefaultDefinitionId = "WorkDef_Team_Default";
 
    public static void clearCaches() {
-      awaHridToWorkDefinitions.clear();
+      awaArtIdToWorkDefinition.clear();
       workDefIdToWorkDefintion.clear();
    }
 
@@ -64,11 +64,11 @@ public class WorkDefinitionFactory {
    }
 
    public static WorkDefinitionMatch getWorkDefinition(Artifact artifact) throws OseeCoreException {
-      if (!awaHridToWorkDefinitions.containsKey(artifact.getHumanReadableId())) {
+      if (!awaArtIdToWorkDefinition.containsKey(artifact.getArtId())) {
          WorkDefinitionMatch match = getWorkDefinitionNew(artifact);
-         awaHridToWorkDefinitions.put(artifact.getHumanReadableId(), match);
+         awaArtIdToWorkDefinition.put(artifact.getArtId(), match);
       }
-      return awaHridToWorkDefinitions.get(artifact.getHumanReadableId());
+      return awaArtIdToWorkDefinition.get(artifact.getArtId());
    }
 
    public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
