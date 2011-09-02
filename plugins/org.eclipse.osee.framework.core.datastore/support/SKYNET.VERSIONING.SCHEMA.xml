@@ -586,7 +586,7 @@
 	<Table name="OSEE_JOIN_ID" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ID" type="INTEGER" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_ID__Q_I_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 			<AppliesTo id="ID"/>

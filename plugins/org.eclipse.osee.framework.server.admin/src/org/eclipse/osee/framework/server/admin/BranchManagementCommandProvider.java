@@ -65,9 +65,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
       do {
          arg = ci.nextArgument();
          if (Strings.isValid(arg)) {
-            if (arg.equals("-excludeBaselineTxs")) {
-               propertyStore.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), true);
-            } else if (arg.equals("-includeArchivedBranches")) {
+            if (arg.equals("-includeArchivedBranches")) {
                includeArchivedBranches = true;
             } else if (arg.equals("-compress")) {
                propertyStore.put(ExportOptions.COMPRESS.name(), true);

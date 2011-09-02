@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
@@ -27,13 +26,11 @@ public abstract class AbstractExportItem implements Runnable {
    private final Set<IExchangeTaskListener> exportListeners;
 
    private File writeLocation;
-   private PropertyStore options;
    private boolean cancel;
 
    public AbstractExportItem(ExportItem id) {
       this.id = id;
       this.fileName = id.getFileName();
-      this.options = null;
       this.cancel = false;
       this.exportListeners = Collections.synchronizedSet(new HashSet<IExchangeTaskListener>());
    }
@@ -66,14 +63,6 @@ public abstract class AbstractExportItem implements Runnable {
       return writeLocation;
    }
 
-   public void setOptions(PropertyStore options) {
-      this.options = options;
-   }
-
-   public PropertyStore getOptions() {
-      return this.options;
-   }
-
    public void addExportListener(IExchangeTaskListener exportListener) {
       if (exportListener != null) {
          this.exportListeners.add(exportListener);
@@ -88,9 +77,6 @@ public abstract class AbstractExportItem implements Runnable {
 
    public void cleanUp() {
       this.setWriteLocation(null);
-      if (this.options != null) {
-         this.options.clear();
-      }
       this.exportListeners.clear();
    }
 

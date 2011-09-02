@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
+
 /**
  * @author Ryan D. Brooks
  */
@@ -56,4 +57,12 @@ public enum ExportItem implements IExportItem {
       return ordinal();
    }
 
+   public boolean matches(ExportItem... exportItems) {
+      for (ExportItem exportItem : exportItems) {
+         if (this == exportItem) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

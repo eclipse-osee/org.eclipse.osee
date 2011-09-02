@@ -10,10 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_ARTIFACT_ACL_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_ARTIFACT_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_ATTRIBUTE_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_BRANCH_ACL_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_BRANCH_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_CONFLICT_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_MERGE_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_RELATION_LINK_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_TXS_ARCHIVED_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_TXS_DATA;
+import static org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem.OSEE_TX_DETAILS_DATA;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
@@ -26,7 +38,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -101,56 +112,72 @@ public final class ExchangeDb {
       "SELECT last_sequence FROM osee_sequence WHERE sequence_name = '" + IOseeSequence.TRANSACTION_ID_SEQ + "'";
 
    private static final String BRANCH_TABLE_QUERY =
-      "SELECT br1.* FROM osee_branch br1, osee_join_export_import jex1 WHERE br1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY br1.branch_id";
+      "SELECT br.* FROM osee_join_export_import jex, osee_branch br WHERE jex.query_id=? AND jex.id1=br.branch_id ORDER BY br.branch_id";
 
    private static final String TX_DETAILS_TABLE_QUERY =
-      "SELECT txd1.TRANSACTION_ID, txd1.TIME, txd1.AUTHOR, txd1.OSEE_COMMENT, txd1.BRANCH_ID, txd1.COMMIT_ART_ID, txd1.TX_TYPE FROM osee_tx_details txd1, osee_join_export_import jex1 WHERE txd1.branch_id = jex1.id1 AND jex1.query_id=? %s ORDER BY txd1.transaction_id";
-
-   private static final String TXS_ARCHIVE_TABLE_QUERY =
-      "SELECT txs1.GAMMA_ID, txs1.TRANSACTION_ID, txs1.TX_CURRENT, txs1.MOD_TYPE, txs1.BRANCH_ID FROM osee_txs_archived txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+      "SELECT txd.* FROM osee_join_export_import jex, osee_tx_details txd WHERE jex.query_id=? AND jex.id1=txd.branch_id";
 
    private static final String TXS_TABLE_QUERY =
-      "SELECT txs1.GAMMA_ID, txs1.TRANSACTION_ID, txs1.TX_CURRENT, txs1.MOD_TYPE, txs1.BRANCH_ID FROM osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+      "SELECT txs.* FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1=txs.branch_id";
+
+   private static final String TXS_ARCHIVE_TABLE_QUERY = TXS_TABLE_QUERY.replace("osee_txs", "osee_txs_archived");
 
    private static final String ARTIFACT_TABLE_QUERY =
-      "SELECT DISTINCT (art1.GAMMA_ID), art1.art_id, art1.GUID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID FROM osee_artifact art1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE art1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+      "SELECT * FROM osee_join_id oji, osee_artifact item WHERE oji.query_id = ? AND oji.id = item.gamma_id";
 
-   private static final String ATTRIBUTE_TABLE_QUERY =
-      "SELECT DISTINCT (attr1.GAMMA_ID), attr1.ATTR_ID, attr1.ART_ID, attr1.VALUE, attr1.ATTR_TYPE_ID, attr1.URI FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+   private static final String ATTRIBUTE_TABLE_QUERY = ARTIFACT_TABLE_QUERY.replace("osee_artifact", "osee_attribute");
 
-   private static final String RELATION_LINK_TABLE_QUERY =
-      "SELECT DISTINCT (rel1.GAMMA_ID), rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID FROM osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+   private static final String RELATION_LINK_TABLE_QUERY = ARTIFACT_TABLE_QUERY.replace("osee_artifact",
+      "osee_relation_link");
 
    private static final String MERGE_TABLE_QUERY =
-      "SELECT om1.* FROM osee_merge om1, osee_join_export_import jex1 WHERE om1.merge_branch_id = jex1.id1 AND jex1.query_id=? %s";
+      "SELECT om.* FROM osee_join_export_import jex, osee_merge om WHERE jex.query_id=? AND jex.id1=om.merge_branch_id ORDER BY om.merge_branch_id";
 
    private static final String CONFLICT_TABLE_QUERY =
-      "SELECT oc1.* FROM osee_conflict oc1, osee_merge om1, osee_join_export_import jex1 WHERE oc1.merge_branch_id = om1.merge_branch_id AND om1.merge_branch_id = jex1.id1 AND jex1.query_id=? %s";
+      "SELECT oc.* FROM osee_join_export_import jex, osee_merge om, osee_conflict oc WHERE jex.query_id=? AND jex.id1=om.merge_branch_id AND om.merge_branch_id=oc.merge_branch_id";
 
    private static final String ARTIFACT_ACL_QUERY =
-      "SELECT oaa1.* FROM osee_artifact_acl oaa1, osee_join_export_import jex1 WHERE oaa1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY oaa1.branch_id";
+      "SELECT aac.* FROM osee_join_export_import jex, osee_artifact_acl aac WHERE jex.query_id=? AND jex.id1=aac.branch_id ORDER BY aac.branch_id";
 
    private static final String BRANCH_ACL_QUERY =
-      "SELECT oba1.* FROM osee_branch_acl oba1, osee_join_export_import jex1 WHERE oba1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY oba1.branch_id";
+      "SELECT bac.* FROM osee_join_export_import jex, osee_branch_acl bac WHERE jex.query_id=? AND jex.id1=bac.branch_id ORDER BY bac.branch_id";
 
-   static List<AbstractExportItem> createTaskList(OseeServices services) throws OseeCoreException {
-      List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
-      items.add(new ManifestExportItem(items));
+   private final List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
+   private final OseeServices services;
+   private final PropertyStore options;
+   private final int exportJoinId;
+   private int gammaJoinId;
+
+   public ExchangeDb(OseeServices services, PropertyStore options, int exportJoinId) {
+      this.services = services;
+      this.options = options;
+      this.exportJoinId = exportJoinId;
+   }
+
+   List<AbstractExportItem> createTaskList() throws OseeCoreException {
+      this.gammaJoinId = setupGammaJoin();
+
+      items.add(new ManifestExportItem(items, options));
       items.add(new MetadataExportItem(items, services.getDatabaseService().getConnection().getMetaData()));
       items.add(new OseeTypeModelExportItem(services.getModelingService()));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
-      items.add(new DbTableExportItem(services, ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
-
+      addExportItem(OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
+      addExportItem(OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);
+      addExportItem(OSEE_TXS_DATA, TXS_TABLE_QUERY);
+      addExportItem(OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY);
+      addExportItem(OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY);
+      addExportItem(OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY);
+      addExportItem(OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY);
+      addExportItem(OSEE_MERGE_DATA, MERGE_TABLE_QUERY);
+      addExportItem(OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY);
+      addExportItem(OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY);
+      addExportItem(OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY);
       return items;
+   }
+
+   private void addExportItem(ExportItem exportItem, String query) throws OseeCoreException {
+      StringBuilder modifiedQuery = new StringBuilder(query);
+      Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, exportJoinId, gammaJoinId);
+      items.add(new DbTableExportItem(services, exportItem, modifiedQuery.toString(), bindData));
    }
 
    static List<IndexCollector> createCheckList() {
@@ -179,47 +206,60 @@ public final class ExchangeDb {
       return translators;
    }
 
-   public static Pair<String, Object[]> getQueryWithOptions(String originalQuery, int queryId, PropertyStore options) throws Exception {
-      if (originalQuery.contains("%s")) {
-         if (originalQuery.contains("osee_tx_details") || originalQuery.contains("osee_merge")) {
-            List<Object> dataArray = new ArrayList<Object>();
-            dataArray.add(queryId);
-            StringBuilder optionString = new StringBuilder();
-            if (options.getBoolean(ExportOptions.EXCLUDE_BASELINE_TXS.name()) && originalQuery.contains("txd1")) {
-               optionString.append(" AND txd1.TX_TYPE = 0");
-            }
+   private static void addMaxMinFilter(StringBuilder query, List<Object> bindData, PropertyStore options) throws OseeCoreException {
+      long minTxs = getMinTransaction(options);
+      long maxTxs = getMaxTransaction(options);
 
-            long minTxs = getMinTransaction(options);
-            long maxTxs = getMaxTransaction(options);
-
-            if (minTxs != Long.MIN_VALUE) {
-               if (originalQuery.contains("om1")) {
-                  optionString.append(" AND om1.commit_transaction_id >= ?");
-                  dataArray.add(minTxs);
-               } else if (originalQuery.contains("txs1")) {
-                  optionString.append(" AND txd1.transaction_id >= ?");
-                  dataArray.add(minTxs);
-               }
-            }
-
-            if (maxTxs != Long.MIN_VALUE) {
-               if (originalQuery.contains("om1")) {
-                  optionString.append(" AND om1.commit_transaction_id <= ?");
-                  dataArray.add(maxTxs);
-               } else if (originalQuery.contains("txs1")) {
-                  optionString.append(" AND txd1.transaction_id <= ?");
-                  dataArray.add(maxTxs);
-               }
-            }
-            if (minTxs > maxTxs) {
-               throw new OseeArgumentException("Invalid transaction range: min - %d >  max - %d", minTxs, maxTxs);
-            }
-
-            return new Pair<String, Object[]>(String.format(originalQuery, optionString),
-               dataArray.toArray(new Object[dataArray.size()]));
-         }
+      if (minTxs > maxTxs) {
+         throw new OseeArgumentException("Invalid transaction range: min - %d >  max - %d", minTxs, maxTxs);
       }
-      return new Pair<String, Object[]>(originalQuery, new Object[] {queryId});
+
+      if (minTxs != Long.MIN_VALUE) {
+         query.append(" AND transaction_id >= ?");
+         bindData.add(minTxs);
+      }
+      if (maxTxs != Long.MIN_VALUE) {
+         query.append(" AND transaction_id <= ?");
+         bindData.add(maxTxs);
+      }
+   }
+
+   private int setupGammaJoin() throws OseeCoreException {
+      List<Object> bindList = new ArrayList<Object>();
+      int gammaJoinId = new Random().nextInt();
+      StringBuilder sql =
+         new StringBuilder(
+            "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), ? FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
+      bindList.add(gammaJoinId);
+      bindList.add(exportJoinId);
+      addMaxMinFilter(sql, bindList, options);
+
+      sql.append(" UNION SELECT DISTINCT(gamma_id), ? FROM osee_join_export_import jex, osee_txs_archived txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
+      bindList.add(gammaJoinId);
+      bindList.add(exportJoinId);
+      addMaxMinFilter(sql, bindList, options);
+
+      IOseeDatabaseService databaseService = services.getDatabaseService();
+      Object[] bindData = bindList.toArray(new Object[bindList.size()]);
+      System.out.println(databaseService.runPreparedUpdate(sql.toString(), bindData));
+      return gammaJoinId;
+   }
+
+   public static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, int exportJoinId, int gammaJionId) throws OseeCoreException {
+      List<Object> bindData = new ArrayList<Object>();
+
+      if (exportItem.matches(OSEE_ARTIFACT_DATA, OSEE_ATTRIBUTE_DATA, OSEE_RELATION_LINK_DATA)) {
+         bindData.add(gammaJionId);
+      } else {
+         bindData.add(exportJoinId);
+      }
+
+      if (exportItem.matches(OSEE_TX_DETAILS_DATA, OSEE_TXS_DATA, OSEE_TXS_ARCHIVED_DATA)) {
+         // this can not be accurately applied to osee_merge and osee_conflict because the best you can do is filter a the merge_branch level
+         addMaxMinFilter(query, bindData, options);
+      }
+
+      return bindData.toArray(new Object[bindData.size()]);
    }
 
    static Long getMaxTransaction(PropertyStore options) {
@@ -237,9 +277,5 @@ public final class ExchangeDb {
          toReturn = Long.valueOf(transactionNumber);
       }
       return toReturn;
-   }
-
-   private ExchangeDb() {
-      // utility class
    }
 }

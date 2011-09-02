@@ -18,16 +18,19 @@ import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.database.core.OseeInfo;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ManifestExportItem extends AbstractXmlExportItem {
    private final List<AbstractExportItem> exportItems;
+   private final PropertyStore options;
 
-   public ManifestExportItem(List<AbstractExportItem> exportItems) {
+   public ManifestExportItem(List<AbstractExportItem> exportItems, PropertyStore options) {
       super(ExportItem.EXPORT_MANIFEST);
       this.exportItems = exportItems;
+      this.options = options;
    }
 
    private void addEntry(Appendable appendable, String fileName, int priority, String source) throws IOException {
@@ -54,12 +57,9 @@ public class ManifestExportItem extends AbstractXmlExportItem {
          }
       }
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.OPTIONS);
-      for (ExportOptions exportOptions : ExportOptions.values()) {
-         String value = getOptions().get(exportOptions.name());
-         if (exportOptions.equals(ExportOptions.EXCLUDE_BASELINE_TXS)) {
-            value = Boolean.valueOf(value).toString();
-         }
-         ExportImportXml.addXmlAttribute(appendable, exportOptions.name(), value);
+      for (ExportOptions exportOption : ExportOptions.values()) {
+         String value = options.get(exportOption.name());
+         ExportImportXml.addXmlAttribute(appendable, exportOption.name(), value);
       }
       ExportImportXml.closePartialXmlNode(appendable);
    }

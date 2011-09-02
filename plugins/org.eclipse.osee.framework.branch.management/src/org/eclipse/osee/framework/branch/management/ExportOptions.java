@@ -14,8 +14,6 @@ package org.eclipse.osee.framework.branch.management;
  * @author Roberto E. Escobar
  */
 public enum ExportOptions {
-   EXCLUDE_BRANCH_IDS,
-   EXCLUDE_BASELINE_TXS,
    MIN_TXS,
    MAX_TXS,
    COMPRESS;

@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,19 +40,22 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 /**
  * @author Roberto E. Escobar
  */
-public class DbTableExportItem extends AbstractDbExportItem {
-   private final String query;
+public class DbTableExportItem extends AbstractXmlExportItem {
+
    private final StringBuilder binaryContentBuffer = new StringBuilder();
    private final StringBuilder stringContentBuffer = new StringBuilder();
    private final StringBuilder oseeCommentBuffer = new StringBuilder();
    private final StringBuilder branchNameBuffer = new StringBuilder();
    private final StringBuilder rationaleBuffer = new StringBuilder();
    private final OseeServices services;
+   private final String query;
+   private final Object[] bindData;
 
-   public DbTableExportItem(OseeServices services, ExportItem id, String query) {
+   public DbTableExportItem(OseeServices services, ExportItem id, String query, Object[] bindData) {
       super(id);
       this.services = services;
       this.query = query;
+      this.bindData = bindData;
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws OseeCoreException, IOException {
@@ -88,8 +89,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
    protected void doWork(Appendable appendable) throws Exception {
       IOseeStatement chStmt = services.getDatabaseService().getStatement();
       try {
-         Pair<String, Object[]> sqlData = ExchangeDb.getQueryWithOptions(query, getJoinQueryId(), getOptions());
-         chStmt.runPreparedQuery(10000, sqlData.getFirst(), sqlData.getSecond());
+         chStmt.runPreparedQuery(10000, query, bindData);
          while (chStmt.next()) {
             processData(appendable, chStmt);
          }
