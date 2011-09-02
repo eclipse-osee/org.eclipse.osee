@@ -450,14 +450,6 @@
       </actionSet>
    </extension>
       <extension
-            id="WorkDefinitionFactoryLegacy"
-            name="WorkDefinitionFactoryLegacy"
-            point="org.eclipse.osee.ats.core.AtsLegacyWorkDefinitionProvider">
-         <AtsLegacyWorkDefinitionProvider
-               classname="org.eclipse.osee.ats.workdef.WorkDefinitionFactoryLegacy">
-         </AtsLegacyWorkDefinitionProvider>
-      </extension>
-      <extension
             id="AtsTransitionListener"
             name="AtsTransitionListener"
             point="org.eclipse.osee.ats.core.AtsTransitionListener">
