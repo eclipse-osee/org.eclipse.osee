@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +40,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -48,8 +53,9 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
 
+   private static Map<Integer, String> branchIdToGuidMap;
+
    public ArtifactFileServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager, IOseeCachingService cachingService) {
-      super();
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       this.branchCache = cachingService.getBranchCache();
@@ -87,7 +93,13 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
             } else if (artifactFileInfo.isBranchGuidValid()) {
                branch = branchCache.getByGuid(artifactFileInfo.getBranchGuid());
             } else {
-               branch = branchCache.getById(artifactFileInfo.getId());
+
+               int branchId = artifactFileInfo.getId();
+               if (branchId != HttpArtifactFileInfo.INVALID_BRANCH_ID) {
+                  loadIdToGuidMapping();
+                  branch = branchCache.getByGuid(branchIdToGuidMap.get(branchId));
+               }
+
             }
             uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branch);
          }
@@ -157,5 +169,37 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
       response.setContentType("text/plain");
       OseeLog.log(Activator.class, Level.SEVERE, message, ex);
       response.getWriter().write(Lib.exceptionToString(ex));
+   }
+
+   private synchronized static void loadIdToGuidMapping() {
+      if (branchIdToGuidMap == null) {
+         branchIdToGuidMap = new HashMap<Integer, String>();
+         BufferedReader reader = null;
+
+         try {
+            reader =
+               new BufferedReader(new InputStreamReader(FrameworkUtil.getBundle(ArtifactFileServlet.class).getResource(
+                  "templates/branchIdToBranchGuid.txt").openStream()));
+            String branchIdAndGuidLine = null;
+
+            while ((branchIdAndGuidLine = reader.readLine()) != null) {
+
+               String[] idAndGuid = branchIdAndGuidLine.split(",");
+
+               int branchId;
+               try {
+                  branchId = Integer.parseInt(idAndGuid[0]);
+               } catch (Exception ex) {
+                  branchId = -1;
+               }
+
+               branchIdToGuidMap.put(branchId, idAndGuid[1].trim());
+            }
+         } catch (Exception e) {
+            OseeLog.log(ArtifactFileServlet.class, Level.SEVERE, e);
+         } finally {
+            Lib.close(reader);
+         }
+      }
    }
 }

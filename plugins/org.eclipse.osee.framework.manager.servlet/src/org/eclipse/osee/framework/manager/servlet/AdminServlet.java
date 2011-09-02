@@ -45,7 +45,6 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
    private final BundleContext context;
 
    public AdminServlet(BundleContext context) {
-      super();
       this.context = context;
    }
 

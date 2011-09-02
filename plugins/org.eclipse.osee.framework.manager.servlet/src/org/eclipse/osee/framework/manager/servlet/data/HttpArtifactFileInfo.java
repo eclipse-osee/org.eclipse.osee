@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class HttpArtifactFileInfo {
-   private static final int INVALID_BRANCH_ID = -1;
+   public static final int INVALID_BRANCH_ID = -1;
    private static final String GUID_KEY = "guid";
    private static final String BRANCH_NAME_KEY = "branch";
    private static final String BRANCH_ID_KEY = "branchId";
