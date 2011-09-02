@@ -23,7 +23,10 @@ import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
@@ -57,6 +60,7 @@ public class AtsPurgeTest {
    @org.junit.Test
    public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
+      txPrune();
       DbTestUtil.getTableRowCounts(preCreateActionCount, tables);
 
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
@@ -98,8 +102,13 @@ public class AtsPurgeTest {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToPurge));
 
       // Count rows and check that same as when began
+      txPrune();
       DbTestUtil.getTableRowCounts(postPurgeCount, tables);
       TestUtil.checkThatEqual(preCreateActionCount, postPurgeCount);
+   }
+
+   private void txPrune() throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
    }
 
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,12 +25,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -196,8 +199,7 @@ public class GlobalMenu {
                      for (GlobalMenuListener listener : listeners) {
                         Result result = listener.actioning(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
                         if (result.isFalse()) {
-                           return new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.OK, result.getText(),
-                              null);
+                           return new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.OK, result.getText(), null);
                         }
                      }
                   } catch (Exception ex) {
@@ -206,13 +208,19 @@ public class GlobalMenu {
                   monitor.beginTask("Purge artifact", artifactsToBePurged.size());
 
                   try {
+                     boolean recurseChildren = dialog.getToggleState();
+                     Collection<Artifact> toPurge = new LinkedHashSet<Artifact>();
                      for (Artifact artifactToPurge : artifactsToBePurged) {
                         if (!artifactToPurge.isDeleted()) {
-                           monitor.setTaskName("Purge: " + artifactToPurge.getName());
-                           artifactToPurge.purgeFromBranch(dialog.getToggleState());
+                           toPurge.add(artifactToPurge);
+                           if (recurseChildren) {
+                              toPurge.addAll(artifactToPurge.getDescendants());
+                           }
                         }
-                        monitor.worked(1);
                      }
+                     monitor.setTaskName("Purging " + toPurge.size() + " artifacts");
+                     Operations.executeWorkAndCheckStatus(new PurgeArtifacts(toPurge));
+                     monitor.worked(toPurge.size());
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -638,6 +638,7 @@
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Column id="BRANCH_ID" type="INTEGER" />
 		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
