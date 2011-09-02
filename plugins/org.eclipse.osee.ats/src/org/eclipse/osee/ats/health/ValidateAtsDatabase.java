@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
+import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManagerCore;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
@@ -77,6 +78,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -153,18 +155,22 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
+      AtsBulkLoad.loadConfig(true);
 
       int count = 0;
       // Break artifacts into blocks so don't run out of memory
       List<Collection<Integer>> artIdLists = null;
 
       // Un-comment to process whole Common branch - Normal Mode
-      //      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
+      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
       artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
-      //      elapsedTime.end();
+      elapsedTime.end();
 
       // Un-comment to process specific artifact from common - Test Mode
-      // artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(524575)));
+      //      artIdLists = new ArrayList<Collection<Integer>>();
+      //      List<Integer> ids = new ArrayList<Integer>();
+      //      ids.add(new Integer(1070598));
+      //      artIdLists.add(ids);
 
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
@@ -434,23 +440,20 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          Branch branch = BranchManager.getBranchByGuid(parentBranchGuid);
          if (branch.getArchiveState().isArchived()) {
             testNameToResultsMap.put("validateBranchGuid", String.format(
-               "Error: Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]", parentBranchGuid, branch,
-               artifact.getHumanReadableId(), artifact));
-         } else if (branch.getBranchType().isWorkingBranch()) {
+               "Error: [%s][%s][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
+               artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact, parentBranchGuid, branch));
+         } else if (!branch.getBranchType().isBaselineBranch()) {
             testNameToResultsMap.put(
                "validateBranchGuid",
                String.format(
-                  "Error: Parent Branch [%s][%s] is WORKING branch and can't be parent branch for [%s][%s]; Switch to BASELINE?",
-                  parentBranchGuid, branch, artifact.getHumanReadableId(), artifact));
-         } else if (!branch.getBranchType().isBaselineBranch()) {
-            testNameToResultsMap.put("validateBranchGuid", String.format(
-               "Error: Parent Branch Id [%s][%s] must be Baseline branch for [%s][%s]", parentBranchGuid, branch,
-               artifact.getHumanReadableId(), artifact));
+                  "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASLINE branch",
+                  artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact,
+                  branch.getBranchType().name(), parentBranchGuid, branch));
          }
       } catch (BranchDoesNotExist ex) {
          testNameToResultsMap.put("validateBranchGuid", String.format(
-            "Error: Parent Branch Id [%s] references non-existant branch for [%s][%s]", parentBranchGuid,
-            artifact.getHumanReadableId(), artifact));
+            "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant",
+            artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact, parentBranchGuid));
       } catch (Exception ex) {
          testNameToResultsMap.put(
             "validateBranchGuid",
@@ -493,8 +496,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
 
                if (artifact instanceof AbstractWorkflowArtifact) {
-                  checkAndResolveDuplicateAttributes(artifact, fixAttributeValues,
-                     testNameToResultsMap, transaction);
+                  checkAndResolveDuplicateAttributes(artifact, fixAttributeValues, testNameToResultsMap, transaction);
                }
 
                if (artifact.hasDirtyAttributes()) {
