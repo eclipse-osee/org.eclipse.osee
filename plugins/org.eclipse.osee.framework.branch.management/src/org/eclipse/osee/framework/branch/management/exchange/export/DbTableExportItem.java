@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -216,8 +217,10 @@ public class DbTableExportItem extends AbstractXmlExportItem {
          throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
       }
       AbstractOseeType<Long> type = cache.getById(typeId);
-      String uuid = HexUtil.toString(type.getGuid());
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, uuid);
+      Conditions.checkNotNull(type, "abstartOseeType", "localId[%s] for [%s]", typeId, getSource());
+      long uuid = type.getGuid();
+      String uuidString = HexUtil.toString(uuid);
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, uuidString);
    }
 
    private void handleStringContent(Appendable appendable, Object value, String tag) throws IOException {

@@ -123,7 +123,7 @@ public final class ExchangeDb {
    private static final String TXS_ARCHIVE_TABLE_QUERY = TXS_TABLE_QUERY.replace("osee_txs", "osee_txs_archived");
 
    private static final String ARTIFACT_TABLE_QUERY =
-      "SELECT * FROM osee_join_id oji, osee_artifact item WHERE oji.query_id = ? AND oji.id = item.gamma_id";
+      "SELECT item.* FROM osee_join_id oji, osee_artifact item WHERE oji.query_id = ? AND oji.id = item.gamma_id";
 
    private static final String ATTRIBUTE_TABLE_QUERY = ARTIFACT_TABLE_QUERY.replace("osee_artifact", "osee_attribute");
 
