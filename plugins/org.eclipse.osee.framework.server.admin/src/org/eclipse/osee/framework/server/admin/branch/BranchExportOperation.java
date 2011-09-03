@@ -59,7 +59,8 @@ public final class BranchExportOperation extends AbstractOperation {
       if (branchIds.isEmpty()) {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(String.format(SELECT_BRANCHES, includeArchivedBranches ? "" : "where archived = 0"));
+            chStmt.runPreparedQuery(10000,
+               String.format(SELECT_BRANCHES, includeArchivedBranches ? "" : "where archived = 0"));
             while (chStmt.next()) {
                branchIds.add(chStmt.getInt("branch_id"));
             }
