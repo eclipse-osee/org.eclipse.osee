@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.branch;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -31,13 +33,21 @@ public final class BranchExportOperation extends AbstractOperation {
    private final String exportFileName;
    private final boolean includeArchivedBranches;
    private final List<Integer> branchIds;
+   private final List<Integer> excludedBranchIds;
 
-   public BranchExportOperation(OperationLogger logger, PropertyStore propertyStore, String exportFileName, boolean includeArchivedBranches, List<Integer> branchIds) {
+   public BranchExportOperation(OperationLogger logger, PropertyStore propertyStore, String exportFileName, boolean includeArchivedBranches, List<Integer> branchIds, boolean excludeBranchIds) {
       super("Branch Export", Activator.PLUGIN_ID, logger);
       this.propertyStore = propertyStore;
       this.exportFileName = exportFileName;
       this.includeArchivedBranches = includeArchivedBranches;
-      this.branchIds = branchIds;
+
+      if (excludeBranchIds) {
+         excludedBranchIds = branchIds;
+         this.branchIds = new ArrayList<Integer>();
+      } else {
+         this.branchIds = branchIds;
+         excludedBranchIds = Collections.emptyList();
+      }
    }
 
    @Override
@@ -55,6 +65,9 @@ public final class BranchExportOperation extends AbstractOperation {
             }
          } finally {
             chStmt.close();
+         }
+         for (Integer branchId : excludedBranchIds) {
+            branchIds.remove(branchId);
          }
       }
       logf("Exporting: [%s] branches\n", branchIds.size());

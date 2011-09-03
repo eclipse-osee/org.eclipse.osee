@@ -57,44 +57,38 @@ public class BranchManagementCommandProvider implements CommandProvider {
 
    public Job _export_branch(CommandInterpreter ci) {
       PropertyStore propertyStore = new PropertyStore();
-      String arg = null;
-      int count = 0;
       String exportFileName = null;
       boolean includeArchivedBranches = false;
+      boolean excludeBranchIds = false;
       List<Integer> branchIds = new ArrayList<Integer>();
-      do {
-         arg = ci.nextArgument();
-         if (Strings.isValid(arg)) {
-            if (arg.equals("-includeArchivedBranches")) {
-               includeArchivedBranches = true;
-            } else if (arg.equals("-compress")) {
-               propertyStore.put(ExportOptions.COMPRESS.name(), true);
-            } else if (arg.equals("-minTx")) {
-               arg = ci.nextArgument();
-               if (Strings.isValid(arg)) {
-                  propertyStore.put(ExportOptions.MIN_TXS.name(), arg);
-               }
-               count++;
-            } else if (arg.equals("-maxTx")) {
-               arg = ci.nextArgument();
-               if (Strings.isValid(arg)) {
-                  propertyStore.put(ExportOptions.MAX_TXS.name(), arg);
-               }
-               count++;
-            } else {
-               if (count == 0 && !arg.startsWith("-")) {
-                  exportFileName = arg;
-               } else {
-                  branchIds.add(new Integer(arg));
-               }
+      exportFileName = ci.nextArgument();
+
+      for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
+         if (arg.equals("-includeArchivedBranches")) {
+            includeArchivedBranches = true;
+         } else if (arg.equals("-excludeBranchIds")) {
+            excludeBranchIds = true;
+         } else if (arg.equals("-compress")) {
+            propertyStore.put(ExportOptions.COMPRESS.name(), true);
+         } else if (arg.equals("-minTx")) {
+            arg = ci.nextArgument();
+            if (Strings.isValid(arg)) {
+               propertyStore.put(ExportOptions.MIN_TXS.name(), arg);
             }
+         } else if (arg.equals("-maxTx")) {
+            arg = ci.nextArgument();
+            if (Strings.isValid(arg)) {
+               propertyStore.put(ExportOptions.MAX_TXS.name(), arg);
+            }
+         } else {
+            branchIds.add(new Integer(arg));
          }
-         count++;
-      } while (Strings.isValid(arg));
+      }
 
       OperationLogger logger = new CommandInterpreterLogger(ci);
       IOperation op =
-         new BranchExportOperation(logger, propertyStore, exportFileName, includeArchivedBranches, branchIds);
+         new BranchExportOperation(logger, propertyStore, exportFileName, includeArchivedBranches, branchIds,
+            excludeBranchIds);
       return Operations.executeAsJob(op, false, Job.LONG, new JobStatusListener(logger), branchMutex);
    }
 
@@ -202,7 +196,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
       sb.append("\n---OSEE Branch Commands---\n");
-      sb.append("\texport_branch <exchangeFileName> [-compress] [-minTx <value>] [-maxTx <value>] [-exclude_baseline_txs] [-includeArchivedBranches] -excludeBranchIds [<branchId>]+ - export a specific set of branches into an exchange zip file.\n");
+      sb.append("\texport_branch <exchangeFileName> [-compress] [-minTx <value>] [-maxTx <value>] [-includeArchivedBranches] -excludeBranchIds [<branchId>]+ - export a specific set of branches into an exchange zip file.\n");
       sb.append("\timport_branch <exchangeFileName> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
       sb.append("\tcheck_exchange <exchangeFileName> - checks an exchange file to ensure data integrity\n");
       sb.append("\tpurge_deleted_branches - permenatly remove all branches that are both archived and deleted \n");
