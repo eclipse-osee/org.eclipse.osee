@@ -9,9 +9,7 @@
 	<Table name="OSEE_TYPE_ID_MAP" schema="OSEE" tablespace="osee_data">
 		<Column id="LOCAL_ID" defaultValue="not null" type="smallint" />
 		<Column id="REMOTE_ID" defaultValue="not null" type="BIGINT" />
-		<Index id="OSEE_TYPE_ID_MAP_L_IDX" type="UNIQUE" tablespace="osee_index">
-			<AppliesTo id="LOCAL_ID"/>
-		</Index>
+		<Constraint schema="OSEE" id="OSEE_TYPE_ID_MAP_AT_L_PK" type="PRIMARY KEY" appliesTo="LOCAL_ID" />
 		<Index id="OSEE_TYPE_ID_MAP_R_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="REMOTE_ID"/>
 		</Index>
