@@ -279,6 +279,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
          }
          try {
             taskEditor.setLoading(true);
+            taskEditor.getTaskActionPage().getTaskComposite().getTaskXViewer().clear(true);
             final List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
             for (Artifact artifact : itaskEditorProvider.getTaskEditorTaskArtifacts()) {
                if (artifact.isOfType(AtsArtifactTypes.Task)) {
