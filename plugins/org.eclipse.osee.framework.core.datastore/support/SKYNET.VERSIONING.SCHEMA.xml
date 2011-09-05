@@ -21,19 +21,6 @@
 		<Column id="REMOTE_ID" description="" />
 	</TableDescription>
 
-	<Table name="OSEE_ATTRIBUTE_PROVIDER_TYPE" schema="OSEE" tablespace="osee_data">
-		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="ATTRIBUTE_PROVIDER_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_ATTR_PROVIDER_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" />
-	</Table>
-	
-	<TableDescription referenceTable="OSEE_ATTRIBUTE_PROVIDER_TYPE">
-		<Note purpose="Attibute provider types are used to create factory objects specializing in implmenting basic CRUD operations for various attributes."/>
-		<Column id="ATTR_PROVIDER_TYPE_ID" description="" example="org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider" />
-		<Column id="ATTRIBUTE_PROVIDER_CLASS" description="" example="1" />
-	</TableDescription>
-
-
 	<!-- _____________________________________________________ -->
 	<!--                                                       -->
 	<!--              MAIN ARTIFACT TABLES                     -->
