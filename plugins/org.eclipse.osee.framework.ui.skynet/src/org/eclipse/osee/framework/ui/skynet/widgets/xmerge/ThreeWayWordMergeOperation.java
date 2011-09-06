@@ -105,7 +105,7 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
             IOperation op =
                new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact),
                   mergeArtifact.getBranch(), true);
-            Operations.executeWork(op, monitor);
+            Operations.executeWorkAndCheckStatus(op, monitor);
 
             monitor.done();
             RendererManager.openInJob(mergeArtifact, PresentationType.SPECIALIZED_EDIT);
