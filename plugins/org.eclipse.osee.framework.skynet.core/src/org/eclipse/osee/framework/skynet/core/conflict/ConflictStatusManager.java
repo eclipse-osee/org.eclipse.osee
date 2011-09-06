@@ -32,7 +32,7 @@ public class ConflictStatusManager {
    private static final String MERGE_UPDATE_GAMMAS =
       "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_BRANCH_GAMMAS =
-      "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
+      "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.branch_id = ? AND tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
 
    public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, int mergeBranchId) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -67,7 +67,8 @@ public class ConflictStatusManager {
                ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branchID,
                   objectID, conflictType);
                if (conflictType == ConflictType.ATTRIBUTE.getValue()) {
-                  ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, transactionId, objectID);
+                  ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, branchID, transactionId,
+                     objectID);
                }
             }
             if (intStatus == ConflictStatus.INFORMATIONAL.getValue() || passedStatus == ConflictStatus.INFORMATIONAL) {

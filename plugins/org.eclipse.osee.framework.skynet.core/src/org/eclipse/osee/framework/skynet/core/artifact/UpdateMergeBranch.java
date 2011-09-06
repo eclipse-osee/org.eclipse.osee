@@ -47,7 +47,7 @@ public class UpdateMergeBranch extends DbTransaction {
       " END";
 
    private static final String UPDATE_ARTIFACTS =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", txs1.branch_id FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", txs1.branch_id FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.branch_id = txs1.branch_id AND txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
 
    private static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.art_id = ?)";
@@ -240,7 +240,6 @@ public class UpdateMergeBranch extends DbTransaction {
     * will also be removed from the database only for the branch it is on).
     */
    private static void purgeArtifactFromBranch(OseeConnection connection, Branch branch, int artId) throws OseeCoreException {
-      int baseTxId = branch.getBaseTransaction().getId();
       int branchId = branch.getId();
 
       //Remove from Baseline
