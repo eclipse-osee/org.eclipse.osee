@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
+package org.eclipse.osee.ote.model.manager;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

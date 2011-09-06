@@ -8,12 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.ote.model.manager;
 
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 import org.eclipse.osee.ote.core.model.IModel;
 import org.eclipse.osee.ote.core.model.ModelKey;
