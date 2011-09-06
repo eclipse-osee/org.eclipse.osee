@@ -259,6 +259,10 @@ public final class ExchangeDb {
          addMaxMinFilter(query, bindData, options);
       }
 
+      if (exportItem.matches(OSEE_TX_DETAILS_DATA)) {
+         // tx_details needs to be ordered so transactions are sequenced properly
+         query.append(" ORDER BY transaction_id ASC");
+      }
       return bindData.toArray(new Object[bindData.size()]);
    }
 
