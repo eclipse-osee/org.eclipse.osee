@@ -229,19 +229,19 @@ public final class ExchangeDb {
       int gammaJoinId = new Random().nextInt();
       StringBuilder sql =
          new StringBuilder(
-            "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), ? FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
-      bindList.add(gammaJoinId);
+            "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
       bindList.add(exportJoinId);
       addMaxMinFilter(sql, bindList, options);
 
-      sql.append(" UNION SELECT DISTINCT(gamma_id), ? FROM osee_join_export_import jex, osee_txs_archived txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
-      bindList.add(gammaJoinId);
+      sql.append(" UNION SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs_archived txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
       bindList.add(exportJoinId);
       addMaxMinFilter(sql, bindList, options);
 
       IOseeDatabaseService databaseService = services.getDatabaseService();
       Object[] bindData = bindList.toArray(new Object[bindList.size()]);
-      System.out.println(databaseService.runPreparedUpdate(sql.toString(), bindData));
+
+      String insert = String.format(sql.toString(), gammaJoinId, gammaJoinId);
+      System.out.println(databaseService.runPreparedUpdate(insert, bindData));
       return gammaJoinId;
    }
 
