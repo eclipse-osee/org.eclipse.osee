@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class WorldXNavigateItemAction extends XNavigateItemAction {
 
    public WorldXNavigateItemAction(XNavigateItem parent, String name, KeyedImage oseeImage) {
-      super(parent, name, oseeImage);
+      super(parent, name, (oseeImage == null ? determineImage(name) : oseeImage));
    }
 
    public WorldXNavigateItemAction(XNavigateItem parent, String name) {
@@ -30,12 +30,14 @@ public class WorldXNavigateItemAction extends XNavigateItemAction {
    }
 
    private static KeyedImage determineImage(String name) {
-      if (name.contains("Report")) {
+      if (name.contains("Report") || name.contains("Metrics")) {
          return AtsImage.REPORT;
       } else if (name.contains("Search")) {
          return FrameworkImage.FLASHLIGHT;
       } else if (name.contains("Task")) {
          return AtsImage.TASK;
+      } else if (name.contains("Sync")) {
+         return FrameworkImage.ARROW_LEFT_YELLOW;
       }
       return AtsImage.GLOBE;
    }
