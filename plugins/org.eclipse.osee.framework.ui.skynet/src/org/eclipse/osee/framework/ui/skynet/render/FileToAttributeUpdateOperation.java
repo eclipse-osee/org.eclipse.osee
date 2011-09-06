@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -43,14 +46,19 @@ public class FileToAttributeUpdateOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException, IOException {
-      String data = null;
-      data = Lib.fileToString(file);
+      InputStream stream;
 
       if (modifier != null) {
-         data = modifier.modifyForSave(artifact, data);
+         stream = modifier.modifyForSave(artifact, file);
+      } else {
+         stream = new BufferedInputStream(new FileInputStream(file));
       }
-      artifact.setSoleAttributeFromString(attributeType, data);
-      artifact.persist(getClass().getSimpleName());
-   }
 
+      try {
+         artifact.setSoleAttributeFromStream(attributeType, stream);
+         artifact.persist(getClass().getSimpleName());
+      } finally {
+         Lib.close(stream);
+      }
+   }
 }

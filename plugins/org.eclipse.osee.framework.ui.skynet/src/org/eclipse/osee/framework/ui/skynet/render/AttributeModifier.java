@@ -5,10 +5,13 @@
  */
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface AttributeModifier {
 
-   String modifyForSave(Artifact owner, String value) throws OseeCoreException;
+   InputStream modifyForSave(Artifact owner, File file) throws OseeCoreException, IOException;
 }
