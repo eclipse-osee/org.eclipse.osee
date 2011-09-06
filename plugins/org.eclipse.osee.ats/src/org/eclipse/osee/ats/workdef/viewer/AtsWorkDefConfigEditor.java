@@ -222,7 +222,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
                throw new OseeArgumentException("StartPage null for workflow " + workflowDef);
             }
             // Create states
-            List<StateDefinition> stateDefs = workflowDef.getStatesOrdered();
+            List<StateDefinition> stateDefs = workflowDef.getStatesOrderedByDefaultToState();
             for (StateDefinition stateDef : workflowDef.getStates()) {
                if (!stateDefs.contains(stateDef)) {
                   stateDefs.add(stateDef);
@@ -241,7 +241,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
             }
 
             // Create transitions
-            for (StateDefinition stateDef : workflowDef.getStatesOrdered()) {
+            for (StateDefinition stateDef : workflowDef.getStatesOrderedByDefaultToState()) {
                StateDefShape pageShape = getStateDefShape(stateDef);
                // Handle to pages
                Set<StateDefinition> toPages = new HashSet<StateDefinition>();

@@ -36,14 +36,26 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return states;
    }
 
-   public List<StateDefinition> getStatesOrdered() {
+   public List<StateDefinition> getStatesOrderedByOrdinal() {
+      List<StateDefinition> orderedPages = new ArrayList<StateDefinition>();
+      for (int x = 1; x < states.size(); x++) {
+         for (StateDefinition state : states) {
+            if (state.getOrdinal() == x) {
+               orderedPages.add(state);
+            }
+         }
+      }
+      return orderedPages;
+   }
+
+   public List<StateDefinition> getStatesOrderedByDefaultToState() {
       if (startState == null) {
          throw new IllegalArgumentException("Can't locate Start State for workflow " + getName());
       }
 
       // Get ordered pages starting with start page
       List<StateDefinition> orderedPages = new ArrayList<StateDefinition>();
-      getOrderedStates(startState, orderedPages);
+      getStatesOrderedByDefaultToState(startState, orderedPages);
 
       // Move completed to the end if it exists
       StateDefinition completedPage = null;
@@ -61,7 +73,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return orderedPages;
    }
 
-   private void getOrderedStates(StateDefinition stateDefinition, List<StateDefinition> pages) {
+   private void getStatesOrderedByDefaultToState(StateDefinition stateDefinition, List<StateDefinition> pages) {
       if (pages.contains(stateDefinition)) {
          return;
       }
@@ -70,12 +82,12 @@ public class WorkDefinition extends AbstractWorkDefItem {
       // Add default page
       StateDefinition defaultToState = getDefaultToState(stateDefinition);
       if (defaultToState != null && !defaultToState.getName().equals(stateDefinition.getName())) {
-         getOrderedStates(getDefaultToState(stateDefinition), pages);
+         getStatesOrderedByDefaultToState(getDefaultToState(stateDefinition), pages);
       }
       // Add remaining pages
       for (StateDefinition stateDef : stateDefinition.getToStates()) {
          if (!pages.contains(stateDef)) {
-            getOrderedStates(stateDef, pages);
+            getStatesOrderedByDefaultToState(stateDef, pages);
          }
       }
    }

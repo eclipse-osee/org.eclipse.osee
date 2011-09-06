@@ -76,7 +76,7 @@ public class WorkflowDebugAction extends Action {
       }
 
       // Display pages
-      for (StateDefinition state : sma.getWorkDefinition().getStatesOrdered()) {
+      for (StateDefinition state : sma.getWorkDefinition().getStatesOrderedByDefaultToState()) {
          rd.log(AHTML.bold(state.toString()));
          processStateItems(state.getStateItems(), rd, 1);
          for (RuleDefinition rule : state.getRules()) {

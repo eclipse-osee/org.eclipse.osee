@@ -293,7 +293,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
-         for (StateDefinition stateDef : weightDef.getWorkDef().getStatesOrdered()) {
+         for (StateDefinition stateDef : weightDef.getWorkDef().getStatesOrderedByDefaultToState()) {
             items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
          }
       }
@@ -384,7 +384,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          for (String id : ((WorkDefinitionMatch) element).getWorkDefinition().getIds()) {
             items.add("Id: " + id);
          }
-         items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getStatesOrdered());
+         items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getStatesOrderedByDefaultToState());
          items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getRules());
          items.add(new WrappedPercentWeight(((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));

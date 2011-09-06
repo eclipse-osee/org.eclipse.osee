@@ -159,7 +159,7 @@ public class SMAPrint extends Action {
 
    private void getWorkFlowHtml(XResultData rd) throws OseeCoreException {
       // Only display current or past states
-      for (StateXWidgetPage statePage : WorkflowManager.getStatePages(sma)) {
+      for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(sma)) {
          if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
             // Don't show completed or cancelled state if not currently those state
             if (statePage.isCompletedPage() && !sma.isCompleted()) {

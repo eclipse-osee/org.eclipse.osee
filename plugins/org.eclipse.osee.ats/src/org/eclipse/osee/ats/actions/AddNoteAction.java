@@ -57,7 +57,7 @@ public class AddNoteAction extends Action {
          ArrayList<String> artifactNames = new ArrayList<String>();
          Map<String, String> selectedToStateName = new HashMap<String, String>();
          artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
-         for (StateDefinition stateDefinition : sma.getWorkDefinition().getStatesOrdered()) {
+         for (StateDefinition stateDefinition : sma.getWorkDefinition().getStatesOrderedByDefaultToState()) {
             String displayName = "\"" + stateDefinition.getPageName() + "\" State";
             artifactNames.add(displayName);
             selectedToStateName.put(displayName, stateDefinition.getPageName());

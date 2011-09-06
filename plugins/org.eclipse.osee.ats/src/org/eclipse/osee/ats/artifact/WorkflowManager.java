@@ -52,8 +52,8 @@ public class WorkflowManager {
       awa.isAccessControlWrite() && //
 
       (WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), priviledgedEditEnabled) || //
-      // page is define to allow anyone to edit
-      awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
+         // page is define to allow anyone to edit
+         awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
       // team definition has allowed anyone to edit
       awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
    }
@@ -293,7 +293,7 @@ public class WorkflowManager {
    }
 
    public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
-      for (StateXWidgetPage statePage : getStatePages(awa)) {
+      for (StateXWidgetPage statePage : getStatePagesOrderedByDefaultToState(awa)) {
          if (awa.getStateMgr().isInState(statePage)) {
             return statePage;
          }
@@ -301,9 +301,25 @@ public class WorkflowManager {
       return null;
    }
 
-   public static List<StateXWidgetPage> getStatePages(AbstractWorkflowArtifact awa) {
+   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (StateDefinition stateDefinition : awa.getWorkDefinition().getStatesOrdered()) {
+      for (StateDefinition stateDefinition : awa.getWorkDefinition().getStatesOrderedByOrdinal()) {
+         try {
+            StateXWidgetPage statePage =
+               new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,
+                  ATSXWidgetOptionResolver.getInstance());
+            statePages.add(statePage);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return statePages;
+
+   }
+
+   public static List<StateXWidgetPage> getStatePagesOrderedByDefaultToState(AbstractWorkflowArtifact awa) {
+      List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
+      for (StateDefinition stateDefinition : awa.getWorkDefinition().getStatesOrderedByDefaultToState()) {
          try {
             StateXWidgetPage statePage =
                new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,

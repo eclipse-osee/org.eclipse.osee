@@ -343,7 +343,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createPageSections() {
       try {
          // Only display current or past states
-         for (StateXWidgetPage statePage : WorkflowManager.getStatePages(awa)) {
+         for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(awa)) {
             try {
                if (awa.isInState(statePage) || awa.getStateMgr().isStateVisited(statePage)) {
                   // Don't show completed or cancelled state if not currently those state
