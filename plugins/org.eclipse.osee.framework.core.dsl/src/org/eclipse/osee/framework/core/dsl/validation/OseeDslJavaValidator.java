@@ -85,8 +85,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       for (XAttributeType attrType : oseeDsl.getAttributeTypes()) {
          if (typeNames.contains(attrType.getName())) {
             String message = String.format("Duplicate attribute type name [%s]", attrType.getName());
-            error(message, attrType, OseeDslPackage.Literals.OSEE_DSL__ATTRIBUTE_TYPES,
-               OseeDslPackage.XATTRIBUTE_TYPE__NAME);
+            error(message, attrType, OseeDslPackage.Literals.OSEE_TYPE__NAME, OseeDslPackage.XATTRIBUTE_TYPE__NAME);
          } else {
             typeNames.add(attrType.getName());
          }
@@ -94,7 +93,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
             String message =
                String.format("Duplicate guid [%s] for attribute types [%s] and [%s]", attrType.getTypeGuid(),
                   attrType.getName(), guidToTypeName.get(attrType.getTypeGuid()));
-            error(message, attrType, OseeDslPackage.Literals.OSEE_DSL__ATTRIBUTE_TYPES,
+            error(message, attrType, OseeDslPackage.Literals.OSEE_TYPE__TYPE_GUID,
                OseeDslPackage.XATTRIBUTE_TYPE__TYPE_GUID);
          } else {
             guidToTypeName.put(attrType.getTypeGuid(), attrType.getName());
@@ -105,8 +104,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       for (XArtifactType artType : oseeDsl.getArtifactTypes()) {
          if (typeNames.contains(artType.getName())) {
             String message = String.format("Duplicate artifact type name [%s]", artType.getName());
-            error(message, artType, OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_TYPES,
-               OseeDslPackage.XARTIFACT_TYPE__NAME);
+            error(message, artType, OseeDslPackage.Literals.OSEE_TYPE__NAME, OseeDslPackage.XARTIFACT_TYPE__NAME);
          } else {
             typeNames.add(artType.getName());
          }
@@ -114,7 +112,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
             String message =
                String.format("Duplicate guid [%s] for artifact types [%s] and [%s]", artType.getTypeGuid(),
                   artType.getName(), guidToTypeName.get(artType.getTypeGuid()));
-            error(message, artType, OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_TYPES,
+            error(message, artType, OseeDslPackage.Literals.OSEE_TYPE__TYPE_GUID,
                OseeDslPackage.XARTIFACT_TYPE__TYPE_GUID);
          } else {
             guidToTypeName.put(artType.getTypeGuid(), artType.getName());
@@ -125,8 +123,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       for (XRelationType relType : oseeDsl.getRelationTypes()) {
          if (typeNames.contains(relType.getName())) {
             String message = String.format("Duplicate relation type name [%s]", relType.getName());
-            error(message, relType, OseeDslPackage.Literals.OSEE_DSL__RELATION_TYPES,
-               OseeDslPackage.XRELATION_TYPE__NAME);
+            error(message, relType, OseeDslPackage.Literals.OSEE_TYPE__NAME, OseeDslPackage.XRELATION_TYPE__NAME);
          } else {
             typeNames.add(relType.getName());
          }
@@ -134,7 +131,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
             String message =
                String.format("Duplicate guid [%s] for relation types [%s] and [%s]", relType.getTypeGuid(),
                   relType.getName(), guidToTypeName.get(relType.getTypeGuid()));
-            error(message, relType, OseeDslPackage.Literals.OSEE_DSL__RELATION_TYPES,
+            error(message, relType, OseeDslPackage.Literals.OSEE_TYPE__TYPE_GUID,
                OseeDslPackage.XRELATION_TYPE__TYPE_GUID);
          } else {
             guidToTypeName.put(relType.getTypeGuid(), relType.getName());
