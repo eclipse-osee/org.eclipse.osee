@@ -84,6 +84,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
             byte[] compressed =
                Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
             dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
+            this.rawStringValue = "";
          } catch (IOException ex) {
             OseeExceptions.wrapAndThrow(ex);
          }
