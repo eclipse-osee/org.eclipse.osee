@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -50,13 +51,15 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
    private final IOseeCachingService cachingService;
    private final IOseeBranchService branchService;
    private final IApplicationServerManager appServerService;
+   private final IdentityService identityService;
 
-   public ConfigurationServlet(IApplicationServerManager appServerService, IDataTranslationService translationService, IOseeDatabaseService databaseService, IOseeCachingService cachingService, IOseeBranchService branchService) {
+   public ConfigurationServlet(IApplicationServerManager appServerService, IDataTranslationService translationService, IOseeDatabaseService databaseService, IOseeCachingService cachingService, IOseeBranchService branchService, IdentityService identityService) {
       this.translationService = translationService;
       this.databaseService = databaseService;
       this.branchService = branchService;
       this.cachingService = cachingService;
       this.appServerService = appServerService;
+      this.identityService = identityService;
    }
 
    @Override
@@ -94,7 +97,7 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
             IOseeSchemaProvider schemaProvider = new OseeSchemaProvider();
             IOperation operation =
                new DatastoreInitOperation(appServerService, databaseService, cachingService, branchService,
-                  schemaProvider, options);
+                  schemaProvider, options, identityService);
             Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor());
          } catch (Exception ex) {
             String message = String.format("Datastore Initialization: [%s]\n%s", response.toString(), ex.toString());

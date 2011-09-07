@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -43,6 +44,7 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
 //      IOseeModelingService.class,
       IResourceLocatorManager.class,
       IResourceManager.class, 
+      IdentityService.class,
       };
    //@formatter:on
 
@@ -81,6 +83,7 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
       final IApplicationServerManager appManager = getService(IApplicationServerManager.class, services);
       final IResourceManager resourceManager = getService(IResourceManager.class, services);
       final IResourceLocatorManager resourceLocatorManager = getService(IResourceLocatorManager.class, services);
+      final IdentityService identityService = getService(IdentityService.class, services);
 
       ModelingServiceProvider provider = new ModelingServiceProvider() {
 
@@ -99,6 +102,6 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
       };
 
       return new ServerOseeCachingServiceFactory(dbService, modelFactoryService, translationService, lookupService,
-         appManager, provider, resourceLocatorManager, resourceManager);
+         appManager, provider, resourceLocatorManager, resourceManager, identityService);
    }
 }

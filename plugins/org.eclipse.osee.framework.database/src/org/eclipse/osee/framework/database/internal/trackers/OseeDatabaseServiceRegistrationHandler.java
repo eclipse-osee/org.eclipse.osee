@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.database.internal.trackers;
 
 import java.util.Map;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.internal.core.ConnectionFactoryProvider;
+import org.eclipse.osee.framework.database.internal.core.IdentityServiceImpl;
 import org.eclipse.osee.framework.database.internal.core.OseeDatabaseServiceImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -26,7 +29,8 @@ public final class OseeDatabaseServiceRegistrationHandler extends AbstractTracki
 
    private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IDatabaseInfoProvider.class};
 
-   private ServiceRegistration serviceRegistration;
+   private ServiceRegistration<?> serviceRegistration;
+   private ServiceRegistration<?> serviceRegistration2;
 
    public OseeDatabaseServiceRegistrationHandler() {
       super();
@@ -44,12 +48,14 @@ public final class OseeDatabaseServiceRegistrationHandler extends AbstractTracki
       ConnectionFactoryProvider dbConnectionFactory = new ConnectionFactoryProvider(context);
       IOseeDatabaseService databaseService = new OseeDatabaseServiceImpl(dbInfoProvider, dbConnectionFactory);
       serviceRegistration = context.registerService(IOseeDatabaseService.class.getName(), databaseService, null);
+
+      IdentityService identityService = new IdentityServiceImpl(databaseService);
+      serviceRegistration2 = context.registerService(IdentityService.class.getName(), identityService, null);
    }
 
    @Override
    public void onDeActivate() {
-      if (serviceRegistration != null) {
-         serviceRegistration.unregister();
-      }
+      OsgiUtil.close(serviceRegistration);
+      OsgiUtil.close(serviceRegistration2);
    }
 }

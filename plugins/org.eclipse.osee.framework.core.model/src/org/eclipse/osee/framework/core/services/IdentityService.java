@@ -3,21 +3,21 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.framework.core.services;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-public interface RemoteIdManager {
+public interface IdentityService {
 
-   Integer getLocalId(Long remoteId) throws OseeCoreException;
+   Integer getLocalId(Long universalId) throws OseeCoreException;
 
-   Long getRemoteId(Integer localId) throws OseeCoreException;
+   Long getUniversalId(Integer localId) throws OseeCoreException;
 
    int getLocalId(Identity<Long> identity) throws OseeCoreException;
 
-   void store(Collection<Long> remoteIds) throws OseeCoreException;
+   void store(Collection<Long> universalIds) throws OseeCoreException;
 
    void clear();
 

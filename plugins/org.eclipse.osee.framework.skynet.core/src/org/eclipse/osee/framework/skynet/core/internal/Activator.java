@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -70,6 +71,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
       createServiceTracker(context, ILifecycleService.class, OseeServiceTrackerId.LIFECYCLE_SERVER);
       createServiceTracker(context, AccessPolicy.class, OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE);
+      createServiceTracker(context, IdentityService.class, OseeServiceTrackerId.IDENTITY_SERVICE);
 
       for (ServiceDependencyTracker dependencyTracker : trackers) {
          dependencyTracker.open();
@@ -93,6 +95,10 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
 
    public static Activator getInstance() {
       return instance;
+   }
+
+   public IdentityService getIdentityService() {
+      return getTracker(OseeServiceTrackerId.IDENTITY_SERVICE, IdentityService.class);
    }
 
    public IOseeCachingService getOseeCacheService() {

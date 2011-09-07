@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -25,6 +26,7 @@ public class DatabaseInitActivator implements BundleActivator, IDataTranslationS
    private ServiceTracker serviceTracker;
    private ServiceTracker serviceTracker2;
    private ServiceTracker serviceTracker3;
+   private ServiceTracker serviceTracker4;
 
    @Override
    public void start(BundleContext context) throws Exception {
@@ -37,6 +39,9 @@ public class DatabaseInitActivator implements BundleActivator, IDataTranslationS
 
       serviceTracker3 = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
       serviceTracker3.open(true);
+
+      serviceTracker4 = new ServiceTracker(context, IdentityService.class.getName(), null);
+      serviceTracker4.open(true);
    }
 
    @Override
@@ -49,6 +54,9 @@ public class DatabaseInitActivator implements BundleActivator, IDataTranslationS
       }
       if (serviceTracker3 != null) {
          serviceTracker3.close();
+      }
+      if (serviceTracker4 != null) {
+         serviceTracker4.close();
       }
    }
 
@@ -67,5 +75,9 @@ public class DatabaseInitActivator implements BundleActivator, IDataTranslationS
 
    public IOseeDatabaseService getDatabaseService() {
       return (IOseeDatabaseService) serviceTracker3.getService();
+   }
+
+   public IdentityService getIdentityService() {
+      return (IdentityService) serviceTracker4.getService();
    }
 }

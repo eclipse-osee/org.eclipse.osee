@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
@@ -48,8 +49,9 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
    private final ModelingServiceProvider modelingService;
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
+   private final IdentityService identityService;
 
-   public ServerOseeCachingServiceFactory(IOseeDatabaseService databaseService, IOseeModelFactoryService factoryService, IDataTranslationService translationService, IApplicationServerLookup serverLookUp, IApplicationServerManager appManager, ModelingServiceProvider modelingService, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+   public ServerOseeCachingServiceFactory(IOseeDatabaseService databaseService, IOseeModelFactoryService factoryService, IDataTranslationService translationService, IApplicationServerLookup serverLookUp, IApplicationServerManager appManager, ModelingServiceProvider modelingService, IResourceLocatorManager locatorManager, IResourceManager resourceManager, IdentityService identityService) {
       this.databaseService = databaseService;
       this.factoryService = factoryService;
       this.translationService = translationService;
@@ -58,6 +60,7 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
       this.modelingService = modelingService;
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
+      this.identityService = identityService;
    }
 
    @Override
@@ -72,16 +75,16 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
 
       OseeEnumTypeCache oseeEnumTypeCache =
          new OseeEnumTypeCache(new ArtifactTypeDataAccessor<OseeEnumType>(modelingService, databaseService,
-            locatorManager, resourceManager, branchCache));
+            locatorManager, resourceManager, branchCache, identityService));
       AttributeTypeCache attributeCache =
          new AttributeTypeCache(new ArtifactTypeDataAccessor<AttributeType>(modelingService, databaseService,
-            locatorManager, resourceManager, branchCache));
+            locatorManager, resourceManager, branchCache, identityService));
       ArtifactTypeCache artifactCache =
          new ArtifactTypeCache(new ArtifactTypeDataAccessor<ArtifactType>(modelingService, databaseService,
-            locatorManager, resourceManager, branchCache));
+            locatorManager, resourceManager, branchCache, identityService));
       RelationTypeCache relationCache =
          new RelationTypeCache(new ArtifactTypeDataAccessor<RelationType>(modelingService, databaseService,
-            locatorManager, resourceManager, branchCache));
+            locatorManager, resourceManager, branchCache, identityService));
 
       return new OseeCachingService(branchCache, txCache, artifactCache, attributeCache, relationCache,
          oseeEnumTypeCache);

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -75,6 +76,7 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       IResourceLocatorManager.class, 
       IResourceManager.class,
       HttpService.class,
+      IdentityService.class,
    };
    //@formatter:on
 
@@ -104,6 +106,7 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       IOseeModelFactoryService factoryService = getService(IOseeModelFactoryService.class, services);
       IResourceLocatorManager locatorManager = getService(IResourceLocatorManager.class, services);
       IResourceManager resourceManager = getService(IResourceManager.class, services);
+      IdentityService identityService = getService(IdentityService.class, services);
 
       httpService = getService(HttpService.class, services);
       appServerManager = getService(IApplicationServerManager.class, services);
@@ -129,8 +132,8 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       register(new UnsubscribeServlet(context, databaseService, caching), "osee/unsubscribe");
 
       register(new AtsServlet(locatorManager, resourceManager, caching), "osee/ats");
-      register(new ConfigurationServlet(appServerManager, translationService, databaseService, caching, branchService),
-         OseeServerContext.OSEE_CONFIGURE_CONTEXT);
+      register(new ConfigurationServlet(appServerManager, translationService, databaseService, caching, branchService,
+         identityService), OseeServerContext.OSEE_CONFIGURE_CONTEXT);
       register(new DataServlet(locatorManager, resourceManager, caching), "osee/data");
       register(new AdminServlet(context), "osee/console");
    }

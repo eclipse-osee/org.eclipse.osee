@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeInfo;
@@ -44,8 +45,9 @@ public class DatastoreInitOperation extends AbstractOperation {
    private final IOseeSchemaProvider schemaProvider;
    private final SchemaCreationOptions options;
    private final IApplicationServerManager appServerManager;
+   private final IdentityService identityService;
 
-   public DatastoreInitOperation(IApplicationServerManager appServerManager, IOseeDatabaseService dbService, IOseeCachingService cachingService, IOseeBranchService branchService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {
+   public DatastoreInitOperation(IApplicationServerManager appServerManager, IOseeDatabaseService dbService, IOseeCachingService cachingService, IOseeBranchService branchService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options, IdentityService identityService) {
       super("Datastore Initialization", Activator.PLUGIN_ID);
       this.appServerManager = appServerManager;
       this.dbService = dbService;
@@ -53,6 +55,7 @@ public class DatastoreInitOperation extends AbstractOperation {
       this.branchService = branchService;
       this.schemaProvider = schemaProvider;
       this.options = options;
+      this.identityService = identityService;
    }
 
    @Override
@@ -64,7 +67,7 @@ public class DatastoreInitOperation extends AbstractOperation {
       doSubWork(subOp, monitor, 0.30);
 
       dbService.getSequence().clear();
-      dbService.getRemoteIdManager().clear();
+      identityService.clear();
 
       appServerManager.executeLookupRegistration();
 

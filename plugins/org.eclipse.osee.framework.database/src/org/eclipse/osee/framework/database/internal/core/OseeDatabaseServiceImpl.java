@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.RemoteIdManager;
 import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -42,11 +41,9 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    private final IOseeSequence oseeSequence;
    private final ConnectionFactoryProvider dbConnectionFactory;
    private final IDatabaseInfoProvider dbInfoProvider;
-   private final RemoteIdManager remoteIdManager;
 
    public OseeDatabaseServiceImpl(IDatabaseInfoProvider dbInfoProvider, ConnectionFactoryProvider dbConnectionFactory) {
       this.oseeSequence = new OseeSequenceImpl(this);
-      this.remoteIdManager = new RemoteIdManagerImpl(this);
       this.dbInfoProvider = dbInfoProvider;
       this.dbConnectionFactory = dbConnectionFactory;
    }
@@ -230,8 +227,4 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       return getDatabaseInfoProvider().isProduction();
    }
 
-   @Override
-   public RemoteIdManager getRemoteIdManager() {
-      return remoteIdManager;
-   }
 }

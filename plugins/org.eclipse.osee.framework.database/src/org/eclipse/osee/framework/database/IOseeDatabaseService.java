@@ -17,14 +17,11 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.RemoteIdManager;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IOseeDatabaseService {
-
-   RemoteIdManager getRemoteIdManager();
 
    IOseeSequence getSequence() throws OseeDataStoreException;
 

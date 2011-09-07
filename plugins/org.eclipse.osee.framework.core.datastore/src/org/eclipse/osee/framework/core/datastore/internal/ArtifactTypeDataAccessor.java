@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.RemoteIdManager;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -48,13 +48,15 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
    private final IResourceLocatorManager locatorManager;
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
+   private final IdentityService identityService;
 
-   public ArtifactTypeDataAccessor(ModelingServiceProvider modelService, IOseeDatabaseService databaseService, IResourceLocatorManager locatorManager, IResourceManager resourceManager, BranchCache branchCache) {
+   public ArtifactTypeDataAccessor(ModelingServiceProvider modelService, IOseeDatabaseService databaseService, IResourceLocatorManager locatorManager, IResourceManager resourceManager, BranchCache branchCache, IdentityService identityService) {
       this.modelService = modelService;
       this.databaseService = databaseService;
       this.locatorManager = locatorManager;
       this.resourceManager = resourceManager;
       this.branchCache = branchCache;
+      this.identityService = identityService;
    }
 
    @Override
@@ -75,14 +77,13 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
 
    @Override
    public void store(Collection<T> types) throws OseeCoreException {
-      RemoteIdManager manager = databaseService.getRemoteIdManager();
       Collection<Long> remoteIds = new ArrayList<Long>();
       for (T type : types) {
          remoteIds.add(type.getGuid());
       }
-      manager.store(remoteIds);
+      identityService.store(remoteIds);
       for (T type : types) {
-         type.setId(manager.getLocalId(type.getGuid()));
+         type.setId(identityService.getLocalId(type.getGuid()));
          type.clearDirty();
       }
    }
@@ -90,11 +91,8 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
    private Collection<String> findOseeTypeData() throws OseeCoreException {
       Collection<String> paths = new ArrayList<String>();
 
-      RemoteIdManager manager = databaseService.getRemoteIdManager();
-
-      // john: Which attribute type store type def binary data
-      Integer artifactTypeId = manager.getLocalId(CoreArtifactTypes.OseeTypeDefinition.getGuid());
-      Integer attributeTypeId = manager.getLocalId(CoreAttributeTypes.UriGeneralStringData.getGuid());
+      Integer artifactTypeId = identityService.getLocalId(CoreArtifactTypes.OseeTypeDefinition.getGuid());
+      Integer attributeTypeId = identityService.getLocalId(CoreAttributeTypes.UriGeneralStringData.getGuid());
 
       Branch commonBranch = branchCache.get(CoreBranches.COMMON);
 
