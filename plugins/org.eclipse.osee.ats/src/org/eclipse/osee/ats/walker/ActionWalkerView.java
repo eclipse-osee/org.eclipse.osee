@@ -271,14 +271,6 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    }
 
    @Override
-   public String getActionDescription() {
-      if (activeAwa != null) {
-         return String.format("Current Artifact - %s - %s", activeAwa.getGuid(), activeAwa.getName());
-      }
-      return "";
-   }
-
-   @Override
    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
       processWindowActivated();
    }

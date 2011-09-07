@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -249,14 +248,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == IActionable.class) {
-         return new IActionable() {
-            @Override
-            public String getActionDescription() {
-               return "";
-            }
-         };
-      } else if (adapter == IContentOutlinePage.class) {
+      if (adapter == IContentOutlinePage.class) {
          ArtifactEditorOutlinePage page = getOutlinePage();
          page.setInput(this);
          return page;

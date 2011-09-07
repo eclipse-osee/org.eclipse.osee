@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -38,7 +37,6 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
@@ -65,7 +63,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class ReviewNavigateView extends ViewPart implements IActionable, IXNavigateEventListener {
+public class ReviewNavigateView extends ViewPart implements IXNavigateEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.review.ReviewNavigateView";
    private static final String INPUT = "filter";
@@ -222,15 +220,6 @@ public class ReviewNavigateView extends ViewPart implements IActionable, IXNavig
             "Couldn't Launch OSEE Review NavigateView " + e1.getMessage());
       }
       return null;
-   }
-
-   @Override
-   public String getActionDescription() {
-      IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) {
-         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
-      }
-      return "";
    }
 
    @Override

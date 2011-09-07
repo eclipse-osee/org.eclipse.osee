@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
@@ -40,7 +39,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsEditor extends AbstractArtifactEditor implements IActionable {
+public class ResultsEditor extends AbstractArtifactEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
 
@@ -129,11 +128,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
    @Override
    public boolean isDirty() {
       return false;
-   }
-
-   @Override
-   public String getActionDescription() {
-      return null;
    }
 
    public static void open(final String tabName, final String title, final String html) {

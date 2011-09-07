@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -54,7 +53,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditor extends FormEditor implements IActionable {
+public class CoverageEditor extends FormEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.coverage.editor.CoverageEditor";
    private Integer startPage = null;
    private CoverageEditorImportTab coverageEditorImportTab = null;
@@ -324,25 +323,6 @@ public class CoverageEditor extends FormEditor implements IActionable {
             }
          }
       });
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (IActionable.class.equals(adapter)) {
-         return new IActionable() {
-            @Override
-            public String getActionDescription() {
-               return "";
-            }
-         };
-      }
-      return super.getAdapter(adapter);
-   }
-
-   @Override
-   public String getActionDescription() {
-      return null;
    }
 
    @Override

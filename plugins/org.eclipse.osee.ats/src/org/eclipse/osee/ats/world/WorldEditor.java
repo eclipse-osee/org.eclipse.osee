@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -47,7 +46,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider, IActionable {
+public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private WorldXWidgetActionPage worldXWidgetActionPage;
    public static final int TITLE_MAX_LENGTH = 80;
@@ -232,11 +231,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    @Override
-   public String getActionDescription() {
-      return null;
-   }
-
-   @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       return worldXWidgetActionPage.getWorldComposite().getManHoursPerDayPreference();
    }
@@ -258,11 +252,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   @Override
-   public IActionable getIActionable() {
-      return null;
    }
 
    @Override

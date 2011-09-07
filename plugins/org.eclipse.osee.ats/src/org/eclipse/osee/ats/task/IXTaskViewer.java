@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.IWorkPage;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
 /**
@@ -66,7 +65,5 @@ public interface IXTaskViewer {
     * Called if isRefreshActionHandled() returns true
     */
    public void handleRefreshAction() throws OseeCoreException;
-
-   public IActionable getActionable() throws OseeCoreException;
 
 }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.swt.widgets.Menu;
 
 /**
@@ -24,8 +23,6 @@ public interface IWorldEditor {
    public void setTableTitle(final String title, final boolean warning);
 
    public void reSearch() throws OseeCoreException;
-
-   public IActionable getIActionable();
 
    public IWorldEditorProvider getWorldEditorProvider() throws OseeCoreException;
 

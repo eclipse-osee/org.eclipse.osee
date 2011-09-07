@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -69,20 +68,6 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == IActionable.class) {
-         return new IActionable() {
-            @Override
-            public String getActionDescription() {
-               return "";
-            }
-         };
-      }
-      return super.getAdapter(adapter);
    }
 
    private VariableMap getBlamVariableMap() {

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -57,7 +56,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class MassArtifactEditor extends AbstractArtifactEditor implements IActionable {
+public class MassArtifactEditor extends AbstractArtifactEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor";
    private int artifactsPageIndex;
    private MassXViewer xViewer;
@@ -290,11 +289,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
     */
    public Collection<? extends Artifact> getArtifacts() {
       return xViewer.getArtifacts();
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    public static Collection<MassArtifactEditor> getEditors() {

@@ -44,7 +44,6 @@ import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.data.model.editor.action.ODMExportAction;
 import org.eclipse.osee.framework.ui.data.model.editor.action.ODMImportAction;
@@ -109,13 +108,6 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
          return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
       } else if (adapter == IContentOutlinePage.class) {
          return getOverviewOutlinePage();
-      } else if (adapter == IActionable.class) {
-         return new IActionable() {
-            @Override
-            public String getActionDescription() {
-               return "ODM Editor description here";
-            }
-         };
       }
       return super.getAdapter(adapter);
    }

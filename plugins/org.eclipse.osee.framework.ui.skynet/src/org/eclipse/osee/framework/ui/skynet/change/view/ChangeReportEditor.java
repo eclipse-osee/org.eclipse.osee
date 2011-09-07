@@ -15,10 +15,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -77,38 +75,6 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       OseeEventManager.addListener(eventRelay);
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == IActionable.class) {
-         return new IActionable() {
-            @Override
-            public String getActionDescription() {
-               StringBuilder sb = new StringBuilder();
-               ChangeUiData changeData = getEditorInput().getChangeData();
-               TransactionDelta txDelta = changeData.getTxDelta();
-               Branch branch1 = null;
-               Branch branch2 = null;
-               try {
-                  branch1 = txDelta.getStartTx().getBranch();
-                  branch2 = txDelta.getEndTx().getBranch();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
-               }
-               if (txDelta.areOnTheSameBranch()) {
-                  sb.append(String.format("\nBranch - %s", branch1));
-                  sb.append(String.format("\nTransactions - %s", txDelta.toString()));
-               } else {
-                  sb.append(String.format("\nBranch %s - %s Tx:[%s]", 1, branch1, txDelta.getStartTx().getId()));
-                  sb.append(String.format("\nBranch %s - %s Tx:[%s]", 2, branch2, txDelta.getEndTx().getId()));
-               }
-               return sb.toString();
-            }
-         };
-      }
-      return super.getAdapter(adapter);
    }
 
    @Override
@@ -173,8 +139,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
             branches[0] = changeUiData.getTxDelta().getStartTx().getBranch();
             branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Error obtaining change report branches for branch event",
-               ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Error obtaining change report branches for branch event", ex);
          }
          for (Branch branch : branches) {
             if (branch != null && branch.getGuid().equals(branchEvent.getBranchGuid())) {

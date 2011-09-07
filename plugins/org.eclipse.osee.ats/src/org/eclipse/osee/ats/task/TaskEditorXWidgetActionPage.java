@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -60,7 +59,7 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implements IActionable {
+public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    private final TaskEditor taskEditor;
    private TaskComposite taskComposite;
@@ -138,11 +137,6 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return taskComposite.getActionDescription();
    }
 
    @Override

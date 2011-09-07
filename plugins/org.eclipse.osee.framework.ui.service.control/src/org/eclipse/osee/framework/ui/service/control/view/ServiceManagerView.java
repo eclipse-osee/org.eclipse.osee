@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.service.control.view;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.ui.service.control.actions.HideLookupsAction;
 import org.eclipse.osee.framework.ui.service.control.actions.KillServiceAction;
@@ -28,7 +27,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Roberto E. Escobar
  */
-public class ServiceManagerView extends ViewPart implements IActionable {
+public class ServiceManagerView extends ViewPart {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView";
    private ManagerMain managerMain;
@@ -63,11 +62,6 @@ public class ServiceManagerView extends ViewPart implements IActionable {
       menuBuilder.addAction(new HideLookupsAction(managerMain));
       menuBuilder.addAction(new RefreshDataStore(managerMain));
       menuBuilder.createPopUpMenu(managerMain.getLookupViewer().getViewer());
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    @Override

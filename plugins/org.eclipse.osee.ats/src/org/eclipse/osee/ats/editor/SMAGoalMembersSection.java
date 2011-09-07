@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -347,11 +346,6 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
    @Override
    public String getCurrentTitleLabel() {
       return "";
-   }
-
-   @Override
-   public IActionable getIActionable() {
-      return null;
    }
 
    @Override

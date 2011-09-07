@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
@@ -72,7 +71,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends ViewPart implements IArtifactEventListener, IActionable, IRebuildMenuListener {
+public class GroupExplorer extends ViewPart implements IArtifactEventListener, IRebuildMenuListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -395,11 +394,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    public void dispose() {
       OseeEventManager.removeListener(this);
       super.dispose();
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    private class NeedProjectMenuListener implements MenuListener {

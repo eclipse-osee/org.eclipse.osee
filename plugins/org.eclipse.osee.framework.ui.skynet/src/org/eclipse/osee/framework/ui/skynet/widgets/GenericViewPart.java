@@ -10,17 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 
 /**
  * This class provides &quot;general&quot; functionality to widgets having the need to override ViewPart methods and
  * providing blank functionality. Subclasses must call setFocusWidget() in their implementation for createPartControl <br/>
- *
+ * 
  * @author Karol M. Wilk
  */
-public abstract class GenericViewPart extends ViewPart implements IActionable {
+public abstract class GenericViewPart extends ViewPart {
    private Control focusWidget;
 
    @Override
@@ -28,11 +27,6 @@ public abstract class GenericViewPart extends ViewPart implements IActionable {
       if (focusWidget != null && !focusWidget.isDisposed()) {
          focusWidget.setFocus();
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    /**

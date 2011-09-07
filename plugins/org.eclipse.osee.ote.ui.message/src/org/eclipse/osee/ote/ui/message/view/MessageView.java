@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -79,7 +78,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-public class MessageView extends ViewPart implements IActionable, IMessageDictionaryListener {
+public class MessageView extends ViewPart implements IMessageDictionaryListener {
    protected TreeViewer treeViewer;
    protected Text searchText;
    protected MessageViewLabelProvider labelProvider;
@@ -516,11 +515,6 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
    @Override
    public void setFocus() {
       parentComposite.setFocus();
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    @Override

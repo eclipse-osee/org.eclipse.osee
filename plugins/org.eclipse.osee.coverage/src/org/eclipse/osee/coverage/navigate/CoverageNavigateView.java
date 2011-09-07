@@ -13,19 +13,16 @@ package org.eclipse.osee.coverage.navigate;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
@@ -43,7 +40,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageNavigateView extends ViewPart implements IActionable {
+public class CoverageNavigateView extends ViewPart {
 
    public static final String VIEW_ID = "org.eclipse.osee.coverage.navigate.CoverageNavigateView";
    private XNavigateComposite xNavComp;
@@ -154,15 +151,6 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(refreshAction);
-   }
-
-   @Override
-   public String getActionDescription() {
-      IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) {
-         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
-      }
-      return "";
    }
 
    public void refresh() {

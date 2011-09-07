@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.test.manager.pages;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
@@ -25,7 +24,7 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author David Diepenbrock
  */
-public class OverviewPage extends TestManagerPage implements IActionable {
+public class OverviewPage extends TestManagerPage {
 
    private static final String pageName = "Overview";
    private static final String release = "";
@@ -123,11 +122,6 @@ public class OverviewPage extends TestManagerPage implements IActionable {
 
          labelMap.put(enumEntry, updateableLabel);
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    @Override

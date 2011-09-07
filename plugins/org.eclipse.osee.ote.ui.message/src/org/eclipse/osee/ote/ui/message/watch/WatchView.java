@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -125,7 +124,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Ken J. Aguilar
  */
-public final class WatchView extends ViewPart implements IActionable, IMessageDictionaryListener, ITestConnectionListener, IOteMessageClientView {
+public final class WatchView extends ViewPart implements IMessageDictionaryListener, ITestConnectionListener, IOteMessageClientView {
    private MessageXViewer treeViewer;
 
    private final ClientMessageServiceTracker msgServiceTracker;
@@ -684,12 +683,9 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
       }
       try {
          if (Benchmark.isBenchmarkingEnabled()) {
-            OseeLog.logf(
-               Activator.class,
-               Level.INFO,
-               "%s: # samples=%d, max=%d, min=%d, avg=%d", benchMark.getName(),
-                  benchMark.getTotalSamples(), benchMark.getLongestSample(), benchMark.getShortestSample(),
-                  benchMark.getAverage());
+            OseeLog.logf(Activator.class, Level.INFO, "%s: # samples=%d, max=%d, min=%d, avg=%d", benchMark.getName(),
+               benchMark.getTotalSamples(), benchMark.getLongestSample(), benchMark.getShortestSample(),
+               benchMark.getAverage());
          }
       } catch (Throwable t) {
          OseeLog.log(Activator.class, Level.WARNING, "Exception during disconnect", t);
@@ -913,11 +909,6 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
 
    public TreeViewer getTreeViewer() {
       return treeViewer;
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    public void updateMenuActions(final IMenuManager mm) {

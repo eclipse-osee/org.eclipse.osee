@@ -29,7 +29,6 @@ import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -63,7 +62,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * <li>Source Page
  * </ul>
  */
-public abstract class TestManagerEditor extends MultiPageEditorPart implements IActionable, ITestConnectionListener {
+public abstract class TestManagerEditor extends MultiPageEditorPart implements ITestConnectionListener {
    private static final Image errorImage = ImageManager.getImage(OteTestManagerImage.ERROR);
    public static final String namespace = "org.eclipse.osee.ote.ui.test.manager.editors.TestManagerEditor";
 
@@ -485,36 +484,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    public PageManager getPageManager() {
       return pageManager;
-   }
-
-   @Override
-   public String getActionDescription() {
-      String version =
-         (String) Platform.getBundle("org.eclipse.osee.ote.ui.test.manager").getHeaders().get("Bundle-Version");
-      String serverVersion = "";
-      try {
-         serverVersion = (String) Platform.getBundle("org.eclipse.osee.ote.core").getHeaders().get("Bundle-Version");
-      } catch (Exception ex) {
-         // do nothing
-      }
-      StringBuilder builder = new StringBuilder();
-      builder.append("Problem found on OSEE TM Version: ");
-      builder.append(version);
-      builder.append("\nServer Version: ");
-      builder.append(serverVersion);
-      builder.append("\nTM File: ");
-      builder.append(getTitle());
-      builder.append("\n");
-      builder.append("OFP: \"");
-      builder.append(pageManager.getScriptPage().getOFP());
-      builder.append("\"\n");
-      builder.append("Scripts: \n");
-      builder.append(pageManager.getScriptPage().getScripts());
-      builder.append("\n");
-
-      builder.append(getPropertyStore().toString());
-
-      return builder.toString();
    }
 
    @Override

@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.swt.widgets.Control;
 
-public abstract class GenericXWidget extends XWidget implements IActionable {
+public abstract class GenericXWidget extends XWidget {
 
    public GenericXWidget() {
       this("");
@@ -32,11 +31,6 @@ public abstract class GenericXWidget extends XWidget implements IActionable {
       if (control != null && !control.isDisposed()) {
          control.setFocus();
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    @Override

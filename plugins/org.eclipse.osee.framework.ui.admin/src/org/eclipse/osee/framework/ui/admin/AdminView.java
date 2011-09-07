@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEventType;
@@ -39,7 +38,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -48,7 +46,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 
-public class AdminView extends ViewPart implements IActionable {
+public class AdminView extends ViewPart {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.admin.AdminView";
    private static Action saveAction;
    private TabFolder tabFolder;
@@ -221,17 +219,6 @@ public class AdminView extends ViewPart implements IActionable {
       } else {
          saveAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVED));
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      String desc = "";
-      TabItem items[] = tabFolder.getSelection();
-      if (items.length == 1) {
-         String tabName = items[0].getText();
-         desc += String.format("Tab = %s ", tabName);
-      }
-      return desc;
    }
 
 }

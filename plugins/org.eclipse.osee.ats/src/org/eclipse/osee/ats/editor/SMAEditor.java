@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -87,7 +86,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IActionable, IAtsMetricsProvider, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private AbstractWorkflowArtifact awa;
    private SMAWorkFlowTab workFlowTab;
@@ -555,11 +554,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public String getActionDescription() {
-      return null;
-   }
-
-   @Override
    public Collection<? extends Artifact> getMetricsArtifacts() {
       return Arrays.asList(awa);
    }
@@ -590,11 +584,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    public TaskComposite getTaskComposite() {
       return taskTabXWidgetActionPage.getTaskComposite();
-   }
-
-   @Override
-   public IActionable getActionable() {
-      return this;
    }
 
    @Override

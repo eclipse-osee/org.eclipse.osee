@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -35,7 +34,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,8 +50,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceProvider;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -73,7 +71,7 @@ import org.eclipse.swt.widgets.Tree;
  * @author Donald G. Dunne
  * @author Theron Virgin
  */
-public class MergeXWidget extends GenericXWidget implements IAdaptable {
+public class MergeXWidget extends GenericXWidget {
    private static final String COMPLETE_COMMIT_ACTION_ID = "complete.commit.action.id";
    private static final String REFRESH_ACTION_ID = "refresh.action.id";
    private MergeXViewer mergeXViewer;
@@ -474,15 +472,6 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
 
    }
 
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (IActionable.class.equals(adapter)) {
-         return new MergeViewerActionable();
-      }
-      return null;
-   }
-
    private Action getCompleteCommitAction() {
       if (completeCommitAction == null) {
          completeCommitAction = new CompleteCommitAction();
@@ -517,30 +506,6 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
          manager.remove(COMPLETE_COMMIT_ACTION_ID);
       }
       manager.update(true);
-   }
-
-   private final class MergeViewerActionable implements IActionable {
-      @Override
-      public String getActionDescription() {
-         StringBuilder sb = new StringBuilder();
-         if (sourceBranch != null) {
-            sb.append("\nSource Branch: ");
-            sb.append(sourceBranch);
-         }
-         if (destBranch != null) {
-            sb.append("\nDestination Branch: ");
-            sb.append(destBranch);
-         }
-         if (tranId != null) {
-            sb.append("\nTransactionId: ");
-            sb.append(tranId);
-         }
-         if (commitTrans != null) {
-            sb.append("\nCommit TransactionId: ");
-            sb.append(commitTrans);
-         }
-         return sb.toString();
-      }
    }
 
    private final class CompleteCommitAction extends Action {

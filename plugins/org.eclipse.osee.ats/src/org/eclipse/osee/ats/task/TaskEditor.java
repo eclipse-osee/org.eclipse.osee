@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -58,7 +57,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditor extends AbstractArtifactEditor implements IActionable, IAtsMetricsProvider, IXTaskViewer {
+public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int mainPageIndex, metricsPageIndex;
    private TaskEditorXWidgetActionPage taskActionPage;
@@ -387,16 +386,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
          return AtsUtilCore.DEFAULT_HOURS_PER_WORK_DAY;
       }
       return tasks.iterator().next().getManHrsPerDayPreference();
-   }
-
-   @Override
-   public String getActionDescription() {
-      return taskActionPage.getActionDescription();
-   }
-
-   @Override
-   public IActionable getActionable() {
-      return this;
    }
 
    public boolean isLoading() {

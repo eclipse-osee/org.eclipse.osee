@@ -16,9 +16,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
@@ -37,7 +35,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @see ViewPart
  */
-public class DefineNavigateView extends ViewPart implements IActionable, IXNavigateEventListener {
+public class DefineNavigateView extends ViewPart implements IXNavigateEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.define.DefineNavigateView";
    private XNavigateComposite xNavComp;
@@ -110,15 +108,6 @@ public class DefineNavigateView extends ViewPart implements IActionable, IXNavig
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
-   }
-
-   @Override
-   public String getActionDescription() {
-      IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) {
-         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
-      }
-      return "";
    }
 
 }

@@ -289,16 +289,6 @@ public class XHistoryWidget extends GenericXWidget {
       }
    }
 
-   @Override
-   public String getActionDescription() {
-      StringBuffer sb = new StringBuffer();
-      if (artifact != null) {
-         sb.append("\nHistory : ");
-         sb.append(artifact.getName());
-      }
-      return sb.toString();
-   }
-
    public Artifact getArtifact() {
       return artifact;
    }

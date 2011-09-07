@@ -59,7 +59,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -100,7 +99,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class SMAWorkFlowTab extends FormPage implements IActionable {
+public class SMAWorkFlowTab extends FormPage {
    private final AbstractWorkflowArtifact awa;
    private final List<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
    private final List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
@@ -554,11 +553,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       if (editor.getToolkit() != null) {
          editor.getToolkit().dispose();
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "Workflow Tab";
    }
 
    private Control control = null;

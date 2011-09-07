@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -157,7 +156,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IBranchEventListener, IActionable, ISelectionProvider, IBranchProvider {
+public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IBranchEventListener, ISelectionProvider, IBranchProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
@@ -727,11 +726,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   try {
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
-                     OseeLog.logf(
-                        Activator.class,
-                        OseeLevel.SEVERE_POPUP,
-                        "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
-                           branch.getName());
+                     OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
+                        "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(), branch.getName());
                   }
                }
 
@@ -1008,8 +1004,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                artifactTransferData.add(artifact);
             }
          }
-         artifactClipboard.setArtifactsToClipboard(Activator.getInstance().getAccessPolicy(),
-            artifactTransferData);
+         artifactClipboard.setArtifactsToClipboard(Activator.getInstance().getAccessPolicy(), artifactTransferData);
       }
    }
 
@@ -1322,11 +1317,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       OseeEventManager.removeListener(this);
       ArtifactExplorerEventManager.remove(this);
       super.dispose();
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    @Override

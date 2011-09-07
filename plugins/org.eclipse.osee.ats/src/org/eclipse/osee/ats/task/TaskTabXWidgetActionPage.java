@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -59,7 +58,7 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Donald G. Dunne
  */
-public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implements IActionable {
+public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    private final SMAEditor smaEditor;
    private TaskComposite taskComposite;
@@ -124,11 +123,6 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
    @Override
    public void handleSearchButtonPressed() {
       // do nothing
-   }
-
-   @Override
-   public String getActionDescription() {
-      return taskComposite.getActionDescription();
    }
 
    @Override

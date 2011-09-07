@@ -26,13 +26,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
@@ -61,7 +59,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class UserNavigateView extends ViewPart implements IActionable, IXNavigateEventListener {
+public class UserNavigateView extends ViewPart implements IXNavigateEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.UserNavigateView";
    private static final String INPUT = "filter";
@@ -215,15 +213,6 @@ public class UserNavigateView extends ViewPart implements IActionable, IXNavigat
             "Couldn't Launch OSEE User NavigateView " + e1.getMessage());
       }
       return null;
-   }
-
-   @Override
-   public String getActionDescription() {
-      IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) {
-         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
-      }
-      return "";
    }
 
    @Override
