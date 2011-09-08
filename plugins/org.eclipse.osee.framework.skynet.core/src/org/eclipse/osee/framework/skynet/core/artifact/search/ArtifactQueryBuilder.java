@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -42,11 +43,11 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -292,8 +293,9 @@ public class ArtifactQueryBuilder {
 
       if (hasValues(artifactTypes)) {
          Set<Integer> artTypeIds = new HashSet<Integer>();
+         IdentityService identityService = Activator.getInstance().getIdentityService();
          for (IArtifactType artifactType : artifactTypes) {
-            artTypeIds.add(ArtifactTypeManager.getTypeId(artifactType));
+            artTypeIds.add(identityService.getLocalId(artifactType));
          }
          idTypeJoinQuery = addToIdJoin(artTypeIds);
          sql.append(artAlias);

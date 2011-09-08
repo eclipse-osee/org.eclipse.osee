@@ -44,10 +44,10 @@ import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
@@ -107,11 +107,13 @@ public class AccessControlService implements IAccessControlService {
 
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
+   private final IdentityService identityService;
 
-   public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService) {
+   public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, IdentityService identityService) {
       super();
       this.databaseService = databaseService;
       this.cachingService = cachingService;
+      this.identityService = identityService;
       try {
          reloadCache();
       } catch (OseeCoreException ex) {
@@ -215,8 +217,8 @@ public class AccessControlService implements IAccessControlService {
 
          IOseeStatement chStmt = getDatabaseService().getStatement();
          try {
-            RelationType relationType = getRelationTypeCache().get(CoreRelationTypes.Users_User);
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, relationType.getId());
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
+               identityService.getLocalId(CoreRelationTypes.Users_User));
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {

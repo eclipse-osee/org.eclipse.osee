@@ -16,10 +16,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -36,14 +37,21 @@ public final class AttributeDataStore {
 
    private static final SearchTagQueryBuilder searchTagQueryBuilder = new SearchTagQueryBuilder();
 
-   private AttributeDataStore() {
-      // Utility Class
+   private IOseeDatabaseService databaseService;
+   private IdentityService identityService;
+
+   public void setDatabaseService(IOseeDatabaseService databaseService) {
+      this.databaseService = databaseService;
    }
 
-   public static Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeCoreException {
+   public void setIdentityService(IdentityService identityService) {
+      this.identityService = identityService;
+   }
+
+   public Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeCoreException {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = databaseService.getStatement(connection);
       try {
          chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
          while (chStmt.next()) {
@@ -57,11 +65,11 @@ public final class AttributeDataStore {
       return attributeData;
    }
 
-   public static Set<AttributeData> getAttributesByTags(int branchId, DeletionFlag deletionFlag, final Collection<Long> tagData, final Collection<AttributeType> attributeTypes) throws OseeCoreException {
+   public Set<AttributeData> getAttributesByTags(int branchId, DeletionFlag deletionFlag, final Collection<Long> tagData, final Collection<IAttributeType> attributeTypes) throws OseeCoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
 
       IdJoinQuery oseeIdJoin = null;
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = databaseService.getStatement();
       boolean useAttrTypeJoin = attributeTypes.size() > 1;
 
       try {
@@ -74,8 +82,8 @@ public final class AttributeDataStore {
             sqlQuery += " and attr1.attr_type_id = ?";
          } else if (useAttrTypeJoin) {
             oseeIdJoin = JoinUtility.createIdJoinQuery();
-            for (AttributeType attributeType : attributeTypes) {
-               oseeIdJoin.add(attributeType.getId());
+            for (IAttributeType attributeType : attributeTypes) {
+               oseeIdJoin.add(identityService.getLocalId(attributeType));
             }
             oseeIdJoin.store();
             params.add(oseeIdJoin.getQueryId());
@@ -85,8 +93,8 @@ public final class AttributeDataStore {
             params.add(branchId);
          }
          if (attributeTypes.size() == 1) {
-            AttributeType type = attributeTypes.iterator().next();
-            params.add(type.getId());
+            IAttributeType type = attributeTypes.iterator().next();
+            params.add(identityService.getLocalId(type));
          }
 
          chStmt.runPreparedQuery(sqlQuery, params.toArray(new Object[params.size()]));

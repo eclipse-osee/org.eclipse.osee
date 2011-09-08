@@ -71,7 +71,6 @@ public class OseeTypesSetup {
          // Only delete file if no problems processing
          combinedFile.delete();
 
-         //john - for each in map, create artifact (OseeTypeDefinition) and store xtext data in artifact
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }

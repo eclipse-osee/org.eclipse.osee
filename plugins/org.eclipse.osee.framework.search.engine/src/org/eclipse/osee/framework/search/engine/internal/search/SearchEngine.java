@@ -44,13 +44,15 @@ public class SearchEngine implements ISearchEngine {
    private final IAttributeTaggerProviderManager taggingManager;
    private final AttributeTypeCache attributeTypeCache;
    private final BranchCache branchCache;
+   private final AttributeDataStore attributeDataStore;
 
-   public SearchEngine(SearchStatistics statistics, TagProcessor tagProcessor, IAttributeTaggerProviderManager taggingManager, AttributeTypeCache attributeTypeCache, BranchCache branchCache) {
+   public SearchEngine(SearchStatistics statistics, TagProcessor tagProcessor, IAttributeTaggerProviderManager taggingManager, AttributeTypeCache attributeTypeCache, BranchCache branchCache, AttributeDataStore attributeDataStore) {
       this.statistics = statistics;
       this.tagProcessor = tagProcessor;
       this.taggingManager = taggingManager;
       this.attributeTypeCache = attributeTypeCache;
       this.branchCache = branchCache;
+      this.attributeDataStore = attributeDataStore;
    }
 
    private Collection<AttributeType> getAttributeTypes(Collection<IAttributeType> tokens) throws OseeCoreException {
@@ -89,12 +91,11 @@ public class SearchEngine implements ISearchEngine {
 
          SearchOptions options = searchRequest.getOptions();
          Collection<IAttributeType> attributeTypeTokens = options.getAttributeTypeFilter();
-         Collection<AttributeType> attributeTypes = getAttributeTypes(attributeTypeTokens);
 
          int branchId = branchCache.get(searchRequest.getBranch()).getId();
          Collection<AttributeData> tagMatches =
-            AttributeDataStore.getAttributesByTags(branchId, options.getDeletionFlag(), searchTags.values(),
-               attributeTypes);
+            attributeDataStore.getAttributesByTags(branchId, options.getDeletionFlag(), searchTags.values(),
+               attributeTypeTokens);
          String message =
             String.format("Attribute Search Query found [%d] in [%d] ms", tagMatches.size(),
                System.currentTimeMillis() - startDataStoreSearch);

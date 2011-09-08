@@ -135,8 +135,8 @@ public class ServerAdminCommandProvider implements CommandProvider {
       }
 
       IOperation operation =
-         new PurgeRelationType(Activator.getOseeDatabaseService(), Activator.getOseeCachingService(), logger, force,
-            relationTypes.toArray(new String[relationTypes.size()]));
+         new PurgeRelationType(Activator.getOseeDatabaseService(), Activator.getOseeCachingService(),
+            Activator.getIdentityService(), logger, force, relationTypes.toArray(new String[relationTypes.size()]));
 
       return Operations.executeAsJob(operation, false);
    }

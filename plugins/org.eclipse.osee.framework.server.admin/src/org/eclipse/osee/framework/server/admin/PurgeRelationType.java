@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -53,13 +54,15 @@ public final class PurgeRelationType extends AbstractDbTxOperation {
    private final String[] typesToPurge;
    private final boolean forcePurge;
    private final List<Long[]> relationTypeGuids;
+   private final IdentityService identityService;
 
-   public PurgeRelationType(IOseeDatabaseService databaseService, IOseeCachingService cachingService, OperationLogger logger, boolean force, String... typesToPurge) {
+   public PurgeRelationType(IOseeDatabaseService databaseService, IOseeCachingService cachingService, IdentityService identityService, OperationLogger logger, boolean force, String... typesToPurge) {
       super(databaseService, "Purge Relation Type", Activator.PLUGIN_ID, logger);
       this.cache = cachingService.getRelationTypeCache();
       this.forcePurge = force;
       this.typesToPurge = typesToPurge;
       this.relationTypeGuids = new ArrayList<Long[]>(typesToPurge.length);
+      this.identityService = identityService;
    }
 
    @Override
@@ -104,7 +107,7 @@ public final class PurgeRelationType extends AbstractDbTxOperation {
 
       try {
          for (Long[] relationTypeId : relationTypeGuids) {
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, cache.getByGuid(relationTypeId[0]).getId());
+            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, identityService.getLocalId(relationTypeId[0]));
             while (chStmt.next()) {
                gammas.add(new Integer[] {chStmt.getInt("gamma_id")});
             }

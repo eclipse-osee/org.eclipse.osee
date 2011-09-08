@@ -81,7 +81,7 @@ public class RelationManager {
             relation.getBArtifactId() == newRelation.getBArtifactId() && //
             relation.getRelationType() == newRelation.getRelationType() && //
             relation != newRelation) {
-               OseeLog.logf(Activator.class, Level.WARNING, 
+               OseeLog.logf(Activator.class, Level.WARNING,
                   "Duplicate relation objects for same relation for RELATION 1 [%s] RELATION 2 [%s]", relation,
                   newRelation);
             }
@@ -220,17 +220,17 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationTypeSide relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
-      List<Artifact> artifacts = getRelatedArtifacts(artifact, relationEnum, relationEnum.getSide());
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationTypeSide relationType, DeletionFlag deletionFlag) throws OseeCoreException {
+      List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationType.getSide());
       Collection<Integer> artIds = new ArrayList<Integer>();
 
       if (deletionFlag.areDeletedAllowed()) {
-         Object[] formatArgs = relationEnum.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
+         Object[] formatArgs = relationType.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
-            chStmt.runPreparedQuery(sql, artifact.getBranch().getId(), RelationTypeManager.getTypeId(relationEnum),
-               artifact.getArtId());
+            chStmt.runPreparedQuery(sql, artifact.getBranch().getId(),
+               Activator.getInstance().getIdentityService().getLocalId(relationType), artifact.getArtId());
             while (chStmt.next()) {
                int artId = chStmt.getInt(formatArgs[0] + "_art_id");
                artIds.add(artId);

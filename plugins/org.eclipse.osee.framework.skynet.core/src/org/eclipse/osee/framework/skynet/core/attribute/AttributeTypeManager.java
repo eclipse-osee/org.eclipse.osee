@@ -135,10 +135,6 @@ public class AttributeTypeManager {
       getCache().storeAllModified();
    }
 
-   public static int getTypeId(IAttributeType typeToken) throws OseeCoreException {
-      return getType(typeToken).getId();
-   }
-
    @SuppressWarnings("rawtypes")
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, IAttributeType attributeType) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));

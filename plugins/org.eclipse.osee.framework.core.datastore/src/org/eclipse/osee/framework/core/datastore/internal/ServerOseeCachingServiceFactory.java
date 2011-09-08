@@ -87,6 +87,6 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
             locatorManager, resourceManager, branchCache, identityService));
 
       return new OseeCachingService(branchCache, txCache, artifactCache, attributeCache, relationCache,
-         oseeEnumTypeCache);
+         oseeEnumTypeCache, identityService);
    }
 }

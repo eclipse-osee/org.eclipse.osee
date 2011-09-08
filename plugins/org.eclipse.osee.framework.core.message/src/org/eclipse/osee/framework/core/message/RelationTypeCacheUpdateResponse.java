@@ -16,9 +16,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 
 /**
  * @author Roberto E. Escobar
@@ -142,12 +142,12 @@ public class RelationTypeCacheUpdateResponse {
 
    public static RelationTypeCacheUpdateResponse fromCache(IOseeCachingService caching) throws OseeCoreException {
       Collection<RelationType> relationTypes = caching.getRelationTypeCache().getAll();
-      ArtifactTypeCache artifactTypeCache = caching.getArtifactTypeCache();
+      IdentityService identityService = caching.getIdentityService();
 
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
       for (RelationType item : relationTypes) {
-         int artifactTypeSideA = artifactTypeCache.get(item.getArtifactTypeSideA()).getId();
-         int artifactTypeSideB = artifactTypeCache.get(item.getArtifactTypeSideB()).getId();
+         int artifactTypeSideA = identityService.getLocalId(item.getArtifactTypeSideA());
+         int artifactTypeSideB = identityService.getLocalId(item.getArtifactTypeSideB());
 
          rows.add(new RelationTypeRow(item.getId(), item.getName(), item.getGuid(), item.getStorageState(),
             item.getSideAName(), item.getSideBName(), artifactTypeSideA, artifactTypeSideB, item.getMultiplicity(),

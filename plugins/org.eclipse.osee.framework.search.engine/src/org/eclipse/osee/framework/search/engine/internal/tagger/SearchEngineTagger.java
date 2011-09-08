@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
+import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 
 /**
@@ -36,12 +37,14 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    private final TaggerStatistics statistics;
    private final SearchTagDataStore searchTagDataStore;
    private final IAttributeTaggerProviderManager taggingManager;
+   private final AttributeDataStore attributeDataStore;
 
-   public SearchEngineTagger(ExecutorService executor, SearchTagDataStore searchTagDataStore, IAttributeTaggerProviderManager taggingManager) {
+   public SearchEngineTagger(ExecutorService executor, SearchTagDataStore searchTagDataStore, IAttributeTaggerProviderManager taggingManager, AttributeDataStore attributeDataStore) {
       this.statistics = new TaggerStatistics(searchTagDataStore);
       this.executor = executor;
       this.searchTagDataStore = searchTagDataStore;
       this.taggingManager = taggingManager;
+      this.attributeDataStore = attributeDataStore;
 
       Timer timer = new Timer("Start-Up Tagger");
       timer.schedule(new StartUpRunnable(this), 3000);
@@ -61,7 +64,8 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
 
    @Override
    public FutureTask<?> tagByQueueQueryId(ITagListener listener, int queryId) {
-      TaggerRunnable runnable = new TaggerRunnable(taggingManager, searchTagDataStore, queryId, false, CACHE_LIMIT);
+      TaggerRunnable runnable =
+         new TaggerRunnable(taggingManager, searchTagDataStore, queryId, false, CACHE_LIMIT, attributeDataStore);
       runnable.addListener(statistics);
       if (listener != null) {
          runnable.addListener(listener);

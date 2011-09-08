@@ -129,7 +129,7 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       register(new OseeCacheServlet(sessionManager, translationService, caching, factoryService),
          OseeServerContext.CACHE_CONTEXT);
       register(new OseeModelServlet(sessionManager, translationService, modeling), OseeServerContext.OSEE_MODEL_CONTEXT);
-      register(new UnsubscribeServlet(context, databaseService, caching), "osee/unsubscribe");
+      register(new UnsubscribeServlet(context, databaseService, caching, identityService), "osee/unsubscribe");
 
       register(new AtsServlet(locatorManager, resourceManager, caching), "osee/ats");
       register(new ConfigurationServlet(appServerManager, translationService, databaseService, caching, branchService,

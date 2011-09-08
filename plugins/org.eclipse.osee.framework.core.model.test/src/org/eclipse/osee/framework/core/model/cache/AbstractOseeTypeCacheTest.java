@@ -16,7 +16,6 @@ public class AbstractOseeTypeCacheTest<T extends AbstractOseeType<Long>> extends
 
    @Override
    protected Long createKey() {
-      // john check what needs to happen here.
       return 0x00L;
    }
 }

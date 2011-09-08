@@ -146,7 +146,8 @@ public final class MockDataFactory {
       RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
       OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<Long, OseeEnumType>());
 
-      IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
+      IOseeCachingService service =
+         new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache, null);
       return new MockOseeCachingServiceProvider(service);
    }
 

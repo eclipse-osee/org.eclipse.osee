@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -131,8 +130,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
             }
          } catch (Exception ex) {
             badData.add(attrData.gammaId);
-            OseeLog.logf(Activator.class, Level.SEVERE, "Skiping File %s because of exception %s",
-               attrData.getHrid(), ex);
+            OseeLog.logf(Activator.class, Level.SEVERE, "Skiping File %s because of exception %s", attrData.getHrid(),
+               ex);
          }
 
          if (fixedAttribute) {
@@ -173,7 +172,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(GET_ATTRS, AttributeTypeManager.getTypeId(CoreAttributeTypes.WordTemplateContent));
+         chStmt.runPreparedQuery(GET_ATTRS,
+            Activator.getInstance().getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent));
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
                chStmt.getString("uri")));

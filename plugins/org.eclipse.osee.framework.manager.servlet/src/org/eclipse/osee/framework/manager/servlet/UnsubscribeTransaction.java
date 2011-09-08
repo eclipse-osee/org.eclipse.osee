@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -43,12 +43,14 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
    private int currentGammaId;
    private final UnsubscribeRequest unsubscribeData;
    private final IOseeCachingService cacheService;
+   private final IdentityService identityService;
    private String completionMethod;
 
-   public UnsubscribeTransaction(IOseeDatabaseService databaseService, IOseeCachingService cacheService, UnsubscribeRequest unsubscribeData) {
+   public UnsubscribeTransaction(IOseeDatabaseService databaseService, IOseeCachingService cacheService, UnsubscribeRequest unsubscribeData, IdentityService identityService) {
       super(databaseService, "Delete Relation", Activator.PLUGIN_ID);
       this.unsubscribeData = unsubscribeData;
       this.cacheService = cacheService;
+      this.identityService = identityService;
    }
 
    @Override
@@ -64,12 +66,12 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
 
    private boolean getRelationTxData() throws OseeCoreException {
       common = cacheService.getBranchCache().getCommonBranch();
-      RelationType relationType = cacheService.getRelationTypeCache().get(CoreRelationTypes.Users_Artifact);
+      int relationTypeId = identityService.getLocalId(CoreRelationTypes.Users_Artifact);
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
          chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, unsubscribeData.getGroupId(), unsubscribeData.getUserId(),
-            relationType.getId(), common.getId(), TxChange.NOT_CURRENT.getValue());
+            relationTypeId, common.getId(), TxChange.NOT_CURRENT.getValue());
          if (chStmt.next()) {
             currentGammaId = chStmt.getInt("gamma_id");
             relationId = chStmt.getInt("rel_link_id");

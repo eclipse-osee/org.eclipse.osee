@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -138,7 +138,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       if (attributeType != null) {
          builder.append(attrAlias);
          builder.append(".attr_type_id=? AND ");
-         builder.addParameter(AttributeTypeManager.getTypeId(attributeType));
+         builder.addParameter(Activator.getInstance().getIdentityService().getLocalId(attributeType));
       }
       if (value != null) {
          builder.append(attrAlias);

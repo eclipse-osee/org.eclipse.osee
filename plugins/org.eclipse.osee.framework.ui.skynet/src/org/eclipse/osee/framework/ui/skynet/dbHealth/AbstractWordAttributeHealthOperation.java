@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
@@ -157,7 +156,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          List<AttrData> attrData = new ArrayList<AttrData>();
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(GET_ATTRS, AttributeTypeManager.getTypeId(attributeType));
+            chStmt.runPreparedQuery(GET_ATTRS, Activator.getInstance().getIdentityService().getLocalId(attributeType));
             while (chStmt.next()) {
                checkForCancelledStatus(monitor);
                String uri = chStmt.getString("uri");

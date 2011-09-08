@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,11 +36,13 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    private final IOseeDatabaseService databaseService;
    private final IOseeCachingService cacheService;
    private final BundleContext bundleContext;
+   private final IdentityService identityService;
 
-   public UnsubscribeServlet(BundleContext bundleContext, IOseeDatabaseService databaseService, IOseeCachingService cacheService) {
+   public UnsubscribeServlet(BundleContext bundleContext, IOseeDatabaseService databaseService, IOseeCachingService cacheService, IdentityService identityService) {
       this.databaseService = databaseService;
       this.cacheService = cacheService;
       this.bundleContext = bundleContext;
+      this.identityService = identityService;
    }
 
    @Override
@@ -83,7 +86,7 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          UnsubscribeRequest data = UnsubscribeRequest.createFromXML(request);
-         UnsubscribeTransaction del = new UnsubscribeTransaction(databaseService, cacheService, data);
+         UnsubscribeTransaction del = new UnsubscribeTransaction(databaseService, cacheService, data, identityService);
          Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor());
          response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/plain");

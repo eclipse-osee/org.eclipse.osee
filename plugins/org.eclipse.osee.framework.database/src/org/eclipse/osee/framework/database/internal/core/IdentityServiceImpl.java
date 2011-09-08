@@ -84,10 +84,11 @@ public class IdentityServiceImpl implements IdentityService {
    }
 
    @Override
-   public void clear() {
+   public synchronized void clear() {
       universalIdToLocalId.clear();
       localIdToUniversalId.clear();
       persistedIds.clear();
+      ensurePopulatedRanOnce = false;
    }
 
    private void cache(Long remoteId, Integer localId) {

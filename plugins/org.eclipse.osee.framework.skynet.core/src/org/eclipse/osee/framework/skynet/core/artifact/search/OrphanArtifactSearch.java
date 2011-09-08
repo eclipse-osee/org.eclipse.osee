@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -28,17 +30,19 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    private static final String tables = "osee_artifact";
    private static final String sql =
       "art_type_id =? AND art_id NOT in (SELECT t2.art_id FROM osee_relation_link t1, osee_artifact t2, osee_txs t4, (SELECT Max(t1.gamma_id) AS gamma_id, t1.rel_link_id, t2.branch_id FROM osee_relation_link t1, osee_txs t2 WHERE t1.gamma_id = t2.gamma_id AND t2.branch_id = ? GROUP BY t1.rel_link_id, t2.branch_id) t6 WHERE t1.rel_link_type_id =? AND t1.b_art_id = t2.art_id AND t1.gamma_id = t4.gamma_id AND t1.rel_link_id = t6.rel_link_id AND t4.branch_id = t6.branch_id AND t1.gamma_id = t6.gamma_id AND t4.mod_type <> " + ModificationType.DELETED.getValue() + " GROUP BY t2.art_id)";
-   private final ArtifactType aritfactType;
+   private final IArtifactType aritfactType;
    private final int relationTypeId;
 
    public OrphanArtifactSearch(IArtifactType aritfactType) throws OseeCoreException {
-      this.aritfactType = ArtifactTypeManager.getType(aritfactType);
-      this.relationTypeId = RelationTypeManager.getType("Default Hierarchical").getId();
+      this.aritfactType = aritfactType;
+      this.relationTypeId =
+         Activator.getInstance().getIdentityService().getLocalId(CoreRelationTypes.Default_Hierarchical__Child);
    }
 
    @Override
    public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
-      dataList.add(aritfactType.getId());
+      IdentityService identityService = Activator.getInstance().getIdentityService();
+      dataList.add(identityService.getLocalId(aritfactType));
       dataList.add(BranchManager.getBranchId(branch));
       dataList.add(relationTypeId);
 

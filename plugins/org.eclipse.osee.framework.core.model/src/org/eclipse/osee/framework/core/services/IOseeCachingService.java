@@ -38,6 +38,8 @@ public interface IOseeCachingService {
 
    OseeEnumTypeCache getEnumTypeCache();
 
+   IdentityService getIdentityService();
+
    Collection<?> getCaches();
 
    IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException;

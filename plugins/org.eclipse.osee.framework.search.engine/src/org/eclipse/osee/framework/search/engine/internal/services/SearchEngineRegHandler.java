@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
+import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.internal.search.SearchEngine;
 import org.eclipse.osee.framework.search.engine.internal.search.SearchStatistics;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
@@ -34,7 +35,8 @@ public class SearchEngineRegHandler extends AbstractTrackingHandler {
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
       IAttributeTaggerProviderManager.class,
       IOseeCachingService.class,
-      IOseeDatabaseService.class
+      IOseeDatabaseService.class,
+      AttributeDataStore.class, 
       };
    //@formatter:on
 
@@ -54,7 +56,7 @@ public class SearchEngineRegHandler extends AbstractTrackingHandler {
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
       IAttributeTaggerProviderManager taggingManager = getService(IAttributeTaggerProviderManager.class, services);
       IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
-      //      IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
+      AttributeDataStore attributeDataStore = getService(AttributeDataStore.class, services);
 
       SearchStatistics searchStatistics = new SearchStatistics();
 
@@ -62,7 +64,8 @@ public class SearchEngineRegHandler extends AbstractTrackingHandler {
       BranchCache branchCache = cachingService.getBranchCache();
 
       ISearchEngine searchEngine =
-         new SearchEngine(searchStatistics, processor, taggingManager, attributeTypeCache, branchCache);
+         new SearchEngine(searchStatistics, processor, taggingManager, attributeTypeCache, branchCache,
+            attributeDataStore);
       serviceRegistration = context.registerService(ISearchEngine.class.getName(), searchEngine, null);
    }
 

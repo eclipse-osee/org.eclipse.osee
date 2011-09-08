@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -49,6 +50,7 @@ public class Activator implements BundleActivator {
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
       createServiceTracker(context, IApplicationServerManager.class, OseeServiceTrackerId.APPLICATION_MANAGER);
       createServiceTracker(context, ISessionManager.class, OseeServiceTrackerId.SESSION_MANAGER);
+      createServiceTracker(context, IdentityService.class, OseeServiceTrackerId.IDENTITY_SERVICE);
    }
 
    @Override
@@ -101,6 +103,10 @@ public class Activator implements BundleActivator {
 
    public static ISessionManager getSessionManager() {
       return getTracker(OseeServiceTrackerId.SESSION_MANAGER, ISessionManager.class);
+   }
+
+   public static IdentityService getIdentityService() {
+      return getTracker(OseeServiceTrackerId.IDENTITY_SERVICE, IdentityService.class);
    }
 
    private static <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {

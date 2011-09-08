@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
@@ -58,6 +59,7 @@ public class Activator extends OseeUiActivator implements IBroadcastEventListene
    private ServiceTracker cacheServiceTracker;
    private ServiceTracker databaseServiceTracker;
    private ServiceTracker accessServiceTracker;
+   private ServiceTracker identityServiceTracker;
 
    private final Map<String, ServiceDependencyTracker> trackers = new HashMap<String, ServiceDependencyTracker>();
 
@@ -73,6 +75,7 @@ public class Activator extends OseeUiActivator implements IBroadcastEventListene
       cacheServiceTracker.close();
       databaseServiceTracker.close();
       accessServiceTracker.close();
+      identityServiceTracker.close();
 
       for (ServiceDependencyTracker tracker : trackers.values()) {
          Lib.close(tracker);
@@ -94,6 +97,9 @@ public class Activator extends OseeUiActivator implements IBroadcastEventListene
 
       accessServiceTracker = new ServiceTracker(context, AccessPolicy.class.getName(), null);
       accessServiceTracker.open();
+
+      identityServiceTracker = new ServiceTracker(context, IdentityService.class.getName(), null);
+      identityServiceTracker.open();
 
       trackers.put(ArtifactPromptService.class.getName(), new ServiceDependencyTracker(context,
          new ArtifactPromptServiceRegHandler()));
@@ -159,6 +165,10 @@ public class Activator extends OseeUiActivator implements IBroadcastEventListene
 
    public AccessPolicy getAccessPolicy() {
       return (AccessPolicy) accessServiceTracker.getService();
+   }
+
+   public IdentityService getIdentityService() {
+      return (IdentityService) identityServiceTracker.getService();
    }
 
    public ArtifactPromptService getArtifactPromptService() throws OseeCoreException {

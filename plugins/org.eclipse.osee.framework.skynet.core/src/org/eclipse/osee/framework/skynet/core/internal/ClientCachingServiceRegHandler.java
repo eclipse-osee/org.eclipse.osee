@@ -84,6 +84,6 @@ public class ClientCachingServiceRegHandler extends AbstractTrackingHandler {
          new RelationTypeCache(new ClientRelationTypeAccessor(factory.getRelationTypeFactory(), artifactTypeCache));
 
       return new OseeCachingService(branchCache, transactionCache, artifactTypeCache, attributeTypeCache,
-         relationTypeCache, oseeEnumTypeCache);
+         relationTypeCache, oseeEnumTypeCache, Activator.getInstance().getIdentityService());
    }
 }

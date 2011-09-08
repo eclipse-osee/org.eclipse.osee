@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.core.message.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
@@ -33,7 +34,8 @@ public class OseeBranchExchangeServiceRegistrationHandler extends AbstractTracki
       IResourceLocatorManager.class,
       IOseeModelingService.class,
       IOseeCachingService.class,
-      IOseeDatabaseService.class};
+      IOseeDatabaseService.class,
+      IdentityService.class,};
 
    private ServiceRegistration serviceRegistration;
 
@@ -61,8 +63,10 @@ public class OseeBranchExchangeServiceRegistrationHandler extends AbstractTracki
       IOseeModelingService modelingService = getService(IOseeModelingService.class, services);
       IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
       IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
+      IdentityService identityService = getService(IdentityService.class, services);
       OseeServices oseeServices =
-         new OseeServices(resourceManager, resourceLocatorManager, cachingService, modelingService, databaseService);
+         new OseeServices(resourceManager, resourceLocatorManager, cachingService, modelingService, databaseService,
+            identityService);
       return new BranchExchange(oseeServices);
    }
 }

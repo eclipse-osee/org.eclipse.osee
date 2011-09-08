@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
+import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.internal.tagger.SearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 import org.osgi.framework.BundleContext;
@@ -34,7 +35,8 @@ public class SearchEngineTaggerRegHandler extends AbstractTrackingHandler {
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
       IApplicationServerManager.class,
       IOseeDatabaseService.class,
-      IAttributeTaggerProviderManager.class
+      IAttributeTaggerProviderManager.class, 
+      AttributeDataStore.class,
    };
    //@formatter:on
 
@@ -50,12 +52,13 @@ public class SearchEngineTaggerRegHandler extends AbstractTrackingHandler {
       IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
       IApplicationServerManager serverManager = getService(IApplicationServerManager.class, services);
       IAttributeTaggerProviderManager taggingManager = getService(IAttributeTaggerProviderManager.class, services);
-
+      AttributeDataStore attributeDataStore = getService(AttributeDataStore.class, services);
       ThreadFactory threadFactory = serverManager.createNewThreadFactory("tagger.worker", Thread.NORM_PRIORITY);
       ExecutorService executorService = Executors.newFixedThreadPool(3, threadFactory);
 
       SearchTagDataStore dataStore = new SearchTagDataStore(databaseService);
-      ISearchEngineTagger tagger = new SearchEngineTagger(executorService, dataStore, taggingManager);
+      ISearchEngineTagger tagger =
+         new SearchEngineTagger(executorService, dataStore, taggingManager, attributeDataStore);
 
       serviceRegistration = context.registerService(ISearchEngineTagger.class.getName(), tagger, null);
    }

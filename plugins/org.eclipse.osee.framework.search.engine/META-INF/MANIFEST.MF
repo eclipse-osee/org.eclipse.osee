@@ -39,3 +39,4 @@ Export-Package: org.eclipse.osee.framework.search.engine,
  org.eclipse.osee.framework.search.engine.data,
  org.eclipse.osee.framework.search.engine.utility
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
