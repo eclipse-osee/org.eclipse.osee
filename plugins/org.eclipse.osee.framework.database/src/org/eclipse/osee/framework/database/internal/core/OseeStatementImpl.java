@@ -55,6 +55,10 @@ public final class OseeStatementImpl implements IOseeStatement {
       this(connectionPool, null);
    }
 
+   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, int resultSetType, int resultSetConcurrency) {
+      this(connectionPool, null, true, resultSetType, resultSetConcurrency);
+   }
+
    public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection, boolean autoClose, int resultSetType, int resultSetConcurrency) {
       this.autoClose = autoClose;
       this.connection = connection;
