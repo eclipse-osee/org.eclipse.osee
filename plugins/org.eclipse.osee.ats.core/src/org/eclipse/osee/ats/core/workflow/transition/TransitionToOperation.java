@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +36,16 @@ public class TransitionToOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), helper.getName());
+         SkynetTransaction transaction =
+            new SkynetTransaction(AtsUtilCore.getAtsBranch(), helper.getName() + ".preSave");
+         for (AbstractWorkflowArtifact awa : helper.getAwas()) {
+            if (awa.isDirty()) {
+               awa.persist(transaction);
+            }
+         }
+         transaction.execute();
+
+         transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), helper.getName());
          TransitionManager transitionMgr = new TransitionManager(helper, transaction);
          results = transitionMgr.handleAll();
          if (results.isCancelled()) {

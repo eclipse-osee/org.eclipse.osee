@@ -55,10 +55,7 @@ public class TransitionManager {
 
    public TransitionResults handleAll() {
       TransitionResults results = new TransitionResults();
-      handleTransitionPrep(results);
-      if (results.isCancelled() || !results.isEmpty()) {
-         return results;
-      }
+
       handleTransitionValidation(results);
       if (results.isCancelled() || !results.isEmpty()) {
          return results;
@@ -78,25 +75,6 @@ public class TransitionManager {
          }
       }
       return results;
-   }
-
-   /**
-    * Prepare AbstractWorkflowArtifact for transition including setting users, un-setting system users, saving, etc.
-    * 
-    * @return Result.isFalse if failure
-    */
-   public void handleTransitionPrep(TransitionResults results) {
-      // Persist must be done prior and separate from transition
-      try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), "Transition Preparation");
-         for (AbstractWorkflowArtifact awa : helper.getAwas()) {
-            awa.persist(getClass().getSimpleName());
-         }
-         transaction.execute();
-      } catch (OseeCoreException ex) {
-         results.addResult(new TransitionResult(String.format("Exception while preparing for transition [%s]",
-            helper.getName()), ex));
-      }
    }
 
    /**

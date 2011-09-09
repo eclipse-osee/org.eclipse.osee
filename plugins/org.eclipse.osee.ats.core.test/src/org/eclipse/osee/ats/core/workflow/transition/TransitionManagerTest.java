@@ -53,28 +53,8 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionPrep() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset("TransitionManagerTest");
-      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      // make change that should be persisted
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.PriorityType, "5");
-
-      Assert.assertTrue("Team WF should be dirty", teamArt.isDirty());
-
-      TransitionHelper helper =
-         new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
-            TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
-      TransitionResults results = new TransitionResults();
-      transMgr.handleTransitionPrep(results);
-      Assert.assertTrue(results.isEmpty());
-
-      Assert.assertFalse("Team WF should NOT be dirty", teamArt.isDirty());
-   }
-
-   @org.junit.Test
    public void testHandleTransitionValidation__NoAwas() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest");
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), EMPTY_AWAS, AtsTestUtil.getImplementStateDef().getPageName(),
             Arrays.asList(UserManager.getUser()), null, TransitionOption.None);
