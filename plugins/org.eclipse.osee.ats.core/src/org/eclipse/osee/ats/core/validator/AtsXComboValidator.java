@@ -22,7 +22,7 @@ public class AtsXComboValidator extends AtsXWidgetValidator {
    @Override
    public WidgetResult validateTransition(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) throws OseeCoreException {
       WidgetResult result = WidgetResult.Valid;
-      if ("XComboDam".equals(widgetDef.getXWidgetName())) {
+      if (widgetDef.getXWidgetName().startsWith("XComboDam")) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
          if (!result.isValid()) {
             return result;
