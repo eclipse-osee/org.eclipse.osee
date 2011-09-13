@@ -41,11 +41,6 @@ public final class RelationSetRule extends AbstractValidationRule {
       return artType.inheritsFrom(artifactType);
    }
 
-   @Override
-   public String toString() {
-      return "For \"" + artifactType + "\", ensure at least " + minimumRelations + " relations(s) of type \"" + relationEnum + "\" exists";
-   }
-
    public IRelationTypeSide getRelationEnum() {
       return relationEnum;
    }
@@ -58,10 +53,20 @@ public final class RelationSetRule extends AbstractValidationRule {
          // validate that artifact has one "Requirement Trace" relation to a Subsystem Requirement
          Collection<Artifact> arts = artToValidate.getRelatedArtifacts(relationEnum);
          if (arts.size() < minimumRelations) {
-            errorMessages.add(ValidateReqChangeReport.getRequirementHyperlink(artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum + "\"");
+            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum + "\"");
             validationPassed = false;
          }
       }
       return new ValidationResult(errorMessages, validationPassed);
+   }
+
+   @Override
+   public String getRuleDescription() {
+      return "<b>Relations Check: </b>" + "For \"" + artifactType + "\", ensure at least " + minimumRelations + " relations(s) of type \"" + relationEnum + "\" exists";
+   }
+
+   @Override
+   public String getRuleTitle() {
+      return "Relations Check:";
    }
 }

@@ -16,4 +16,8 @@ public abstract class AbstractValidationRule {
     * @param rd The XResultData object to write (or render) validation results to.
     */
    protected abstract ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException;
+
+   public abstract String getRuleDescription();
+
+   public abstract String getRuleTitle();
 }

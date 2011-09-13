@@ -12,122 +12,128 @@ package org.eclipse.osee.ats.util.validate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
-import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
  */
 public class ValidationReportOperation extends AbstractOperation {
-   final Set<AttributeSetRule> attributeSetRules;
-   final Set<RelationSetRule> relationSetRules;
-   final Set<UniqueNameRule> uniqueNameRules;
-   final TeamWorkFlowArtifact teamArt;
-   final XResultData rd;
 
-   public ValidationReportOperation(XResultData rd, TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules, Set<UniqueNameRule> uniqueNameRules) {
-      super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID);
-      this.rd = rd;
-      this.teamArt = teamArt;
-      this.attributeSetRules = attributeSetRules;
-      this.relationSetRules = relationSetRules;
-      this.uniqueNameRules = uniqueNameRules;
-   }
+   private final TeamWorkFlowArtifact teamArt;
+   private final Set<AbstractValidationRule> rules;
 
-   public ValidationReportOperation(XResultData rd, TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) {
-      super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID);
-      this.rd = rd;
+   public ValidationReportOperation(OperationLogger logger, TeamWorkFlowArtifact teamArt, Set<AbstractValidationRule> rules) {
+      super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID, logger);
       this.teamArt = teamArt;
-      this.attributeSetRules = attributeSetRules;
-      this.relationSetRules = relationSetRules;
-      this.uniqueNameRules = null;
+      this.rules = rules;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      rd.log("<b>Validating Requirement Changes for " + teamArt.getName() + "</b>");
-      for (AttributeSetRule attributeSetRule : attributeSetRules) {
-         rd.log("<b>Attribute Check: </b>" + attributeSetRule.toString());
+      logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
+
+      List<AbstractValidationRule> rulesSorted = new ArrayList<AbstractValidationRule>(rules);
+      Collections.sort(rulesSorted, new ValidationRuleComparator());
+
+      for (AbstractValidationRule rule : rulesSorted) {
+         log(rule.getRuleDescription());
       }
-      for (RelationSetRule relationSetRule : relationSetRules) {
-         rd.log("<b>Relations Check: </b>" + relationSetRule.toString());
-      }
-      for (UniqueNameRule uniqueNameRule : uniqueNameRules) {
-         rd.log("<b>Unique Names Check: </b>" + uniqueNameRule.toString());
-      }
-      rd.log("<b>Artifact Validation Checks: </b> All Errors reported must be fixed.");
-      rd.log("<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
+      log("<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
+
       try {
-         performValidation();
-         rd.log("Validation Complete");
+         ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
+         Collection<Artifact> changedArtifacts =
+            changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW, ModificationType.MODIFIED);
+         checkForCancelledStatus(monitor);
+
+         double total = changedArtifacts.size() + rules.size();
+         if (total > 0) {
+            Collection<String> warnings = new ArrayList<String>();
+
+            int workAmount = calculateWork(1 / total);
+
+            String lastTitle = "";
+            int ruleIndex = 1;
+            for (AbstractValidationRule rule : rulesSorted) {
+               checkForCancelledStatus(monitor);
+
+               //check to see if we should print a header for sorted (and grouped) rule types
+               String currentTitle = rule.getRuleTitle();
+               if (!lastTitle.equals(currentTitle)) {
+                  logf("\n%s", currentTitle);
+                  lastTitle = currentTitle;
+               }
+
+               int artIndex = 1;
+               for (Artifact art : changedArtifacts) {
+                  monitor.setTaskName(String.format("Validating: Rule[%s of %s] Artifact[%s of %s]", ruleIndex,
+                     rules.size(), artIndex, changedArtifacts.size()));
+                  checkForCancelledStatus(monitor);
+
+                  ValidationResult result = rule.validate(art, monitor);
+                  if (!result.didValidationPass()) {
+                     for (String errorMsg : result.getErrorMessages()) {
+                        if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement)) {
+                           logf("Error: %s", errorMsg);
+                        } else {
+                           warnings.add(String.format("Warning: %s", errorMsg));
+                        }
+                     }
+                  }
+                  monitor.worked(workAmount);
+                  artIndex++;
+               }
+               ruleIndex++;
+            }
+
+            // print warnings at the end of the report
+            for (String warning : warnings) {
+               log(warning);
+            }
+         }
+
+         log("\nValidation Complete");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         rd.logError(ex.getLocalizedMessage());
+         logf("Error: %s", ex.getLocalizedMessage());
       }
-      createReport();
    }
 
-   private void createReport() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            String title = getName();
-            if (title.length() > 60) {
-               title = title.substring(0, 59) + "...";
-            }
-            XResultDataUI.report(rd, title, Manipulations.CONVERT_NEWLINES, Manipulations.ERROR_RED,
-               Manipulations.ERROR_WARNING_HEADER, Manipulations.WARNING_YELLOW);
+   private final class ValidationRuleComparator implements Comparator<AbstractValidationRule> {
+
+      @Override
+      public int compare(AbstractValidationRule o1, AbstractValidationRule o2) {
+         String title1 = o1.getRuleTitle();
+         String title2 = o2.getRuleTitle();
+         if (title1 == null) {
+            title1 = "";
          }
-      });
-   }
-
-   public String performValidation() throws OseeCoreException {
-      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
-      Collection<Artifact> changedArtifacts =
-         changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW, ModificationType.MODIFIED);
-
-      runOperations(changedArtifacts, rd);
-      return rd.toString();
-   }
-
-   private void runOperations(Collection<Artifact> itemsToCheck, XResultData rd) {
-      List<IOperation> operations = new ArrayList<IOperation>();
-      operations.add(new AttributeRuleCheckOperation(itemsToCheck, rd, attributeSetRules));
-      operations.add(new RelationRuleCheckOperation(itemsToCheck, rd, relationSetRules));
-      operations.add(new UniqueNameRuleCheckOperation(itemsToCheck, rd, uniqueNameRules));
-      operations.add(new ArtifactValidationCheckOperation(itemsToCheck, false));
-      CompositeOperation operation = new CompositeOperation(getName(), Activator.PLUGIN_ID, operations);
-
-      IStatus status = Operations.executeWork(operation);
-      if (!status.isOK()) {
-         if (status.isMultiStatus()) {
-            for (IStatus child : status.getChildren()) {
-               ValidateReqChangeReport.reportStatus(rd, child);
-            }
-         } else {
-            ValidateReqChangeReport.reportStatus(rd, status);
+         if (title2 == null) {
+            title2 = "";
          }
+         return title1.compareTo(title2);
       }
+   }
+
+   public static String getRequirementHyperlink(Artifact art) {
+      String linkName = String.format("%s(%s)", art.getName(), art.getHumanReadableId());
+      return XResultDataUI.getHyperlink(linkName, art.getHumanReadableId(), art.getBranch().getId());
    }
 }

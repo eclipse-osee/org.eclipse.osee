@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -26,8 +27,19 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 public final class Operations {
    public static final int TASK_WORK_RESOLUTION = Integer.MAX_VALUE;
 
+   private static final IOperation NOOP_OPERATION = new AbstractOperation("", Activator.PLUGIN_ID) {
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         // Do Nothing
+      }
+   };
+
    private Operations() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
+   }
+
+   public static IOperation getNoOpOperation() {
+      return NOOP_OPERATION;
    }
 
    /**

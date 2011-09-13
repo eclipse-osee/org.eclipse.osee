@@ -35,11 +35,6 @@ public class UniqueNameRule extends AbstractValidationRule {
    }
 
    @Override
-   public String toString() {
-      return "Ensure no two artifacts have the same name value";
-   }
-
-   @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<String>();
       boolean validationPassed = true;
@@ -51,7 +46,7 @@ public class UniqueNameRule extends AbstractValidationRule {
          for (Artifact art : arts) {
             if (art.getName().equalsIgnoreCase(artToValidate.getName()) && art.getGuid() != artToValidate.getGuid() && !hasGuidPairAlreadyBeenEvaluated(
                art.getGuid(), artToValidate.getGuid())) {
-               errorMessages.add(ValidateReqChangeReport.getRequirementHyperlink(artToValidate) + " and " + ValidateReqChangeReport.getRequirementHyperlink(art) + " have same name value:\"" + artToValidate.getName() + " \"");
+               errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " and " + ValidationReportOperation.getRequirementHyperlink(art) + " have same name value:\"" + artToValidate.getName() + " \"");
                validationPassed = false;
                addGuidPair(art.getGuid(), artToValidate.getGuid());
             }
@@ -89,5 +84,15 @@ public class UniqueNameRule extends AbstractValidationRule {
       public String getGuidB() {
          return guidB;
       }
+   }
+
+   @Override
+   public String getRuleDescription() {
+      return "<b>Unique Names Check: </b>Ensure no two artifacts have the same name value";
+   }
+
+   @Override
+   public String getRuleTitle() {
+      return "Unique Names Check:";
    }
 }

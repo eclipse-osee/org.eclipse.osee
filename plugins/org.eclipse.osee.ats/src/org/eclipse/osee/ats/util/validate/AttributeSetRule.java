@@ -54,11 +54,6 @@ public final class AttributeSetRule extends AbstractValidationRule {
    }
 
    @Override
-   public String toString() {
-      return "For \"" + baseArtifactType + "\", ensure \"" + attributeType + "\" attribute has at least " + minimumValues + " value(s)" + (invalidValue != null ? " and does NOT have \"" + invalidValue + "\" values" : "");
-   }
-
-   @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<String>();
       boolean validationPassed = true;
@@ -69,17 +64,27 @@ public final class AttributeSetRule extends AbstractValidationRule {
          for (String attributeValue : attributeValues) {
             AbstractOperation.checkForCancelledStatus(monitor);
             if (attributeValue.equals(invalidValue)) {
-               errorMessages.add(ValidateReqChangeReport.getRequirementHyperlink(artToValidate) + " has invalid " + invalidValue + " \"" + attributeType + "\" attribute");
+               errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " has invalid " + invalidValue + " \"" + attributeType + "\" attribute");
                validationPassed = false;
             } else {
                validValueFound++;
             }
          }
          if (validValueFound < minimumValues) {
-            errorMessages.add(ValidateReqChangeReport.getRequirementHyperlink(artToValidate) + " has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"");
+            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"");
             validationPassed = false;
          }
       }
       return new ValidationResult(errorMessages, validationPassed);
+   }
+
+   @Override
+   public String getRuleDescription() {
+      return "<b>Attribute Check: </b>" + "For \"" + baseArtifactType + "\", ensure \"" + attributeType + "\" attribute has at least " + minimumValues + " value(s)" + (invalidValue != null ? " and does NOT have \"" + invalidValue + "\" values" : "");
+   }
+
+   @Override
+   public String getRuleTitle() {
+      return "Attribute Check:";
    }
 }

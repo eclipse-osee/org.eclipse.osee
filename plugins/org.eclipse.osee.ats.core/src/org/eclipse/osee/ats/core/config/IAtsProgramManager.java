@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.IOperation;
 
 public interface IAtsProgramManager {
 
@@ -16,7 +17,7 @@ public interface IAtsProgramManager {
 
    public boolean isApplicable(TeamWorkFlowArtifact teamArt);
 
-   public void validateReqChanges(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public IOperation createValidateReqChangesOp(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
    public String getName();
 
