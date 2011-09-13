@@ -68,6 +68,9 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
                revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users, createdDate, createdBy);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()));
+      for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
+         provider.reviewCreated(decArt);
+      }
       decArt.persist(transaction);
       return decArt;
    }

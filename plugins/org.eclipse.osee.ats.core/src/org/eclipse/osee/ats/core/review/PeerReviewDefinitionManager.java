@@ -67,6 +67,9 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
          peerArt.getStateMgr().setAssignees(assignees);
       }
       peerArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", peerRevDef.getName()));
+      for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
+         provider.reviewCreated(peerArt);
+      }
       return peerArt;
    }
 
