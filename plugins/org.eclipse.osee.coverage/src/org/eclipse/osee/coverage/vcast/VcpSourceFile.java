@@ -51,14 +51,14 @@ public class VcpSourceFile {
       }
    }
 
-   public VcpSourceLisFile getVcpSourceLisFile() throws OseeCoreException, IOException {
+   public synchronized VcpSourceLisFile getVcpSourceLisFile() throws OseeCoreException, IOException {
       if (vcpSourceLisFile == null) {
          vcpSourceLisFile = new VcpSourceLisFile(vCastVcp, this);
       }
       return vcpSourceLisFile;
    }
 
-   public CoverageDataFile getCoverageDataFile(CoverageImport coverageImport) throws OseeCoreException {
+   public synchronized CoverageDataFile getCoverageDataFile(CoverageImport coverageImport) throws OseeCoreException {
       if (coverageDataFile == null) {
          coverageDataFile =
             new CoverageDataFile(coverageImport,

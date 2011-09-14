@@ -34,16 +34,20 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class VCastAggregateReportValidator {
 
-   Pattern coverageUnitPattern = Pattern.compile("Code&nbsp;Coverage&nbsp;for&nbsp;Unit:&nbsp;(.*?)<");
-   Pattern resultsPattern = Pattern.compile("&nbsp;([0-9]+)&nbsp;of&nbsp;([0-9]+)&nbsp;Lines&nbsp;Covered&nbsp;");
+   private static final Pattern coverageUnitPattern =
+      Pattern.compile("Code&nbsp;Coverage&nbsp;for&nbsp;Unit:&nbsp;(.*?)<");
+   private static final Pattern resultsPattern =
+      Pattern.compile("&nbsp;([0-9]+)&nbsp;of&nbsp;([0-9]+)&nbsp;Lines&nbsp;Covered&nbsp;");
    String NO_COVERAGE_DATA_EXISTS = "No&nbsp;Coverage&nbsp;Data&nbsp;Exists";
    boolean error = false;
    private VectorCastAdaCoverageImporter importer;
+   private final Matcher coverageUnitMatcher = coverageUnitPattern.matcher("");
+   private final Matcher resultsMatcher = resultsPattern.matcher("");
 
    public void run(IProgressMonitor progressMonitor, VectorCastAdaCoverageImporter importer) throws OseeCoreException {
       this.importer = importer;
       if (progressMonitor != null) {
-         progressMonitor.beginTask("nVerifying aggregate.html report with Imported results", 1);
+         progressMonitor.beginTask("Verifying aggregate.html report with Imported results", 1);
       }
       importer.getCoverageImport().getLog().log("\nVerifying aggregate.html report with Imported results");
 
@@ -67,21 +71,21 @@ public class VCastAggregateReportValidator {
          AggregateCoverageUnitResult result = null;
          while ((line = bufferedReader.readLine()) != null) {
             for (String subStr : line.split("<strong>")) {
-               Matcher m = coverageUnitPattern.matcher(subStr);
-               if (m.find()) {
+               coverageUnitMatcher.reset(subStr);
+               if (coverageUnitMatcher.find()) {
                   if (result != null) {
                      throw new OseeStateException("Found coverage begin before last coverage end");
                   }
-                  result = new AggregateCoverageUnitResult(m.group(1));
+                  result = new AggregateCoverageUnitResult(coverageUnitMatcher.group(1));
                   //               System.out.println("Found name " + m.group(1));
                }
-               m = resultsPattern.matcher(subStr);
-               if (m.find()) {
+               resultsMatcher.reset(subStr);
+               if (resultsMatcher.find()) {
                   if (result == null) {
                      throw new OseeStateException("Found coverage end before begin");
                   }
-                  result.setNumCovered(new Integer(m.group(1)));
-                  result.setNumLines(new Integer(m.group(2)));
+                  result.setNumCovered(new Integer(resultsMatcher.group(1)));
+                  result.setNumLines(new Integer(resultsMatcher.group(2)));
                   //               System.out.println("Found covered " + result.getNumCovered() + " of " + result.getNumLines());
                   verifyAggregateCoverageUnitResult(importer, coverageNameToCoverageUnit, result);
                   result = null;

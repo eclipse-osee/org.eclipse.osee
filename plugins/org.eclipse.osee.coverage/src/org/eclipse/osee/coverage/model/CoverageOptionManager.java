@@ -68,7 +68,7 @@ public class CoverageOptionManager {
     * @param enabledOption
     * @return
     */
-   public Collection<CoverageOption> getEnabled(EnabledOption enabledOption) {
+   public synchronized Collection<CoverageOption> getEnabled(EnabledOption enabledOption) {
       List<CoverageOption> enabled = new ArrayList<CoverageOption>();
       for (CoverageOption option : options) {
          if (enabledOption == EnabledOption.Read) {

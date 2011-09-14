@@ -12,7 +12,6 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +30,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * @author Donald G. Dunne
  */
 public abstract class CoveragePackageBase extends NamedIdentity<String> implements ICoverage, ICoverageUnitProvider {
-   List<CoverageUnit> coverageUnits = Collections.synchronizedList(new ArrayList<CoverageUnit>());
+   protected final List<CoverageUnit> coverageUnits = new CopyOnWriteArrayList<CoverageUnit>();
    final XResultDataFile logResultData = new XResultDataFile(false);
    boolean editable = true;
    protected final CoverageOptionManager coverageOptionManager;
@@ -48,28 +47,22 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
    @Override
    public void addCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnit.setParent(this);
-      synchronized (coverageUnits) {
-         if (!coverageUnits.contains(coverageUnit)) {
-            coverageUnits.add(coverageUnit);
-         }
+      if (!coverageUnits.contains(coverageUnit)) {
+         coverageUnits.add(coverageUnit);
       }
    }
 
    @Override
    public List<CoverageUnit> getCoverageUnits() {
-      synchronized (coverageUnits) {
-         return coverageUnits;
-      }
+      return coverageUnits;
    }
 
    public abstract void getOverviewHtmlHeader(XResultData xResultData);
 
    public List<CoverageItem> getCoverageItems() {
       List<CoverageItem> items = new ArrayList<CoverageItem>();
-      synchronized (coverageUnits) {
-         for (CoverageUnit coverageUnit : coverageUnits) {
-            items.addAll(coverageUnit.getCoverageItems(true));
-         }
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         items.addAll(coverageUnit.getCoverageItems(true));
       }
       return items;
    }
@@ -110,20 +103,18 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
    @Override
    public Collection<? extends ICoverage> getChildren(boolean recurse) {
       Set<ICoverage> items = new HashSet<ICoverage>();
-      synchronized (coverageUnits) {
-         for (CoverageUnit coverageUnit : coverageUnits) {
-            items.add(coverageUnit);
-            if (recurse) {
-               items.addAll(coverageUnit.getChildren(recurse));
-            }
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         items.add(coverageUnit);
+         if (recurse) {
+            items.addAll(coverageUnit.getChildren(recurse));
          }
       }
       return items;
    }
 
-   public CoverageUnit getOrCreateParent(String namespace) {
+   public synchronized CoverageUnit getOrCreateParent(String namespace) {
       // Look for already existing CU
-      for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getChildren(true))) {
+      for (ICoverage item : getChildren(true)) {
          if (!(item instanceof CoverageUnit)) {
             continue;
          }
@@ -141,22 +132,20 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
          } else {
             nameStr = nameStr + "." + name;
          }
-         synchronized (coverageUnits) {
-            if (coverageUnits.isEmpty()) {
-               CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
-               newCoverageUnit.setFolder(true);
-               newCoverageUnit.setNamespace(nameStr);
-               addCoverageUnit(newCoverageUnit);
-               if (nameStr.equals(namespace)) {
-                  return newCoverageUnit;
-               }
-               continue;
+         if (coverageUnits.isEmpty()) {
+            CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
+            newCoverageUnit.setFolder(true);
+            newCoverageUnit.setNamespace(nameStr);
+            addCoverageUnit(newCoverageUnit);
+            if (nameStr.equals(namespace)) {
+               return newCoverageUnit;
             }
+            continue;
          }
 
          // Look for already existing CU
          boolean found = false;
-         for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getChildren(true))) {
+         for (ICoverage item : getChildren(true)) {
             if (!(item instanceof CoverageUnit)) {
                continue;
             }
@@ -193,10 +182,6 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
       return null;
    }
 
-   public void setCoverageUnits(List<CoverageUnit> coverageUnits) {
-      this.coverageUnits = coverageUnits;
-   }
-
    public XResultDataFile getLog() {
       return logResultData;
    }
@@ -217,11 +202,9 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
 
    @Override
    public boolean isCovered() {
-      synchronized (coverageUnits) {
-         for (CoverageUnit coverageUnit : coverageUnits) {
-            if (!coverageUnit.isCovered()) {
-               return false;
-            }
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         if (!coverageUnit.isCovered()) {
+            return false;
          }
       }
       return true;
@@ -242,9 +225,7 @@ public abstract class CoveragePackageBase extends NamedIdentity<String> implemen
 
    @Override
    public void removeCoverageUnit(CoverageUnit coverageUnit) {
-      synchronized (coverageUnits) {
-         coverageUnits.remove(coverageUnit);
-      }
+      coverageUnits.remove(coverageUnit);
    }
 
    @Override

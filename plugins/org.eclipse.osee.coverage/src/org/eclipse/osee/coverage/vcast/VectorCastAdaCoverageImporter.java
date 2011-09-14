@@ -49,7 +49,6 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
 
    private CoverageImport coverageImport;
    private final IVectorCastCoverageImportProvider vectorCastCoverageImportProvider;
-   Pattern sourceLinePattern = Pattern.compile("^[0-9]+ [0-9]+(.*?)$");
 
    public VectorCastAdaCoverageImporter(IVectorCastCoverageImportProvider vectorCastCoverageImportProvider) {
       this.vectorCastCoverageImportProvider = vectorCastCoverageImportProvider;
@@ -179,7 +178,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
    }
 
    private List<Object> workerHelper(ImportWorkerFactory workerFactory) throws OseeCoreException {
-      int numProcessors = Runtime.getRuntime().availableProcessors();
+      int numProcessors = Runtime.getRuntime().availableProcessors() * 2;
       int partitionSize = workerFactory.getListSize() / numProcessors;
       int remainder = workerFactory.getListSize() % numProcessors;
       AtomicInteger numberProcessed = new AtomicInteger(1);
@@ -306,6 +305,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       private final AtomicInteger numberProcessed;
       private final Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram;
       private final Map<String, CoverageUnit> fileNumToCoverageUnit;
+      private final Pattern sourceLinePattern = Pattern.compile("^[0-9]+ [0-9]+(.*?)$");
 
       public VcpSourceFileWorker(IProgressMonitor progressMonitor, List<VcpSourceFile> filesToProcess, int totalSize, AtomicInteger numberProcessed, Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram, Map<String, CoverageUnit> fileNumToCoverageUnit) {
          this.progressMonitor = progressMonitor;

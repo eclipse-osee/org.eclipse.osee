@@ -45,7 +45,8 @@ public class VcpResultsDatFile {
    }
 
    public void process(CoverageImport coverageImport, Map<String, CoverageUnit> fileNumToCoverageUnit) throws OseeCoreException {
-      String resultFilename = vCastVcp.getVCastDirectory() + "/vcast/results/" + testUnitName;
+      String resultFilename =
+         vCastVcp.getVCastDirectory() + File.separator + "vcast" + File.separator + "results" + File.separator + testUnitName;
       resultsFile = new File(resultFilename);
       if (!resultsFile.exists()) {
          throw new OseeArgumentException(
