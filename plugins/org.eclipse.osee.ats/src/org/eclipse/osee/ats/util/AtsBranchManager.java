@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.CatchAndReleaseJob;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -339,7 +340,7 @@ public class AtsBranchManager implements IBranchEventListener {
     * Create a working branch associated with this state machine artifact. This should NOT be called by applications
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
-   public static void createWorkingBranch(final TeamWorkFlowArtifact teamArt, String pageId, final IOseeBranch parentBranch) {
+   public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, String pageId, final IOseeBranch parentBranch) {
       final String branchName = Strings.truncate(teamArt.getBranchName(), 195, true);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
@@ -358,7 +359,9 @@ public class AtsBranchManager implements IBranchEventListener {
          }
       };
 
-      Jobs.runInJob("Create Branch", runnable, Activator.class, Activator.PLUGIN_ID);
+      //            Jobs.runInJob("Create Branch", runnable, Activator.class, Activator.PLUGIN_ID);
+      return Jobs.startJob(new CatchAndReleaseJob("Create Branch", runnable, Activator.class, Activator.PLUGIN_ID),
+         true);
    }
 
    /**

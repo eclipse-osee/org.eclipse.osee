@@ -210,6 +210,10 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       return new Float(value).doubleValue();
    }
 
+   public Branch getWorkingBranchForceCacheUpdate() throws OseeCoreException {
+      return AtsBranchManagerCore.getWorkingBranch(this, true);
+   }
+
    public Branch getWorkingBranch() throws OseeCoreException {
       return AtsBranchManagerCore.getWorkingBranch(this);
    }
