@@ -110,8 +110,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void initializeNewStateMachine(IWorkPage state, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
       getStateMgr().initializeStateMachine(state, assignees);
-      setCreatedBy(createdBy, true, createdDate);
-      TransitionManager.logStateStartedEvent(this, state, createdDate, createdBy);
+      IBasicUser user = createdBy == null ? UserManager.getUser() : createdBy;
+      setCreatedBy(user, true, createdDate);
+      TransitionManager.logStateStartedEvent(this, state, createdDate, user);
    }
 
    public boolean isTargetedVersionable() throws OseeCoreException {

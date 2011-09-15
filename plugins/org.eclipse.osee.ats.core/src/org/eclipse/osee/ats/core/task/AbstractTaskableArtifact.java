@@ -109,7 +109,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
          (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
 
       addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
-      taskArt.initializeNewStateMachine(assignees, new Date(), UserManager.getUser());
+      taskArt.initializeNewStateMachine(assignees, new Date(), (createdBy == null ? UserManager.getUser() : createdBy));
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());
