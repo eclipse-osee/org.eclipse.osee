@@ -283,4 +283,11 @@ public class OseeEventManager {
       testBranchEventListener = branchEventListener;
    }
 
+   public static void removeBranchEventListenerForTest() {
+      if (!OseeProperties.isInTest()) {
+         throw new IllegalStateException("Invalid registration for production");
+      }
+      testBranchEventListener = null;
+   }
+
 }
