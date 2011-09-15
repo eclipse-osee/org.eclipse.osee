@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.suite;
 
 import static org.junit.Assert.assertTrue;
+import junit.framework.Assert;
 import org.eclipse.osee.ats.AtsTest_Demo_Config_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_StateItem_Suite;
 import org.eclipse.osee.ats.AtsTest_Demo_Suite;
@@ -23,9 +24,11 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.test.AllEventResTestSuite;
 import org.eclipse.osee.framework.skynet.core.FrameworkCore_Demo_Suite;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DirtyArtifactCacheTest;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
+import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -64,6 +67,8 @@ public class MasterTestSuite_DemoDbTests {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
+      Assert.assertEquals("Demo client should run as Joe Smith insead of " + UserManager.getUser().toStringWithId(),
+         UserManager.getUser(DemoUsers.Joe_Smith), UserManager.getUser());
 
       RenderingUtil.setPopupsAllowed(false);
    }
