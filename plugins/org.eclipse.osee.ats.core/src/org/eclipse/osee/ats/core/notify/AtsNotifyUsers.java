@@ -51,7 +51,7 @@ public class AtsNotifyUsers {
       if (types.contains(AtsNotifyType.Originator)) {
          IBasicUser originator = awa.getCreatedBy();
          if (originator.isActive()) {
-            if (!EmailUtil.isEmailValid(originator)) {
+            if (!EmailUtil.isEmailValid(originator) && !UserManager.isSystemUser(originator)) {
                OseeLog.logf(Activator.class, Level.INFO, "Email [%s] invalid for user [%s]",
                   UserManager.getUser(originator).getEmail(), originator.getName());
             } else if (!UserManager.getUser().equals(originator)) {
