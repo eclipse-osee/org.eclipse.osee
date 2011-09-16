@@ -38,13 +38,17 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public List<StateDefinition> getStatesOrderedByOrdinal() {
       List<StateDefinition> orderedPages = new ArrayList<StateDefinition>();
-      for (int x = 1; x < states.size(); x++) {
+      List<StateDefinition> unOrderedPages = new ArrayList<StateDefinition>();
+      for (int x = 1; x < states.size() + 1; x++) {
          for (StateDefinition state : states) {
             if (state.getOrdinal() == x) {
                orderedPages.add(state);
+            } else if (state.getOrdinal() == 0) {
+               unOrderedPages.add(state);
             }
          }
       }
+      orderedPages.addAll(unOrderedPages);
       return orderedPages;
    }
 
