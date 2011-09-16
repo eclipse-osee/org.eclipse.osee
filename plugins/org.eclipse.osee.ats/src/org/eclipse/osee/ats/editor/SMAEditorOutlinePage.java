@@ -362,6 +362,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromStateDefinition(Object element, List<Object> items) {
          StateDefinition stateDef = (StateDefinition) element;
+         items.add("Ordinal: " + stateDef.getOrdinal());
          if (Strings.isValid(stateDef.getDescription())) {
             items.add("Description: " + stateDef.getDescription());
          }
