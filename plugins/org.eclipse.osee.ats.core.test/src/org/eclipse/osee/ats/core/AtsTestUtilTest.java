@@ -28,6 +28,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class AtsTestUtilTest extends AtsTestUtil {
 
+   @org.junit.After
+   public void validateCleanup() throws OseeCoreException {
+      AtsTestUtil.validateObjectsNull();
+   }
+
    @org.junit.Test
    public void testCleanupAndReset() throws OseeCoreException {
       boolean exceptionThrown = false;

@@ -94,6 +94,31 @@ public class AtsTestUtil {
       }
    }
 
+   public static void validateObjectsNull() throws OseeStateException {
+      validateObjectsNull("teamArt", teamArt);
+      validateObjectsNull("teamDef", teamDef);
+      validateObjectsNull("verArt1", verArt1);
+      validateObjectsNull("verArt2", verArt2);
+      validateObjectsNull("decRevArt", decRevArt);
+      validateObjectsNull("peerRevArt", peerRevArt);
+      validateObjectsNull("taskArt", taskArt);
+      validateObjectsNull("testAi", testAi);
+      validateObjectsNull("actionArt", actionArt);
+      validateObjectsNull("analyze", analyze);
+      validateObjectsNull("implement", implement);
+      validateObjectsNull("completed", completed);
+      validateObjectsNull("cancelled", cancelled);
+      validateObjectsNull("workDef", workDef);
+      validateObjectsNull("estHoursWidgetDef", estHoursWidgetDef);
+      validateObjectsNull("workPackageWidgetDef", workPackageWidgetDef);
+   }
+
+   private static void validateObjectsNull(String name, Object obj) throws OseeStateException {
+      if (obj != null) {
+         throw new OseeStateException("[%s] objects should be null but is not", name);
+      }
+   }
+
    public static WorkDefinition getWorkDef() throws OseeCoreException {
       ensureLoaded();
       return workDef;
