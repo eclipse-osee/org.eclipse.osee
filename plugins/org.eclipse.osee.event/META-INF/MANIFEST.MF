@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Event
+Bundle-SymbolicName: org.eclipse.osee.event
+Bundle-Version: 0.9.9.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.event
