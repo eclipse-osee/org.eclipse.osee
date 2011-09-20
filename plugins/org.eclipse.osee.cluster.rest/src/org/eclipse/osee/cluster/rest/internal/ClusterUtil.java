@@ -8,27 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.distributed;
+package org.eclipse.osee.cluster.rest.internal;
+
+import java.net.InetSocketAddress;
+import org.eclipse.osee.cluster.Member;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AtomicNumber extends DistributedObject, HasName {
+public final class ClusterUtil {
 
-   long get();
+   private ClusterUtil() {
+      // Utility class
+   }
 
-   void set(long newValue);
+   public static String asId(InetSocketAddress address) {
+      return address.toString();
+   }
 
-   long decrementAndGet();
-
-   long incrementAndGet();
-
-   long getAndAdd(long delta);
-
-   long addAndGet(long delta);
-
-   long getAndSet(long newValue);
-
-   boolean compareAndSet(long expect, long update);
-
+   public static XmlMember fromMember(Member member) {
+      return new XmlMember(member.getInetSocketAddress().toString(), member.hasData(), member.isLocal());
+   }
 }

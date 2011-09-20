@@ -8,27 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.distributed;
+package org.eclipse.osee.cluster;
+
+import java.util.concurrent.Future;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AtomicNumber extends DistributedObject, HasName {
+public interface Callback<V> {
 
-   long get();
-
-   void set(long newValue);
-
-   long decrementAndGet();
-
-   long incrementAndGet();
-
-   long getAndAdd(long delta);
-
-   long addAndGet(long delta);
-
-   long getAndSet(long newValue);
-
-   boolean compareAndSet(long expect, long update);
+   void done(Future<V> future);
 
 }

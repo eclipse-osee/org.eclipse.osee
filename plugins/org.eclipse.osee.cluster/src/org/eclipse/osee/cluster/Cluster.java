@@ -8,27 +8,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.distributed;
+package org.eclipse.osee.cluster;
+
+import java.util.Set;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AtomicNumber extends DistributedObject, HasName {
+public interface Cluster {
 
-   long get();
+   /**
+    * Set of current cluster members
+    * 
+    * @return cluster members
+    */
+   Set<Member> getMembers();
 
-   void set(long newValue);
+   /**
+    * Returns the member running on the local machine
+    * 
+    * @return this member
+    */
+   Member getLocalMember();
 
-   long decrementAndGet();
-
-   long incrementAndGet();
-
-   long getAndAdd(long delta);
-
-   long addAndGet(long delta);
-
-   long getAndSet(long newValue);
-
-   boolean compareAndSet(long expect, long update);
-
+   /**
+    * Returns the cluster-wide time
+    * 
+    * @return cluster-wide time
+    */
+   long getClusterTime();
 }

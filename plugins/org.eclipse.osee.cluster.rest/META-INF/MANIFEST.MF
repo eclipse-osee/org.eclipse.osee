@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Cluster Rest
+Bundle-SymbolicName: org.eclipse.osee.cluster.rest
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
+Import-Package: javax.ws.rs,
+ javax.ws.rs.core,
+ org.eclipse.osee.cluster

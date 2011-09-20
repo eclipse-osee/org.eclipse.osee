@@ -8,27 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.distributed;
+package org.eclipse.osee.cluster.rest.internal;
+
+import javax.ws.rs.Path;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AtomicNumber extends DistributedObject, HasName {
-
-   long get();
-
-   void set(long newValue);
-
-   long decrementAndGet();
-
-   long incrementAndGet();
-
-   long getAndAdd(long delta);
-
-   long addAndGet(long delta);
-
-   long getAndSet(long newValue);
-
-   boolean compareAndSet(long expect, long update);
-
+@Path("jobs")
+public class JobsResource {
+   //
+   // GET /jobs/ gets list of jobs
+   //
+   // One user methods:
+   //
+   // GET /jobs/[jobId] gets job details
+   // DELETE /jobs/[jobId] deletes a job - stops/cancels ?
+   //
 }
