@@ -108,13 +108,13 @@ public class WETransitionComposite extends Composite {
       StateDefinition currState = awa.getStateDefinition();
       if (currState.isCompletedPage()) {
          StateDefinition completedFromState = awa.getWorkDefinition().getStateByName(awa.getCompletedFromState());
-         if (!allPages.contains(completedFromState)) {
+         if (completedFromState != null && !allPages.contains(completedFromState)) {
             allPages.add(completedFromState);
          }
       }
       if (currState.isCancelledPage()) {
          StateDefinition cancelledFromState = awa.getWorkDefinition().getStateByName(awa.getCancelledFromState());
-         if (!allPages.contains(cancelledFromState)) {
+         if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {
             allPages.add(cancelledFromState);
          }
       }
