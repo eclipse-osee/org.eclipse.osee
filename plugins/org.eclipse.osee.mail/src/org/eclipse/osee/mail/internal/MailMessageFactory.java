@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail.admin.internal;
+package org.eclipse.osee.mail.internal;
 
 import java.util.Collection;
 import java.util.Date;

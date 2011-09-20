@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail.admin.internal;
+package org.eclipse.osee.mail.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +18,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import javax.activation.DataSource;
 import javax.mail.event.TransportListener;
+import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.mail.MailConstants;
 import org.eclipse.osee.mail.MailMessage;
 import org.eclipse.osee.mail.MailService;
 import org.eclipse.osee.mail.MailServiceConfig;
 import org.eclipse.osee.mail.MailUtils;
 import org.eclipse.osee.mail.SendMailStatus;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -34,11 +33,15 @@ public class MailServiceImpl implements MailService {
 
    private MailServiceConfig config;
    private MailMessageFactory factory;
-   private EventAdmin eventAdmin;
+   private EventService eventService;
    private TransportListener[] listeners;
 
-   public void setEventAdmin(EventAdmin eventAdmin) {
-      this.eventAdmin = eventAdmin;
+   public void setEventService(EventService eventService) {
+      this.eventService = eventService;
+   }
+
+   public EventService getEventService() {
+      return eventService;
    }
 
    @Override
@@ -51,16 +54,16 @@ public class MailServiceImpl implements MailService {
       this.config.setTo(config);
    }
 
-   public synchronized void start(Map<String, String> props) {
+   public synchronized void start(Map<String, ?> props) {
       config = new MailServiceConfig();
       factory = new MailMessageFactory(config);
-      eventAdmin.postEvent(new Event(MailConstants.REGISTRATION_EVENT, props));
+      getEventService().postEvent(MailConstants.REGISTRATION_EVENT, props);
 
-      listeners = new TransportListener[] {new MailTransportListener(eventAdmin)};
+      listeners = new TransportListener[] {new MailTransportListener(eventService)};
    }
 
-   public synchronized void stop(Map<String, String> props) {
-      eventAdmin.postEvent(new Event(MailConstants.DEREGISTRATION_EVENT, props));
+   public synchronized void stop(Map<String, ?> props) {
+      getEventService().postEvent(MailConstants.DEREGISTRATION_EVENT, props);
       listeners = null;
    }
 
