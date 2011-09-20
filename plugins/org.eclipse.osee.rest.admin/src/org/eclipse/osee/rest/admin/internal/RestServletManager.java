@@ -16,11 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.http.HttpServlet;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.rest.admin.RestAdminConstants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
@@ -35,15 +35,32 @@ public class RestServletManager {
       new CopyOnWriteArrayList<ServiceReference<Application>>();
 
    private HttpService httpService;
-   private EventAdmin eventAdmin;
+   private Log logger;
+   private EventService eventService;
    private Thread thread;
 
    public void setHttpService(HttpService httpService) {
       this.httpService = httpService;
    }
 
-   public void setEventAdmin(EventAdmin eventAdmin) {
-      this.eventAdmin = eventAdmin;
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   public void setEventService(EventService eventService) {
+      this.eventService = eventService;
+   }
+
+   private HttpService getHttpService() {
+      return httpService;
+   }
+
+   private Log getLogger() {
+      return logger;
+   }
+
+   private EventService getEventService() {
+      return eventService;
    }
 
    public void start() throws Exception {
@@ -66,7 +83,7 @@ public class RestServletManager {
    }
 
    private boolean isReady() {
-      return httpService != null && eventAdmin != null;
+      return httpService != null && logger != null;
    }
 
    public void addApplication(ServiceReference<Application> reference) {
@@ -89,10 +106,10 @@ public class RestServletManager {
       String componentName = RestServiceUtils.getComponentName(reference);
       String contextName = RestServiceUtils.getContextName(reference);
 
-      System.out.printf("De-registering servlet for '%s' with alias '%s'\n", componentName, contextName);
+      getLogger().debug("De-registering servlet for '%s' with alias '%s'\n", componentName, contextName);
       HttpServlet servlet = registeredServlets.remove(componentName);
       if (servlet != null) {
-         httpService.unregister(contextName);
+         getHttpService().unregister(contextName);
          servlet.destroy();
       }
       notifyDeRegistration(componentName, contextName);
@@ -105,10 +122,10 @@ public class RestServletManager {
       try {
          ServletContainer servlet = createContainer(reference);
          HttpContext httpContext = createHttpContext(reference);
-         httpService.registerServlet(contextName, servlet, null, httpContext);
+         getHttpService().registerServlet(contextName, servlet, null, httpContext);
          registeredServlets.put(componentName, servlet);
          notifyRegistration(componentName, contextName);
-         System.out.printf("Registered servlet for '%s' with alias '%s'\n", componentName, contextName);
+         getLogger().debug("Registered servlet for '%s' with alias '%s'\n", componentName, contextName);
       } catch (Exception ex) {
          throw new RuntimeException(ex);
       }
@@ -128,12 +145,12 @@ public class RestServletManager {
 
    private void notifyRegistration(String componentName, String contextName) {
       Map<String, String> data = RestServiceUtils.toMap(componentName, contextName);
-      eventAdmin.postEvent(new Event(RestAdminConstants.REST_REGISTRATION_EVENT, data));
+      getEventService().postEvent(RestAdminConstants.REST_REGISTRATION_EVENT, data);
    }
 
    private void notifyDeRegistration(String componentName, String contextName) {
       Map<String, String> data = RestServiceUtils.toMap(componentName, contextName);
-      eventAdmin.postEvent(new Event(RestAdminConstants.REST_DEREGISTRATION_EVENT, data));
+      getEventService().postEvent(RestAdminConstants.REST_DEREGISTRATION_EVENT, data);
    }
 
 }

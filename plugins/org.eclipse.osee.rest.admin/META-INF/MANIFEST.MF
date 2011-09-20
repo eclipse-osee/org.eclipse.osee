@@ -10,7 +10,8 @@ Import-Package: com.sun.jersey.spi.container.servlet,
  javax.servlet.http;version="2.5.0",
  javax.ws.rs.core,
  org.osgi.framework,
- org.osgi.service.event,
+ org.eclipse.osee.logger,
+ org.eclipse.osee.event,
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.rest.admin

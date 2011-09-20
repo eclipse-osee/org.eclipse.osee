@@ -7,10 +7,15 @@
     policy="static"
     bind="setHttpService" />
     
-   <reference interface="org.osgi.service.event.EventAdmin" name="EventAdmin" 
+   <reference interface="org.eclipse.osee.logger.Log" name="Log" 
    	cardinality="1..1"  
    	policy="static" 
-   	bind="setEventAdmin" />
+   	bind="setLogger" />
+   	
+    <reference interface="org.eclipse.osee.event.EventService" name="EventService" 
+   	cardinality="1..1"  
+   	policy="static" 
+   	bind="setEventService" />
    
    <reference interface="javax.ws.rs.core.Application" name="Application" 
     cardinality="1..n" 
