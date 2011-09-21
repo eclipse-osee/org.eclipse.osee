@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Vaadin
+Bundle-SymbolicName: org.eclipse.osee.vaadin
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
+Import-Package: javax.servlet;version="2.5.0",
+ javax.servlet.http,
+ org.eclipse.osee.event,
+ org.eclipse.osee.logger,
+ org.osgi.framework;version="1.6.0",
+ org.osgi.service.http;version="1.2.1"
+Require-Bundle: com.vaadin;bundle-version="6.6.6";visibility:=reexport
+Export-Package: org.eclipse.osee.vaadin
