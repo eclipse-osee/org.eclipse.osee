@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Ui Web
+Bundle-SymbolicName: org.eclipse.osee.ui.web
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
+Import-Package: com.vaadin,
+ org.eclipse.osee.vaadin
