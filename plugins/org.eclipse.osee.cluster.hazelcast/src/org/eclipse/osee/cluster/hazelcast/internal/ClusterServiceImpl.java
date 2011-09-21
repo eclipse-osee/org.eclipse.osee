@@ -129,22 +129,22 @@ public class ClusterServiceImpl implements ClusterService, InstanceManager {
    }
 
    public synchronized void start(final Map<String, Object> properties) {
-      //      thread = new Thread("Register Pending Rest Services") {
-      //         @Override
-      //         public void run() {
-      Config config = getConfiguration(properties);
-      instance = Hazelcast.init(config);
-      clusterProxy = new ClusterProxy(instance);
-      executor = new DistributedExecutorServiceImpl(instance);
+      thread = new Thread("Register Pending Rest Services") {
+         @Override
+         public void run() {
+            Config config = getConfiguration(properties);
+            instance = Hazelcast.init(config);
+            clusterProxy = new ClusterProxy(instance);
+            executor = new DistributedExecutorServiceImpl(instance);
 
-      String componentName = ClusterServiceUtils.getComponentName(properties);
-      String contextName = ClusterServiceUtils.getContextName(properties);
-      eventNotifier = new ClusterEventNotifier(componentName, contextName, getEventService());
-      registerEventListeners();
-      eventNotifier.notifyRegistration();
-      //         }
-      //      };
-      //      thread.start();
+            String componentName = ClusterServiceUtils.getComponentName(properties);
+            String contextName = ClusterServiceUtils.getContextName(properties);
+            eventNotifier = new ClusterEventNotifier(componentName, contextName, getEventService());
+            registerEventListeners();
+            eventNotifier.notifyRegistration();
+         }
+      };
+      thread.start();
    }
 
    public synchronized void stop(Map<String, Object> properties) {
