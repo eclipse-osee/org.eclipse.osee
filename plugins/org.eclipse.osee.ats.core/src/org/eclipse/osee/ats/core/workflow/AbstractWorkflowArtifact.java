@@ -108,7 +108,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       initializeNewStateMachine(startState, assignees, createdDate, createdBy);
    }
 
-   public void initializeNewStateMachine(IWorkPage state, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
+   private void initializeNewStateMachine(IWorkPage state, Collection<IBasicUser> assignees, Date createdDate, IBasicUser createdBy) throws OseeCoreException {
       getStateMgr().initializeStateMachine(state, assignees);
       IBasicUser user = createdBy == null ? UserManager.getUser() : createdBy;
       setCreatedBy(user, true, createdDate);

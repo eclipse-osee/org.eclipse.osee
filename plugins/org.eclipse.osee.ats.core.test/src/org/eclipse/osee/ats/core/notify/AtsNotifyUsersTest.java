@@ -13,12 +13,16 @@ package org.eclipse.osee.ats.core.notify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.SubscribeManager;
+import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
+import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
@@ -29,11 +33,9 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
+import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoUsers;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Test unit for {@link AtsNotifyUsers}
@@ -41,12 +43,12 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class AtsNotifyUsersTest {
-   @BeforeClass
+   @org.junit.BeforeClass
    public static void setup() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset(AtsNotificationManagerTest.class.getSimpleName());
    }
 
-   @AfterClass
+   @org.junit.AfterClass
    public static void cleanup() throws OseeCoreException {
       UserManager.getUser(DemoUsers.Jason_Michael).reloadAttributesAndRelations();
       UserManager.getUser(DemoUsers.Kay_Jones).reloadAttributesAndRelations();
@@ -56,7 +58,7 @@ public class AtsNotifyUsersTest {
       AtsTestUtil.cleanup();
    }
 
-   @Test
+   @org.junit.Test
    public void testNotify() throws OseeCoreException {
       User jason_ValidEmail = UserManager.getUser(DemoUsers.Jason_Michael);
       jason_ValidEmail.setEmail("jason@boeing.com");
@@ -121,7 +123,8 @@ public class AtsNotifyUsersTest {
          event.getDescription());
 
       notifyManager.clear();
-      AtsNotificationManager.notify(teamArt, Collections.singleton((IBasicUser) jason_ValidEmail), AtsNotifyType.Assigned);
+      AtsNotificationManager.notify(teamArt, Collections.singleton((IBasicUser) jason_ValidEmail),
+         AtsNotifyType.Assigned);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(AtsNotifyType.Assigned.name(), event.getType());
@@ -151,7 +154,7 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
 
       notifyManager.clear();
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed);
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null);
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(AtsNotifyType.Completed.name(), event.getType());
@@ -161,14 +164,14 @@ public class AtsNotifyUsersTest {
       notifyManager.clear();
       teamArt.internalSetCreatedBy(inactiveSteve);
       teamArt.persist(getClass().getSimpleName());
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed);
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null);
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
       teamArt.internalSetCreatedBy(kay_ValidEmail);
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Analyze);
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Analyze, null);
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getPageName(),
             null, "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
@@ -185,6 +188,34 @@ public class AtsNotifyUsersTest {
       Assert.assertTrue(event.getDescription().startsWith(
          "[Team Workflow] titled [AtsNotifyUsersTest] was [Cancelled] from the [Analyze] state on"));
       Assert.assertTrue(event.getDescription().endsWith(".<br>Reason: [this is the reason]"));
+
+   }
+
+   @org.junit.Test
+   public void testNotifyOnNewAction() throws OseeCoreException {
+
+      User kay_ValidEmail = UserManager.getUser(DemoUsers.Kay_Jones);
+      kay_ValidEmail.setEmail("kay@boeing.com");
+
+      TestNotificationManager notifyManager = new TestNotificationManager();
+      AtsNotificationManager.setNotificationManager(notifyManager);
+      AtsNotificationManager.setInTest(false);
+      AtsNotificationManager.setIsProduction(true);
+
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      ActionManager.createAction(null, getClass().getSimpleName() + "-OnNewAction", "Description",
+         ChangeType.Improvement, "2", false, null,
+         ActionableItemManagerCore.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())),
+         new Date(), UserManager.getUser(), null, transaction);
+      transaction.execute();
+
+      Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
+      OseeNotificationEvent event = notifyManager.getNotificationEvents().get(0);
+      Assert.assertEquals(AtsNotifyType.Assigned.name(), event.getType());
+      Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
+      Assert.assertEquals(
+         "You have been set as the assignee of [Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest-OnNewAction]",
+         event.getDescription());
 
    }
 }

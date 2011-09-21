@@ -395,13 +395,6 @@ public class StateManager {
    /**
     * Initializes state machine and sets the current state to stateName
     */
-   public void initializeStateMachine(IWorkPage state) throws OseeCoreException {
-      initializeStateMachine(state, null);
-   }
-
-   /**
-    * Initializes state machine and sets the current state to stateName
-    */
    public void initializeStateMachine(IWorkPage state, Collection<IBasicUser> assignees) throws OseeCoreException {
       SMAState smaState = null;
       if (getVisitedStateNames().contains(state.getPageName())) {
@@ -421,6 +414,9 @@ public class StateManager {
       if (sma.isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
          sma.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, state.getWorkPageType().name());
       }
+      Collection<IBasicUser> notifyUsers = new ArrayList<IBasicUser>();
+      notifyUsers.addAll(smaState.getAssignees());
+      AtsNotificationManager.notify(sma, notifyUsers, AtsNotifyType.Assigned);
    }
 
    private void putState(SMAState state) throws OseeCoreException {
