@@ -10,6 +10,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -62,8 +63,8 @@ public class RelationHandler {
       }
 
       @Override
-      public Artifact getArtifact(int ArtId, Branch branch) {
-         return null;
+      public Artifact getArtifact(int artId, Branch branch) throws OseeCoreException {
+         return ArtifactQuery.getArtifactFromId(artId, branch);
       }
 
       @Override
