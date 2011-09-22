@@ -1,0 +1,163 @@
+<project name="Generates OSEE Application Server Runtime Package" default="run">
+
+	<target name="setup">
+		<echo>Packaging Server Runtime</echo>
+		<echo>Output-Path: ${output-path}</echo>
+		<echo>P2-Content-Path: ${p2-content-path}</echo>
+		<echo>Output-Name: ${output-name}</echo>
+		<echo>Server-Path: ${server-path}</echo>
+		<echo>Demo-Data-Path: ${demo-content-path}</echo>
+		<echo />
+
+		<condition property="os-separator-exp" value="\\" else="/">
+			<os family="windows" />
+		</condition>
+		
+		<mkdir dir="${server-path}" />
+
+		<property name="server-config-path" value="${server-path}/configuration" />
+		<property name="server-plugins-path" value="${server-path}/plugins" />
+
+		<mkdir dir="${server-config-path}" />
+		<mkdir dir="${server-plugins-path}" />
+
+		<copy todir="${server-plugins-path}">
+			<fileset dir="${p2-content-path}/plugins" excludes="**/*source_*.jar" />
+		</copy>
+
+		<pathconvert property="launcherBundlePath" setonempty="false">
+			<path>
+				<fileset dir="${server-plugins-path}">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<propertyregex property="equinox-launcher-jar" override="true" input="${launcherBundlePath}" regexp="[^${os-separator-exp}]+$" select="\0" casesensitive="false" />
+	</target>
+
+	<target name="pack">
+		<zip destfile="${output-path}/${output-name}.zip">
+			<fileset dir="${server-path}" />
+		</zip>
+	</target>
+
+	<target name="cleanup">
+		<delete dir="${server-path}" quiet="true" />
+	</target>
+
+	<target name="generateConfig">
+		<generateConfigIni configPath="${server-config-path}" pluginsPath="${server-plugins-path}" />
+	</target>
+
+	<!-- *************************************************************** -->
+	<!--   MAIN RUN		                                                -->
+	<!-- *************************************************************** -->
+	<target name="run" depends="setup,generateConfig,generateLaunchScripts,pack" />
+
+	<!-- *************************************************************** -->
+	<!--   LAUNCH CONFIGS                                                -->
+	<!-- *************************************************************** -->
+	<target name="generateTemplate">
+		<createLaunch filepath="${server-path}/runExample.sh" connection.id="[id from connection file]" serverport="8089" executable="false" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] \${line.separator}-Dosee.application.server.data=[binary data path]" />
+	</target>
+
+	<target name="generateH2Launch">
+		<createLaunch filepath="${server-path}/runH2.sh" connection.id="h2" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.db.embedded.server=0.0.0.0:8088" />
+	</target>
+
+	<target name="generateDemoLaunch">
+		<createLaunch filepath="${server-path}/runDemo.sh" connection.id="osee.demo.h2" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.db.embedded.server=0.0.0.0:8088 \${line.separator}-Dosee.connection.info.uri=&quot;demo/osee.demo.db.connection.xml&quot; \${line.separator}-Dosee.application.server.data=&quot;demo/binary_data&quot;" />
+
+		<copy file="${server-path}/runDemo.sh" tofile="${server-path}/runDemo.bat" overwrite="true" />
+		<replaceregexp file="${server-path}/runDemo.bat" match="\\" replace="^" flags="g" />
+
+		<!-- Copy Demo Files -->
+		<property name="server-demo-path" value="${server-path}/demo" />
+
+		<mkdir dir="${server-demo-path}" />
+		<mkdir dir="${server-demo-path}/binary_data" />
+
+		<unzip src="${demo-content-path}/h2.zip" dest="${server-demo-path}" />
+		<unzip src="${demo-content-path}/binary_data.zip" dest="${server-demo-path}/binary_data" />
+		<copy file="${demo-content-path}/osee.demo.db.connection.xml" tofile="${server-demo-path}/osee.demo.db.connection.xml" />
+	</target>
+
+	<target name="generateLocalPostgresLaunch">
+		<createLaunch filepath="${server-path}/runPostgresqlLocal.sh" connection.id="postgresqlLocalhost" serverport="8089" launcher="${equinox-launcher-jar}" />
+	</target>
+
+	<target name="generateLaunchScripts" depends="generateTemplate,generateDemoLaunch,generateH2Launch,generateLocalPostgresLaunch" />
+
+	<!-- *************************************************************** -->
+	<!--   GENERATE CONFIG.INI                                           -->
+	<!-- *************************************************************** -->
+	<macrodef name="generateConfigIni">
+		<attribute name="configPath" />
+		<attribute name="pluginsPath" />
+		<sequential>
+			<echo file="@{configPath}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
+
+			<pathconvert property="serverBundles" setonempty="false" pathsep=";">
+				<path>
+					<fileset dir="@{pluginsPath}">
+						<exclude name="org.eclipse.osgi_*.jar" />
+						<exclude name="org.eclipse.equinox.launcher_*.jar" />
+						<exclude name="*source_*.jar" />
+					</fileset>
+				</path>
+			</pathconvert>
+
+			<var name="isFirst" value="false" />
+			<for param="bundle" delimiter=";" list="${serverBundles}" trim="true">
+				<sequential>
+					<propertyregex override="yes" property="jarFilename" input="@{bundle}" regexp="[^${os-separator-exp}]+$" select="\0" />
+
+					<propertyregex property="projectName" override="true" input="${jarFilename}" regexp="(.*?)_" select="\1" casesensitive="false" />
+					<if>
+						<equals arg1="${isFirst}" arg2="true" />
+						<then>
+							<echo file="@{configPath}/config.ini" message=", \${line.separator}" append="true" />
+							<var name="isFirst" value="false" />
+						</then>
+					</if>
+					<echo file="@{configPath}/config.ini" message="${projectName}@start" append="true" />
+					<var name="isFirst" value="true" />
+				</sequential>
+			</for>
+			<echo file="@{configPath}/config.ini" append="true">
+osgi.noShutdown=true
+eclipse.ignoreApp=true
+equinox.ds.debug=true
+osee.log.default=INFO
+			</echo>
+		</sequential>
+	</macrodef>
+
+	<!-- *************************************************************** -->
+	<!--   GENERATE LAUNCH                                               -->
+	<!-- *************************************************************** -->
+	<macrodef name="createLaunch">
+		<attribute name="filepath" />
+		<attribute name="serverport" />
+		<attribute name="connection.id" />
+		<attribute name="launcher" />
+		<attribute name="serverMaxMem" default="1024m" />
+		<attribute name="executable" default="true" />
+		<attribute name="extraVMArgs" default=" " />
+		<sequential>
+			<echo file="@{filepath}" append="false">java \
+-Xmx@{serverMaxMem} \
+-Dorg.osgi.service.http.port=@{serverport} \
+-Dosee.db.connection.id=@{connection.id} \
+@{extraVMArgs} \
+-jar plugins/@{launcher} -console
+</echo>
+			<if>
+				<equals arg1="@{executable}" arg2="true" />
+				<then>
+					<chmod file="@{filepath}" perm="ugo+rx" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+</project>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.osee.x.core.feature"
+      label="%featureName"
+      version="0.9.9.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.slf4j.api"/>
+      <import plugin="ch.qos.logback.classic" version="0.9.27" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.codec"/>
+      <import plugin="org.apache.commons.httpclient"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="javax.mail.glassfish"/>
+      <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="com.sun.jersey"/>
+      <import plugin="javax.ws.rs"/>
+      <import feature="org.eclipse.osee.x.core.external.feature" version="0.9.9.qualifier" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.osee.logger"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.logger.slf4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.logback.config"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.jdk.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.mail"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.vaadin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.vaadin.widgets"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.rest.admin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.event"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.event.osgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
