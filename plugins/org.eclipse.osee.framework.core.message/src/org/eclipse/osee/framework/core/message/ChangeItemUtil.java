@@ -81,7 +81,7 @@ public final class ChangeItemUtil {
 
    public static boolean hasBeenReplacedWithVersion(ChangeItem changeItem) {
       boolean results = areGammasEqual(changeItem.getCurrentVersion(), changeItem.getBaselineVersion()) && //
-      !isDeleted(changeItem.getCurrentVersion());
+      isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
       return results;
    }
 
