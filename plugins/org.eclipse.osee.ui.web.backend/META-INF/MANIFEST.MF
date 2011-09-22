@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: OSEE Ui Web Backend
-Bundle-SymbolicName: org.eclipse.osee.ui.web.backend
-Bundle-Version: 0.9.9.qualifier
-Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
