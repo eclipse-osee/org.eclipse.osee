@@ -10,31 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ui.web.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.vaadin.widgets.HasViews;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
-import com.vaadin.Application;
-import com.vaadin.ui.Window;
+import org.eclipse.osee.vaadin.widgets.Navigator;
 
 /**
  * @author Roberto E. Escobar
  */
-@SuppressWarnings("serial")
-public class OseeUiApplication extends Application {
+public class OseeUiViews implements HasViews {
 
    @Override
-   public void init() {
-      WindowFactory factory = new WindowFactory();
-      HasViews viewProvider = new OseeUiViews();
-      Window mainWindow = factory.createNavigatableWindow(viewProvider);
-      setMainWindow(mainWindow);
-      mainWindow.setApplication(this);
+   public List<Class<? extends Navigator.View>> getViews() {
+      // Dynamic View Registration?
+      List<Class<? extends Navigator.View>> views = new ArrayList<Class<? extends Navigator.View>>();
+      views.add(View1.class);
+      views.add(View2.class);
+      views.add(View3.class);
+      return views;
    }
-
-   @Override
-   public String getVersion() {
-      Bundle bundle = FrameworkUtil.getBundle(this.getClass());
-      return bundle.getVersion().toString();
-   }
-
 }
