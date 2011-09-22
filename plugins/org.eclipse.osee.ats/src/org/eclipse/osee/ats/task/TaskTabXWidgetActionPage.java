@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.TaskAddAction;
 import org.eclipse.osee.ats.actions.TaskDeleteAction;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -67,7 +68,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
    private Action filterCompletedAction, filterMyAssigneeAction;
 
    public TaskTabXWidgetActionPage(SMAEditor smaEditor) {
-      super(smaEditor, "org.eclipse.osee.ats.actionPage", "Tasks");
+      super(smaEditor, "org.eclipse.osee.ats.actionPage", getTabName(smaEditor.getAwa()));
       this.smaEditor = smaEditor;
    }
 
@@ -103,6 +104,17 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
          AWorkbench.popup("ERROR", "DB Relation Unavailable");
          return;
       }
+   }
+
+   private static String getTabName(AbstractWorkflowArtifact awa) {
+      try {
+         if (awa instanceof AbstractTaskableArtifact) {
+            return String.format("Tasks (%d)", ((AbstractTaskableArtifact) awa).getTaskArtifacts().size());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return "Tasks";
    }
 
    @Override
