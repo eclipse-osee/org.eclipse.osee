@@ -79,6 +79,12 @@ public final class ChangeItemUtil {
       return wasNewOnSource(changeItem) || wasIntroducedOnSource(changeItem);
    }
 
+   public static boolean hasBeenReplacedWithVersion(ChangeItem changeItem) {
+      boolean results = areGammasEqual(changeItem.getCurrentVersion(), changeItem.getBaselineVersion()) && //
+      !isDeleted(changeItem.getCurrentVersion());
+      return results;
+   }
+
    public static boolean isAlreadyOnDestination(ChangeItem changeItem) {
       return areGammasEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
       isDeleted(changeItem.getCurrentVersion()) == isDeleted(changeItem.getDestinationVersion());
@@ -104,7 +110,8 @@ public final class ChangeItemUtil {
       isAlreadyOnDestination(changeItem) || //
       isDeletedAndDoesNotExistInDestination(changeItem) || //
       hasBeenDeletedInDestination(changeItem) || //
-      isDestinationEqualOrNewerThanCurrent(changeItem);
+      isDestinationEqualOrNewerThanCurrent(changeItem) || //
+      hasBeenReplacedWithVersion(changeItem);
    }
 
    public static boolean wasCreatedAndDeleted(ChangeItem changeItem) {

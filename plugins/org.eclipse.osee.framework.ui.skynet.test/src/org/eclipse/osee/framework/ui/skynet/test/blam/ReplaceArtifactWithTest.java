@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.test.blam;
 
 import static org.junit.Assert.assertTrue;
 import java.util.Collections;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Assert;
@@ -32,13 +34,15 @@ import org.junit.Assert;
  * @author Jeff C. Phillips
  */
 public class ReplaceArtifactWithTest {
+   private Artifact artifact;
+   private Artifact childArtifact;
 
    @org.junit.Test
    public void testReplaceArtifactVersion() throws Exception {
       Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(parentBranch);
 
-      Artifact artifact =
+      artifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, parentBranch, getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("My Name"));
       artifact.persist(getClass().getName());
@@ -52,7 +56,7 @@ public class ReplaceArtifactWithTest {
 
       Thread.sleep(3000);
 
-      Artifact childArtifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), childBranch);
+      childArtifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), childBranch);
       Attribute<?> childNameAttribute = childArtifact.getAttributes(CoreAttributeTypes.Name).iterator().next();
 
       int parentNumberOfAttrs = childArtifact.getAttributes().size();
@@ -63,7 +67,8 @@ public class ReplaceArtifactWithTest {
       childArtifact.addAttribute(CoreAttributeTypes.StaticId, "I am an ID");
       childArtifact.persist(getClass().getName());
 
-      int i = 3;
+      ChangeManager.getChangesMadeOnCurrentBranch(childArtifact, new NullProgressMonitor());
+
       Operations.executeWorkAndCheckStatus(new ReplaceArtifactWithBaselineOperation(
          Collections.singleton(childArtifact)));
 
