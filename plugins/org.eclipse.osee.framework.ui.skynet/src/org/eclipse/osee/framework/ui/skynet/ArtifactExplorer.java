@@ -634,7 +634,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      Artifact newChildArt = parent.addNewChild(null, type, name);
                      parent.persist(transaction);
                      transaction.execute();
-                     RendererManager.open(newChildArt, PresentationType.DEFAULT_OPEN);
+                     RendererManager.open(newChildArt, PresentationType.GENERALIZED_EDIT);
                      treeViewer.refresh();
                      treeViewer.refresh(false);
                   }
