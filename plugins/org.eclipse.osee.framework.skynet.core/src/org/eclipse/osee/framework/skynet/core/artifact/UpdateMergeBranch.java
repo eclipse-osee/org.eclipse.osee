@@ -49,12 +49,12 @@ public class UpdateMergeBranch extends DbTransaction {
    private static final String UPDATE_ARTIFACTS =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", txs1.branch_id FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.branch_id = ? AND txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
 
-   private static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
+   private static final String PURGE_ATTRIBUTE_FROM_MERGE_BRANCH =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.art_id = ?)";
-   private static final String PURGE_BASELINE_RELATION_TRANS =
+   private static final String PURGE_RELATION_FROM_MERGE_BRANCH =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.branch_id = ? AND (rel.a_art_id = ? or rel.b_art_id = ?))";
-   private static final String PURGE_BASELINE_ARTIFACT_TRANS =
-      "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND art.art_id = ?)";
+   private static final String PURGE_ARTIFACT_FROM_MERGE_BRANCH =
+      "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id AND txs.branch_id = ? AND art.art_id = ?)";
 
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
@@ -243,9 +243,9 @@ public class UpdateMergeBranch extends DbTransaction {
       int branchId = branch.getId();
 
       //Remove from Baseline
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_RELATION_FROM_MERGE_BRANCH, branchId, artId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_ARTIFACT_FROM_MERGE_BRANCH, branchId, artId);
    }
 
 }
