@@ -36,12 +36,22 @@ public class ElapsedTime {
       System.out.println("\n" + name + " - [" + pointName + "] " + DateUtil.getTimeStamp());
    }
 
+   public static enum Units {
+      SEC,
+      MSEC
+   }
+
    public void end() {
+      end(Units.SEC);
+   }
+
+   public void end(Units units) {
       endDate = new Date();
       long diff = endDate.getTime() - startDate.getTime();
       String str =
-         String.format("%s - elapsed %d sec - start %s - end %s", name, (diff / 1000),
-            DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
+         String.format("%s - elapsed %d %s - start %s - end %s", name, (units == Units.SEC ? (diff / 1000) : diff),
+            units.name(), DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS),
+            DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
       System.out.println(str);
    }
 }
