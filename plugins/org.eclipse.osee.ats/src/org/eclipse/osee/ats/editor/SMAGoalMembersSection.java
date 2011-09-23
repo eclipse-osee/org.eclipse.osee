@@ -29,6 +29,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
@@ -293,10 +294,14 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             super.performArtifactDrop(dropArtifacts);
             final Set<Artifact> artifacts = new HashSet<Artifact>();
+            final List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
             final List<Artifact> artList = new ArrayList<Artifact>();
             for (Artifact artifact : dropArtifacts) {
                artifacts.add(artifact);
                artList.add(artifact);
+               if (artifact instanceof TaskArtifact) {
+                  tasks.add((TaskArtifact) artifact);
+               }
             }
             RemoveFromGoalAction remove =
                new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), new ISelectedAtsArtifacts() {
@@ -309,6 +314,11 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
                   @Override
                   public List<Artifact> getSelectedAtsArtifacts() {
                      return artList;
+                  }
+
+                  @Override
+                  public List<TaskArtifact> getSelectedTaskArtifacts() {
+                     return tasks;
                   }
                });
             remove.run();
@@ -404,5 +414,16 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
          }
       }
       return artifacts;
+   }
+
+   @Override
+   public List<TaskArtifact> getSelectedTaskArtifacts() {
+      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
+      for (Artifact art : worldComposite.getSelectedArtifacts()) {
+         if (art instanceof TaskArtifact) {
+            tasks.add((TaskArtifact) art);
+         }
+      }
+      return tasks;
    }
 }

@@ -649,4 +649,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          }
       }
    }
+
+   @Override
+   public List<TaskArtifact> getSelectedTaskArtifacts() {
+      if (awa instanceof TaskArtifact) {
+         return Arrays.asList((TaskArtifact) awa);
+      }
+      return java.util.Collections.emptyList();
+   }
 }

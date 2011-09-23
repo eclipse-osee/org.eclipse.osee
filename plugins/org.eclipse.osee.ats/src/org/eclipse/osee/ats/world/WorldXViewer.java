@@ -445,6 +445,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return arts;
    }
 
+   @Override
    public List<TaskArtifact> getSelectedTaskArtifacts() {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       TreeItem items[] = getTree().getSelection();

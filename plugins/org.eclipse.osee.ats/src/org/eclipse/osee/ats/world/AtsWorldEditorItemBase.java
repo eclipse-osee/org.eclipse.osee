@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
@@ -51,4 +52,10 @@ public abstract class AtsWorldEditorItemBase implements IAtsWorldEditorItem {
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
       return Collections.emptyList();
    }
+
+   @Override
+   public void updateTaskEditMenuActions(TaskXViewer taskXViewer) {
+      // do nothing
+   }
+
 }
