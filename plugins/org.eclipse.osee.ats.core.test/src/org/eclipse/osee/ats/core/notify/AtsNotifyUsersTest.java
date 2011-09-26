@@ -27,10 +27,13 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
@@ -46,6 +49,7 @@ public class AtsNotifyUsersTest {
    @org.junit.BeforeClass
    public static void setup() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset(AtsNotificationManagerTest.class.getSimpleName());
+      cleanUpAction();
    }
 
    @org.junit.AfterClass
@@ -56,6 +60,17 @@ public class AtsNotifyUsersTest {
       UserManager.getUser(DemoUsers.Joe_Smith).reloadAttributesAndRelations();
       UserManager.getUser(DemoUsers.Inactive_Steve).reloadAttributesAndRelations();
       AtsTestUtil.cleanup();
+      cleanUpAction();
+   }
+
+   private static void cleanUpAction() throws OseeCoreException {
+      SkynetTransaction transaction =
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
+      for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.Name,
+         AtsNotifyUsersTest.class.getSimpleName() + "%", AtsUtilCore.getAtsBranch())) {
+         art.deleteAndPersist(transaction);
+      }
+      transaction.execute();
    }
 
    @org.junit.Test
