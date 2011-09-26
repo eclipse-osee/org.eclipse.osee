@@ -886,6 +886,16 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    /**
+    * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
+    * data in memory
+    */
+   public void replaceWithVersion(int gammaId) {
+      lastValidModType = this.modType;
+      this.modType = ModificationType.REPLACED_WITH_VERSION;
+      this.gammaId = gammaId;
+   }
+
+   /**
     * This is used to mark that the artifact deleted.
     */
    public final void internalSetDeleted() throws OseeCoreException {

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -71,10 +72,16 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
             Collection<Change> changes =
                ChangeCombiner.combine(ChangeManager.getChangesMadeOnCurrentBranch(artifact, monitor), baseTx);
 
+            boolean changeMade = false;
             for (Change change : changes) {
                if (change instanceof AttributeChange) {
-                  processAttribute(artifact, baseTx, (AttributeChange) change);
+                  changeMade |= processAttribute(artifact, baseTx, (AttributeChange) change);
+               } else if (change instanceof ArtifactChange) {
+                  changeMade = processArtifact(artifact, baseTx, (ArtifactChange) change);
                }
+            }
+
+            if (changeMade) {
                SkynetTransaction transaction = getTransaction(branch);
                artifact.persist(transaction);
             }
@@ -96,20 +103,43 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       transactions = null;
    }
 
-   private void processAttribute(Artifact artifact, TransactionRecord baseTx, AttributeChange change) throws OseeCoreException {
-      Attribute<?> attribute = artifact.getAttributeById(change.getItemId(), true);
-      if (attribute != null) {
+   private boolean processArtifact(Artifact artifact, TransactionRecord baseTx, ArtifactChange change) throws OseeCoreException {
+      boolean changeMade = false;
+      if (artifact != null) {
          if (isBaselineTransaction(change, baseTx)) {
-            if (attribute.getGammaId() != change.getGamma()) {
-               attribute.replaceWithVersion((int) change.getGamma());
+            if (artifact.getGammaId() != change.getGamma() || (artifact.getModType().isDeleted())) {
+               artifact.replaceWithVersion((int) change.getGamma());
+               changeMade = true;
             }
-         } else if (!attribute.getModificationType().equals(ModificationType.REPLACED_WITH_VERSION)) {
-            attribute.delete();
+         } else if (!artifact.getModType().equals(ModificationType.REPLACED_WITH_VERSION)) {
+            artifact.delete();
+            changeMade = true;
          }
       } else {
          //Do something's
          //like an error
       }
+      return changeMade;
+   }
+
+   private boolean processAttribute(Artifact artifact, TransactionRecord baseTx, AttributeChange change) throws OseeCoreException {
+      boolean changeMade = false;
+      Attribute<?> attribute = artifact.getAttributeById(change.getItemId(), true);
+      if (attribute != null) {
+         if (isBaselineTransaction(change, baseTx)) {
+            if (attribute.getGammaId() != change.getGamma() || (attribute.getModificationType().isDeleted())) {
+               attribute.replaceWithVersion((int) change.getGamma());
+               changeMade = true;
+            }
+         } else if (!attribute.getModificationType().equals(ModificationType.REPLACED_WITH_VERSION)) {
+            attribute.delete();
+            changeMade = true;
+         }
+      } else {
+         //Do something's
+         //like an error
+      }
+      return changeMade;
    }
 
    private boolean isBaselineTransaction(Change change, TransactionRecord baseTx) {

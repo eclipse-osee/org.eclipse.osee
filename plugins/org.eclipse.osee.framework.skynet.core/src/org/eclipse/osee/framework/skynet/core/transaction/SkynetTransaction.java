@@ -231,7 +231,7 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    private void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
-      if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType()) {
+      if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType() || artifact.getModType() == ModificationType.REPLACED_WITH_VERSION) {
          if (artifact.isDeleted() && !artifact.isInDb()) {
             for (Attribute<?> attribute : artifact.internalGetAttributes()) {
                if (attribute.isDirty()) {
@@ -243,7 +243,7 @@ public final class SkynetTransaction extends AbstractOperation {
          checkAccess(artifact);
          madeChanges = true;
 
-         if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted()) {
+         if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == ModificationType.REPLACED_WITH_VERSION) {
             BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
             if (txItem == null) {
                artifactReferences.add(artifact);
