@@ -17,6 +17,10 @@
       %license
    </license>
 
+   <includes
+         id="org.eclipse.osee.x.core.external.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osgi.services"/>
@@ -27,10 +31,9 @@
       <import plugin="org.apache.xerces"/>
       <import plugin="javax.mail.glassfish"/>
       <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
-      <import plugin="javax.servlet"/>
       <import plugin="com.sun.jersey"/>
       <import plugin="javax.ws.rs"/>
-      <import feature="org.eclipse.osee.x.core.external.feature" version="0.9.9.qualifier" match="greaterOrEqual"/>
+      <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

@@ -21,9 +21,11 @@
 		<module>../../plugins/org.eclipse.osee.event.osgi</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.jdk.core</module>
+		<module>../../plugins/org.eclipse.osee.framework.jdk.core.test</module>
 
 		<module>../../plugins/org.eclipse.osee.mail</module>
-
+		<module>../../plugins/org.eclipse.osee.mail.test</module>
+		
 		<module>../../plugins/org.eclipse.osee.vaadin</module>
 		<module>../../plugins/org.eclipse.osee.vaadin.widgets</module>
 
@@ -33,8 +35,7 @@
 		<module>../../features/org.eclipse.osee.x.core.feature</module>
 		<module>../../features/org.eclipse.osee.x.core.feature.source</module>
 
-		<module>../../features/org.eclipse.osee.x.core.p2</module>
-
+		<module>../../plugins/org.eclipse.osee.x.core.p2</module>
 	</modules>
 
 	<properties>
@@ -51,7 +52,7 @@
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 		<swtbot-site>http://download.eclipse.org/technology/swtbot/${platform-version-name}/dev-build/update-site</swtbot-site>
 
-		<eclipse-ip-site-path>file:../../../../org.eclipse.ip</eclipse-ip-site-path>
+		<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
 		<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
 	</properties>
 
@@ -100,17 +101,6 @@
 			<layout>p2</layout>
 			<url>${eclipse-ip-site}</url>
 		</repository>
-
-		<!-- <repository> <id>polarion</id> <layout>p2</layout> <url>${polarion-site}</url> 
-			</repository> <repository> <id>subversive</id> <layout>p2</layout> <url>${subversive-site}</url> 
-			</repository> <repository> <id>nebula-cdatetime</id> <layout>p2</layout> 
-			<url>${nebula-cdatetime-site}</url> </repository> <repository> <id>nebula-cwt</id> 
-			<layout>p2</layout> <url>${nebula-cwt-site}</url> </repository> <repository> 
-			<id>nebula-calendarcombo</id> <layout>p2</layout> <url>${nebula-calendarcombo-site}</url> 
-			</repository> <repository> <id>nebula-xviewer</id> <layout>p2</layout> <url>${nebula-xviewer-site}</url> 
-			</repository> <repository> <id>itemis</id> <layout>p2</layout> <url>${itemis-site}</url> 
-			</repository> -->
-
 	</repositories>
 
 	<build>
@@ -288,29 +278,6 @@
 	<profiles>
 
 		<profile>
-			<id>osee-local-sites</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<eclipse-ip-path>file:../../../eclipse-ip-site-path</eclipse-ip-path>
-				<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>osee-remote-sites</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<eclipse-ip-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</eclipse-ip-path>
-				<eclipse-ip-version>DEV/org.eclipse.ip</eclipse-ip-version>
-				<eclipse-ip-site>${eclipse-ip-site-path}/${eclipse-ip-version}/org.eclipse.ip.p2</eclipse-ip-site>
-			</properties>
-		</profile>
-
-		<profile>
 			<id>helpGeneration</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -424,6 +391,29 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+
+		<profile>
+			<id>osee-local-sites</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
+				<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>osee-remote-sites</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<eclipse-ip-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
+				<eclipse-ip-site-version>DEV</eclipse-ip-site-version>
+				<eclipse-ip-site>${eclipse-ip-site-path}/${eclipse-ip-site-version}/org.eclipse.ip/org.eclipse.ip.p2</eclipse-ip-site>
+			</properties>
 		</profile>
 
 		<profile>

@@ -10,8 +10,25 @@
 		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.logback.config</artifactId>
+	<artifactId>org.eclipse.osee.orcs.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OSEE Logback Config - (Incubation)</name>
+	<name>OSEE ORCS Core - (Incubation)</name>
 
+	<build>
+		<!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

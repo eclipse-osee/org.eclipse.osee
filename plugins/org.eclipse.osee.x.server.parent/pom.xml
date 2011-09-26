@@ -10,16 +10,21 @@
 	<version>0.9.9-SNAPSHOT</version>
 
 	<modules>
-		<module>../../plugins/org.eclipse.osee.x.core.parent</module>
-
 		<module>../../plugins/org.eclipse.osee.display</module>
 		<module>../../plugins/org.eclipse.osee.display.view.web</module>
 		<module>../../plugins/org.eclipse.osee.display.presenter</module>
+		<module>../../plugins/org.eclipse.osee.display.presenter.test</module>
+
+		<module>../../plugins/org.eclipse.osee.orcs</module>
+		<module>../../plugins/org.eclipse.osee.orcs.core</module>
+		<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
+		<module>../../plugins/org.eclipse.osee.orcs.db</module>
+		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 
 		<module>../../features/org.eclipse.osee.x.server.feature</module>
 		<module>../../features/org.eclipse.osee.x.server.feature.source</module>
 
-		<module>../../features/org.eclipse.osee.x.server.p2</module>
+		<module>../../plugins/org.eclipse.osee.x.server.p2</module>
 	</modules>
 
 	<properties>
@@ -28,25 +33,17 @@
 		<ant-contrib-version>1.0b3</ant-contrib-version>
 		<build-alias>-DEV</build-alias>
 		<platform-version-name>indigo</platform-version-name>
-		<eclipse-ip-path>file:../../../../org.eclipse.ip</eclipse-ip-path>
+
 		<orbit-version>R20110523182458</orbit-version>
-		<xtext-version>2.0.0</xtext-version>
+
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 		<swtbot-site>http://download.eclipse.org/technology/swtbot/${platform-version-name}/dev-build/update-site</swtbot-site>
-		
-		<eclipse-ip-site>${eclipse-ip-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-		
-		<!-- 
-		<subversive-site>http://download.eclipse.org/technology/subversive/0.7//update-site</subversive-site>
-		<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site</polarion-site>
-		<nebula-cdatetime-site>http://download.eclipse.org/technology/nebula/cdatetime/update-N</nebula-cdatetime-site>
-		<nebula-cwt-site>http://download.eclipse.org/technology/nebula/cwt/update-N</nebula-cwt-site>
-		<nebula-calendarcombo-site>http://download.eclipse.org/technology/nebula/calendarcombo/update-N</nebula-calendarcombo-site>
-		<nebula-xviewer-site>http://download.eclipse.org/technology/nebula/xviewer/update-N/</nebula-xviewer-site>
-		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}/</itemis-site>
-		-->
+
+		<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
+		<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+
 	</properties>
 
 	<licenses>
@@ -90,48 +87,10 @@
 			<url>${orbit-site}</url>
 		</repository>
 		<repository>
-			<id>eclipse-ip</id>
+			<id>osee-xcore</id>
 			<layout>p2</layout>
-			<url>${eclipse-ip-site}</url>
+			<url>${osee-xcore-site}</url>
 		</repository>
-
-<!-- 		
-		<repository>
-			<id>polarion</id>
-			<layout>p2</layout>
-			<url>${polarion-site}</url>
-		</repository>
-		<repository>
-			<id>subversive</id>
-			<layout>p2</layout>
-			<url>${subversive-site}</url>
-		</repository>
-		<repository>
-			<id>nebula-cdatetime</id>
-			<layout>p2</layout>
-			<url>${nebula-cdatetime-site}</url>
-		</repository>
-		<repository>
-			<id>nebula-cwt</id>
-			<layout>p2</layout>
-			<url>${nebula-cwt-site}</url>
-		</repository>
-		<repository>
-			<id>nebula-calendarcombo</id>
-			<layout>p2</layout>
-			<url>${nebula-calendarcombo-site}</url>
-		</repository>
-		<repository>
-			<id>nebula-xviewer</id>
-			<layout>p2</layout>
-			<url>${nebula-xviewer-site}</url>
-		</repository>
-		<repository>
-			<id>itemis</id>
-			<layout>p2</layout>
-			<url>${itemis-site}</url>
-		</repository> -->
-		
 	</repositories>
 
 	<build>
@@ -151,7 +110,7 @@
 					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
 					<archiveSite>true</archiveSite>
 					<environments>
-						<environment>
+						<!-- <environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86</arch>
@@ -160,7 +119,7 @@
 							<os>macosx</os>
 							<ws>carbon</ws>
 							<arch>x86</arch>
-						</environment>
+						</environment>-->
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
@@ -186,16 +145,16 @@
 				<configuration>
 					<resolver>p2</resolver>
 					<environments>
-						<environment>
+						<!-- <environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86</arch>
-						</environment>
+						</environment> 
 						<environment>
 							<os>macosx</os>
 							<ws>carbon</ws>
 							<arch>x86</arch>
-						</environment>
+						</environment>-->
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
@@ -421,6 +380,95 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+
+		<profile>
+			<id>osee-local-sites</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
+				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>osee-remote-sites</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<osee-xcore-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-xcore-site-path>
+				<osee-xcore-site-version>DEV/org.eclipse.osee</osee-xcore-site-version>
+				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2</osee-xcore-site>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>local-mirror</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<mirrors-server>http://msa-linux-adm.msc.az.boeing.com</mirrors-server>
+			</properties>
+			<!--Enable snapshots for the built in central repo to direct -->
+			<!--all requests to nexus via the mirror -->
+			<repositories>
+				<repository>
+					<id>central</id>
+					<url>${mirrors-server}/nexus/content/groups/public/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>snapshots</id>
+					<url>${mirrors-server}/nexus/content/groups/public-snapshots/</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>eclipse</id>
+					<layout>p2</layout>
+					<url>${mirrors-server}/osee/sites/MIRRORS/eclipse/${platform-version-name}</url>
+				</repository>
+				<repository>
+					<id>orbit</id>
+					<layout>p2</layout>
+					<url>${mirrors-server}/osee/sites/MIRRORS/orbit/${orbit-version}/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>central</id>
+					<url>${mirrors-server}/nexus/content/groups/public/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>snapshots</id>
+					<url>${mirrors-server}/nexus/content/groups/public-snapshots/</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
 		</profile>
 
 	</profiles>
