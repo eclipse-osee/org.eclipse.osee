@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSEE VCS
-Bundle-SymbolicName: org.eclipse.osee.vcs
+Bundle-Name: OSEE ORCS Core Test
+Bundle-SymbolicName: org.eclipse.osee.orcs.core.test
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
+Fragment-Host: org.eclipse.osee.orcs.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
