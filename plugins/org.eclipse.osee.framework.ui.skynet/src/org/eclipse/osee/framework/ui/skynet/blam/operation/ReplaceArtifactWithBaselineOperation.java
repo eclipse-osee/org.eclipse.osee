@@ -77,7 +77,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                if (change instanceof AttributeChange) {
                   changeMade |= processAttribute(artifact, baseTx, (AttributeChange) change);
                } else if (change instanceof ArtifactChange) {
-                  changeMade = processArtifact(artifact, baseTx, (ArtifactChange) change);
+                  changeMade |= processArtifact(artifact, baseTx, (ArtifactChange) change);
                }
             }
 

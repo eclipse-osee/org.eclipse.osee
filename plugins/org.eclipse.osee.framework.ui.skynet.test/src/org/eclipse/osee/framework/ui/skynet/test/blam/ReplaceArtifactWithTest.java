@@ -38,15 +38,13 @@ import org.junit.Assert;
  * @author Jeff C. Phillips
  */
 public class ReplaceArtifactWithTest {
-   private Artifact artifact;
-   private Artifact childArtifact;
 
    @org.junit.Test
    public void testReplaceArtifactVersion() throws Exception {
       Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(parentBranch);
 
-      artifact =
+      Artifact artifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, parentBranch, getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("My Name"));
       artifact.persist(getClass().getName());
@@ -60,7 +58,7 @@ public class ReplaceArtifactWithTest {
 
       Thread.sleep(3000);
 
-      childArtifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), childBranch);
+      Artifact childArtifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), childBranch);
       Attribute<?> childNameAttribute = childArtifact.getAttributes(CoreAttributeTypes.Name).iterator().next();
 
       int parentNumberOfAttrs = childArtifact.getAttributes().size();
@@ -88,7 +86,7 @@ public class ReplaceArtifactWithTest {
       artifact.persist(getClass().getName());
 
       List<Change> changes = new ArrayList<Change>();
-      ChangeManager.comparedToParent(childBranch, changes);
+      Operations.executeWork(ChangeManager.comparedToParent(childBranch, changes), new NullProgressMonitor());
       assertTrue(changes.isEmpty());
    }
 
@@ -97,7 +95,7 @@ public class ReplaceArtifactWithTest {
       Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(parentBranch);
 
-      artifact =
+      Artifact artifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, parentBranch, getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Deleted my name"));
       artifact.persist(getClass().getName());
@@ -108,18 +106,21 @@ public class ReplaceArtifactWithTest {
 
       Thread.sleep(3000);
 
-      childArtifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), childBranch);
-      childArtifact.deleteAndPersist();
+      Artifact childArtifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), childBranch);
+      childArtifact.setName("New name");
+      childArtifact.persist("Persist away");
 
       List<Change> firstChanges = new ArrayList<Change>();
-      ChangeManager.comparedToParent(childBranch, firstChanges);
+      Operations.executeWork(ChangeManager.comparedToParent(childBranch, firstChanges), new NullProgressMonitor());
       assertTrue(!firstChanges.isEmpty());
+
+      childArtifact.deleteAndPersist();
 
       Operations.executeWorkAndCheckStatus(new ReplaceArtifactWithBaselineOperation(
          Collections.singleton(childArtifact)));
 
       List<Change> changes = new ArrayList<Change>();
-      ChangeManager.comparedToParent(childBranch, changes);
+      Operations.executeWork(ChangeManager.comparedToParent(childBranch, changes), new NullProgressMonitor());
       assertTrue(changes.isEmpty());
    }
 
@@ -132,15 +133,19 @@ public class ReplaceArtifactWithTest {
          BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch",
             UserManager.getUser(SystemUser.OseeSystem));
 
-      artifact =
+      Artifact artifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, childBranch, getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Deleted my name"));
       artifact.persist(getClass().getName());
 
+      List<Change> firstChanges = new ArrayList<Change>();
+      Operations.executeWork(ChangeManager.comparedToParent(childBranch, firstChanges), new NullProgressMonitor());
+      assertTrue(!firstChanges.isEmpty());
+
       Operations.executeWorkAndCheckStatus(new ReplaceArtifactWithBaselineOperation(Collections.singleton(artifact)));
 
       List<Change> changes = new ArrayList<Change>();
-      ChangeManager.comparedToParent(childBranch, changes);
+      Operations.executeWork(ChangeManager.comparedToParent(childBranch, changes), new NullProgressMonitor());
       assertTrue(changes.isEmpty());
    }
 }
