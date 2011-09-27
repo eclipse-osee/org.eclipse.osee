@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,6 +30,7 @@ public class OseeGroup {
 
    private final String groupName;
    private Artifact groupArtifact;
+   private final Map<String, Boolean> temporaryOverride = new HashMap<String, Boolean>();
 
    public OseeGroup(String groupName) {
       this.groupName = groupName;
@@ -57,7 +60,7 @@ public class OseeGroup {
     * @return whether the user is a member of this group
     */
    public boolean isMember(User user) throws OseeCoreException {
-      return getGroupArtifact().isRelated(CoreRelationTypes.Users_User, user);
+      return isTemporaryOverride(user) || getGroupArtifact().isRelated(CoreRelationTypes.Users_User, user);
    }
 
    /**
@@ -67,6 +70,24 @@ public class OseeGroup {
     */
    public boolean isCurrentUserMember() throws OseeCoreException {
       return isMember(UserManager.getUser());
+   }
+
+   public boolean isTemporaryOverride(User user) {
+      if (temporaryOverride.get(groupName) != null) {
+         return temporaryOverride.get(groupName);
+      }
+      return false;
+   }
+
+   /**
+    * Allow user to temporarily override admin
+    */
+   public void setTemporaryOverride(boolean member) {
+      temporaryOverride.put(groupName, member);
+   }
+
+   public void removeTemporaryOverride() {
+      temporaryOverride.remove(groupName);
    }
 
    private void checkGroupExists() throws OseeCoreException {

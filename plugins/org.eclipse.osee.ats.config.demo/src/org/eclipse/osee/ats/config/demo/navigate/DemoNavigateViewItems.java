@@ -145,7 +145,6 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
          AtsArtifactTypes.TeamWorkflow));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
-      new SetJoeSmithAsAdminNavigateItem(adminItems);
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);
       new ValidateAtsDatabase(healthItems);

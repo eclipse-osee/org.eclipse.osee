@@ -65,5 +65,12 @@
             TraceUnitResourceLocator="org.eclipse.osee.ats.config.demo.traceability.DemoTraceUnitResourceLocator">
       </TraceUnitHandler>
    </extension>
+   <extension
+         id="AtsConfigAddDemoUsers"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+      <DatabaseInitializationTask
+            classname="org.eclipse.osee.ats.config.demo.config.AtsConfigAddDemoUsers">
+      </DatabaseInitializationTask>
+   </extension>
 
 </plugin>

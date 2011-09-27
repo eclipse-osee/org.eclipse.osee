@@ -62,7 +62,9 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -113,12 +115,17 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
       public void done(IJobChangeEvent event) {
          Job job = new UIJob("Load ATS Navigator") {
 
+            private Label userLabel;
+
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
                   showBusy(false);
                   if (Widgets.isAccessible(loadingComposite)) {
                      loadingComposite.dispose();
+                  } else if (Widgets.isAccessible(xNavComp)) {
+                     getViewSite().getActionBars().getToolBarManager().removeAll();
+                     xNavComp.dispose();
                   }
 
                   if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
@@ -144,24 +151,18 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
                         }
                      });
 
-                     Label label = new Label(xNavComp, SWT.None);
-                     String str = getWhoAmI();
-                     if (AtsUtilCore.isAtsAdmin()) {
-                        str += " - Admin";
-                     }
-                     if (!str.equals("")) {
-                        if (AtsUtilCore.isAtsAdmin()) {
-                           label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                        } else {
-                           label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                     userLabel = new Label(xNavComp, SWT.None);
+                     userLabel.addListener(SWT.MouseDoubleClick, new Listener() {
+                        @Override
+                        public void handleEvent(Event event) {
+                           ToggleAtsAdmin.run();
                         }
-                     }
-                     label.setText(str);
-                     label.setToolTipText(str);
+                     });
+                     refreshUserLabel();
 
                      GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
                      gridData.heightHint = 15;
-                     label.setLayoutData(gridData);
+                     userLabel.setLayoutData(gridData);
 
                      if (savedFilterStr != null) {
                         xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
@@ -179,6 +180,22 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
                return Status.OK_STATUS;
+            }
+
+            public void refreshUserLabel() {
+               String str = getWhoAmI();
+               if (AtsUtilCore.isAtsAdmin()) {
+                  str += " - Admin";
+               }
+               if (!str.equals("")) {
+                  if (AtsUtilCore.isAtsAdmin()) {
+                     userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+                  } else {
+                     userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                  }
+               }
+               userLabel.setText(str);
+               userLabel.setToolTipText(str);
             }
          };
          Operations.scheduleJob(job, false, Job.SHORT, null);

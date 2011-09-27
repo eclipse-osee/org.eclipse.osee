@@ -8,22 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core;
+package org.eclipse.osee.ats.core.util;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeGroup;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public enum SystemGroup {
+public enum AtsGroup {
 
-   Everyone,
-   OseeAdmin;
+   AtsAdmin, // Admin setting upon startup
+   AtsTempAdmin; // Allows user to temporarily toggle admin; overrides AtsAdmin
 
    private final OseeGroup group;
 
-   SystemGroup() {
+   AtsGroup() {
       group = new OseeGroup(name());
    }
 

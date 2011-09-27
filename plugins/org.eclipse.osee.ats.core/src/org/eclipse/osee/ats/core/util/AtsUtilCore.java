@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -39,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  */
 public class AtsUtilCore {
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
-   private static OseeGroup atsAdminGroup = new OseeGroup("AtsAdmin");
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
       AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
@@ -97,15 +95,11 @@ public class AtsUtilCore {
 
    public static boolean isAtsAdmin() {
       try {
-         return getAtsAdminGroup().isCurrentUserMember();
+         return AtsGroup.AtsAdmin.isCurrentUserMember();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
       }
-   }
-
-   public static OseeGroup getAtsAdminGroup() {
-      return atsAdminGroup;
    }
 
    public static String doubleToI18nString(double d) {

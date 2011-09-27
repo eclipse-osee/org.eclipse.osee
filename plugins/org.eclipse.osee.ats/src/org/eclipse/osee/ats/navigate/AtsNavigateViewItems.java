@@ -238,6 +238,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
    private void createUtilItems(XNavigateItem parent, List<XNavigateItem> items) {
       XNavigateItem utilItems = new XNavigateItem(parent, "Util", FrameworkImage.GEAR);
+      new ToggleAtsAdmin(utilItems);
       new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
       new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
       new GenerateGuid(utilItems);
@@ -365,5 +366,10 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    @Override
    public String getSectionId() {
       return "ATS";
+   }
+
+   public void clearCaches() {
+      ensurePopulatedRanOnce = false;
+      items.clear();
    }
 }

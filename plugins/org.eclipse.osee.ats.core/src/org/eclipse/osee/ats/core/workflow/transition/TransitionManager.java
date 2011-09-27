@@ -125,9 +125,12 @@ public class TransitionManager {
             }
 
             // Validate Editable
-            if (!WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPriviledgedEditEnabled()) //
-               && !awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) //
-               && !helper.isOverrideAssigneeCheck()) {
+            boolean stateIsEditable =
+               WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPriviledgedEditEnabled());
+            boolean currentlyUnAssigned =
+               awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
+            boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
+            if (!stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
                results.addResult(awa, TransitionResult.MUST_BE_ASSIGNED);
                continue;
             }
@@ -139,7 +142,7 @@ public class TransitionManager {
             }
 
             // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
-            if (!helper.isOverrideAssigneeCheck() && !toStateDef.isCancelledPage() && helper.isSystemUserAssingee(awa)) {
+            if (!overrideAssigneeCheck && !toStateDef.isCancelledPage() && helper.isSystemUserAssingee(awa)) {
                results.addResult(awa, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED);
                continue;
             }

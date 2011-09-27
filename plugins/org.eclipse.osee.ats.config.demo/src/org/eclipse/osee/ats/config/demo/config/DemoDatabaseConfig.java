@@ -12,16 +12,19 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import org.eclipse.osee.ats.config.demo.DemoCISBuilds;
 import org.eclipse.osee.ats.config.demo.DemoSubsystems;
+import org.eclipse.osee.ats.core.util.AtsGroup;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -44,6 +47,8 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       BranchManager.createTopLevelBranch(DemoCISBuilds.CIS_Bld_1);
       populateProgramBranch(DemoCISBuilds.CIS_Bld_1);
 
+      AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));
+      AtsGroup.AtsTempAdmin.getArtifact().persist("Set Joe as Temp Admin");
    }
 
    private void populateProgramBranch(IOseeBranch programBranch) throws OseeCoreException {
