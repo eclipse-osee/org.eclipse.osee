@@ -8,12 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.orcs;
 
 /**
- * @author Ryand D. Brooks
- * @author Donald G. Dunne
+ * @author Ryan D. Brooks
  */
-public interface IArtifactToken extends Identity<String>, FullyNamed, HasArtifactType {
-   // composition interface requires no additional methods,fields
+public interface AbstractArtifactSearchCriteria {
+
 }
