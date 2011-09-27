@@ -12,12 +12,16 @@
 package org.eclipse.osee.ats.util.widgets.commit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
@@ -151,9 +155,20 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                            return;
                         }
                         try {
+                           // commit all branches in order
+                           Map<Integer, Branch> branchIdToBranchMap = new HashMap<Integer, Branch>();
                            for (Branch destinationBranch : AtsBranchManagerCore.getBranchesLeftToCommit(teamArt)) {
-                              AtsBranchManager.commitWorkingBranch(teamArt, false, true, destinationBranch, true);
-                              Thread.sleep(1000);
+                              branchIdToBranchMap.put(destinationBranch.getId(), destinationBranch);
+                           }
+                           List<Integer> branchIds = new ArrayList<Integer>();
+                           branchIds.addAll(branchIdToBranchMap.keySet());
+                           Arrays.sort(branchIds.toArray(new Integer[branchIds.size()]));
+                           for (Integer branchId : branchIds) {
+                              Branch destinationBranch = branchIdToBranchMap.get(branchId);
+                              Job job =
+                                 AtsBranchManager.commitWorkingBranch(teamArt, false, true, destinationBranch,
+                                    branchId == branchIds.get(branchIds.size() - 1));
+                              job.join();
                            }
                         } catch (Exception ex) {
                            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
