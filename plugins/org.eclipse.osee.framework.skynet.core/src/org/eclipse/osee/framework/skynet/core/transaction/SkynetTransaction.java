@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -37,10 +38,10 @@ import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -223,10 +224,12 @@ public final class SkynetTransaction extends AbstractOperation {
    }
 
    private void addArtifact(Artifact artifact, boolean force) throws OseeCoreException {
-      boolean wasAdded = alreadyProcessedArtifacts.add(artifact);
-      if (wasAdded || force) {
-         addArtifactAndAttributes(artifact);
-         addRelations(artifact);
+      if (artifact != null) {
+         boolean wasAdded = alreadyProcessedArtifacts.add(artifact);
+         if (wasAdded || force) {
+            addArtifactAndAttributes(artifact);
+            addRelations(artifact);
+         }
       }
    }
 
@@ -290,6 +293,15 @@ public final class SkynetTransaction extends AbstractOperation {
       }
    }
 
+   private Artifact getArtifact(int artId, IOseeBranch branch) throws OseeCoreException {
+      try {
+         return ArtifactQuery.getArtifactFromId(artId, branch);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
    public void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
       checkAccess(artifact, link);
       madeChanges = true;
@@ -299,8 +311,8 @@ public final class SkynetTransaction extends AbstractOperation {
       RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
       Branch branch = link.getBranch();
-      Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), branch);
-      Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), branch);
+      Artifact aArtifact = getArtifact(link.getAArtifactId(), branch);
+      Artifact bArtifact = getArtifact(link.getBArtifactId(), branch);
       if (link.isInDb()) {
          if (link.isUnDeleted()) {
             modificationType = ModificationType.MODIFIED; // Temporary until UNDELETED persisted to DB
