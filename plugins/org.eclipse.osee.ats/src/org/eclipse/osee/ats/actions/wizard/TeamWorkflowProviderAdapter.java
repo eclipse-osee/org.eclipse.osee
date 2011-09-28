@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -43,12 +42,6 @@ public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvid
    @Override
    public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt) {
       // provided for subclass implementation
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public Collection<? extends IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException {
-      return Collections.emptyList();
    }
 
    @SuppressWarnings("unused")

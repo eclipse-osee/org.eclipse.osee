@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.team;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**
@@ -28,15 +23,6 @@ public final class TeamWorkflowProviders {
 
    private TeamWorkflowProviders() {
       // private constructor
-   }
-
-   public static Set<IArtifactType> getAllTeamWorkflowArtifactTypes() throws OseeCoreException {
-      Set<IArtifactType> artifactTypes = new HashSet<IArtifactType>();
-      artifactTypes.add(AtsArtifactTypes.TeamWorkflow);
-      for (ITeamWorkflowProvider ext : getAtsTeamWorkflowProviders()) {
-         artifactTypes.addAll(ext.getTeamWorkflowArtifactTypes());
-      }
-      return artifactTypes;
    }
 
    /*

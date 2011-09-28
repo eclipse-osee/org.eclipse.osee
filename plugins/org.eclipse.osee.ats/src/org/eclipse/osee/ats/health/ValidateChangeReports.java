@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
@@ -129,7 +129,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         for (IArtifactType artifactType : TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes()) {
+         for (IArtifactType artifactType : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
             sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactType.getName(), columnHeaders.length));
 
             try {
@@ -392,8 +392,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
          ChangeReportComparer comparer = new ChangeReportComparer();
          comparer.compare(currentData, storedData);
 
-         OseeLog.logf(Activator.class, Level.SEVERE,
-            "Checksums not equal - stored:[%s] current:[%s]", checkSum1, checkSum2);
+         OseeLog.logf(Activator.class, Level.SEVERE, "Checksums not equal - stored:[%s] current:[%s]", checkSum1,
+            checkSum2);
       }
       return result;
    }

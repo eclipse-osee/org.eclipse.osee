@@ -49,14 +49,6 @@ public interface ITeamWorkflowProvider {
     */
    public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt);
 
-   /**
-    * Return a collection of all team workflow artifact type names. These are used by ATS when searching is performed
-    * since there is no "inheritance" in the DB model.
-    * 
-    * @return collection of all team workflow artifact type names
-    */
-   public Collection<? extends IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException;
-
    public String getWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
 
    public String getRelatedTaskWorkflowDefinitionId(TeamWorkFlowArtifact teamArt) throws OseeCoreException;

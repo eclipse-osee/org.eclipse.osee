@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
-import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.SubscribeManager;
@@ -49,7 +49,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
-      for (IArtifactType artifactType : TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes()) {
+      for (IArtifactType artifactType : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
          ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
       }
    }

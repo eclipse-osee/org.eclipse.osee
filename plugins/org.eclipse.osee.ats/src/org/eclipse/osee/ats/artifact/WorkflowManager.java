@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
@@ -60,7 +60,7 @@ public class WorkflowManager {
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
       List<TeamWorkFlowArtifact> result = new ArrayList<TeamWorkFlowArtifact>();
-      for (IArtifactType artType : TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes()) {
+      for (IArtifactType artType : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts =
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(artType,
                AtsUtil.getAtsBranch()));

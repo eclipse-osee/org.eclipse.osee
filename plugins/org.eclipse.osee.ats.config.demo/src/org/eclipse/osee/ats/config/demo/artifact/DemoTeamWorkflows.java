@@ -10,26 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.artifact;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import org.eclipse.osee.ats.actions.wizard.TeamWorkflowProviderAdapter;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
-import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
  */
 public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
-
-   private static List<? extends IArtifactType> workflowArtifactTypes;
 
    @Override
    public IArtifactType getTeamWorkflowArtifactType(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
@@ -46,20 +39,6 @@ public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
    @Override
    public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
       return teamDef.getName().contains("SAW") || teamDef.getName().contains("CIS");
-   }
-
-   @Override
-   public Collection<? extends IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException {
-      if (workflowArtifactTypes == null) {
-         if (TestUtil.isDemoDb()) {
-            workflowArtifactTypes =
-               Arrays.asList(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoArtifactTypes.DemoTestTeamWorkflow,
-                  DemoArtifactTypes.DemoReqTeamWorkflow);
-         } else {
-            workflowArtifactTypes = Collections.emptyList();
-         }
-      }
-      return workflowArtifactTypes;
    }
 
    @Override

@@ -22,10 +22,9 @@ import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
-import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Ryan D. Brooks
@@ -43,14 +43,12 @@ public class AtsArtifactFactory extends ArtifactFactory {
       super(AtsArtifactTypes.Action, AtsArtifactTypes.Version, AtsArtifactTypes.PeerToPeerReview,
          AtsArtifactTypes.DecisionReview, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Task,
          AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Goal);
-      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
-         try {
-            for (IArtifactType teamWorkflowTypeName : atsTeamWorkflow.getTeamWorkflowArtifactTypes()) {
-               registerAsResponsible(teamWorkflowTypeName);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+      try {
+         for (IArtifactType teamWorkflowTypeName : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
+            registerAsResponsible(teamWorkflowTypeName);
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -58,7 +56,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       if (artifactType.equals(AtsArtifactTypes.Task)) {
          return new TaskArtifact(this, guid, humandReadableId, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.TeamWorkflow)) {
+      } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
          return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.TeamDefinition)) {
          return new TeamDefinitionArtifact(this, guid, humandReadableId, branch, artifactType);
@@ -74,8 +72,6 @@ public class AtsArtifactFactory extends ArtifactFactory {
          return new GoalArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Action)) {
          return new ActionArtifact(this, guid, humandReadableId, branch, artifactType);
-      } else if (TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes().contains(artifactType)) {
-         return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
       }
