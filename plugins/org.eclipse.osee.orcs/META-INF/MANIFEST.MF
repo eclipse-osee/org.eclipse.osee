@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.orcs
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.runtime,
- org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.exception
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.util
+Export-Package: org.eclipse.osee.orcs
