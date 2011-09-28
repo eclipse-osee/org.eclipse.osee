@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -36,6 +37,7 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class CopyActionDetailsAction extends Action {
 
+   private static final String USE_DEVELOPER_CHANGE_TYPES = "UseDeveloperChangeTypes";
    private Clipboard clipboard;
    private final AbstractWorkflowArtifact sma;
 
@@ -78,7 +80,16 @@ public class CopyActionDetailsAction extends Action {
    private String getChangeTypeOrObjectType(AbstractWorkflowArtifact awa) throws OseeCoreException {
       String result = "";
       if (awa instanceof TeamWorkFlowArtifact) {
+         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
          result = ChangeTypeUtil.getChangeTypeStr(sma);
+         if (teamArt.getTeamDefinition().getAttributesToStringList(CoreAttributeTypes.StaticId).contains(
+            USE_DEVELOPER_CHANGE_TYPES)) {
+            if (result.equals("Improvement")) {
+               result = "feature";
+            } else if (result.equals("Problem")) {
+               result = "bug";
+            }
+         }
       } else if (awa instanceof TaskArtifact) {
          result = "Task";
       } else if (awa.isOfType(AtsArtifactTypes.ReviewArtifact)) {
