@@ -8,12 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.data;
 
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface WritableRelation extends ReadableRelation {
-   // Place-holder
+public interface ReadableRelation extends Readable, HasVersion {
+
+   @Override
+   String toString();
 }

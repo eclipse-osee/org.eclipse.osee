@@ -8,14 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.data;
 
-/**
- * @author Roberto E. Escobar
- * @author Andrew M. Finkbeiner
- */
-public interface ReadableRelation extends Readable, HasVersion {
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Named;
 
-   @Override
-   String toString();
+public interface Identifiable extends Identity<String>, Named {
+   // 
 }

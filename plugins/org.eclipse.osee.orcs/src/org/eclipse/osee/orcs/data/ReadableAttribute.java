@@ -8,12 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.data;
+
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface WritableAttribute<T> extends ReadableAttribute<T> {
-   // Place-holder
+public interface ReadableAttribute<T> extends Readable, HasVersion {
+
+   int getId();
+
+   IAttributeType getAttributeType();
+
+   T getValue() throws OseeCoreException;
+
+   String getDisplayableString() throws OseeCoreException;
+
+   @Override
+   String toString();
 }

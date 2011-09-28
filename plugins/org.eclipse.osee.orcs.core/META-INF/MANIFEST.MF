@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.core
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+<<<<<<< HEAD
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
@@ -17,3 +18,10 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.orcs
 Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds
+=======
+Import-Package: org.osgi.framework;version="1.3.0"
+Require-Bundle: org.eclipse.osee.framework.core,
+ org.eclipse.osee.orcs,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.jdk.core
+>>>>>>> bd229ed... feature[ats_8KF8L]: Get programs and builds web backend

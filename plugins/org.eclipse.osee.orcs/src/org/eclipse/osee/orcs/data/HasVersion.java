@@ -8,12 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.data;
+
+import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
  * @author Roberto E. Escobar
- * @author Andrew M. Finkbeiner
  */
-public interface Writable {
-   // Base Writable
+public interface HasVersion {
+
+   int getGammaId();
+
+   ModificationType getModificationType();
 }

@@ -8,25 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.db.internal;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
 /**
  * @author Roberto E. Escobar
- * @author Andrew M. Finkbeiner
  */
-public interface ReadableAttribute<T> extends Readable, HasVersion {
+public interface SqlProvider {
 
-   int getId();
+   String getSql(String key) throws OseeCoreException;
 
-   IAttributeType getAttributeType();
-
-   T getValue() throws OseeCoreException;
-
-   String getDisplayableString() throws OseeCoreException;
-
-   @Override
-   String toString();
+   String getSql(OseeSql key) throws OseeCoreException;
 }

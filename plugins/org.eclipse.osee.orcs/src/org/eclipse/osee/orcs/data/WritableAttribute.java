@@ -8,16 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
-
-import org.eclipse.osee.framework.core.enums.ModificationType;
+package org.eclipse.osee.orcs.data;
 
 /**
  * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
  */
-public interface HasVersion {
-
-   int getGammaId();
-
-   ModificationType getModificationType();
+public interface WritableAttribute<T> extends ReadableAttribute<T> {
+   // Place-holder
 }
