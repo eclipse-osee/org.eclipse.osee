@@ -20,8 +20,9 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
-import org.eclipse.osee.ats.core.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -34,7 +35,6 @@ import org.eclipse.osee.ats.walker.action.ActionWalkerLayoutAction;
 import org.eclipse.osee.ats.walker.action.ActionWalkerRefreshAction;
 import org.eclipse.osee.ats.walker.action.ActionWalkerShowAllAction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -151,11 +151,13 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
          } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
          } else if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            Artifact parentArtifact = ((AbstractWorkflowArtifact) art).getParentAWA();
-            if (parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
-            } else {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unknown parent " + art.getHumanReadableId());
+            if (!PeerToPeerReviewManager.isStandAlongReview(art)) {
+               Artifact parentArtifact = ((AbstractWorkflowArtifact) art).getParentAWA();
+               if (parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+                  artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
+               } else {
+                  OseeLog.log(Activator.class, Level.SEVERE, "Unknown parent " + art.getHumanReadableId());
+               }
             }
          }
       } catch (OseeCoreException ex) {
@@ -177,8 +179,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    }
 
    private void setTooltips() {
-      if (!(activeAwa instanceof GoalArtifact)) {
-         try {
+      try {
+         if (!GoalManager.isGoalArtifact(activeAwa) && !PeerToPeerReviewManager.isStandAlongReview(activeAwa)) {
             ActionArtifact actionArt = (ActionArtifact) activeAwa.getParentActionArtifact();
             for (TeamWorkFlowArtifact teamArt : actionArt.getTeams()) {
                GraphItem item = viewer.findGraphItem(teamArt);
@@ -187,9 +189,9 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
                   node.setTooltip(new Label(getToolTip(teamArt)));
                }
             }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

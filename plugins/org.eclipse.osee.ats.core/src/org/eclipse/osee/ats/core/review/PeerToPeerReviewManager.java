@@ -166,4 +166,11 @@ public class PeerToPeerReviewManager {
       return peerToPeerRev;
    }
 
+   public static boolean isStandAlongReview(Object object) throws OseeCoreException {
+      if (object instanceof PeerToPeerReviewArtifact) {
+         PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) object;
+         return peerArt.isStandAloneReview();
+      }
+      return false;
+   }
 }

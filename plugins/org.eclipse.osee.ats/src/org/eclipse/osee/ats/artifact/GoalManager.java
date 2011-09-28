@@ -197,4 +197,7 @@ public final class GoalManager {
       return null;
    }
 
+   public static boolean isGoalArtifact(Object object) {
+      return object instanceof GoalArtifact;
+   }
 }
