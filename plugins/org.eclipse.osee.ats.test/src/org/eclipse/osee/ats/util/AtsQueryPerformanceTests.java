@@ -29,25 +29,18 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class AtsQueryPerformanceTests {
 
-   public AtsQueryPerformanceTests() {
-      AtsBulkLoad.loadConfig(true);
-   }
-
    @org.junit.Test
-   public void testUserWorldSearch() throws Exception {
-      User usr = getAUser();
-      assertNotNull("User does not exist", usr);
-      MyWorldSearchItem search = new MyWorldSearchItem();
+   public void testAtsBulkLoad() throws Exception {
       long startTime = System.currentTimeMillis();
-      Collection<Artifact> artifacts = search.searchIt(usr);
+      AtsBulkLoad.loadConfig(true);
       long elapsedTime = System.currentTimeMillis() - startTime;
-      System.out.println(String.format("testUserWorldSearch took %dms for %d artifacts", elapsedTime, artifacts.size()));
-      assertTrue("No artifacts found", artifacts.size() > 0);
-      assertTrue("testUserWorldSearch should take less than 2500ms currently " + elapsedTime + "ms", elapsedTime < 2500);
+      System.out.println(String.format("testAtsBulkLoad took %dms", elapsedTime));
+      assertTrue("testAtsBulkLoad should take less than 2500ms currently " + elapsedTime + "ms", elapsedTime < 2500);
    }
 
    @org.junit.Test
    public void testTeamWorldSearchItem() throws Exception {
+      AtsBulkLoad.loadConfig(true);
       TeamWorldSearchItem searchItem =
          new TeamWorldSearchItem("Show Open OSEE Actions", Arrays.asList("ATS", "Define", "OTE"), false, false, true,
             false, null, null, null, null, null);
@@ -57,8 +50,21 @@ public class AtsQueryPerformanceTests {
       System.out.println(String.format("testTeamWorldSearchItem took %dms for %d artifacts", elapsedTime,
          artifacts.size()));
       assertTrue("No artifacts found", artifacts.size() > 0);
-      assertTrue("testTeamWorldSearchItem should take less than 20000ms; took " + elapsedTime + "ms",
-         elapsedTime < 20000);
+      assertTrue("testTeamWorldSearchItem should take less than 2000ms; took " + elapsedTime + "ms", elapsedTime < 2000);
+   }
+
+   @org.junit.Test
+   public void testUserWorldSearch() throws Exception {
+      AtsBulkLoad.loadConfig(true);
+      User usr = getAUser();
+      assertNotNull("User does not exist", usr);
+      MyWorldSearchItem search = new MyWorldSearchItem();
+      long startTime = System.currentTimeMillis();
+      Collection<Artifact> artifacts = search.searchIt(usr);
+      long elapsedTime = System.currentTimeMillis() - startTime;
+      System.out.println(String.format("testUserWorldSearch took %dms for %d artifacts", elapsedTime, artifacts.size()));
+      assertTrue("No artifacts found", artifacts.size() > 0);
+      assertTrue("testUserWorldSearch should take less than 2500ms currently " + elapsedTime + "ms", elapsedTime < 2500);
    }
 
    private User getAUser() throws OseeCoreException {
