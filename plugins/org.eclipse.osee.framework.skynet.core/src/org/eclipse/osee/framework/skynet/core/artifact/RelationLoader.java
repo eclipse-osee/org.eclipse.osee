@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadLevel.ATTRIBUTE;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadLevel.SHALLOW;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.ATTRIBUTE;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.SHALLOW;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;

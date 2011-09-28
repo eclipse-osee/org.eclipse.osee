@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.core.enums;
 
 /**
  * Enumeration used to determine the level of artifact data that will be pre-loaded from the datastore
