@@ -316,6 +316,10 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artifactTypeToken, branch, FULL, allowDeleted).getArtifacts(1000, null);
    }
 
+   public static List<Artifact> getArtifactListFromType(List<IArtifactType> artifactTypeTokens, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactTypeTokens, branch, FULL, allowDeleted).getArtifacts(1000, null);
+   }
+
    public static List<Artifact> getArtifactListFromType(IArtifactType artifactTypeToken, IOseeBranch branch) throws OseeCoreException {
       return getArtifactListFromType(artifactTypeToken, branch, EXCLUDE_DELETED);
    }

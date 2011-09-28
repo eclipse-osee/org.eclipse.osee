@@ -10,20 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.ats.core.type.AtsRelationTypes;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -44,20 +45,18 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
       if (!loaded) {
          loaded = true;
          OseeLog.log(Activator.class, Level.INFO, "Loading ATS Configuration");
-         Artifact headingArt = AtsUtilCore.getFromToken(AtsArtifactToken.HeadingFolder);
-         if (headingArt == null) {
-            OseeLog.log(Activator.class, Level.SEVERE, "AST Heading not found - ATS Load Configuration failed");
-         } else {
-            // Loading artifacts will cache them in ArtifactCache
-            for (Artifact artifact : RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-               CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-               // CacheByText for all staticId values
-               for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-                  ArtifactCache.cacheByTextId(staticId, artifact);
-               }
-            }
-         }
+         cacheStaticIds(ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.TeamDefinition,
+            AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version, AtsArtifactTypes.WorkDefinition),
+            AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED));
          loaded = true;
+      }
+   }
+
+   public void cacheStaticIds(Collection<Artifact> artifacts) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+            ArtifactCache.cacheByTextId(staticId, artifact);
+         }
       }
    }
 

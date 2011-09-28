@@ -173,7 +173,7 @@ public class RelationManager {
          return relatedArtifacts;
       }
 
-      // loop through till either depth is reached or there re no more artifacts to search at this level
+      // loop through till either depth is reached or there are no more artifacts to search at this level
       for (int i = 0; i < depth && !newArtifactsToSearch.isEmpty(); i++) {
          relatedArtIds.clear();
          for (Artifact artifact : newArtifactsToSearch) {

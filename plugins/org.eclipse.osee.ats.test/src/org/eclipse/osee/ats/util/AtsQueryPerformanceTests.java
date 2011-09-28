@@ -35,7 +35,7 @@ public class AtsQueryPerformanceTests {
       AtsBulkLoad.loadConfig(true);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testAtsBulkLoad took %dms", elapsedTime));
-      assertTrue("testAtsBulkLoad should take less than 2500ms currently " + elapsedTime + "ms", elapsedTime < 2500);
+      assertTrue("testAtsBulkLoad should take less than 5000ms currently " + elapsedTime + "ms", elapsedTime < 5000);
    }
 
    @org.junit.Test
