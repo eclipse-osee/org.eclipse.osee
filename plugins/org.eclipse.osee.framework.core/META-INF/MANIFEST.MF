@@ -10,8 +10,6 @@ Import-Package: org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
  org.eclipse.core.net.proxy,
- org.eclipse.core.runtime,
- org.eclipse.core.runtime.jobs,
  org.eclipse.osee.framework.jdk.core.text,
  org.eclipse.osee.framework.jdk.core.text.change,
  org.eclipse.osee.framework.jdk.core.text.rules,
@@ -30,3 +28,4 @@ Export-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.translation,
  org.eclipse.osee.framework.core.util
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
