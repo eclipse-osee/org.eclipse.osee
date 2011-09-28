@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
-import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewe
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
+import org.eclipse.osee.framework.ui.skynet.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;

@@ -6,11 +6,7 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.lowagie.text;version="2.1.7",
- com.lowagie.text.html;version="2.1.7",
- com.lowagie.text.pdf;version="2.1.7",
- com.lowagie.text.rtf;version="2.1.7",
- org.apache.commons.httpclient,
+Import-Package: org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
  org.eclipse.core.net.proxy,
@@ -21,7 +17,6 @@ Import-Package: com.lowagie.text;version="2.1.7",
  org.eclipse.osee.framework.jdk.core.text.rules,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.logging,
  org.eclipse.osgi.framework.console,
  org.osgi.framework,

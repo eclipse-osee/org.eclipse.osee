@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.ui.skynet.results.html.IResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
+import org.eclipse.osee.framework.ui.skynet.util.TableWriterAdaptor;
 
 /**
  * @author Roberto E. Escobar

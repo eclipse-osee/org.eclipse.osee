@@ -14,8 +14,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.util.TableWriterAdaptor;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 
 /**

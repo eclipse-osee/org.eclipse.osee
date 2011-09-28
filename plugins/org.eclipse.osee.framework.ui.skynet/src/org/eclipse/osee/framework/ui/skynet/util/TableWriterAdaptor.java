@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.util;
+package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.awt.Color;
 import java.io.OutputStream;
