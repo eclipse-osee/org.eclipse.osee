@@ -22,4 +22,16 @@ public enum LoadLevel {
    RELATION,
    ATTRIBUTE,
    ALL_CURRENT;
+
+   public boolean isShallow() {
+      return this == SHALLOW;
+   }
+
+   public boolean isRelationsOnly() {
+      return this == RELATION;
+   }
+
+   public boolean isHead() {
+      return this == ALL_CURRENT;
+   }
 }
