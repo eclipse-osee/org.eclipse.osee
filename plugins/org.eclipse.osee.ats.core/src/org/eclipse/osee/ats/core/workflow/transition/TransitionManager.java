@@ -130,7 +130,14 @@ public class TransitionManager {
             boolean currentlyUnAssigned =
                awa.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
             boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
-            if (!stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
+            // Allow anyone to transition any task to completed/cancelled/working if parent is working
+            if (awa.isTask() && awa.getParentTeamWorkflow().isCompletedOrCancelled()) {
+               results.addResult(awa, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
+               continue;
+
+            }
+            // Else, only allow transition if...
+            else if (!awa.isTask() && !stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
                results.addResult(awa, TransitionResult.MUST_BE_ASSIGNED);
                continue;
             }

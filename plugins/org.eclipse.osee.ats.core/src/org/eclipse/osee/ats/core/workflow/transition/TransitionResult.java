@@ -24,6 +24,8 @@ public class TransitionResult implements ITransitionResult {
    public static TransitionResult MUST_BE_ASSIGNED =
       new TransitionResult(
          "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
+   public static TransitionResult TASK_CANT_TRANSITION_IF_PARENT_COMPLETED = new TransitionResult(
+      "You can not transition a task that belongs to a completed Workflow.  Un-complete workflow first.");
    public static TransitionResult DELETE_WORKING_BRANCH_BEFORE_CANCEL = new TransitionResult(
       "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
    public static TransitionResult WORKING_BRANCH_BEING_COMMITTED = new TransitionResult(
