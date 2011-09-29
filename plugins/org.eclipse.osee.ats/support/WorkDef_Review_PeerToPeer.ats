@@ -93,7 +93,11 @@ workDefinition "WorkDef_Review_PeerToPeer" {
             attributeWidget "ats.Need By"
             widget "Related To State"
          }
-         attributeWidget "ats.Estimated Hours"
+         composite {
+         	numColumns 4
+            attributeWidget "ats.Estimated Hours"
+            attributeWidget "ats.Estimated Completion Date"
+         }
          composite {
             numColumns 8
             attributeWidget "ats.LOC Changed"
@@ -114,7 +118,13 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       layout {
          widget "Description"	
          widget "Role"
-         widget "Review Defect"
+         widget "Review Defect"         
+         composite {
+         	numColumns 4
+            attributeWidget "ats.Estimated Hours"
+            attributeWidget "ats.Estimated Completion Date"
+         }
+         
          composite {
             numColumns 8
             attributeWidget "ats.LOC Changed"
