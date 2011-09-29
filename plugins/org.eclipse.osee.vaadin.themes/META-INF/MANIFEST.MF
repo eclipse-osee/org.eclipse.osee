@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee Vaadin Themes
+Bundle-SymbolicName: org.eclipse.osee.vaadin.themes
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Fragment-Host: com.vaadin;bundle-version="6.6.6"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
