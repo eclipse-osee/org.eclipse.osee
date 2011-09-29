@@ -22,5 +22,5 @@ WebProgramsPresenterTest.class,//
  * @author John Misinco
  */
 public class DisplayPresenterTestSuite {
-
+   //Test Suite class
 }

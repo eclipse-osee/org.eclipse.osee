@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.internal;
 
-import org.eclipse.osee.display.presenter.mocks.MockArtifactQueryService;
 import org.junit.Test;
 
-/*
- * @author John Misinco
+/**
+ * @author John R. Misinco
  */
 public class WebProgramsPresenterTest {
 
