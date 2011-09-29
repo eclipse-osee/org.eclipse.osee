@@ -10,12 +10,16 @@
 	<version>0.9.9-SNAPSHOT</version>
 
 	<modules>
+		<module>../../plugins/org.eclipse.osee.framework.core</module>
+
 		<module>../../plugins/org.eclipse.osee.display</module>
 		<module>../../plugins/org.eclipse.osee.display.view.web</module>
+
 		<module>../../plugins/org.eclipse.osee.display.presenter</module>
 		<module>../../plugins/org.eclipse.osee.display.presenter.test</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs</module>
+		<module>../../plugins/org.eclipse.osee.orcs.mock</module>
 		<module>../../plugins/org.eclipse.osee.orcs.core</module>
 		<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db</module>
@@ -110,16 +114,9 @@
 					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
 					<archiveSite>true</archiveSite>
 					<environments>
-						<!-- <environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>carbon</ws>
-							<arch>x86</arch>
-						</environment>-->
+						<!-- <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> -->
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
@@ -145,16 +142,9 @@
 				<configuration>
 					<resolver>p2</resolver>
 					<environments>
-						<!-- <environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86</arch>
-						</environment> 
-						<environment>
-							<os>macosx</os>
-							<ws>carbon</ws>
-							<arch>x86</arch>
-						</environment>-->
+						<!-- <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> -->
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
