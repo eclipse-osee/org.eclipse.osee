@@ -12,6 +12,8 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.internal.Activator;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 /**
  * @author Donald G. Dunne
@@ -40,8 +42,9 @@ public final class OseeCodeVersion {
    }
 
    public static String getBundleVersion() {
-      return (String) Activator.getBundleContext().getBundle().getHeaders().get(
-         org.osgi.framework.Constants.BUNDLE_VERSION);
+      Bundle bundle = Activator.getBundleContext().getBundle();
+      Version version = bundle.getVersion();
+      return version.toString();
    }
 
    public static boolean isDevelopment() {
