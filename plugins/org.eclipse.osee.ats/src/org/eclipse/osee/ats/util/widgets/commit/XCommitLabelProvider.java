@@ -53,13 +53,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          try {
             CommitStatus commitStatus =
                AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
-            if (commitStatus == CommitStatus.Branch_Not_Configured ||
+            if (commitStatus == CommitStatus.Branch_Not_Configured || commitStatus == CommitStatus.Branch_Commit_Disabled ||
             //
-            commitStatus == CommitStatus.Branch_Commit_Disabled ||
-            //
-            commitStatus == CommitStatus.Commit_Needed ||
-            //
-            commitStatus == CommitStatus.Working_Branch_Not_Created) {
+            commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Working_Branch_Not_Created) {
                return ImageManager.getImage(FrameworkImage.DOT_RED);
             }
 
@@ -67,9 +63,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
                return ImageManager.getImage(FrameworkImage.DOT_YELLOW);
             }
 
-            if (commitStatus == CommitStatus.Committed ||
-            //
-            commitStatus == CommitStatus.Committed_With_Merge) {
+            if (commitStatus == CommitStatus.Committed || commitStatus == CommitStatus.Committed_With_Merge || commitStatus == CommitStatus.No_Commit_Needed) {
                return ImageManager.getImage(FrameworkImage.DOT_GREEN);
             }
             return null;
@@ -110,6 +104,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return handleCommitCommentColumn(configArt);
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {
          return handleDestBranchColumn(element, branch);
+      } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Create_Date_Col)) {
+         return handleDestBranchCreationDateColumn(element, branch);
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          return handleActionColumn(configArt);
       }
@@ -144,6 +140,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
+   private String handleDestBranchCreationDateColumn(Object element, Branch branch) throws OseeCoreException {
+      if (element instanceof VersionArtifact) {
+         return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
+      } else if (element instanceof TeamDefinitionArtifact) {
+         return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
+      }
+      return "";
+   }
+
    private String handleActionColumn(ICommitConfigArtifact configArt) throws OseeCoreException {
       CommitStatus commitStatus =
          AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
@@ -153,6 +158,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return "Enable Branch Commit";
       } else if (commitStatus == CommitStatus.Commit_Needed) {
          return "Start Commit";
+      } else if (commitStatus == CommitStatus.No_Commit_Needed) {
+         return CommitStatus.No_Commit_Needed.getDisplayName();
       } else if (commitStatus == CommitStatus.Merge_In_Progress) {
          return "Merge Conflicts and Commit";
       } else if (commitStatus == CommitStatus.Committed) {

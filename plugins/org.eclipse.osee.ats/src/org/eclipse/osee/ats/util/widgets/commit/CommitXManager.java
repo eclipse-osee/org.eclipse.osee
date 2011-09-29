@@ -83,6 +83,9 @@ public class CommitXManager extends XViewer {
          CommitStatus commitStatus = AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), configArt);
          if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
+         } else if (commitStatus == CommitStatus.No_Commit_Needed) {
+            AWorkbench.popup(commitStatus.getDisplayName(),
+               "Destination Branch creation date is after commit to Parent Destination Branch; No Action Needed");
          } else if (commitStatus == CommitStatus.Branch_Not_Configured) {
             AWorkbench.popup(commitStatus.getDisplayName(),
                "Talk to project lead to configure branch for version [" + configArt + "]");

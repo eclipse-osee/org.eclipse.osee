@@ -18,6 +18,7 @@ public enum CommitStatus {
    Branch_Not_Configured("Branch Not Configured"),
    Branch_Commit_Disabled("Branch Commit Disabled"),
    Commit_Needed("Start Commit"),
+   No_Commit_Needed("No Commit Needed"),
    Merge_In_Progress("Merge in Progress"),
    Committed("Committed"),
    Committed_With_Merge("Committed With Merge");

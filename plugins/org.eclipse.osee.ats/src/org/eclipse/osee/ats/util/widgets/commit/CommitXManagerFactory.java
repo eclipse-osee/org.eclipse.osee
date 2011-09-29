@@ -28,21 +28,23 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
       SortDataType.String, false, null);
    public static XViewerColumn Merge_Col = new XViewerColumn("osee.commit.merge", "Merge Branch Exists", 30, SWT.LEFT,
       true, SortDataType.String, false, "Will show merge icon if merge branch exists");
-   public static XViewerColumn Dest_Branch_Col = new XViewerColumn("osee.commit.name", "Destination Branch", 200,
+   public static XViewerColumn Dest_Branch_Col = new XViewerColumn("osee.commit.name", "Destination Branch", 150,
       SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Version_Col = new XViewerColumn("osee.commit.shortName", "Destination Version", 200,
+   public static XViewerColumn Dest_Branch_Create_Date_Col = new XViewerColumn("osee.commit.name.createDate",
+      "Destination Branch Creation Date", 110, SWT.LEFT, true, SortDataType.Date, false, null);
+   public static XViewerColumn Version_Col = new XViewerColumn("osee.commit.shortName", "Destination Version", 80,
       SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Configuring_Object_Col = new XViewerColumn("osee.commit.configObj",
       "Configuring Object", 100, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Commit_Date = new XViewerColumn("osee.commit.commitDate", "Commit Date", 200, SWT.LEFT,
+   public static XViewerColumn Commit_Date = new XViewerColumn("osee.commit.commitDate", "Commit Date", 110, SWT.LEFT,
       true, SortDataType.Date, false, null);
    public static XViewerColumn Commit_Comment = new XViewerColumn("osee.commit.commitComment", "Commit Comment", 200,
       SWT.LEFT, true, SortDataType.String, false, null);
 
    public CommitXManagerFactory() {
       super("osee.skynet.gui.CommitXViewer");
-      registerColumns(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Version_Col,
-         Configuring_Object_Col, Commit_Date, Commit_Comment);
+      registerColumns(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Dest_Branch_Create_Date_Col,
+         Version_Col, Configuring_Object_Col, Commit_Date, Commit_Comment);
    }
 
    @Override

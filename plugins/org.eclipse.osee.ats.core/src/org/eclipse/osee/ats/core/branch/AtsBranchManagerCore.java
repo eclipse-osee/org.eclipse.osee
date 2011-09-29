@@ -139,16 +139,20 @@ public class AtsBranchManagerCore {
    }
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
-      Branch desinationBranch = configArt.getParentBranch();
-      if (desinationBranch == null) {
+      Branch destinationBranch = configArt.getParentBranch();
+      return getCommitStatus(teamArt, destinationBranch);
+   }
+
+   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
+      if (destinationBranch == null) {
          return CommitStatus.Branch_Not_Configured;
       }
 
       Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(teamArt);
-      boolean mergeBranchExists = AtsBranchManagerCore.isMergeBranchExists(teamArt, desinationBranch);
+      boolean mergeBranchExists = AtsBranchManagerCore.isMergeBranchExists(teamArt, destinationBranch);
 
       for (TransactionRecord transId : transactions) {
-         if (desinationBranch.equals(transId.getBranch())) {
+         if (destinationBranch.equals(transId.getBranch())) {
             if (mergeBranchExists) {
                return CommitStatus.Committed_With_Merge;
             } else {
@@ -157,7 +161,12 @@ public class AtsBranchManagerCore {
          }
       }
 
-      Result result = AtsBranchManagerCore.isCommitBranchAllowed(teamArt, configArt);
+      if (workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(teamArt, destinationBranch,
+         transactions)) {
+         return CommitStatus.No_Commit_Needed;
+      }
+
+      Result result = AtsBranchManagerCore.isCommitBranchAllowed(teamArt);
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;
       }
@@ -170,7 +179,30 @@ public class AtsBranchManagerCore {
       return CommitStatus.Commit_Needed;
    }
 
-   public static Result isCommitBranchAllowed(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
+   private static boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(TeamWorkFlowArtifact teamArt, Branch destinationBranch, Collection<TransactionRecord> commitTransactionIds) throws OseeCoreException {
+      Branch destinationBranchParent = destinationBranch.getParentBranch();
+      if (destinationBranchParent.getBranchType() == BranchType.SYSTEM_ROOT) {
+         return false;
+      }
+
+      TransactionRecord committedToParentTransRecord = null;
+      for (TransactionRecord transId : commitTransactionIds) {
+         if (transId.getBranch().equals(destinationBranchParent)) {
+            committedToParentTransRecord = transId;
+            break;
+         }
+      }
+      if (committedToParentTransRecord == null) {
+         return false;
+      }
+      if (destinationBranch.getBaseTransaction().getTimeStamp().after(committedToParentTransRecord.getTimeStamp())) {
+         return true;
+      }
+      return workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(teamArt,
+         destinationBranchParent, commitTransactionIds);
+   }
+
+   public static Result isCommitBranchAllowed(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       if (!teamArt.isTeamWorkflow()) {
          return Result.FalseResult;
       }
@@ -284,7 +316,7 @@ public class AtsBranchManagerCore {
       Set<Branch> branchesLeft = new HashSet<Branch>();
       Collection<Branch> committedTo = getBranchesCommittedTo(teamArt);
       for (Branch branchToCommit : getBranchesToCommitTo(teamArt)) {
-         if (!committedTo.contains(branchToCommit)) {
+         if (!committedTo.contains(branchToCommit) && !isNoCommitNeeded(teamArt, branchToCommit)) {
             branchesLeft.add(branchToCommit);
          }
       }
@@ -318,13 +350,17 @@ public class AtsBranchManagerCore {
       return isAllObjectsToCommitToConfigured(teamArt) && !getBranchesCommittedTo(teamArt).isEmpty();
    }
 
+   public static boolean isNoCommitNeeded(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
+      return getCommitStatus(teamArt, destinationBranch) == CommitStatus.No_Commit_Needed;
+   }
+
    /**
     * Return true if all commit destination branches are configured and have been committed to
     */
    public static boolean isBranchesAllCommitted(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Collection<Branch> committedTo = getBranchesCommittedTo(teamArt);
       for (Branch destBranch : getBranchesToCommitTo(teamArt)) {
-         if (!committedTo.contains(destBranch)) {
+         if (!committedTo.contains(destBranch) && !isNoCommitNeeded(teamArt, destBranch)) {
             return false;
          }
       }
@@ -334,7 +370,8 @@ public class AtsBranchManagerCore {
    public static boolean isBranchesAllCommittedExcept(TeamWorkFlowArtifact teamArt, Branch branchToExclude) throws OseeCoreException {
       Collection<Branch> committedTo = getBranchesCommittedTo(teamArt);
       for (Branch destBranch : getBranchesToCommitTo(teamArt)) {
-         if (!destBranch.equals(branchToExclude) && !committedTo.contains(destBranch)) {
+         if (!destBranch.equals(branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamArt,
+            destBranch)) {
             return false;
          }
       }
