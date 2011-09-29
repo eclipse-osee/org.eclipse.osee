@@ -10,11 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import javax.management.relation.RelationType;
+
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
 public interface ReadableRelation extends Readable, HasVersion {
+
+   public int getId();
+
+   public int getAArtifactId();
+
+   public int getBArtifactId();
+
+   public String getRationale();
+
+   public RelationType getRelationType();
 
    @Override
    String toString();
