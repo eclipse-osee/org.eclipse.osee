@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.logging;singleton:=true
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.jdk.core.util,
- org.osgi.framework
+Import-Package: org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.framework.logging
 Eclipse-ExtensibleAPI: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
