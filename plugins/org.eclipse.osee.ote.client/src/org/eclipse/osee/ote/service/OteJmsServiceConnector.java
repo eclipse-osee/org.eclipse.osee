@@ -18,8 +18,8 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IConnectionService;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
@@ -40,6 +40,10 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
  */
 class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatusCallback {
 
+   /**
+    *
+    */
+   private static final String OTE_EMBEDDED_BROKER_PROP = "OTEEmbeddedBroker";
    private final ConcurrentHashMap<String, JmsToJiniBridgeConnector> connectors;
    private final ConcurrentHashMap<String, ServiceHealth> serviceHealthMap;
    private final RemoteServiceLookup remoteServiceLookup;
@@ -116,16 +120,13 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 
    private void requestJmsJiniBridgeConnector(ServiceHealth serviceHealth) {
       try {
-         //			ConnectionNode connectionNode = messageService.get(new NodeInfo(serviceHealth.getServiceUniqueId(), new URI(serviceHealth.getBrokerURI())));
+//         			ConnectionNode connectionNode = messageService.get(new NodeInfo(serviceHealth.getServiceUniqueId(), new URI(serviceHealth.getBrokerURI())));
          ConnectionNode connectionNode = messageService.getDefault();
          connectionNode.subscribeToReply(OteBaseMessages.RequestOteHost, myOteServiceRequestHandler);
          connectionNode.send(OteBaseMessages.RequestOteHost, serviceHealth.getServiceUniqueId(), this);
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      //		catch (URISyntaxException ex) {
-      //			OseeLog.log(Activator.class, Level.SEVERE, ex);
-      //		}
    }
 
    private boolean isNewService(ServiceHealth serviceHealth) {
@@ -147,17 +148,18 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
       public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
 
          try {
-            //            System.out.println("please be a remote reference");
             ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) message);
             ObjectInputStream ois = new ObjectInputStream(bais);
             Object msg = ois.readObject();
             msg.toString();
             Object obj = ois.readObject();
             IHostTestEnvironment hostEnv = (IHostTestEnvironment) obj;
+
             String id = hostEnv.getProperties().getProperty("id").toString();
-            if (id != null && connectors.get(id) == null) {
+            NodeInfo nodeInfo = getNodeInfo(id);
+            if (nodeInfo != null && !connectors.containsKey(id)) {
                JmsToJiniBridgeConnector connector = new JmsToJiniBridgeConnector(exportClassLoader, hostEnv, id);
-               connector.setProperty("OTEEmbeddedBroker", getNodeInfo(id));
+               connector.setProperty(OTE_EMBEDDED_BROKER_PROP, nodeInfo);
                connectors.put(id, connector);
                connectionService.addConnector(connector);
             }
@@ -167,16 +169,21 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          } catch (URISyntaxException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
+
    }
 
    private NodeInfo getNodeInfo(String id) throws URISyntaxException {
       ServiceHealth serviceHealth = this.serviceHealthMap.get(id);
+
       if (serviceHealth != null) {
-         return new NodeInfo("OTEEmbeddedBroker", new URI(serviceHealth.getBrokerURI()));
+         return new NodeInfo(OTE_EMBEDDED_BROKER_PROP, new URI(serviceHealth.getBrokerURI()));
       }
       return null;
    }
+
 
 }
