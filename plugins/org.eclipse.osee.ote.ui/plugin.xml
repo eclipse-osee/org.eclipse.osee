@@ -17,13 +17,6 @@
             name="OTE Navigator"/>
    </extension>
      <extension
-           point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
-        <XNavigateItem
-              classname="org.eclipse.osee.ote.ui.navigate.WorkspaceSetupViewItems"
-              viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView" >
-        </XNavigateItem>
-     </extension>
-     <extension
            id="testnature"
            name="Test Nature"
            point="org.eclipse.core.resources.natures">

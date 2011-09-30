@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ote.ui;
 
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.osee.ote.ui.navigate.OteNavigateView;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
@@ -67,8 +66,11 @@ public class TestPerspective implements IPerspectiveFactory {
       lower.addView("org.eclipse.ui.console.ConsoleView");
       lower.addView(IPageLayout.ID_PROBLEM_VIEW);
 
-      layout.addActionSet(JavaUI.ID_ACTION_SET);
-      layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
+      // string found in JavaUI.ID_ACTION_SET
+      layout.addActionSet("org.eclipse.jdt.ui.JavaActionSet");
+      
+      // string found in JavaUI.ID_ELEMENT_CRATION_ACTION_SET
+      layout.addActionSet("org.eclipse.jdt.ui.JavaElementCreationActionSet");
       layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 
    }
