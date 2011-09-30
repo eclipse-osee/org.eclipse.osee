@@ -5,4 +5,3 @@ Bundle-SymbolicName: org.eclipse.osee.display.api.test
 Bundle-Version: 0.9.9.qualifier
 Fragment-Host: org.eclipse.osee.display.api
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit
