@@ -91,8 +91,8 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
    private Collection<String> findOseeTypeData() throws OseeCoreException {
       Collection<String> paths = new ArrayList<String>();
 
-      Integer artifactTypeId = identityService.getLocalId(CoreArtifactTypes.OseeTypeDefinition.getGuid());
-      Integer attributeTypeId = identityService.getLocalId(CoreAttributeTypes.UriGeneralStringData.getGuid());
+      Integer artifactTypeId = identityService.getLocalId(CoreArtifactTypes.OseeTypeDefinition);
+      Integer attributeTypeId = identityService.getLocalId(CoreAttributeTypes.UriGeneralStringData);
 
       Branch commonBranch = branchCache.get(CoreBranches.COMMON);
 
