@@ -5,12 +5,12 @@
  */
 package org.eclipse.osee.display.api.components;
 
-import org.eclipse.osee.display.api.data.Artifact;
+import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 
 public interface SearchResultComponent {
 
-   void setArtifact(Artifact artifact);
+   void setArtifact(WebArtifact artifact);
 
    void addSearchResultMatch(SearchResultMatch match);
 }

@@ -8,18 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.display.view.web.search;
 
-package org.eclipse.osee.display.view.web.internal.search;
-
-import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchResultsListComponent extends VerticalLayout {
-   public OseeSearchResultsListComponent(Navigator navigator) {
+public class OseeSearchHeaderComponent extends VerticalLayout {
 
+   @Override
+   public void attach() {
+      createLayout();
    }
+
+   protected void createLayout() {
+      //Do nothing.
+   }
+
 }

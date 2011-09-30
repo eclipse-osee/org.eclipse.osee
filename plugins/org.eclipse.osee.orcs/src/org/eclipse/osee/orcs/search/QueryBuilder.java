@@ -86,6 +86,19 @@ public interface QueryBuilder {
    QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException;
 
    /**
+    * Search criteria that finds an attribute of the given type with its current value relative to the given value based
+    * on the operator provided.
+    */
+   QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
+    * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
+    * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
+    */
+   QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException;
+
+   /**
     * Creates a result set based on query settings
     * 
     * @see LoadLevel level

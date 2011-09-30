@@ -1,4 +1,4 @@
-package org.eclipse.osee.display.view.web.internal;
+package org.eclipse.osee.display.view.web;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;

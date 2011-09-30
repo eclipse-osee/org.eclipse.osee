@@ -12,7 +12,9 @@ package org.eclipse.osee.display.view.web.internal.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.display.api.data.Artifact;
+import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.view.web.CssConstants;
+import org.eclipse.osee.display.view.web.components.ArtifactNameLinkComponent;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -23,21 +25,21 @@ import com.vaadin.ui.Label;
 @SuppressWarnings("serial")
 public class OseeBreadcrumbComponent extends HorizontalLayout {
    private Navigator navigator;
-   private Artifact artifact;
+   private WebArtifact artifact;
 
    private void init() {
       this.removeAllComponents();
 
-      Collection<Artifact> crumbs = new ArrayList<Artifact>();
-      if (artifact != null && artifact.getAncestry() != null && artifact.getAncestry().size() > 0) {
-         crumbs.addAll(artifact.getAncestry());
-      }
+      Collection<WebArtifact> crumbs = new ArrayList<WebArtifact>();
+      //      if (artifact != null && artifact.getAncestry() != null && artifact.getAncestry().size() > 0) {
+      //         crumbs.addAll(artifact.getAncestry());
+      //      }
 
       int count = 0;
       int manyBreadCrumbs = crumbs.size();
-      for (Artifact crumb : crumbs) {
+      for (WebArtifact crumb : crumbs) {
          ArtifactNameLinkComponent crumbLabel =
-            new ArtifactNameLinkComponent(navigator, crumb, CssConstants.OSEE_BREADCRUMB_ARTNAME);
+            new ArtifactNameLinkComponent(crumb, CssConstants.OSEE_BREADCRUMB_ARTNAME);
          addComponent(crumbLabel);
          if (count < manyBreadCrumbs - 1) {
             Label delimiter = new Label("&nbsp; >> &nbsp;", Label.CONTENT_XHTML);
@@ -48,14 +50,14 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
       }
    }
 
-   public OseeBreadcrumbComponent(Navigator navigator, Artifact artifact) {
+   public OseeBreadcrumbComponent(Navigator navigator, WebArtifact artifact) {
       this.navigator = navigator;
       this.artifact = artifact;
 
       init();
    }
 
-   public void setArtifact(Artifact artifact) {
+   public void setArtifact(WebArtifact artifact) {
       this.artifact = artifact;
       init();
    }

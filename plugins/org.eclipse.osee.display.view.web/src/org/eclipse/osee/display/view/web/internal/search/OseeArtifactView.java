@@ -11,8 +11,10 @@
 package org.eclipse.osee.display.view.web.internal.search;
 
 import java.util.Map;
-import org.eclipse.osee.display.api.data.Artifact;
+import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.search.SearchView;
+import org.eclipse.osee.display.view.web.components.ArtifactNameLinkComponent;
+import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
 import com.vaadin.ui.Alignment;
@@ -28,9 +30,8 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    private OseeSearchHeaderComponent oseeSearchHeader;
    private Navigator navigator;
    private OseeRelationsComponent relationsComp;
-   private final OseeWebBackend webBackend = new OseeWebBackend();
    private final OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(null, null);
-   private Artifact artifact;
+   private WebArtifact artifact;
 
    private void initLayout() {
       final VerticalLayout vertLayout = new VerticalLayout();
@@ -39,7 +40,7 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
       if (artifact != null) {
          vertLayout.removeAllComponents();
 
-         ArtifactNameLinkComponent artifactName = new ArtifactNameLinkComponent(navigator, artifact);
+         ArtifactNameLinkComponent artifactName = new ArtifactNameLinkComponent(artifact);
 
          final VerticalLayout paddedVertLayout = new VerticalLayout();
          paddedVertLayout.setSizeFull();
@@ -62,9 +63,9 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    public void init(Navigator navigator, Application application) {
       this.navigator = navigator;
 
-      oseeSearchHeader = new OseeSearchHeaderComponent(false);
+      oseeSearchHeader = new OseeSearchHeaderComponent();
       breadcrumbComp.setNavigator(navigator);
-      relationsComp = new OseeRelationsComponent(navigator, webBackend, null);
+      //relationsComp = new OseeRelationsComponent(navigator, webBackend, null);
 
       setSizeFull();
       initLayout();

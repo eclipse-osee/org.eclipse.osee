@@ -19,9 +19,11 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.ResultSet;
+import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
  * @author Roberto E. Escobar
@@ -177,5 +179,15 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public int getCount() throws OseeCoreException {
       return rsetFactory.getCount(criteriaSet.clone(), options.clone());
+   }
+
+   @Override
+   public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException {
+      return null;
    }
 }

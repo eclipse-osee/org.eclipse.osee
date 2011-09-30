@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -36,6 +37,12 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
 
    <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+
+   ReadableArtifact getRelatedArtifact(IRelationTypeSide relationSide) throws OseeCoreException;
+
+   List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationEnum) throws OseeCoreException;
+
+   String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
    @Override
    String toString();

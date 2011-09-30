@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.view.web.internal.search;
+package org.eclipse.osee.display.view.web.search;
 
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
@@ -22,18 +22,29 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchHomeView extends CustomComponent implements Navigator.View {
 
+   protected OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
+
    @Override
    public void init(Navigator navigator, Application application) {
+      initComponents();
+
       this.setSizeFull();
 
       final VerticalLayout vertLayout = new VerticalLayout();
       vertLayout.setSizeFull();
 
-      OseeSearchHeaderComponent oseeSearchHeader = new OseeSearchHeaderComponent(true);
       vertLayout.addComponent(oseeSearchHeader);
       vertLayout.setComponentAlignment(oseeSearchHeader, Alignment.MIDDLE_CENTER);
 
       setCompositionRoot(vertLayout);
+   }
+
+   protected void initComponents() {
+      //Do nothing
+   }
+
+   protected OseeSearchHeaderComponent getOseeSearchHeader() {
+      return new OseeSearchHeaderComponent();
    }
 
    @Override

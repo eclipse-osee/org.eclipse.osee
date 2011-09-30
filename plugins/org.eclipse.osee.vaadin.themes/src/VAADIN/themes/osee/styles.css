@@ -91,24 +91,37 @@
 
 .osee-title-medium-text {
 	font-size: 70px;
+	width: 70px;
+	height: 70px;
 }
 
 .osee-search-textfield {
 	width: 350px;
 }
 
-.osee-search-result-artname {
+.osee-searchresult-artname {
 	font-size: 20px;
 	color: blue;
 }
 
-.osee-search-result-arttype {
+.osee-searchresult-arttype {
 	font-size: 15px;
 	color: black;
+}
+
+.osee-searchresult-match {
+	font-size: 12px;
+	color: green;
+}
+
+.osee-searchresult-match-many {
+	font-size: 12px;
+	color: red;
 }
 
 .osee-horizontal-line {
 	background-image:url('linespacer.png');
 	background-repeat:repeat-x;
 }
+
 

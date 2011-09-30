@@ -13,3 +13,5 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type
+Require-Bundle: org.eclipse.osee.display.api
+Export-Package: org.eclipse.osee.display.presenter

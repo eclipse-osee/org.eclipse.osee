@@ -58,7 +58,7 @@ public class Navigator extends CustomComponent {
       });
    }
 
-   private void fragmentChanged() {
+   public void fragmentChanged() {
       String newFragment = uriFragmentUtil.getFragment();
       if ("".equals(newFragment)) {
          newFragment = mainViewUri;
@@ -97,7 +97,14 @@ public class Navigator extends CustomComponent {
          @Override
          public void buttonClick(ClickEvent event) {
             uriFragmentUtil.setFragment(currentFragment, false);
-            main.removeWindow(wDialog);
+
+            //Vaadin library bug in which without catching and using the return value of this method
+            // the Java compiler will silently generate bytecode that drops the extra value from the stack
+            //  https://vaadin.com/forum/-/message_boards/view_message/311111
+            boolean catchButDontUseBoolean = main.removeWindow(wDialog);
+            if (catchButDontUseBoolean) {
+               //Do Nothing
+            }
          }
       });
       Button cont = new Button("Continue", new Button.ClickListener() {
@@ -168,7 +175,7 @@ public class Navigator extends CustomComponent {
    /**
     * Get the main view. Main view is the default view shown to user when he opens application without specifying view
     * uri.
-    *
+    * 
     * @return Uri of the main view.
     */
    public String getMainView() {
@@ -179,7 +186,7 @@ public class Navigator extends CustomComponent {
     * Set the main view. Main view is the default view shown to user when he opens application without specifying view
     * uri. If main view has not been set, the first view registered with addView() is used as main view. Note that the
     * view must be registered with addView() before calling this method.
-    *
+    * 
     * @param mainViewUri Uri of the main view.
     */
    public void setMainView(String mainViewUri) {
@@ -195,7 +202,7 @@ public class Navigator extends CustomComponent {
 
    /**
     * Add a new view to navigator. Register a view to navigator.
-    *
+    * 
     * @param uri String that identifies a view. This is the string that is shown in URL after #
     * @param viewClass Component class that implements Navigator.View interface
     */
@@ -236,7 +243,7 @@ public class Navigator extends CustomComponent {
 
    /**
     * Remove view from navigator.
-    *
+    * 
     * @param uri Uri of the view to remove.
     */
    public void removeView(String uri) {
@@ -256,7 +263,7 @@ public class Navigator extends CustomComponent {
 
    /**
     * Get the uri for given view implementation class.
-    *
+    * 
     * @param viewClass Class that implements the view.
     * @return Uri registered for the view class.
     */
@@ -266,7 +273,7 @@ public class Navigator extends CustomComponent {
 
    /**
     * Get the view class for given uri.
-    *
+    * 
     * @param uri Uri to get view for
     * @return View that corresponds to the uri
     */
@@ -277,7 +284,7 @@ public class Navigator extends CustomComponent {
    /**
     * Switch to view identified with uri. Uri can be either the exact uri registered previously with addView() or it can
     * also contain data id passed to the view. In case data id is included, the format is 'uri/freeFormedDataIdString'.
-    *
+    * 
     * @param uri Uri where to navigate.
     */
    public void navigateTo(String uri) {
@@ -287,7 +294,7 @@ public class Navigator extends CustomComponent {
    /**
     * Switch to view implemented by given class. Note that the view must be registered to navigator with addView()
     * before calling this method.
-    *
+    * 
     * @param viewClass Class that implements the view.
     */
    public void navigateTo(Class<?> viewClass) {
@@ -299,7 +306,7 @@ public class Navigator extends CustomComponent {
 
    /**
     * Listen to the view changes. The listener will get notified after the view has changed.
-    *
+    * 
     * @param listener Listener to invoke after view changes.
     */
    public void addListener(ViewChangeListener listener) {
@@ -308,7 +315,7 @@ public class Navigator extends CustomComponent {
 
    /**
     * Remove the view change listener.
-    *
+    * 
     * @param listener Listener to remove.
     */
    public void removeListener(ViewChangeListener listener) {
@@ -323,7 +330,7 @@ public class Navigator extends CustomComponent {
       /**
        * Invoked after the view has changed. Be careful for deadlocks if you decide to change the view again in the
        * listener.
-       *
+       * 
        * @param previous Preview view before the change.
        * @param current New view after the change.
        */
@@ -341,7 +348,7 @@ public class Navigator extends CustomComponent {
        * Init view. Convenience method which navigator call before slightly before the view is first time rendered. This
        * is called only once in the lifetime of each view instance. In many cases it is better to construct UI within
        * this method than in constructor as you are guaranteed to get references to application and navigator here.
-       *
+       * 
        * @param navigator Reference to navigator that controls the window where this view is attached to.
        * @param application Application instance this view lives in.
        */
@@ -350,7 +357,7 @@ public class Navigator extends CustomComponent {
       /**
        * This view is navigated to. This method is always called before the view is shown on screen. If there is any
        * additional id to data what should be shown in the view, it is also optionally passed as parameter.
-       *
+       * 
        * @param requestedDataId Id of the data extracted from URI fragment or null if not given. This is the string that
        * appears in URI after #viewname/
        */
@@ -361,7 +368,7 @@ public class Navigator extends CustomComponent {
        * state where navigating away from it could lead to data loss, this method should return a message that will be
        * shown to user before he confirms that he will leave the screen. If there is no need to ask questions from user,
        * this should return null.
-       *
+       * 
        * @return Message to be shown or null if no message should be shown.
        */
       public String getWarningForNavigatingFrom();
@@ -378,7 +385,7 @@ public class Navigator extends CustomComponent {
        * there are multiple instances of concurrently. Each window can contain anything you like, but at least they
        * should contain a new Navigator instance for controlling navigation within the window. Typically one also adds
        * some kind of menu for commanding navigator.
-       *
+       * 
        * @return New window.
        */
       public Window createNewWindow();
@@ -390,14 +397,14 @@ public class Navigator extends CustomComponent {
     * This helper makes implementing support for multiple browser tabs or browser windows easy. Just override
     * Application.getWindow(String) in your application like this:
     * </p>
-    *
+    * 
     * <pre>
     * &#064;Override
     * public Window getWindow(String name) {
     *    return Navigator.getWindow(this, name, super.getWindow(name));
     * }
     * </pre>
-    *
+    * 
     * @param application Application instance, which implements Navigator.NavigableApplication interface.
     * @param name Name parameter from Application.getWindow(String name)
     * @param superGetWindow The window returned by super.getWindow(name)

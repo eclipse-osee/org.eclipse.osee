@@ -8,11 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.view.web.internal.search;
+package org.eclipse.osee.display.view.web.components;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.display.api.data.Artifact;
+import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.view.web.CssConstants;
+import org.eclipse.osee.display.view.web.OseeAppData;
+import org.eclipse.osee.display.view.web.internal.search.OseeArtifactView;
+import org.eclipse.osee.display.view.web.internal.search.OseeRoadMapAndNavigation;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
@@ -24,11 +28,13 @@ import com.vaadin.ui.Link;
 @SuppressWarnings("serial")
 public class ArtifactNameLinkComponent extends Link {
 
-   public ArtifactNameLinkComponent(Navigator navigator, Artifact artifact) {
-      this(navigator, artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
+   private final Navigator navigator = OseeAppData.getNavigator();
+
+   public ArtifactNameLinkComponent(WebArtifact artifact) {
+      this(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
    }
 
-   public ArtifactNameLinkComponent(Navigator navigator, Artifact artifact, String styleName) {
+   public ArtifactNameLinkComponent(WebArtifact artifact, String styleName) {
       super();
 
       this.setCaption(artifact.getArtifactName());

@@ -8,19 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.view.web.internal.search;
+package org.eclipse.osee.ats.view.web.components;
 
-import org.eclipse.osee.display.api.search.SearchPresenter;
-import org.eclipse.osee.display.api.search.SearchView;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.view.web.AtsAppData;
+import org.eclipse.osee.ats.view.web.AtsNavigator;
+import org.eclipse.osee.ats.view.web.search.AtsSearchHomeView;
+import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.view.web.CssConstants;
+import org.eclipse.osee.display.view.web.components.OseeLogoLink;
+import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -30,42 +35,40 @@ import com.vaadin.ui.VerticalLayout;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchHeaderComponent extends VerticalLayout implements SearchView {
+public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implements AtsSearchHeaderComponentInterface {
 
    private boolean populated;
    private final ComboBox programCombo = new ComboBox("Program:");
    private final ComboBox buildCombo = new ComboBox("Build:");
-   final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", false);
-   final TextField searchTextField = new TextField();
+   private final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", false);
+   private final TextField searchTextField = new TextField();
    private final boolean showOseeTitleAbove;
+   private final AtsWebSearchPresenter atsBackend = AtsAppData.getAtsWebSearchPresenter();
+   private final AtsNavigator atsNavigator = AtsAppData.getAtsNavigator();
 
-   //   private ProgramsAndBuilds builds;
-
-   public OseeSearchHeaderComponent(boolean showOseeTitleAbove) {
+   public AtsSearchHeaderComponent(boolean showOseeTitleAbove) {
       this.showOseeTitleAbove = showOseeTitleAbove;
-      programCombo.setNullSelectionAllowed(false);
-      buildCombo.setNullSelectionAllowed(false);
-      SearchPresenter webBackend = new OseeWebBackend();
-      //      webBackend.getProgramsAndBuilds(this);
-
-      programCombo.addListener(new Property.ValueChangeListener() {
-         @Override
-         public void valueChange(ValueChangeEvent event) {
-            buildCombo.removeAllItems();
-            //            Program program = (Program) programCombo.getValue();
-            //            Collection<Build> buildList = builds.getBuilds(program);
-            //            for (Build build : buildList) {
-            //               buildCombo.addItem(build);
-            //            }
-         }
-      });
-      programCombo.setImmediate(true);
+      if (programCombo != null) {
+         programCombo.setNullSelectionAllowed(false);
+         final AtsSearchHeaderComponentInterface me = this;
+         programCombo.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+               WebId program = (WebId) programCombo.getValue();
+               atsBackend.selectProgram(program, me);
+            }
+         });
+         programCombo.setImmediate(true);
+      }
+      if (buildCombo != null) {
+         buildCombo.setNullSelectionAllowed(false);
+      }
 
       searchTextField.setImmediate(true);
    }
 
    @Override
-   public void attach() {
+   protected void createLayout() {
       if (populated) {
          // Only populate the layout once
          return;
@@ -79,8 +82,8 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchV
       HorizontalLayout hLayoutRow1 = new HorizontalLayout();
       HorizontalLayout hLayoutRow2 = new HorizontalLayout();
 
-      Embedded oseeTitleLabel = new Embedded("", new ThemeResource("../osee/osee_large.png"));
-      oseeTitleLabel.setType(Embedded.TYPE_IMAGE);
+      //      Embedded oseeTitleLabel = new Embedded("", new ThemeResource("../osee/osee_large.png"));
+      //      oseeTitleLabel.setType(Embedded.TYPE_IMAGE);
 
       Label spacer1 = new Label("");
       spacer1.setHeight(null);
@@ -104,12 +107,11 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchV
       Button searchButton = new Button("Search", new Button.ClickListener() {
          @Override
          public void buttonClick(ClickEvent event) {
-            //            Program program = (Program) programCombo.getValue();
-            //            Build build = (Build) buildCombo.getValue();
-            String isNameOnly = nameOnlyCheckBox.toString();
+            WebId program = (WebId) programCombo.getValue();
+            WebId build = (WebId) buildCombo.getValue();
+            boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
             String searchPhrase = (String) searchTextField.getValue();
-            //            SearchCriteria searchCriteria = new SearchCriteria(program, build, isNameOnly.equals("true"), searchPhrase);
-            //            OseeRoadMapAndNavigation.navigateToSearchResults(searchCriteria);
+            atsBackend.selectSearch(program, build, nameOnly, searchPhrase, atsNavigator);
          }
       });
       hLayoutRow2.addComponent(searchTextField);
@@ -119,6 +121,8 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchV
       hLayoutRow2.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
 
       if (showOseeTitleAbove) {
+         OseeLogoLink oseeTitleLabel =
+            new OseeLogoLink(atsNavigator, CssConstants.OSEE_TITLE_LARGE_TEXT, AtsSearchHomeView.class);
          hLayoutRow0.addComponent(oseeTitleLabel);
          hLayoutRow0.setComponentAlignment(oseeTitleLabel, Alignment.MIDDLE_CENTER);
          oseeTitleLabel.setStyleName(CssConstants.OSEE_TITLE_LARGE_TEXT);
@@ -134,6 +138,8 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchV
          setComponentAlignment(hLayoutRow1, Alignment.MIDDLE_CENTER);
          setComponentAlignment(hLayoutRow2, Alignment.MIDDLE_CENTER);
       } else {
+         OseeLogoLink oseeTitleLabel =
+            new OseeLogoLink(atsNavigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchHomeView.class);
          Label spacer4 = new Label("");
          spacer4.setWidth(15, UNITS_PIXELS);
          oseeTitleLabel.setHeight(70, UNITS_PIXELS);
@@ -160,50 +166,80 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchV
          addComponent(spacer5);
       }
 
-      //      SearchCriteria searchCriteria = OseeRoadMapAndNavigation.getSearchCriteria();
-      //      if (searchCriteria != null) {
-      //         programCombo.setValue(searchCriteria.getProgram());
-      //         buildCombo.setValue(searchCriteria.getBuild());
-      //         nameOnlyCheckBox.setValue(searchCriteria.isNameOnly());
-      //         searchTextField.setValue(searchCriteria.getSearchPhrase());
-      //      }
-
       populated = true;
    }
 
-   //   @Override
-   //   public void setSearchResults(Collection<SearchResult> searchResults) {
-   //      //Do Nothing
-   //   }
+   @Override
+   public void addProgram(WebId program) {
+      if (programCombo != null) {
+         programCombo.addItem(program);
+      }
+   }
 
-   //   @Override
-   //   public void setProgramsAndBuilds(ProgramsAndBuilds builds) {
-   //      programCombo.removeAllItems();
-   //      buildCombo.removeAllItems();
-   //
-   //      if (builds != null) {
-   //         this.builds = builds;
-   //         for (Program program : this.builds.getPrograms()) {
-   //            programCombo.addItem(program);
-   //         }
-   //      }
-   //   }
+   @Override
+   public void clearBuilds() {
+      if (buildCombo != null) {
+         buildCombo.removeAllItems();
+      }
+   }
 
-   //   @Override
-   //   public void setArtifact(Artifact artifact) {
-   //      //Do nothing
-   //   }
-   //
-   //   @Override
-   //   public void setProgram(Program program) {
-   //   }
-   //
-   //   @Override
-   //   public void setBuild(Build build) {
-   //   }
-   //
-   //   @Override
-   //   public void setErrorMessage(String message) {
-   //   }
+   @Override
+   public void addBuild(WebId build) {
+      if (buildCombo != null) {
+         buildCombo.addItem(build);
+      }
+   }
+
+   @Override
+   public void setSearchCriteria(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
+      if (programCombo != null) {
+         programCombo.setValue(program);
+      }
+      if (buildCombo != null) {
+         buildCombo.setValue(build);
+      }
+      if (nameOnlyCheckBox != null) {
+         nameOnlyCheckBox.setValue(nameOnly);
+      }
+      if (searchTextField != null) {
+         searchTextField.setValue(searchPhrase);
+      }
+   }
+
+   @Override
+   public void clearAll() {
+      if (programCombo != null) {
+         //         programCombo.removeAllItems();
+         programCombo.setValue(null);
+      }
+      if (buildCombo != null) {
+         //         buildCombo.removeAllItems();
+         buildCombo.setValue(null);
+      }
+      if (nameOnlyCheckBox != null) {
+         nameOnlyCheckBox.setValue(false);
+      }
+      if (searchTextField != null) {
+         searchTextField.setValue("");
+      }
+   }
+
+   @Override
+   public void setProgram(WebId program) {
+      if (programCombo != null) {
+         programCombo.setValue(program);
+      }
+   }
+
+   @Override
+   public void setBuild(WebId build) {
+      if (buildCombo != null) {
+         buildCombo.setValue(build);
+      }
+   }
+
+   @Override
+   public void setErrorMessage(String message) {
+   }
 
 }

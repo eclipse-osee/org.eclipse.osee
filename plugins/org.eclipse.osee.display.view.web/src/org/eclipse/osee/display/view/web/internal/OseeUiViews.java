@@ -13,8 +13,8 @@ package org.eclipse.osee.display.view.web.internal;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.display.view.web.internal.search.OseeArtifactView;
-import org.eclipse.osee.display.view.web.internal.search.OseeSearchHomeView;
-import org.eclipse.osee.display.view.web.internal.search.OseeSearchResultsView;
+import org.eclipse.osee.display.view.web.search.OseeSearchHomeView;
+import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 

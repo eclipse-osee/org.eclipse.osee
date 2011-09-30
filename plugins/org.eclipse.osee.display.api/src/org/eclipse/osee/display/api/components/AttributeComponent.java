@@ -5,11 +5,11 @@
  */
 package org.eclipse.osee.display.api.components;
 
-import org.eclipse.osee.display.api.data.Artifact;
+import org.eclipse.osee.display.api.data.WebArtifact;
 
 public interface AttributeComponent {
 
    void clearAll();
 
-   void setArtifact(Artifact artifact);
+   void setArtifact(WebArtifact artifact);
 }

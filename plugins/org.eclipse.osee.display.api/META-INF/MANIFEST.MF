@@ -10,3 +10,4 @@ Import-Package: org.eclipse.osee.display.api.data,
 Export-Package: org.eclipse.osee.display.api.components,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search
+Require-Bundle: org.eclipse.osee.framework.core

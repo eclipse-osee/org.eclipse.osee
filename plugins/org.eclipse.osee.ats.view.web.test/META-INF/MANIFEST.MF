@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ATS View Web Test
+Bundle-SymbolicName: org.eclipse.osee.ats.view.web.test
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Foundation
+Fragment-Host: org.eclipse.osee.ats.view.web
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.ats.api.search,
+ org.eclipse.osee.display.api.components,
+ org.eclipse.osee.display.api.data

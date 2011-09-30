@@ -8,92 +8,49 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.presenter.internal;
+package org.eclipse.osee.ats.presenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
 import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
 import org.eclipse.osee.ats.api.tokens.AtsArtifactToken;
+import org.eclipse.osee.ats.api.tokens.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
-import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
-import org.eclipse.osee.display.api.components.AttributeComponent;
-import org.eclipse.osee.display.api.components.RelationComponent;
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
-import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.display.presenter.ArtifactProvider;
+import org.eclipse.osee.display.presenter.WebSearchPresenter;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.ArtifactQuery;
-import org.eclipse.osee.orcs.IArtifactQueryService;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /*
  * @author John Misinco
  */
-public class WebProgramsPresenter implements AtsWebSearchPresenter {
+public class WebProgramsPresenter extends WebSearchPresenter implements AtsWebSearchPresenter {
 
-   public interface IFakeArtifact {
-
-      List<IFakeArtifact> getRelatedArtifacts(IRelationTypeSide relationSide);
-
-      IFakeArtifact getRelatedArtifact(IRelationTypeSide relationSide);
-
-      String getName();
-
-      String getGuid();
-   }
-
-   private IArtifactQueryService queryService;
-   private SearchNavigator navigator;
-
-   public void setArtifactQueryService(IArtifactQueryService queryService) {
-      this.queryService = queryService;
-   }
-
-   public void setSearchNavigator(SearchNavigator navigator) {
-      this.navigator = navigator;
+   public WebProgramsPresenter(ArtifactProvider artifactProvider) {
+      super(artifactProvider);
    }
 
    @Override
-   public void initSearchHome(SearchHeaderComponent searchHeaderComp) {
-   }
-
-   @Override
-   public void initSearchResults(String url, SearchHeaderComponent searchHeaderComp, SearchResultsListComponent searchResultsComp) {
-   }
-
-   @Override
-   public void selectArtifact(WebId id) {
-   }
-
-   @Override
-   public void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
-   }
-
-   @Override
-   public void selectRelationType(WebId id) {
-   }
-
-   @Override
-   public void selectSearch(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
+   public void selectSearch(WebId program, WebId build, boolean nameOnly, String searchPhrase, SearchNavigator atsNavigator) {
       String url = encode(program, build, nameOnly, searchPhrase);
-      navigator.navigateSearchResults(url);
+      atsNavigator.navigateSearchResults(url);
    }
 
    @Override
-   public void initSearchHome(AtsSearchHeaderComponent headerComponent) {
+   public void initSearchHome(AtsSearchHeaderComponentInterface headerComponent) {
       headerComponent.clearAll();
       Collection<WebId> programs = null;
       try {
          programs = getPrograms();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          headerComponent.setErrorMessage(ex.getMessage());
          return;
       }
@@ -103,7 +60,7 @@ public class WebProgramsPresenter implements AtsWebSearchPresenter {
    }
 
    @Override
-   public void initSearchResults(String url, AtsSearchHeaderComponent searchHeaderComponent, SearchResultsListComponent resultsComponent) {
+   public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
       SearchParameters params = decode(url);
       WebId program = null, build = null;
       searchHeaderComponent.clearAll();
@@ -111,7 +68,7 @@ public class WebProgramsPresenter implements AtsWebSearchPresenter {
 
       try {
          programs = getPrograms();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          searchHeaderComponent.setErrorMessage(ex.getMessage());
          return;
       }
@@ -122,10 +79,15 @@ public class WebProgramsPresenter implements AtsWebSearchPresenter {
          }
       }
 
+      if (program == null) {
+         searchHeaderComponent.setErrorMessage(String.format("Invalid program id: [%s]", params.getProgram().getGuid()));
+         return;
+      }
+
       Collection<WebId> builds = null;
       try {
          builds = getbuilds(program);
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          searchHeaderComponent.setErrorMessage(ex.getMessage());
          return;
       }
@@ -136,15 +98,28 @@ public class WebProgramsPresenter implements AtsWebSearchPresenter {
          }
       }
 
-      searchHeaderComponent.setSearchCriteria(program, build, params.getNameOnly(), params.getSearchPhrase());
+      if (build == null) {
+         searchHeaderComponent.setErrorMessage(String.format("Invalid build id: [%s]", params.getBuild().getGuid()));
+         return;
+      }
 
-      resultsComponent.clearAll();
-      SearchResultComponent searchResult = resultsComponent.createSearchResult();
+      String branchGuid;
+      try {
+         branchGuid = getBranchGuid(build);
+      } catch (OseeCoreException ex) {
+         searchHeaderComponent.setErrorMessage(String.format("Cannot resolve branch id from build id: [%s]",
+            params.getBuild().getGuid()));
+         return;
+      }
+
+      searchHeaderComponent.setSearchCriteria(program, build, params.getNameOnly(), params.getSearchPhrase());
+      String newUrl = encode(new WebId(branchGuid, ""), params.getNameOnly(), params.getSearchPhrase());
+      initSearchResults(newUrl, searchHeaderComponent, resultsComponent);
 
    }
 
    @Override
-   public void programSelected(AtsSearchHeaderComponent headerComponent, WebId program) {
+   public void selectProgram(WebId program, AtsSearchHeaderComponentInterface headerComponent) {
       Collection<WebId> builds = null;
       try {
          builds = getbuilds(program);
@@ -159,24 +134,23 @@ public class WebProgramsPresenter implements AtsWebSearchPresenter {
 
    private Collection<WebId> getPrograms() throws OseeCoreException {
       Collection<WebId> toReturn = new LinkedList<WebId>();
-      ArtifactQuery webProgramsQuery = queryService.getFromToken(AtsArtifactToken.WebPrograms, CoreBranches.COMMON);
-      IFakeArtifact webProgramsArtifact = (IFakeArtifact) webProgramsQuery.getArtifactExactlyOne(LoadLevel.RELATION);
-      List<IFakeArtifact> programs =
+      ReadableArtifact webProgramsArtifact =
+         artifactProvider.getArtifactByArtifactToken(CoreBranches.COMMON, AtsArtifactToken.WebPrograms);
+      List<ReadableArtifact> programs =
          webProgramsArtifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
-      for (IFakeArtifact program : programs) {
+      for (ReadableArtifact program : programs) {
          toReturn.add(new WebId(program.getGuid(), program.getName()));
       }
       return toReturn;
    }
 
    private Collection<WebId> getbuilds(WebId program) throws OseeCoreException {
-      ArtifactQuery programQuery = queryService.getFromGuidOrHrid(program.getGuid(), CoreBranches.COMMON);
-      IFakeArtifact programArtifact = (IFakeArtifact) programQuery.getArtifactExactlyOne(LoadLevel.RELATION);
-      IFakeArtifact teamDef = programArtifact.getRelatedArtifact(CoreRelationTypes.SupportingInfo_SupportingInfo);
-      Collection<IFakeArtifact> relatedArtifacts =
+      ReadableArtifact programArtifact = artifactProvider.getArtifactByGuid(CoreBranches.COMMON, program.getGuid());
+      ReadableArtifact teamDef = programArtifact.getRelatedArtifact(CoreRelationTypes.SupportingInfo_SupportingInfo);
+      Collection<ReadableArtifact> relatedArtifacts =
          teamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version);
       Collection<WebId> builds = new ArrayList<WebId>();
-      for (IFakeArtifact build : relatedArtifacts) {
+      for (ReadableArtifact build : relatedArtifacts) {
          builds.add(new WebId(build.getGuid(), build.getName()));
       }
       return builds;
@@ -196,13 +170,20 @@ public class WebProgramsPresenter implements AtsWebSearchPresenter {
    }
 
    private SearchParameters decode(String url) {
-      String[] tokens = url.split("?");
+      String[] tokens = url.split("\\?");
       WebId program = new WebId(tokens[0].split("=")[1], "unknown");
       WebId build = new WebId(tokens[1].split("=")[1], "unknown");
-      boolean nameOnly = Boolean.getBoolean(tokens[2].split("=")[1]);
+      boolean nameOnly = tokens[2].split("=")[1].equalsIgnoreCase("true") ? true : false;
       String searchPhrase = tokens[3].split("=")[1];
       searchPhrase = searchPhrase.replaceAll("%20", " ");
       return new SearchParameters(program, build, nameOnly, searchPhrase);
+   }
+
+   private String getBranchGuid(WebId build) throws OseeCoreException {
+      String guid = null;
+      ReadableArtifact buildArtifact = artifactProvider.getArtifactByGuid(CoreBranches.COMMON, build.getGuid());
+      guid = buildArtifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid);
+      return guid;
    }
 
    private class SearchParameters {

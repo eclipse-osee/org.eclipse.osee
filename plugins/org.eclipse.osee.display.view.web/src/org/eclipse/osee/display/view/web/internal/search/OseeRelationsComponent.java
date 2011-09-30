@@ -10,19 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.internal.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import org.eclipse.osee.display.api.data.Artifact;
-import org.eclipse.osee.display.api.data.RelationType;
+import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.vaadin.widgets.Navigator;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -32,7 +25,7 @@ import com.vaadin.ui.VerticalLayout;
 public class OseeRelationsComponent extends VerticalLayout {
    private final Navigator navigator;
    private final SearchPresenter webBackend;
-   private Artifact artifact;
+   private WebArtifact artifact;
 
    private void initLayout() {
       if (artifact != null) {
@@ -52,30 +45,30 @@ public class OseeRelationsComponent extends VerticalLayout {
             }
          });
 
-         final ListSelect relationTypesListSelect = new ListSelect("Relation Types:", artifact.getRelationTypes());
-         relationTypesListSelect.setNullSelectionAllowed(false);
-         relationTypesListSelect.setImmediate(true);
-         Label spacer = new Label();
-         spacer.setWidth(15, UNITS_PIXELS);
-         final ListSelect relationsListSelect = new ListSelect("Relations:", new ArrayList<String>());
-         relationsListSelect.setNullSelectionAllowed(false);
-         relationsListSelect.setImmediate(true);
-
-         relationTypesListSelect.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-               RelationType relationType = (RelationType) relationTypesListSelect.getValue();
-               Collection<Artifact> relations = artifact.getRelationsWithRelationType(relationType);
-               relationsListSelect.removeAllItems();
-               for (Artifact artifact : relations) {
-                  relationsListSelect.addItem(artifact);
-               }
-            }
-         });
-
-         listBoxesLayout.addComponent(relationTypesListSelect);
-         listBoxesLayout.addComponent(spacer);
-         listBoxesLayout.addComponent(relationsListSelect);
+         //         final ListSelect relationTypesListSelect = new ListSelect("Relation Types:", artifact.getRelationTypes());
+         //         relationTypesListSelect.setNullSelectionAllowed(false);
+         //         relationTypesListSelect.setImmediate(true);
+         //         Label spacer = new Label();
+         //         spacer.setWidth(15, UNITS_PIXELS);
+         //         final ListSelect relationsListSelect = new ListSelect("Relations:", new ArrayList<String>());
+         //         relationsListSelect.setNullSelectionAllowed(false);
+         //         relationsListSelect.setImmediate(true);
+         //
+         //         relationTypesListSelect.addListener(new Property.ValueChangeListener() {
+         //            @Override
+         //            public void valueChange(ValueChangeEvent event) {
+         //               RelationType relationType = (RelationType) relationTypesListSelect.getValue();
+         //               Collection<Artifact> relations = artifact.getRelationsWithRelationType(relationType);
+         //               relationsListSelect.removeAllItems();
+         //               for (Artifact artifact : relations) {
+         //                  relationsListSelect.addItem(artifact);
+         //               }
+         //            }
+         //         });
+         //
+         //         listBoxesLayout.addComponent(relationTypesListSelect);
+         //         listBoxesLayout.addComponent(spacer);
+         //         listBoxesLayout.addComponent(relationsListSelect);
 
          addComponent(showHideButton);
          addComponent(listBoxesLayout);
@@ -83,7 +76,7 @@ public class OseeRelationsComponent extends VerticalLayout {
       }
    }
 
-   public OseeRelationsComponent(Navigator navigator, SearchPresenter webBackend, Artifact artifact) {
+   public OseeRelationsComponent(Navigator navigator, SearchPresenter webBackend, WebArtifact artifact) {
       this.navigator = navigator;
       this.webBackend = webBackend;
       this.artifact = artifact;
@@ -91,7 +84,7 @@ public class OseeRelationsComponent extends VerticalLayout {
       initLayout();
    }
 
-   public void setArtifact(Artifact artifact) {
+   public void setArtifact(WebArtifact artifact) {
       this.artifact = artifact;
       initLayout();
    }

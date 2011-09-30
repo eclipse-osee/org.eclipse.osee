@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.ats.view.web.AtsUiApplicationFactory">
+   <implementation class="org.eclipse.osee.ats.view.web.AtsUiApplicationFactory"/>
+   <property name="context.name" type="String" value="ui/ats"/>
+   <service>
+      <provide interface="org.eclipse.osee.vaadin.ApplicationFactory"/>
+   </service>
+</scr:component>

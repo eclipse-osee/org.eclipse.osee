@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.internal;
 
+import org.eclipse.osee.display.view.web.OseeFooter;
 import org.eclipse.osee.display.view.web.internal.search.OseeRoadMapAndNavigation;
 import org.eclipse.osee.vaadin.widgets.AccountMenuBar;
 import org.eclipse.osee.vaadin.widgets.HasViews;

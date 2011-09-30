@@ -31,4 +31,5 @@ public interface SearchPresenter {
    void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp);
 
    void selectRelationType(WebId id);
+
 }
