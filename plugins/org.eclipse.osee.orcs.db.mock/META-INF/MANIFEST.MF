@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Database Mock
+Bundle-SymbolicName: org.eclipse.osee.orcs.db.mock
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.network,
+ org.junit;version="4.8.2",
+ org.junit.rules;version="4.8.2",
+ org.junit.runners.model;version="4.8.2",
+ org.osgi.framework;version="1.6.0",
+ org.osgi.util.tracker;version="1.5.0"
+Export-Package: org.eclipse.osee.orcs.db.mock
