@@ -36,10 +36,6 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    private static TreeMap<String, AbstractBlam> blams;
 
    public static Map<String, AbstractBlam> getBlamMap() {
-      return blams;
-   }
-
-   public static Collection<AbstractBlam> getBlamOperations() {
       if (blams == null) {
          ExtensionDefinedObjects<AbstractBlam> definedObjects =
             new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
@@ -49,7 +45,11 @@ public class BlamContributionManager implements IXNavigateCommonItem {
             blams.put(blam.getName(), blam);
          }
       }
-      return blams.values();
+      return blams;
+   }
+
+   public static Collection<AbstractBlam> getBlamOperations() {
+      return getBlamMap().values();
    }
 
    private static void createCategories(String[] categoryElements, int index, XNavigateItem parentItem, Map<String, XNavigateItem> nameToParent) throws OseeCoreException {
