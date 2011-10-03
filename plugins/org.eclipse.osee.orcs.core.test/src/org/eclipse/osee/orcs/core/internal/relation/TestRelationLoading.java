@@ -8,12 +8,13 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ArtifactQuery;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,38 +24,34 @@ public class TestRelationLoading {
    @Test
    public void testRelationCountMatches() throws OseeCoreException, IOException {
       Log log = new MockLog();
-      ArtifactQuery artifactQuery = new MockArtifactQuery();
-      List<RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(22, artifactQuery);
+      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(log, providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
 
-      checkRelationCount(providersThatWillBeLoaded.get(0), RelationSide.SIDE_B, 9);
-      checkRelationCount(providersThatWillBeLoaded.get(0), RelationSide.SIDE_A, 0);
-      checkRelationCount(providersThatWillBeLoaded.get(1), RelationSide.SIDE_B, 0);
-      checkRelationCount(providersThatWillBeLoaded.get(2), RelationSide.SIDE_B, 6);
-      checkRelationCount(providersThatWillBeLoaded.get(2), RelationSide.SIDE_A, 1);
-      checkRelationCount(providersThatWillBeLoaded.get(3), RelationSide.SIDE_B, 7);
+      checkRelationCount(providersThatWillBeLoaded.get(1), RelationSide.SIDE_B, 9);
+      checkRelationCount(providersThatWillBeLoaded.get(1), RelationSide.SIDE_A, 0);
+      checkRelationCount(providersThatWillBeLoaded.get(2), RelationSide.SIDE_B, 0);
+      checkRelationCount(providersThatWillBeLoaded.get(3), RelationSide.SIDE_B, 6);
+      checkRelationCount(providersThatWillBeLoaded.get(3), RelationSide.SIDE_A, 1);
+      checkRelationCount(providersThatWillBeLoaded.get(4), RelationSide.SIDE_B, 7);
    }
 
    //@formatter:off
    @Test
    public void testRelatedArtifactsMatch() throws OseeCoreException, IOException {
-
-      //objects 
       Log log = new MockLog();
-      ArtifactQuery artifactQuery = new MockArtifactQuery();
-      List<RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(22, artifactQuery);
+      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(log, providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
       List<Integer> relatedArtifacts = new ArrayList<Integer>();
-      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(0), RelationSide.SIDE_B, new int[]{2,3,4,5,6,7,8,9,10});
-      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(0), RelationSide.SIDE_A, new int[]{});
-      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(1), RelationSide.SIDE_B, new int[]{});
-      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(2), RelationSide.SIDE_B, new int[]{11,12,13,14,15,16});
-      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(2), RelationSide.SIDE_A, new int[]{1});
-      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(3), RelationSide.SIDE_B, new int[]{17,18,19,20,21,22,2});
+      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(1), RelationSide.SIDE_B, new int[]{2,3,4,5,6,7,8,9,10});
+      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(1), RelationSide.SIDE_A, new int[]{});
+      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(2), RelationSide.SIDE_B, new int[]{});
+      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(3), RelationSide.SIDE_B, new int[]{11,12,13,14,15,16});
+      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(3), RelationSide.SIDE_A, new int[]{1});
+      checkRelatedArtifacts(relatedArtifacts, providersThatWillBeLoaded.get(4), RelationSide.SIDE_B, new int[]{17,18,19,20,21,22,2});
    }
    //@formatter:on
 
@@ -74,10 +71,10 @@ public class TestRelationLoading {
       }
    }
 
-   private List<RelationContainerImpl> getRelationProviderList(int size, ArtifactQuery artifactQuery) {
-      List<RelationContainerImpl> providersThatWillBeLoaded = new ArrayList<RelationContainerImpl>();
+   private Map<Integer, RelationContainerImpl> getRelationProviderList(int size) {
+      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = new HashMap<Integer, RelationContainerImpl>();
       for (int i = 1; i <= size; i++) {
-         providersThatWillBeLoaded.add(new RelationContainerImpl(i, artifactQuery));
+         providersThatWillBeLoaded.put(i, new RelationContainerImpl(i));
       }
       return providersThatWillBeLoaded;
    }

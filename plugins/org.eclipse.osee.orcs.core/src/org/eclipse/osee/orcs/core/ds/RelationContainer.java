@@ -14,5 +14,4 @@ public interface RelationContainer {
 
    void add(RelationRow nextRelation);
 
-   int getParentId();
 }
