@@ -34,4 +34,8 @@ public enum LoadLevel {
    public boolean isHead() {
       return this == ALL_CURRENT;
    }
+
+   public boolean isAttributesOnly() {
+      return this == ATTRIBUTE;
+   }
 }

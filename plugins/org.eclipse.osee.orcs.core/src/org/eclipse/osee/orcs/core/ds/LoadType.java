@@ -10,12 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-
-/**
- * @author Roberto E. Escobar
- */
-public interface AttributeRowHandler {
-   void onRow(List<AttributeRow> rows) throws OseeCoreException;
+public enum LoadType {
+   INCLUDE_CACHE,
+   RELOAD_CACHE;
 }

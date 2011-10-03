@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeRowHandler {
-   void onRow(List<AttributeRow> rows) throws OseeCoreException;
+public interface ArtifactRowHandler {
+
+   void onRow(ArtifactRow row) throws OseeCoreException;
 }

@@ -63,15 +63,12 @@ public class AttributeLoader {
       return identityService.getUniversalId(localId);
    }
 
-   public void loadAttributeData(AttributeRowHandler handler, LoadOptions options, int queryId) throws OseeCoreException {
-      if (options.getLoadLevel().isShallow() || options.getLoadLevel().isRelationsOnly()) {
-         return;
-      }
+   public void loadAttributeData(AttributeRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
+      String sql = getSql(options);
 
       IOseeStatement chStmt = dbService.getStatement();
       try {
-         String sql = getSql(options);
-         chStmt.runPreparedQuery(options.getFetchSize(), sql, queryId);
+         chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
          AttributeRow previousAttr = new AttributeRow();
 

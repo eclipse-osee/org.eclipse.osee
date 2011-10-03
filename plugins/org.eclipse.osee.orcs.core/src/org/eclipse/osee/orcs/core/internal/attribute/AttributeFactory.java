@@ -54,14 +54,14 @@ public class AttributeFactory {
       primitiveAttributes.put("", CompressedContentAttribute.class);
    }
 
-   public <T> void loadAttribute(AttributeContainer<?> container, AttributeRow row) throws OseeCoreException {
+   public <T> void loadAttribute(AttributeContainer container, AttributeRow row) throws OseeCoreException {
       AttributeType attributeType = attributeTypeCache.getByGuid(row.getAttrTypeUuid());
       boolean markDirty = false;
 
       Class<? extends Attribute<T>> attributeClass = null;
       Attribute<T> attribute = createAttribute(attributeClass);
       container.add(attributeType, attribute);
-      Reference<AttributeContainer<?>> artifactRef = new WeakReference<AttributeContainer<?>>(container);
+      Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(container);
       DataProxy proxy = row.getDataProxy();
 
       attribute.internalInitialize(attributeType, proxy, artifactRef, row.getModType(), row.getAttrId(),

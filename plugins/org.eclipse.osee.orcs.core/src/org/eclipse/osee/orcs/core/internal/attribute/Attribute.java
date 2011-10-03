@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.data.WritableAttribute;
  */
 public abstract class Attribute<T> implements Comparable<Attribute<T>>, WritableAttribute<T> {
    private AttributeType attributeType;
-   private Reference<AttributeContainer<?>> containerReference;
+   private Reference<AttributeContainer> containerReference;
    private DataProxy dataProxy;
    private int attrId;
    private int gammaId;
@@ -40,7 +40,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
    private String defaultValue;
    private Log logger;
 
-   void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer<?>> containerReference, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeType = attributeType;
       this.containerReference = containerReference;
       this.modificationType = modificationType;
@@ -52,7 +52,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       uponInitialize();
    }
 
-   public void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer<?>> containerReference, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(AttributeType attributeType, DataProxy dataProxy, Reference<AttributeContainer> containerReference, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       internalInitialize(attributeType, dataProxy, containerReference, modificationType, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
@@ -193,7 +193,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
       //      }
    }
 
-   public AttributeContainer<?> getContainer() throws OseeStateException {
+   public AttributeContainer getContainer() throws OseeStateException {
       if (containerReference.get() == null) {
          throw new OseeStateException("Attribute parent has been garbage collected");
       }

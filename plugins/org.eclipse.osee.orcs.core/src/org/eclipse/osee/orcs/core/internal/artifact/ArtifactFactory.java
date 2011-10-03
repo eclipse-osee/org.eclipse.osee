@@ -8,14 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.artifact;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeRowHandler {
-   void onRow(List<AttributeRow> rows) throws OseeCoreException;
+public class ArtifactFactory {
+
+   public Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
+      return null;
+   }
 }

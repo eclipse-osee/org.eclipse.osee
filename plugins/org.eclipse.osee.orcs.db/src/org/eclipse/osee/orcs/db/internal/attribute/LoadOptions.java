@@ -17,27 +17,20 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
  * @author Roberto E. Escobar
  */
 public class LoadOptions {
-   private static final int MAX_FETCH_SIZE = 10000;
 
    private boolean historical;
    private DeletionFlag allowDeletedArtifacts;
    private LoadLevel loadLevel;
-   private int fetchSize;
 
    public LoadOptions() {
-      this(MAX_FETCH_SIZE, false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.SHALLOW);
+      this(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.SHALLOW);
    }
 
-   public LoadOptions(int fetchSize, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) {
+   public LoadOptions(boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) {
       super();
-      this.fetchSize = fetchSize;
       this.historical = historical;
       this.allowDeletedArtifacts = allowDeletedArtifacts;
       this.loadLevel = loadLevel;
-   }
-
-   public int getFetchSize() {
-      return fetchSize;
    }
 
    public boolean isHistorical() {
@@ -50,10 +43,6 @@ public class LoadOptions {
 
    public LoadLevel getLoadLevel() {
       return loadLevel;
-   }
-
-   public void setFetchSize(int fetchSize) {
-      this.fetchSize = fetchSize;
    }
 
    public void setHistorical(boolean historical) {
@@ -70,7 +59,7 @@ public class LoadOptions {
 
    @Override
    public String toString() {
-      return "LoadOptions [historical=" + historical + ", allowDeletedArtifacts=" + allowDeletedArtifacts + ", loadLevel=" + loadLevel + ", fetchSize=" + fetchSize + "]";
+      return "LoadOptions [historical=" + historical + ", allowDeletedArtifacts=" + allowDeletedArtifacts + ", loadLevel=" + loadLevel + "]";
    }
 
 }

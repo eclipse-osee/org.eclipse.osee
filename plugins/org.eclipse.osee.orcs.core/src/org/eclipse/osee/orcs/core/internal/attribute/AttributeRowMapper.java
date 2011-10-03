@@ -33,8 +33,8 @@ public class AttributeRowMapper implements AttributeRowHandler {
       this.factory = factory;
    }
 
-   private AttributeContainer<?> getContainer(AttributeRow current) {
-      AttributeContainer<?> container = null;
+   private AttributeContainer getContainer(AttributeRow current) {
+      AttributeContainer container = null;
       if (current.isHistorical()) {
          container = context.getHistorical(current.getArtifactId(), current.getStripeId());
       } else {
@@ -48,7 +48,7 @@ public class AttributeRowMapper implements AttributeRowHandler {
 
    @Override
    public void onRow(List<AttributeRow> rows) throws OseeCoreException {
-      AttributeContainer<?> container = getContainer(rows.get(0));
+      AttributeContainer container = getContainer(rows.get(0));
       if (container == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }

@@ -19,13 +19,11 @@ import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeContainer<PARENT> {
-
-   PARENT getContainer();
+public interface AttributeContainer {
 
    void add(IAttributeType type, Attribute<?> attribute);
 
-   int getCount(IAttributeType type);
+   int getCount(IAttributeType type) throws OseeCoreException;
 
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
 

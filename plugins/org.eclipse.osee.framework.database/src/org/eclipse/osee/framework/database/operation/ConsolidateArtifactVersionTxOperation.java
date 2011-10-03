@@ -108,8 +108,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       chStmt.runPreparedQuery(POPULATE_DUPLICATE_ARTID);
 
       while (chStmt.next()) {
-         idJoinQuery.add(chStmt.getInt("art_id"), chStmt.getInt("branch_id"));
-         idJoinQuery.add(chStmt.getInt("art_id_1"), chStmt.getInt("branch_id_1"));
+         idJoinQuery.add(chStmt.getInt("art_id"), chStmt.getInt("branch_id"), -1);
+         idJoinQuery.add(chStmt.getInt("art_id_1"), chStmt.getInt("branch_id_1"), -1);
       }
       idJoinQuery.store();
       return idJoinQuery;

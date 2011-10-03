@@ -20,20 +20,22 @@ public final class ArtifactJoinQuery extends AbstractJoinQuery {
    private final class Entry implements IJoinRow {
       private final int artId;
       private final int branchId;
+      private final int transactionId;
 
-      private Entry(Integer artId, Integer branchId) {
+      private Entry(Integer artId, Integer branchId, Integer transactionId) {
          this.artId = artId;
          this.branchId = branchId;
+         this.transactionId = transactionId;
       }
 
       @Override
       public Object[] toArray() {
-         return new Object[] {getQueryId(), getInsertTime(), artId, branchId};
+         return new Object[] {getQueryId(), getInsertTime(), artId, branchId, transactionId};
       }
 
       @Override
       public String toString() {
-         return String.format("art_id=%s, branch_id=%s", artId, branchId);
+         return String.format("art_id=%s, branch_id=%s, transaction_id=%s", artId, branchId, transactionId);
       }
 
       @Override
@@ -45,12 +47,12 @@ public final class ArtifactJoinQuery extends AbstractJoinQuery {
             return false;
          }
          Entry other = (Entry) obj;
-         return other.artId == this.artId && other.branchId == this.branchId;
+         return other.artId == this.artId && other.branchId == this.branchId && other.transactionId == this.transactionId;
       }
 
       @Override
       public int hashCode() {
-         return 37 * artId * branchId;
+         return 37 * artId * branchId * transactionId;
       }
    }
 
@@ -58,8 +60,8 @@ public final class ArtifactJoinQuery extends AbstractJoinQuery {
       super(joinAccessor, JoinItem.ARTIFACT, queryId);
    }
 
-   public void add(Integer art_id, Integer branchId) {
-      entries.add(new Entry(art_id, branchId));
+   public void add(Integer art_id, Integer branchId, Integer transactionId) {
+      entries.add(new Entry(art_id, branchId, transactionId));
    }
 
 }
