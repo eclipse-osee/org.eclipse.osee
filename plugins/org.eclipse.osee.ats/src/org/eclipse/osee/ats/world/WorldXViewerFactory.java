@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.column.AssigneeColumn;
@@ -203,7 +204,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       LocReviewedColumn.getInstance(),
       PagesChangedColumn.getInstance(),
       PagesReviewedColumn.getInstance(),
-      new GuidColumn(false)};
+      new GuidColumn(false),
+      ActionableItemOwner.getInstance()};
    private final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {

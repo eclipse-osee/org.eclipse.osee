@@ -1087,6 +1087,17 @@ relationType "ParallelVersion" {
    multiplicity MANY_TO_MANY
 }
 
+relationType "Owner" {
+   guid "AA65ENnCSzX_F5mspbwA"
+   uuid 0x2000000000000178
+   sideAName "Actionable Item"
+   sideAArtifactType "Actionable Item"
+   sideBName "Owner"
+   sideBArtifactType "User"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity MANY_TO_MANY
+}
+
 relationType "Goal" {
    guid "ABMn0wPKdyN+Mfo5nwgA"
    uuid 0x2000000000000175

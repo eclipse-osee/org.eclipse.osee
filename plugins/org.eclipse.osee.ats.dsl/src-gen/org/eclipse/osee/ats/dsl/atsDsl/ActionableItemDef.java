@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getActionable <em>Actionable</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getLead <em>Lead</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getOwner <em>Owner</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getAccessContextId <em>Access Context Id</em>}</li>
@@ -151,6 +152,22 @@ public interface ActionableItemDef extends EObject
    * @generated
    */
   EList<UserRef> getLead();
+
+  /**
+   * Returns the value of the '<em><b>Owner</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.ats.dsl.atsDsl.UserRef}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Owner</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Owner</em>' containment reference list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getActionableItemDef_Owner()
+   * @model containment="true"
+   * @generated
+   */
+  EList<UserRef> getOwner();
 
   /**
    * Returns the value of the '<em><b>Static Id</b></em>' attribute list.

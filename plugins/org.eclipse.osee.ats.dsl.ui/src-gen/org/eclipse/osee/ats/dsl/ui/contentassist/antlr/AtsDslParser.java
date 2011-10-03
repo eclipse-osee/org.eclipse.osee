@@ -85,7 +85,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_5(), "rule__ActionableItemDef__Group_2_5__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_6(), "rule__ActionableItemDef__Group_2_6__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_7(), "rule__ActionableItemDef__Group_2_7__0");
-					put(grammarAccess.getActionableItemDefAccess().getGroup_2_7_2(), "rule__ActionableItemDef__Group_2_7_2__0");
+					put(grammarAccess.getActionableItemDefAccess().getGroup_2_8(), "rule__ActionableItemDef__Group_2_8__0");
+					put(grammarAccess.getActionableItemDefAccess().getGroup_2_8_2(), "rule__ActionableItemDef__Group_2_8_2__0");
 					put(grammarAccess.getVersionDefAccess().getGroup(), "rule__VersionDef__Group__0");
 					put(grammarAccess.getVersionDefAccess().getGroup_2(), "rule__VersionDef__Group_2__0");
 					put(grammarAccess.getVersionDefAccess().getGroup_3(), "rule__VersionDef__Group_3__0");
@@ -164,10 +165,11 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getActionableItemDefAccess().getActiveAssignment_2_1_1(), "rule__ActionableItemDef__ActiveAssignment_2_1_1");
 					put(grammarAccess.getActionableItemDefAccess().getActionableAssignment_2_2_1(), "rule__ActionableItemDef__ActionableAssignment_2_2_1");
 					put(grammarAccess.getActionableItemDefAccess().getLeadAssignment_2_3_1(), "rule__ActionableItemDef__LeadAssignment_2_3_1");
-					put(grammarAccess.getActionableItemDefAccess().getStaticIdAssignment_2_4_1(), "rule__ActionableItemDef__StaticIdAssignment_2_4_1");
-					put(grammarAccess.getActionableItemDefAccess().getTeamDefAssignment_2_5_1(), "rule__ActionableItemDef__TeamDefAssignment_2_5_1");
-					put(grammarAccess.getActionableItemDefAccess().getAccessContextIdAssignment_2_6_1(), "rule__ActionableItemDef__AccessContextIdAssignment_2_6_1");
-					put(grammarAccess.getActionableItemDefAccess().getChildrenAssignment_2_7_2_1(), "rule__ActionableItemDef__ChildrenAssignment_2_7_2_1");
+					put(grammarAccess.getActionableItemDefAccess().getOwnerAssignment_2_4_1(), "rule__ActionableItemDef__OwnerAssignment_2_4_1");
+					put(grammarAccess.getActionableItemDefAccess().getStaticIdAssignment_2_5_1(), "rule__ActionableItemDef__StaticIdAssignment_2_5_1");
+					put(grammarAccess.getActionableItemDefAccess().getTeamDefAssignment_2_6_1(), "rule__ActionableItemDef__TeamDefAssignment_2_6_1");
+					put(grammarAccess.getActionableItemDefAccess().getAccessContextIdAssignment_2_7_1(), "rule__ActionableItemDef__AccessContextIdAssignment_2_7_1");
+					put(grammarAccess.getActionableItemDefAccess().getChildrenAssignment_2_8_2_1(), "rule__ActionableItemDef__ChildrenAssignment_2_8_2_1");
 					put(grammarAccess.getVersionDefAccess().getNameAssignment_0(), "rule__VersionDef__NameAssignment_0");
 					put(grammarAccess.getVersionDefAccess().getStaticIdAssignment_2_1(), "rule__VersionDef__StaticIdAssignment_2_1");
 					put(grammarAccess.getVersionDefAccess().getNextAssignment_3_1(), "rule__VersionDef__NextAssignment_3_1");

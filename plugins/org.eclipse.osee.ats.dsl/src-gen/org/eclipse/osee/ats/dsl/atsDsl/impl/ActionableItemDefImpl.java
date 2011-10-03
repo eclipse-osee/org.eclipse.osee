@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getActionable <em>Actionable</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getLead <em>Lead</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getOwner <em>Owner</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
@@ -130,6 +131,16 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected EList<UserRef> lead;
+
+  /**
+   * The cached value of the '{@link #getOwner() <em>Owner</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOwner()
+   * @generated
+   * @ordered
+   */
+  protected EList<UserRef> owner;
 
   /**
    * The cached value of the '{@link #getStaticId() <em>Static Id</em>}' attribute list.
@@ -304,6 +315,20 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<UserRef> getOwner()
+  {
+    if (owner == null)
+    {
+      owner = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER);
+    }
+    return owner;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<String> getStaticId()
   {
     if (staticId == null)
@@ -376,6 +401,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
     {
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__LEAD:
         return ((InternalEList<?>)getLead()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER:
+        return ((InternalEList<?>)getOwner()).basicRemove(otherEnd, msgs);
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
     }
@@ -402,6 +429,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return getActionable();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__LEAD:
         return getLead();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER:
+        return getOwner();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__STATIC_ID:
         return getStaticId();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__TEAM_DEF:
@@ -441,6 +470,10 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__LEAD:
         getLead().clear();
         getLead().addAll((Collection<? extends UserRef>)newValue);
+        return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER:
+        getOwner().clear();
+        getOwner().addAll((Collection<? extends UserRef>)newValue);
         return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__STATIC_ID:
         getStaticId().clear();
@@ -486,6 +519,9 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__LEAD:
         getLead().clear();
         return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER:
+        getOwner().clear();
+        return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__STATIC_ID:
         getStaticId().clear();
         return;
@@ -522,6 +558,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return actionable != ACTIONABLE_EDEFAULT;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__LEAD:
         return lead != null && !lead.isEmpty();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER:
+        return owner != null && !owner.isEmpty();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__STATIC_ID:
         return staticId != null && !staticId.isEmpty();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__TEAM_DEF:

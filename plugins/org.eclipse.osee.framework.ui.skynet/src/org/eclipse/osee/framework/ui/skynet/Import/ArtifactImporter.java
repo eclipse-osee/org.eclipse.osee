@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 /**
  * Facilitates importing of artifacts with {@link ArtifactImportWizard }. <br/>
  * Refer to {@link ArtifactImporter.initialized()} to determine if importer has been properly setup.
- *
+ * 
  * @author Karol M Wilk
  */
 public final class ArtifactImporter {
@@ -35,6 +35,10 @@ public final class ArtifactImporter {
       this(null, null);
    }
 
+   /**
+    * @param importResource file to import
+    * @param defaultDestinationArtifact parent of newly created artifact
+    */
    public ArtifactImporter(File importResource, Artifact defaultDestinationArtifact) {
       this.importResource = importResource;
       this.defaultDestinationArtifact = defaultDestinationArtifact;

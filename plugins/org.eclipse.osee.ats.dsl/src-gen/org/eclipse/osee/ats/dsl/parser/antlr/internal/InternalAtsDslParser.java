@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'workDefinition'", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'{'", "'active'", "'userId'", "'email'", "'isAdmin'", "'}'", "'usesVersions'", "'staticId'", "'lead'", "'member'", "'priviledged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baslineBranchGuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'relatedToState'", "'blockingType'", "'onEvent'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPriviledgedEditToTeamMember'", "'AllowPriviledgedEditToTeamMemberAndOriginator'", "'AllowPriviledgedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'workDefinition'", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'{'", "'active'", "'userId'", "'email'", "'isAdmin'", "'}'", "'usesVersions'", "'staticId'", "'lead'", "'member'", "'priviledged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'owner'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baslineBranchGuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'relatedToState'", "'blockingType'", "'onEvent'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPriviledgedEditToTeamMember'", "'AllowPriviledgedEditToTeamMemberAndOriginator'", "'AllowPriviledgedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'"
     };
     public static final int RULE_ID=6;
     public static final int T__29=29;
@@ -48,6 +48,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final int T__15=15;
     public static final int T__90=90;
     public static final int T__18=18;
+    public static final int T__149=149;
     public static final int T__17=17;
     public static final int T__12=12;
     public static final int T__11=11;
@@ -698,7 +699,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                 int alt5=2;
                 int LA5_0 = input.LA(1);
 
-                if ( (LA5_0==RULE_STRING||LA5_0==77) ) {
+                if ( (LA5_0==RULE_STRING||LA5_0==78) ) {
                     alt5=1;
                 }
 
@@ -1183,7 +1184,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                 int alt11=2;
                 int LA11_0 = input.LA(1);
 
-                if ( (LA11_0==RULE_STRING||LA11_0==77) ) {
+                if ( (LA11_0==RULE_STRING||LA11_0==78) ) {
                     alt11=1;
                 }
 
@@ -1999,7 +2000,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleActionableItemDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:742:1: ruleActionableItemDef returns [EObject current=null] : ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )* (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )? (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )* (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )? otherlv_20= '}' )? ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:742:1: ruleActionableItemDef returns [EObject current=null] : ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )* (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )* (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )? (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )* (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )? otherlv_22= '}' )? ) ;
     public final EObject ruleActionableItemDef() throws RecognitionException {
         EObject current = null;
 
@@ -2008,16 +2009,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
         Token otherlv_5=null;
         Token otherlv_7=null;
         Token otherlv_9=null;
-        Token lv_staticId_10_0=null;
         Token otherlv_11=null;
-        Token lv_teamDef_12_0=null;
+        Token lv_staticId_12_0=null;
         Token otherlv_13=null;
-        Token lv_accessContextId_14_0=null;
+        Token lv_teamDef_14_0=null;
         Token otherlv_15=null;
-        Token otherlv_16=null;
+        Token lv_accessContextId_16_0=null;
         Token otherlv_17=null;
+        Token otherlv_18=null;
         Token otherlv_19=null;
-        Token otherlv_20=null;
+        Token otherlv_21=null;
+        Token otherlv_22=null;
         AntlrDatatypeRuleToken lv_name_0_0 = null;
 
         AntlrDatatypeRuleToken lv_aiDefOption_1_0 = null;
@@ -2028,17 +2030,19 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
         EObject lv_lead_8_0 = null;
 
-        EObject lv_children_18_0 = null;
+        EObject lv_owner_10_0 = null;
+
+        EObject lv_children_20_0 = null;
 
 
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:745:28: ( ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )* (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )? (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )* (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )? otherlv_20= '}' )? ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:746:1: ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )* (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )? (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )* (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )? otherlv_20= '}' )? )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:745:28: ( ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )* (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )* (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )? (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )* (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )? otherlv_22= '}' )? ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:746:1: ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )* (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )* (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )? (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )* (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )? otherlv_22= '}' )? )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:746:1: ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )* (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )? (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )* (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )? otherlv_20= '}' )? )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:746:2: ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )* (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )? (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )* (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )? otherlv_20= '}' )?
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:746:1: ( ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )* (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )* (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )? (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )* (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )? otherlv_22= '}' )? )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:746:2: ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) ) ( (lv_aiDefOption_1_0= ruleActionableItemOption ) )* (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )* (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )* (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )? (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )* (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )? otherlv_22= '}' )?
             {
             // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:746:2: ( (lv_name_0_0= ruleAI_DEF_REFERENCE ) )
             // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:747:1: (lv_name_0_0= ruleAI_DEF_REFERENCE )
@@ -2077,7 +2081,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                 int alt24=2;
                 int LA24_0 = input.LA(1);
 
-                if ( (LA24_0==RULE_STRING||LA24_0==77) ) {
+                if ( (LA24_0==RULE_STRING||LA24_0==78) ) {
                     alt24=1;
                 }
 
@@ -2120,16 +2124,16 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:782:3: (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )* (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )? (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )* (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )? otherlv_20= '}' )?
-            int alt33=2;
-            int LA33_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:782:3: (otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )* (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )* (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )? (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )* (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )? otherlv_22= '}' )?
+            int alt34=2;
+            int LA34_0 = input.LA(1);
 
-            if ( (LA33_0==15) ) {
-                alt33=1;
+            if ( (LA34_0==15) ) {
+                alt34=1;
             }
-            switch (alt33) {
+            switch (alt34) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:782:5: otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )* (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )? (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )* (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )? otherlv_20= '}'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:782:5: otherlv_2= '{' (otherlv_3= 'active' ( (lv_active_4_0= ruleBooleanDef ) ) )? (otherlv_5= 'actionable' ( (lv_actionable_6_0= ruleBooleanDef ) ) )? (otherlv_7= 'lead' ( (lv_lead_8_0= ruleUserRef ) ) )* (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )* (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )* (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )? (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )* (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )? otherlv_22= '}'
                     {
                     otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleActionableItemDef1530); 
 
@@ -2298,44 +2302,49 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                         }
                     } while (true);
 
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:852:4: (otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) ) )*
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:852:4: (otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) ) )*
                     loop28:
                     do {
                         int alt28=2;
                         int LA28_0 = input.LA(1);
 
-                        if ( (LA28_0==22) ) {
+                        if ( (LA28_0==31) ) {
                             alt28=1;
                         }
 
 
                         switch (alt28) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:852:6: otherlv_9= 'staticId' ( (lv_staticId_10_0= RULE_STRING ) )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:852:6: otherlv_9= 'owner' ( (lv_owner_10_0= ruleUserRef ) )
                     	    {
-                    	    otherlv_9=(Token)match(input,22,FOLLOW_22_in_ruleActionableItemDef1651); 
+                    	    otherlv_9=(Token)match(input,31,FOLLOW_31_in_ruleActionableItemDef1651); 
 
-                    	        	newLeafNode(otherlv_9, grammarAccess.getActionableItemDefAccess().getStaticIdKeyword_2_4_0());
+                    	        	newLeafNode(otherlv_9, grammarAccess.getActionableItemDefAccess().getOwnerKeyword_2_4_0());
                     	        
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:856:1: ( (lv_staticId_10_0= RULE_STRING ) )
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:857:1: (lv_staticId_10_0= RULE_STRING )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:856:1: ( (lv_owner_10_0= ruleUserRef ) )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:857:1: (lv_owner_10_0= ruleUserRef )
                     	    {
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:857:1: (lv_staticId_10_0= RULE_STRING )
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:858:3: lv_staticId_10_0= RULE_STRING
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:857:1: (lv_owner_10_0= ruleUserRef )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:858:3: lv_owner_10_0= ruleUserRef
                     	    {
-                    	    lv_staticId_10_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleActionableItemDef1668); 
+                    	     
+                    	    	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getOwnerUserRefParserRuleCall_2_4_1_0()); 
+                    	    	    
+                    	    pushFollow(FOLLOW_ruleUserRef_in_ruleActionableItemDef1672);
+                    	    lv_owner_10_0=ruleUserRef();
 
-                    	    			newLeafNode(lv_staticId_10_0, grammarAccess.getActionableItemDefAccess().getStaticIdSTRINGTerminalRuleCall_2_4_1_0()); 
-                    	    		
+                    	    state._fsp--;
+
 
                     	    	        if (current==null) {
-                    	    	            current = createModelElement(grammarAccess.getActionableItemDefRule());
+                    	    	            current = createModelElementForParent(grammarAccess.getActionableItemDefRule());
                     	    	        }
-                    	           		addWithLastConsumed(
+                    	           		add(
                     	           			current, 
-                    	           			"staticId",
-                    	            		lv_staticId_10_0, 
-                    	            		"STRING");
+                    	           			"owner",
+                    	            		lv_owner_10_0, 
+                    	            		"UserRef");
+                    	    	        afterParserOrEnumRuleCall();
                     	    	    
 
                     	    }
@@ -2352,30 +2361,84 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                         }
                     } while (true);
 
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:874:4: (otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) ) )?
-                    int alt29=2;
-                    int LA29_0 = input.LA(1);
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:874:4: (otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) ) )*
+                    loop29:
+                    do {
+                        int alt29=2;
+                        int LA29_0 = input.LA(1);
 
-                    if ( (LA29_0==31) ) {
-                        alt29=1;
+                        if ( (LA29_0==22) ) {
+                            alt29=1;
+                        }
+
+
+                        switch (alt29) {
+                    	case 1 :
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:874:6: otherlv_11= 'staticId' ( (lv_staticId_12_0= RULE_STRING ) )
+                    	    {
+                    	    otherlv_11=(Token)match(input,22,FOLLOW_22_in_ruleActionableItemDef1687); 
+
+                    	        	newLeafNode(otherlv_11, grammarAccess.getActionableItemDefAccess().getStaticIdKeyword_2_5_0());
+                    	        
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:878:1: ( (lv_staticId_12_0= RULE_STRING ) )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:879:1: (lv_staticId_12_0= RULE_STRING )
+                    	    {
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:879:1: (lv_staticId_12_0= RULE_STRING )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:880:3: lv_staticId_12_0= RULE_STRING
+                    	    {
+                    	    lv_staticId_12_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleActionableItemDef1704); 
+
+                    	    			newLeafNode(lv_staticId_12_0, grammarAccess.getActionableItemDefAccess().getStaticIdSTRINGTerminalRuleCall_2_5_1_0()); 
+                    	    		
+
+                    	    	        if (current==null) {
+                    	    	            current = createModelElement(grammarAccess.getActionableItemDefRule());
+                    	    	        }
+                    	           		addWithLastConsumed(
+                    	           			current, 
+                    	           			"staticId",
+                    	            		lv_staticId_12_0, 
+                    	            		"STRING");
+                    	    	    
+
+                    	    }
+
+
+                    	    }
+
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop29;
+                        }
+                    } while (true);
+
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:896:4: (otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) ) )?
+                    int alt30=2;
+                    int LA30_0 = input.LA(1);
+
+                    if ( (LA30_0==32) ) {
+                        alt30=1;
                     }
-                    switch (alt29) {
+                    switch (alt30) {
                         case 1 :
-                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:874:6: otherlv_11= 'team' ( (lv_teamDef_12_0= RULE_STRING ) )
+                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:896:6: otherlv_13= 'team' ( (lv_teamDef_14_0= RULE_STRING ) )
                             {
-                            otherlv_11=(Token)match(input,31,FOLLOW_31_in_ruleActionableItemDef1688); 
+                            otherlv_13=(Token)match(input,32,FOLLOW_32_in_ruleActionableItemDef1724); 
 
-                                	newLeafNode(otherlv_11, grammarAccess.getActionableItemDefAccess().getTeamKeyword_2_5_0());
+                                	newLeafNode(otherlv_13, grammarAccess.getActionableItemDefAccess().getTeamKeyword_2_6_0());
                                 
-                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:878:1: ( (lv_teamDef_12_0= RULE_STRING ) )
-                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:879:1: (lv_teamDef_12_0= RULE_STRING )
+                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:900:1: ( (lv_teamDef_14_0= RULE_STRING ) )
+                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:901:1: (lv_teamDef_14_0= RULE_STRING )
                             {
-                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:879:1: (lv_teamDef_12_0= RULE_STRING )
-                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:880:3: lv_teamDef_12_0= RULE_STRING
+                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:901:1: (lv_teamDef_14_0= RULE_STRING )
+                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:902:3: lv_teamDef_14_0= RULE_STRING
                             {
-                            lv_teamDef_12_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleActionableItemDef1705); 
+                            lv_teamDef_14_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleActionableItemDef1741); 
 
-                            			newLeafNode(lv_teamDef_12_0, grammarAccess.getActionableItemDefAccess().getTeamDefSTRINGTerminalRuleCall_2_5_1_0()); 
+                            			newLeafNode(lv_teamDef_14_0, grammarAccess.getActionableItemDefAccess().getTeamDefSTRINGTerminalRuleCall_2_6_1_0()); 
                             		
 
                             	        if (current==null) {
@@ -2384,7 +2447,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                                    		setWithLastConsumed(
                                    			current, 
                                    			"teamDef",
-                                    		lv_teamDef_12_0, 
+                                    		lv_teamDef_14_0, 
                                     		"STRING");
                             	    
 
@@ -2399,34 +2462,34 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:896:4: (otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) ) )*
-                    loop30:
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:918:4: (otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) ) )*
+                    loop31:
                     do {
-                        int alt30=2;
-                        int LA30_0 = input.LA(1);
+                        int alt31=2;
+                        int LA31_0 = input.LA(1);
 
-                        if ( (LA30_0==27) ) {
-                            alt30=1;
+                        if ( (LA31_0==27) ) {
+                            alt31=1;
                         }
 
 
-                        switch (alt30) {
+                        switch (alt31) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:896:6: otherlv_13= 'accessContextId' ( (lv_accessContextId_14_0= RULE_STRING ) )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:918:6: otherlv_15= 'accessContextId' ( (lv_accessContextId_16_0= RULE_STRING ) )
                     	    {
-                    	    otherlv_13=(Token)match(input,27,FOLLOW_27_in_ruleActionableItemDef1725); 
+                    	    otherlv_15=(Token)match(input,27,FOLLOW_27_in_ruleActionableItemDef1761); 
 
-                    	        	newLeafNode(otherlv_13, grammarAccess.getActionableItemDefAccess().getAccessContextIdKeyword_2_6_0());
+                    	        	newLeafNode(otherlv_15, grammarAccess.getActionableItemDefAccess().getAccessContextIdKeyword_2_7_0());
                     	        
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:900:1: ( (lv_accessContextId_14_0= RULE_STRING ) )
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:901:1: (lv_accessContextId_14_0= RULE_STRING )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:922:1: ( (lv_accessContextId_16_0= RULE_STRING ) )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:923:1: (lv_accessContextId_16_0= RULE_STRING )
                     	    {
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:901:1: (lv_accessContextId_14_0= RULE_STRING )
-                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:902:3: lv_accessContextId_14_0= RULE_STRING
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:923:1: (lv_accessContextId_16_0= RULE_STRING )
+                    	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:924:3: lv_accessContextId_16_0= RULE_STRING
                     	    {
-                    	    lv_accessContextId_14_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleActionableItemDef1742); 
+                    	    lv_accessContextId_16_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleActionableItemDef1778); 
 
-                    	    			newLeafNode(lv_accessContextId_14_0, grammarAccess.getActionableItemDefAccess().getAccessContextIdSTRINGTerminalRuleCall_2_6_1_0()); 
+                    	    			newLeafNode(lv_accessContextId_16_0, grammarAccess.getActionableItemDefAccess().getAccessContextIdSTRINGTerminalRuleCall_2_7_1_0()); 
                     	    		
 
                     	    	        if (current==null) {
@@ -2435,7 +2498,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     	           		addWithLastConsumed(
                     	           			current, 
                     	           			"accessContextId",
-                    	            		lv_accessContextId_14_0, 
+                    	            		lv_accessContextId_16_0, 
                     	            		"STRING");
                     	    	    
 
@@ -2449,60 +2512,60 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     	    break;
 
                     	default :
-                    	    break loop30;
+                    	    break loop31;
                         }
                     } while (true);
 
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:918:4: (otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}' )?
-                    int alt32=2;
-                    int LA32_0 = input.LA(1);
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:940:4: (otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}' )?
+                    int alt33=2;
+                    int LA33_0 = input.LA(1);
 
-                    if ( (LA32_0==29) ) {
-                        alt32=1;
+                    if ( (LA33_0==29) ) {
+                        alt33=1;
                     }
-                    switch (alt32) {
+                    switch (alt33) {
                         case 1 :
-                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:918:6: otherlv_15= 'children' otherlv_16= '{' (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+ otherlv_19= '}'
+                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:940:6: otherlv_17= 'children' otherlv_18= '{' (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+ otherlv_21= '}'
                             {
-                            otherlv_15=(Token)match(input,29,FOLLOW_29_in_ruleActionableItemDef1762); 
+                            otherlv_17=(Token)match(input,29,FOLLOW_29_in_ruleActionableItemDef1798); 
 
-                                	newLeafNode(otherlv_15, grammarAccess.getActionableItemDefAccess().getChildrenKeyword_2_7_0());
+                                	newLeafNode(otherlv_17, grammarAccess.getActionableItemDefAccess().getChildrenKeyword_2_8_0());
                                 
-                            otherlv_16=(Token)match(input,15,FOLLOW_15_in_ruleActionableItemDef1774); 
+                            otherlv_18=(Token)match(input,15,FOLLOW_15_in_ruleActionableItemDef1810); 
 
-                                	newLeafNode(otherlv_16, grammarAccess.getActionableItemDefAccess().getLeftCurlyBracketKeyword_2_7_1());
+                                	newLeafNode(otherlv_18, grammarAccess.getActionableItemDefAccess().getLeftCurlyBracketKeyword_2_8_1());
                                 
-                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:926:1: (otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) ) )+
-                            int cnt31=0;
-                            loop31:
+                            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:948:1: (otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) ) )+
+                            int cnt32=0;
+                            loop32:
                             do {
-                                int alt31=2;
-                                int LA31_0 = input.LA(1);
+                                int alt32=2;
+                                int LA32_0 = input.LA(1);
 
-                                if ( (LA31_0==14) ) {
-                                    alt31=1;
+                                if ( (LA32_0==14) ) {
+                                    alt32=1;
                                 }
 
 
-                                switch (alt31) {
+                                switch (alt32) {
                             	case 1 :
-                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:926:3: otherlv_17= 'actionableItem' ( (lv_children_18_0= ruleActionableItemDef ) )
+                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:948:3: otherlv_19= 'actionableItem' ( (lv_children_20_0= ruleActionableItemDef ) )
                             	    {
-                            	    otherlv_17=(Token)match(input,14,FOLLOW_14_in_ruleActionableItemDef1787); 
+                            	    otherlv_19=(Token)match(input,14,FOLLOW_14_in_ruleActionableItemDef1823); 
 
-                            	        	newLeafNode(otherlv_17, grammarAccess.getActionableItemDefAccess().getActionableItemKeyword_2_7_2_0());
+                            	        	newLeafNode(otherlv_19, grammarAccess.getActionableItemDefAccess().getActionableItemKeyword_2_8_2_0());
                             	        
-                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:930:1: ( (lv_children_18_0= ruleActionableItemDef ) )
-                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:931:1: (lv_children_18_0= ruleActionableItemDef )
+                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:952:1: ( (lv_children_20_0= ruleActionableItemDef ) )
+                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:953:1: (lv_children_20_0= ruleActionableItemDef )
                             	    {
-                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:931:1: (lv_children_18_0= ruleActionableItemDef )
-                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:932:3: lv_children_18_0= ruleActionableItemDef
+                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:953:1: (lv_children_20_0= ruleActionableItemDef )
+                            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:954:3: lv_children_20_0= ruleActionableItemDef
                             	    {
                             	     
-                            	    	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getChildrenActionableItemDefParserRuleCall_2_7_2_1_0()); 
+                            	    	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getChildrenActionableItemDefParserRuleCall_2_8_2_1_0()); 
                             	    	    
-                            	    pushFollow(FOLLOW_ruleActionableItemDef_in_ruleActionableItemDef1808);
-                            	    lv_children_18_0=ruleActionableItemDef();
+                            	    pushFollow(FOLLOW_ruleActionableItemDef_in_ruleActionableItemDef1844);
+                            	    lv_children_20_0=ruleActionableItemDef();
 
                             	    state._fsp--;
 
@@ -2513,7 +2576,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                             	           		add(
                             	           			current, 
                             	           			"children",
-                            	            		lv_children_18_0, 
+                            	            		lv_children_20_0, 
                             	            		"ActionableItemDef");
                             	    	        afterParserOrEnumRuleCall();
                             	    	    
@@ -2528,17 +2591,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                             	    break;
 
                             	default :
-                            	    if ( cnt31 >= 1 ) break loop31;
+                            	    if ( cnt32 >= 1 ) break loop32;
                                         EarlyExitException eee =
-                                            new EarlyExitException(31, input);
+                                            new EarlyExitException(32, input);
                                         throw eee;
                                 }
-                                cnt31++;
+                                cnt32++;
                             } while (true);
 
-                            otherlv_19=(Token)match(input,20,FOLLOW_20_in_ruleActionableItemDef1822); 
+                            otherlv_21=(Token)match(input,20,FOLLOW_20_in_ruleActionableItemDef1858); 
 
-                                	newLeafNode(otherlv_19, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_7_3());
+                                	newLeafNode(otherlv_21, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_8_3());
                                 
 
                             }
@@ -2546,9 +2609,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    otherlv_20=(Token)match(input,20,FOLLOW_20_in_ruleActionableItemDef1836); 
+                    otherlv_22=(Token)match(input,20,FOLLOW_20_in_ruleActionableItemDef1872); 
 
-                        	newLeafNode(otherlv_20, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_8());
+                        	newLeafNode(otherlv_22, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_9());
                         
 
                     }
@@ -2577,7 +2640,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleVERSION_DEF_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:964:1: entryRuleVERSION_DEF_REFERENCE returns [String current=null] : iv_ruleVERSION_DEF_REFERENCE= ruleVERSION_DEF_REFERENCE EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:986:1: entryRuleVERSION_DEF_REFERENCE returns [String current=null] : iv_ruleVERSION_DEF_REFERENCE= ruleVERSION_DEF_REFERENCE EOF ;
     public final String entryRuleVERSION_DEF_REFERENCE() throws RecognitionException {
         String current = null;
 
@@ -2585,17 +2648,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:965:2: (iv_ruleVERSION_DEF_REFERENCE= ruleVERSION_DEF_REFERENCE EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:966:2: iv_ruleVERSION_DEF_REFERENCE= ruleVERSION_DEF_REFERENCE EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:987:2: (iv_ruleVERSION_DEF_REFERENCE= ruleVERSION_DEF_REFERENCE EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:988:2: iv_ruleVERSION_DEF_REFERENCE= ruleVERSION_DEF_REFERENCE EOF
             {
              newCompositeNode(grammarAccess.getVERSION_DEF_REFERENCERule()); 
-            pushFollow(FOLLOW_ruleVERSION_DEF_REFERENCE_in_entryRuleVERSION_DEF_REFERENCE1875);
+            pushFollow(FOLLOW_ruleVERSION_DEF_REFERENCE_in_entryRuleVERSION_DEF_REFERENCE1911);
             iv_ruleVERSION_DEF_REFERENCE=ruleVERSION_DEF_REFERENCE();
 
             state._fsp--;
 
              current =iv_ruleVERSION_DEF_REFERENCE.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleVERSION_DEF_REFERENCE1886); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleVERSION_DEF_REFERENCE1922); 
 
             }
 
@@ -2613,7 +2676,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleVERSION_DEF_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:973:1: ruleVERSION_DEF_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:995:1: ruleVERSION_DEF_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleVERSION_DEF_REFERENCE() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -2622,10 +2685,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:976:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:977:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:998:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:999:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVERSION_DEF_REFERENCE1925); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVERSION_DEF_REFERENCE1961); 
 
             		current.merge(this_STRING_0);
                 
@@ -2650,7 +2713,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleVersionDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:992:1: entryRuleVersionDef returns [EObject current=null] : iv_ruleVersionDef= ruleVersionDef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1014:1: entryRuleVersionDef returns [EObject current=null] : iv_ruleVersionDef= ruleVersionDef EOF ;
     public final EObject entryRuleVersionDef() throws RecognitionException {
         EObject current = null;
 
@@ -2658,17 +2721,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:993:2: (iv_ruleVersionDef= ruleVersionDef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:994:2: iv_ruleVersionDef= ruleVersionDef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1015:2: (iv_ruleVersionDef= ruleVersionDef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1016:2: iv_ruleVersionDef= ruleVersionDef EOF
             {
              newCompositeNode(grammarAccess.getVersionDefRule()); 
-            pushFollow(FOLLOW_ruleVersionDef_in_entryRuleVersionDef1969);
+            pushFollow(FOLLOW_ruleVersionDef_in_entryRuleVersionDef2005);
             iv_ruleVersionDef=ruleVersionDef();
 
             state._fsp--;
 
              current =iv_ruleVersionDef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleVersionDef1979); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleVersionDef2015); 
 
             }
 
@@ -2686,7 +2749,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleVersionDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1001:1: ruleVersionDef returns [EObject current=null] : ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1023:1: ruleVersionDef returns [EObject current=null] : ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' ) ;
     public final EObject ruleVersionDef() throws RecognitionException {
         EObject current = null;
 
@@ -2716,22 +2779,22 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1004:28: ( ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1005:1: ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1026:28: ( ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1027:1: ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1005:1: ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1005:2: ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1027:1: ( ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1027:2: ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )* (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )? (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )? (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )? (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )? (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )? (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )* otherlv_16= '}'
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1005:2: ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1006:1: (lv_name_0_0= ruleVERSION_DEF_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1027:2: ( (lv_name_0_0= ruleVERSION_DEF_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1028:1: (lv_name_0_0= ruleVERSION_DEF_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1006:1: (lv_name_0_0= ruleVERSION_DEF_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1007:3: lv_name_0_0= ruleVERSION_DEF_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1028:1: (lv_name_0_0= ruleVERSION_DEF_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1029:3: lv_name_0_0= ruleVERSION_DEF_REFERENCE
             {
              
             	        newCompositeNode(grammarAccess.getVersionDefAccess().getNameVERSION_DEF_REFERENCEParserRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_ruleVERSION_DEF_REFERENCE_in_ruleVersionDef2025);
+            pushFollow(FOLLOW_ruleVERSION_DEF_REFERENCE_in_ruleVersionDef2061);
             lv_name_0_0=ruleVERSION_DEF_REFERENCE();
 
             state._fsp--;
@@ -2753,36 +2816,36 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleVersionDef2037); 
+            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleVersionDef2073); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getVersionDefAccess().getLeftCurlyBracketKeyword_1());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1027:1: (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )*
-            loop34:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1049:1: (otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) ) )*
+            loop35:
             do {
-                int alt34=2;
-                int LA34_0 = input.LA(1);
+                int alt35=2;
+                int LA35_0 = input.LA(1);
 
-                if ( (LA34_0==22) ) {
-                    alt34=1;
+                if ( (LA35_0==22) ) {
+                    alt35=1;
                 }
 
 
-                switch (alt34) {
+                switch (alt35) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1027:3: otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1049:3: otherlv_2= 'staticId' ( (lv_staticId_3_0= RULE_STRING ) )
             	    {
-            	    otherlv_2=(Token)match(input,22,FOLLOW_22_in_ruleVersionDef2050); 
+            	    otherlv_2=(Token)match(input,22,FOLLOW_22_in_ruleVersionDef2086); 
 
             	        	newLeafNode(otherlv_2, grammarAccess.getVersionDefAccess().getStaticIdKeyword_2_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1031:1: ( (lv_staticId_3_0= RULE_STRING ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1032:1: (lv_staticId_3_0= RULE_STRING )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1053:1: ( (lv_staticId_3_0= RULE_STRING ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1054:1: (lv_staticId_3_0= RULE_STRING )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1032:1: (lv_staticId_3_0= RULE_STRING )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1033:3: lv_staticId_3_0= RULE_STRING
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1054:1: (lv_staticId_3_0= RULE_STRING )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1055:3: lv_staticId_3_0= RULE_STRING
             	    {
-            	    lv_staticId_3_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVersionDef2067); 
+            	    lv_staticId_3_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVersionDef2103); 
 
             	    			newLeafNode(lv_staticId_3_0, grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_2_1_0()); 
             	    		
@@ -2807,35 +2870,35 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop34;
+            	    break loop35;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1049:4: (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )?
-            int alt35=2;
-            int LA35_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1071:4: (otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) ) )?
+            int alt36=2;
+            int LA36_0 = input.LA(1);
 
-            if ( (LA35_0==32) ) {
-                alt35=1;
+            if ( (LA36_0==33) ) {
+                alt36=1;
             }
-            switch (alt35) {
+            switch (alt36) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1049:6: otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1071:6: otherlv_4= 'next' ( (lv_next_5_0= ruleBooleanDef ) )
                     {
-                    otherlv_4=(Token)match(input,32,FOLLOW_32_in_ruleVersionDef2087); 
+                    otherlv_4=(Token)match(input,33,FOLLOW_33_in_ruleVersionDef2123); 
 
                         	newLeafNode(otherlv_4, grammarAccess.getVersionDefAccess().getNextKeyword_3_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1053:1: ( (lv_next_5_0= ruleBooleanDef ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1054:1: (lv_next_5_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1075:1: ( (lv_next_5_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1076:1: (lv_next_5_0= ruleBooleanDef )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1054:1: (lv_next_5_0= ruleBooleanDef )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1055:3: lv_next_5_0= ruleBooleanDef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1076:1: (lv_next_5_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1077:3: lv_next_5_0= ruleBooleanDef
                     {
                      
                     	        newCompositeNode(grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_3_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2108);
+                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2144);
                     lv_next_5_0=ruleBooleanDef();
 
                     state._fsp--;
@@ -2863,31 +2926,31 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1071:4: (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )?
-            int alt36=2;
-            int LA36_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1093:4: (otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) ) )?
+            int alt37=2;
+            int LA37_0 = input.LA(1);
 
-            if ( (LA36_0==33) ) {
-                alt36=1;
+            if ( (LA37_0==34) ) {
+                alt37=1;
             }
-            switch (alt36) {
+            switch (alt37) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1071:6: otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1093:6: otherlv_6= 'released' ( (lv_released_7_0= ruleBooleanDef ) )
                     {
-                    otherlv_6=(Token)match(input,33,FOLLOW_33_in_ruleVersionDef2123); 
+                    otherlv_6=(Token)match(input,34,FOLLOW_34_in_ruleVersionDef2159); 
 
                         	newLeafNode(otherlv_6, grammarAccess.getVersionDefAccess().getReleasedKeyword_4_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1075:1: ( (lv_released_7_0= ruleBooleanDef ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1076:1: (lv_released_7_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1097:1: ( (lv_released_7_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1098:1: (lv_released_7_0= ruleBooleanDef )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1076:1: (lv_released_7_0= ruleBooleanDef )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1077:3: lv_released_7_0= ruleBooleanDef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1098:1: (lv_released_7_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1099:3: lv_released_7_0= ruleBooleanDef
                     {
                      
                     	        newCompositeNode(grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_4_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2144);
+                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2180);
                     lv_released_7_0=ruleBooleanDef();
 
                     state._fsp--;
@@ -2915,31 +2978,31 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1093:4: (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )?
-            int alt37=2;
-            int LA37_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1115:4: (otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) ) )?
+            int alt38=2;
+            int LA38_0 = input.LA(1);
 
-            if ( (LA37_0==34) ) {
-                alt37=1;
+            if ( (LA38_0==35) ) {
+                alt38=1;
             }
-            switch (alt37) {
+            switch (alt38) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1093:6: otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1115:6: otherlv_8= 'allowCreateBranch' ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) )
                     {
-                    otherlv_8=(Token)match(input,34,FOLLOW_34_in_ruleVersionDef2159); 
+                    otherlv_8=(Token)match(input,35,FOLLOW_35_in_ruleVersionDef2195); 
 
                         	newLeafNode(otherlv_8, grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_5_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1097:1: ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1098:1: (lv_allowCreateBranch_9_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1119:1: ( (lv_allowCreateBranch_9_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1120:1: (lv_allowCreateBranch_9_0= ruleBooleanDef )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1098:1: (lv_allowCreateBranch_9_0= ruleBooleanDef )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1099:3: lv_allowCreateBranch_9_0= ruleBooleanDef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1120:1: (lv_allowCreateBranch_9_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1121:3: lv_allowCreateBranch_9_0= ruleBooleanDef
                     {
                      
                     	        newCompositeNode(grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_5_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2180);
+                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2216);
                     lv_allowCreateBranch_9_0=ruleBooleanDef();
 
                     state._fsp--;
@@ -2967,31 +3030,31 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1115:4: (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )?
-            int alt38=2;
-            int LA38_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1137:4: (otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) ) )?
+            int alt39=2;
+            int LA39_0 = input.LA(1);
 
-            if ( (LA38_0==35) ) {
-                alt38=1;
+            if ( (LA39_0==36) ) {
+                alt39=1;
             }
-            switch (alt38) {
+            switch (alt39) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1115:6: otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1137:6: otherlv_10= 'allowCommitBranch' ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) )
                     {
-                    otherlv_10=(Token)match(input,35,FOLLOW_35_in_ruleVersionDef2195); 
+                    otherlv_10=(Token)match(input,36,FOLLOW_36_in_ruleVersionDef2231); 
 
                         	newLeafNode(otherlv_10, grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_6_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1119:1: ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1120:1: (lv_allowCommitBranch_11_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1141:1: ( (lv_allowCommitBranch_11_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1142:1: (lv_allowCommitBranch_11_0= ruleBooleanDef )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1120:1: (lv_allowCommitBranch_11_0= ruleBooleanDef )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1121:3: lv_allowCommitBranch_11_0= ruleBooleanDef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1142:1: (lv_allowCommitBranch_11_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1143:3: lv_allowCommitBranch_11_0= ruleBooleanDef
                     {
                      
                     	        newCompositeNode(grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_6_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2216);
+                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleVersionDef2252);
                     lv_allowCommitBranch_11_0=ruleBooleanDef();
 
                     state._fsp--;
@@ -3019,28 +3082,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1137:4: (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )?
-            int alt39=2;
-            int LA39_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1159:4: (otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) ) )?
+            int alt40=2;
+            int LA40_0 = input.LA(1);
 
-            if ( (LA39_0==36) ) {
-                alt39=1;
+            if ( (LA40_0==37) ) {
+                alt40=1;
             }
-            switch (alt39) {
+            switch (alt40) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1137:6: otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1159:6: otherlv_12= 'baslineBranchGuid' ( (lv_baselineBranchGuid_13_0= RULE_STRING ) )
                     {
-                    otherlv_12=(Token)match(input,36,FOLLOW_36_in_ruleVersionDef2231); 
+                    otherlv_12=(Token)match(input,37,FOLLOW_37_in_ruleVersionDef2267); 
 
                         	newLeafNode(otherlv_12, grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_7_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1141:1: ( (lv_baselineBranchGuid_13_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1142:1: (lv_baselineBranchGuid_13_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1163:1: ( (lv_baselineBranchGuid_13_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1164:1: (lv_baselineBranchGuid_13_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1142:1: (lv_baselineBranchGuid_13_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1143:3: lv_baselineBranchGuid_13_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1164:1: (lv_baselineBranchGuid_13_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1165:3: lv_baselineBranchGuid_13_0= RULE_STRING
                     {
-                    lv_baselineBranchGuid_13_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVersionDef2248); 
+                    lv_baselineBranchGuid_13_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVersionDef2284); 
 
                     			newLeafNode(lv_baselineBranchGuid_13_0, grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_7_1_0()); 
                     		
@@ -3066,32 +3129,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1159:4: (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )*
-            loop40:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1181:4: (otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) ) )*
+            loop41:
             do {
-                int alt40=2;
-                int LA40_0 = input.LA(1);
+                int alt41=2;
+                int LA41_0 = input.LA(1);
 
-                if ( (LA40_0==37) ) {
-                    alt40=1;
+                if ( (LA41_0==38) ) {
+                    alt41=1;
                 }
 
 
-                switch (alt40) {
+                switch (alt41) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1159:6: otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1181:6: otherlv_14= 'parallelVersion' ( (lv_parallelVersion_15_0= RULE_STRING ) )
             	    {
-            	    otherlv_14=(Token)match(input,37,FOLLOW_37_in_ruleVersionDef2268); 
+            	    otherlv_14=(Token)match(input,38,FOLLOW_38_in_ruleVersionDef2304); 
 
             	        	newLeafNode(otherlv_14, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_8_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1163:1: ( (lv_parallelVersion_15_0= RULE_STRING ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1164:1: (lv_parallelVersion_15_0= RULE_STRING )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1185:1: ( (lv_parallelVersion_15_0= RULE_STRING ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1186:1: (lv_parallelVersion_15_0= RULE_STRING )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1164:1: (lv_parallelVersion_15_0= RULE_STRING )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1165:3: lv_parallelVersion_15_0= RULE_STRING
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1186:1: (lv_parallelVersion_15_0= RULE_STRING )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1187:3: lv_parallelVersion_15_0= RULE_STRING
             	    {
-            	    lv_parallelVersion_15_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVersionDef2285); 
+            	    lv_parallelVersion_15_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleVersionDef2321); 
 
             	    			newLeafNode(lv_parallelVersion_15_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_8_1_0()); 
             	    		
@@ -3116,11 +3179,11 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop40;
+            	    break loop41;
                 }
             } while (true);
 
-            otherlv_16=(Token)match(input,20,FOLLOW_20_in_ruleVersionDef2304); 
+            otherlv_16=(Token)match(input,20,FOLLOW_20_in_ruleVersionDef2340); 
 
                 	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_9());
                 
@@ -3145,7 +3208,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWorkDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1193:1: entryRuleWorkDef returns [EObject current=null] : iv_ruleWorkDef= ruleWorkDef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1215:1: entryRuleWorkDef returns [EObject current=null] : iv_ruleWorkDef= ruleWorkDef EOF ;
     public final EObject entryRuleWorkDef() throws RecognitionException {
         EObject current = null;
 
@@ -3153,17 +3216,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1194:2: (iv_ruleWorkDef= ruleWorkDef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1195:2: iv_ruleWorkDef= ruleWorkDef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1216:2: (iv_ruleWorkDef= ruleWorkDef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1217:2: iv_ruleWorkDef= ruleWorkDef EOF
             {
              newCompositeNode(grammarAccess.getWorkDefRule()); 
-            pushFollow(FOLLOW_ruleWorkDef_in_entryRuleWorkDef2340);
+            pushFollow(FOLLOW_ruleWorkDef_in_entryRuleWorkDef2376);
             iv_ruleWorkDef=ruleWorkDef();
 
             state._fsp--;
 
              current =iv_ruleWorkDef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleWorkDef2350); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleWorkDef2386); 
 
             }
 
@@ -3181,7 +3244,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWorkDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1202:1: ruleWorkDef returns [EObject current=null] : ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1224:1: ruleWorkDef returns [EObject current=null] : ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' ) ;
     public final EObject ruleWorkDef() throws RecognitionException {
         EObject current = null;
 
@@ -3204,22 +3267,22 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1205:28: ( ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1206:1: ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1227:28: ( ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1228:1: ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1206:1: ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1206:2: ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1228:1: ( ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1228:2: ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) ) otherlv_1= '{' (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+ (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ( (lv_widgetDefs_6_0= ruleWidgetDef ) )* ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )* ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )* ( (lv_states_9_0= ruleStateDef ) )+ otherlv_10= '}'
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1206:2: ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1207:1: (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1228:2: ( (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1229:1: (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1207:1: (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1208:3: lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1229:1: (lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1230:3: lv_name_0_0= ruleWORK_DEFINITION_NAME_REFERENCE
             {
              
             	        newCompositeNode(grammarAccess.getWorkDefAccess().getNameWORK_DEFINITION_NAME_REFERENCEParserRuleCall_0_0()); 
             	    
-            pushFollow(FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_ruleWorkDef2396);
+            pushFollow(FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_ruleWorkDef2432);
             lv_name_0_0=ruleWORK_DEFINITION_NAME_REFERENCE();
 
             state._fsp--;
@@ -3241,37 +3304,37 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleWorkDef2408); 
+            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleWorkDef2444); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getWorkDefAccess().getLeftCurlyBracketKeyword_1());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1228:1: (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+
-            int cnt41=0;
-            loop41:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1250:1: (otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) ) )+
+            int cnt42=0;
+            loop42:
             do {
-                int alt41=2;
-                int LA41_0 = input.LA(1);
+                int alt42=2;
+                int LA42_0 = input.LA(1);
 
-                if ( (LA41_0==38) ) {
-                    alt41=1;
+                if ( (LA42_0==39) ) {
+                    alt42=1;
                 }
 
 
-                switch (alt41) {
+                switch (alt42) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1228:3: otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1250:3: otherlv_2= 'id' ( (lv_id_3_0= RULE_STRING ) )
             	    {
-            	    otherlv_2=(Token)match(input,38,FOLLOW_38_in_ruleWorkDef2421); 
+            	    otherlv_2=(Token)match(input,39,FOLLOW_39_in_ruleWorkDef2457); 
 
             	        	newLeafNode(otherlv_2, grammarAccess.getWorkDefAccess().getIdKeyword_2_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1232:1: ( (lv_id_3_0= RULE_STRING ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1233:1: (lv_id_3_0= RULE_STRING )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1254:1: ( (lv_id_3_0= RULE_STRING ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1255:1: (lv_id_3_0= RULE_STRING )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1233:1: (lv_id_3_0= RULE_STRING )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1234:3: lv_id_3_0= RULE_STRING
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1255:1: (lv_id_3_0= RULE_STRING )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1256:3: lv_id_3_0= RULE_STRING
             	    {
-            	    lv_id_3_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWorkDef2438); 
+            	    lv_id_3_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWorkDef2474); 
 
             	    			newLeafNode(lv_id_3_0, grammarAccess.getWorkDefAccess().getIdSTRINGTerminalRuleCall_2_1_0()); 
             	    		
@@ -3296,26 +3359,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt41 >= 1 ) break loop41;
+            	    if ( cnt42 >= 1 ) break loop42;
                         EarlyExitException eee =
-                            new EarlyExitException(41, input);
+                            new EarlyExitException(42, input);
                         throw eee;
                 }
-                cnt41++;
+                cnt42++;
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1250:4: (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1250:6: otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1272:4: (otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1272:6: otherlv_4= 'startState' ( ( ruleSTATE_NAME_REFERENCE ) )
             {
-            otherlv_4=(Token)match(input,39,FOLLOW_39_in_ruleWorkDef2458); 
+            otherlv_4=(Token)match(input,40,FOLLOW_40_in_ruleWorkDef2494); 
 
                 	newLeafNode(otherlv_4, grammarAccess.getWorkDefAccess().getStartStateKeyword_3_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1254:1: ( ( ruleSTATE_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1255:1: ( ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1276:1: ( ( ruleSTATE_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1277:1: ( ruleSTATE_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1255:1: ( ruleSTATE_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1256:3: ruleSTATE_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1277:1: ( ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1278:3: ruleSTATE_NAME_REFERENCE
             {
 
             			if (current==null) {
@@ -3325,7 +3388,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getWorkDefAccess().getStartStateStateDefCrossReference_3_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleWorkDef2481);
+            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleWorkDef2517);
             ruleSTATE_NAME_REFERENCE();
 
             state._fsp--;
@@ -3342,28 +3405,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1269:3: ( (lv_widgetDefs_6_0= ruleWidgetDef ) )*
-            loop42:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1291:3: ( (lv_widgetDefs_6_0= ruleWidgetDef ) )*
+            loop43:
             do {
-                int alt42=2;
-                int LA42_0 = input.LA(1);
+                int alt43=2;
+                int LA43_0 = input.LA(1);
 
-                if ( (LA42_0==40) ) {
-                    alt42=1;
+                if ( (LA43_0==41) ) {
+                    alt43=1;
                 }
 
 
-                switch (alt42) {
+                switch (alt43) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1270:1: (lv_widgetDefs_6_0= ruleWidgetDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1292:1: (lv_widgetDefs_6_0= ruleWidgetDef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1270:1: (lv_widgetDefs_6_0= ruleWidgetDef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1271:3: lv_widgetDefs_6_0= ruleWidgetDef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1292:1: (lv_widgetDefs_6_0= ruleWidgetDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1293:3: lv_widgetDefs_6_0= ruleWidgetDef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getWorkDefAccess().getWidgetDefsWidgetDefParserRuleCall_4_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleWidgetDef_in_ruleWorkDef2503);
+            	    pushFollow(FOLLOW_ruleWidgetDef_in_ruleWorkDef2539);
             	    lv_widgetDefs_6_0=ruleWidgetDef();
 
             	    state._fsp--;
@@ -3387,32 +3450,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop42;
+            	    break loop43;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1287:3: ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )*
-            loop43:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1309:3: ( (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef ) )*
+            loop44:
             do {
-                int alt43=2;
-                int LA43_0 = input.LA(1);
+                int alt44=2;
+                int LA44_0 = input.LA(1);
 
-                if ( (LA43_0==60) ) {
-                    alt43=1;
+                if ( (LA44_0==61) ) {
+                    alt44=1;
                 }
 
 
-                switch (alt43) {
+                switch (alt44) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1288:1: (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1310:1: (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1288:1: (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1289:3: lv_decisionReviewDefs_7_0= ruleDecisionReviewDef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1310:1: (lv_decisionReviewDefs_7_0= ruleDecisionReviewDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1311:3: lv_decisionReviewDefs_7_0= ruleDecisionReviewDef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getWorkDefAccess().getDecisionReviewDefsDecisionReviewDefParserRuleCall_5_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleDecisionReviewDef_in_ruleWorkDef2525);
+            	    pushFollow(FOLLOW_ruleDecisionReviewDef_in_ruleWorkDef2561);
             	    lv_decisionReviewDefs_7_0=ruleDecisionReviewDef();
 
             	    state._fsp--;
@@ -3436,32 +3499,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop43;
+            	    break loop44;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1305:3: ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )*
-            loop44:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1327:3: ( (lv_peerReviewDefs_8_0= rulePeerReviewDef ) )*
+            loop45:
             do {
-                int alt44=2;
-                int LA44_0 = input.LA(1);
+                int alt45=2;
+                int LA45_0 = input.LA(1);
 
-                if ( (LA44_0==68) ) {
-                    alt44=1;
+                if ( (LA45_0==69) ) {
+                    alt45=1;
                 }
 
 
-                switch (alt44) {
+                switch (alt45) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1306:1: (lv_peerReviewDefs_8_0= rulePeerReviewDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1328:1: (lv_peerReviewDefs_8_0= rulePeerReviewDef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1306:1: (lv_peerReviewDefs_8_0= rulePeerReviewDef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1307:3: lv_peerReviewDefs_8_0= rulePeerReviewDef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1328:1: (lv_peerReviewDefs_8_0= rulePeerReviewDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1329:3: lv_peerReviewDefs_8_0= rulePeerReviewDef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getWorkDefAccess().getPeerReviewDefsPeerReviewDefParserRuleCall_6_0()); 
             	    	    
-            	    pushFollow(FOLLOW_rulePeerReviewDef_in_ruleWorkDef2547);
+            	    pushFollow(FOLLOW_rulePeerReviewDef_in_ruleWorkDef2583);
             	    lv_peerReviewDefs_8_0=rulePeerReviewDef();
 
             	    state._fsp--;
@@ -3485,33 +3548,33 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop44;
+            	    break loop45;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1323:3: ( (lv_states_9_0= ruleStateDef ) )+
-            int cnt45=0;
-            loop45:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1345:3: ( (lv_states_9_0= ruleStateDef ) )+
+            int cnt46=0;
+            loop46:
             do {
-                int alt45=2;
-                int LA45_0 = input.LA(1);
+                int alt46=2;
+                int LA46_0 = input.LA(1);
 
-                if ( (LA45_0==52) ) {
-                    alt45=1;
+                if ( (LA46_0==53) ) {
+                    alt46=1;
                 }
 
 
-                switch (alt45) {
+                switch (alt46) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1324:1: (lv_states_9_0= ruleStateDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1346:1: (lv_states_9_0= ruleStateDef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1324:1: (lv_states_9_0= ruleStateDef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1325:3: lv_states_9_0= ruleStateDef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1346:1: (lv_states_9_0= ruleStateDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1347:3: lv_states_9_0= ruleStateDef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getWorkDefAccess().getStatesStateDefParserRuleCall_7_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleStateDef_in_ruleWorkDef2569);
+            	    pushFollow(FOLLOW_ruleStateDef_in_ruleWorkDef2605);
             	    lv_states_9_0=ruleStateDef();
 
             	    state._fsp--;
@@ -3535,15 +3598,15 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt45 >= 1 ) break loop45;
+            	    if ( cnt46 >= 1 ) break loop46;
                         EarlyExitException eee =
-                            new EarlyExitException(45, input);
+                            new EarlyExitException(46, input);
                         throw eee;
                 }
-                cnt45++;
+                cnt46++;
             } while (true);
 
-            otherlv_10=(Token)match(input,20,FOLLOW_20_in_ruleWorkDef2582); 
+            otherlv_10=(Token)match(input,20,FOLLOW_20_in_ruleWorkDef2618); 
 
                 	newLeafNode(otherlv_10, grammarAccess.getWorkDefAccess().getRightCurlyBracketKeyword_8());
                 
@@ -3568,7 +3631,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWidgetDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1353:1: entryRuleWidgetDef returns [EObject current=null] : iv_ruleWidgetDef= ruleWidgetDef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1375:1: entryRuleWidgetDef returns [EObject current=null] : iv_ruleWidgetDef= ruleWidgetDef EOF ;
     public final EObject entryRuleWidgetDef() throws RecognitionException {
         EObject current = null;
 
@@ -3576,17 +3639,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1354:2: (iv_ruleWidgetDef= ruleWidgetDef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1355:2: iv_ruleWidgetDef= ruleWidgetDef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1376:2: (iv_ruleWidgetDef= ruleWidgetDef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1377:2: iv_ruleWidgetDef= ruleWidgetDef EOF
             {
              newCompositeNode(grammarAccess.getWidgetDefRule()); 
-            pushFollow(FOLLOW_ruleWidgetDef_in_entryRuleWidgetDef2618);
+            pushFollow(FOLLOW_ruleWidgetDef_in_entryRuleWidgetDef2654);
             iv_ruleWidgetDef=ruleWidgetDef();
 
             state._fsp--;
 
              current =iv_ruleWidgetDef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleWidgetDef2628); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleWidgetDef2664); 
 
             }
 
@@ -3604,7 +3667,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWidgetDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1362:1: ruleWidgetDef returns [EObject current=null] : (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1384:1: ruleWidgetDef returns [EObject current=null] : (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' ) ;
     public final EObject ruleWidgetDef() throws RecognitionException {
         EObject current = null;
 
@@ -3634,26 +3697,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1365:28: ( (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1366:1: (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1387:28: ( (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1388:1: (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1366:1: (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1366:3: otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1388:1: (otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1388:3: otherlv_0= 'widgetDefinition' ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )? (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )? (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )? (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )? (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )? (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )* (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )? (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )? otherlv_19= '}'
             {
-            otherlv_0=(Token)match(input,40,FOLLOW_40_in_ruleWidgetDef2665); 
+            otherlv_0=(Token)match(input,41,FOLLOW_41_in_ruleWidgetDef2701); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getWidgetDefAccess().getWidgetDefinitionKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1370:1: ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1371:1: (lv_name_1_0= ruleWIDGET_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1392:1: ( (lv_name_1_0= ruleWIDGET_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1393:1: (lv_name_1_0= ruleWIDGET_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1371:1: (lv_name_1_0= ruleWIDGET_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1372:3: lv_name_1_0= ruleWIDGET_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1393:1: (lv_name_1_0= ruleWIDGET_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1394:3: lv_name_1_0= ruleWIDGET_NAME_REFERENCE
             {
              
             	        newCompositeNode(grammarAccess.getWidgetDefAccess().getNameWIDGET_NAME_REFERENCEParserRuleCall_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetDef2686);
+            pushFollow(FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetDef2722);
             lv_name_1_0=ruleWIDGET_NAME_REFERENCE();
 
             state._fsp--;
@@ -3675,32 +3738,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleWidgetDef2698); 
+            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleWidgetDef2734); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getWidgetDefAccess().getLeftCurlyBracketKeyword_2());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1392:1: (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )?
-            int alt46=2;
-            int LA46_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1414:1: (otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) ) )?
+            int alt47=2;
+            int LA47_0 = input.LA(1);
 
-            if ( (LA46_0==41) ) {
-                alt46=1;
+            if ( (LA47_0==42) ) {
+                alt47=1;
             }
-            switch (alt46) {
+            switch (alt47) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1392:3: otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1414:3: otherlv_3= 'attributeName' ( (lv_attributeName_4_0= RULE_STRING ) )
                     {
-                    otherlv_3=(Token)match(input,41,FOLLOW_41_in_ruleWidgetDef2711); 
+                    otherlv_3=(Token)match(input,42,FOLLOW_42_in_ruleWidgetDef2747); 
 
                         	newLeafNode(otherlv_3, grammarAccess.getWidgetDefAccess().getAttributeNameKeyword_3_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1396:1: ( (lv_attributeName_4_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1397:1: (lv_attributeName_4_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1418:1: ( (lv_attributeName_4_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1419:1: (lv_attributeName_4_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1397:1: (lv_attributeName_4_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1398:3: lv_attributeName_4_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1419:1: (lv_attributeName_4_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1420:3: lv_attributeName_4_0= RULE_STRING
                     {
-                    lv_attributeName_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2728); 
+                    lv_attributeName_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2764); 
 
                     			newLeafNode(lv_attributeName_4_0, grammarAccess.getWidgetDefAccess().getAttributeNameSTRINGTerminalRuleCall_3_1_0()); 
                     		
@@ -3726,28 +3789,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1414:4: (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )?
-            int alt47=2;
-            int LA47_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1436:4: (otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) )?
+            int alt48=2;
+            int LA48_0 = input.LA(1);
 
-            if ( (LA47_0==42) ) {
-                alt47=1;
+            if ( (LA48_0==43) ) {
+                alt48=1;
             }
-            switch (alt47) {
+            switch (alt48) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1414:6: otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1436:6: otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) )
                     {
-                    otherlv_5=(Token)match(input,42,FOLLOW_42_in_ruleWidgetDef2748); 
+                    otherlv_5=(Token)match(input,43,FOLLOW_43_in_ruleWidgetDef2784); 
 
                         	newLeafNode(otherlv_5, grammarAccess.getWidgetDefAccess().getDescriptionKeyword_4_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1418:1: ( (lv_description_6_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1419:1: (lv_description_6_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1440:1: ( (lv_description_6_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1441:1: (lv_description_6_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1419:1: (lv_description_6_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1420:3: lv_description_6_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1441:1: (lv_description_6_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1442:3: lv_description_6_0= RULE_STRING
                     {
-                    lv_description_6_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2765); 
+                    lv_description_6_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2801); 
 
                     			newLeafNode(lv_description_6_0, grammarAccess.getWidgetDefAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0()); 
                     		
@@ -3773,28 +3836,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1436:4: (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )?
-            int alt48=2;
-            int LA48_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1458:4: (otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) ) )?
+            int alt49=2;
+            int LA49_0 = input.LA(1);
 
-            if ( (LA48_0==43) ) {
-                alt48=1;
+            if ( (LA49_0==44) ) {
+                alt49=1;
             }
-            switch (alt48) {
+            switch (alt49) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1436:6: otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1458:6: otherlv_7= 'xWidgetName' ( (lv_xWidgetName_8_0= RULE_STRING ) )
                     {
-                    otherlv_7=(Token)match(input,43,FOLLOW_43_in_ruleWidgetDef2785); 
+                    otherlv_7=(Token)match(input,44,FOLLOW_44_in_ruleWidgetDef2821); 
 
                         	newLeafNode(otherlv_7, grammarAccess.getWidgetDefAccess().getXWidgetNameKeyword_5_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1440:1: ( (lv_xWidgetName_8_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1441:1: (lv_xWidgetName_8_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1462:1: ( (lv_xWidgetName_8_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1463:1: (lv_xWidgetName_8_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1441:1: (lv_xWidgetName_8_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1442:3: lv_xWidgetName_8_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1463:1: (lv_xWidgetName_8_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1464:3: lv_xWidgetName_8_0= RULE_STRING
                     {
-                    lv_xWidgetName_8_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2802); 
+                    lv_xWidgetName_8_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2838); 
 
                     			newLeafNode(lv_xWidgetName_8_0, grammarAccess.getWidgetDefAccess().getXWidgetNameSTRINGTerminalRuleCall_5_1_0()); 
                     		
@@ -3820,28 +3883,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1458:4: (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )?
-            int alt49=2;
-            int LA49_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1480:4: (otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) ) )?
+            int alt50=2;
+            int LA50_0 = input.LA(1);
 
-            if ( (LA49_0==44) ) {
-                alt49=1;
+            if ( (LA50_0==45) ) {
+                alt50=1;
             }
-            switch (alt49) {
+            switch (alt50) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1458:6: otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1480:6: otherlv_9= 'defaultValue' ( (lv_defaultValue_10_0= RULE_STRING ) )
                     {
-                    otherlv_9=(Token)match(input,44,FOLLOW_44_in_ruleWidgetDef2822); 
+                    otherlv_9=(Token)match(input,45,FOLLOW_45_in_ruleWidgetDef2858); 
 
                         	newLeafNode(otherlv_9, grammarAccess.getWidgetDefAccess().getDefaultValueKeyword_6_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1462:1: ( (lv_defaultValue_10_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1463:1: (lv_defaultValue_10_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1484:1: ( (lv_defaultValue_10_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1485:1: (lv_defaultValue_10_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1463:1: (lv_defaultValue_10_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1464:3: lv_defaultValue_10_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1485:1: (lv_defaultValue_10_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1486:3: lv_defaultValue_10_0= RULE_STRING
                     {
-                    lv_defaultValue_10_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2839); 
+                    lv_defaultValue_10_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2875); 
 
                     			newLeafNode(lv_defaultValue_10_0, grammarAccess.getWidgetDefAccess().getDefaultValueSTRINGTerminalRuleCall_6_1_0()); 
                     		
@@ -3867,28 +3930,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1480:4: (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )?
-            int alt50=2;
-            int LA50_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1502:4: (otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) ) )?
+            int alt51=2;
+            int LA51_0 = input.LA(1);
 
-            if ( (LA50_0==45) ) {
-                alt50=1;
+            if ( (LA51_0==46) ) {
+                alt51=1;
             }
-            switch (alt50) {
+            switch (alt51) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1480:6: otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1502:6: otherlv_11= 'height' ( (lv_height_12_0= RULE_INT ) )
                     {
-                    otherlv_11=(Token)match(input,45,FOLLOW_45_in_ruleWidgetDef2859); 
+                    otherlv_11=(Token)match(input,46,FOLLOW_46_in_ruleWidgetDef2895); 
 
                         	newLeafNode(otherlv_11, grammarAccess.getWidgetDefAccess().getHeightKeyword_7_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1484:1: ( (lv_height_12_0= RULE_INT ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1485:1: (lv_height_12_0= RULE_INT )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1506:1: ( (lv_height_12_0= RULE_INT ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1507:1: (lv_height_12_0= RULE_INT )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1485:1: (lv_height_12_0= RULE_INT )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1486:3: lv_height_12_0= RULE_INT
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1507:1: (lv_height_12_0= RULE_INT )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1508:3: lv_height_12_0= RULE_INT
                     {
-                    lv_height_12_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleWidgetDef2876); 
+                    lv_height_12_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleWidgetDef2912); 
 
                     			newLeafNode(lv_height_12_0, grammarAccess.getWidgetDefAccess().getHeightINTTerminalRuleCall_7_1_0()); 
                     		
@@ -3914,35 +3977,35 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1502:4: (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )*
-            loop51:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1524:4: (otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) ) )*
+            loop52:
             do {
-                int alt51=2;
-                int LA51_0 = input.LA(1);
+                int alt52=2;
+                int LA52_0 = input.LA(1);
 
-                if ( (LA51_0==46) ) {
-                    alt51=1;
+                if ( (LA52_0==47) ) {
+                    alt52=1;
                 }
 
 
-                switch (alt51) {
+                switch (alt52) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1502:6: otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1524:6: otherlv_13= 'option' ( (lv_option_14_0= ruleWidgetOption ) )
             	    {
-            	    otherlv_13=(Token)match(input,46,FOLLOW_46_in_ruleWidgetDef2896); 
+            	    otherlv_13=(Token)match(input,47,FOLLOW_47_in_ruleWidgetDef2932); 
 
             	        	newLeafNode(otherlv_13, grammarAccess.getWidgetDefAccess().getOptionKeyword_8_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1506:1: ( (lv_option_14_0= ruleWidgetOption ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1507:1: (lv_option_14_0= ruleWidgetOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1528:1: ( (lv_option_14_0= ruleWidgetOption ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1529:1: (lv_option_14_0= ruleWidgetOption )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1507:1: (lv_option_14_0= ruleWidgetOption )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1508:3: lv_option_14_0= ruleWidgetOption
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1529:1: (lv_option_14_0= ruleWidgetOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1530:3: lv_option_14_0= ruleWidgetOption
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getWidgetDefAccess().getOptionWidgetOptionParserRuleCall_8_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleWidgetOption_in_ruleWidgetDef2917);
+            	    pushFollow(FOLLOW_ruleWidgetOption_in_ruleWidgetDef2953);
             	    lv_option_14_0=ruleWidgetOption();
 
             	    state._fsp--;
@@ -3969,32 +4032,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop51;
+            	    break loop52;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1524:4: (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )?
-            int alt52=2;
-            int LA52_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1546:4: (otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) ) )?
+            int alt53=2;
+            int LA53_0 = input.LA(1);
 
-            if ( (LA52_0==47) ) {
-                alt52=1;
+            if ( (LA53_0==48) ) {
+                alt53=1;
             }
-            switch (alt52) {
+            switch (alt53) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1524:6: otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1546:6: otherlv_15= 'minConstraint' ( (lv_minConstraint_16_0= RULE_STRING ) )
                     {
-                    otherlv_15=(Token)match(input,47,FOLLOW_47_in_ruleWidgetDef2932); 
+                    otherlv_15=(Token)match(input,48,FOLLOW_48_in_ruleWidgetDef2968); 
 
                         	newLeafNode(otherlv_15, grammarAccess.getWidgetDefAccess().getMinConstraintKeyword_9_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1528:1: ( (lv_minConstraint_16_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1529:1: (lv_minConstraint_16_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1550:1: ( (lv_minConstraint_16_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1551:1: (lv_minConstraint_16_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1529:1: (lv_minConstraint_16_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1530:3: lv_minConstraint_16_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1551:1: (lv_minConstraint_16_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1552:3: lv_minConstraint_16_0= RULE_STRING
                     {
-                    lv_minConstraint_16_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2949); 
+                    lv_minConstraint_16_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2985); 
 
                     			newLeafNode(lv_minConstraint_16_0, grammarAccess.getWidgetDefAccess().getMinConstraintSTRINGTerminalRuleCall_9_1_0()); 
                     		
@@ -4020,28 +4083,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1546:4: (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )?
-            int alt53=2;
-            int LA53_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1568:4: (otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) ) )?
+            int alt54=2;
+            int LA54_0 = input.LA(1);
 
-            if ( (LA53_0==48) ) {
-                alt53=1;
+            if ( (LA54_0==49) ) {
+                alt54=1;
             }
-            switch (alt53) {
+            switch (alt54) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1546:6: otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1568:6: otherlv_17= 'maxConstraint' ( (lv_maxConstraint_18_0= RULE_STRING ) )
                     {
-                    otherlv_17=(Token)match(input,48,FOLLOW_48_in_ruleWidgetDef2969); 
+                    otherlv_17=(Token)match(input,49,FOLLOW_49_in_ruleWidgetDef3005); 
 
                         	newLeafNode(otherlv_17, grammarAccess.getWidgetDefAccess().getMaxConstraintKeyword_10_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1550:1: ( (lv_maxConstraint_18_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1551:1: (lv_maxConstraint_18_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1572:1: ( (lv_maxConstraint_18_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1573:1: (lv_maxConstraint_18_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1551:1: (lv_maxConstraint_18_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1552:3: lv_maxConstraint_18_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1573:1: (lv_maxConstraint_18_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1574:3: lv_maxConstraint_18_0= RULE_STRING
                     {
-                    lv_maxConstraint_18_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef2986); 
+                    lv_maxConstraint_18_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWidgetDef3022); 
 
                     			newLeafNode(lv_maxConstraint_18_0, grammarAccess.getWidgetDefAccess().getMaxConstraintSTRINGTerminalRuleCall_10_1_0()); 
                     		
@@ -4067,7 +4130,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_19=(Token)match(input,20,FOLLOW_20_in_ruleWidgetDef3005); 
+            otherlv_19=(Token)match(input,20,FOLLOW_20_in_ruleWidgetDef3041); 
 
                 	newLeafNode(otherlv_19, grammarAccess.getWidgetDefAccess().getRightCurlyBracketKeyword_11());
                 
@@ -4092,7 +4155,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWidgetRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1580:1: entryRuleWidgetRef returns [EObject current=null] : iv_ruleWidgetRef= ruleWidgetRef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1602:1: entryRuleWidgetRef returns [EObject current=null] : iv_ruleWidgetRef= ruleWidgetRef EOF ;
     public final EObject entryRuleWidgetRef() throws RecognitionException {
         EObject current = null;
 
@@ -4100,17 +4163,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1581:2: (iv_ruleWidgetRef= ruleWidgetRef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1582:2: iv_ruleWidgetRef= ruleWidgetRef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1603:2: (iv_ruleWidgetRef= ruleWidgetRef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1604:2: iv_ruleWidgetRef= ruleWidgetRef EOF
             {
              newCompositeNode(grammarAccess.getWidgetRefRule()); 
-            pushFollow(FOLLOW_ruleWidgetRef_in_entryRuleWidgetRef3041);
+            pushFollow(FOLLOW_ruleWidgetRef_in_entryRuleWidgetRef3077);
             iv_ruleWidgetRef=ruleWidgetRef();
 
             state._fsp--;
 
              current =iv_ruleWidgetRef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleWidgetRef3051); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleWidgetRef3087); 
 
             }
 
@@ -4128,7 +4191,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWidgetRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1589:1: ruleWidgetRef returns [EObject current=null] : (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1611:1: ruleWidgetRef returns [EObject current=null] : (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) ) ;
     public final EObject ruleWidgetRef() throws RecognitionException {
         EObject current = null;
 
@@ -4137,21 +4200,21 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1592:28: ( (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1593:1: (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1614:28: ( (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1615:1: (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1593:1: (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1593:3: otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1615:1: (otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1615:3: otherlv_0= 'widget' ( ( ruleWIDGET_NAME_REFERENCE ) )
             {
-            otherlv_0=(Token)match(input,49,FOLLOW_49_in_ruleWidgetRef3088); 
+            otherlv_0=(Token)match(input,50,FOLLOW_50_in_ruleWidgetRef3124); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getWidgetRefAccess().getWidgetKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1597:1: ( ( ruleWIDGET_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1598:1: ( ruleWIDGET_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1619:1: ( ( ruleWIDGET_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1620:1: ( ruleWIDGET_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1598:1: ( ruleWIDGET_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1599:3: ruleWIDGET_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1620:1: ( ruleWIDGET_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1621:3: ruleWIDGET_NAME_REFERENCE
             {
 
             			if (current==null) {
@@ -4161,7 +4224,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getWidgetRefAccess().getWidgetWidgetDefCrossReference_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetRef3111);
+            pushFollow(FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetRef3147);
             ruleWIDGET_NAME_REFERENCE();
 
             state._fsp--;
@@ -4196,7 +4259,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleAttrWidget"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1620:1: entryRuleAttrWidget returns [EObject current=null] : iv_ruleAttrWidget= ruleAttrWidget EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1642:1: entryRuleAttrWidget returns [EObject current=null] : iv_ruleAttrWidget= ruleAttrWidget EOF ;
     public final EObject entryRuleAttrWidget() throws RecognitionException {
         EObject current = null;
 
@@ -4204,17 +4267,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1621:2: (iv_ruleAttrWidget= ruleAttrWidget EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1622:2: iv_ruleAttrWidget= ruleAttrWidget EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1643:2: (iv_ruleAttrWidget= ruleAttrWidget EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1644:2: iv_ruleAttrWidget= ruleAttrWidget EOF
             {
              newCompositeNode(grammarAccess.getAttrWidgetRule()); 
-            pushFollow(FOLLOW_ruleAttrWidget_in_entryRuleAttrWidget3147);
+            pushFollow(FOLLOW_ruleAttrWidget_in_entryRuleAttrWidget3183);
             iv_ruleAttrWidget=ruleAttrWidget();
 
             state._fsp--;
 
              current =iv_ruleAttrWidget; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleAttrWidget3157); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleAttrWidget3193); 
 
             }
 
@@ -4232,7 +4295,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleAttrWidget"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1629:1: ruleAttrWidget returns [EObject current=null] : (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1651:1: ruleAttrWidget returns [EObject current=null] : (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* ) ;
     public final EObject ruleAttrWidget() throws RecognitionException {
         EObject current = null;
 
@@ -4245,23 +4308,23 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1632:28: ( (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1633:1: (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1654:28: ( (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1655:1: (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1633:1: (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1633:3: otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )*
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1655:1: (otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )* )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1655:3: otherlv_0= 'attributeWidget' ( (lv_attributeName_1_0= RULE_STRING ) ) (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )*
             {
-            otherlv_0=(Token)match(input,50,FOLLOW_50_in_ruleAttrWidget3194); 
+            otherlv_0=(Token)match(input,51,FOLLOW_51_in_ruleAttrWidget3230); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getAttrWidgetAccess().getAttributeWidgetKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1637:1: ( (lv_attributeName_1_0= RULE_STRING ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1638:1: (lv_attributeName_1_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1659:1: ( (lv_attributeName_1_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1660:1: (lv_attributeName_1_0= RULE_STRING )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1638:1: (lv_attributeName_1_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1639:3: lv_attributeName_1_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1660:1: (lv_attributeName_1_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1661:3: lv_attributeName_1_0= RULE_STRING
             {
-            lv_attributeName_1_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAttrWidget3211); 
+            lv_attributeName_1_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAttrWidget3247); 
 
             			newLeafNode(lv_attributeName_1_0, grammarAccess.getAttrWidgetAccess().getAttributeNameSTRINGTerminalRuleCall_1_0()); 
             		
@@ -4281,35 +4344,35 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1655:2: (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )*
-            loop54:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1677:2: (otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) ) )*
+            loop55:
             do {
-                int alt54=2;
-                int LA54_0 = input.LA(1);
+                int alt55=2;
+                int LA55_0 = input.LA(1);
 
-                if ( (LA54_0==51) ) {
-                    alt54=1;
+                if ( (LA55_0==52) ) {
+                    alt55=1;
                 }
 
 
-                switch (alt54) {
+                switch (alt55) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1655:4: otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1677:4: otherlv_2= 'with' ( (lv_option_3_0= ruleWidgetOption ) )
             	    {
-            	    otherlv_2=(Token)match(input,51,FOLLOW_51_in_ruleAttrWidget3229); 
+            	    otherlv_2=(Token)match(input,52,FOLLOW_52_in_ruleAttrWidget3265); 
 
             	        	newLeafNode(otherlv_2, grammarAccess.getAttrWidgetAccess().getWithKeyword_2_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1659:1: ( (lv_option_3_0= ruleWidgetOption ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1660:1: (lv_option_3_0= ruleWidgetOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1681:1: ( (lv_option_3_0= ruleWidgetOption ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1682:1: (lv_option_3_0= ruleWidgetOption )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1660:1: (lv_option_3_0= ruleWidgetOption )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1661:3: lv_option_3_0= ruleWidgetOption
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1682:1: (lv_option_3_0= ruleWidgetOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1683:3: lv_option_3_0= ruleWidgetOption
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getAttrWidgetAccess().getOptionWidgetOptionParserRuleCall_2_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleWidgetOption_in_ruleAttrWidget3250);
+            	    pushFollow(FOLLOW_ruleWidgetOption_in_ruleAttrWidget3286);
             	    lv_option_3_0=ruleWidgetOption();
 
             	    state._fsp--;
@@ -4336,7 +4399,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop54;
+            	    break loop55;
                 }
             } while (true);
 
@@ -4361,7 +4424,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleStateDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1685:1: entryRuleStateDef returns [EObject current=null] : iv_ruleStateDef= ruleStateDef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1707:1: entryRuleStateDef returns [EObject current=null] : iv_ruleStateDef= ruleStateDef EOF ;
     public final EObject entryRuleStateDef() throws RecognitionException {
         EObject current = null;
 
@@ -4369,17 +4432,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1686:2: (iv_ruleStateDef= ruleStateDef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1687:2: iv_ruleStateDef= ruleStateDef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1708:2: (iv_ruleStateDef= ruleStateDef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1709:2: iv_ruleStateDef= ruleStateDef EOF
             {
              newCompositeNode(grammarAccess.getStateDefRule()); 
-            pushFollow(FOLLOW_ruleStateDef_in_entryRuleStateDef3288);
+            pushFollow(FOLLOW_ruleStateDef_in_entryRuleStateDef3324);
             iv_ruleStateDef=ruleStateDef();
 
             state._fsp--;
 
              current =iv_ruleStateDef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleStateDef3298); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleStateDef3334); 
 
             }
 
@@ -4397,7 +4460,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleStateDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1694:1: ruleStateDef returns [EObject current=null] : (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1716:1: ruleStateDef returns [EObject current=null] : (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' ) ;
     public final EObject ruleStateDef() throws RecognitionException {
         EObject current = null;
 
@@ -4435,26 +4498,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1697:28: ( (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1698:1: (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1719:28: ( (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1720:1: (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1698:1: (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1698:3: otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1720:1: (otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1720:3: otherlv_0= 'state' ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )? otherlv_5= 'type' ( (lv_pageType_6_0= rulePageType ) ) otherlv_7= 'ordinal' ( (lv_ordinal_8_0= RULE_INT ) ) ( (lv_transitionStates_9_0= ruleToState ) )* (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )* ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )* ( (lv_peerReviews_13_0= rulePeerReviewRef ) )* (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )? (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )? (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )? ( (lv_layout_20_0= ruleLayoutType ) )? otherlv_21= '}'
             {
-            otherlv_0=(Token)match(input,52,FOLLOW_52_in_ruleStateDef3335); 
+            otherlv_0=(Token)match(input,53,FOLLOW_53_in_ruleStateDef3371); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getStateDefAccess().getStateKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1702:1: ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1703:1: (lv_name_1_0= ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1724:1: ( (lv_name_1_0= ruleSTATE_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1725:1: (lv_name_1_0= ruleSTATE_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1703:1: (lv_name_1_0= ruleSTATE_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1704:3: lv_name_1_0= ruleSTATE_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1725:1: (lv_name_1_0= ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1726:3: lv_name_1_0= ruleSTATE_NAME_REFERENCE
             {
              
             	        newCompositeNode(grammarAccess.getStateDefAccess().getNameSTATE_NAME_REFERENCEParserRuleCall_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleStateDef3356);
+            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleStateDef3392);
             lv_name_1_0=ruleSTATE_NAME_REFERENCE();
 
             state._fsp--;
@@ -4476,32 +4539,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleStateDef3368); 
+            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleStateDef3404); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getStateDefAccess().getLeftCurlyBracketKeyword_2());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1724:1: (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )?
-            int alt55=2;
-            int LA55_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1746:1: (otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) ) )?
+            int alt56=2;
+            int LA56_0 = input.LA(1);
 
-            if ( (LA55_0==42) ) {
-                alt55=1;
+            if ( (LA56_0==43) ) {
+                alt56=1;
             }
-            switch (alt55) {
+            switch (alt56) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1724:3: otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1746:3: otherlv_3= 'description' ( (lv_description_4_0= RULE_STRING ) )
                     {
-                    otherlv_3=(Token)match(input,42,FOLLOW_42_in_ruleStateDef3381); 
+                    otherlv_3=(Token)match(input,43,FOLLOW_43_in_ruleStateDef3417); 
 
                         	newLeafNode(otherlv_3, grammarAccess.getStateDefAccess().getDescriptionKeyword_3_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1728:1: ( (lv_description_4_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1729:1: (lv_description_4_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1750:1: ( (lv_description_4_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1751:1: (lv_description_4_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1729:1: (lv_description_4_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1730:3: lv_description_4_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1751:1: (lv_description_4_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1752:3: lv_description_4_0= RULE_STRING
                     {
-                    lv_description_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleStateDef3398); 
+                    lv_description_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleStateDef3434); 
 
                     			newLeafNode(lv_description_4_0, grammarAccess.getStateDefAccess().getDescriptionSTRINGTerminalRuleCall_3_1_0()); 
                     		
@@ -4527,20 +4590,20 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_5=(Token)match(input,53,FOLLOW_53_in_ruleStateDef3417); 
+            otherlv_5=(Token)match(input,54,FOLLOW_54_in_ruleStateDef3453); 
 
                 	newLeafNode(otherlv_5, grammarAccess.getStateDefAccess().getTypeKeyword_4());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1750:1: ( (lv_pageType_6_0= rulePageType ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1751:1: (lv_pageType_6_0= rulePageType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1772:1: ( (lv_pageType_6_0= rulePageType ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1773:1: (lv_pageType_6_0= rulePageType )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1751:1: (lv_pageType_6_0= rulePageType )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1752:3: lv_pageType_6_0= rulePageType
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1773:1: (lv_pageType_6_0= rulePageType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1774:3: lv_pageType_6_0= rulePageType
             {
              
             	        newCompositeNode(grammarAccess.getStateDefAccess().getPageTypePageTypeParserRuleCall_5_0()); 
             	    
-            pushFollow(FOLLOW_rulePageType_in_ruleStateDef3438);
+            pushFollow(FOLLOW_rulePageType_in_ruleStateDef3474);
             lv_pageType_6_0=rulePageType();
 
             state._fsp--;
@@ -4562,17 +4625,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_7=(Token)match(input,54,FOLLOW_54_in_ruleStateDef3450); 
+            otherlv_7=(Token)match(input,55,FOLLOW_55_in_ruleStateDef3486); 
 
                 	newLeafNode(otherlv_7, grammarAccess.getStateDefAccess().getOrdinalKeyword_6());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1772:1: ( (lv_ordinal_8_0= RULE_INT ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1773:1: (lv_ordinal_8_0= RULE_INT )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1794:1: ( (lv_ordinal_8_0= RULE_INT ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1795:1: (lv_ordinal_8_0= RULE_INT )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1773:1: (lv_ordinal_8_0= RULE_INT )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1774:3: lv_ordinal_8_0= RULE_INT
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1795:1: (lv_ordinal_8_0= RULE_INT )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1796:3: lv_ordinal_8_0= RULE_INT
             {
-            lv_ordinal_8_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleStateDef3467); 
+            lv_ordinal_8_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleStateDef3503); 
 
             			newLeafNode(lv_ordinal_8_0, grammarAccess.getStateDefAccess().getOrdinalINTTerminalRuleCall_7_0()); 
             		
@@ -4592,28 +4655,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1790:2: ( (lv_transitionStates_9_0= ruleToState ) )*
-            loop56:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1812:2: ( (lv_transitionStates_9_0= ruleToState ) )*
+            loop57:
             do {
-                int alt56=2;
-                int LA56_0 = input.LA(1);
+                int alt57=2;
+                int LA57_0 = input.LA(1);
 
-                if ( (LA56_0==72) ) {
-                    alt56=1;
+                if ( (LA57_0==73) ) {
+                    alt57=1;
                 }
 
 
-                switch (alt56) {
+                switch (alt57) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1791:1: (lv_transitionStates_9_0= ruleToState )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1813:1: (lv_transitionStates_9_0= ruleToState )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1791:1: (lv_transitionStates_9_0= ruleToState )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1792:3: lv_transitionStates_9_0= ruleToState
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1813:1: (lv_transitionStates_9_0= ruleToState )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1814:3: lv_transitionStates_9_0= ruleToState
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getStateDefAccess().getTransitionStatesToStateParserRuleCall_8_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleToState_in_ruleStateDef3493);
+            	    pushFollow(FOLLOW_ruleToState_in_ruleStateDef3529);
             	    lv_transitionStates_9_0=ruleToState();
 
             	    state._fsp--;
@@ -4637,39 +4700,39 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop56;
+            	    break loop57;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1808:3: (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )*
-            loop57:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1830:3: (otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) ) )*
+            loop58:
             do {
-                int alt57=2;
-                int LA57_0 = input.LA(1);
+                int alt58=2;
+                int LA58_0 = input.LA(1);
 
-                if ( (LA57_0==55) ) {
-                    alt57=1;
+                if ( (LA58_0==56) ) {
+                    alt58=1;
                 }
 
 
-                switch (alt57) {
+                switch (alt58) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1808:5: otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1830:5: otherlv_10= 'rule' ( (lv_rules_11_0= ruleRule ) )
             	    {
-            	    otherlv_10=(Token)match(input,55,FOLLOW_55_in_ruleStateDef3507); 
+            	    otherlv_10=(Token)match(input,56,FOLLOW_56_in_ruleStateDef3543); 
 
             	        	newLeafNode(otherlv_10, grammarAccess.getStateDefAccess().getRuleKeyword_9_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1812:1: ( (lv_rules_11_0= ruleRule ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1813:1: (lv_rules_11_0= ruleRule )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1834:1: ( (lv_rules_11_0= ruleRule ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1835:1: (lv_rules_11_0= ruleRule )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1813:1: (lv_rules_11_0= ruleRule )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1814:3: lv_rules_11_0= ruleRule
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1835:1: (lv_rules_11_0= ruleRule )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1836:3: lv_rules_11_0= ruleRule
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getStateDefAccess().getRulesRuleParserRuleCall_9_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleRule_in_ruleStateDef3528);
+            	    pushFollow(FOLLOW_ruleRule_in_ruleStateDef3564);
             	    lv_rules_11_0=ruleRule();
 
             	    state._fsp--;
@@ -4696,32 +4759,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop57;
+            	    break loop58;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1830:4: ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )*
-            loop58:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1852:4: ( (lv_decisionReviews_12_0= ruleDecisionReviewRef ) )*
+            loop59:
             do {
-                int alt58=2;
-                int LA58_0 = input.LA(1);
+                int alt59=2;
+                int LA59_0 = input.LA(1);
 
-                if ( (LA58_0==59) ) {
-                    alt58=1;
+                if ( (LA59_0==60) ) {
+                    alt59=1;
                 }
 
 
-                switch (alt58) {
+                switch (alt59) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1831:1: (lv_decisionReviews_12_0= ruleDecisionReviewRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1853:1: (lv_decisionReviews_12_0= ruleDecisionReviewRef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1831:1: (lv_decisionReviews_12_0= ruleDecisionReviewRef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1832:3: lv_decisionReviews_12_0= ruleDecisionReviewRef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1853:1: (lv_decisionReviews_12_0= ruleDecisionReviewRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1854:3: lv_decisionReviews_12_0= ruleDecisionReviewRef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getStateDefAccess().getDecisionReviewsDecisionReviewRefParserRuleCall_10_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleDecisionReviewRef_in_ruleStateDef3551);
+            	    pushFollow(FOLLOW_ruleDecisionReviewRef_in_ruleStateDef3587);
             	    lv_decisionReviews_12_0=ruleDecisionReviewRef();
 
             	    state._fsp--;
@@ -4745,32 +4808,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop58;
+            	    break loop59;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1848:3: ( (lv_peerReviews_13_0= rulePeerReviewRef ) )*
-            loop59:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1870:3: ( (lv_peerReviews_13_0= rulePeerReviewRef ) )*
+            loop60:
             do {
-                int alt59=2;
-                int LA59_0 = input.LA(1);
+                int alt60=2;
+                int LA60_0 = input.LA(1);
 
-                if ( (LA59_0==67) ) {
-                    alt59=1;
+                if ( (LA60_0==68) ) {
+                    alt60=1;
                 }
 
 
-                switch (alt59) {
+                switch (alt60) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1849:1: (lv_peerReviews_13_0= rulePeerReviewRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1871:1: (lv_peerReviews_13_0= rulePeerReviewRef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1849:1: (lv_peerReviews_13_0= rulePeerReviewRef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1850:3: lv_peerReviews_13_0= rulePeerReviewRef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1871:1: (lv_peerReviews_13_0= rulePeerReviewRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1872:3: lv_peerReviews_13_0= rulePeerReviewRef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getStateDefAccess().getPeerReviewsPeerReviewRefParserRuleCall_11_0()); 
             	    	    
-            	    pushFollow(FOLLOW_rulePeerReviewRef_in_ruleStateDef3573);
+            	    pushFollow(FOLLOW_rulePeerReviewRef_in_ruleStateDef3609);
             	    lv_peerReviews_13_0=rulePeerReviewRef();
 
             	    state._fsp--;
@@ -4794,32 +4857,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop59;
+            	    break loop60;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1866:3: (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )?
-            int alt60=2;
-            int LA60_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1888:3: (otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) ) )?
+            int alt61=2;
+            int LA61_0 = input.LA(1);
 
-            if ( (LA60_0==56) ) {
-                alt60=1;
+            if ( (LA61_0==57) ) {
+                alt61=1;
             }
-            switch (alt60) {
+            switch (alt61) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1866:5: otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1888:5: otherlv_14= 'percentWeight' ( (lv_percentWeight_15_0= RULE_INT ) )
                     {
-                    otherlv_14=(Token)match(input,56,FOLLOW_56_in_ruleStateDef3587); 
+                    otherlv_14=(Token)match(input,57,FOLLOW_57_in_ruleStateDef3623); 
 
                         	newLeafNode(otherlv_14, grammarAccess.getStateDefAccess().getPercentWeightKeyword_12_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1870:1: ( (lv_percentWeight_15_0= RULE_INT ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1871:1: (lv_percentWeight_15_0= RULE_INT )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1892:1: ( (lv_percentWeight_15_0= RULE_INT ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1893:1: (lv_percentWeight_15_0= RULE_INT )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1871:1: (lv_percentWeight_15_0= RULE_INT )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1872:3: lv_percentWeight_15_0= RULE_INT
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1893:1: (lv_percentWeight_15_0= RULE_INT )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1894:3: lv_percentWeight_15_0= RULE_INT
                     {
-                    lv_percentWeight_15_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleStateDef3604); 
+                    lv_percentWeight_15_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleStateDef3640); 
 
                     			newLeafNode(lv_percentWeight_15_0, grammarAccess.getStateDefAccess().getPercentWeightINTTerminalRuleCall_12_1_0()); 
                     		
@@ -4845,28 +4908,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1888:4: (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )?
-            int alt61=2;
-            int LA61_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1910:4: (otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) ) )?
+            int alt62=2;
+            int LA62_0 = input.LA(1);
 
-            if ( (LA61_0==57) ) {
-                alt61=1;
+            if ( (LA62_0==58) ) {
+                alt62=1;
             }
-            switch (alt61) {
+            switch (alt62) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1888:6: otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1910:6: otherlv_16= 'recommendedPercentComplete' ( (lv_recommendedPercentComplete_17_0= RULE_INT ) )
                     {
-                    otherlv_16=(Token)match(input,57,FOLLOW_57_in_ruleStateDef3624); 
+                    otherlv_16=(Token)match(input,58,FOLLOW_58_in_ruleStateDef3660); 
 
                         	newLeafNode(otherlv_16, grammarAccess.getStateDefAccess().getRecommendedPercentCompleteKeyword_13_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1892:1: ( (lv_recommendedPercentComplete_17_0= RULE_INT ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1893:1: (lv_recommendedPercentComplete_17_0= RULE_INT )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1914:1: ( (lv_recommendedPercentComplete_17_0= RULE_INT ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1915:1: (lv_recommendedPercentComplete_17_0= RULE_INT )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1893:1: (lv_recommendedPercentComplete_17_0= RULE_INT )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1894:3: lv_recommendedPercentComplete_17_0= RULE_INT
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1915:1: (lv_recommendedPercentComplete_17_0= RULE_INT )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1916:3: lv_recommendedPercentComplete_17_0= RULE_INT
                     {
-                    lv_recommendedPercentComplete_17_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleStateDef3641); 
+                    lv_recommendedPercentComplete_17_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleStateDef3677); 
 
                     			newLeafNode(lv_recommendedPercentComplete_17_0, grammarAccess.getStateDefAccess().getRecommendedPercentCompleteINTTerminalRuleCall_13_1_0()); 
                     		
@@ -4892,31 +4955,31 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1910:4: (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )?
-            int alt62=2;
-            int LA62_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1932:4: (otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) ) )?
+            int alt63=2;
+            int LA63_0 = input.LA(1);
 
-            if ( (LA62_0==58) ) {
-                alt62=1;
+            if ( (LA63_0==59) ) {
+                alt63=1;
             }
-            switch (alt62) {
+            switch (alt63) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1910:6: otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1932:6: otherlv_18= 'color' ( (lv_color_19_0= ruleStateColor ) )
                     {
-                    otherlv_18=(Token)match(input,58,FOLLOW_58_in_ruleStateDef3661); 
+                    otherlv_18=(Token)match(input,59,FOLLOW_59_in_ruleStateDef3697); 
 
                         	newLeafNode(otherlv_18, grammarAccess.getStateDefAccess().getColorKeyword_14_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1914:1: ( (lv_color_19_0= ruleStateColor ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1915:1: (lv_color_19_0= ruleStateColor )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1936:1: ( (lv_color_19_0= ruleStateColor ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1937:1: (lv_color_19_0= ruleStateColor )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1915:1: (lv_color_19_0= ruleStateColor )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1916:3: lv_color_19_0= ruleStateColor
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1937:1: (lv_color_19_0= ruleStateColor )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1938:3: lv_color_19_0= ruleStateColor
                     {
                      
                     	        newCompositeNode(grammarAccess.getStateDefAccess().getColorStateColorParserRuleCall_14_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleStateColor_in_ruleStateDef3682);
+                    pushFollow(FOLLOW_ruleStateColor_in_ruleStateDef3718);
                     lv_color_19_0=ruleStateColor();
 
                     state._fsp--;
@@ -4944,24 +5007,24 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1932:4: ( (lv_layout_20_0= ruleLayoutType ) )?
-            int alt63=2;
-            int LA63_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1954:4: ( (lv_layout_20_0= ruleLayoutType ) )?
+            int alt64=2;
+            int LA64_0 = input.LA(1);
 
-            if ( ((LA63_0>=73 && LA63_0<=74)) ) {
-                alt63=1;
+            if ( ((LA64_0>=74 && LA64_0<=75)) ) {
+                alt64=1;
             }
-            switch (alt63) {
+            switch (alt64) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1933:1: (lv_layout_20_0= ruleLayoutType )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1955:1: (lv_layout_20_0= ruleLayoutType )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1933:1: (lv_layout_20_0= ruleLayoutType )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1934:3: lv_layout_20_0= ruleLayoutType
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1955:1: (lv_layout_20_0= ruleLayoutType )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1956:3: lv_layout_20_0= ruleLayoutType
                     {
                      
                     	        newCompositeNode(grammarAccess.getStateDefAccess().getLayoutLayoutTypeParserRuleCall_15_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleLayoutType_in_ruleStateDef3705);
+                    pushFollow(FOLLOW_ruleLayoutType_in_ruleStateDef3741);
                     lv_layout_20_0=ruleLayoutType();
 
                     state._fsp--;
@@ -4986,7 +5049,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_21=(Token)match(input,20,FOLLOW_20_in_ruleStateDef3718); 
+            otherlv_21=(Token)match(input,20,FOLLOW_20_in_ruleStateDef3754); 
 
                 	newLeafNode(otherlv_21, grammarAccess.getStateDefAccess().getRightCurlyBracketKeyword_16());
                 
@@ -5011,7 +5074,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleDecisionReviewRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1962:1: entryRuleDecisionReviewRef returns [EObject current=null] : iv_ruleDecisionReviewRef= ruleDecisionReviewRef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1984:1: entryRuleDecisionReviewRef returns [EObject current=null] : iv_ruleDecisionReviewRef= ruleDecisionReviewRef EOF ;
     public final EObject entryRuleDecisionReviewRef() throws RecognitionException {
         EObject current = null;
 
@@ -5019,17 +5082,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1963:2: (iv_ruleDecisionReviewRef= ruleDecisionReviewRef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1964:2: iv_ruleDecisionReviewRef= ruleDecisionReviewRef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1985:2: (iv_ruleDecisionReviewRef= ruleDecisionReviewRef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1986:2: iv_ruleDecisionReviewRef= ruleDecisionReviewRef EOF
             {
              newCompositeNode(grammarAccess.getDecisionReviewRefRule()); 
-            pushFollow(FOLLOW_ruleDecisionReviewRef_in_entryRuleDecisionReviewRef3754);
+            pushFollow(FOLLOW_ruleDecisionReviewRef_in_entryRuleDecisionReviewRef3790);
             iv_ruleDecisionReviewRef=ruleDecisionReviewRef();
 
             state._fsp--;
 
              current =iv_ruleDecisionReviewRef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleDecisionReviewRef3764); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleDecisionReviewRef3800); 
 
             }
 
@@ -5047,7 +5110,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleDecisionReviewRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1971:1: ruleDecisionReviewRef returns [EObject current=null] : (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1993:1: ruleDecisionReviewRef returns [EObject current=null] : (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) ) ;
     public final EObject ruleDecisionReviewRef() throws RecognitionException {
         EObject current = null;
 
@@ -5056,21 +5119,21 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1974:28: ( (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1975:1: (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1996:28: ( (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1997:1: (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1975:1: (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1975:3: otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1997:1: (otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1997:3: otherlv_0= 'decisionReview' ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) )
             {
-            otherlv_0=(Token)match(input,59,FOLLOW_59_in_ruleDecisionReviewRef3801); 
+            otherlv_0=(Token)match(input,60,FOLLOW_60_in_ruleDecisionReviewRef3837); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getDecisionReviewRefAccess().getDecisionReviewKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1979:1: ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1980:1: ( ruleDECISION_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2001:1: ( ( ruleDECISION_REVIEW_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2002:1: ( ruleDECISION_REVIEW_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1980:1: ( ruleDECISION_REVIEW_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:1981:3: ruleDECISION_REVIEW_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2002:1: ( ruleDECISION_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2003:3: ruleDECISION_REVIEW_NAME_REFERENCE
             {
 
             			if (current==null) {
@@ -5080,7 +5143,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getDecisionReviewRefAccess().getDecisionReviewDecisionReviewDefCrossReference_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewRef3824);
+            pushFollow(FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewRef3860);
             ruleDECISION_REVIEW_NAME_REFERENCE();
 
             state._fsp--;
@@ -5115,7 +5178,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleDecisionReviewDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2002:1: entryRuleDecisionReviewDef returns [EObject current=null] : iv_ruleDecisionReviewDef= ruleDecisionReviewDef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2024:1: entryRuleDecisionReviewDef returns [EObject current=null] : iv_ruleDecisionReviewDef= ruleDecisionReviewDef EOF ;
     public final EObject entryRuleDecisionReviewDef() throws RecognitionException {
         EObject current = null;
 
@@ -5123,17 +5186,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2003:2: (iv_ruleDecisionReviewDef= ruleDecisionReviewDef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2004:2: iv_ruleDecisionReviewDef= ruleDecisionReviewDef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2025:2: (iv_ruleDecisionReviewDef= ruleDecisionReviewDef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2026:2: iv_ruleDecisionReviewDef= ruleDecisionReviewDef EOF
             {
              newCompositeNode(grammarAccess.getDecisionReviewDefRule()); 
-            pushFollow(FOLLOW_ruleDecisionReviewDef_in_entryRuleDecisionReviewDef3860);
+            pushFollow(FOLLOW_ruleDecisionReviewDef_in_entryRuleDecisionReviewDef3896);
             iv_ruleDecisionReviewDef=ruleDecisionReviewDef();
 
             state._fsp--;
 
              current =iv_ruleDecisionReviewDef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleDecisionReviewDef3870); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleDecisionReviewDef3906); 
 
             }
 
@@ -5151,7 +5214,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleDecisionReviewDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2011:1: ruleDecisionReviewDef returns [EObject current=null] : (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2033:1: ruleDecisionReviewDef returns [EObject current=null] : (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' ) ;
     public final EObject ruleDecisionReviewDef() throws RecognitionException {
         EObject current = null;
 
@@ -5183,26 +5246,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2014:28: ( (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2015:1: (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2036:28: ( (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2037:1: (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2015:1: (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2015:3: otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2037:1: (otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2037:3: otherlv_0= 'decisionReviewDefinition' ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_9= 'blockingType' ( (lv_blockingType_10_0= ruleReviewBlockingType ) ) otherlv_11= 'onEvent' ( (lv_stateEvent_12_0= ruleWorkflowEventType ) ) (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )* (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )? ( (lv_options_17_0= ruleDecisionReviewOpt ) )+ otherlv_18= '}'
             {
-            otherlv_0=(Token)match(input,60,FOLLOW_60_in_ruleDecisionReviewDef3907); 
+            otherlv_0=(Token)match(input,61,FOLLOW_61_in_ruleDecisionReviewDef3943); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getDecisionReviewDefAccess().getDecisionReviewDefinitionKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2019:1: ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2020:1: (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2041:1: ( (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2042:1: (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2020:1: (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2021:3: lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2042:1: (lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2043:3: lv_name_1_0= ruleDECISION_REVIEW_NAME_REFERENCE
             {
              
             	        newCompositeNode(grammarAccess.getDecisionReviewDefAccess().getNameDECISION_REVIEW_NAME_REFERENCEParserRuleCall_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewDef3928);
+            pushFollow(FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewDef3964);
             lv_name_1_0=ruleDECISION_REVIEW_NAME_REFERENCE();
 
             state._fsp--;
@@ -5224,21 +5287,21 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleDecisionReviewDef3940); 
+            otherlv_2=(Token)match(input,15,FOLLOW_15_in_ruleDecisionReviewDef3976); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getDecisionReviewDefAccess().getLeftCurlyBracketKeyword_2());
                 
-            otherlv_3=(Token)match(input,61,FOLLOW_61_in_ruleDecisionReviewDef3952); 
+            otherlv_3=(Token)match(input,62,FOLLOW_62_in_ruleDecisionReviewDef3988); 
 
                 	newLeafNode(otherlv_3, grammarAccess.getDecisionReviewDefAccess().getTitleKeyword_3());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2045:1: ( (lv_title_4_0= RULE_STRING ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2046:1: (lv_title_4_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2067:1: ( (lv_title_4_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2068:1: (lv_title_4_0= RULE_STRING )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2046:1: (lv_title_4_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2047:3: lv_title_4_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2068:1: (lv_title_4_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2069:3: lv_title_4_0= RULE_STRING
             {
-            lv_title_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDecisionReviewDef3969); 
+            lv_title_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDecisionReviewDef4005); 
 
             			newLeafNode(lv_title_4_0, grammarAccess.getDecisionReviewDefAccess().getTitleSTRINGTerminalRuleCall_4_0()); 
             		
@@ -5258,17 +5321,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_5=(Token)match(input,42,FOLLOW_42_in_ruleDecisionReviewDef3986); 
+            otherlv_5=(Token)match(input,43,FOLLOW_43_in_ruleDecisionReviewDef4022); 
 
                 	newLeafNode(otherlv_5, grammarAccess.getDecisionReviewDefAccess().getDescriptionKeyword_5());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2067:1: ( (lv_description_6_0= RULE_STRING ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2068:1: (lv_description_6_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2089:1: ( (lv_description_6_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2090:1: (lv_description_6_0= RULE_STRING )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2068:1: (lv_description_6_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2069:3: lv_description_6_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2090:1: (lv_description_6_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2091:3: lv_description_6_0= RULE_STRING
             {
-            lv_description_6_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDecisionReviewDef4003); 
+            lv_description_6_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDecisionReviewDef4039); 
 
             			newLeafNode(lv_description_6_0, grammarAccess.getDecisionReviewDefAccess().getDescriptionSTRINGTerminalRuleCall_6_0()); 
             		
@@ -5288,26 +5351,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2085:2: (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )?
-            int alt64=2;
-            int LA64_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2107:2: (otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )?
+            int alt65=2;
+            int LA65_0 = input.LA(1);
 
-            if ( (LA64_0==62) ) {
-                alt64=1;
+            if ( (LA65_0==63) ) {
+                alt65=1;
             }
-            switch (alt64) {
+            switch (alt65) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2085:4: otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2107:4: otherlv_7= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) )
                     {
-                    otherlv_7=(Token)match(input,62,FOLLOW_62_in_ruleDecisionReviewDef4021); 
+                    otherlv_7=(Token)match(input,63,FOLLOW_63_in_ruleDecisionReviewDef4057); 
 
                         	newLeafNode(otherlv_7, grammarAccess.getDecisionReviewDefAccess().getRelatedToStateKeyword_7_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2089:1: ( ( ruleSTATE_NAME_REFERENCE ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2090:1: ( ruleSTATE_NAME_REFERENCE )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2111:1: ( ( ruleSTATE_NAME_REFERENCE ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2112:1: ( ruleSTATE_NAME_REFERENCE )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2090:1: ( ruleSTATE_NAME_REFERENCE )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2091:3: ruleSTATE_NAME_REFERENCE
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2112:1: ( ruleSTATE_NAME_REFERENCE )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2113:3: ruleSTATE_NAME_REFERENCE
                     {
 
                     			if (current==null) {
@@ -5317,7 +5380,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                      
                     	        newCompositeNode(grammarAccess.getDecisionReviewDefAccess().getRelatedToStateStateDefCrossReference_7_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleDecisionReviewDef4044);
+                    pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleDecisionReviewDef4080);
                     ruleSTATE_NAME_REFERENCE();
 
                     state._fsp--;
@@ -5337,20 +5400,20 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_9=(Token)match(input,63,FOLLOW_63_in_ruleDecisionReviewDef4058); 
+            otherlv_9=(Token)match(input,64,FOLLOW_64_in_ruleDecisionReviewDef4094); 
 
                 	newLeafNode(otherlv_9, grammarAccess.getDecisionReviewDefAccess().getBlockingTypeKeyword_8());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2108:1: ( (lv_blockingType_10_0= ruleReviewBlockingType ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2109:1: (lv_blockingType_10_0= ruleReviewBlockingType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2130:1: ( (lv_blockingType_10_0= ruleReviewBlockingType ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2131:1: (lv_blockingType_10_0= ruleReviewBlockingType )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2109:1: (lv_blockingType_10_0= ruleReviewBlockingType )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2110:3: lv_blockingType_10_0= ruleReviewBlockingType
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2131:1: (lv_blockingType_10_0= ruleReviewBlockingType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2132:3: lv_blockingType_10_0= ruleReviewBlockingType
             {
              
             	        newCompositeNode(grammarAccess.getDecisionReviewDefAccess().getBlockingTypeReviewBlockingTypeEnumRuleCall_9_0()); 
             	    
-            pushFollow(FOLLOW_ruleReviewBlockingType_in_ruleDecisionReviewDef4079);
+            pushFollow(FOLLOW_ruleReviewBlockingType_in_ruleDecisionReviewDef4115);
             lv_blockingType_10_0=ruleReviewBlockingType();
 
             state._fsp--;
@@ -5372,20 +5435,20 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_11=(Token)match(input,64,FOLLOW_64_in_ruleDecisionReviewDef4091); 
+            otherlv_11=(Token)match(input,65,FOLLOW_65_in_ruleDecisionReviewDef4127); 
 
                 	newLeafNode(otherlv_11, grammarAccess.getDecisionReviewDefAccess().getOnEventKeyword_10());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2130:1: ( (lv_stateEvent_12_0= ruleWorkflowEventType ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2131:1: (lv_stateEvent_12_0= ruleWorkflowEventType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2152:1: ( (lv_stateEvent_12_0= ruleWorkflowEventType ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2153:1: (lv_stateEvent_12_0= ruleWorkflowEventType )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2131:1: (lv_stateEvent_12_0= ruleWorkflowEventType )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2132:3: lv_stateEvent_12_0= ruleWorkflowEventType
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2153:1: (lv_stateEvent_12_0= ruleWorkflowEventType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2154:3: lv_stateEvent_12_0= ruleWorkflowEventType
             {
              
             	        newCompositeNode(grammarAccess.getDecisionReviewDefAccess().getStateEventWorkflowEventTypeEnumRuleCall_11_0()); 
             	    
-            pushFollow(FOLLOW_ruleWorkflowEventType_in_ruleDecisionReviewDef4112);
+            pushFollow(FOLLOW_ruleWorkflowEventType_in_ruleDecisionReviewDef4148);
             lv_stateEvent_12_0=ruleWorkflowEventType();
 
             state._fsp--;
@@ -5407,35 +5470,35 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2148:2: (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )*
-            loop65:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2170:2: (otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) ) )*
+            loop66:
             do {
-                int alt65=2;
-                int LA65_0 = input.LA(1);
+                int alt66=2;
+                int LA66_0 = input.LA(1);
 
-                if ( (LA65_0==65) ) {
-                    alt65=1;
+                if ( (LA66_0==66) ) {
+                    alt66=1;
                 }
 
 
-                switch (alt65) {
+                switch (alt66) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2148:4: otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2170:4: otherlv_13= 'assignee' ( (lv_assigneeRefs_14_0= ruleUserRef ) )
             	    {
-            	    otherlv_13=(Token)match(input,65,FOLLOW_65_in_ruleDecisionReviewDef4125); 
+            	    otherlv_13=(Token)match(input,66,FOLLOW_66_in_ruleDecisionReviewDef4161); 
 
             	        	newLeafNode(otherlv_13, grammarAccess.getDecisionReviewDefAccess().getAssigneeKeyword_12_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2152:1: ( (lv_assigneeRefs_14_0= ruleUserRef ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2153:1: (lv_assigneeRefs_14_0= ruleUserRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2174:1: ( (lv_assigneeRefs_14_0= ruleUserRef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2175:1: (lv_assigneeRefs_14_0= ruleUserRef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2153:1: (lv_assigneeRefs_14_0= ruleUserRef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2154:3: lv_assigneeRefs_14_0= ruleUserRef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2175:1: (lv_assigneeRefs_14_0= ruleUserRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2176:3: lv_assigneeRefs_14_0= ruleUserRef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getDecisionReviewDefAccess().getAssigneeRefsUserRefParserRuleCall_12_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleUserRef_in_ruleDecisionReviewDef4146);
+            	    pushFollow(FOLLOW_ruleUserRef_in_ruleDecisionReviewDef4182);
             	    lv_assigneeRefs_14_0=ruleUserRef();
 
             	    state._fsp--;
@@ -5462,35 +5525,35 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop65;
+            	    break loop66;
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2170:4: (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )?
-            int alt66=2;
-            int LA66_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2192:4: (otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) ) )?
+            int alt67=2;
+            int LA67_0 = input.LA(1);
 
-            if ( (LA66_0==66) ) {
-                alt66=1;
+            if ( (LA67_0==67) ) {
+                alt67=1;
             }
-            switch (alt66) {
+            switch (alt67) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2170:6: otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2192:6: otherlv_15= 'autoTransitionToDecision' ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) )
                     {
-                    otherlv_15=(Token)match(input,66,FOLLOW_66_in_ruleDecisionReviewDef4161); 
+                    otherlv_15=(Token)match(input,67,FOLLOW_67_in_ruleDecisionReviewDef4197); 
 
                         	newLeafNode(otherlv_15, grammarAccess.getDecisionReviewDefAccess().getAutoTransitionToDecisionKeyword_13_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2174:1: ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2175:1: (lv_autoTransitionToDecision_16_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2196:1: ( (lv_autoTransitionToDecision_16_0= ruleBooleanDef ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2197:1: (lv_autoTransitionToDecision_16_0= ruleBooleanDef )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2175:1: (lv_autoTransitionToDecision_16_0= ruleBooleanDef )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2176:3: lv_autoTransitionToDecision_16_0= ruleBooleanDef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2197:1: (lv_autoTransitionToDecision_16_0= ruleBooleanDef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2198:3: lv_autoTransitionToDecision_16_0= ruleBooleanDef
                     {
                      
                     	        newCompositeNode(grammarAccess.getDecisionReviewDefAccess().getAutoTransitionToDecisionBooleanDefEnumRuleCall_13_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleDecisionReviewDef4182);
+                    pushFollow(FOLLOW_ruleBooleanDef_in_ruleDecisionReviewDef4218);
                     lv_autoTransitionToDecision_16_0=ruleBooleanDef();
 
                     state._fsp--;
@@ -5518,29 +5581,29 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2192:4: ( (lv_options_17_0= ruleDecisionReviewOpt ) )+
-            int cnt67=0;
-            loop67:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2214:4: ( (lv_options_17_0= ruleDecisionReviewOpt ) )+
+            int cnt68=0;
+            loop68:
             do {
-                int alt67=2;
-                int LA67_0 = input.LA(1);
+                int alt68=2;
+                int LA68_0 = input.LA(1);
 
-                if ( (LA67_0==46) ) {
-                    alt67=1;
+                if ( (LA68_0==47) ) {
+                    alt68=1;
                 }
 
 
-                switch (alt67) {
+                switch (alt68) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2193:1: (lv_options_17_0= ruleDecisionReviewOpt )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2215:1: (lv_options_17_0= ruleDecisionReviewOpt )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2193:1: (lv_options_17_0= ruleDecisionReviewOpt )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2194:3: lv_options_17_0= ruleDecisionReviewOpt
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2215:1: (lv_options_17_0= ruleDecisionReviewOpt )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2216:3: lv_options_17_0= ruleDecisionReviewOpt
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getDecisionReviewDefAccess().getOptionsDecisionReviewOptParserRuleCall_14_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleDecisionReviewOpt_in_ruleDecisionReviewDef4205);
+            	    pushFollow(FOLLOW_ruleDecisionReviewOpt_in_ruleDecisionReviewDef4241);
             	    lv_options_17_0=ruleDecisionReviewOpt();
 
             	    state._fsp--;
@@ -5564,15 +5627,15 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt67 >= 1 ) break loop67;
+            	    if ( cnt68 >= 1 ) break loop68;
                         EarlyExitException eee =
-                            new EarlyExitException(67, input);
+                            new EarlyExitException(68, input);
                         throw eee;
                 }
-                cnt67++;
+                cnt68++;
             } while (true);
 
-            otherlv_18=(Token)match(input,20,FOLLOW_20_in_ruleDecisionReviewDef4218); 
+            otherlv_18=(Token)match(input,20,FOLLOW_20_in_ruleDecisionReviewDef4254); 
 
                 	newLeafNode(otherlv_18, grammarAccess.getDecisionReviewDefAccess().getRightCurlyBracketKeyword_15());
                 
@@ -5597,7 +5660,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleDECISION_REVIEW_OPT_REF"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2222:1: entryRuleDECISION_REVIEW_OPT_REF returns [String current=null] : iv_ruleDECISION_REVIEW_OPT_REF= ruleDECISION_REVIEW_OPT_REF EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2244:1: entryRuleDECISION_REVIEW_OPT_REF returns [String current=null] : iv_ruleDECISION_REVIEW_OPT_REF= ruleDECISION_REVIEW_OPT_REF EOF ;
     public final String entryRuleDECISION_REVIEW_OPT_REF() throws RecognitionException {
         String current = null;
 
@@ -5605,17 +5668,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2223:2: (iv_ruleDECISION_REVIEW_OPT_REF= ruleDECISION_REVIEW_OPT_REF EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2224:2: iv_ruleDECISION_REVIEW_OPT_REF= ruleDECISION_REVIEW_OPT_REF EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2245:2: (iv_ruleDECISION_REVIEW_OPT_REF= ruleDECISION_REVIEW_OPT_REF EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2246:2: iv_ruleDECISION_REVIEW_OPT_REF= ruleDECISION_REVIEW_OPT_REF EOF
             {
              newCompositeNode(grammarAccess.getDECISION_REVIEW_OPT_REFRule()); 
-            pushFollow(FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_entryRuleDECISION_REVIEW_OPT_REF4255);
+            pushFollow(FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_entryRuleDECISION_REVIEW_OPT_REF4291);
             iv_ruleDECISION_REVIEW_OPT_REF=ruleDECISION_REVIEW_OPT_REF();
 
             state._fsp--;
 
              current =iv_ruleDECISION_REVIEW_OPT_REF.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleDECISION_REVIEW_OPT_REF4266); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleDECISION_REVIEW_OPT_REF4302); 
 
             }
 
@@ -5633,7 +5696,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleDECISION_REVIEW_OPT_REF"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2231:1: ruleDECISION_REVIEW_OPT_REF returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2253:1: ruleDECISION_REVIEW_OPT_REF returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleDECISION_REVIEW_OPT_REF() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -5642,10 +5705,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2234:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2235:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2256:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2257:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_OPT_REF4305); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_OPT_REF4341); 
 
             		current.merge(this_STRING_0);
                 
@@ -5670,7 +5733,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleDecisionReviewOpt"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2250:1: entryRuleDecisionReviewOpt returns [EObject current=null] : iv_ruleDecisionReviewOpt= ruleDecisionReviewOpt EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2272:1: entryRuleDecisionReviewOpt returns [EObject current=null] : iv_ruleDecisionReviewOpt= ruleDecisionReviewOpt EOF ;
     public final EObject entryRuleDecisionReviewOpt() throws RecognitionException {
         EObject current = null;
 
@@ -5678,17 +5741,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2251:2: (iv_ruleDecisionReviewOpt= ruleDecisionReviewOpt EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2252:2: iv_ruleDecisionReviewOpt= ruleDecisionReviewOpt EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2273:2: (iv_ruleDecisionReviewOpt= ruleDecisionReviewOpt EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2274:2: iv_ruleDecisionReviewOpt= ruleDecisionReviewOpt EOF
             {
              newCompositeNode(grammarAccess.getDecisionReviewOptRule()); 
-            pushFollow(FOLLOW_ruleDecisionReviewOpt_in_entryRuleDecisionReviewOpt4349);
+            pushFollow(FOLLOW_ruleDecisionReviewOpt_in_entryRuleDecisionReviewOpt4385);
             iv_ruleDecisionReviewOpt=ruleDecisionReviewOpt();
 
             state._fsp--;
 
              current =iv_ruleDecisionReviewOpt; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleDecisionReviewOpt4359); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleDecisionReviewOpt4395); 
 
             }
 
@@ -5706,7 +5769,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleDecisionReviewOpt"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2259:1: ruleDecisionReviewOpt returns [EObject current=null] : (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2281:1: ruleDecisionReviewOpt returns [EObject current=null] : (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? ) ;
     public final EObject ruleDecisionReviewOpt() throws RecognitionException {
         EObject current = null;
 
@@ -5719,26 +5782,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2262:28: ( (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2263:1: (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2284:28: ( (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2285:1: (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2263:1: (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2263:3: otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )?
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2285:1: (otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )? )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2285:3: otherlv_0= 'option' ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) ) ( (lv_followup_2_0= ruleFollowupRef ) )?
             {
-            otherlv_0=(Token)match(input,46,FOLLOW_46_in_ruleDecisionReviewOpt4396); 
+            otherlv_0=(Token)match(input,47,FOLLOW_47_in_ruleDecisionReviewOpt4432); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getDecisionReviewOptAccess().getOptionKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2267:1: ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2268:1: (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2289:1: ( (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2290:1: (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2268:1: (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2269:3: lv_name_1_0= ruleDECISION_REVIEW_OPT_REF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2290:1: (lv_name_1_0= ruleDECISION_REVIEW_OPT_REF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2291:3: lv_name_1_0= ruleDECISION_REVIEW_OPT_REF
             {
              
             	        newCompositeNode(grammarAccess.getDecisionReviewOptAccess().getNameDECISION_REVIEW_OPT_REFParserRuleCall_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_ruleDecisionReviewOpt4417);
+            pushFollow(FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_ruleDecisionReviewOpt4453);
             lv_name_1_0=ruleDECISION_REVIEW_OPT_REF();
 
             state._fsp--;
@@ -5760,24 +5823,24 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2285:2: ( (lv_followup_2_0= ruleFollowupRef ) )?
-            int alt68=2;
-            int LA68_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2307:2: ( (lv_followup_2_0= ruleFollowupRef ) )?
+            int alt69=2;
+            int LA69_0 = input.LA(1);
 
-            if ( (LA68_0==70) ) {
-                alt68=1;
+            if ( (LA69_0==71) ) {
+                alt69=1;
             }
-            switch (alt68) {
+            switch (alt69) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2286:1: (lv_followup_2_0= ruleFollowupRef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2308:1: (lv_followup_2_0= ruleFollowupRef )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2286:1: (lv_followup_2_0= ruleFollowupRef )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2287:3: lv_followup_2_0= ruleFollowupRef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2308:1: (lv_followup_2_0= ruleFollowupRef )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2309:3: lv_followup_2_0= ruleFollowupRef
                     {
                      
                     	        newCompositeNode(grammarAccess.getDecisionReviewOptAccess().getFollowupFollowupRefParserRuleCall_2_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleFollowupRef_in_ruleDecisionReviewOpt4438);
+                    pushFollow(FOLLOW_ruleFollowupRef_in_ruleDecisionReviewOpt4474);
                     lv_followup_2_0=ruleFollowupRef();
 
                     state._fsp--;
@@ -5823,7 +5886,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRulePeerReviewRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2311:1: entryRulePeerReviewRef returns [EObject current=null] : iv_rulePeerReviewRef= rulePeerReviewRef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2333:1: entryRulePeerReviewRef returns [EObject current=null] : iv_rulePeerReviewRef= rulePeerReviewRef EOF ;
     public final EObject entryRulePeerReviewRef() throws RecognitionException {
         EObject current = null;
 
@@ -5831,17 +5894,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2312:2: (iv_rulePeerReviewRef= rulePeerReviewRef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2313:2: iv_rulePeerReviewRef= rulePeerReviewRef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2334:2: (iv_rulePeerReviewRef= rulePeerReviewRef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2335:2: iv_rulePeerReviewRef= rulePeerReviewRef EOF
             {
              newCompositeNode(grammarAccess.getPeerReviewRefRule()); 
-            pushFollow(FOLLOW_rulePeerReviewRef_in_entryRulePeerReviewRef4475);
+            pushFollow(FOLLOW_rulePeerReviewRef_in_entryRulePeerReviewRef4511);
             iv_rulePeerReviewRef=rulePeerReviewRef();
 
             state._fsp--;
 
              current =iv_rulePeerReviewRef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRulePeerReviewRef4485); 
+            match(input,EOF,FOLLOW_EOF_in_entryRulePeerReviewRef4521); 
 
             }
 
@@ -5859,7 +5922,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "rulePeerReviewRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2320:1: rulePeerReviewRef returns [EObject current=null] : (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2342:1: rulePeerReviewRef returns [EObject current=null] : (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) ) ;
     public final EObject rulePeerReviewRef() throws RecognitionException {
         EObject current = null;
 
@@ -5868,21 +5931,21 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2323:28: ( (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2324:1: (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2345:28: ( (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2346:1: (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2324:1: (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2324:3: otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2346:1: (otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2346:3: otherlv_0= 'peerReview' ( ( rulePEER_REVIEW_NAME_REFERENCE ) )
             {
-            otherlv_0=(Token)match(input,67,FOLLOW_67_in_rulePeerReviewRef4522); 
+            otherlv_0=(Token)match(input,68,FOLLOW_68_in_rulePeerReviewRef4558); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getPeerReviewRefAccess().getPeerReviewKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2328:1: ( ( rulePEER_REVIEW_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2329:1: ( rulePEER_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2350:1: ( ( rulePEER_REVIEW_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2351:1: ( rulePEER_REVIEW_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2329:1: ( rulePEER_REVIEW_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2330:3: rulePEER_REVIEW_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2351:1: ( rulePEER_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2352:3: rulePEER_REVIEW_NAME_REFERENCE
             {
 
             			if (current==null) {
@@ -5892,7 +5955,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getPeerReviewRefAccess().getPeerReviewPeerReviewDefCrossReference_1_0()); 
             	    
-            pushFollow(FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewRef4545);
+            pushFollow(FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewRef4581);
             rulePEER_REVIEW_NAME_REFERENCE();
 
             state._fsp--;
@@ -5927,7 +5990,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRulePeerReviewDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2351:1: entryRulePeerReviewDef returns [EObject current=null] : iv_rulePeerReviewDef= rulePeerReviewDef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2373:1: entryRulePeerReviewDef returns [EObject current=null] : iv_rulePeerReviewDef= rulePeerReviewDef EOF ;
     public final EObject entryRulePeerReviewDef() throws RecognitionException {
         EObject current = null;
 
@@ -5935,17 +5998,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2352:2: (iv_rulePeerReviewDef= rulePeerReviewDef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2353:2: iv_rulePeerReviewDef= rulePeerReviewDef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2374:2: (iv_rulePeerReviewDef= rulePeerReviewDef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2375:2: iv_rulePeerReviewDef= rulePeerReviewDef EOF
             {
              newCompositeNode(grammarAccess.getPeerReviewDefRule()); 
-            pushFollow(FOLLOW_rulePeerReviewDef_in_entryRulePeerReviewDef4581);
+            pushFollow(FOLLOW_rulePeerReviewDef_in_entryRulePeerReviewDef4617);
             iv_rulePeerReviewDef=rulePeerReviewDef();
 
             state._fsp--;
 
              current =iv_rulePeerReviewDef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRulePeerReviewDef4591); 
+            match(input,EOF,FOLLOW_EOF_in_entryRulePeerReviewDef4627); 
 
             }
 
@@ -5963,7 +6026,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "rulePeerReviewDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2360:1: rulePeerReviewDef returns [EObject current=null] : (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2382:1: rulePeerReviewDef returns [EObject current=null] : (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' ) ;
     public final EObject rulePeerReviewDef() throws RecognitionException {
         EObject current = null;
 
@@ -5992,26 +6055,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2363:28: ( (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2364:1: (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2385:28: ( (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2386:1: (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2364:1: (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2364:3: otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2386:1: (otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2386:3: otherlv_0= 'peerReviewDefinition' ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) ) otherlv_2= '{' (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )? otherlv_5= 'description' ( (lv_description_6_0= RULE_STRING ) ) (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )? (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )? otherlv_11= 'blockingType' ( (lv_blockingType_12_0= ruleReviewBlockingType ) ) otherlv_13= 'onEvent' ( (lv_stateEvent_14_0= ruleWorkflowEventType ) ) (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )* otherlv_17= '}'
             {
-            otherlv_0=(Token)match(input,68,FOLLOW_68_in_rulePeerReviewDef4628); 
+            otherlv_0=(Token)match(input,69,FOLLOW_69_in_rulePeerReviewDef4664); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getPeerReviewDefAccess().getPeerReviewDefinitionKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2368:1: ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2369:1: (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2390:1: ( (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2391:1: (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2369:1: (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2370:3: lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2391:1: (lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2392:3: lv_name_1_0= rulePEER_REVIEW_NAME_REFERENCE
             {
              
             	        newCompositeNode(grammarAccess.getPeerReviewDefAccess().getNamePEER_REVIEW_NAME_REFERENCEParserRuleCall_1_0()); 
             	    
-            pushFollow(FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewDef4649);
+            pushFollow(FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewDef4685);
             lv_name_1_0=rulePEER_REVIEW_NAME_REFERENCE();
 
             state._fsp--;
@@ -6033,32 +6096,32 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_2=(Token)match(input,15,FOLLOW_15_in_rulePeerReviewDef4661); 
+            otherlv_2=(Token)match(input,15,FOLLOW_15_in_rulePeerReviewDef4697); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getPeerReviewDefAccess().getLeftCurlyBracketKeyword_2());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2390:1: (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )?
-            int alt69=2;
-            int LA69_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2412:1: (otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) ) )?
+            int alt70=2;
+            int LA70_0 = input.LA(1);
 
-            if ( (LA69_0==61) ) {
-                alt69=1;
+            if ( (LA70_0==62) ) {
+                alt70=1;
             }
-            switch (alt69) {
+            switch (alt70) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2390:3: otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2412:3: otherlv_3= 'title' ( (lv_title_4_0= RULE_STRING ) )
                     {
-                    otherlv_3=(Token)match(input,61,FOLLOW_61_in_rulePeerReviewDef4674); 
+                    otherlv_3=(Token)match(input,62,FOLLOW_62_in_rulePeerReviewDef4710); 
 
                         	newLeafNode(otherlv_3, grammarAccess.getPeerReviewDefAccess().getTitleKeyword_3_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2394:1: ( (lv_title_4_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2395:1: (lv_title_4_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2416:1: ( (lv_title_4_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2417:1: (lv_title_4_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2395:1: (lv_title_4_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2396:3: lv_title_4_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2417:1: (lv_title_4_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2418:3: lv_title_4_0= RULE_STRING
                     {
-                    lv_title_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePeerReviewDef4691); 
+                    lv_title_4_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePeerReviewDef4727); 
 
                     			newLeafNode(lv_title_4_0, grammarAccess.getPeerReviewDefAccess().getTitleSTRINGTerminalRuleCall_3_1_0()); 
                     		
@@ -6084,17 +6147,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_5=(Token)match(input,42,FOLLOW_42_in_rulePeerReviewDef4710); 
+            otherlv_5=(Token)match(input,43,FOLLOW_43_in_rulePeerReviewDef4746); 
 
                 	newLeafNode(otherlv_5, grammarAccess.getPeerReviewDefAccess().getDescriptionKeyword_4());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2416:1: ( (lv_description_6_0= RULE_STRING ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2417:1: (lv_description_6_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2438:1: ( (lv_description_6_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2439:1: (lv_description_6_0= RULE_STRING )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2417:1: (lv_description_6_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2418:3: lv_description_6_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2439:1: (lv_description_6_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2440:3: lv_description_6_0= RULE_STRING
             {
-            lv_description_6_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePeerReviewDef4727); 
+            lv_description_6_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePeerReviewDef4763); 
 
             			newLeafNode(lv_description_6_0, grammarAccess.getPeerReviewDefAccess().getDescriptionSTRINGTerminalRuleCall_5_0()); 
             		
@@ -6114,28 +6177,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2434:2: (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )?
-            int alt70=2;
-            int LA70_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2456:2: (otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) ) )?
+            int alt71=2;
+            int LA71_0 = input.LA(1);
 
-            if ( (LA70_0==69) ) {
-                alt70=1;
+            if ( (LA71_0==70) ) {
+                alt71=1;
             }
-            switch (alt70) {
+            switch (alt71) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2434:4: otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2456:4: otherlv_7= 'location' ( (lv_location_8_0= RULE_STRING ) )
                     {
-                    otherlv_7=(Token)match(input,69,FOLLOW_69_in_rulePeerReviewDef4745); 
+                    otherlv_7=(Token)match(input,70,FOLLOW_70_in_rulePeerReviewDef4781); 
 
                         	newLeafNode(otherlv_7, grammarAccess.getPeerReviewDefAccess().getLocationKeyword_6_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2438:1: ( (lv_location_8_0= RULE_STRING ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2439:1: (lv_location_8_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2460:1: ( (lv_location_8_0= RULE_STRING ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2461:1: (lv_location_8_0= RULE_STRING )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2439:1: (lv_location_8_0= RULE_STRING )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2440:3: lv_location_8_0= RULE_STRING
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2461:1: (lv_location_8_0= RULE_STRING )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2462:3: lv_location_8_0= RULE_STRING
                     {
-                    lv_location_8_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePeerReviewDef4762); 
+                    lv_location_8_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePeerReviewDef4798); 
 
                     			newLeafNode(lv_location_8_0, grammarAccess.getPeerReviewDefAccess().getLocationSTRINGTerminalRuleCall_6_1_0()); 
                     		
@@ -6161,26 +6224,26 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2456:4: (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )?
-            int alt71=2;
-            int LA71_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2478:4: (otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) ) )?
+            int alt72=2;
+            int LA72_0 = input.LA(1);
 
-            if ( (LA71_0==62) ) {
-                alt71=1;
+            if ( (LA72_0==63) ) {
+                alt72=1;
             }
-            switch (alt71) {
+            switch (alt72) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2456:6: otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2478:6: otherlv_9= 'relatedToState' ( ( ruleSTATE_NAME_REFERENCE ) )
                     {
-                    otherlv_9=(Token)match(input,62,FOLLOW_62_in_rulePeerReviewDef4782); 
+                    otherlv_9=(Token)match(input,63,FOLLOW_63_in_rulePeerReviewDef4818); 
 
                         	newLeafNode(otherlv_9, grammarAccess.getPeerReviewDefAccess().getRelatedToStateKeyword_7_0());
                         
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2460:1: ( ( ruleSTATE_NAME_REFERENCE ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2461:1: ( ruleSTATE_NAME_REFERENCE )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2482:1: ( ( ruleSTATE_NAME_REFERENCE ) )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2483:1: ( ruleSTATE_NAME_REFERENCE )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2461:1: ( ruleSTATE_NAME_REFERENCE )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2462:3: ruleSTATE_NAME_REFERENCE
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2483:1: ( ruleSTATE_NAME_REFERENCE )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2484:3: ruleSTATE_NAME_REFERENCE
                     {
 
                     			if (current==null) {
@@ -6190,7 +6253,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                      
                     	        newCompositeNode(grammarAccess.getPeerReviewDefAccess().getRelatedToStateStateDefCrossReference_7_1_0()); 
                     	    
-                    pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_rulePeerReviewDef4805);
+                    pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_rulePeerReviewDef4841);
                     ruleSTATE_NAME_REFERENCE();
 
                     state._fsp--;
@@ -6210,20 +6273,20 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_11=(Token)match(input,63,FOLLOW_63_in_rulePeerReviewDef4819); 
+            otherlv_11=(Token)match(input,64,FOLLOW_64_in_rulePeerReviewDef4855); 
 
                 	newLeafNode(otherlv_11, grammarAccess.getPeerReviewDefAccess().getBlockingTypeKeyword_8());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2479:1: ( (lv_blockingType_12_0= ruleReviewBlockingType ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2480:1: (lv_blockingType_12_0= ruleReviewBlockingType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2501:1: ( (lv_blockingType_12_0= ruleReviewBlockingType ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2502:1: (lv_blockingType_12_0= ruleReviewBlockingType )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2480:1: (lv_blockingType_12_0= ruleReviewBlockingType )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2481:3: lv_blockingType_12_0= ruleReviewBlockingType
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2502:1: (lv_blockingType_12_0= ruleReviewBlockingType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2503:3: lv_blockingType_12_0= ruleReviewBlockingType
             {
              
             	        newCompositeNode(grammarAccess.getPeerReviewDefAccess().getBlockingTypeReviewBlockingTypeEnumRuleCall_9_0()); 
             	    
-            pushFollow(FOLLOW_ruleReviewBlockingType_in_rulePeerReviewDef4840);
+            pushFollow(FOLLOW_ruleReviewBlockingType_in_rulePeerReviewDef4876);
             lv_blockingType_12_0=ruleReviewBlockingType();
 
             state._fsp--;
@@ -6245,20 +6308,20 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_13=(Token)match(input,64,FOLLOW_64_in_rulePeerReviewDef4852); 
+            otherlv_13=(Token)match(input,65,FOLLOW_65_in_rulePeerReviewDef4888); 
 
                 	newLeafNode(otherlv_13, grammarAccess.getPeerReviewDefAccess().getOnEventKeyword_10());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2501:1: ( (lv_stateEvent_14_0= ruleWorkflowEventType ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2502:1: (lv_stateEvent_14_0= ruleWorkflowEventType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2523:1: ( (lv_stateEvent_14_0= ruleWorkflowEventType ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2524:1: (lv_stateEvent_14_0= ruleWorkflowEventType )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2502:1: (lv_stateEvent_14_0= ruleWorkflowEventType )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2503:3: lv_stateEvent_14_0= ruleWorkflowEventType
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2524:1: (lv_stateEvent_14_0= ruleWorkflowEventType )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2525:3: lv_stateEvent_14_0= ruleWorkflowEventType
             {
              
             	        newCompositeNode(grammarAccess.getPeerReviewDefAccess().getStateEventWorkflowEventTypeEnumRuleCall_11_0()); 
             	    
-            pushFollow(FOLLOW_ruleWorkflowEventType_in_rulePeerReviewDef4873);
+            pushFollow(FOLLOW_ruleWorkflowEventType_in_rulePeerReviewDef4909);
             lv_stateEvent_14_0=ruleWorkflowEventType();
 
             state._fsp--;
@@ -6280,35 +6343,35 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2519:2: (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )*
-            loop72:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2541:2: (otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) ) )*
+            loop73:
             do {
-                int alt72=2;
-                int LA72_0 = input.LA(1);
+                int alt73=2;
+                int LA73_0 = input.LA(1);
 
-                if ( (LA72_0==65) ) {
-                    alt72=1;
+                if ( (LA73_0==66) ) {
+                    alt73=1;
                 }
 
 
-                switch (alt72) {
+                switch (alt73) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2519:4: otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2541:4: otherlv_15= 'assignee' ( (lv_assigneeRefs_16_0= ruleUserRef ) )
             	    {
-            	    otherlv_15=(Token)match(input,65,FOLLOW_65_in_rulePeerReviewDef4886); 
+            	    otherlv_15=(Token)match(input,66,FOLLOW_66_in_rulePeerReviewDef4922); 
 
             	        	newLeafNode(otherlv_15, grammarAccess.getPeerReviewDefAccess().getAssigneeKeyword_12_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2523:1: ( (lv_assigneeRefs_16_0= ruleUserRef ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2524:1: (lv_assigneeRefs_16_0= ruleUserRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2545:1: ( (lv_assigneeRefs_16_0= ruleUserRef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2546:1: (lv_assigneeRefs_16_0= ruleUserRef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2524:1: (lv_assigneeRefs_16_0= ruleUserRef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2525:3: lv_assigneeRefs_16_0= ruleUserRef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2546:1: (lv_assigneeRefs_16_0= ruleUserRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2547:3: lv_assigneeRefs_16_0= ruleUserRef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getPeerReviewDefAccess().getAssigneeRefsUserRefParserRuleCall_12_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleUserRef_in_rulePeerReviewDef4907);
+            	    pushFollow(FOLLOW_ruleUserRef_in_rulePeerReviewDef4943);
             	    lv_assigneeRefs_16_0=ruleUserRef();
 
             	    state._fsp--;
@@ -6335,11 +6398,11 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop72;
+            	    break loop73;
                 }
             } while (true);
 
-            otherlv_17=(Token)match(input,20,FOLLOW_20_in_rulePeerReviewDef4921); 
+            otherlv_17=(Token)match(input,20,FOLLOW_20_in_rulePeerReviewDef4957); 
 
                 	newLeafNode(otherlv_17, grammarAccess.getPeerReviewDefAccess().getRightCurlyBracketKeyword_13());
                 
@@ -6364,7 +6427,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleFollowupRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2553:1: entryRuleFollowupRef returns [EObject current=null] : iv_ruleFollowupRef= ruleFollowupRef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2575:1: entryRuleFollowupRef returns [EObject current=null] : iv_ruleFollowupRef= ruleFollowupRef EOF ;
     public final EObject entryRuleFollowupRef() throws RecognitionException {
         EObject current = null;
 
@@ -6372,17 +6435,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2554:2: (iv_ruleFollowupRef= ruleFollowupRef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2555:2: iv_ruleFollowupRef= ruleFollowupRef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2576:2: (iv_ruleFollowupRef= ruleFollowupRef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2577:2: iv_ruleFollowupRef= ruleFollowupRef EOF
             {
              newCompositeNode(grammarAccess.getFollowupRefRule()); 
-            pushFollow(FOLLOW_ruleFollowupRef_in_entryRuleFollowupRef4957);
+            pushFollow(FOLLOW_ruleFollowupRef_in_entryRuleFollowupRef4993);
             iv_ruleFollowupRef=ruleFollowupRef();
 
             state._fsp--;
 
              current =iv_ruleFollowupRef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleFollowupRef4967); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleFollowupRef5003); 
 
             }
 
@@ -6400,7 +6463,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleFollowupRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2562:1: ruleFollowupRef returns [EObject current=null] : (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2584:1: ruleFollowupRef returns [EObject current=null] : (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ ) ;
     public final EObject ruleFollowupRef() throws RecognitionException {
         EObject current = null;
 
@@ -6412,46 +6475,46 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2565:28: ( (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2566:1: (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2587:28: ( (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2588:1: (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2566:1: (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2566:3: otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2588:1: (otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+ )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2588:3: otherlv_0= 'followup by' (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+
             {
-            otherlv_0=(Token)match(input,70,FOLLOW_70_in_ruleFollowupRef5004); 
+            otherlv_0=(Token)match(input,71,FOLLOW_71_in_ruleFollowupRef5040); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getFollowupRefAccess().getFollowupByKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2570:1: (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+
-            int cnt73=0;
-            loop73:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2592:1: (otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) ) )+
+            int cnt74=0;
+            loop74:
             do {
-                int alt73=2;
-                int LA73_0 = input.LA(1);
+                int alt74=2;
+                int LA74_0 = input.LA(1);
 
-                if ( (LA73_0==65) ) {
-                    alt73=1;
+                if ( (LA74_0==66) ) {
+                    alt74=1;
                 }
 
 
-                switch (alt73) {
+                switch (alt74) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2570:3: otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2592:3: otherlv_1= 'assignee' ( (lv_assigneeRefs_2_0= ruleUserRef ) )
             	    {
-            	    otherlv_1=(Token)match(input,65,FOLLOW_65_in_ruleFollowupRef5017); 
+            	    otherlv_1=(Token)match(input,66,FOLLOW_66_in_ruleFollowupRef5053); 
 
             	        	newLeafNode(otherlv_1, grammarAccess.getFollowupRefAccess().getAssigneeKeyword_1_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2574:1: ( (lv_assigneeRefs_2_0= ruleUserRef ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2575:1: (lv_assigneeRefs_2_0= ruleUserRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2596:1: ( (lv_assigneeRefs_2_0= ruleUserRef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2597:1: (lv_assigneeRefs_2_0= ruleUserRef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2575:1: (lv_assigneeRefs_2_0= ruleUserRef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2576:3: lv_assigneeRefs_2_0= ruleUserRef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2597:1: (lv_assigneeRefs_2_0= ruleUserRef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2598:3: lv_assigneeRefs_2_0= ruleUserRef
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getFollowupRefAccess().getAssigneeRefsUserRefParserRuleCall_1_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleUserRef_in_ruleFollowupRef5038);
+            	    pushFollow(FOLLOW_ruleUserRef_in_ruleFollowupRef5074);
             	    lv_assigneeRefs_2_0=ruleUserRef();
 
             	    state._fsp--;
@@ -6478,12 +6541,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt73 >= 1 ) break loop73;
+            	    if ( cnt74 >= 1 ) break loop74;
                         EarlyExitException eee =
-                            new EarlyExitException(73, input);
+                            new EarlyExitException(74, input);
                         throw eee;
                 }
-                cnt73++;
+                cnt74++;
             } while (true);
 
 
@@ -6507,7 +6570,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleUserRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2600:1: entryRuleUserRef returns [EObject current=null] : iv_ruleUserRef= ruleUserRef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2622:1: entryRuleUserRef returns [EObject current=null] : iv_ruleUserRef= ruleUserRef EOF ;
     public final EObject entryRuleUserRef() throws RecognitionException {
         EObject current = null;
 
@@ -6515,17 +6578,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2601:2: (iv_ruleUserRef= ruleUserRef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2602:2: iv_ruleUserRef= ruleUserRef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2623:2: (iv_ruleUserRef= ruleUserRef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2624:2: iv_ruleUserRef= ruleUserRef EOF
             {
              newCompositeNode(grammarAccess.getUserRefRule()); 
-            pushFollow(FOLLOW_ruleUserRef_in_entryRuleUserRef5076);
+            pushFollow(FOLLOW_ruleUserRef_in_entryRuleUserRef5112);
             iv_ruleUserRef=ruleUserRef();
 
             state._fsp--;
 
              current =iv_ruleUserRef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleUserRef5086); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleUserRef5122); 
 
             }
 
@@ -6543,7 +6606,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleUserRef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2609:1: ruleUserRef returns [EObject current=null] : (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2631:1: ruleUserRef returns [EObject current=null] : (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName ) ;
     public final EObject ruleUserRef() throws RecognitionException {
         EObject current = null;
 
@@ -6555,33 +6618,33 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2612:28: ( (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2613:1: (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2634:28: ( (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2635:1: (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2613:1: (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName )
-            int alt74=2;
-            int LA74_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2635:1: (this_UserByUserId_0= ruleUserByUserId | this_UserByName_1= ruleUserByName )
+            int alt75=2;
+            int LA75_0 = input.LA(1);
 
-            if ( (LA74_0==17) ) {
-                alt74=1;
+            if ( (LA75_0==17) ) {
+                alt75=1;
             }
-            else if ( (LA74_0==71) ) {
-                alt74=2;
+            else if ( (LA75_0==72) ) {
+                alt75=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 74, 0, input);
+                    new NoViableAltException("", 75, 0, input);
 
                 throw nvae;
             }
-            switch (alt74) {
+            switch (alt75) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2614:5: this_UserByUserId_0= ruleUserByUserId
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2636:5: this_UserByUserId_0= ruleUserByUserId
                     {
                      
                             newCompositeNode(grammarAccess.getUserRefAccess().getUserByUserIdParserRuleCall_0()); 
                         
-                    pushFollow(FOLLOW_ruleUserByUserId_in_ruleUserRef5133);
+                    pushFollow(FOLLOW_ruleUserByUserId_in_ruleUserRef5169);
                     this_UserByUserId_0=ruleUserByUserId();
 
                     state._fsp--;
@@ -6594,12 +6657,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2624:5: this_UserByName_1= ruleUserByName
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2646:5: this_UserByName_1= ruleUserByName
                     {
                      
                             newCompositeNode(grammarAccess.getUserRefAccess().getUserByNameParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleUserByName_in_ruleUserRef5160);
+                    pushFollow(FOLLOW_ruleUserByName_in_ruleUserRef5196);
                     this_UserByName_1=ruleUserByName();
 
                     state._fsp--;
@@ -6632,7 +6695,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleUserByUserId"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2640:1: entryRuleUserByUserId returns [EObject current=null] : iv_ruleUserByUserId= ruleUserByUserId EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2662:1: entryRuleUserByUserId returns [EObject current=null] : iv_ruleUserByUserId= ruleUserByUserId EOF ;
     public final EObject entryRuleUserByUserId() throws RecognitionException {
         EObject current = null;
 
@@ -6640,17 +6703,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2641:2: (iv_ruleUserByUserId= ruleUserByUserId EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2642:2: iv_ruleUserByUserId= ruleUserByUserId EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2663:2: (iv_ruleUserByUserId= ruleUserByUserId EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2664:2: iv_ruleUserByUserId= ruleUserByUserId EOF
             {
              newCompositeNode(grammarAccess.getUserByUserIdRule()); 
-            pushFollow(FOLLOW_ruleUserByUserId_in_entryRuleUserByUserId5195);
+            pushFollow(FOLLOW_ruleUserByUserId_in_entryRuleUserByUserId5231);
             iv_ruleUserByUserId=ruleUserByUserId();
 
             state._fsp--;
 
              current =iv_ruleUserByUserId; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleUserByUserId5205); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleUserByUserId5241); 
 
             }
 
@@ -6668,7 +6731,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleUserByUserId"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2649:1: ruleUserByUserId returns [EObject current=null] : (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2671:1: ruleUserByUserId returns [EObject current=null] : (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) ) ;
     public final EObject ruleUserByUserId() throws RecognitionException {
         EObject current = null;
 
@@ -6678,23 +6741,23 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2652:28: ( (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2653:1: (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2674:28: ( (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2675:1: (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2653:1: (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2653:3: otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2675:1: (otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2675:3: otherlv_0= 'userId' ( (lv_userId_1_0= RULE_STRING ) )
             {
-            otherlv_0=(Token)match(input,17,FOLLOW_17_in_ruleUserByUserId5242); 
+            otherlv_0=(Token)match(input,17,FOLLOW_17_in_ruleUserByUserId5278); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getUserByUserIdAccess().getUserIdKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2657:1: ( (lv_userId_1_0= RULE_STRING ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2658:1: (lv_userId_1_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2679:1: ( (lv_userId_1_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2680:1: (lv_userId_1_0= RULE_STRING )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2658:1: (lv_userId_1_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2659:3: lv_userId_1_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2680:1: (lv_userId_1_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2681:3: lv_userId_1_0= RULE_STRING
             {
-            lv_userId_1_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleUserByUserId5259); 
+            lv_userId_1_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleUserByUserId5295); 
 
             			newLeafNode(lv_userId_1_0, grammarAccess.getUserByUserIdAccess().getUserIdSTRINGTerminalRuleCall_1_0()); 
             		
@@ -6735,7 +6798,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleUserByName"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2683:1: entryRuleUserByName returns [EObject current=null] : iv_ruleUserByName= ruleUserByName EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2705:1: entryRuleUserByName returns [EObject current=null] : iv_ruleUserByName= ruleUserByName EOF ;
     public final EObject entryRuleUserByName() throws RecognitionException {
         EObject current = null;
 
@@ -6743,17 +6806,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2684:2: (iv_ruleUserByName= ruleUserByName EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2685:2: iv_ruleUserByName= ruleUserByName EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2706:2: (iv_ruleUserByName= ruleUserByName EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2707:2: iv_ruleUserByName= ruleUserByName EOF
             {
              newCompositeNode(grammarAccess.getUserByNameRule()); 
-            pushFollow(FOLLOW_ruleUserByName_in_entryRuleUserByName5300);
+            pushFollow(FOLLOW_ruleUserByName_in_entryRuleUserByName5336);
             iv_ruleUserByName=ruleUserByName();
 
             state._fsp--;
 
              current =iv_ruleUserByName; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleUserByName5310); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleUserByName5346); 
 
             }
 
@@ -6771,7 +6834,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleUserByName"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2692:1: ruleUserByName returns [EObject current=null] : (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2714:1: ruleUserByName returns [EObject current=null] : (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) ) ;
     public final EObject ruleUserByName() throws RecognitionException {
         EObject current = null;
 
@@ -6781,23 +6844,23 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2695:28: ( (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2696:1: (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2717:28: ( (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2718:1: (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2696:1: (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2696:3: otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2718:1: (otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2718:3: otherlv_0= 'named' ( (lv_userName_1_0= RULE_STRING ) )
             {
-            otherlv_0=(Token)match(input,71,FOLLOW_71_in_ruleUserByName5347); 
+            otherlv_0=(Token)match(input,72,FOLLOW_72_in_ruleUserByName5383); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getUserByNameAccess().getNamedKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2700:1: ( (lv_userName_1_0= RULE_STRING ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2701:1: (lv_userName_1_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2722:1: ( (lv_userName_1_0= RULE_STRING ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2723:1: (lv_userName_1_0= RULE_STRING )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2701:1: (lv_userName_1_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2702:3: lv_userName_1_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2723:1: (lv_userName_1_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2724:3: lv_userName_1_0= RULE_STRING
             {
-            lv_userName_1_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleUserByName5364); 
+            lv_userName_1_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleUserByName5400); 
 
             			newLeafNode(lv_userName_1_0, grammarAccess.getUserByNameAccess().getUserNameSTRINGTerminalRuleCall_1_0()); 
             		
@@ -6838,7 +6901,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleDECISION_REVIEW_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2726:1: entryRuleDECISION_REVIEW_NAME_REFERENCE returns [String current=null] : iv_ruleDECISION_REVIEW_NAME_REFERENCE= ruleDECISION_REVIEW_NAME_REFERENCE EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2748:1: entryRuleDECISION_REVIEW_NAME_REFERENCE returns [String current=null] : iv_ruleDECISION_REVIEW_NAME_REFERENCE= ruleDECISION_REVIEW_NAME_REFERENCE EOF ;
     public final String entryRuleDECISION_REVIEW_NAME_REFERENCE() throws RecognitionException {
         String current = null;
 
@@ -6846,17 +6909,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2727:2: (iv_ruleDECISION_REVIEW_NAME_REFERENCE= ruleDECISION_REVIEW_NAME_REFERENCE EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2728:2: iv_ruleDECISION_REVIEW_NAME_REFERENCE= ruleDECISION_REVIEW_NAME_REFERENCE EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2749:2: (iv_ruleDECISION_REVIEW_NAME_REFERENCE= ruleDECISION_REVIEW_NAME_REFERENCE EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2750:2: iv_ruleDECISION_REVIEW_NAME_REFERENCE= ruleDECISION_REVIEW_NAME_REFERENCE EOF
             {
              newCompositeNode(grammarAccess.getDECISION_REVIEW_NAME_REFERENCERule()); 
-            pushFollow(FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5406);
+            pushFollow(FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5442);
             iv_ruleDECISION_REVIEW_NAME_REFERENCE=ruleDECISION_REVIEW_NAME_REFERENCE();
 
             state._fsp--;
 
              current =iv_ruleDECISION_REVIEW_NAME_REFERENCE.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5417); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5453); 
 
             }
 
@@ -6874,7 +6937,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleDECISION_REVIEW_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2735:1: ruleDECISION_REVIEW_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2757:1: ruleDECISION_REVIEW_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleDECISION_REVIEW_NAME_REFERENCE() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -6883,10 +6946,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2738:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2739:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2760:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2761:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_NAME_REFERENCE5456); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_NAME_REFERENCE5492); 
 
             		current.merge(this_STRING_0);
                 
@@ -6911,7 +6974,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRulePEER_REVIEW_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2754:1: entryRulePEER_REVIEW_NAME_REFERENCE returns [String current=null] : iv_rulePEER_REVIEW_NAME_REFERENCE= rulePEER_REVIEW_NAME_REFERENCE EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2776:1: entryRulePEER_REVIEW_NAME_REFERENCE returns [String current=null] : iv_rulePEER_REVIEW_NAME_REFERENCE= rulePEER_REVIEW_NAME_REFERENCE EOF ;
     public final String entryRulePEER_REVIEW_NAME_REFERENCE() throws RecognitionException {
         String current = null;
 
@@ -6919,17 +6982,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2755:2: (iv_rulePEER_REVIEW_NAME_REFERENCE= rulePEER_REVIEW_NAME_REFERENCE EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2756:2: iv_rulePEER_REVIEW_NAME_REFERENCE= rulePEER_REVIEW_NAME_REFERENCE EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2777:2: (iv_rulePEER_REVIEW_NAME_REFERENCE= rulePEER_REVIEW_NAME_REFERENCE EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2778:2: iv_rulePEER_REVIEW_NAME_REFERENCE= rulePEER_REVIEW_NAME_REFERENCE EOF
             {
              newCompositeNode(grammarAccess.getPEER_REVIEW_NAME_REFERENCERule()); 
-            pushFollow(FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_entryRulePEER_REVIEW_NAME_REFERENCE5501);
+            pushFollow(FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_entryRulePEER_REVIEW_NAME_REFERENCE5537);
             iv_rulePEER_REVIEW_NAME_REFERENCE=rulePEER_REVIEW_NAME_REFERENCE();
 
             state._fsp--;
 
              current =iv_rulePEER_REVIEW_NAME_REFERENCE.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRulePEER_REVIEW_NAME_REFERENCE5512); 
+            match(input,EOF,FOLLOW_EOF_in_entryRulePEER_REVIEW_NAME_REFERENCE5548); 
 
             }
 
@@ -6947,7 +7010,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "rulePEER_REVIEW_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2763:1: rulePEER_REVIEW_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2785:1: rulePEER_REVIEW_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken rulePEER_REVIEW_NAME_REFERENCE() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -6956,10 +7019,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2766:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2767:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2788:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2789:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePEER_REVIEW_NAME_REFERENCE5551); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePEER_REVIEW_NAME_REFERENCE5587); 
 
             		current.merge(this_STRING_0);
                 
@@ -6984,7 +7047,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleSTATE_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2782:1: entryRuleSTATE_NAME_REFERENCE returns [String current=null] : iv_ruleSTATE_NAME_REFERENCE= ruleSTATE_NAME_REFERENCE EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2804:1: entryRuleSTATE_NAME_REFERENCE returns [String current=null] : iv_ruleSTATE_NAME_REFERENCE= ruleSTATE_NAME_REFERENCE EOF ;
     public final String entryRuleSTATE_NAME_REFERENCE() throws RecognitionException {
         String current = null;
 
@@ -6992,17 +7055,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2783:2: (iv_ruleSTATE_NAME_REFERENCE= ruleSTATE_NAME_REFERENCE EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2784:2: iv_ruleSTATE_NAME_REFERENCE= ruleSTATE_NAME_REFERENCE EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2805:2: (iv_ruleSTATE_NAME_REFERENCE= ruleSTATE_NAME_REFERENCE EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2806:2: iv_ruleSTATE_NAME_REFERENCE= ruleSTATE_NAME_REFERENCE EOF
             {
              newCompositeNode(grammarAccess.getSTATE_NAME_REFERENCERule()); 
-            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_entryRuleSTATE_NAME_REFERENCE5596);
+            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_entryRuleSTATE_NAME_REFERENCE5632);
             iv_ruleSTATE_NAME_REFERENCE=ruleSTATE_NAME_REFERENCE();
 
             state._fsp--;
 
              current =iv_ruleSTATE_NAME_REFERENCE.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleSTATE_NAME_REFERENCE5607); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleSTATE_NAME_REFERENCE5643); 
 
             }
 
@@ -7020,7 +7083,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleSTATE_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2791:1: ruleSTATE_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2813:1: ruleSTATE_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleSTATE_NAME_REFERENCE() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -7029,10 +7092,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2794:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2795:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2816:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2817:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleSTATE_NAME_REFERENCE5646); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleSTATE_NAME_REFERENCE5682); 
 
             		current.merge(this_STRING_0);
                 
@@ -7057,7 +7120,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWIDGET_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2810:1: entryRuleWIDGET_NAME_REFERENCE returns [String current=null] : iv_ruleWIDGET_NAME_REFERENCE= ruleWIDGET_NAME_REFERENCE EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2832:1: entryRuleWIDGET_NAME_REFERENCE returns [String current=null] : iv_ruleWIDGET_NAME_REFERENCE= ruleWIDGET_NAME_REFERENCE EOF ;
     public final String entryRuleWIDGET_NAME_REFERENCE() throws RecognitionException {
         String current = null;
 
@@ -7065,17 +7128,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2811:2: (iv_ruleWIDGET_NAME_REFERENCE= ruleWIDGET_NAME_REFERENCE EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2812:2: iv_ruleWIDGET_NAME_REFERENCE= ruleWIDGET_NAME_REFERENCE EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2833:2: (iv_ruleWIDGET_NAME_REFERENCE= ruleWIDGET_NAME_REFERENCE EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2834:2: iv_ruleWIDGET_NAME_REFERENCE= ruleWIDGET_NAME_REFERENCE EOF
             {
              newCompositeNode(grammarAccess.getWIDGET_NAME_REFERENCERule()); 
-            pushFollow(FOLLOW_ruleWIDGET_NAME_REFERENCE_in_entryRuleWIDGET_NAME_REFERENCE5691);
+            pushFollow(FOLLOW_ruleWIDGET_NAME_REFERENCE_in_entryRuleWIDGET_NAME_REFERENCE5727);
             iv_ruleWIDGET_NAME_REFERENCE=ruleWIDGET_NAME_REFERENCE();
 
             state._fsp--;
 
              current =iv_ruleWIDGET_NAME_REFERENCE.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleWIDGET_NAME_REFERENCE5702); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleWIDGET_NAME_REFERENCE5738); 
 
             }
 
@@ -7093,7 +7156,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWIDGET_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2819:1: ruleWIDGET_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2841:1: ruleWIDGET_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleWIDGET_NAME_REFERENCE() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -7102,10 +7165,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2822:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2823:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2844:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2845:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWIDGET_NAME_REFERENCE5741); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWIDGET_NAME_REFERENCE5777); 
 
             		current.merge(this_STRING_0);
                 
@@ -7130,7 +7193,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWORK_DEFINITION_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2838:1: entryRuleWORK_DEFINITION_NAME_REFERENCE returns [String current=null] : iv_ruleWORK_DEFINITION_NAME_REFERENCE= ruleWORK_DEFINITION_NAME_REFERENCE EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2860:1: entryRuleWORK_DEFINITION_NAME_REFERENCE returns [String current=null] : iv_ruleWORK_DEFINITION_NAME_REFERENCE= ruleWORK_DEFINITION_NAME_REFERENCE EOF ;
     public final String entryRuleWORK_DEFINITION_NAME_REFERENCE() throws RecognitionException {
         String current = null;
 
@@ -7138,17 +7201,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2839:2: (iv_ruleWORK_DEFINITION_NAME_REFERENCE= ruleWORK_DEFINITION_NAME_REFERENCE EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2840:2: iv_ruleWORK_DEFINITION_NAME_REFERENCE= ruleWORK_DEFINITION_NAME_REFERENCE EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2861:2: (iv_ruleWORK_DEFINITION_NAME_REFERENCE= ruleWORK_DEFINITION_NAME_REFERENCE EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2862:2: iv_ruleWORK_DEFINITION_NAME_REFERENCE= ruleWORK_DEFINITION_NAME_REFERENCE EOF
             {
              newCompositeNode(grammarAccess.getWORK_DEFINITION_NAME_REFERENCERule()); 
-            pushFollow(FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5786);
+            pushFollow(FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5822);
             iv_ruleWORK_DEFINITION_NAME_REFERENCE=ruleWORK_DEFINITION_NAME_REFERENCE();
 
             state._fsp--;
 
              current =iv_ruleWORK_DEFINITION_NAME_REFERENCE.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5797); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5833); 
 
             }
 
@@ -7166,7 +7229,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWORK_DEFINITION_NAME_REFERENCE"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2847:1: ruleWORK_DEFINITION_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2869:1: ruleWORK_DEFINITION_NAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleWORK_DEFINITION_NAME_REFERENCE() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -7175,10 +7238,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2850:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2851:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2872:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2873:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWORK_DEFINITION_NAME_REFERENCE5836); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWORK_DEFINITION_NAME_REFERENCE5872); 
 
             		current.merge(this_STRING_0);
                 
@@ -7203,7 +7266,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleToState"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2866:1: entryRuleToState returns [EObject current=null] : iv_ruleToState= ruleToState EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2888:1: entryRuleToState returns [EObject current=null] : iv_ruleToState= ruleToState EOF ;
     public final EObject entryRuleToState() throws RecognitionException {
         EObject current = null;
 
@@ -7211,17 +7274,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2867:2: (iv_ruleToState= ruleToState EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2868:2: iv_ruleToState= ruleToState EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2889:2: (iv_ruleToState= ruleToState EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2890:2: iv_ruleToState= ruleToState EOF
             {
              newCompositeNode(grammarAccess.getToStateRule()); 
-            pushFollow(FOLLOW_ruleToState_in_entryRuleToState5880);
+            pushFollow(FOLLOW_ruleToState_in_entryRuleToState5916);
             iv_ruleToState=ruleToState();
 
             state._fsp--;
 
              current =iv_ruleToState; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleToState5890); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleToState5926); 
 
             }
 
@@ -7239,7 +7302,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleToState"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2875:1: ruleToState returns [EObject current=null] : (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2897:1: ruleToState returns [EObject current=null] : (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* ) ;
     public final EObject ruleToState() throws RecognitionException {
         EObject current = null;
 
@@ -7250,21 +7313,21 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2878:28: ( (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2879:1: (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2900:28: ( (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2901:1: (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2879:1: (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2879:3: otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )*
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2901:1: (otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )* )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2901:3: otherlv_0= 'to' ( ( ruleSTATE_NAME_REFERENCE ) ) ( (lv_options_2_0= ruleTransitionOption ) )*
             {
-            otherlv_0=(Token)match(input,72,FOLLOW_72_in_ruleToState5927); 
+            otherlv_0=(Token)match(input,73,FOLLOW_73_in_ruleToState5963); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getToStateAccess().getToKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2883:1: ( ( ruleSTATE_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2884:1: ( ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2905:1: ( ( ruleSTATE_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2906:1: ( ruleSTATE_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2884:1: ( ruleSTATE_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2885:3: ruleSTATE_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2906:1: ( ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2907:3: ruleSTATE_NAME_REFERENCE
             {
 
             			if (current==null) {
@@ -7274,7 +7337,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getToStateAccess().getStateStateDefCrossReference_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleToState5950);
+            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleToState5986);
             ruleSTATE_NAME_REFERENCE();
 
             state._fsp--;
@@ -7288,28 +7351,28 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2898:2: ( (lv_options_2_0= ruleTransitionOption ) )*
-            loop75:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2920:2: ( (lv_options_2_0= ruleTransitionOption ) )*
+            loop76:
             do {
-                int alt75=2;
-                int LA75_0 = input.LA(1);
+                int alt76=2;
+                int LA76_0 = input.LA(1);
 
-                if ( (LA75_0==RULE_STRING||(LA75_0>=79 && LA75_0<=80)) ) {
-                    alt75=1;
+                if ( (LA76_0==RULE_STRING||(LA76_0>=80 && LA76_0<=81)) ) {
+                    alt76=1;
                 }
 
 
-                switch (alt75) {
+                switch (alt76) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2899:1: (lv_options_2_0= ruleTransitionOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2921:1: (lv_options_2_0= ruleTransitionOption )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2899:1: (lv_options_2_0= ruleTransitionOption )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2900:3: lv_options_2_0= ruleTransitionOption
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2921:1: (lv_options_2_0= ruleTransitionOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2922:3: lv_options_2_0= ruleTransitionOption
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getToStateAccess().getOptionsTransitionOptionParserRuleCall_2_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleTransitionOption_in_ruleToState5971);
+            	    pushFollow(FOLLOW_ruleTransitionOption_in_ruleToState6007);
             	    lv_options_2_0=ruleTransitionOption();
 
             	    state._fsp--;
@@ -7333,7 +7396,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop75;
+            	    break loop76;
                 }
             } while (true);
 
@@ -7358,7 +7421,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLayoutType"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2924:1: entryRuleLayoutType returns [EObject current=null] : iv_ruleLayoutType= ruleLayoutType EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2946:1: entryRuleLayoutType returns [EObject current=null] : iv_ruleLayoutType= ruleLayoutType EOF ;
     public final EObject entryRuleLayoutType() throws RecognitionException {
         EObject current = null;
 
@@ -7366,17 +7429,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2925:2: (iv_ruleLayoutType= ruleLayoutType EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2926:2: iv_ruleLayoutType= ruleLayoutType EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2947:2: (iv_ruleLayoutType= ruleLayoutType EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2948:2: iv_ruleLayoutType= ruleLayoutType EOF
             {
              newCompositeNode(grammarAccess.getLayoutTypeRule()); 
-            pushFollow(FOLLOW_ruleLayoutType_in_entryRuleLayoutType6008);
+            pushFollow(FOLLOW_ruleLayoutType_in_entryRuleLayoutType6044);
             iv_ruleLayoutType=ruleLayoutType();
 
             state._fsp--;
 
              current =iv_ruleLayoutType; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutType6018); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutType6054); 
 
             }
 
@@ -7394,7 +7457,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLayoutType"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2933:1: ruleLayoutType returns [EObject current=null] : (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2955:1: ruleLayoutType returns [EObject current=null] : (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy ) ;
     public final EObject ruleLayoutType() throws RecognitionException {
         EObject current = null;
 
@@ -7406,33 +7469,33 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2936:28: ( (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2937:1: (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2958:28: ( (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2959:1: (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2937:1: (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy )
-            int alt76=2;
-            int LA76_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2959:1: (this_LayoutDef_0= ruleLayoutDef | this_LayoutCopy_1= ruleLayoutCopy )
+            int alt77=2;
+            int LA77_0 = input.LA(1);
 
-            if ( (LA76_0==73) ) {
-                alt76=1;
+            if ( (LA77_0==74) ) {
+                alt77=1;
             }
-            else if ( (LA76_0==74) ) {
-                alt76=2;
+            else if ( (LA77_0==75) ) {
+                alt77=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 76, 0, input);
+                    new NoViableAltException("", 77, 0, input);
 
                 throw nvae;
             }
-            switch (alt76) {
+            switch (alt77) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2938:5: this_LayoutDef_0= ruleLayoutDef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2960:5: this_LayoutDef_0= ruleLayoutDef
                     {
                      
                             newCompositeNode(grammarAccess.getLayoutTypeAccess().getLayoutDefParserRuleCall_0()); 
                         
-                    pushFollow(FOLLOW_ruleLayoutDef_in_ruleLayoutType6065);
+                    pushFollow(FOLLOW_ruleLayoutDef_in_ruleLayoutType6101);
                     this_LayoutDef_0=ruleLayoutDef();
 
                     state._fsp--;
@@ -7445,12 +7508,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2948:5: this_LayoutCopy_1= ruleLayoutCopy
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2970:5: this_LayoutCopy_1= ruleLayoutCopy
                     {
                      
                             newCompositeNode(grammarAccess.getLayoutTypeAccess().getLayoutCopyParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleLayoutCopy_in_ruleLayoutType6092);
+                    pushFollow(FOLLOW_ruleLayoutCopy_in_ruleLayoutType6128);
                     this_LayoutCopy_1=ruleLayoutCopy();
 
                     state._fsp--;
@@ -7483,7 +7546,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLayoutDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2964:1: entryRuleLayoutDef returns [EObject current=null] : iv_ruleLayoutDef= ruleLayoutDef EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2986:1: entryRuleLayoutDef returns [EObject current=null] : iv_ruleLayoutDef= ruleLayoutDef EOF ;
     public final EObject entryRuleLayoutDef() throws RecognitionException {
         EObject current = null;
 
@@ -7491,17 +7554,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2965:2: (iv_ruleLayoutDef= ruleLayoutDef EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2966:2: iv_ruleLayoutDef= ruleLayoutDef EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2987:2: (iv_ruleLayoutDef= ruleLayoutDef EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2988:2: iv_ruleLayoutDef= ruleLayoutDef EOF
             {
              newCompositeNode(grammarAccess.getLayoutDefRule()); 
-            pushFollow(FOLLOW_ruleLayoutDef_in_entryRuleLayoutDef6127);
+            pushFollow(FOLLOW_ruleLayoutDef_in_entryRuleLayoutDef6163);
             iv_ruleLayoutDef=ruleLayoutDef();
 
             state._fsp--;
 
              current =iv_ruleLayoutDef; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutDef6137); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutDef6173); 
 
             }
 
@@ -7519,7 +7582,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLayoutDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2973:1: ruleLayoutDef returns [EObject current=null] : (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2995:1: ruleLayoutDef returns [EObject current=null] : (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' ) ;
     public final EObject ruleLayoutDef() throws RecognitionException {
         EObject current = null;
 
@@ -7532,43 +7595,43 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2976:28: ( (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2977:1: (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2998:28: ( (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2999:1: (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2977:1: (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2977:3: otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2999:1: (otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2999:3: otherlv_0= 'layout' otherlv_1= '{' ( (lv_layoutItems_2_0= ruleLayoutItem ) )+ otherlv_3= '}'
             {
-            otherlv_0=(Token)match(input,73,FOLLOW_73_in_ruleLayoutDef6174); 
+            otherlv_0=(Token)match(input,74,FOLLOW_74_in_ruleLayoutDef6210); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLayoutDefAccess().getLayoutKeyword_0());
                 
-            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleLayoutDef6186); 
+            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleLayoutDef6222); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getLayoutDefAccess().getLeftCurlyBracketKeyword_1());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2985:1: ( (lv_layoutItems_2_0= ruleLayoutItem ) )+
-            int cnt77=0;
-            loop77:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3007:1: ( (lv_layoutItems_2_0= ruleLayoutItem ) )+
+            int cnt78=0;
+            loop78:
             do {
-                int alt77=2;
-                int LA77_0 = input.LA(1);
+                int alt78=2;
+                int LA78_0 = input.LA(1);
 
-                if ( ((LA77_0>=49 && LA77_0<=50)||LA77_0==75) ) {
-                    alt77=1;
+                if ( ((LA78_0>=50 && LA78_0<=51)||LA78_0==76) ) {
+                    alt78=1;
                 }
 
 
-                switch (alt77) {
+                switch (alt78) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2986:1: (lv_layoutItems_2_0= ruleLayoutItem )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3008:1: (lv_layoutItems_2_0= ruleLayoutItem )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2986:1: (lv_layoutItems_2_0= ruleLayoutItem )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:2987:3: lv_layoutItems_2_0= ruleLayoutItem
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3008:1: (lv_layoutItems_2_0= ruleLayoutItem )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3009:3: lv_layoutItems_2_0= ruleLayoutItem
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getLayoutDefAccess().getLayoutItemsLayoutItemParserRuleCall_2_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleLayoutItem_in_ruleLayoutDef6207);
+            	    pushFollow(FOLLOW_ruleLayoutItem_in_ruleLayoutDef6243);
             	    lv_layoutItems_2_0=ruleLayoutItem();
 
             	    state._fsp--;
@@ -7592,15 +7655,15 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt77 >= 1 ) break loop77;
+            	    if ( cnt78 >= 1 ) break loop78;
                         EarlyExitException eee =
-                            new EarlyExitException(77, input);
+                            new EarlyExitException(78, input);
                         throw eee;
                 }
-                cnt77++;
+                cnt78++;
             } while (true);
 
-            otherlv_3=(Token)match(input,20,FOLLOW_20_in_ruleLayoutDef6220); 
+            otherlv_3=(Token)match(input,20,FOLLOW_20_in_ruleLayoutDef6256); 
 
                 	newLeafNode(otherlv_3, grammarAccess.getLayoutDefAccess().getRightCurlyBracketKeyword_3());
                 
@@ -7625,7 +7688,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLayoutCopy"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3015:1: entryRuleLayoutCopy returns [EObject current=null] : iv_ruleLayoutCopy= ruleLayoutCopy EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3037:1: entryRuleLayoutCopy returns [EObject current=null] : iv_ruleLayoutCopy= ruleLayoutCopy EOF ;
     public final EObject entryRuleLayoutCopy() throws RecognitionException {
         EObject current = null;
 
@@ -7633,17 +7696,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3016:2: (iv_ruleLayoutCopy= ruleLayoutCopy EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3017:2: iv_ruleLayoutCopy= ruleLayoutCopy EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3038:2: (iv_ruleLayoutCopy= ruleLayoutCopy EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3039:2: iv_ruleLayoutCopy= ruleLayoutCopy EOF
             {
              newCompositeNode(grammarAccess.getLayoutCopyRule()); 
-            pushFollow(FOLLOW_ruleLayoutCopy_in_entryRuleLayoutCopy6256);
+            pushFollow(FOLLOW_ruleLayoutCopy_in_entryRuleLayoutCopy6292);
             iv_ruleLayoutCopy=ruleLayoutCopy();
 
             state._fsp--;
 
              current =iv_ruleLayoutCopy; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutCopy6266); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutCopy6302); 
 
             }
 
@@ -7661,7 +7724,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLayoutCopy"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3024:1: ruleLayoutCopy returns [EObject current=null] : (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3046:1: ruleLayoutCopy returns [EObject current=null] : (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) ) ;
     public final EObject ruleLayoutCopy() throws RecognitionException {
         EObject current = null;
 
@@ -7670,21 +7733,21 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3027:28: ( (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3028:1: (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3049:28: ( (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3050:1: (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3028:1: (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3028:3: otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3050:1: (otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3050:3: otherlv_0= 'layoutCopyFrom' ( ( ruleSTATE_NAME_REFERENCE ) )
             {
-            otherlv_0=(Token)match(input,74,FOLLOW_74_in_ruleLayoutCopy6303); 
+            otherlv_0=(Token)match(input,75,FOLLOW_75_in_ruleLayoutCopy6339); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getLayoutCopyAccess().getLayoutCopyFromKeyword_0());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3032:1: ( ( ruleSTATE_NAME_REFERENCE ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3033:1: ( ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3054:1: ( ( ruleSTATE_NAME_REFERENCE ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3055:1: ( ruleSTATE_NAME_REFERENCE )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3033:1: ( ruleSTATE_NAME_REFERENCE )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3034:3: ruleSTATE_NAME_REFERENCE
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3055:1: ( ruleSTATE_NAME_REFERENCE )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3056:3: ruleSTATE_NAME_REFERENCE
             {
 
             			if (current==null) {
@@ -7694,7 +7757,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
              
             	        newCompositeNode(grammarAccess.getLayoutCopyAccess().getStateStateDefCrossReference_1_0()); 
             	    
-            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleLayoutCopy6326);
+            pushFollow(FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleLayoutCopy6362);
             ruleSTATE_NAME_REFERENCE();
 
             state._fsp--;
@@ -7729,7 +7792,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleLayoutItem"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3055:1: entryRuleLayoutItem returns [EObject current=null] : iv_ruleLayoutItem= ruleLayoutItem EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3077:1: entryRuleLayoutItem returns [EObject current=null] : iv_ruleLayoutItem= ruleLayoutItem EOF ;
     public final EObject entryRuleLayoutItem() throws RecognitionException {
         EObject current = null;
 
@@ -7737,17 +7800,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3056:2: (iv_ruleLayoutItem= ruleLayoutItem EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3057:2: iv_ruleLayoutItem= ruleLayoutItem EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3078:2: (iv_ruleLayoutItem= ruleLayoutItem EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3079:2: iv_ruleLayoutItem= ruleLayoutItem EOF
             {
              newCompositeNode(grammarAccess.getLayoutItemRule()); 
-            pushFollow(FOLLOW_ruleLayoutItem_in_entryRuleLayoutItem6362);
+            pushFollow(FOLLOW_ruleLayoutItem_in_entryRuleLayoutItem6398);
             iv_ruleLayoutItem=ruleLayoutItem();
 
             state._fsp--;
 
              current =iv_ruleLayoutItem; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutItem6372); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleLayoutItem6408); 
 
             }
 
@@ -7765,7 +7828,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleLayoutItem"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3064:1: ruleLayoutItem returns [EObject current=null] : (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3086:1: ruleLayoutItem returns [EObject current=null] : (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite ) ;
     public final EObject ruleLayoutItem() throws RecognitionException {
         EObject current = null;
 
@@ -7779,42 +7842,42 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3067:28: ( (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3068:1: (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3089:28: ( (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3090:1: (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3068:1: (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite )
-            int alt78=3;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3090:1: (this_WidgetRef_0= ruleWidgetRef | this_AttrWidget_1= ruleAttrWidget | this_Composite_2= ruleComposite )
+            int alt79=3;
             switch ( input.LA(1) ) {
-            case 49:
-                {
-                alt78=1;
-                }
-                break;
             case 50:
                 {
-                alt78=2;
+                alt79=1;
                 }
                 break;
-            case 75:
+            case 51:
                 {
-                alt78=3;
+                alt79=2;
+                }
+                break;
+            case 76:
+                {
+                alt79=3;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 78, 0, input);
+                    new NoViableAltException("", 79, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt78) {
+            switch (alt79) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3069:5: this_WidgetRef_0= ruleWidgetRef
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3091:5: this_WidgetRef_0= ruleWidgetRef
                     {
                      
                             newCompositeNode(grammarAccess.getLayoutItemAccess().getWidgetRefParserRuleCall_0()); 
                         
-                    pushFollow(FOLLOW_ruleWidgetRef_in_ruleLayoutItem6419);
+                    pushFollow(FOLLOW_ruleWidgetRef_in_ruleLayoutItem6455);
                     this_WidgetRef_0=ruleWidgetRef();
 
                     state._fsp--;
@@ -7827,12 +7890,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3079:5: this_AttrWidget_1= ruleAttrWidget
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3101:5: this_AttrWidget_1= ruleAttrWidget
                     {
                      
                             newCompositeNode(grammarAccess.getLayoutItemAccess().getAttrWidgetParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleAttrWidget_in_ruleLayoutItem6446);
+                    pushFollow(FOLLOW_ruleAttrWidget_in_ruleLayoutItem6482);
                     this_AttrWidget_1=ruleAttrWidget();
 
                     state._fsp--;
@@ -7845,12 +7908,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3089:5: this_Composite_2= ruleComposite
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3111:5: this_Composite_2= ruleComposite
                     {
                      
                             newCompositeNode(grammarAccess.getLayoutItemAccess().getCompositeParserRuleCall_2()); 
                         
-                    pushFollow(FOLLOW_ruleComposite_in_ruleLayoutItem6473);
+                    pushFollow(FOLLOW_ruleComposite_in_ruleLayoutItem6509);
                     this_Composite_2=ruleComposite();
 
                     state._fsp--;
@@ -7883,7 +7946,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleComposite"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3105:1: entryRuleComposite returns [EObject current=null] : iv_ruleComposite= ruleComposite EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3127:1: entryRuleComposite returns [EObject current=null] : iv_ruleComposite= ruleComposite EOF ;
     public final EObject entryRuleComposite() throws RecognitionException {
         EObject current = null;
 
@@ -7891,17 +7954,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3106:2: (iv_ruleComposite= ruleComposite EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3107:2: iv_ruleComposite= ruleComposite EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3128:2: (iv_ruleComposite= ruleComposite EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3129:2: iv_ruleComposite= ruleComposite EOF
             {
              newCompositeNode(grammarAccess.getCompositeRule()); 
-            pushFollow(FOLLOW_ruleComposite_in_entryRuleComposite6508);
+            pushFollow(FOLLOW_ruleComposite_in_entryRuleComposite6544);
             iv_ruleComposite=ruleComposite();
 
             state._fsp--;
 
              current =iv_ruleComposite; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleComposite6518); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleComposite6554); 
 
             }
 
@@ -7919,7 +7982,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleComposite"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3114:1: ruleComposite returns [EObject current=null] : (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3136:1: ruleComposite returns [EObject current=null] : (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' ) ;
     public final EObject ruleComposite() throws RecognitionException {
         EObject current = null;
 
@@ -7937,31 +8000,31 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3117:28: ( (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3118:1: (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3139:28: ( (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3140:1: (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3118:1: (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3118:3: otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}'
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3140:1: (otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}' )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3140:3: otherlv_0= 'composite' otherlv_1= '{' otherlv_2= 'numColumns' ( (lv_numColumns_3_0= RULE_INT ) ) ( (lv_layoutItems_4_0= ruleLayoutItem ) )+ (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )* otherlv_7= '}'
             {
-            otherlv_0=(Token)match(input,75,FOLLOW_75_in_ruleComposite6555); 
+            otherlv_0=(Token)match(input,76,FOLLOW_76_in_ruleComposite6591); 
 
                 	newLeafNode(otherlv_0, grammarAccess.getCompositeAccess().getCompositeKeyword_0());
                 
-            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleComposite6567); 
+            otherlv_1=(Token)match(input,15,FOLLOW_15_in_ruleComposite6603); 
 
                 	newLeafNode(otherlv_1, grammarAccess.getCompositeAccess().getLeftCurlyBracketKeyword_1());
                 
-            otherlv_2=(Token)match(input,76,FOLLOW_76_in_ruleComposite6579); 
+            otherlv_2=(Token)match(input,77,FOLLOW_77_in_ruleComposite6615); 
 
                 	newLeafNode(otherlv_2, grammarAccess.getCompositeAccess().getNumColumnsKeyword_2());
                 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3130:1: ( (lv_numColumns_3_0= RULE_INT ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3131:1: (lv_numColumns_3_0= RULE_INT )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3152:1: ( (lv_numColumns_3_0= RULE_INT ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3153:1: (lv_numColumns_3_0= RULE_INT )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3131:1: (lv_numColumns_3_0= RULE_INT )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3132:3: lv_numColumns_3_0= RULE_INT
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3153:1: (lv_numColumns_3_0= RULE_INT )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3154:3: lv_numColumns_3_0= RULE_INT
             {
-            lv_numColumns_3_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleComposite6596); 
+            lv_numColumns_3_0=(Token)match(input,RULE_INT,FOLLOW_RULE_INT_in_ruleComposite6632); 
 
             			newLeafNode(lv_numColumns_3_0, grammarAccess.getCompositeAccess().getNumColumnsINTTerminalRuleCall_3_0()); 
             		
@@ -7981,29 +8044,29 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
             }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3148:2: ( (lv_layoutItems_4_0= ruleLayoutItem ) )+
-            int cnt79=0;
-            loop79:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3170:2: ( (lv_layoutItems_4_0= ruleLayoutItem ) )+
+            int cnt80=0;
+            loop80:
             do {
-                int alt79=2;
-                int LA79_0 = input.LA(1);
+                int alt80=2;
+                int LA80_0 = input.LA(1);
 
-                if ( ((LA79_0>=49 && LA79_0<=50)||LA79_0==75) ) {
-                    alt79=1;
+                if ( ((LA80_0>=50 && LA80_0<=51)||LA80_0==76) ) {
+                    alt80=1;
                 }
 
 
-                switch (alt79) {
+                switch (alt80) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3149:1: (lv_layoutItems_4_0= ruleLayoutItem )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3171:1: (lv_layoutItems_4_0= ruleLayoutItem )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3149:1: (lv_layoutItems_4_0= ruleLayoutItem )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3150:3: lv_layoutItems_4_0= ruleLayoutItem
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3171:1: (lv_layoutItems_4_0= ruleLayoutItem )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3172:3: lv_layoutItems_4_0= ruleLayoutItem
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getCompositeAccess().getLayoutItemsLayoutItemParserRuleCall_4_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleLayoutItem_in_ruleComposite6622);
+            	    pushFollow(FOLLOW_ruleLayoutItem_in_ruleComposite6658);
             	    lv_layoutItems_4_0=ruleLayoutItem();
 
             	    state._fsp--;
@@ -8027,43 +8090,43 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    if ( cnt79 >= 1 ) break loop79;
+            	    if ( cnt80 >= 1 ) break loop80;
                         EarlyExitException eee =
-                            new EarlyExitException(79, input);
+                            new EarlyExitException(80, input);
                         throw eee;
                 }
-                cnt79++;
+                cnt80++;
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3166:3: (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )*
-            loop80:
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3188:3: (otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) ) )*
+            loop81:
             do {
-                int alt80=2;
-                int LA80_0 = input.LA(1);
+                int alt81=2;
+                int LA81_0 = input.LA(1);
 
-                if ( (LA80_0==46) ) {
-                    alt80=1;
+                if ( (LA81_0==47) ) {
+                    alt81=1;
                 }
 
 
-                switch (alt80) {
+                switch (alt81) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3166:5: otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3188:5: otherlv_5= 'option' ( (lv_options_6_0= ruleCompositeOption ) )
             	    {
-            	    otherlv_5=(Token)match(input,46,FOLLOW_46_in_ruleComposite6636); 
+            	    otherlv_5=(Token)match(input,47,FOLLOW_47_in_ruleComposite6672); 
 
             	        	newLeafNode(otherlv_5, grammarAccess.getCompositeAccess().getOptionKeyword_5_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3170:1: ( (lv_options_6_0= ruleCompositeOption ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3171:1: (lv_options_6_0= ruleCompositeOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3192:1: ( (lv_options_6_0= ruleCompositeOption ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3193:1: (lv_options_6_0= ruleCompositeOption )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3171:1: (lv_options_6_0= ruleCompositeOption )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3172:3: lv_options_6_0= ruleCompositeOption
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3193:1: (lv_options_6_0= ruleCompositeOption )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3194:3: lv_options_6_0= ruleCompositeOption
             	    {
             	     
             	    	        newCompositeNode(grammarAccess.getCompositeAccess().getOptionsCompositeOptionParserRuleCall_5_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleCompositeOption_in_ruleComposite6657);
+            	    pushFollow(FOLLOW_ruleCompositeOption_in_ruleComposite6693);
             	    lv_options_6_0=ruleCompositeOption();
 
             	    state._fsp--;
@@ -8090,11 +8153,11 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    break;
 
             	default :
-            	    break loop80;
+            	    break loop81;
                 }
             } while (true);
 
-            otherlv_7=(Token)match(input,20,FOLLOW_20_in_ruleComposite6671); 
+            otherlv_7=(Token)match(input,20,FOLLOW_20_in_ruleComposite6707); 
 
                 	newLeafNode(otherlv_7, grammarAccess.getCompositeAccess().getRightCurlyBracketKeyword_6());
                 
@@ -8119,7 +8182,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleUSER_DEF_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3200:1: entryRuleUSER_DEF_OPTION_NAME returns [String current=null] : iv_ruleUSER_DEF_OPTION_NAME= ruleUSER_DEF_OPTION_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3222:1: entryRuleUSER_DEF_OPTION_NAME returns [String current=null] : iv_ruleUSER_DEF_OPTION_NAME= ruleUSER_DEF_OPTION_NAME EOF ;
     public final String entryRuleUSER_DEF_OPTION_NAME() throws RecognitionException {
         String current = null;
 
@@ -8127,17 +8190,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3201:2: (iv_ruleUSER_DEF_OPTION_NAME= ruleUSER_DEF_OPTION_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3202:2: iv_ruleUSER_DEF_OPTION_NAME= ruleUSER_DEF_OPTION_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3223:2: (iv_ruleUSER_DEF_OPTION_NAME= ruleUSER_DEF_OPTION_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3224:2: iv_ruleUSER_DEF_OPTION_NAME= ruleUSER_DEF_OPTION_NAME EOF
             {
              newCompositeNode(grammarAccess.getUSER_DEF_OPTION_NAMERule()); 
-            pushFollow(FOLLOW_ruleUSER_DEF_OPTION_NAME_in_entryRuleUSER_DEF_OPTION_NAME6708);
+            pushFollow(FOLLOW_ruleUSER_DEF_OPTION_NAME_in_entryRuleUSER_DEF_OPTION_NAME6744);
             iv_ruleUSER_DEF_OPTION_NAME=ruleUSER_DEF_OPTION_NAME();
 
             state._fsp--;
 
              current =iv_ruleUSER_DEF_OPTION_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleUSER_DEF_OPTION_NAME6719); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleUSER_DEF_OPTION_NAME6755); 
 
             }
 
@@ -8155,7 +8218,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleUSER_DEF_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3209:1: ruleUSER_DEF_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3231:1: ruleUSER_DEF_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleUSER_DEF_OPTION_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8164,10 +8227,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3212:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3213:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3234:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3235:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleUSER_DEF_OPTION_NAME6758); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleUSER_DEF_OPTION_NAME6794); 
 
             		current.merge(this_STRING_0);
                 
@@ -8192,7 +8255,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleUserDefOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3228:1: entryRuleUserDefOption returns [String current=null] : iv_ruleUserDefOption= ruleUserDefOption EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3250:1: entryRuleUserDefOption returns [String current=null] : iv_ruleUserDefOption= ruleUserDefOption EOF ;
     public final String entryRuleUserDefOption() throws RecognitionException {
         String current = null;
 
@@ -8200,17 +8263,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3229:2: (iv_ruleUserDefOption= ruleUserDefOption EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3230:2: iv_ruleUserDefOption= ruleUserDefOption EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3251:2: (iv_ruleUserDefOption= ruleUserDefOption EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3252:2: iv_ruleUserDefOption= ruleUserDefOption EOF
             {
              newCompositeNode(grammarAccess.getUserDefOptionRule()); 
-            pushFollow(FOLLOW_ruleUserDefOption_in_entryRuleUserDefOption6803);
+            pushFollow(FOLLOW_ruleUserDefOption_in_entryRuleUserDefOption6839);
             iv_ruleUserDefOption=ruleUserDefOption();
 
             state._fsp--;
 
              current =iv_ruleUserDefOption.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleUserDefOption6814); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleUserDefOption6850); 
 
             }
 
@@ -8228,7 +8291,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleUserDefOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3237:1: ruleUserDefOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3259:1: ruleUserDefOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME ) ;
     public final AntlrDatatypeRuleToken ruleUserDefOption() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8239,30 +8302,30 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3240:28: ( (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3241:1: (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3262:28: ( (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3263:1: (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3241:1: (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME )
-            int alt81=2;
-            int LA81_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3263:1: (kw= 'GetOrCreate' | this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME )
+            int alt82=2;
+            int LA82_0 = input.LA(1);
 
-            if ( (LA81_0==77) ) {
-                alt81=1;
+            if ( (LA82_0==78) ) {
+                alt82=1;
             }
-            else if ( (LA81_0==RULE_STRING) ) {
-                alt81=2;
+            else if ( (LA82_0==RULE_STRING) ) {
+                alt82=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 81, 0, input);
+                    new NoViableAltException("", 82, 0, input);
 
                 throw nvae;
             }
-            switch (alt81) {
+            switch (alt82) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3242:2: kw= 'GetOrCreate'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3264:2: kw= 'GetOrCreate'
                     {
-                    kw=(Token)match(input,77,FOLLOW_77_in_ruleUserDefOption6852); 
+                    kw=(Token)match(input,78,FOLLOW_78_in_ruleUserDefOption6888); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getUserDefOptionAccess().getGetOrCreateKeyword_0()); 
@@ -8271,12 +8334,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3249:5: this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3271:5: this_USER_DEF_OPTION_NAME_1= ruleUSER_DEF_OPTION_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getUserDefOptionAccess().getUSER_DEF_OPTION_NAMEParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleUSER_DEF_OPTION_NAME_in_ruleUserDefOption6880);
+                    pushFollow(FOLLOW_ruleUSER_DEF_OPTION_NAME_in_ruleUserDefOption6916);
                     this_USER_DEF_OPTION_NAME_1=ruleUSER_DEF_OPTION_NAME();
 
                     state._fsp--;
@@ -8311,7 +8374,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleTEAM_DEF_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3267:1: entryRuleTEAM_DEF_OPTION_NAME returns [String current=null] : iv_ruleTEAM_DEF_OPTION_NAME= ruleTEAM_DEF_OPTION_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3289:1: entryRuleTEAM_DEF_OPTION_NAME returns [String current=null] : iv_ruleTEAM_DEF_OPTION_NAME= ruleTEAM_DEF_OPTION_NAME EOF ;
     public final String entryRuleTEAM_DEF_OPTION_NAME() throws RecognitionException {
         String current = null;
 
@@ -8319,17 +8382,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3268:2: (iv_ruleTEAM_DEF_OPTION_NAME= ruleTEAM_DEF_OPTION_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3269:2: iv_ruleTEAM_DEF_OPTION_NAME= ruleTEAM_DEF_OPTION_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3290:2: (iv_ruleTEAM_DEF_OPTION_NAME= ruleTEAM_DEF_OPTION_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3291:2: iv_ruleTEAM_DEF_OPTION_NAME= ruleTEAM_DEF_OPTION_NAME EOF
             {
              newCompositeNode(grammarAccess.getTEAM_DEF_OPTION_NAMERule()); 
-            pushFollow(FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_entryRuleTEAM_DEF_OPTION_NAME6926);
+            pushFollow(FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_entryRuleTEAM_DEF_OPTION_NAME6962);
             iv_ruleTEAM_DEF_OPTION_NAME=ruleTEAM_DEF_OPTION_NAME();
 
             state._fsp--;
 
              current =iv_ruleTEAM_DEF_OPTION_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleTEAM_DEF_OPTION_NAME6937); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleTEAM_DEF_OPTION_NAME6973); 
 
             }
 
@@ -8347,7 +8410,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleTEAM_DEF_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3276:1: ruleTEAM_DEF_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3298:1: ruleTEAM_DEF_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleTEAM_DEF_OPTION_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8356,10 +8419,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3279:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3280:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3301:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3302:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleTEAM_DEF_OPTION_NAME6976); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleTEAM_DEF_OPTION_NAME7012); 
 
             		current.merge(this_STRING_0);
                 
@@ -8384,7 +8447,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleTeamDefOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3295:1: entryRuleTeamDefOption returns [String current=null] : iv_ruleTeamDefOption= ruleTeamDefOption EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3317:1: entryRuleTeamDefOption returns [String current=null] : iv_ruleTeamDefOption= ruleTeamDefOption EOF ;
     public final String entryRuleTeamDefOption() throws RecognitionException {
         String current = null;
 
@@ -8392,17 +8455,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3296:2: (iv_ruleTeamDefOption= ruleTeamDefOption EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3297:2: iv_ruleTeamDefOption= ruleTeamDefOption EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3318:2: (iv_ruleTeamDefOption= ruleTeamDefOption EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3319:2: iv_ruleTeamDefOption= ruleTeamDefOption EOF
             {
              newCompositeNode(grammarAccess.getTeamDefOptionRule()); 
-            pushFollow(FOLLOW_ruleTeamDefOption_in_entryRuleTeamDefOption7021);
+            pushFollow(FOLLOW_ruleTeamDefOption_in_entryRuleTeamDefOption7057);
             iv_ruleTeamDefOption=ruleTeamDefOption();
 
             state._fsp--;
 
              current =iv_ruleTeamDefOption.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleTeamDefOption7032); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleTeamDefOption7068); 
 
             }
 
@@ -8420,7 +8483,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleTeamDefOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3304:1: ruleTeamDefOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3326:1: ruleTeamDefOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME ) ;
     public final AntlrDatatypeRuleToken ruleTeamDefOption() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8431,30 +8494,30 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3307:28: ( (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3308:1: (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3329:28: ( (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3330:1: (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3308:1: (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME )
-            int alt82=2;
-            int LA82_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3330:1: (kw= 'GetOrCreate' | this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME )
+            int alt83=2;
+            int LA83_0 = input.LA(1);
 
-            if ( (LA82_0==77) ) {
-                alt82=1;
+            if ( (LA83_0==78) ) {
+                alt83=1;
             }
-            else if ( (LA82_0==RULE_STRING) ) {
-                alt82=2;
+            else if ( (LA83_0==RULE_STRING) ) {
+                alt83=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 82, 0, input);
+                    new NoViableAltException("", 83, 0, input);
 
                 throw nvae;
             }
-            switch (alt82) {
+            switch (alt83) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3309:2: kw= 'GetOrCreate'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3331:2: kw= 'GetOrCreate'
                     {
-                    kw=(Token)match(input,77,FOLLOW_77_in_ruleTeamDefOption7070); 
+                    kw=(Token)match(input,78,FOLLOW_78_in_ruleTeamDefOption7106); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getTeamDefOptionAccess().getGetOrCreateKeyword_0()); 
@@ -8463,12 +8526,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3316:5: this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3338:5: this_TEAM_DEF_OPTION_NAME_1= ruleTEAM_DEF_OPTION_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getTeamDefOptionAccess().getTEAM_DEF_OPTION_NAMEParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_ruleTeamDefOption7098);
+                    pushFollow(FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_ruleTeamDefOption7134);
                     this_TEAM_DEF_OPTION_NAME_1=ruleTEAM_DEF_OPTION_NAME();
 
                     state._fsp--;
@@ -8503,7 +8566,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleAI_DEF_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3334:1: entryRuleAI_DEF_OPTION_NAME returns [String current=null] : iv_ruleAI_DEF_OPTION_NAME= ruleAI_DEF_OPTION_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3356:1: entryRuleAI_DEF_OPTION_NAME returns [String current=null] : iv_ruleAI_DEF_OPTION_NAME= ruleAI_DEF_OPTION_NAME EOF ;
     public final String entryRuleAI_DEF_OPTION_NAME() throws RecognitionException {
         String current = null;
 
@@ -8511,17 +8574,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3335:2: (iv_ruleAI_DEF_OPTION_NAME= ruleAI_DEF_OPTION_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3336:2: iv_ruleAI_DEF_OPTION_NAME= ruleAI_DEF_OPTION_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3357:2: (iv_ruleAI_DEF_OPTION_NAME= ruleAI_DEF_OPTION_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3358:2: iv_ruleAI_DEF_OPTION_NAME= ruleAI_DEF_OPTION_NAME EOF
             {
              newCompositeNode(grammarAccess.getAI_DEF_OPTION_NAMERule()); 
-            pushFollow(FOLLOW_ruleAI_DEF_OPTION_NAME_in_entryRuleAI_DEF_OPTION_NAME7144);
+            pushFollow(FOLLOW_ruleAI_DEF_OPTION_NAME_in_entryRuleAI_DEF_OPTION_NAME7180);
             iv_ruleAI_DEF_OPTION_NAME=ruleAI_DEF_OPTION_NAME();
 
             state._fsp--;
 
              current =iv_ruleAI_DEF_OPTION_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleAI_DEF_OPTION_NAME7155); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleAI_DEF_OPTION_NAME7191); 
 
             }
 
@@ -8539,7 +8602,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleAI_DEF_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3343:1: ruleAI_DEF_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3365:1: ruleAI_DEF_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleAI_DEF_OPTION_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8548,10 +8611,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3346:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3347:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3368:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3369:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAI_DEF_OPTION_NAME7194); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleAI_DEF_OPTION_NAME7230); 
 
             		current.merge(this_STRING_0);
                 
@@ -8576,7 +8639,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleActionableItemOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3362:1: entryRuleActionableItemOption returns [String current=null] : iv_ruleActionableItemOption= ruleActionableItemOption EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3384:1: entryRuleActionableItemOption returns [String current=null] : iv_ruleActionableItemOption= ruleActionableItemOption EOF ;
     public final String entryRuleActionableItemOption() throws RecognitionException {
         String current = null;
 
@@ -8584,17 +8647,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3363:2: (iv_ruleActionableItemOption= ruleActionableItemOption EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3364:2: iv_ruleActionableItemOption= ruleActionableItemOption EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3385:2: (iv_ruleActionableItemOption= ruleActionableItemOption EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3386:2: iv_ruleActionableItemOption= ruleActionableItemOption EOF
             {
              newCompositeNode(grammarAccess.getActionableItemOptionRule()); 
-            pushFollow(FOLLOW_ruleActionableItemOption_in_entryRuleActionableItemOption7239);
+            pushFollow(FOLLOW_ruleActionableItemOption_in_entryRuleActionableItemOption7275);
             iv_ruleActionableItemOption=ruleActionableItemOption();
 
             state._fsp--;
 
              current =iv_ruleActionableItemOption.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleActionableItemOption7250); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleActionableItemOption7286); 
 
             }
 
@@ -8612,7 +8675,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleActionableItemOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3371:1: ruleActionableItemOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3393:1: ruleActionableItemOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME ) ;
     public final AntlrDatatypeRuleToken ruleActionableItemOption() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8623,30 +8686,30 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3374:28: ( (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3375:1: (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3396:28: ( (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3397:1: (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3375:1: (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME )
-            int alt83=2;
-            int LA83_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3397:1: (kw= 'GetOrCreate' | this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME )
+            int alt84=2;
+            int LA84_0 = input.LA(1);
 
-            if ( (LA83_0==77) ) {
-                alt83=1;
+            if ( (LA84_0==78) ) {
+                alt84=1;
             }
-            else if ( (LA83_0==RULE_STRING) ) {
-                alt83=2;
+            else if ( (LA84_0==RULE_STRING) ) {
+                alt84=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 83, 0, input);
+                    new NoViableAltException("", 84, 0, input);
 
                 throw nvae;
             }
-            switch (alt83) {
+            switch (alt84) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3376:2: kw= 'GetOrCreate'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3398:2: kw= 'GetOrCreate'
                     {
-                    kw=(Token)match(input,77,FOLLOW_77_in_ruleActionableItemOption7288); 
+                    kw=(Token)match(input,78,FOLLOW_78_in_ruleActionableItemOption7324); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getActionableItemOptionAccess().getGetOrCreateKeyword_0()); 
@@ -8655,12 +8718,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3383:5: this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3405:5: this_AI_DEF_OPTION_NAME_1= ruleAI_DEF_OPTION_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getActionableItemOptionAccess().getAI_DEF_OPTION_NAMEParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleAI_DEF_OPTION_NAME_in_ruleActionableItemOption7316);
+                    pushFollow(FOLLOW_ruleAI_DEF_OPTION_NAME_in_ruleActionableItemOption7352);
                     this_AI_DEF_OPTION_NAME_1=ruleAI_DEF_OPTION_NAME();
 
                     state._fsp--;
@@ -8695,7 +8758,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleCOMPOSITE_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3401:1: entryRuleCOMPOSITE_OPTION_NAME returns [String current=null] : iv_ruleCOMPOSITE_OPTION_NAME= ruleCOMPOSITE_OPTION_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3423:1: entryRuleCOMPOSITE_OPTION_NAME returns [String current=null] : iv_ruleCOMPOSITE_OPTION_NAME= ruleCOMPOSITE_OPTION_NAME EOF ;
     public final String entryRuleCOMPOSITE_OPTION_NAME() throws RecognitionException {
         String current = null;
 
@@ -8703,17 +8766,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3402:2: (iv_ruleCOMPOSITE_OPTION_NAME= ruleCOMPOSITE_OPTION_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3403:2: iv_ruleCOMPOSITE_OPTION_NAME= ruleCOMPOSITE_OPTION_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3424:2: (iv_ruleCOMPOSITE_OPTION_NAME= ruleCOMPOSITE_OPTION_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3425:2: iv_ruleCOMPOSITE_OPTION_NAME= ruleCOMPOSITE_OPTION_NAME EOF
             {
              newCompositeNode(grammarAccess.getCOMPOSITE_OPTION_NAMERule()); 
-            pushFollow(FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_entryRuleCOMPOSITE_OPTION_NAME7362);
+            pushFollow(FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_entryRuleCOMPOSITE_OPTION_NAME7398);
             iv_ruleCOMPOSITE_OPTION_NAME=ruleCOMPOSITE_OPTION_NAME();
 
             state._fsp--;
 
              current =iv_ruleCOMPOSITE_OPTION_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleCOMPOSITE_OPTION_NAME7373); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleCOMPOSITE_OPTION_NAME7409); 
 
             }
 
@@ -8731,7 +8794,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleCOMPOSITE_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3410:1: ruleCOMPOSITE_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3432:1: ruleCOMPOSITE_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleCOMPOSITE_OPTION_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8740,10 +8803,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3413:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3414:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3435:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3436:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleCOMPOSITE_OPTION_NAME7412); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleCOMPOSITE_OPTION_NAME7448); 
 
             		current.merge(this_STRING_0);
                 
@@ -8768,7 +8831,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleCompositeOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3429:1: entryRuleCompositeOption returns [String current=null] : iv_ruleCompositeOption= ruleCompositeOption EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3451:1: entryRuleCompositeOption returns [String current=null] : iv_ruleCompositeOption= ruleCompositeOption EOF ;
     public final String entryRuleCompositeOption() throws RecognitionException {
         String current = null;
 
@@ -8776,17 +8839,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3430:2: (iv_ruleCompositeOption= ruleCompositeOption EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3431:2: iv_ruleCompositeOption= ruleCompositeOption EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3452:2: (iv_ruleCompositeOption= ruleCompositeOption EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3453:2: iv_ruleCompositeOption= ruleCompositeOption EOF
             {
              newCompositeNode(grammarAccess.getCompositeOptionRule()); 
-            pushFollow(FOLLOW_ruleCompositeOption_in_entryRuleCompositeOption7457);
+            pushFollow(FOLLOW_ruleCompositeOption_in_entryRuleCompositeOption7493);
             iv_ruleCompositeOption=ruleCompositeOption();
 
             state._fsp--;
 
              current =iv_ruleCompositeOption.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleCompositeOption7468); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleCompositeOption7504); 
 
             }
 
@@ -8804,7 +8867,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleCompositeOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3438:1: ruleCompositeOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3460:1: ruleCompositeOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME ) ;
     public final AntlrDatatypeRuleToken ruleCompositeOption() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8815,30 +8878,30 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3441:28: ( (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3442:1: (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3463:28: ( (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3464:1: (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3442:1: (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME )
-            int alt84=2;
-            int LA84_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3464:1: (kw= 'None' | this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME )
+            int alt85=2;
+            int LA85_0 = input.LA(1);
 
-            if ( (LA84_0==78) ) {
-                alt84=1;
+            if ( (LA85_0==79) ) {
+                alt85=1;
             }
-            else if ( (LA84_0==RULE_STRING) ) {
-                alt84=2;
+            else if ( (LA85_0==RULE_STRING) ) {
+                alt85=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 84, 0, input);
+                    new NoViableAltException("", 85, 0, input);
 
                 throw nvae;
             }
-            switch (alt84) {
+            switch (alt85) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3443:2: kw= 'None'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3465:2: kw= 'None'
                     {
-                    kw=(Token)match(input,78,FOLLOW_78_in_ruleCompositeOption7506); 
+                    kw=(Token)match(input,79,FOLLOW_79_in_ruleCompositeOption7542); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getCompositeOptionAccess().getNoneKeyword_0()); 
@@ -8847,12 +8910,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3450:5: this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3472:5: this_COMPOSITE_OPTION_NAME_1= ruleCOMPOSITE_OPTION_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getCompositeOptionAccess().getCOMPOSITE_OPTION_NAMEParserRuleCall_1()); 
                         
-                    pushFollow(FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_ruleCompositeOption7534);
+                    pushFollow(FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_ruleCompositeOption7570);
                     this_COMPOSITE_OPTION_NAME_1=ruleCOMPOSITE_OPTION_NAME();
 
                     state._fsp--;
@@ -8887,7 +8950,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleTRANSITION_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3468:1: entryRuleTRANSITION_OPTION_NAME returns [String current=null] : iv_ruleTRANSITION_OPTION_NAME= ruleTRANSITION_OPTION_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3490:1: entryRuleTRANSITION_OPTION_NAME returns [String current=null] : iv_ruleTRANSITION_OPTION_NAME= ruleTRANSITION_OPTION_NAME EOF ;
     public final String entryRuleTRANSITION_OPTION_NAME() throws RecognitionException {
         String current = null;
 
@@ -8895,17 +8958,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3469:2: (iv_ruleTRANSITION_OPTION_NAME= ruleTRANSITION_OPTION_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3470:2: iv_ruleTRANSITION_OPTION_NAME= ruleTRANSITION_OPTION_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3491:2: (iv_ruleTRANSITION_OPTION_NAME= ruleTRANSITION_OPTION_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3492:2: iv_ruleTRANSITION_OPTION_NAME= ruleTRANSITION_OPTION_NAME EOF
             {
              newCompositeNode(grammarAccess.getTRANSITION_OPTION_NAMERule()); 
-            pushFollow(FOLLOW_ruleTRANSITION_OPTION_NAME_in_entryRuleTRANSITION_OPTION_NAME7580);
+            pushFollow(FOLLOW_ruleTRANSITION_OPTION_NAME_in_entryRuleTRANSITION_OPTION_NAME7616);
             iv_ruleTRANSITION_OPTION_NAME=ruleTRANSITION_OPTION_NAME();
 
             state._fsp--;
 
              current =iv_ruleTRANSITION_OPTION_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleTRANSITION_OPTION_NAME7591); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleTRANSITION_OPTION_NAME7627); 
 
             }
 
@@ -8923,7 +8986,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleTRANSITION_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3477:1: ruleTRANSITION_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3499:1: ruleTRANSITION_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleTRANSITION_OPTION_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -8932,10 +8995,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3480:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3481:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3502:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3503:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleTRANSITION_OPTION_NAME7630); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleTRANSITION_OPTION_NAME7666); 
 
             		current.merge(this_STRING_0);
                 
@@ -8960,7 +9023,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleTransitionOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3496:1: entryRuleTransitionOption returns [String current=null] : iv_ruleTransitionOption= ruleTransitionOption EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3518:1: entryRuleTransitionOption returns [String current=null] : iv_ruleTransitionOption= ruleTransitionOption EOF ;
     public final String entryRuleTransitionOption() throws RecognitionException {
         String current = null;
 
@@ -8968,17 +9031,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3497:2: (iv_ruleTransitionOption= ruleTransitionOption EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3498:2: iv_ruleTransitionOption= ruleTransitionOption EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3519:2: (iv_ruleTransitionOption= ruleTransitionOption EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3520:2: iv_ruleTransitionOption= ruleTransitionOption EOF
             {
              newCompositeNode(grammarAccess.getTransitionOptionRule()); 
-            pushFollow(FOLLOW_ruleTransitionOption_in_entryRuleTransitionOption7675);
+            pushFollow(FOLLOW_ruleTransitionOption_in_entryRuleTransitionOption7711);
             iv_ruleTransitionOption=ruleTransitionOption();
 
             state._fsp--;
 
              current =iv_ruleTransitionOption.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleTransitionOption7686); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleTransitionOption7722); 
 
             }
 
@@ -8996,7 +9059,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleTransitionOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3505:1: ruleTransitionOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3527:1: ruleTransitionOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME ) ;
     public final AntlrDatatypeRuleToken ruleTransitionOption() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -9007,39 +9070,39 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3508:28: ( (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3509:1: (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3530:28: ( (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3531:1: (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3509:1: (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME )
-            int alt85=3;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3531:1: (kw= 'AsDefault' | kw= 'OverrideAttributeValidation' | this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME )
+            int alt86=3;
             switch ( input.LA(1) ) {
-            case 79:
-                {
-                alt85=1;
-                }
-                break;
             case 80:
                 {
-                alt85=2;
+                alt86=1;
+                }
+                break;
+            case 81:
+                {
+                alt86=2;
                 }
                 break;
             case RULE_STRING:
                 {
-                alt85=3;
+                alt86=3;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 85, 0, input);
+                    new NoViableAltException("", 86, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt85) {
+            switch (alt86) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3510:2: kw= 'AsDefault'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3532:2: kw= 'AsDefault'
                     {
-                    kw=(Token)match(input,79,FOLLOW_79_in_ruleTransitionOption7724); 
+                    kw=(Token)match(input,80,FOLLOW_80_in_ruleTransitionOption7760); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getTransitionOptionAccess().getAsDefaultKeyword_0()); 
@@ -9048,9 +9111,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3517:2: kw= 'OverrideAttributeValidation'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3539:2: kw= 'OverrideAttributeValidation'
                     {
-                    kw=(Token)match(input,80,FOLLOW_80_in_ruleTransitionOption7743); 
+                    kw=(Token)match(input,81,FOLLOW_81_in_ruleTransitionOption7779); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getTransitionOptionAccess().getOverrideAttributeValidationKeyword_1()); 
@@ -9059,12 +9122,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3524:5: this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3546:5: this_TRANSITION_OPTION_NAME_2= ruleTRANSITION_OPTION_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getTransitionOptionAccess().getTRANSITION_OPTION_NAMEParserRuleCall_2()); 
                         
-                    pushFollow(FOLLOW_ruleTRANSITION_OPTION_NAME_in_ruleTransitionOption7771);
+                    pushFollow(FOLLOW_ruleTRANSITION_OPTION_NAME_in_ruleTransitionOption7807);
                     this_TRANSITION_OPTION_NAME_2=ruleTRANSITION_OPTION_NAME();
 
                     state._fsp--;
@@ -9099,7 +9162,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleRULE_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3542:1: entryRuleRULE_NAME returns [String current=null] : iv_ruleRULE_NAME= ruleRULE_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3564:1: entryRuleRULE_NAME returns [String current=null] : iv_ruleRULE_NAME= ruleRULE_NAME EOF ;
     public final String entryRuleRULE_NAME() throws RecognitionException {
         String current = null;
 
@@ -9107,17 +9170,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3543:2: (iv_ruleRULE_NAME= ruleRULE_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3544:2: iv_ruleRULE_NAME= ruleRULE_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3565:2: (iv_ruleRULE_NAME= ruleRULE_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3566:2: iv_ruleRULE_NAME= ruleRULE_NAME EOF
             {
              newCompositeNode(grammarAccess.getRULE_NAMERule()); 
-            pushFollow(FOLLOW_ruleRULE_NAME_in_entryRuleRULE_NAME7817);
+            pushFollow(FOLLOW_ruleRULE_NAME_in_entryRuleRULE_NAME7853);
             iv_ruleRULE_NAME=ruleRULE_NAME();
 
             state._fsp--;
 
              current =iv_ruleRULE_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleRULE_NAME7828); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleRULE_NAME7864); 
 
             }
 
@@ -9135,7 +9198,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleRULE_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3551:1: ruleRULE_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3573:1: ruleRULE_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleRULE_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -9144,10 +9207,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3554:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3555:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3576:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3577:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleRULE_NAME7867); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleRULE_NAME7903); 
 
             		current.merge(this_STRING_0);
                 
@@ -9172,7 +9235,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleRule"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3570:1: entryRuleRule returns [String current=null] : iv_ruleRule= ruleRule EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3592:1: entryRuleRule returns [String current=null] : iv_ruleRule= ruleRule EOF ;
     public final String entryRuleRule() throws RecognitionException {
         String current = null;
 
@@ -9180,17 +9243,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3571:2: (iv_ruleRule= ruleRule EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3572:2: iv_ruleRule= ruleRule EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3593:2: (iv_ruleRule= ruleRule EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3594:2: iv_ruleRule= ruleRule EOF
             {
              newCompositeNode(grammarAccess.getRuleRule()); 
-            pushFollow(FOLLOW_ruleRule_in_entryRuleRule7912);
+            pushFollow(FOLLOW_ruleRule_in_entryRuleRule7948);
             iv_ruleRule=ruleRule();
 
             state._fsp--;
 
              current =iv_ruleRule.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleRule7923); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleRule7959); 
 
             }
 
@@ -9208,7 +9271,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleRule"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3579:1: ruleRule returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3601:1: ruleRule returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME ) ;
     public final AntlrDatatypeRuleToken ruleRule() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -9219,89 +9282,89 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3582:28: ( (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3583:1: (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3604:28: ( (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3605:1: (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3583:1: (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME )
-            int alt86=13;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3605:1: (kw= 'RequireStateHourSpentPrompt' | kw= 'AddDecisionValidateBlockingReview' | kw= 'AddDecisionValidateNonBlockingReview' | kw= 'AllowTransitionWithWorkingBranch' | kw= 'ForceAssigneesToTeamLeads' | kw= 'RequireTargetedVersion' | kw= 'AllowPriviledgedEditToTeamMember' | kw= 'AllowPriviledgedEditToTeamMemberAndOriginator' | kw= 'AllowPriviledgedEditToAll' | kw= 'AllowEditToAll' | kw= 'AllowAssigneeToAll' | kw= 'AllowTransitionWithoutTaskCompletion' | this_RULE_NAME_12= ruleRULE_NAME )
+            int alt87=13;
             switch ( input.LA(1) ) {
-            case 81:
-                {
-                alt86=1;
-                }
-                break;
             case 82:
                 {
-                alt86=2;
+                alt87=1;
                 }
                 break;
             case 83:
                 {
-                alt86=3;
+                alt87=2;
                 }
                 break;
             case 84:
                 {
-                alt86=4;
+                alt87=3;
                 }
                 break;
             case 85:
                 {
-                alt86=5;
+                alt87=4;
                 }
                 break;
             case 86:
                 {
-                alt86=6;
+                alt87=5;
                 }
                 break;
             case 87:
                 {
-                alt86=7;
+                alt87=6;
                 }
                 break;
             case 88:
                 {
-                alt86=8;
+                alt87=7;
                 }
                 break;
             case 89:
                 {
-                alt86=9;
+                alt87=8;
                 }
                 break;
             case 90:
                 {
-                alt86=10;
+                alt87=9;
                 }
                 break;
             case 91:
                 {
-                alt86=11;
+                alt87=10;
                 }
                 break;
             case 92:
                 {
-                alt86=12;
+                alt87=11;
+                }
+                break;
+            case 93:
+                {
+                alt87=12;
                 }
                 break;
             case RULE_STRING:
                 {
-                alt86=13;
+                alt87=13;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 86, 0, input);
+                    new NoViableAltException("", 87, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt86) {
+            switch (alt87) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3584:2: kw= 'RequireStateHourSpentPrompt'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3606:2: kw= 'RequireStateHourSpentPrompt'
                     {
-                    kw=(Token)match(input,81,FOLLOW_81_in_ruleRule7961); 
+                    kw=(Token)match(input,82,FOLLOW_82_in_ruleRule7997); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getRequireStateHourSpentPromptKeyword_0()); 
@@ -9310,9 +9373,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3591:2: kw= 'AddDecisionValidateBlockingReview'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3613:2: kw= 'AddDecisionValidateBlockingReview'
                     {
-                    kw=(Token)match(input,82,FOLLOW_82_in_ruleRule7980); 
+                    kw=(Token)match(input,83,FOLLOW_83_in_ruleRule8016); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAddDecisionValidateBlockingReviewKeyword_1()); 
@@ -9321,9 +9384,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3598:2: kw= 'AddDecisionValidateNonBlockingReview'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3620:2: kw= 'AddDecisionValidateNonBlockingReview'
                     {
-                    kw=(Token)match(input,83,FOLLOW_83_in_ruleRule7999); 
+                    kw=(Token)match(input,84,FOLLOW_84_in_ruleRule8035); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAddDecisionValidateNonBlockingReviewKeyword_2()); 
@@ -9332,9 +9395,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 4 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3605:2: kw= 'AllowTransitionWithWorkingBranch'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3627:2: kw= 'AllowTransitionWithWorkingBranch'
                     {
-                    kw=(Token)match(input,84,FOLLOW_84_in_ruleRule8018); 
+                    kw=(Token)match(input,85,FOLLOW_85_in_ruleRule8054); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAllowTransitionWithWorkingBranchKeyword_3()); 
@@ -9343,9 +9406,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 5 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3612:2: kw= 'ForceAssigneesToTeamLeads'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3634:2: kw= 'ForceAssigneesToTeamLeads'
                     {
-                    kw=(Token)match(input,85,FOLLOW_85_in_ruleRule8037); 
+                    kw=(Token)match(input,86,FOLLOW_86_in_ruleRule8073); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getForceAssigneesToTeamLeadsKeyword_4()); 
@@ -9354,9 +9417,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 6 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3619:2: kw= 'RequireTargetedVersion'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3641:2: kw= 'RequireTargetedVersion'
                     {
-                    kw=(Token)match(input,86,FOLLOW_86_in_ruleRule8056); 
+                    kw=(Token)match(input,87,FOLLOW_87_in_ruleRule8092); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getRequireTargetedVersionKeyword_5()); 
@@ -9365,9 +9428,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 7 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3626:2: kw= 'AllowPriviledgedEditToTeamMember'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3648:2: kw= 'AllowPriviledgedEditToTeamMember'
                     {
-                    kw=(Token)match(input,87,FOLLOW_87_in_ruleRule8075); 
+                    kw=(Token)match(input,88,FOLLOW_88_in_ruleRule8111); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPriviledgedEditToTeamMemberKeyword_6()); 
@@ -9376,9 +9439,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 8 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3633:2: kw= 'AllowPriviledgedEditToTeamMemberAndOriginator'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3655:2: kw= 'AllowPriviledgedEditToTeamMemberAndOriginator'
                     {
-                    kw=(Token)match(input,88,FOLLOW_88_in_ruleRule8094); 
+                    kw=(Token)match(input,89,FOLLOW_89_in_ruleRule8130); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPriviledgedEditToTeamMemberAndOriginatorKeyword_7()); 
@@ -9387,9 +9450,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 9 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3640:2: kw= 'AllowPriviledgedEditToAll'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3662:2: kw= 'AllowPriviledgedEditToAll'
                     {
-                    kw=(Token)match(input,89,FOLLOW_89_in_ruleRule8113); 
+                    kw=(Token)match(input,90,FOLLOW_90_in_ruleRule8149); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAllowPriviledgedEditToAllKeyword_8()); 
@@ -9398,9 +9461,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 10 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3647:2: kw= 'AllowEditToAll'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3669:2: kw= 'AllowEditToAll'
                     {
-                    kw=(Token)match(input,90,FOLLOW_90_in_ruleRule8132); 
+                    kw=(Token)match(input,91,FOLLOW_91_in_ruleRule8168); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAllowEditToAllKeyword_9()); 
@@ -9409,9 +9472,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 11 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3654:2: kw= 'AllowAssigneeToAll'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3676:2: kw= 'AllowAssigneeToAll'
                     {
-                    kw=(Token)match(input,91,FOLLOW_91_in_ruleRule8151); 
+                    kw=(Token)match(input,92,FOLLOW_92_in_ruleRule8187); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAllowAssigneeToAllKeyword_10()); 
@@ -9420,9 +9483,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 12 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3661:2: kw= 'AllowTransitionWithoutTaskCompletion'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3683:2: kw= 'AllowTransitionWithoutTaskCompletion'
                     {
-                    kw=(Token)match(input,92,FOLLOW_92_in_ruleRule8170); 
+                    kw=(Token)match(input,93,FOLLOW_93_in_ruleRule8206); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getRuleAccess().getAllowTransitionWithoutTaskCompletionKeyword_11()); 
@@ -9431,12 +9494,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 13 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3668:5: this_RULE_NAME_12= ruleRULE_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3690:5: this_RULE_NAME_12= ruleRULE_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getRuleAccess().getRULE_NAMEParserRuleCall_12()); 
                         
-                    pushFollow(FOLLOW_ruleRULE_NAME_in_ruleRule8198);
+                    pushFollow(FOLLOW_ruleRULE_NAME_in_ruleRule8234);
                     this_RULE_NAME_12=ruleRULE_NAME();
 
                     state._fsp--;
@@ -9471,7 +9534,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWIDGET_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3686:1: entryRuleWIDGET_OPTION_NAME returns [String current=null] : iv_ruleWIDGET_OPTION_NAME= ruleWIDGET_OPTION_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3708:1: entryRuleWIDGET_OPTION_NAME returns [String current=null] : iv_ruleWIDGET_OPTION_NAME= ruleWIDGET_OPTION_NAME EOF ;
     public final String entryRuleWIDGET_OPTION_NAME() throws RecognitionException {
         String current = null;
 
@@ -9479,17 +9542,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3687:2: (iv_ruleWIDGET_OPTION_NAME= ruleWIDGET_OPTION_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3688:2: iv_ruleWIDGET_OPTION_NAME= ruleWIDGET_OPTION_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3709:2: (iv_ruleWIDGET_OPTION_NAME= ruleWIDGET_OPTION_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3710:2: iv_ruleWIDGET_OPTION_NAME= ruleWIDGET_OPTION_NAME EOF
             {
              newCompositeNode(grammarAccess.getWIDGET_OPTION_NAMERule()); 
-            pushFollow(FOLLOW_ruleWIDGET_OPTION_NAME_in_entryRuleWIDGET_OPTION_NAME8244);
+            pushFollow(FOLLOW_ruleWIDGET_OPTION_NAME_in_entryRuleWIDGET_OPTION_NAME8280);
             iv_ruleWIDGET_OPTION_NAME=ruleWIDGET_OPTION_NAME();
 
             state._fsp--;
 
              current =iv_ruleWIDGET_OPTION_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleWIDGET_OPTION_NAME8255); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleWIDGET_OPTION_NAME8291); 
 
             }
 
@@ -9507,7 +9570,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWIDGET_OPTION_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3695:1: ruleWIDGET_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3717:1: ruleWIDGET_OPTION_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleWIDGET_OPTION_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -9516,10 +9579,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3698:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3699:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3720:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3721:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWIDGET_OPTION_NAME8294); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleWIDGET_OPTION_NAME8330); 
 
             		current.merge(this_STRING_0);
                 
@@ -9544,7 +9607,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWidgetOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3714:1: entryRuleWidgetOption returns [String current=null] : iv_ruleWidgetOption= ruleWidgetOption EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3736:1: entryRuleWidgetOption returns [String current=null] : iv_ruleWidgetOption= ruleWidgetOption EOF ;
     public final String entryRuleWidgetOption() throws RecognitionException {
         String current = null;
 
@@ -9552,17 +9615,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3715:2: (iv_ruleWidgetOption= ruleWidgetOption EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3716:2: iv_ruleWidgetOption= ruleWidgetOption EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3737:2: (iv_ruleWidgetOption= ruleWidgetOption EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3738:2: iv_ruleWidgetOption= ruleWidgetOption EOF
             {
              newCompositeNode(grammarAccess.getWidgetOptionRule()); 
-            pushFollow(FOLLOW_ruleWidgetOption_in_entryRuleWidgetOption8339);
+            pushFollow(FOLLOW_ruleWidgetOption_in_entryRuleWidgetOption8375);
             iv_ruleWidgetOption=ruleWidgetOption();
 
             state._fsp--;
 
              current =iv_ruleWidgetOption.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleWidgetOption8350); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleWidgetOption8386); 
 
             }
 
@@ -9580,7 +9643,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWidgetOption"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3723:1: ruleWidgetOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3745:1: ruleWidgetOption returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME ) ;
     public final AntlrDatatypeRuleToken ruleWidgetOption() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -9591,179 +9654,179 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3726:28: ( (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3727:1: (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3748:28: ( (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3749:1: (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3727:1: (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME )
-            int alt87=31;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3749:1: (kw= 'REQUIRED_FOR_TRANSITION' | kw= 'NOT_REQUIRED_FOR_TRANSITION' | kw= 'REQUIRED_FOR_COMPLETION' | kw= 'NOT_REQUIRED_FOR_COMPLETION' | kw= 'ENABLED' | kw= 'NOT_ENABLED' | kw= 'EDITABLE' | kw= 'NOT_EDITABLE' | kw= 'FUTURE_DATE_REQUIRED' | kw= 'NOT_FUTURE_DATE_REQUIRED' | kw= 'MULTI_SELECT' | kw= 'HORIZONTAL_LABEL' | kw= 'VERTICAL_LABEL' | kw= 'LABEL_AFTER' | kw= 'LABEL_BEFORE' | kw= 'NO_LABEL' | kw= 'SORTED' | kw= 'ADD_DEFAULT_VALUE' | kw= 'NO_DEFAULT_VALUE' | kw= 'BEGIN_COMPOSITE_4' | kw= 'BEGIN_COMPOSITE_6' | kw= 'BEGIN_COMPOSITE_8' | kw= 'BEGIN_COMPOSITE_10' | kw= 'END_COMPOSITE' | kw= 'FILL_NONE' | kw= 'FILL_HORIZONTALLY' | kw= 'FILL_VERTICALLY' | kw= 'ALIGN_LEFT' | kw= 'ALIGN_RIGHT' | kw= 'ALIGN_CENTER' | this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME )
+            int alt88=31;
             switch ( input.LA(1) ) {
-            case 93:
-                {
-                alt87=1;
-                }
-                break;
             case 94:
                 {
-                alt87=2;
+                alt88=1;
                 }
                 break;
             case 95:
                 {
-                alt87=3;
+                alt88=2;
                 }
                 break;
             case 96:
                 {
-                alt87=4;
+                alt88=3;
                 }
                 break;
             case 97:
                 {
-                alt87=5;
+                alt88=4;
                 }
                 break;
             case 98:
                 {
-                alt87=6;
+                alt88=5;
                 }
                 break;
             case 99:
                 {
-                alt87=7;
+                alt88=6;
                 }
                 break;
             case 100:
                 {
-                alt87=8;
+                alt88=7;
                 }
                 break;
             case 101:
                 {
-                alt87=9;
+                alt88=8;
                 }
                 break;
             case 102:
                 {
-                alt87=10;
+                alt88=9;
                 }
                 break;
             case 103:
                 {
-                alt87=11;
+                alt88=10;
                 }
                 break;
             case 104:
                 {
-                alt87=12;
+                alt88=11;
                 }
                 break;
             case 105:
                 {
-                alt87=13;
+                alt88=12;
                 }
                 break;
             case 106:
                 {
-                alt87=14;
+                alt88=13;
                 }
                 break;
             case 107:
                 {
-                alt87=15;
+                alt88=14;
                 }
                 break;
             case 108:
                 {
-                alt87=16;
+                alt88=15;
                 }
                 break;
             case 109:
                 {
-                alt87=17;
+                alt88=16;
                 }
                 break;
             case 110:
                 {
-                alt87=18;
+                alt88=17;
                 }
                 break;
             case 111:
                 {
-                alt87=19;
+                alt88=18;
                 }
                 break;
             case 112:
                 {
-                alt87=20;
+                alt88=19;
                 }
                 break;
             case 113:
                 {
-                alt87=21;
+                alt88=20;
                 }
                 break;
             case 114:
                 {
-                alt87=22;
+                alt88=21;
                 }
                 break;
             case 115:
                 {
-                alt87=23;
+                alt88=22;
                 }
                 break;
             case 116:
                 {
-                alt87=24;
+                alt88=23;
                 }
                 break;
             case 117:
                 {
-                alt87=25;
+                alt88=24;
                 }
                 break;
             case 118:
                 {
-                alt87=26;
+                alt88=25;
                 }
                 break;
             case 119:
                 {
-                alt87=27;
+                alt88=26;
                 }
                 break;
             case 120:
                 {
-                alt87=28;
+                alt88=27;
                 }
                 break;
             case 121:
                 {
-                alt87=29;
+                alt88=28;
                 }
                 break;
             case 122:
                 {
-                alt87=30;
+                alt88=29;
+                }
+                break;
+            case 123:
+                {
+                alt88=30;
                 }
                 break;
             case RULE_STRING:
                 {
-                alt87=31;
+                alt88=31;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 87, 0, input);
+                    new NoViableAltException("", 88, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt87) {
+            switch (alt88) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3728:2: kw= 'REQUIRED_FOR_TRANSITION'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3750:2: kw= 'REQUIRED_FOR_TRANSITION'
                     {
-                    kw=(Token)match(input,93,FOLLOW_93_in_ruleWidgetOption8388); 
+                    kw=(Token)match(input,94,FOLLOW_94_in_ruleWidgetOption8424); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getREQUIRED_FOR_TRANSITIONKeyword_0()); 
@@ -9772,9 +9835,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3735:2: kw= 'NOT_REQUIRED_FOR_TRANSITION'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3757:2: kw= 'NOT_REQUIRED_FOR_TRANSITION'
                     {
-                    kw=(Token)match(input,94,FOLLOW_94_in_ruleWidgetOption8407); 
+                    kw=(Token)match(input,95,FOLLOW_95_in_ruleWidgetOption8443); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNOT_REQUIRED_FOR_TRANSITIONKeyword_1()); 
@@ -9783,9 +9846,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3742:2: kw= 'REQUIRED_FOR_COMPLETION'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3764:2: kw= 'REQUIRED_FOR_COMPLETION'
                     {
-                    kw=(Token)match(input,95,FOLLOW_95_in_ruleWidgetOption8426); 
+                    kw=(Token)match(input,96,FOLLOW_96_in_ruleWidgetOption8462); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getREQUIRED_FOR_COMPLETIONKeyword_2()); 
@@ -9794,9 +9857,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 4 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3749:2: kw= 'NOT_REQUIRED_FOR_COMPLETION'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3771:2: kw= 'NOT_REQUIRED_FOR_COMPLETION'
                     {
-                    kw=(Token)match(input,96,FOLLOW_96_in_ruleWidgetOption8445); 
+                    kw=(Token)match(input,97,FOLLOW_97_in_ruleWidgetOption8481); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNOT_REQUIRED_FOR_COMPLETIONKeyword_3()); 
@@ -9805,9 +9868,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 5 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3756:2: kw= 'ENABLED'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3778:2: kw= 'ENABLED'
                     {
-                    kw=(Token)match(input,97,FOLLOW_97_in_ruleWidgetOption8464); 
+                    kw=(Token)match(input,98,FOLLOW_98_in_ruleWidgetOption8500); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getENABLEDKeyword_4()); 
@@ -9816,9 +9879,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 6 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3763:2: kw= 'NOT_ENABLED'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3785:2: kw= 'NOT_ENABLED'
                     {
-                    kw=(Token)match(input,98,FOLLOW_98_in_ruleWidgetOption8483); 
+                    kw=(Token)match(input,99,FOLLOW_99_in_ruleWidgetOption8519); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNOT_ENABLEDKeyword_5()); 
@@ -9827,9 +9890,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 7 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3770:2: kw= 'EDITABLE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3792:2: kw= 'EDITABLE'
                     {
-                    kw=(Token)match(input,99,FOLLOW_99_in_ruleWidgetOption8502); 
+                    kw=(Token)match(input,100,FOLLOW_100_in_ruleWidgetOption8538); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getEDITABLEKeyword_6()); 
@@ -9838,9 +9901,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 8 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3777:2: kw= 'NOT_EDITABLE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3799:2: kw= 'NOT_EDITABLE'
                     {
-                    kw=(Token)match(input,100,FOLLOW_100_in_ruleWidgetOption8521); 
+                    kw=(Token)match(input,101,FOLLOW_101_in_ruleWidgetOption8557); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNOT_EDITABLEKeyword_7()); 
@@ -9849,9 +9912,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 9 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3784:2: kw= 'FUTURE_DATE_REQUIRED'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3806:2: kw= 'FUTURE_DATE_REQUIRED'
                     {
-                    kw=(Token)match(input,101,FOLLOW_101_in_ruleWidgetOption8540); 
+                    kw=(Token)match(input,102,FOLLOW_102_in_ruleWidgetOption8576); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFUTURE_DATE_REQUIREDKeyword_8()); 
@@ -9860,9 +9923,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 10 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3791:2: kw= 'NOT_FUTURE_DATE_REQUIRED'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3813:2: kw= 'NOT_FUTURE_DATE_REQUIRED'
                     {
-                    kw=(Token)match(input,102,FOLLOW_102_in_ruleWidgetOption8559); 
+                    kw=(Token)match(input,103,FOLLOW_103_in_ruleWidgetOption8595); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNOT_FUTURE_DATE_REQUIREDKeyword_9()); 
@@ -9871,9 +9934,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 11 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3798:2: kw= 'MULTI_SELECT'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3820:2: kw= 'MULTI_SELECT'
                     {
-                    kw=(Token)match(input,103,FOLLOW_103_in_ruleWidgetOption8578); 
+                    kw=(Token)match(input,104,FOLLOW_104_in_ruleWidgetOption8614); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getMULTI_SELECTKeyword_10()); 
@@ -9882,9 +9945,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 12 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3805:2: kw= 'HORIZONTAL_LABEL'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3827:2: kw= 'HORIZONTAL_LABEL'
                     {
-                    kw=(Token)match(input,104,FOLLOW_104_in_ruleWidgetOption8597); 
+                    kw=(Token)match(input,105,FOLLOW_105_in_ruleWidgetOption8633); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getHORIZONTAL_LABELKeyword_11()); 
@@ -9893,9 +9956,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 13 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3812:2: kw= 'VERTICAL_LABEL'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3834:2: kw= 'VERTICAL_LABEL'
                     {
-                    kw=(Token)match(input,105,FOLLOW_105_in_ruleWidgetOption8616); 
+                    kw=(Token)match(input,106,FOLLOW_106_in_ruleWidgetOption8652); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getVERTICAL_LABELKeyword_12()); 
@@ -9904,9 +9967,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 14 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3819:2: kw= 'LABEL_AFTER'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3841:2: kw= 'LABEL_AFTER'
                     {
-                    kw=(Token)match(input,106,FOLLOW_106_in_ruleWidgetOption8635); 
+                    kw=(Token)match(input,107,FOLLOW_107_in_ruleWidgetOption8671); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getLABEL_AFTERKeyword_13()); 
@@ -9915,9 +9978,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 15 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3826:2: kw= 'LABEL_BEFORE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3848:2: kw= 'LABEL_BEFORE'
                     {
-                    kw=(Token)match(input,107,FOLLOW_107_in_ruleWidgetOption8654); 
+                    kw=(Token)match(input,108,FOLLOW_108_in_ruleWidgetOption8690); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getLABEL_BEFOREKeyword_14()); 
@@ -9926,9 +9989,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 16 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3833:2: kw= 'NO_LABEL'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3855:2: kw= 'NO_LABEL'
                     {
-                    kw=(Token)match(input,108,FOLLOW_108_in_ruleWidgetOption8673); 
+                    kw=(Token)match(input,109,FOLLOW_109_in_ruleWidgetOption8709); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNO_LABELKeyword_15()); 
@@ -9937,9 +10000,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 17 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3840:2: kw= 'SORTED'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3862:2: kw= 'SORTED'
                     {
-                    kw=(Token)match(input,109,FOLLOW_109_in_ruleWidgetOption8692); 
+                    kw=(Token)match(input,110,FOLLOW_110_in_ruleWidgetOption8728); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getSORTEDKeyword_16()); 
@@ -9948,9 +10011,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 18 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3847:2: kw= 'ADD_DEFAULT_VALUE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3869:2: kw= 'ADD_DEFAULT_VALUE'
                     {
-                    kw=(Token)match(input,110,FOLLOW_110_in_ruleWidgetOption8711); 
+                    kw=(Token)match(input,111,FOLLOW_111_in_ruleWidgetOption8747); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getADD_DEFAULT_VALUEKeyword_17()); 
@@ -9959,9 +10022,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 19 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3854:2: kw= 'NO_DEFAULT_VALUE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3876:2: kw= 'NO_DEFAULT_VALUE'
                     {
-                    kw=(Token)match(input,111,FOLLOW_111_in_ruleWidgetOption8730); 
+                    kw=(Token)match(input,112,FOLLOW_112_in_ruleWidgetOption8766); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getNO_DEFAULT_VALUEKeyword_18()); 
@@ -9970,9 +10033,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 20 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3861:2: kw= 'BEGIN_COMPOSITE_4'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3883:2: kw= 'BEGIN_COMPOSITE_4'
                     {
-                    kw=(Token)match(input,112,FOLLOW_112_in_ruleWidgetOption8749); 
+                    kw=(Token)match(input,113,FOLLOW_113_in_ruleWidgetOption8785); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_4Keyword_19()); 
@@ -9981,9 +10044,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 21 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3868:2: kw= 'BEGIN_COMPOSITE_6'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3890:2: kw= 'BEGIN_COMPOSITE_6'
                     {
-                    kw=(Token)match(input,113,FOLLOW_113_in_ruleWidgetOption8768); 
+                    kw=(Token)match(input,114,FOLLOW_114_in_ruleWidgetOption8804); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_6Keyword_20()); 
@@ -9992,9 +10055,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 22 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3875:2: kw= 'BEGIN_COMPOSITE_8'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3897:2: kw= 'BEGIN_COMPOSITE_8'
                     {
-                    kw=(Token)match(input,114,FOLLOW_114_in_ruleWidgetOption8787); 
+                    kw=(Token)match(input,115,FOLLOW_115_in_ruleWidgetOption8823); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_8Keyword_21()); 
@@ -10003,9 +10066,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 23 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3882:2: kw= 'BEGIN_COMPOSITE_10'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3904:2: kw= 'BEGIN_COMPOSITE_10'
                     {
-                    kw=(Token)match(input,115,FOLLOW_115_in_ruleWidgetOption8806); 
+                    kw=(Token)match(input,116,FOLLOW_116_in_ruleWidgetOption8842); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getBEGIN_COMPOSITE_10Keyword_22()); 
@@ -10014,9 +10077,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 24 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3889:2: kw= 'END_COMPOSITE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3911:2: kw= 'END_COMPOSITE'
                     {
-                    kw=(Token)match(input,116,FOLLOW_116_in_ruleWidgetOption8825); 
+                    kw=(Token)match(input,117,FOLLOW_117_in_ruleWidgetOption8861); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getEND_COMPOSITEKeyword_23()); 
@@ -10025,9 +10088,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 25 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3896:2: kw= 'FILL_NONE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3918:2: kw= 'FILL_NONE'
                     {
-                    kw=(Token)match(input,117,FOLLOW_117_in_ruleWidgetOption8844); 
+                    kw=(Token)match(input,118,FOLLOW_118_in_ruleWidgetOption8880); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_NONEKeyword_24()); 
@@ -10036,9 +10099,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 26 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3903:2: kw= 'FILL_HORIZONTALLY'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3925:2: kw= 'FILL_HORIZONTALLY'
                     {
-                    kw=(Token)match(input,118,FOLLOW_118_in_ruleWidgetOption8863); 
+                    kw=(Token)match(input,119,FOLLOW_119_in_ruleWidgetOption8899); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_HORIZONTALLYKeyword_25()); 
@@ -10047,9 +10110,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 27 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3910:2: kw= 'FILL_VERTICALLY'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3932:2: kw= 'FILL_VERTICALLY'
                     {
-                    kw=(Token)match(input,119,FOLLOW_119_in_ruleWidgetOption8882); 
+                    kw=(Token)match(input,120,FOLLOW_120_in_ruleWidgetOption8918); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getFILL_VERTICALLYKeyword_26()); 
@@ -10058,9 +10121,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 28 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3917:2: kw= 'ALIGN_LEFT'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3939:2: kw= 'ALIGN_LEFT'
                     {
-                    kw=(Token)match(input,120,FOLLOW_120_in_ruleWidgetOption8901); 
+                    kw=(Token)match(input,121,FOLLOW_121_in_ruleWidgetOption8937); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_LEFTKeyword_27()); 
@@ -10069,9 +10132,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 29 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3924:2: kw= 'ALIGN_RIGHT'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3946:2: kw= 'ALIGN_RIGHT'
                     {
-                    kw=(Token)match(input,121,FOLLOW_121_in_ruleWidgetOption8920); 
+                    kw=(Token)match(input,122,FOLLOW_122_in_ruleWidgetOption8956); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_RIGHTKeyword_28()); 
@@ -10080,9 +10143,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 30 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3931:2: kw= 'ALIGN_CENTER'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3953:2: kw= 'ALIGN_CENTER'
                     {
-                    kw=(Token)match(input,122,FOLLOW_122_in_ruleWidgetOption8939); 
+                    kw=(Token)match(input,123,FOLLOW_123_in_ruleWidgetOption8975); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getWidgetOptionAccess().getALIGN_CENTERKeyword_29()); 
@@ -10091,12 +10154,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 31 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3938:5: this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3960:5: this_WIDGET_OPTION_NAME_30= ruleWIDGET_OPTION_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getWidgetOptionAccess().getWIDGET_OPTION_NAMEParserRuleCall_30()); 
                         
-                    pushFollow(FOLLOW_ruleWIDGET_OPTION_NAME_in_ruleWidgetOption8967);
+                    pushFollow(FOLLOW_ruleWIDGET_OPTION_NAME_in_ruleWidgetOption9003);
                     this_WIDGET_OPTION_NAME_30=ruleWIDGET_OPTION_NAME();
 
                     state._fsp--;
@@ -10131,7 +10194,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRulePAGE_TYPE_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3956:1: entryRulePAGE_TYPE_NAME returns [String current=null] : iv_rulePAGE_TYPE_NAME= rulePAGE_TYPE_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3978:1: entryRulePAGE_TYPE_NAME returns [String current=null] : iv_rulePAGE_TYPE_NAME= rulePAGE_TYPE_NAME EOF ;
     public final String entryRulePAGE_TYPE_NAME() throws RecognitionException {
         String current = null;
 
@@ -10139,17 +10202,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3957:2: (iv_rulePAGE_TYPE_NAME= rulePAGE_TYPE_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3958:2: iv_rulePAGE_TYPE_NAME= rulePAGE_TYPE_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3979:2: (iv_rulePAGE_TYPE_NAME= rulePAGE_TYPE_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3980:2: iv_rulePAGE_TYPE_NAME= rulePAGE_TYPE_NAME EOF
             {
              newCompositeNode(grammarAccess.getPAGE_TYPE_NAMERule()); 
-            pushFollow(FOLLOW_rulePAGE_TYPE_NAME_in_entryRulePAGE_TYPE_NAME9013);
+            pushFollow(FOLLOW_rulePAGE_TYPE_NAME_in_entryRulePAGE_TYPE_NAME9049);
             iv_rulePAGE_TYPE_NAME=rulePAGE_TYPE_NAME();
 
             state._fsp--;
 
              current =iv_rulePAGE_TYPE_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRulePAGE_TYPE_NAME9024); 
+            match(input,EOF,FOLLOW_EOF_in_entryRulePAGE_TYPE_NAME9060); 
 
             }
 
@@ -10167,7 +10230,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "rulePAGE_TYPE_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3965:1: rulePAGE_TYPE_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3987:1: rulePAGE_TYPE_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken rulePAGE_TYPE_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -10176,10 +10239,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3968:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3969:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3990:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3991:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePAGE_TYPE_NAME9063); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rulePAGE_TYPE_NAME9099); 
 
             		current.merge(this_STRING_0);
                 
@@ -10204,7 +10267,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRulePageType"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3984:1: entryRulePageType returns [String current=null] : iv_rulePageType= rulePageType EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4006:1: entryRulePageType returns [String current=null] : iv_rulePageType= rulePageType EOF ;
     public final String entryRulePageType() throws RecognitionException {
         String current = null;
 
@@ -10212,17 +10275,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3985:2: (iv_rulePageType= rulePageType EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3986:2: iv_rulePageType= rulePageType EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4007:2: (iv_rulePageType= rulePageType EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4008:2: iv_rulePageType= rulePageType EOF
             {
              newCompositeNode(grammarAccess.getPageTypeRule()); 
-            pushFollow(FOLLOW_rulePageType_in_entryRulePageType9108);
+            pushFollow(FOLLOW_rulePageType_in_entryRulePageType9144);
             iv_rulePageType=rulePageType();
 
             state._fsp--;
 
              current =iv_rulePageType.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRulePageType9119); 
+            match(input,EOF,FOLLOW_EOF_in_entryRulePageType9155); 
 
             }
 
@@ -10240,7 +10303,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "rulePageType"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3993:1: rulePageType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4015:1: rulePageType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME ) ;
     public final AntlrDatatypeRuleToken rulePageType() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -10251,44 +10314,44 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3996:28: ( (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3997:1: (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4018:28: ( (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4019:1: (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3997:1: (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME )
-            int alt88=4;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4019:1: (kw= 'Working' | kw= 'Completed' | kw= 'Cancelled' | this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME )
+            int alt89=4;
             switch ( input.LA(1) ) {
-            case 123:
-                {
-                alt88=1;
-                }
-                break;
             case 124:
                 {
-                alt88=2;
+                alt89=1;
                 }
                 break;
             case 125:
                 {
-                alt88=3;
+                alt89=2;
+                }
+                break;
+            case 126:
+                {
+                alt89=3;
                 }
                 break;
             case RULE_STRING:
                 {
-                alt88=4;
+                alt89=4;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 88, 0, input);
+                    new NoViableAltException("", 89, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt88) {
+            switch (alt89) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:3998:2: kw= 'Working'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4020:2: kw= 'Working'
                     {
-                    kw=(Token)match(input,123,FOLLOW_123_in_rulePageType9157); 
+                    kw=(Token)match(input,124,FOLLOW_124_in_rulePageType9193); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getPageTypeAccess().getWorkingKeyword_0()); 
@@ -10297,9 +10360,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4005:2: kw= 'Completed'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4027:2: kw= 'Completed'
                     {
-                    kw=(Token)match(input,124,FOLLOW_124_in_rulePageType9176); 
+                    kw=(Token)match(input,125,FOLLOW_125_in_rulePageType9212); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getPageTypeAccess().getCompletedKeyword_1()); 
@@ -10308,9 +10371,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4012:2: kw= 'Cancelled'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4034:2: kw= 'Cancelled'
                     {
-                    kw=(Token)match(input,125,FOLLOW_125_in_rulePageType9195); 
+                    kw=(Token)match(input,126,FOLLOW_126_in_rulePageType9231); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getPageTypeAccess().getCancelledKeyword_2()); 
@@ -10319,12 +10382,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 4 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4019:5: this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4041:5: this_PAGE_TYPE_NAME_3= rulePAGE_TYPE_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getPageTypeAccess().getPAGE_TYPE_NAMEParserRuleCall_3()); 
                         
-                    pushFollow(FOLLOW_rulePAGE_TYPE_NAME_in_rulePageType9223);
+                    pushFollow(FOLLOW_rulePAGE_TYPE_NAME_in_rulePageType9259);
                     this_PAGE_TYPE_NAME_3=rulePAGE_TYPE_NAME();
 
                     state._fsp--;
@@ -10359,7 +10422,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleCOLOR_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4037:1: entryRuleCOLOR_NAME returns [String current=null] : iv_ruleCOLOR_NAME= ruleCOLOR_NAME EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4059:1: entryRuleCOLOR_NAME returns [String current=null] : iv_ruleCOLOR_NAME= ruleCOLOR_NAME EOF ;
     public final String entryRuleCOLOR_NAME() throws RecognitionException {
         String current = null;
 
@@ -10367,17 +10430,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4038:2: (iv_ruleCOLOR_NAME= ruleCOLOR_NAME EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4039:2: iv_ruleCOLOR_NAME= ruleCOLOR_NAME EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4060:2: (iv_ruleCOLOR_NAME= ruleCOLOR_NAME EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4061:2: iv_ruleCOLOR_NAME= ruleCOLOR_NAME EOF
             {
              newCompositeNode(grammarAccess.getCOLOR_NAMERule()); 
-            pushFollow(FOLLOW_ruleCOLOR_NAME_in_entryRuleCOLOR_NAME9269);
+            pushFollow(FOLLOW_ruleCOLOR_NAME_in_entryRuleCOLOR_NAME9305);
             iv_ruleCOLOR_NAME=ruleCOLOR_NAME();
 
             state._fsp--;
 
              current =iv_ruleCOLOR_NAME.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleCOLOR_NAME9280); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleCOLOR_NAME9316); 
 
             }
 
@@ -10395,7 +10458,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleCOLOR_NAME"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4046:1: ruleCOLOR_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4068:1: ruleCOLOR_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : this_STRING_0= RULE_STRING ;
     public final AntlrDatatypeRuleToken ruleCOLOR_NAME() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -10404,10 +10467,10 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4049:28: (this_STRING_0= RULE_STRING )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4050:5: this_STRING_0= RULE_STRING
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4071:28: (this_STRING_0= RULE_STRING )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4072:5: this_STRING_0= RULE_STRING
             {
-            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleCOLOR_NAME9319); 
+            this_STRING_0=(Token)match(input,RULE_STRING,FOLLOW_RULE_STRING_in_ruleCOLOR_NAME9355); 
 
             		current.merge(this_STRING_0);
                 
@@ -10432,7 +10495,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleStateColor"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4065:1: entryRuleStateColor returns [String current=null] : iv_ruleStateColor= ruleStateColor EOF ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4087:1: entryRuleStateColor returns [String current=null] : iv_ruleStateColor= ruleStateColor EOF ;
     public final String entryRuleStateColor() throws RecognitionException {
         String current = null;
 
@@ -10440,17 +10503,17 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4066:2: (iv_ruleStateColor= ruleStateColor EOF )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4067:2: iv_ruleStateColor= ruleStateColor EOF
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4088:2: (iv_ruleStateColor= ruleStateColor EOF )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4089:2: iv_ruleStateColor= ruleStateColor EOF
             {
              newCompositeNode(grammarAccess.getStateColorRule()); 
-            pushFollow(FOLLOW_ruleStateColor_in_entryRuleStateColor9364);
+            pushFollow(FOLLOW_ruleStateColor_in_entryRuleStateColor9400);
             iv_ruleStateColor=ruleStateColor();
 
             state._fsp--;
 
              current =iv_ruleStateColor.getText(); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleStateColor9375); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleStateColor9411); 
 
             }
 
@@ -10468,7 +10531,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleStateColor"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4074:1: ruleStateColor returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4096:1: ruleStateColor returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] : (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME ) ;
     public final AntlrDatatypeRuleToken ruleStateColor() throws RecognitionException {
         AntlrDatatypeRuleToken current = new AntlrDatatypeRuleToken();
 
@@ -10479,109 +10542,109 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4077:28: ( (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4078:1: (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4099:28: ( (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4100:1: (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4078:1: (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME )
-            int alt89=17;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4100:1: (kw= 'BLACK' | kw= 'WHITE' | kw= 'RED' | kw= 'DARK_RED' | kw= 'GREEN' | kw= 'DARK_GREEN' | kw= 'YELLOW' | kw= 'DARK_YELLOW' | kw= 'BLUE' | kw= 'DARK_BLUE' | kw= 'MAGENTA' | kw= 'DARK_MAGENTA' | kw= 'CYAN' | kw= 'DARK_CYAN' | kw= 'GRAY' | kw= 'DARK_GRAY' | this_COLOR_NAME_16= ruleCOLOR_NAME )
+            int alt90=17;
             switch ( input.LA(1) ) {
-            case 126:
-                {
-                alt89=1;
-                }
-                break;
             case 127:
                 {
-                alt89=2;
+                alt90=1;
                 }
                 break;
             case 128:
                 {
-                alt89=3;
+                alt90=2;
                 }
                 break;
             case 129:
                 {
-                alt89=4;
+                alt90=3;
                 }
                 break;
             case 130:
                 {
-                alt89=5;
+                alt90=4;
                 }
                 break;
             case 131:
                 {
-                alt89=6;
+                alt90=5;
                 }
                 break;
             case 132:
                 {
-                alt89=7;
+                alt90=6;
                 }
                 break;
             case 133:
                 {
-                alt89=8;
+                alt90=7;
                 }
                 break;
             case 134:
                 {
-                alt89=9;
+                alt90=8;
                 }
                 break;
             case 135:
                 {
-                alt89=10;
+                alt90=9;
                 }
                 break;
             case 136:
                 {
-                alt89=11;
+                alt90=10;
                 }
                 break;
             case 137:
                 {
-                alt89=12;
+                alt90=11;
                 }
                 break;
             case 138:
                 {
-                alt89=13;
+                alt90=12;
                 }
                 break;
             case 139:
                 {
-                alt89=14;
+                alt90=13;
                 }
                 break;
             case 140:
                 {
-                alt89=15;
+                alt90=14;
                 }
                 break;
             case 141:
                 {
-                alt89=16;
+                alt90=15;
+                }
+                break;
+            case 142:
+                {
+                alt90=16;
                 }
                 break;
             case RULE_STRING:
                 {
-                alt89=17;
+                alt90=17;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 89, 0, input);
+                    new NoViableAltException("", 90, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt89) {
+            switch (alt90) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4079:2: kw= 'BLACK'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4101:2: kw= 'BLACK'
                     {
-                    kw=(Token)match(input,126,FOLLOW_126_in_ruleStateColor9413); 
+                    kw=(Token)match(input,127,FOLLOW_127_in_ruleStateColor9449); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getBLACKKeyword_0()); 
@@ -10590,9 +10653,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4086:2: kw= 'WHITE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4108:2: kw= 'WHITE'
                     {
-                    kw=(Token)match(input,127,FOLLOW_127_in_ruleStateColor9432); 
+                    kw=(Token)match(input,128,FOLLOW_128_in_ruleStateColor9468); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getWHITEKeyword_1()); 
@@ -10601,9 +10664,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4093:2: kw= 'RED'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4115:2: kw= 'RED'
                     {
-                    kw=(Token)match(input,128,FOLLOW_128_in_ruleStateColor9451); 
+                    kw=(Token)match(input,129,FOLLOW_129_in_ruleStateColor9487); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getREDKeyword_2()); 
@@ -10612,9 +10675,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 4 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4100:2: kw= 'DARK_RED'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4122:2: kw= 'DARK_RED'
                     {
-                    kw=(Token)match(input,129,FOLLOW_129_in_ruleStateColor9470); 
+                    kw=(Token)match(input,130,FOLLOW_130_in_ruleStateColor9506); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_REDKeyword_3()); 
@@ -10623,9 +10686,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 5 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4107:2: kw= 'GREEN'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4129:2: kw= 'GREEN'
                     {
-                    kw=(Token)match(input,130,FOLLOW_130_in_ruleStateColor9489); 
+                    kw=(Token)match(input,131,FOLLOW_131_in_ruleStateColor9525); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getGREENKeyword_4()); 
@@ -10634,9 +10697,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 6 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4114:2: kw= 'DARK_GREEN'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4136:2: kw= 'DARK_GREEN'
                     {
-                    kw=(Token)match(input,131,FOLLOW_131_in_ruleStateColor9508); 
+                    kw=(Token)match(input,132,FOLLOW_132_in_ruleStateColor9544); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_GREENKeyword_5()); 
@@ -10645,9 +10708,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 7 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4121:2: kw= 'YELLOW'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4143:2: kw= 'YELLOW'
                     {
-                    kw=(Token)match(input,132,FOLLOW_132_in_ruleStateColor9527); 
+                    kw=(Token)match(input,133,FOLLOW_133_in_ruleStateColor9563); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getYELLOWKeyword_6()); 
@@ -10656,9 +10719,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 8 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4128:2: kw= 'DARK_YELLOW'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4150:2: kw= 'DARK_YELLOW'
                     {
-                    kw=(Token)match(input,133,FOLLOW_133_in_ruleStateColor9546); 
+                    kw=(Token)match(input,134,FOLLOW_134_in_ruleStateColor9582); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_YELLOWKeyword_7()); 
@@ -10667,9 +10730,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 9 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4135:2: kw= 'BLUE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4157:2: kw= 'BLUE'
                     {
-                    kw=(Token)match(input,134,FOLLOW_134_in_ruleStateColor9565); 
+                    kw=(Token)match(input,135,FOLLOW_135_in_ruleStateColor9601); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getBLUEKeyword_8()); 
@@ -10678,9 +10741,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 10 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4142:2: kw= 'DARK_BLUE'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4164:2: kw= 'DARK_BLUE'
                     {
-                    kw=(Token)match(input,135,FOLLOW_135_in_ruleStateColor9584); 
+                    kw=(Token)match(input,136,FOLLOW_136_in_ruleStateColor9620); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_BLUEKeyword_9()); 
@@ -10689,9 +10752,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 11 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4149:2: kw= 'MAGENTA'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4171:2: kw= 'MAGENTA'
                     {
-                    kw=(Token)match(input,136,FOLLOW_136_in_ruleStateColor9603); 
+                    kw=(Token)match(input,137,FOLLOW_137_in_ruleStateColor9639); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getMAGENTAKeyword_10()); 
@@ -10700,9 +10763,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 12 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4156:2: kw= 'DARK_MAGENTA'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4178:2: kw= 'DARK_MAGENTA'
                     {
-                    kw=(Token)match(input,137,FOLLOW_137_in_ruleStateColor9622); 
+                    kw=(Token)match(input,138,FOLLOW_138_in_ruleStateColor9658); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_MAGENTAKeyword_11()); 
@@ -10711,9 +10774,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 13 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4163:2: kw= 'CYAN'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4185:2: kw= 'CYAN'
                     {
-                    kw=(Token)match(input,138,FOLLOW_138_in_ruleStateColor9641); 
+                    kw=(Token)match(input,139,FOLLOW_139_in_ruleStateColor9677); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getCYANKeyword_12()); 
@@ -10722,9 +10785,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 14 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4170:2: kw= 'DARK_CYAN'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4192:2: kw= 'DARK_CYAN'
                     {
-                    kw=(Token)match(input,139,FOLLOW_139_in_ruleStateColor9660); 
+                    kw=(Token)match(input,140,FOLLOW_140_in_ruleStateColor9696); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_CYANKeyword_13()); 
@@ -10733,9 +10796,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 15 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4177:2: kw= 'GRAY'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4199:2: kw= 'GRAY'
                     {
-                    kw=(Token)match(input,140,FOLLOW_140_in_ruleStateColor9679); 
+                    kw=(Token)match(input,141,FOLLOW_141_in_ruleStateColor9715); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getGRAYKeyword_14()); 
@@ -10744,9 +10807,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 16 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4184:2: kw= 'DARK_GRAY'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4206:2: kw= 'DARK_GRAY'
                     {
-                    kw=(Token)match(input,141,FOLLOW_141_in_ruleStateColor9698); 
+                    kw=(Token)match(input,142,FOLLOW_142_in_ruleStateColor9734); 
 
                             current.merge(kw);
                             newLeafNode(kw, grammarAccess.getStateColorAccess().getDARK_GRAYKeyword_15()); 
@@ -10755,12 +10818,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 17 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4191:5: this_COLOR_NAME_16= ruleCOLOR_NAME
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4213:5: this_COLOR_NAME_16= ruleCOLOR_NAME
                     {
                      
                             newCompositeNode(grammarAccess.getStateColorAccess().getCOLOR_NAMEParserRuleCall_16()); 
                         
-                    pushFollow(FOLLOW_ruleCOLOR_NAME_in_ruleStateColor9726);
+                    pushFollow(FOLLOW_ruleCOLOR_NAME_in_ruleStateColor9762);
                     this_COLOR_NAME_16=ruleCOLOR_NAME();
 
                     state._fsp--;
@@ -10795,7 +10858,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleBooleanDef"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4209:1: ruleBooleanDef returns [Enumerator current=null] : ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4231:1: ruleBooleanDef returns [Enumerator current=null] : ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) ) ;
     public final Enumerator ruleBooleanDef() throws RecognitionException {
         Enumerator current = null;
 
@@ -10805,42 +10868,42 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
          enterRule(); 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4211:28: ( ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4212:1: ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4233:28: ( ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4234:1: ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4212:1: ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) )
-            int alt90=3;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4234:1: ( (enumLiteral_0= 'None' ) | (enumLiteral_1= 'True' ) | (enumLiteral_2= 'False' ) )
+            int alt91=3;
             switch ( input.LA(1) ) {
-            case 78:
+            case 79:
                 {
-                alt90=1;
-                }
-                break;
-            case 142:
-                {
-                alt90=2;
+                alt91=1;
                 }
                 break;
             case 143:
                 {
-                alt90=3;
+                alt91=2;
+                }
+                break;
+            case 144:
+                {
+                alt91=3;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 90, 0, input);
+                    new NoViableAltException("", 91, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt90) {
+            switch (alt91) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4212:2: (enumLiteral_0= 'None' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4234:2: (enumLiteral_0= 'None' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4212:2: (enumLiteral_0= 'None' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4212:4: enumLiteral_0= 'None'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4234:2: (enumLiteral_0= 'None' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4234:4: enumLiteral_0= 'None'
                     {
-                    enumLiteral_0=(Token)match(input,78,FOLLOW_78_in_ruleBooleanDef9785); 
+                    enumLiteral_0=(Token)match(input,79,FOLLOW_79_in_ruleBooleanDef9821); 
 
                             current = grammarAccess.getBooleanDefAccess().getNoneEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getBooleanDefAccess().getNoneEnumLiteralDeclaration_0()); 
@@ -10852,12 +10915,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4218:6: (enumLiteral_1= 'True' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4240:6: (enumLiteral_1= 'True' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4218:6: (enumLiteral_1= 'True' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4218:8: enumLiteral_1= 'True'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4240:6: (enumLiteral_1= 'True' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4240:8: enumLiteral_1= 'True'
                     {
-                    enumLiteral_1=(Token)match(input,142,FOLLOW_142_in_ruleBooleanDef9802); 
+                    enumLiteral_1=(Token)match(input,143,FOLLOW_143_in_ruleBooleanDef9838); 
 
                             current = grammarAccess.getBooleanDefAccess().getTrueEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getBooleanDefAccess().getTrueEnumLiteralDeclaration_1()); 
@@ -10869,12 +10932,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4224:6: (enumLiteral_2= 'False' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4246:6: (enumLiteral_2= 'False' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4224:6: (enumLiteral_2= 'False' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4224:8: enumLiteral_2= 'False'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4246:6: (enumLiteral_2= 'False' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4246:8: enumLiteral_2= 'False'
                     {
-                    enumLiteral_2=(Token)match(input,143,FOLLOW_143_in_ruleBooleanDef9819); 
+                    enumLiteral_2=(Token)match(input,144,FOLLOW_144_in_ruleBooleanDef9855); 
 
                             current = grammarAccess.getBooleanDefAccess().getFalseEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_2, grammarAccess.getBooleanDefAccess().getFalseEnumLiteralDeclaration_2()); 
@@ -10906,7 +10969,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWorkflowEventType"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4234:1: ruleWorkflowEventType returns [Enumerator current=null] : ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4256:1: ruleWorkflowEventType returns [Enumerator current=null] : ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) ) ;
     public final Enumerator ruleWorkflowEventType() throws RecognitionException {
         Enumerator current = null;
 
@@ -10916,42 +10979,42 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
          enterRule(); 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4236:28: ( ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4237:1: ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4258:28: ( ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4259:1: ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4237:1: ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) )
-            int alt91=3;
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4259:1: ( (enumLiteral_0= 'TransitionTo' ) | (enumLiteral_1= 'CreateBranch' ) | (enumLiteral_2= 'CommitBranch' ) )
+            int alt92=3;
             switch ( input.LA(1) ) {
-            case 144:
-                {
-                alt91=1;
-                }
-                break;
             case 145:
                 {
-                alt91=2;
+                alt92=1;
                 }
                 break;
             case 146:
                 {
-                alt91=3;
+                alt92=2;
+                }
+                break;
+            case 147:
+                {
+                alt92=3;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 91, 0, input);
+                    new NoViableAltException("", 92, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt91) {
+            switch (alt92) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4237:2: (enumLiteral_0= 'TransitionTo' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4259:2: (enumLiteral_0= 'TransitionTo' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4237:2: (enumLiteral_0= 'TransitionTo' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4237:4: enumLiteral_0= 'TransitionTo'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4259:2: (enumLiteral_0= 'TransitionTo' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4259:4: enumLiteral_0= 'TransitionTo'
                     {
-                    enumLiteral_0=(Token)match(input,144,FOLLOW_144_in_ruleWorkflowEventType9864); 
+                    enumLiteral_0=(Token)match(input,145,FOLLOW_145_in_ruleWorkflowEventType9900); 
 
                             current = grammarAccess.getWorkflowEventTypeAccess().getTransitionToEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getWorkflowEventTypeAccess().getTransitionToEnumLiteralDeclaration_0()); 
@@ -10963,12 +11026,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4243:6: (enumLiteral_1= 'CreateBranch' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4265:6: (enumLiteral_1= 'CreateBranch' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4243:6: (enumLiteral_1= 'CreateBranch' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4243:8: enumLiteral_1= 'CreateBranch'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4265:6: (enumLiteral_1= 'CreateBranch' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4265:8: enumLiteral_1= 'CreateBranch'
                     {
-                    enumLiteral_1=(Token)match(input,145,FOLLOW_145_in_ruleWorkflowEventType9881); 
+                    enumLiteral_1=(Token)match(input,146,FOLLOW_146_in_ruleWorkflowEventType9917); 
 
                             current = grammarAccess.getWorkflowEventTypeAccess().getCreateBranchEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getWorkflowEventTypeAccess().getCreateBranchEnumLiteralDeclaration_1()); 
@@ -10980,12 +11043,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4249:6: (enumLiteral_2= 'CommitBranch' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4271:6: (enumLiteral_2= 'CommitBranch' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4249:6: (enumLiteral_2= 'CommitBranch' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4249:8: enumLiteral_2= 'CommitBranch'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4271:6: (enumLiteral_2= 'CommitBranch' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4271:8: enumLiteral_2= 'CommitBranch'
                     {
-                    enumLiteral_2=(Token)match(input,146,FOLLOW_146_in_ruleWorkflowEventType9898); 
+                    enumLiteral_2=(Token)match(input,147,FOLLOW_147_in_ruleWorkflowEventType9934); 
 
                             current = grammarAccess.getWorkflowEventTypeAccess().getCommitBranchEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_2, grammarAccess.getWorkflowEventTypeAccess().getCommitBranchEnumLiteralDeclaration_2()); 
@@ -11017,7 +11080,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleReviewBlockingType"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4259:1: ruleReviewBlockingType returns [Enumerator current=null] : ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4281:1: ruleReviewBlockingType returns [Enumerator current=null] : ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) ) ;
     public final Enumerator ruleReviewBlockingType() throws RecognitionException {
         Enumerator current = null;
 
@@ -11026,33 +11089,33 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
          enterRule(); 
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4261:28: ( ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4262:1: ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4283:28: ( ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4284:1: ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4262:1: ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) )
-            int alt92=2;
-            int LA92_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4284:1: ( (enumLiteral_0= 'Transition' ) | (enumLiteral_1= 'Commit' ) )
+            int alt93=2;
+            int LA93_0 = input.LA(1);
 
-            if ( (LA92_0==147) ) {
-                alt92=1;
+            if ( (LA93_0==148) ) {
+                alt93=1;
             }
-            else if ( (LA92_0==148) ) {
-                alt92=2;
+            else if ( (LA93_0==149) ) {
+                alt93=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 92, 0, input);
+                    new NoViableAltException("", 93, 0, input);
 
                 throw nvae;
             }
-            switch (alt92) {
+            switch (alt93) {
                 case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4262:2: (enumLiteral_0= 'Transition' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4284:2: (enumLiteral_0= 'Transition' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4262:2: (enumLiteral_0= 'Transition' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4262:4: enumLiteral_0= 'Transition'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4284:2: (enumLiteral_0= 'Transition' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4284:4: enumLiteral_0= 'Transition'
                     {
-                    enumLiteral_0=(Token)match(input,147,FOLLOW_147_in_ruleReviewBlockingType9943); 
+                    enumLiteral_0=(Token)match(input,148,FOLLOW_148_in_ruleReviewBlockingType9979); 
 
                             current = grammarAccess.getReviewBlockingTypeAccess().getTransitionEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_0, grammarAccess.getReviewBlockingTypeAccess().getTransitionEnumLiteralDeclaration_0()); 
@@ -11064,12 +11127,12 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4268:6: (enumLiteral_1= 'Commit' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4290:6: (enumLiteral_1= 'Commit' )
                     {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4268:6: (enumLiteral_1= 'Commit' )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4268:8: enumLiteral_1= 'Commit'
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4290:6: (enumLiteral_1= 'Commit' )
+                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:4290:8: enumLiteral_1= 'Commit'
                     {
-                    enumLiteral_1=(Token)match(input,148,FOLLOW_148_in_ruleReviewBlockingType9960); 
+                    enumLiteral_1=(Token)match(input,149,FOLLOW_149_in_ruleReviewBlockingType9996); 
 
                             current = grammarAccess.getReviewBlockingTypeAccess().getCommitEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                             newLeafNode(enumLiteral_1, grammarAccess.getReviewBlockingTypeAccess().getCommitEnumLiteralDeclaration_1()); 
@@ -11119,16 +11182,16 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_RULE_STRING_in_ruleUSER_DEF_REFERENCE341 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleUserDef_in_entryRuleUserDef385 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleUserDef395 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUSER_DEF_REFERENCE_in_ruleUserDef441 = new BitSet(new long[]{0x0000000000008012L,0x0000000000002000L});
-    public static final BitSet FOLLOW_ruleUserDefOption_in_ruleUserDef462 = new BitSet(new long[]{0x0000000000008012L,0x0000000000002000L});
+    public static final BitSet FOLLOW_ruleUSER_DEF_REFERENCE_in_ruleUserDef441 = new BitSet(new long[]{0x0000000000008012L,0x0000000000004000L});
+    public static final BitSet FOLLOW_ruleUserDefOption_in_ruleUserDef462 = new BitSet(new long[]{0x0000000000008012L,0x0000000000004000L});
     public static final BitSet FOLLOW_15_in_ruleUserDef476 = new BitSet(new long[]{0x00000000001F0000L});
-    public static final BitSet FOLLOW_16_in_ruleUserDef489 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
+    public static final BitSet FOLLOW_16_in_ruleUserDef489 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
     public static final BitSet FOLLOW_ruleBooleanDef_in_ruleUserDef510 = new BitSet(new long[]{0x00000000001E0000L});
     public static final BitSet FOLLOW_17_in_ruleUserDef525 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleUserDef542 = new BitSet(new long[]{0x00000000001C0000L});
     public static final BitSet FOLLOW_18_in_ruleUserDef562 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleUserDef579 = new BitSet(new long[]{0x0000000000180000L});
-    public static final BitSet FOLLOW_19_in_ruleUserDef599 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
+    public static final BitSet FOLLOW_19_in_ruleUserDef599 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
     public static final BitSet FOLLOW_ruleBooleanDef_in_ruleUserDef620 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_20_in_ruleUserDef634 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleTEAM_DEF_REFERENCE_in_entryRuleTEAM_DEF_REFERENCE673 = new BitSet(new long[]{0x0000000000000000L});
@@ -11136,20 +11199,20 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_RULE_STRING_in_ruleTEAM_DEF_REFERENCE723 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleTeamDef_in_entryRuleTeamDef767 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleTeamDef777 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTEAM_DEF_REFERENCE_in_ruleTeamDef823 = new BitSet(new long[]{0x0000000000008010L,0x0000000000002000L});
-    public static final BitSet FOLLOW_ruleTeamDefOption_in_ruleTeamDef844 = new BitSet(new long[]{0x0000000000008010L,0x0000000000002000L});
+    public static final BitSet FOLLOW_ruleTEAM_DEF_REFERENCE_in_ruleTeamDef823 = new BitSet(new long[]{0x0000000000008010L,0x0000000000004000L});
+    public static final BitSet FOLLOW_ruleTeamDefOption_in_ruleTeamDef844 = new BitSet(new long[]{0x0000000000008010L,0x0000000000004000L});
     public static final BitSet FOLLOW_15_in_ruleTeamDef857 = new BitSet(new long[]{0x000000003FF10800L});
-    public static final BitSet FOLLOW_16_in_ruleTeamDef870 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
+    public static final BitSet FOLLOW_16_in_ruleTeamDef870 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
     public static final BitSet FOLLOW_ruleBooleanDef_in_ruleTeamDef891 = new BitSet(new long[]{0x000000003FF00800L});
-    public static final BitSet FOLLOW_21_in_ruleTeamDef906 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
+    public static final BitSet FOLLOW_21_in_ruleTeamDef906 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
     public static final BitSet FOLLOW_ruleBooleanDef_in_ruleTeamDef927 = new BitSet(new long[]{0x000000003FD00800L});
     public static final BitSet FOLLOW_22_in_ruleTeamDef942 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef959 = new BitSet(new long[]{0x000000003FD00800L});
-    public static final BitSet FOLLOW_23_in_ruleTeamDef979 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_23_in_ruleTeamDef979 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
     public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1000 = new BitSet(new long[]{0x000000003F900800L});
-    public static final BitSet FOLLOW_24_in_ruleTeamDef1015 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_24_in_ruleTeamDef1015 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
     public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1036 = new BitSet(new long[]{0x000000003F100800L});
-    public static final BitSet FOLLOW_25_in_ruleTeamDef1051 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_25_in_ruleTeamDef1051 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
     public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1072 = new BitSet(new long[]{0x000000003E100800L});
     public static final BitSet FOLLOW_11_in_ruleTeamDef1087 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef1104 = new BitSet(new long[]{0x000000003C100000L});
@@ -11170,369 +11233,371 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_RULE_STRING_in_ruleAI_DEF_REFERENCE1395 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleActionableItemDef_in_entryRuleActionableItemDef1439 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleActionableItemDef1449 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAI_DEF_REFERENCE_in_ruleActionableItemDef1495 = new BitSet(new long[]{0x0000000000008012L,0x0000000000002000L});
-    public static final BitSet FOLLOW_ruleActionableItemOption_in_ruleActionableItemDef1516 = new BitSet(new long[]{0x0000000000008012L,0x0000000000002000L});
-    public static final BitSet FOLLOW_15_in_ruleActionableItemDef1530 = new BitSet(new long[]{0x00000000E8D10000L});
-    public static final BitSet FOLLOW_16_in_ruleActionableItemDef1543 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleActionableItemDef1564 = new BitSet(new long[]{0x00000000E8D00000L});
-    public static final BitSet FOLLOW_30_in_ruleActionableItemDef1579 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleActionableItemDef1600 = new BitSet(new long[]{0x00000000A8D00000L});
-    public static final BitSet FOLLOW_23_in_ruleActionableItemDef1615 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_ruleUserRef_in_ruleActionableItemDef1636 = new BitSet(new long[]{0x00000000A8D00000L});
-    public static final BitSet FOLLOW_22_in_ruleActionableItemDef1651 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleActionableItemDef1668 = new BitSet(new long[]{0x00000000A8500000L});
-    public static final BitSet FOLLOW_31_in_ruleActionableItemDef1688 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleActionableItemDef1705 = new BitSet(new long[]{0x0000000028100000L});
-    public static final BitSet FOLLOW_27_in_ruleActionableItemDef1725 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleActionableItemDef1742 = new BitSet(new long[]{0x0000000028100000L});
-    public static final BitSet FOLLOW_29_in_ruleActionableItemDef1762 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleActionableItemDef1774 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_14_in_ruleActionableItemDef1787 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleActionableItemDef_in_ruleActionableItemDef1808 = new BitSet(new long[]{0x0000000000104000L});
-    public static final BitSet FOLLOW_20_in_ruleActionableItemDef1822 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_ruleActionableItemDef1836 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleVERSION_DEF_REFERENCE_in_entryRuleVERSION_DEF_REFERENCE1875 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleVERSION_DEF_REFERENCE1886 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleVERSION_DEF_REFERENCE1925 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleVersionDef_in_entryRuleVersionDef1969 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleVersionDef1979 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleVERSION_DEF_REFERENCE_in_ruleVersionDef2025 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleVersionDef2037 = new BitSet(new long[]{0x0000003F00500000L});
-    public static final BitSet FOLLOW_22_in_ruleVersionDef2050 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleVersionDef2067 = new BitSet(new long[]{0x0000003F00500000L});
-    public static final BitSet FOLLOW_32_in_ruleVersionDef2087 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2108 = new BitSet(new long[]{0x0000003E00100000L});
-    public static final BitSet FOLLOW_33_in_ruleVersionDef2123 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2144 = new BitSet(new long[]{0x0000003C00100000L});
-    public static final BitSet FOLLOW_34_in_ruleVersionDef2159 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2180 = new BitSet(new long[]{0x0000003800100000L});
-    public static final BitSet FOLLOW_35_in_ruleVersionDef2195 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2216 = new BitSet(new long[]{0x0000003000100000L});
-    public static final BitSet FOLLOW_36_in_ruleVersionDef2231 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleVersionDef2248 = new BitSet(new long[]{0x0000002000100000L});
-    public static final BitSet FOLLOW_37_in_ruleVersionDef2268 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleVersionDef2285 = new BitSet(new long[]{0x0000002000100000L});
-    public static final BitSet FOLLOW_20_in_ruleVersionDef2304 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWorkDef_in_entryRuleWorkDef2340 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleWorkDef2350 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_ruleWorkDef2396 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleWorkDef2408 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_38_in_ruleWorkDef2421 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWorkDef2438 = new BitSet(new long[]{0x000000C000000000L});
-    public static final BitSet FOLLOW_39_in_ruleWorkDef2458 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleWorkDef2481 = new BitSet(new long[]{0x1010010000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleWidgetDef_in_ruleWorkDef2503 = new BitSet(new long[]{0x1010010000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleDecisionReviewDef_in_ruleWorkDef2525 = new BitSet(new long[]{0x1010010000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_rulePeerReviewDef_in_ruleWorkDef2547 = new BitSet(new long[]{0x1010010000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleStateDef_in_ruleWorkDef2569 = new BitSet(new long[]{0x1010010000100000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_20_in_ruleWorkDef2582 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWidgetDef_in_entryRuleWidgetDef2618 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleWidgetDef2628 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_40_in_ruleWidgetDef2665 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetDef2686 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleWidgetDef2698 = new BitSet(new long[]{0x0001FE0000100000L});
-    public static final BitSet FOLLOW_41_in_ruleWidgetDef2711 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2728 = new BitSet(new long[]{0x0001FC0000100000L});
-    public static final BitSet FOLLOW_42_in_ruleWidgetDef2748 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2765 = new BitSet(new long[]{0x0001F80000100000L});
-    public static final BitSet FOLLOW_43_in_ruleWidgetDef2785 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2802 = new BitSet(new long[]{0x0001F00000100000L});
-    public static final BitSet FOLLOW_44_in_ruleWidgetDef2822 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2839 = new BitSet(new long[]{0x0001E00000100000L});
-    public static final BitSet FOLLOW_45_in_ruleWidgetDef2859 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_RULE_INT_in_ruleWidgetDef2876 = new BitSet(new long[]{0x0001C00000100000L});
-    public static final BitSet FOLLOW_46_in_ruleWidgetDef2896 = new BitSet(new long[]{0x0000000000000010L,0x07FFFFFFE0000000L});
-    public static final BitSet FOLLOW_ruleWidgetOption_in_ruleWidgetDef2917 = new BitSet(new long[]{0x0001C00000100000L});
-    public static final BitSet FOLLOW_47_in_ruleWidgetDef2932 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2949 = new BitSet(new long[]{0x0001000000100000L});
-    public static final BitSet FOLLOW_48_in_ruleWidgetDef2969 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2986 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_ruleWidgetDef3005 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWidgetRef_in_entryRuleWidgetRef3041 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleWidgetRef3051 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_49_in_ruleWidgetRef3088 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetRef3111 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAttrWidget_in_entryRuleAttrWidget3147 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleAttrWidget3157 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_50_in_ruleAttrWidget3194 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleAttrWidget3211 = new BitSet(new long[]{0x0008000000000002L});
-    public static final BitSet FOLLOW_51_in_ruleAttrWidget3229 = new BitSet(new long[]{0x0000000000000010L,0x07FFFFFFE0000000L});
-    public static final BitSet FOLLOW_ruleWidgetOption_in_ruleAttrWidget3250 = new BitSet(new long[]{0x0008000000000002L});
-    public static final BitSet FOLLOW_ruleStateDef_in_entryRuleStateDef3288 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleStateDef3298 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_ruleStateDef3335 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleStateDef3356 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleStateDef3368 = new BitSet(new long[]{0x0020040000000000L});
-    public static final BitSet FOLLOW_42_in_ruleStateDef3381 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleStateDef3398 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_53_in_ruleStateDef3417 = new BitSet(new long[]{0x0000000000000010L,0x3800000000000000L});
-    public static final BitSet FOLLOW_rulePageType_in_ruleStateDef3438 = new BitSet(new long[]{0x0040000000000000L});
-    public static final BitSet FOLLOW_54_in_ruleStateDef3450 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_RULE_INT_in_ruleStateDef3467 = new BitSet(new long[]{0x0F80000000100000L,0x0000000000000708L});
-    public static final BitSet FOLLOW_ruleToState_in_ruleStateDef3493 = new BitSet(new long[]{0x0F80000000100000L,0x0000000000000708L});
-    public static final BitSet FOLLOW_55_in_ruleStateDef3507 = new BitSet(new long[]{0x0000000000000010L,0x000000001FFE0000L});
-    public static final BitSet FOLLOW_ruleRule_in_ruleStateDef3528 = new BitSet(new long[]{0x0F80000000100000L,0x0000000000000608L});
-    public static final BitSet FOLLOW_ruleDecisionReviewRef_in_ruleStateDef3551 = new BitSet(new long[]{0x0F00000000100000L,0x0000000000000608L});
-    public static final BitSet FOLLOW_rulePeerReviewRef_in_ruleStateDef3573 = new BitSet(new long[]{0x0700000000100000L,0x0000000000000608L});
-    public static final BitSet FOLLOW_56_in_ruleStateDef3587 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_RULE_INT_in_ruleStateDef3604 = new BitSet(new long[]{0x0600000000100000L,0x0000000000000600L});
-    public static final BitSet FOLLOW_57_in_ruleStateDef3624 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_RULE_INT_in_ruleStateDef3641 = new BitSet(new long[]{0x0400000000100000L,0x0000000000000600L});
-    public static final BitSet FOLLOW_58_in_ruleStateDef3661 = new BitSet(new long[]{0x0000000000000010L,0xC000000000000000L,0x0000000000003FFFL});
-    public static final BitSet FOLLOW_ruleStateColor_in_ruleStateDef3682 = new BitSet(new long[]{0x0000000000100000L,0x0000000000000600L});
-    public static final BitSet FOLLOW_ruleLayoutType_in_ruleStateDef3705 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_ruleStateDef3718 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleDecisionReviewRef_in_entryRuleDecisionReviewRef3754 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleDecisionReviewRef3764 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_59_in_ruleDecisionReviewRef3801 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewRef3824 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleDecisionReviewDef_in_entryRuleDecisionReviewDef3860 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleDecisionReviewDef3870 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_60_in_ruleDecisionReviewDef3907 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewDef3928 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleDecisionReviewDef3940 = new BitSet(new long[]{0x2000000000000000L});
-    public static final BitSet FOLLOW_61_in_ruleDecisionReviewDef3952 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleDecisionReviewDef3969 = new BitSet(new long[]{0x0000040000000000L});
-    public static final BitSet FOLLOW_42_in_ruleDecisionReviewDef3986 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleDecisionReviewDef4003 = new BitSet(new long[]{0xC000000000000000L});
-    public static final BitSet FOLLOW_62_in_ruleDecisionReviewDef4021 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleDecisionReviewDef4044 = new BitSet(new long[]{0x8000000000000000L});
-    public static final BitSet FOLLOW_63_in_ruleDecisionReviewDef4058 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000180000L});
-    public static final BitSet FOLLOW_ruleReviewBlockingType_in_ruleDecisionReviewDef4079 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_64_in_ruleDecisionReviewDef4091 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000070000L});
-    public static final BitSet FOLLOW_ruleWorkflowEventType_in_ruleDecisionReviewDef4112 = new BitSet(new long[]{0x0000400000000000L,0x0000000000000006L});
-    public static final BitSet FOLLOW_65_in_ruleDecisionReviewDef4125 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_ruleUserRef_in_ruleDecisionReviewDef4146 = new BitSet(new long[]{0x0000400000000000L,0x0000000000000006L});
-    public static final BitSet FOLLOW_66_in_ruleDecisionReviewDef4161 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L,0x000000000000C000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleDecisionReviewDef4182 = new BitSet(new long[]{0x0000400000000000L,0x0000000000000006L});
-    public static final BitSet FOLLOW_ruleDecisionReviewOpt_in_ruleDecisionReviewDef4205 = new BitSet(new long[]{0x0000400000100000L,0x0000000000000006L});
-    public static final BitSet FOLLOW_20_in_ruleDecisionReviewDef4218 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_entryRuleDECISION_REVIEW_OPT_REF4255 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleDECISION_REVIEW_OPT_REF4266 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_OPT_REF4305 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleDecisionReviewOpt_in_entryRuleDecisionReviewOpt4349 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleDecisionReviewOpt4359 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_46_in_ruleDecisionReviewOpt4396 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_ruleDecisionReviewOpt4417 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000040L});
-    public static final BitSet FOLLOW_ruleFollowupRef_in_ruleDecisionReviewOpt4438 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rulePeerReviewRef_in_entryRulePeerReviewRef4475 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRulePeerReviewRef4485 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_rulePeerReviewRef4522 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewRef4545 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rulePeerReviewDef_in_entryRulePeerReviewDef4581 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRulePeerReviewDef4591 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_rulePeerReviewDef4628 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewDef4649 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_rulePeerReviewDef4661 = new BitSet(new long[]{0x2000040000000000L});
-    public static final BitSet FOLLOW_61_in_rulePeerReviewDef4674 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rulePeerReviewDef4691 = new BitSet(new long[]{0x0000040000000000L});
-    public static final BitSet FOLLOW_42_in_rulePeerReviewDef4710 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rulePeerReviewDef4727 = new BitSet(new long[]{0xC000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_rulePeerReviewDef4745 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rulePeerReviewDef4762 = new BitSet(new long[]{0xC000000000000000L});
-    public static final BitSet FOLLOW_62_in_rulePeerReviewDef4782 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_rulePeerReviewDef4805 = new BitSet(new long[]{0x8000000000000000L});
-    public static final BitSet FOLLOW_63_in_rulePeerReviewDef4819 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000180000L});
-    public static final BitSet FOLLOW_ruleReviewBlockingType_in_rulePeerReviewDef4840 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_64_in_rulePeerReviewDef4852 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000070000L});
-    public static final BitSet FOLLOW_ruleWorkflowEventType_in_rulePeerReviewDef4873 = new BitSet(new long[]{0x0000000000100000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_rulePeerReviewDef4886 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_ruleUserRef_in_rulePeerReviewDef4907 = new BitSet(new long[]{0x0000000000100000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_20_in_rulePeerReviewDef4921 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleFollowupRef_in_entryRuleFollowupRef4957 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleFollowupRef4967 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_70_in_ruleFollowupRef5004 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_ruleFollowupRef5017 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000080L});
-    public static final BitSet FOLLOW_ruleUserRef_in_ruleFollowupRef5038 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUserRef_in_entryRuleUserRef5076 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleUserRef5086 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUserByUserId_in_ruleUserRef5133 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUserByName_in_ruleUserRef5160 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUserByUserId_in_entryRuleUserByUserId5195 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleUserByUserId5205 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_ruleUserByUserId5242 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleUserByUserId5259 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUserByName_in_entryRuleUserByName5300 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleUserByName5310 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_71_in_ruleUserByName5347 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleUserByName5364 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5406 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5417 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_NAME_REFERENCE5456 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_entryRulePEER_REVIEW_NAME_REFERENCE5501 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRulePEER_REVIEW_NAME_REFERENCE5512 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rulePEER_REVIEW_NAME_REFERENCE5551 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_entryRuleSTATE_NAME_REFERENCE5596 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleSTATE_NAME_REFERENCE5607 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleSTATE_NAME_REFERENCE5646 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWIDGET_NAME_REFERENCE_in_entryRuleWIDGET_NAME_REFERENCE5691 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleWIDGET_NAME_REFERENCE5702 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWIDGET_NAME_REFERENCE5741 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5786 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5797 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWORK_DEFINITION_NAME_REFERENCE5836 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleToState_in_entryRuleToState5880 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleToState5890 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_ruleToState5927 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleToState5950 = new BitSet(new long[]{0x0000000000000012L,0x0000000000018000L});
-    public static final BitSet FOLLOW_ruleTransitionOption_in_ruleToState5971 = new BitSet(new long[]{0x0000000000000012L,0x0000000000018000L});
-    public static final BitSet FOLLOW_ruleLayoutType_in_entryRuleLayoutType6008 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutType6018 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleLayoutDef_in_ruleLayoutType6065 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleLayoutCopy_in_ruleLayoutType6092 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleLayoutDef_in_entryRuleLayoutDef6127 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutDef6137 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_73_in_ruleLayoutDef6174 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleLayoutDef6186 = new BitSet(new long[]{0x0006000000000000L,0x0000000000000800L});
-    public static final BitSet FOLLOW_ruleLayoutItem_in_ruleLayoutDef6207 = new BitSet(new long[]{0x0006000000100000L,0x0000000000000800L});
-    public static final BitSet FOLLOW_20_in_ruleLayoutDef6220 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleLayoutCopy_in_entryRuleLayoutCopy6256 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutCopy6266 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_74_in_ruleLayoutCopy6303 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleLayoutCopy6326 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleLayoutItem_in_entryRuleLayoutItem6362 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutItem6372 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWidgetRef_in_ruleLayoutItem6419 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAttrWidget_in_ruleLayoutItem6446 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleComposite_in_ruleLayoutItem6473 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleComposite_in_entryRuleComposite6508 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleComposite6518 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_75_in_ruleComposite6555 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleComposite6567 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_ruleComposite6579 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_RULE_INT_in_ruleComposite6596 = new BitSet(new long[]{0x0006000000000000L,0x0000000000000800L});
-    public static final BitSet FOLLOW_ruleLayoutItem_in_ruleComposite6622 = new BitSet(new long[]{0x0006400000100000L,0x0000000000000800L});
-    public static final BitSet FOLLOW_46_in_ruleComposite6636 = new BitSet(new long[]{0x0000000000000010L,0x0000000000004000L});
-    public static final BitSet FOLLOW_ruleCompositeOption_in_ruleComposite6657 = new BitSet(new long[]{0x0000400000100000L});
-    public static final BitSet FOLLOW_20_in_ruleComposite6671 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUSER_DEF_OPTION_NAME_in_entryRuleUSER_DEF_OPTION_NAME6708 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleUSER_DEF_OPTION_NAME6719 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleUSER_DEF_OPTION_NAME6758 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUserDefOption_in_entryRuleUserDefOption6803 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleUserDefOption6814 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_77_in_ruleUserDefOption6852 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUSER_DEF_OPTION_NAME_in_ruleUserDefOption6880 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_entryRuleTEAM_DEF_OPTION_NAME6926 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleTEAM_DEF_OPTION_NAME6937 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleTEAM_DEF_OPTION_NAME6976 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTeamDefOption_in_entryRuleTeamDefOption7021 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleTeamDefOption7032 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_77_in_ruleTeamDefOption7070 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_ruleTeamDefOption7098 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAI_DEF_OPTION_NAME_in_entryRuleAI_DEF_OPTION_NAME7144 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleAI_DEF_OPTION_NAME7155 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleAI_DEF_OPTION_NAME7194 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleActionableItemOption_in_entryRuleActionableItemOption7239 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleActionableItemOption7250 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_77_in_ruleActionableItemOption7288 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAI_DEF_OPTION_NAME_in_ruleActionableItemOption7316 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_entryRuleCOMPOSITE_OPTION_NAME7362 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleCOMPOSITE_OPTION_NAME7373 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleCOMPOSITE_OPTION_NAME7412 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleCompositeOption_in_entryRuleCompositeOption7457 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleCompositeOption7468 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_78_in_ruleCompositeOption7506 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_ruleCompositeOption7534 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTRANSITION_OPTION_NAME_in_entryRuleTRANSITION_OPTION_NAME7580 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleTRANSITION_OPTION_NAME7591 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleTRANSITION_OPTION_NAME7630 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTransitionOption_in_entryRuleTransitionOption7675 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleTransitionOption7686 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_79_in_ruleTransitionOption7724 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_80_in_ruleTransitionOption7743 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTRANSITION_OPTION_NAME_in_ruleTransitionOption7771 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRULE_NAME_in_entryRuleRULE_NAME7817 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleRULE_NAME7828 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleRULE_NAME7867 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRule_in_entryRuleRule7912 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleRule7923 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_81_in_ruleRule7961 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_82_in_ruleRule7980 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_83_in_ruleRule7999 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_84_in_ruleRule8018 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_85_in_ruleRule8037 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_86_in_ruleRule8056 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_87_in_ruleRule8075 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_88_in_ruleRule8094 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_89_in_ruleRule8113 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_90_in_ruleRule8132 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_91_in_ruleRule8151 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_92_in_ruleRule8170 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRULE_NAME_in_ruleRule8198 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWIDGET_OPTION_NAME_in_entryRuleWIDGET_OPTION_NAME8244 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleWIDGET_OPTION_NAME8255 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleWIDGET_OPTION_NAME8294 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWidgetOption_in_entryRuleWidgetOption8339 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleWidgetOption8350 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_93_in_ruleWidgetOption8388 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_94_in_ruleWidgetOption8407 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_95_in_ruleWidgetOption8426 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_96_in_ruleWidgetOption8445 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_97_in_ruleWidgetOption8464 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_98_in_ruleWidgetOption8483 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_99_in_ruleWidgetOption8502 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_100_in_ruleWidgetOption8521 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_101_in_ruleWidgetOption8540 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_102_in_ruleWidgetOption8559 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_103_in_ruleWidgetOption8578 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_104_in_ruleWidgetOption8597 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_105_in_ruleWidgetOption8616 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_106_in_ruleWidgetOption8635 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_107_in_ruleWidgetOption8654 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_108_in_ruleWidgetOption8673 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_109_in_ruleWidgetOption8692 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_110_in_ruleWidgetOption8711 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_111_in_ruleWidgetOption8730 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_112_in_ruleWidgetOption8749 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_113_in_ruleWidgetOption8768 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_114_in_ruleWidgetOption8787 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_115_in_ruleWidgetOption8806 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_116_in_ruleWidgetOption8825 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_117_in_ruleWidgetOption8844 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_118_in_ruleWidgetOption8863 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_119_in_ruleWidgetOption8882 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_120_in_ruleWidgetOption8901 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_121_in_ruleWidgetOption8920 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_122_in_ruleWidgetOption8939 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWIDGET_OPTION_NAME_in_ruleWidgetOption8967 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rulePAGE_TYPE_NAME_in_entryRulePAGE_TYPE_NAME9013 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRulePAGE_TYPE_NAME9024 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rulePAGE_TYPE_NAME9063 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rulePageType_in_entryRulePageType9108 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRulePageType9119 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_123_in_rulePageType9157 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_124_in_rulePageType9176 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_125_in_rulePageType9195 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rulePAGE_TYPE_NAME_in_rulePageType9223 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleCOLOR_NAME_in_entryRuleCOLOR_NAME9269 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleCOLOR_NAME9280 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleCOLOR_NAME9319 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleStateColor_in_entryRuleStateColor9364 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleStateColor9375 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_126_in_ruleStateColor9413 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_127_in_ruleStateColor9432 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_128_in_ruleStateColor9451 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_129_in_ruleStateColor9470 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_130_in_ruleStateColor9489 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_131_in_ruleStateColor9508 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_132_in_ruleStateColor9527 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_133_in_ruleStateColor9546 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_134_in_ruleStateColor9565 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_135_in_ruleStateColor9584 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_136_in_ruleStateColor9603 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_137_in_ruleStateColor9622 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_138_in_ruleStateColor9641 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_139_in_ruleStateColor9660 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_140_in_ruleStateColor9679 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_141_in_ruleStateColor9698 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleCOLOR_NAME_in_ruleStateColor9726 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_78_in_ruleBooleanDef9785 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_142_in_ruleBooleanDef9802 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_143_in_ruleBooleanDef9819 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_144_in_ruleWorkflowEventType9864 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_145_in_ruleWorkflowEventType9881 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_146_in_ruleWorkflowEventType9898 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_147_in_ruleReviewBlockingType9943 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_148_in_ruleReviewBlockingType9960 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAI_DEF_REFERENCE_in_ruleActionableItemDef1495 = new BitSet(new long[]{0x0000000000008012L,0x0000000000004000L});
+    public static final BitSet FOLLOW_ruleActionableItemOption_in_ruleActionableItemDef1516 = new BitSet(new long[]{0x0000000000008012L,0x0000000000004000L});
+    public static final BitSet FOLLOW_15_in_ruleActionableItemDef1530 = new BitSet(new long[]{0x00000001E8D10000L});
+    public static final BitSet FOLLOW_16_in_ruleActionableItemDef1543 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleActionableItemDef1564 = new BitSet(new long[]{0x00000001E8D00000L});
+    public static final BitSet FOLLOW_30_in_ruleActionableItemDef1579 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleActionableItemDef1600 = new BitSet(new long[]{0x00000001A8D00000L});
+    public static final BitSet FOLLOW_23_in_ruleActionableItemDef1615 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_ruleUserRef_in_ruleActionableItemDef1636 = new BitSet(new long[]{0x00000001A8D00000L});
+    public static final BitSet FOLLOW_31_in_ruleActionableItemDef1651 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_ruleUserRef_in_ruleActionableItemDef1672 = new BitSet(new long[]{0x00000001A8500000L});
+    public static final BitSet FOLLOW_22_in_ruleActionableItemDef1687 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleActionableItemDef1704 = new BitSet(new long[]{0x0000000128500000L});
+    public static final BitSet FOLLOW_32_in_ruleActionableItemDef1724 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleActionableItemDef1741 = new BitSet(new long[]{0x0000000028100000L});
+    public static final BitSet FOLLOW_27_in_ruleActionableItemDef1761 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleActionableItemDef1778 = new BitSet(new long[]{0x0000000028100000L});
+    public static final BitSet FOLLOW_29_in_ruleActionableItemDef1798 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleActionableItemDef1810 = new BitSet(new long[]{0x0000000000004000L});
+    public static final BitSet FOLLOW_14_in_ruleActionableItemDef1823 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleActionableItemDef_in_ruleActionableItemDef1844 = new BitSet(new long[]{0x0000000000104000L});
+    public static final BitSet FOLLOW_20_in_ruleActionableItemDef1858 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_ruleActionableItemDef1872 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleVERSION_DEF_REFERENCE_in_entryRuleVERSION_DEF_REFERENCE1911 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleVERSION_DEF_REFERENCE1922 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleVERSION_DEF_REFERENCE1961 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleVersionDef_in_entryRuleVersionDef2005 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleVersionDef2015 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleVERSION_DEF_REFERENCE_in_ruleVersionDef2061 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleVersionDef2073 = new BitSet(new long[]{0x0000007E00500000L});
+    public static final BitSet FOLLOW_22_in_ruleVersionDef2086 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleVersionDef2103 = new BitSet(new long[]{0x0000007E00500000L});
+    public static final BitSet FOLLOW_33_in_ruleVersionDef2123 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2144 = new BitSet(new long[]{0x0000007C00100000L});
+    public static final BitSet FOLLOW_34_in_ruleVersionDef2159 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2180 = new BitSet(new long[]{0x0000007800100000L});
+    public static final BitSet FOLLOW_35_in_ruleVersionDef2195 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2216 = new BitSet(new long[]{0x0000007000100000L});
+    public static final BitSet FOLLOW_36_in_ruleVersionDef2231 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleVersionDef2252 = new BitSet(new long[]{0x0000006000100000L});
+    public static final BitSet FOLLOW_37_in_ruleVersionDef2267 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleVersionDef2284 = new BitSet(new long[]{0x0000004000100000L});
+    public static final BitSet FOLLOW_38_in_ruleVersionDef2304 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleVersionDef2321 = new BitSet(new long[]{0x0000004000100000L});
+    public static final BitSet FOLLOW_20_in_ruleVersionDef2340 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWorkDef_in_entryRuleWorkDef2376 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleWorkDef2386 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_ruleWorkDef2432 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleWorkDef2444 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_39_in_ruleWorkDef2457 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWorkDef2474 = new BitSet(new long[]{0x0000018000000000L});
+    public static final BitSet FOLLOW_40_in_ruleWorkDef2494 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleWorkDef2517 = new BitSet(new long[]{0x2020020000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_ruleWidgetDef_in_ruleWorkDef2539 = new BitSet(new long[]{0x2020020000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_ruleDecisionReviewDef_in_ruleWorkDef2561 = new BitSet(new long[]{0x2020020000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_rulePeerReviewDef_in_ruleWorkDef2583 = new BitSet(new long[]{0x2020020000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_ruleStateDef_in_ruleWorkDef2605 = new BitSet(new long[]{0x2020020000100000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_20_in_ruleWorkDef2618 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWidgetDef_in_entryRuleWidgetDef2654 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleWidgetDef2664 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_41_in_ruleWidgetDef2701 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetDef2722 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleWidgetDef2734 = new BitSet(new long[]{0x0003FC0000100000L});
+    public static final BitSet FOLLOW_42_in_ruleWidgetDef2747 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2764 = new BitSet(new long[]{0x0003F80000100000L});
+    public static final BitSet FOLLOW_43_in_ruleWidgetDef2784 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2801 = new BitSet(new long[]{0x0003F00000100000L});
+    public static final BitSet FOLLOW_44_in_ruleWidgetDef2821 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2838 = new BitSet(new long[]{0x0003E00000100000L});
+    public static final BitSet FOLLOW_45_in_ruleWidgetDef2858 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2875 = new BitSet(new long[]{0x0003C00000100000L});
+    public static final BitSet FOLLOW_46_in_ruleWidgetDef2895 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_RULE_INT_in_ruleWidgetDef2912 = new BitSet(new long[]{0x0003800000100000L});
+    public static final BitSet FOLLOW_47_in_ruleWidgetDef2932 = new BitSet(new long[]{0x0000000000000010L,0x0FFFFFFFC0000000L});
+    public static final BitSet FOLLOW_ruleWidgetOption_in_ruleWidgetDef2953 = new BitSet(new long[]{0x0003800000100000L});
+    public static final BitSet FOLLOW_48_in_ruleWidgetDef2968 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef2985 = new BitSet(new long[]{0x0002000000100000L});
+    public static final BitSet FOLLOW_49_in_ruleWidgetDef3005 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWidgetDef3022 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_ruleWidgetDef3041 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWidgetRef_in_entryRuleWidgetRef3077 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleWidgetRef3087 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_50_in_ruleWidgetRef3124 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleWIDGET_NAME_REFERENCE_in_ruleWidgetRef3147 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAttrWidget_in_entryRuleAttrWidget3183 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleAttrWidget3193 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_51_in_ruleAttrWidget3230 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleAttrWidget3247 = new BitSet(new long[]{0x0010000000000002L});
+    public static final BitSet FOLLOW_52_in_ruleAttrWidget3265 = new BitSet(new long[]{0x0000000000000010L,0x0FFFFFFFC0000000L});
+    public static final BitSet FOLLOW_ruleWidgetOption_in_ruleAttrWidget3286 = new BitSet(new long[]{0x0010000000000002L});
+    public static final BitSet FOLLOW_ruleStateDef_in_entryRuleStateDef3324 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleStateDef3334 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_53_in_ruleStateDef3371 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleStateDef3392 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleStateDef3404 = new BitSet(new long[]{0x0040080000000000L});
+    public static final BitSet FOLLOW_43_in_ruleStateDef3417 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleStateDef3434 = new BitSet(new long[]{0x0040000000000000L});
+    public static final BitSet FOLLOW_54_in_ruleStateDef3453 = new BitSet(new long[]{0x0000000000000010L,0x7000000000000000L});
+    public static final BitSet FOLLOW_rulePageType_in_ruleStateDef3474 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_55_in_ruleStateDef3486 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_RULE_INT_in_ruleStateDef3503 = new BitSet(new long[]{0x1F00000000100000L,0x0000000000000E10L});
+    public static final BitSet FOLLOW_ruleToState_in_ruleStateDef3529 = new BitSet(new long[]{0x1F00000000100000L,0x0000000000000E10L});
+    public static final BitSet FOLLOW_56_in_ruleStateDef3543 = new BitSet(new long[]{0x0000000000000010L,0x000000003FFC0000L});
+    public static final BitSet FOLLOW_ruleRule_in_ruleStateDef3564 = new BitSet(new long[]{0x1F00000000100000L,0x0000000000000C10L});
+    public static final BitSet FOLLOW_ruleDecisionReviewRef_in_ruleStateDef3587 = new BitSet(new long[]{0x1E00000000100000L,0x0000000000000C10L});
+    public static final BitSet FOLLOW_rulePeerReviewRef_in_ruleStateDef3609 = new BitSet(new long[]{0x0E00000000100000L,0x0000000000000C10L});
+    public static final BitSet FOLLOW_57_in_ruleStateDef3623 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_RULE_INT_in_ruleStateDef3640 = new BitSet(new long[]{0x0C00000000100000L,0x0000000000000C00L});
+    public static final BitSet FOLLOW_58_in_ruleStateDef3660 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_RULE_INT_in_ruleStateDef3677 = new BitSet(new long[]{0x0800000000100000L,0x0000000000000C00L});
+    public static final BitSet FOLLOW_59_in_ruleStateDef3697 = new BitSet(new long[]{0x0000000000000010L,0x8000000000000000L,0x0000000000007FFFL});
+    public static final BitSet FOLLOW_ruleStateColor_in_ruleStateDef3718 = new BitSet(new long[]{0x0000000000100000L,0x0000000000000C00L});
+    public static final BitSet FOLLOW_ruleLayoutType_in_ruleStateDef3741 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_ruleStateDef3754 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleDecisionReviewRef_in_entryRuleDecisionReviewRef3790 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleDecisionReviewRef3800 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_60_in_ruleDecisionReviewRef3837 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewRef3860 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleDecisionReviewDef_in_entryRuleDecisionReviewDef3896 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleDecisionReviewDef3906 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_ruleDecisionReviewDef3943 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_ruleDecisionReviewDef3964 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleDecisionReviewDef3976 = new BitSet(new long[]{0x4000000000000000L});
+    public static final BitSet FOLLOW_62_in_ruleDecisionReviewDef3988 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleDecisionReviewDef4005 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_ruleDecisionReviewDef4022 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleDecisionReviewDef4039 = new BitSet(new long[]{0x8000000000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_63_in_ruleDecisionReviewDef4057 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleDecisionReviewDef4080 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_64_in_ruleDecisionReviewDef4094 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000300000L});
+    public static final BitSet FOLLOW_ruleReviewBlockingType_in_ruleDecisionReviewDef4115 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_ruleDecisionReviewDef4127 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x00000000000E0000L});
+    public static final BitSet FOLLOW_ruleWorkflowEventType_in_ruleDecisionReviewDef4148 = new BitSet(new long[]{0x0000800000000000L,0x000000000000000CL});
+    public static final BitSet FOLLOW_66_in_ruleDecisionReviewDef4161 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_ruleUserRef_in_ruleDecisionReviewDef4182 = new BitSet(new long[]{0x0000800000000000L,0x000000000000000CL});
+    public static final BitSet FOLLOW_67_in_ruleDecisionReviewDef4197 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L,0x0000000000018000L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleDecisionReviewDef4218 = new BitSet(new long[]{0x0000800000000000L,0x000000000000000CL});
+    public static final BitSet FOLLOW_ruleDecisionReviewOpt_in_ruleDecisionReviewDef4241 = new BitSet(new long[]{0x0000800000100000L,0x000000000000000CL});
+    public static final BitSet FOLLOW_20_in_ruleDecisionReviewDef4254 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_entryRuleDECISION_REVIEW_OPT_REF4291 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleDECISION_REVIEW_OPT_REF4302 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_OPT_REF4341 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleDecisionReviewOpt_in_entryRuleDecisionReviewOpt4385 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleDecisionReviewOpt4395 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_47_in_ruleDecisionReviewOpt4432 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleDECISION_REVIEW_OPT_REF_in_ruleDecisionReviewOpt4453 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
+    public static final BitSet FOLLOW_ruleFollowupRef_in_ruleDecisionReviewOpt4474 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rulePeerReviewRef_in_entryRulePeerReviewRef4511 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRulePeerReviewRef4521 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_rulePeerReviewRef4558 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewRef4581 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rulePeerReviewDef_in_entryRulePeerReviewDef4617 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRulePeerReviewDef4627 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_69_in_rulePeerReviewDef4664 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_rulePeerReviewDef4685 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_rulePeerReviewDef4697 = new BitSet(new long[]{0x4000080000000000L});
+    public static final BitSet FOLLOW_62_in_rulePeerReviewDef4710 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rulePeerReviewDef4727 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_rulePeerReviewDef4746 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rulePeerReviewDef4763 = new BitSet(new long[]{0x8000000000000000L,0x0000000000000041L});
+    public static final BitSet FOLLOW_70_in_rulePeerReviewDef4781 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rulePeerReviewDef4798 = new BitSet(new long[]{0x8000000000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_63_in_rulePeerReviewDef4818 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_rulePeerReviewDef4841 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_64_in_rulePeerReviewDef4855 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000300000L});
+    public static final BitSet FOLLOW_ruleReviewBlockingType_in_rulePeerReviewDef4876 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_rulePeerReviewDef4888 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x00000000000E0000L});
+    public static final BitSet FOLLOW_ruleWorkflowEventType_in_rulePeerReviewDef4909 = new BitSet(new long[]{0x0000000000100000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_66_in_rulePeerReviewDef4922 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_ruleUserRef_in_rulePeerReviewDef4943 = new BitSet(new long[]{0x0000000000100000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_20_in_rulePeerReviewDef4957 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleFollowupRef_in_entryRuleFollowupRef4993 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleFollowupRef5003 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_71_in_ruleFollowupRef5040 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_66_in_ruleFollowupRef5053 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_ruleUserRef_in_ruleFollowupRef5074 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ruleUserRef_in_entryRuleUserRef5112 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleUserRef5122 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUserByUserId_in_ruleUserRef5169 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUserByName_in_ruleUserRef5196 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUserByUserId_in_entryRuleUserByUserId5231 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleUserByUserId5241 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_ruleUserByUserId5278 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleUserByUserId5295 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUserByName_in_entryRuleUserByName5336 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleUserByName5346 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_72_in_ruleUserByName5383 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleUserByName5400 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleDECISION_REVIEW_NAME_REFERENCE_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5442 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleDECISION_REVIEW_NAME_REFERENCE5453 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleDECISION_REVIEW_NAME_REFERENCE5492 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rulePEER_REVIEW_NAME_REFERENCE_in_entryRulePEER_REVIEW_NAME_REFERENCE5537 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRulePEER_REVIEW_NAME_REFERENCE5548 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rulePEER_REVIEW_NAME_REFERENCE5587 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_entryRuleSTATE_NAME_REFERENCE5632 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleSTATE_NAME_REFERENCE5643 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleSTATE_NAME_REFERENCE5682 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWIDGET_NAME_REFERENCE_in_entryRuleWIDGET_NAME_REFERENCE5727 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleWIDGET_NAME_REFERENCE5738 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWIDGET_NAME_REFERENCE5777 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWORK_DEFINITION_NAME_REFERENCE_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5822 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleWORK_DEFINITION_NAME_REFERENCE5833 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWORK_DEFINITION_NAME_REFERENCE5872 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleToState_in_entryRuleToState5916 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleToState5926 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_73_in_ruleToState5963 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleToState5986 = new BitSet(new long[]{0x0000000000000012L,0x0000000000030000L});
+    public static final BitSet FOLLOW_ruleTransitionOption_in_ruleToState6007 = new BitSet(new long[]{0x0000000000000012L,0x0000000000030000L});
+    public static final BitSet FOLLOW_ruleLayoutType_in_entryRuleLayoutType6044 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutType6054 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleLayoutDef_in_ruleLayoutType6101 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleLayoutCopy_in_ruleLayoutType6128 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleLayoutDef_in_entryRuleLayoutDef6163 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutDef6173 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_74_in_ruleLayoutDef6210 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleLayoutDef6222 = new BitSet(new long[]{0x000C000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_ruleLayoutItem_in_ruleLayoutDef6243 = new BitSet(new long[]{0x000C000000100000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_20_in_ruleLayoutDef6256 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleLayoutCopy_in_entryRuleLayoutCopy6292 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutCopy6302 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_75_in_ruleLayoutCopy6339 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleSTATE_NAME_REFERENCE_in_ruleLayoutCopy6362 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleLayoutItem_in_entryRuleLayoutItem6398 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleLayoutItem6408 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWidgetRef_in_ruleLayoutItem6455 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAttrWidget_in_ruleLayoutItem6482 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleComposite_in_ruleLayoutItem6509 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleComposite_in_entryRuleComposite6544 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleComposite6554 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_76_in_ruleComposite6591 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_ruleComposite6603 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002000L});
+    public static final BitSet FOLLOW_77_in_ruleComposite6615 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_RULE_INT_in_ruleComposite6632 = new BitSet(new long[]{0x000C000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_ruleLayoutItem_in_ruleComposite6658 = new BitSet(new long[]{0x000C800000100000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_47_in_ruleComposite6672 = new BitSet(new long[]{0x0000000000000010L,0x0000000000008000L});
+    public static final BitSet FOLLOW_ruleCompositeOption_in_ruleComposite6693 = new BitSet(new long[]{0x0000800000100000L});
+    public static final BitSet FOLLOW_20_in_ruleComposite6707 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUSER_DEF_OPTION_NAME_in_entryRuleUSER_DEF_OPTION_NAME6744 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleUSER_DEF_OPTION_NAME6755 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleUSER_DEF_OPTION_NAME6794 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUserDefOption_in_entryRuleUserDefOption6839 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleUserDefOption6850 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_78_in_ruleUserDefOption6888 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUSER_DEF_OPTION_NAME_in_ruleUserDefOption6916 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_entryRuleTEAM_DEF_OPTION_NAME6962 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleTEAM_DEF_OPTION_NAME6973 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleTEAM_DEF_OPTION_NAME7012 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleTeamDefOption_in_entryRuleTeamDefOption7057 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleTeamDefOption7068 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_78_in_ruleTeamDefOption7106 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleTEAM_DEF_OPTION_NAME_in_ruleTeamDefOption7134 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAI_DEF_OPTION_NAME_in_entryRuleAI_DEF_OPTION_NAME7180 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleAI_DEF_OPTION_NAME7191 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleAI_DEF_OPTION_NAME7230 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleActionableItemOption_in_entryRuleActionableItemOption7275 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleActionableItemOption7286 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_78_in_ruleActionableItemOption7324 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAI_DEF_OPTION_NAME_in_ruleActionableItemOption7352 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_entryRuleCOMPOSITE_OPTION_NAME7398 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleCOMPOSITE_OPTION_NAME7409 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleCOMPOSITE_OPTION_NAME7448 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleCompositeOption_in_entryRuleCompositeOption7493 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleCompositeOption7504 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_79_in_ruleCompositeOption7542 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleCOMPOSITE_OPTION_NAME_in_ruleCompositeOption7570 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleTRANSITION_OPTION_NAME_in_entryRuleTRANSITION_OPTION_NAME7616 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleTRANSITION_OPTION_NAME7627 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleTRANSITION_OPTION_NAME7666 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleTransitionOption_in_entryRuleTransitionOption7711 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleTransitionOption7722 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_80_in_ruleTransitionOption7760 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_81_in_ruleTransitionOption7779 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleTRANSITION_OPTION_NAME_in_ruleTransitionOption7807 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRULE_NAME_in_entryRuleRULE_NAME7853 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleRULE_NAME7864 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleRULE_NAME7903 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRule_in_entryRuleRule7948 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleRule7959 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_82_in_ruleRule7997 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_83_in_ruleRule8016 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_84_in_ruleRule8035 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_85_in_ruleRule8054 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_86_in_ruleRule8073 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_87_in_ruleRule8092 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_88_in_ruleRule8111 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_89_in_ruleRule8130 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_90_in_ruleRule8149 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_91_in_ruleRule8168 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_92_in_ruleRule8187 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_93_in_ruleRule8206 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRULE_NAME_in_ruleRule8234 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWIDGET_OPTION_NAME_in_entryRuleWIDGET_OPTION_NAME8280 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleWIDGET_OPTION_NAME8291 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleWIDGET_OPTION_NAME8330 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWidgetOption_in_entryRuleWidgetOption8375 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleWidgetOption8386 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_94_in_ruleWidgetOption8424 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_95_in_ruleWidgetOption8443 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_96_in_ruleWidgetOption8462 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_97_in_ruleWidgetOption8481 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_98_in_ruleWidgetOption8500 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_99_in_ruleWidgetOption8519 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_100_in_ruleWidgetOption8538 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_101_in_ruleWidgetOption8557 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_102_in_ruleWidgetOption8576 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_103_in_ruleWidgetOption8595 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_104_in_ruleWidgetOption8614 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_105_in_ruleWidgetOption8633 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_106_in_ruleWidgetOption8652 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_107_in_ruleWidgetOption8671 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_108_in_ruleWidgetOption8690 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_109_in_ruleWidgetOption8709 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_110_in_ruleWidgetOption8728 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_111_in_ruleWidgetOption8747 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_112_in_ruleWidgetOption8766 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_113_in_ruleWidgetOption8785 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_114_in_ruleWidgetOption8804 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_115_in_ruleWidgetOption8823 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_116_in_ruleWidgetOption8842 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_117_in_ruleWidgetOption8861 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_118_in_ruleWidgetOption8880 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_119_in_ruleWidgetOption8899 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_120_in_ruleWidgetOption8918 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_121_in_ruleWidgetOption8937 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_122_in_ruleWidgetOption8956 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_123_in_ruleWidgetOption8975 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWIDGET_OPTION_NAME_in_ruleWidgetOption9003 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rulePAGE_TYPE_NAME_in_entryRulePAGE_TYPE_NAME9049 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRulePAGE_TYPE_NAME9060 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rulePAGE_TYPE_NAME9099 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rulePageType_in_entryRulePageType9144 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRulePageType9155 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_124_in_rulePageType9193 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_125_in_rulePageType9212 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_126_in_rulePageType9231 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rulePAGE_TYPE_NAME_in_rulePageType9259 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleCOLOR_NAME_in_entryRuleCOLOR_NAME9305 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleCOLOR_NAME9316 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleCOLOR_NAME9355 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleStateColor_in_entryRuleStateColor9400 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleStateColor9411 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_127_in_ruleStateColor9449 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_128_in_ruleStateColor9468 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_129_in_ruleStateColor9487 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_130_in_ruleStateColor9506 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_131_in_ruleStateColor9525 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_132_in_ruleStateColor9544 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_133_in_ruleStateColor9563 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_134_in_ruleStateColor9582 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_135_in_ruleStateColor9601 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_136_in_ruleStateColor9620 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_137_in_ruleStateColor9639 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_138_in_ruleStateColor9658 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_139_in_ruleStateColor9677 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_140_in_ruleStateColor9696 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_141_in_ruleStateColor9715 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_142_in_ruleStateColor9734 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleCOLOR_NAME_in_ruleStateColor9762 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_79_in_ruleBooleanDef9821 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_143_in_ruleBooleanDef9838 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_144_in_ruleBooleanDef9855 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_145_in_ruleWorkflowEventType9900 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_146_in_ruleWorkflowEventType9917 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_147_in_ruleWorkflowEventType9934 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_148_in_ruleReviewBlockingType9979 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_149_in_ruleReviewBlockingType9996 = new BitSet(new long[]{0x0000000000000002L});
 
 }

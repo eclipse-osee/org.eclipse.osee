@@ -637,9 +637,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_StaticId()
+  public EReference getActionableItemDef_Owner()
   {
-    return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(5);
+    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -647,7 +647,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_TeamDef()
+  public EAttribute getActionableItemDef_StaticId()
   {
     return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(6);
   }
@@ -657,7 +657,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getActionableItemDef_AccessContextId()
+  public EAttribute getActionableItemDef_TeamDef()
   {
     return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(7);
   }
@@ -667,9 +667,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getActionableItemDef_AccessContextId()
+  {
+    return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getActionableItemDef_Children()
   {
-    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(8);
+    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -1677,6 +1687,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__ACTIVE);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__ACTIONABLE);
     createEReference(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__LEAD);
+    createEReference(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__OWNER);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__STATIC_ID);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__TEAM_DEF);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID);
@@ -1873,6 +1884,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getActionableItemDef_Active(), this.getBooleanDef(), "active", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_Actionable(), this.getBooleanDef(), "actionable", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getActionableItemDef_Lead(), this.getUserRef(), null, "lead", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getActionableItemDef_Owner(), this.getUserRef(), null, "owner", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_StaticId(), ecorePackage.getEString(), "staticId", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_TeamDef(), ecorePackage.getEString(), "teamDef", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_AccessContextId(), ecorePackage.getEString(), "accessContextId", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -203,6 +203,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
          for (Artifact user : UserRefUtil.getUsers(dslAIDef.getLead())) {
             newAi.addRelation(AtsRelationTypes.TeamLead_Lead, user);
          }
+         for (Artifact user : UserRefUtil.getUsers(dslAIDef.getOwner())) {
+            newAi.addRelation(AtsRelationTypes.ActionableItem_User, user);
+         }
          if (dslAIDef.getTeamDef() != null) {
             if (dslAIDef.getTeamDef() == null) {
                throw new OseeStateException(String.format("No Team Definition defined for Actionable Item [%s]",

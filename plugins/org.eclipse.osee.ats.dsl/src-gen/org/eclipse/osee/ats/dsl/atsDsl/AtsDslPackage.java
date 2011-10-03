@@ -381,13 +381,22 @@ public interface AtsDslPackage extends EPackage
   int ACTIONABLE_ITEM_DEF__LEAD = 4;
 
   /**
+   * The feature id for the '<em><b>Owner</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACTIONABLE_ITEM_DEF__OWNER = 5;
+
+  /**
    * The feature id for the '<em><b>Static Id</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__STATIC_ID = 5;
+  int ACTIONABLE_ITEM_DEF__STATIC_ID = 6;
 
   /**
    * The feature id for the '<em><b>Team Def</b></em>' attribute.
@@ -396,7 +405,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__TEAM_DEF = 6;
+  int ACTIONABLE_ITEM_DEF__TEAM_DEF = 7;
 
   /**
    * The feature id for the '<em><b>Access Context Id</b></em>' attribute list.
@@ -405,7 +414,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = 7;
+  int ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = 8;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -414,7 +423,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__CHILDREN = 8;
+  int ACTIONABLE_ITEM_DEF__CHILDREN = 9;
 
   /**
    * The number of structural features of the '<em>Actionable Item Def</em>' class.
@@ -423,7 +432,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 9;
+  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 10;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl <em>Version Def</em>}' class.
@@ -1834,6 +1843,17 @@ public interface AtsDslPackage extends EPackage
   EReference getActionableItemDef_Lead();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getOwner <em>Owner</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Owner</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getOwner()
+   * @see #getActionableItemDef()
+   * @generated
+   */
+  EReference getActionableItemDef_Owner();
+
+  /**
    * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getStaticId <em>Static Id</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3173,6 +3193,14 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EReference ACTIONABLE_ITEM_DEF__LEAD = eINSTANCE.getActionableItemDef_Lead();
+
+    /**
+     * The meta object literal for the '<em><b>Owner</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ACTIONABLE_ITEM_DEF__OWNER = eINSTANCE.getActionableItemDef_Owner();
 
     /**
      * The meta object literal for the '<em><b>Static Id</b></em>' attribute list feature.

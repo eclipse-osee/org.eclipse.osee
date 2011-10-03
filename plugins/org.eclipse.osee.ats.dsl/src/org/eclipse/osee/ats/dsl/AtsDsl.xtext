@@ -51,6 +51,7 @@ ActionableItemDef:
 		('active' active=BooleanDef)?
 		('actionable' actionable=BooleanDef)?
 		('lead' lead+=UserRef)*
+		('owner' owner+=UserRef)*
 		('staticId' staticId+=STRING)*
 		('team' teamDef=STRING)?
 		('accessContextId' accessContextId+=STRING)*
