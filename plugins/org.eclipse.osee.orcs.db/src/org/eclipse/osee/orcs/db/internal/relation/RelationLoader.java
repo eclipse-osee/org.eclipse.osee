@@ -33,13 +33,13 @@ public class RelationLoader {
       this.dbService = dbService;
    }
 
-   public void loadRelationData(int fetchSize, RelationRowHandler handler, LoadOptions options, int queryId) throws OseeCoreException {
+   public void loadRelationData(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       if (options.isHistorical()) {//should this be done by the MasterLoader
          return; // TODO: someday we might have a use for historical relations, but not now
       }
+      String sqlQuery = sqlProvider.getSql(OseeSql.LOAD_RELATIONS_NEWER);
       IOseeStatement statement = dbService.getStatement();
       try {
-         String sqlQuery = sqlProvider.getSql(OseeSql.LOAD_RELATIONS_NEWER);
          statement.runPreparedQuery(fetchSize, sqlQuery, queryId);
          while (statement.next()) {
             RelationRow nextRelation = new RelationRow();
