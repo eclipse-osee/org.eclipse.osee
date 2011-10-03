@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.relation;
+package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.attribute.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
 /**

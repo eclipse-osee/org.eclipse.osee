@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.attribute;
+package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.ArrayList;
 import java.util.List;

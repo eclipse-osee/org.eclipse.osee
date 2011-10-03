@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.artifact;
+package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,7 +26,6 @@ import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.LoadType;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.attribute.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
 /**
