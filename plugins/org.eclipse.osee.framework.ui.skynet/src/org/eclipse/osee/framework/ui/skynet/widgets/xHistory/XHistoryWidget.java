@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -233,21 +234,18 @@ public class XHistoryWidget extends GenericXWidget {
                   @Override
                   public void run() {
                      if (loadHistory) {
-                        if (changes.isEmpty()) {
-                           extraInfoLabel.setText(NO_HISTORY);
-                           xHistoryViewer.setInput(changes);
-                        } else {
-                           String infoLabel = "";
-                           try {
-                              infoLabel =
-                                 String.format("History: %s on branch: %s", artifact.getName(),
-                                    artifact.getFullBranch().getShortName());
-                           } catch (OseeCoreException ex) {
-                              OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-                           }
-                           extraInfoLabel.setText(infoLabel);
-                           xHistoryViewer.setInput(changes);
+                        String shortName = Strings.emptyString();
+                        try {
+                           shortName = artifact.getFullBranch().getShortName();
+                        } catch (OseeCoreException ex) {
+                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }
+                        String infoLabel = NO_HISTORY;
+                        if (!changes.isEmpty()) {
+                           infoLabel = String.format("History: %s on branch: %s", artifact.getName(), shortName);
+                        }
+                        extraInfoLabel.setText(infoLabel);
+                        xHistoryViewer.setInput(changes);
                      } else {
                         extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
                      }
@@ -292,10 +290,6 @@ public class XHistoryWidget extends GenericXWidget {
          }
          return artifacts.toArray(new Artifact[artifacts.size()]);
       }
-   }
-
-   public Artifact getArtifact() {
-      return artifact;
    }
 
    @SuppressWarnings("rawtypes")
