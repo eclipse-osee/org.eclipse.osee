@@ -20,12 +20,12 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 /**
  * @author Roberto E. Escobar
  */
-public class DefaultDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy {
+public class SizeManagedCharacterDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy {
 
    public static final int MAX_VARCHAR_LENGTH = 4000;
    private String rawStringValue;
 
-   public DefaultDataProxy(DataStore dataStore) {
+   public SizeManagedCharacterDataProxy(Storage dataStore) {
       super(dataStore);
       this.rawStringValue = "";
    }

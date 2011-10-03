@@ -14,17 +14,14 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.AttributeRow;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.core.internal.AttributeDataProxyFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.BooleanAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.CompressedContentAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.DateAttribute;
@@ -42,11 +39,9 @@ public class AttributeFactory {
    private final Map<String, Class<? extends Attribute<?>>> primitiveAttributes =
       new HashMap<String, Class<? extends Attribute<?>>>();
 
-   private final AttributeDataProxyFactory dataProxyFactory;
    private final AttributeTypeCache attributeTypeCache;
 
-   public AttributeFactory(Log logger, AttributeDataProxyFactory dataProxyFactory, AttributeTypeCache attributeTypeCache) {
-      this.dataProxyFactory = dataProxyFactory;
+   public AttributeFactory(Log logger, AttributeTypeCache attributeTypeCache) {
       this.attributeTypeCache = attributeTypeCache;
 
       primitiveAttributes.put("", BooleanAttribute.class);
@@ -59,36 +54,18 @@ public class AttributeFactory {
       primitiveAttributes.put("", CompressedContentAttribute.class);
    }
 
-   private DataProxy createDataProxy(AttributeType attributeType) throws OseeCoreException {
-      return dataProxyFactory.createDataProxy(attributeType.getAttributeProviderId());
-   }
-
    public <T> void loadAttribute(AttributeContainer<?> container, AttributeRow row) throws OseeCoreException {
       AttributeType attributeType = attributeTypeCache.getByGuid(row.getAttrTypeUuid());
-      String value = row.getValue();
-      if (isEnumOrBoolean(attributeType)) {
-         value = Strings.intern(value);
-      }
       boolean markDirty = false;
 
       Class<? extends Attribute<T>> attributeClass = null;
       Attribute<T> attribute = createAttribute(attributeClass);
       container.add(attributeType, attribute);
-
-      DataProxy dataProxy = createDataProxy(attributeType);
       Reference<AttributeContainer<?>> artifactRef = new WeakReference<AttributeContainer<?>>(container);
+      DataProxy proxy = row.getDataProxy();
 
-      attribute.internalInitialize(attributeType, dataProxy, artifactRef, row.getModType(), row.getAttrId(),
+      attribute.internalInitialize(attributeType, proxy, artifactRef, row.getModType(), row.getAttrId(),
          row.getGammaId(), markDirty, false);
-   }
-
-   @SuppressWarnings("unused")
-   private boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {
-      boolean isBooleanAttribute = false;
-      //    AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType);
-      boolean isEnumAttribute = false;
-      // AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
-      return isBooleanAttribute || isEnumAttribute;
    }
 
    /**

@@ -48,8 +48,7 @@ public class AttributeRowMapper implements AttributeRowHandler {
 
    @Override
    public void onRow(List<AttributeRow> rows) throws OseeCoreException {
-      AttributeRow firstRow = rows.iterator().next();
-      AttributeContainer<?> container = getContainer(firstRow);
+      AttributeContainer<?> container = getContainer(rows.get(0));
       if (container == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }

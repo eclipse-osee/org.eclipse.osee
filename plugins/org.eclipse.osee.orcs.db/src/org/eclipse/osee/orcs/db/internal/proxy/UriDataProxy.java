@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy, BinaryDataProxy {
    private String displayable;
 
-   public UriDataProxy(DataStore dataStore) {
+   public UriDataProxy(Storage dataStore) {
       super(dataStore);
       this.displayable = "";
    }

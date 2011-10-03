@@ -10,11 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
-public class ClobDataProxy extends DefaultDataProxy {
-   public ClobDataProxy(DataStore dataStore) {
-      super(dataStore);
-   }
+public interface DataHandler {
+
+   byte[] acquire(DataResource resource) throws OseeCoreException;
+
+   void save(int storageId, DataResource resource, byte[] rawContent) throws OseeCoreException;
+
+   //int gammaId, String artifactGuid, String extension
+
+   void purge(DataResource resource) throws OseeCoreException;
+
 }

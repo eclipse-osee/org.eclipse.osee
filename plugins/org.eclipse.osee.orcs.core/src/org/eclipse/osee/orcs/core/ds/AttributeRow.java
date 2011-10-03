@@ -23,9 +23,8 @@ public class AttributeRow {
    private ModificationType modType = null;
    private int transactionId = -1;
    private long attrTypeUuid = -1;
-   private String value = "";
    private int stripeId = -1;
-   private String uri = "";
+   private DataProxy proxy;
    private boolean isHistorical = false;
 
    public AttributeRow() {
@@ -60,16 +59,12 @@ public class AttributeRow {
       return attrTypeUuid;
    }
 
-   public String getValue() {
-      return value;
+   public DataProxy getDataProxy() {
+      return proxy;
    }
 
    public int getStripeId() {
       return stripeId;
-   }
-
-   public String getUri() {
-      return uri;
    }
 
    public boolean isHistorical() {
@@ -104,16 +99,12 @@ public class AttributeRow {
       this.attrTypeUuid = attrTypeUuid;
    }
 
-   public void setValue(String value) {
-      this.value = value;
-   }
-
    public void setStripeId(int stripeId) {
       this.stripeId = stripeId;
    }
 
-   public void setUri(String uri) {
-      this.uri = uri;
+   public void setDataProxy(DataProxy proxy) {
+      this.proxy = proxy;
    }
 
    public void setHistorical(boolean isHistorical) {

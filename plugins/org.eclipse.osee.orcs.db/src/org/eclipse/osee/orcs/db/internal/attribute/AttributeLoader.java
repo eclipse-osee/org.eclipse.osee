@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.AttributeRow;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
+import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
@@ -27,14 +28,21 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
  */
 public class AttributeLoader {
 
+   public static interface DataProxyFactory {
+
+      DataProxy createProxy(int proxyId, long typeUuid, String value, String uri) throws OseeCoreException;
+   }
+
    private final SqlProvider sqlProvider;
    private final IOseeDatabaseService dbService;
    private final IdentityService identityService;
+   private final DataProxyFactory proxyFactory;
 
-   public AttributeLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService) {
+   public AttributeLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService, DataProxyFactory proxyFactory) {
       this.sqlProvider = sqlProvider;
       this.dbService = dbService;
       this.identityService = identityService;
+      this.proxyFactory = proxyFactory;
    }
 
    public String getSql(LoadOptions options) throws OseeCoreException {
@@ -51,7 +59,11 @@ public class AttributeLoader {
       return sqlProvider.getSql(sqlKey);
    }
 
-   public void loadAttributeData(int fetchSize, AttributeRowHandler handler, LoadOptions options, int queryId) throws OseeCoreException {
+   private long toUuid(int localId) throws OseeCoreException {
+      return identityService.getUniversalId(localId);
+   }
+
+   public void loadAttributeData(AttributeRowHandler handler, LoadOptions options, int queryId) throws OseeCoreException {
       if (options.getLoadLevel().isShallow() || options.getLoadLevel().isRelationsOnly()) {
          return;
       }
@@ -59,26 +71,29 @@ public class AttributeLoader {
       IOseeStatement chStmt = dbService.getStatement();
       try {
          String sql = getSql(options);
-         chStmt.runPreparedQuery(fetchSize, sql, queryId);
+         chStmt.runPreparedQuery(options.getFetchSize(), sql, queryId);
 
          AttributeRow previousAttr = new AttributeRow();
 
          List<AttributeRow> currentAttributes = new ArrayList<AttributeRow>();
          while (chStmt.next()) {
+            int modId = chStmt.getInt("mod_type");
+
             AttributeRow nextAttr = new AttributeRow();
             nextAttr.setArtifactId(chStmt.getInt("art_id"));
             nextAttr.setBranchId(chStmt.getInt("branch_id"));
             nextAttr.setAttrId(chStmt.getInt("attr_id"));
             nextAttr.setGammaId(chStmt.getInt("gamma_id"));
             nextAttr.setTransactionId(chStmt.getInt("transaction_id"));
-            nextAttr.setValue(chStmt.getString("value"));
-            nextAttr.setUri(chStmt.getString("uri"));
+            nextAttr.setAttrTypeUuid(toUuid(chStmt.getInt("attr_type_id")));
+            nextAttr.setModType(ModificationType.getMod(modId));
             nextAttr.setHistorical(options.isHistorical());
 
-            nextAttr.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
-            int localAttributeTypeId = chStmt.getInt("attr_type_id");
-            long attributeTypeUuid = identityService.getUniversalId(localAttributeTypeId);
-            nextAttr.setAttrTypeUuid(attributeTypeUuid);
+            String value = chStmt.getString("value");
+            String uri = chStmt.getString("uri");
+            DataProxy proxy =
+               proxyFactory.createProxy(nextAttr.getArtifactId(), nextAttr.getAttrTypeUuid(), value, uri);
+            nextAttr.setDataProxy(proxy);
 
             if (options.isHistorical()) {
                nextAttr.setStripeId(chStmt.getInt("stripe_transaction_id"));

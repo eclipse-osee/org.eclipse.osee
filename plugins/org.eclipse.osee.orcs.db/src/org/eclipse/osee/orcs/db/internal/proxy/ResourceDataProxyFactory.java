@@ -74,9 +74,10 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
       }
       Conditions.checkNotNull(factoryAliases, "PROXY_FACTORY_ALIAS");
 
-      proxyClassMap.put("DefaultAttributeDataProvider", DefaultDataProxy.class);
-      proxyClassMap.put("ClobAttributeDataProvider", ClobDataProxy.class);
+      proxyClassMap.put("DefaultAttributeDataProvider", SizeManagedCharacterDataProxy.class);
+      proxyClassMap.put("ClobAttributeDataProvider", SizeManagedCharacterDataProxy.class);
       proxyClassMap.put("UriAttributeDataProvider", UriDataProxy.class);
+      proxyClassMap.put("MappedAttributeDataProvider", MappedFileDataProxy.class);
 
       List<String> aliases = Arrays.asList(factoryAliases);
       Set<String> keys = proxyClassMap.keySet();
@@ -93,23 +94,20 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
 
    @Override
    public DataProxy createInstance(String factoryAlias) throws OseeCoreException {
-      DataProxy dataProxy = null;
 
       IResourceManager resourceManager = getResourceManager();
       IResourceLocatorManager locatorManager = getResourceLocator();
 
-      //      resourceManager.acquire(locator, options)
-      //      locatorManager.generateResourceLocator("attr", seed, name);
-      //      locatorManager.getResourceLocator(path);
-
-      DataStore.Resource resource = null;
-      DataStore dataStore = new DataStore(resource);
+      DataHandler handler = new ResourceHandler(resourceManager, locatorManager);
+      DataResource resource = new DataResource();
+      Storage dataStore = new Storage(resource, handler);
 
       Class<? extends AbstractDataSourceProxy> clazz = getProxyClazz(factoryAlias);
       Conditions.checkNotNull(clazz, "DataProxy", "Unable to find data proxy clazz [%s]", factoryAlias);
 
+      DataProxy dataProxy = null;
       try {
-         Constructor<? extends DataProxy> constructor = clazz.getConstructor(new Class[] {DataStore.class});
+         Constructor<? extends DataProxy> constructor = clazz.getConstructor(new Class[] {Storage.class});
          dataProxy = constructor.newInstance(new Object[] {dataStore});
       } catch (Exception ex) {
          getLogger().error(ex, "Error creating data proxy for [%s]", factoryAlias);

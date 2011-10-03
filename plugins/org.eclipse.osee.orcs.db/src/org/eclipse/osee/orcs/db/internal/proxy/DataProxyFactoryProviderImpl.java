@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal;
+package org.eclipse.osee.orcs.db.internal.proxy;
 
 import java.util.List;
 import java.util.Map;
@@ -17,15 +17,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
+import org.eclipse.osee.orcs.db.internal.DataProxyFactoryProvider;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataProxyFactory {
+public class DataProxyFactoryProviderImpl implements DataProxyFactoryProvider {
 
    private final Map<String, DataProxyFactory> proxyClassMap = new ConcurrentHashMap<String, DataProxyFactory>();
    private final List<ServiceReference<DataProxyFactory>> pending =
@@ -35,7 +35,7 @@ public class AttributeDataProxyFactory {
    private Thread thread;
    private boolean isReady;
 
-   public AttributeDataProxyFactory() {
+   public DataProxyFactoryProviderImpl() {
       isReady = false;
    }
 
@@ -115,13 +115,9 @@ public class AttributeDataProxyFactory {
       return aliases;
    }
 
-   private DataProxyFactory getProxy(String factoryAlias) {
+   @Override
+   public DataProxyFactory getProxy(String factoryAlias) {
       return proxyClassMap.get(factoryAlias);
    }
 
-   public DataProxy createDataProxy(String factoryAlias) throws OseeCoreException {
-      DataProxyFactory factory = getProxy(factoryAlias);
-      Conditions.checkNotNull(factory, "DataProxyFactory", "Unable to find data proxy factory for [%s]", factoryAlias);
-      return factory.createInstance(factoryAlias);
-   }
 }
