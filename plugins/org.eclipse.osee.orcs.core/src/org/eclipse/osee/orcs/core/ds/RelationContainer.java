@@ -10,22 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.Collection;
-import java.util.List;
-import javax.management.relation.Relation;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+public interface RelationContainer {
 
-public interface RelationContainer<PARENT> {
+   void add(RelationRow nextRelation);
 
-   PARENT getContainer();
-
-   void add(IRelationType type, Relation relation);
-
-   int getCount(IRelationType type);
-
-   Collection<IRelationType> getRelationTypes() throws OseeCoreException;
-
-   List<Relation> getRelations(IRelationType relationType) throws OseeCoreException;
-
+   int getParentId();
 }

@@ -35,19 +35,17 @@ public class RelationLoader {
    }
 
    public void loadRelationData(int fetchSize, RelationRowHandler handler, LoadOptions options, int queryId) throws OseeCoreException {
-      if (options.getLoadLevel().isShallow() || options.getLoadLevel().isRelationsOnly()) {
-         return;
-      }
-      if (options.isHistorical()) {
+      if (options.isHistorical()) {//should this be done by the MasterLoader
          return; // TODO: someday we might have a use for historical relations, but not now
       }
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          IOseeStatement statement = dbService.getStatement();
-         String sqlQuery = sqlProvider.getSql(OseeSql.LOAD_RELATIONS);
+         String sqlQuery = sqlProvider.getSql(OseeSql.LOAD_RELATIONS_NEWER);
          statement.runPreparedQuery(fetchSize, sqlQuery, queryId);
          while (statement.next()) {
             RelationRow nextRelation = new RelationRow();
+            nextRelation.setParentId(statement.getInt("art_id"));
             nextRelation.setRelationId(statement.getInt("rel_link_id"));
             nextRelation.setArtIdA(statement.getInt("a_art_id"));
             nextRelation.setArtIdB(statement.getInt("b_art_id"));
@@ -57,14 +55,9 @@ public class RelationLoader {
             nextRelation.setRationale(chStmt.getString("rationale"));
             nextRelation.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
             handler.onRow(nextRelation);
-            //            RelationManager.getOrCreate(aArtifactId, bArtifactId, branch, relationType, relationId, gammaId, rationale,
-            //               modificationType);
          }
       } finally {
          chStmt.close();
       }
-      //      for (Artifact artifact : artifacts) {
-      //         artifact.setLinksLoaded(true);
-      //      }
    }
 }

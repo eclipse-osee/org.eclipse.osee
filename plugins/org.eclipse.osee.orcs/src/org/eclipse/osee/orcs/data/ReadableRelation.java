@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import javax.management.relation.RelationType;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
  * @author Roberto E. Escobar

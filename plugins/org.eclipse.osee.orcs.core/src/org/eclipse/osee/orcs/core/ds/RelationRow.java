@@ -9,6 +9,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 
 public class RelationRow {
 
+   private int parentId = -1;
    private int relationId = -1;
    private int artIdA = -1;
    private int artIdB = -1;
@@ -82,4 +83,11 @@ public class RelationRow {
       return modType;
    }
 
+   public void setParentId(int parentId) {
+      this.parentId = parentId;
+   }
+
+   public int getParentId() {
+      return parentId;
+   }
 }
