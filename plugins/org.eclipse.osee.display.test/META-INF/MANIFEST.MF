@@ -3,5 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Osee Display Test
 Bundle-SymbolicName: org.eclipse.osee.display.api.test
 Bundle-Version: 0.9.9.qualifier
-Fragment-Host: org.eclipse.osee.display.api
+Fragment-Host: org.eclipse.osee.display
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit

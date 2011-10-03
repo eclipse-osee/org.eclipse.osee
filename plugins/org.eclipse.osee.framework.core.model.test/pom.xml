@@ -10,9 +10,9 @@
 		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.orcs.db.test</artifactId>
+	<artifactId>org.eclipse.osee.framework.core.model.test</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
-	<name>OSEE ORCS DB Test - (Incubation)</name>
+	<name>OSEE Framework Core Model Test- (Incubation)</name>
 
 	<build>
 		<plugins>
@@ -21,25 +21,8 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<testSuite>org.eclipse.osee.orcs.db.test</testSuite>
-					<testClass>org.eclipse.osee.orcs.db.OrcsDbTestSuite</testClass>
-					<dependencies>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.h2</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eclipse.osee.framework.h2</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eclipse.equinox.ds</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-					</dependencies>
+					<testSuite>org.eclipse.osee.framework.core.model.test</testSuite>
+					<testClass>org.eclipse.osee.framework.core.model.AllCoreModelTestSuite</testClass>
 				</configuration>
 			</plugin>
 		</plugins>

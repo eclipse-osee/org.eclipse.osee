@@ -22,7 +22,14 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<testSuite>org.eclipse.osee.mail.test</testSuite>
-					<testClass>org.eclipse.osee.mail.test.AllMailTestSuite</testClass>
+					<testClass>org.eclipse.osee.mail.AllMailTestSuite</testClass>
+					<dependencies>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>javax.activation</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+					</dependencies>
 				</configuration>
 			</plugin>
 		</plugins>

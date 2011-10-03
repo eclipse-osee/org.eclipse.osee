@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Display
-Bundle-SymbolicName: org.eclipse.osee.display.api
+Bundle-SymbolicName: org.eclipse.osee.display
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

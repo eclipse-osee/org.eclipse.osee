@@ -26,6 +26,7 @@ import javax.activation.DataSource;
 import javax.activation.MailcapCommandMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -47,6 +48,7 @@ public class MailUtilsTest {
       Pattern.DOTALL);
 
    @Test
+   @Ignore
    public void testMailCapCommand() {
       MailcapCommandMap map = MailUtils.getMailcapCommandMap();
       List<String> mimeTypes = Arrays.asList(map.getMimeTypes());
@@ -226,6 +228,7 @@ public class MailUtilsTest {
 
    private static void assertHandler(MailcapCommandMap map, String mimeType, String handler) {
       DataContentHandler actualHandler = map.createDataContentHandler(mimeType);
+      Assert.assertNotNull(String.format("handler for [%s] is null", mimeType), actualHandler);
       Assert.assertEquals(handler, actualHandler.getClass().getName());
    }
 

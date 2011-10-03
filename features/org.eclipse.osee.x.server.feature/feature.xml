@@ -21,6 +21,10 @@
          id="org.eclipse.osee.x.core.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.x.server.external.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
       <import plugin="javax.servlet"/>
@@ -73,6 +77,27 @@
 
    <plugin
          id="org.eclipse.osee.framework.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.resource.management"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.database"
          download-size="0"
          install-size="0"
          version="0.0.0"
