@@ -10,24 +10,20 @@
 		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.display.api</artifactId>
-	<packaging>eclipse-plugin</packaging>
-	<name>OSEE Display - (Incubation)</name>
+	<artifactId>org.eclipse.osee.framework.core.test</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+	<name>OSEE Framework Core Test - (Incubation)</name>
 
 	<build>
-		<!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-source-plugin</artifactId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<testSuite>org.eclipse.osee.framework.core.test</testSuite>
+					<testClass>org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite</testClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.resource.management.test;
 
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStoreTest;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ import org.junit.Test;
  * 
  * @author Roberto E. Escobar
  */
-public class OptionsTest extends PropertyStoreTest {
+public class OptionsTest {
 
    @Test
    public void testClear() {
