@@ -24,7 +24,7 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
    private static final String SELECT_QUERY_IDS = "select DISTINCT query_id from %s";
 
    private static final String INSERT_INTO_JOIN_ARTIFACT =
-      "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
+      "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
 
    private static final String INSERT_INTO_JOIN_TRANSACTION =
       "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";

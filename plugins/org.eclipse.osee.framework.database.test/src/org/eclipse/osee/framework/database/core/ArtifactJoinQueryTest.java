@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.database.core;
 
 import java.sql.Timestamp;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.test.mocks.MockJoinAccessor;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -32,11 +32,11 @@ public class ArtifactJoinQueryTest {
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
-      join.add(1234, 5678);
+      join.add(1234, 5678, null);
       Assert.assertEquals(1, join.size());
       Assert.assertEquals(false, join.isEmpty());
 
-      join.add(1234, 5678);
+      join.add(1234, 5678, null);
       Assert.assertEquals(1, join.size());
 
       Assert.assertEquals(false, join.wasStored());
@@ -50,7 +50,7 @@ public class ArtifactJoinQueryTest {
       Assert.assertEquals(1, data.size());
 
       Object[] entry = data.get(0);
-      Assert.assertEquals(4, entry.length);
+      Assert.assertEquals(5, entry.length);
       Assert.assertEquals(999, entry[0]);
       Assert.assertTrue(entry[1] instanceof Timestamp);
       Assert.assertEquals(1234, entry[2]);

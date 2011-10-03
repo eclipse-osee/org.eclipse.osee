@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 public final class ArtifactJoinQuery extends AbstractJoinQuery {
 
    private final class Entry implements IJoinRow {
-      private final int artId;
-      private final int branchId;
-      private final int transactionId;
+      private final Integer artId;
+      private final Integer branchId;
+      private final Integer transactionId;
 
       private Entry(Integer artId, Integer branchId, Integer transactionId) {
          this.artId = artId;
@@ -40,19 +40,56 @@ public final class ArtifactJoinQuery extends AbstractJoinQuery {
 
       @Override
       public boolean equals(Object obj) {
-         if (obj == this) {
+         if (this == obj) {
             return true;
          }
-         if (!(obj instanceof Entry)) {
+         if (obj == null) {
+            return false;
+         }
+         if (getClass() != obj.getClass()) {
             return false;
          }
          Entry other = (Entry) obj;
-         return other.artId == this.artId && other.branchId == this.branchId && other.transactionId == this.transactionId;
+         if (!getOuterType().equals(other.getOuterType())) {
+            return false;
+         }
+         if (artId == null) {
+            if (other.artId != null) {
+               return false;
+            }
+         } else if (!artId.equals(other.artId)) {
+            return false;
+         }
+         if (branchId == null) {
+            if (other.branchId != null) {
+               return false;
+            }
+         } else if (!branchId.equals(other.branchId)) {
+            return false;
+         }
+         if (transactionId == null) {
+            if (other.transactionId != null) {
+               return false;
+            }
+         } else if (!transactionId.equals(other.transactionId)) {
+            return false;
+         }
+         return true;
       }
 
       @Override
       public int hashCode() {
-         return 37 * artId * branchId * transactionId;
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + getOuterType().hashCode();
+         result = prime * result + ((artId == null) ? 0 : artId.hashCode());
+         result = prime * result + ((branchId == null) ? 0 : branchId.hashCode());
+         result = prime * result + ((transactionId == null) ? 0 : transactionId.hashCode());
+         return result;
+      }
+
+      private ArtifactJoinQuery getOuterType() {
+         return ArtifactJoinQuery.this;
       }
    }
 
