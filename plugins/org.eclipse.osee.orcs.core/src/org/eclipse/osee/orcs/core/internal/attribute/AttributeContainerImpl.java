@@ -1,0 +1,72 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.core.internal.attribute;
+
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.AttributeContainer;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class AttributeContainerImpl implements AttributeContainer {
+
+   private final AttributeCollection collection = new AttributeCollection();
+
+   private boolean isLoaded;
+
+   @Override
+   public boolean isLoaded() {
+      return isLoaded;
+   }
+
+   @Override
+   public void setLoaded(boolean value) {
+      this.isLoaded = value;
+      if (value == true) {
+         onLoaded();
+      }
+   }
+
+   private void onLoaded() {
+      //      computeLastDateModified();
+      //    artifact.meetMinimumAttributeCounts(false);
+   }
+
+   @Override
+   public int getCount(IAttributeType type) throws OseeCoreException {
+      return getAttributes(type).size();
+   }
+
+   @Override
+   public void add(IAttributeType type, Attribute<?> attribute) {
+      collection.add(type, attribute);
+   }
+
+   @Override
+   public Collection<IAttributeType> getAttributeTypes() {
+      return collection.keySet();
+   }
+
+   @Override
+   public <T> List<Attribute<T>> getAttributes(IAttributeType type) throws OseeCoreException {
+      ensureAttributesLoaded();
+      return collection.getCurrentAttributesFor(type);
+   }
+
+   private void ensureAttributesLoaded() throws OseeCoreException {
+      //      if (!isLoaded() && isInDb()) {
+      //         ArtifactLoader.loadArtifactData(this, LoadLevel.ATTRIBUTE);
+      //      }
+   }
+}
