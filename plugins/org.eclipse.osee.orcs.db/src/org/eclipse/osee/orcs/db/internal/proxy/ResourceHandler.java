@@ -14,13 +14,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.orcs.db.internal.util.ByteStreamResource;
 
 /**
  * @author Roberto E. Escobar
@@ -40,25 +43,29 @@ public class ResourceHandler implements DataHandler {
    @Override
    public byte[] acquire(DataResource dataResource) throws OseeCoreException {
       String path = dataResource.getLocator();
-      IResourceLocator locator = resourceLocator.getResourceLocator(path);
-      IResource resource = resourceManager.acquire(locator, DEFAULT_OPTIONS);
+      Conditions.checkNotNull(path, "resource path");
 
-      dataResource.setEncoding("ISO-8859-1");
+      IResourceLocator locator = resourceLocator.getResourceLocator(path);
+      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]", dataResource.getName());
+
+      IResource resource = resourceManager.acquire(locator, DEFAULT_OPTIONS);
+      resource.getName();
 
       InputStream inputStream = resource.getContent();
       try {
          String mimeType = URLConnection.guessContentTypeFromStream(inputStream);
          if (mimeType == null) {
-            mimeType = URLConnection.guessContentTypeFromName(resource.getLocation().toString());
+            mimeType = URLConnection.guessContentTypeFromName(resource.getLocation().toASCIIString());
             if (mimeType == null) {
                mimeType = "application/*";
             }
          }
          dataResource.setContentType(mimeType);
-
+         dataResource.setEncoding("ISO-8859-1");
          return Lib.inputStreamToBytes(inputStream);
       } catch (IOException ex) {
-         throw OseeExceptions.wrap(ex);
+         throw new OseeCoreException(ex, "Error acquiring resource - name[%s] locator[%s]", dataResource.getName(),
+            dataResource.getLocator());
       } finally {
          Lib.close(inputStream);
       }
@@ -66,27 +73,35 @@ public class ResourceHandler implements DataHandler {
 
    @Override
    public void save(int storageId, DataResource dataResource, byte[] rawContent) throws OseeCoreException {
-      //      Map<String, String> parameterMap = new HashMap<String, String>();
-      //      parameterMap.put("seed", Integer.toString(gammaId));
-      //      parameterMap.put("name", artifactGuid);
-      //      if (Strings.isValid(extension) != false) {
-      //         parameterMap.put("extension", extension);
-      //      }
+      String name = dataResource.getName();
+      String extension = dataResource.getExtension();
+      if (Strings.isValid(extension)) {
+         name += "." + extension;
+      }
+      boolean isCompressed = false;
 
-      int gammaId = -1;
-
-      String name = "";
-      String seed = Integer.toString(gammaId);
+      String seed = Integer.toString(storageId);
       IResourceLocator locatorHint = resourceLocator.generateResourceLocator("attr", seed, name);
-      IResource resource = null;
+
+      IResource resource = new ByteStreamResource(locatorHint, rawContent, isCompressed);
       IResourceLocator locator = resourceManager.save(locatorHint, resource, DEFAULT_OPTIONS);
+      Conditions.checkNotNull(locator, "locator", "Error saving resource [%s]", locatorHint.getRawPath());
+
       dataResource.setLocator(locator.getLocation().toASCIIString());
    }
 
    @Override
    public void purge(DataResource dataResource) throws OseeCoreException {
-      IResourceLocator locator = resourceLocator.getResourceLocator(dataResource.getLocator());
-      resourceManager.delete(locator);
+      String path = dataResource.getLocator();
+      Conditions.checkNotNull(path, "resource path");
+
+      IResourceLocator locator = resourceLocator.getResourceLocator(path);
+      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]", dataResource.getName());
+
+      int result = resourceManager.delete(locator);
+      if (IResourceManager.OK != result) {
+         throw new OseeDataStoreException("Error deleting resource located at [%s]", dataResource.getLocator());
+      }
    }
 
    //   public static PropertyStore getOptions(HttpServletRequest request) {
@@ -96,24 +111,5 @@ public class ResourceHandler implements DataHandler {
    //      options.put(StandardOptions.DecompressOnAquire.name(), request.getParameter(DECOMPRESS_ON_ACQUIRE));
    //      options.put(StandardOptions.Overwrite.name(), request.getParameter(IS_OVERWRITE_ALLOWED));
    //      return options;
-   //   }
-
-   //
-   //   public void acquire(DataStore dataStore) throws OseeCoreException {
-   //      URL url = getAcquireURL(dataStore);
-   //      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-   //      try {
-   //         AcquireResult result = HttpProcessor.acquire(url, outputStream);
-   //         int code = result.getCode();
-   //         if (code == HttpURLConnection.HTTP_OK) {
-   //            dataStore.setContent(outputStream.toByteArray(), "", result.getContentType(), result.getEncoding());
-   //         } else {
-   //            throw new OseeDataStoreException("Error acquiring resource: [%s] - status code: [%s]; %s",
-   //               dataStore.getLocator(), code, new String(outputStream.toByteArray()));
-   //         }
-   //      } catch (Exception ex) {
-   //         OseeExceptions.wrapAndThrow(ex);
-   //      }
-   //   }
-
+   //}
 }

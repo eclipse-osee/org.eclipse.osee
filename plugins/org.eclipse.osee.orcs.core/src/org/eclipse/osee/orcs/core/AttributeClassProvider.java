@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import java.util.List;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeRowHandler {
-   void onRow(AttributeRow row) throws OseeCoreException;
+public interface AttributeClassProvider {
+
+   List<Class<? extends Attribute<?>>> getClasses();
 }

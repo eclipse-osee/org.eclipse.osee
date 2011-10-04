@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -70,12 +68,7 @@ public class AttributeLoader {
       try {
          chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
-         AttributeRow previousAttr = new AttributeRow();
-
-         List<AttributeRow> currentAttributes = new ArrayList<AttributeRow>();
          while (chStmt.next()) {
-            int modId = chStmt.getInt("mod_type");
-
             AttributeRow nextAttr = new AttributeRow();
             nextAttr.setArtifactId(chStmt.getInt("art_id"));
             nextAttr.setBranchId(chStmt.getInt("branch_id"));
@@ -83,6 +76,8 @@ public class AttributeLoader {
             nextAttr.setGammaId(chStmt.getInt("gamma_id"));
             nextAttr.setTransactionId(chStmt.getInt("transaction_id"));
             nextAttr.setAttrTypeUuid(toUuid(chStmt.getInt("attr_type_id")));
+
+            int modId = chStmt.getInt("mod_type");
             nextAttr.setModType(ModificationType.getMod(modId));
             nextAttr.setHistorical(options.isHistorical());
 
@@ -95,15 +90,8 @@ public class AttributeLoader {
             if (options.isHistorical()) {
                nextAttr.setStripeId(chStmt.getInt("stripe_transaction_id"));
             }
-
-            if (!previousAttr.isSameArtifact(nextAttr)) {
-               handler.onRow(currentAttributes);
-               currentAttributes.clear();
-            }
-            currentAttributes.add(nextAttr);
-            previousAttr = nextAttr;
+            handler.onRow(nextAttr);
          }
-         handler.onRow(currentAttributes);
       } finally {
          chStmt.close();
       }

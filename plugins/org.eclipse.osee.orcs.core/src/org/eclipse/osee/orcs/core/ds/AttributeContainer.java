@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
 
 /**
  * @author Roberto E. Escobar
@@ -27,7 +28,9 @@ public interface AttributeContainer {
 
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
 
-   <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+   <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+
+   <T> ReadableAttribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException;
 
    //TODO is this needed
    boolean isLoaded();

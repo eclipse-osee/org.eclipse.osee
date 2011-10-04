@@ -96,7 +96,6 @@ public class Storage {
       this.rawContent = rawContent;
       this.resource.setContentType(contentType);
       this.resource.setEncoding(encoding);
-      //      this.resource.setExtension(extension);
    }
 
    public void copyTo(Storage other) {

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
 
 public class Artifact implements AttributeContainer {
    // Place-holder
@@ -44,7 +45,7 @@ public class Artifact implements AttributeContainer {
    }
 
    @Override
-   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
+   public <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
       return null;
    }
 
@@ -55,5 +56,10 @@ public class Artifact implements AttributeContainer {
 
    @Override
    public void setLoaded(boolean value) {
+   }
+
+   @Override
+   public <T> ReadableAttribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+      return null;
    }
 }

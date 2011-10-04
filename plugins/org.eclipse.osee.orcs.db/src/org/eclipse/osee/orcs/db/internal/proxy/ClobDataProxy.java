@@ -20,13 +20,13 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 /**
  * @author Roberto E. Escobar
  */
-public class SizeManagedCharacterDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy {
+public class ClobDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy {
 
    public static final int MAX_VARCHAR_LENGTH = 4000;
    private String rawStringValue;
 
-   public SizeManagedCharacterDataProxy(Storage dataStore) {
-      super(dataStore);
+   public ClobDataProxy(Storage storage) {
+      super(storage);
       this.rawStringValue = "";
    }
 
@@ -45,7 +45,7 @@ public class SizeManagedCharacterDataProxy extends AbstractDataSourceProxy imple
       String fromStorage = null;
       byte[] data = null;
       try {
-         data = getDataStore().getContent();
+         data = getStorage().getContent();
          if (data != null) {
             data = Lib.decompressBytes(new ByteArrayInputStream(data));
             fromStorage = new String(data, "UTF-8");
@@ -73,38 +73,38 @@ public class SizeManagedCharacterDataProxy extends AbstractDataSourceProxy imple
       if (value != null && value.length() > MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
-               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getDataStore().getFileName());
-            getDataStore().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
+               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getStorage().getFileName());
+            getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
             this.rawStringValue = "";
          } catch (IOException ex) {
             OseeExceptions.wrapAndThrow(ex);
          }
       } else {
          this.rawStringValue = value;
-         getDataStore().clear();
+         getStorage().clear();
       }
    }
 
    @Override
    public Object[] getData() {
-      return new Object[] {rawStringValue, getDataStore().getLocator()};
+      return new Object[] {rawStringValue, getStorage().getLocator()};
    }
 
    @Override
    public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
          storeValue((String) objects[0]);
-         getDataStore().setLocator((String) objects[1]);
+         getStorage().setLocator((String) objects[1]);
       }
    }
 
    @Override
    public void persist(int storageId) throws OseeCoreException {
-      getDataStore().persist(storageId);
+      getStorage().persist(storageId);
    }
 
    @Override
    public void purge() throws OseeCoreException {
-      getDataStore().purge();
+      getStorage().purge();
    }
 }

@@ -27,8 +27,8 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy, BinaryDataProxy {
    private String displayable;
 
-   public UriDataProxy(Storage dataStore) {
-      super(dataStore);
+   public UriDataProxy(Storage storage) {
+      super(storage);
       this.displayable = "";
    }
 
@@ -46,16 +46,16 @@ public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDa
    public boolean setValue(ByteBuffer data) throws OseeCoreException {
       boolean response = false;
       try {
-         if (!Arrays.equals(getDataStore().getContent(), data != null ? data.array() : null)) {
+         if (!Arrays.equals(getStorage().getContent(), data != null ? data.array() : null)) {
             if (data != null) {
                byte[] compressed;
-               compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getDataStore().getFileName());
-               getDataStore().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
+               compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getStorage().getFileName());
+               getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
                response = true;
             } else {
-               String loc = getDataStore().getLocator();
-               getDataStore().clear();
-               getDataStore().setLocator(loc);
+               String loc = getStorage().getLocator();
+               getStorage().clear();
+               getStorage().setLocator(loc);
             }
          }
       } catch (IOException ex) {
@@ -67,7 +67,7 @@ public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDa
    @Override
    public ByteBuffer getValueAsBytes() throws OseeCoreException {
       ByteBuffer decompressed = null;
-      byte[] rawData = getDataStore().getContent();
+      byte[] rawData = getStorage().getContent();
       if (rawData != null) {
          try {
             decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
@@ -111,23 +111,23 @@ public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDa
 
    @Override
    public Object[] getData() {
-      return new Object[] {"", getDataStore().getLocator()};
+      return new Object[] {"", getStorage().getLocator()};
    }
 
    @Override
    public void loadData(Object... objects) {
       if (objects != null && objects.length > 1) {
-         getDataStore().setLocator((String) objects[1]);
+         getStorage().setLocator((String) objects[1]);
       }
    }
 
    @Override
    public void persist(int storageId) throws OseeCoreException {
-      getDataStore().persist(storageId);
+      getStorage().persist(storageId);
    }
 
    @Override
    public void purge() throws OseeCoreException {
-      getDataStore().purge();
+      getStorage().purge();
    }
 }

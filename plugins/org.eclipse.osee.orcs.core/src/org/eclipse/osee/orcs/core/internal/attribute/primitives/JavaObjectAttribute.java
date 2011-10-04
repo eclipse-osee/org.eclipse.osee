@@ -18,7 +18,9 @@ import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 
+@OseeAttribute("JavaObjectAttribute")
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    @Override
    public Object getValue() throws OseeCoreException {

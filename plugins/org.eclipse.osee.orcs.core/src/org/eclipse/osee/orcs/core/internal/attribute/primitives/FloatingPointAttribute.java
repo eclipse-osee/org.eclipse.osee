@@ -13,11 +13,13 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
 
 /**
  * @author Ryan D. Brooks
  */
+@OseeAttribute("FloatingPointAttribute")
 public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
    private static final Double DEFAULT_DOUBLE = Double.MIN_VALUE;

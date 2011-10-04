@@ -12,10 +12,12 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 
 /**
  * @author Ryan D. Brooks
  */
+@OseeAttribute("EnumeratedAttribute")
 public class EnumeratedAttribute extends StringAttribute {
    // When an enumerated attribute is required for an artifact, yet doesn't exist yet, it is created upon
    // init of the artifact and given the "Unspecified" value

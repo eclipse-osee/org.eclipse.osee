@@ -1,8 +1,13 @@
-/*
- * Created on Oct 3, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.util.ArrayList;
@@ -16,6 +21,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class AttributeCollection {
 
    private final HashCollection<IAttributeType, Attribute<?>> attributes =
@@ -49,7 +57,7 @@ public class AttributeCollection {
       return filteredList;
    }
 
-   public <T> List<Attribute<T>> getCurrentAttributesFor(IAttributeType type) throws OseeCoreException {
+   public <T> List<T> getCurrentAttributesFor(IAttributeType type) throws OseeCoreException {
       return Collections.castAll(getAttributesByModificationType(type, ModificationType.getCurrentModTypes()));
    }
 

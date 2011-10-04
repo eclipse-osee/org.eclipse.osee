@@ -222,6 +222,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Writable
     * 
     * @return whether this attribute's type or any of its super-types are the specified type
     */
+   @Override
    public boolean isOfType(IAttributeType otherAttributeType) {
       return getAttributeType().equals(otherAttributeType);
    }

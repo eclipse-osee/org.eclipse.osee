@@ -16,14 +16,14 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractDataSourceProxy implements DataProxy {
-   private final Storage dataStore;
+   private final Storage storage;
 
-   public AbstractDataSourceProxy(Storage dataStore) {
+   public AbstractDataSourceProxy(Storage storage) {
       super();
-      this.dataStore = dataStore;
+      this.storage = storage;
    }
 
-   protected Storage getDataStore() {
-      return dataStore;
+   protected Storage getStorage() {
+      return storage;
    }
 }

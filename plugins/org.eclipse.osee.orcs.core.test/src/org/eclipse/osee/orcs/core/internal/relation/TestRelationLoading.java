@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
+import org.eclipse.osee.orcs.core.mocks.MockLog;
 import org.junit.Assert;
 import org.junit.Test;
 

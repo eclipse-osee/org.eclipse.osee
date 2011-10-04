@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
@@ -47,28 +46,28 @@ public class AttributeRowMapper implements AttributeRowHandler {
    }
 
    @Override
-   public void onRow(List<AttributeRow> rows) throws OseeCoreException {
-      AttributeContainer container = getContainer(rows.get(0));
+   public void onRow(AttributeRow row) throws OseeCoreException {
+      AttributeContainer container = getContainer(row);
       if (container == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
-      AttributeRow previous = new AttributeRow();
-      synchronized (container) {
-         if (!container.isLoaded()) {
-            //            int maxTransactionId = Integer.MIN_VALUE;
-            for (AttributeRow current : rows) {
-               if (previous.isSameAttribute(current)) {
-                  handleMultipleVersions(previous, current);
-               } else {
-                  factory.loadAttribute(container, current);
-               }
-               previous = current;
-               //               maxTransactionId = Math.max(maxTransactionId, current.getTransactionId());
-            }
-            //            getContainer().setTransactionId(maxTransactionId);
-            container.setLoaded(true);
-         }
-      }
+      //      AttributeRow previous = new AttributeRow();
+      //      synchronized (container) {
+      //         if (!container.isLoaded()) {
+      //            //            int maxTransactionId = Integer.MIN_VALUE;
+      //            for (AttributeRow current : rows) {
+      //               if (previous.isSameAttribute(current)) {
+      //                  handleMultipleVersions(previous, current);
+      //               } else {
+      //                  factory.loadAttribute(container, current);
+      //               }
+      //               previous = current;
+      //               //               maxTransactionId = Math.max(maxTransactionId, current.getTransactionId());
+      //            }
+      //            //            getContainer().setTransactionId(maxTransactionId);
+      //            container.setLoaded(true);
+      //         }
+      //      }
    }
 
    private void handleMultipleVersions(AttributeRow previous, AttributeRow current) {

@@ -74,8 +74,8 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
       }
       Conditions.checkNotNull(factoryAliases, "PROXY_FACTORY_ALIAS");
 
-      proxyClassMap.put("DefaultAttributeDataProvider", SizeManagedCharacterDataProxy.class);
-      proxyClassMap.put("ClobAttributeDataProvider", SizeManagedCharacterDataProxy.class);
+      proxyClassMap.put("DefaultAttributeDataProvider", ClobDataProxy.class);
+      proxyClassMap.put("ClobAttributeDataProvider", ClobDataProxy.class);
       proxyClassMap.put("UriAttributeDataProvider", UriDataProxy.class);
       proxyClassMap.put("MappedAttributeDataProvider", MappedFileDataProxy.class);
 

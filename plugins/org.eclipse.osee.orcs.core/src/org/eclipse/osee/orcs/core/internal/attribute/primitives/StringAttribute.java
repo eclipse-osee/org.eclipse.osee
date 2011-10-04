@@ -11,11 +11,13 @@
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
 
 /**
  * @author Ryan D. Brooks
  */
+@OseeAttribute("StringAttribute")
 public class StringAttribute extends CharacterBackedAttribute<String> {
    @Override
    public String getValue() throws OseeCoreException {
