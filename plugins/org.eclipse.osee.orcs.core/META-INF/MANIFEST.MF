@@ -20,3 +20,4 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.orcs.data
 Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
