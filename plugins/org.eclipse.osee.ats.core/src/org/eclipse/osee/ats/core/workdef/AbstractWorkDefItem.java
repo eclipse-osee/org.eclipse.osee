@@ -10,27 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 public class AbstractWorkDefItem {
 
    private String name;
    protected String description;
-   protected Map<String, String> workDataKeyValueMap = new HashMap<String, String>();
-   private final Pattern keyValuePattern = Pattern.compile("^(.*?)=(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
 
    public AbstractWorkDefItem(String name) {
       this.name = name;
-   }
-
-   public String getWorkDataValue(String key) {
-      return workDataKeyValueMap.get(key);
-   }
-
-   public void addWorkDataKeyValue(String key, String value) {
-      workDataKeyValueMap.put(key, value);
    }
 
    public String getName() {
@@ -47,14 +34,6 @@ public class AbstractWorkDefItem {
 
    public void setDescription(String description) {
       this.description = description;
-   }
-
-   public Pattern getKeyValuePattern() {
-      return keyValuePattern;
-   }
-
-   public Map<String, String> getWorkDataKeyValueMap() {
-      return workDataKeyValueMap;
    }
 
    @Override

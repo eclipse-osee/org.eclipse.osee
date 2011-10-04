@@ -61,7 +61,6 @@ Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.walker,
  org.eclipse.osee.ats.workdef,
  org.eclipse.osee.ats.workflow,
- org.eclipse.osee.ats.workflow.item,
  org.eclipse.osee.ats.world,
  org.eclipse.osee.ats.world.search
 Import-Package: com.google.inject,

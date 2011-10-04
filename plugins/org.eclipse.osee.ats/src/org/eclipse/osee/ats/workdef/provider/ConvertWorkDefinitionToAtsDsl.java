@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.core.workdef.CompositeStateItem;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
@@ -76,9 +75,6 @@ public class ConvertWorkDefinitionToAtsDsl {
       dslWorkDef = AtsDslFactoryImpl.init().createWorkDef();
       dslWorkDef.setName(Strings.quote(definitionName));
       dslWorkDef.getId().add(definitionName);
-      if (!workDef.getWorkDataKeyValueMap().isEmpty()) {
-         resultData.logError("Unhandled Key/Value for WorkDefinition");
-      }
       if (!workDef.getRules().isEmpty()) {
          resultData.logError("Unhandled Rules for WorkDefinition");
       }
@@ -96,9 +92,6 @@ public class ConvertWorkDefinitionToAtsDsl {
          dslState.setPageType(stateDef.getWorkPageType().name());
          if (workDef.getStartState().getName().equals(stateDef.getName())) {
             dslWorkDef.setStartState(dslState);
-         }
-         if (!workDef.getWorkDataKeyValueMap().isEmpty()) {
-            resultData.logError("Unhandled Key/Value for Work State " + stateDef.getName());
          }
 
          // Process Work Rules for States
@@ -313,12 +306,6 @@ public class ConvertWorkDefinitionToAtsDsl {
          dslWidget.setName(Strings.quote(widgetDef.getName()));
          dslWidget.setDefaultValue(widgetDef.getDefaultValue());
          dslWidget.setDescription(widgetDef.getDescription());
-         if (!widgetDef.getWorkDataKeyValueMap().isEmpty()) {
-            for (Entry<String, String> entry : widgetDef.getWorkDataKeyValueMap().entrySet()) {
-               resultData.logError(String.format("Widget Definition [%s] has unhandled key/value pair [%s][%s]",
-                  widgetDef.getName(), entry.getKey(), entry.getValue()));
-            }
-         }
          for (WidgetOption option : widgetDef.getOptions().getXOptions()) {
             dslWidget.getOption().add(option.name());
          }

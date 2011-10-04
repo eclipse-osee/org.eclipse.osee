@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -79,12 +78,7 @@ public class TaskResolutionOptionRule {
    }
 
    private static String getTaskResolutionRuleXml(RuleDefinition ruleDefinition) throws OseeCoreException {
-      // If this rule was converted from WorkRuleDefinition, it will have task options
-      String xml = ruleDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG);
-      if (Strings.isValid(xml)) {
-         return xml;
-      }
-      // Else, look for a GeneralData artifact of same name as rule to retrieve options xml string
+      // Look for a GeneralData artifact of same name as rule to retrieve options xml string
       Artifact artifact = null;
       try {
          artifact =
@@ -118,7 +112,7 @@ public class TaskResolutionOptionRule {
       }
    }
 
-   private String toXml() throws OseeCoreException {
+   public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append("<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">\n");
       for (TaskResOptionDefinition def : options) {
