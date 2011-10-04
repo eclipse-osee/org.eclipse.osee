@@ -57,7 +57,7 @@
 
 		<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
 		<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-		
+
 		<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 		<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
 
@@ -107,7 +107,7 @@
 			<id>eclipse-ip</id>
 			<layout>p2</layout>
 			<url>${eclipse-ip-site}</url>
-		</repository>		
+		</repository>
 		<repository>
 			<id>osee-xcore</id>
 			<layout>p2</layout>
@@ -269,9 +269,49 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.8</version>
+					<configuration>
+						<debug>true</debug>
+						<maxmemory>1024m</maxmemory>
+						<sourcepath>src</sourcepath>
+						<author>true</author>
+						<version>true</version>
+						<aggregate>true</aggregate>
+						<encoding>ISO-8859-1</encoding>
+					</configuration>
+					<executions>
+						<execution>
+							<id>aggregate</id>
+							<goals>
+								<goal>aggregate</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
 	<profiles>
 		<profile>
@@ -398,7 +438,7 @@
 			<properties>
 				<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
 				<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-			
+
 				<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
 			</properties>
@@ -413,7 +453,7 @@
 				<eclipse-ip-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
 				<eclipse-ip-site-version>DEV</eclipse-ip-site-version>
 				<eclipse-ip-site>${eclipse-ip-site-path}/${eclipse-ip-site-version}/org.eclipse.ip/org.eclipse.ip.p2</eclipse-ip-site>
-			
+
 				<osee-xcore-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-xcore-site-path>
 				<osee-xcore-site-version>DEV/org.eclipse.osee</osee-xcore-site-version>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2</osee-xcore-site>
