@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,6 +48,17 @@ public class AtsUtilCore {
       AtsArtifactTypes.TeamWorkflow);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
    private static boolean emailEnabled = true;
+
+   /**
+    * Is ATS using Resolution Options
+    */
+   public static boolean isAtsUsingResolutionOptions() throws OseeCoreException {
+      return OseeInfo.isBoolean("AtsUsingResolutionOptions");
+   }
+
+   public static void setAtsUsingResolutionOptions(boolean set) throws OseeCoreException {
+      OseeInfo.setBoolean("AtsUsingResolutionOptions", true);
+   }
 
    public static boolean isEmailEnabled() {
       return emailEnabled;

@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.core.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsGroup;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -32,6 +33,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
+      AtsUtilCore.setAtsUsingResolutionOptions(false);
       createAtsFolders();
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);

@@ -46,6 +46,9 @@ public class TaskResolutionOptionRule {
       new HashMap<StateDefinition, List<TaskResOptionDefinition>>();
 
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(StateDefinition stateDefinition) throws OseeCoreException {
+      if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
+         return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
+      }
       if (!stateDefToTaskResOptDefCache.containsKey(stateDefinition)) {
          TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(stateDefinition);
          if (taskResolutionOptionRule != null) {
@@ -58,6 +61,9 @@ public class TaskResolutionOptionRule {
    }
 
    public static TaskResolutionOptionRule getTaskResolutionOptionRule(StateDefinition stateDefinition) throws OseeCoreException {
+      if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
+         return null;
+      }
       List<RuleDefinition> wids = new ArrayList<RuleDefinition>();
       for (RuleDefinition ruleDef : stateDefinition.getRules()) {
          if (ruleDef.getName().contains("taskResolutionOptions")) {
