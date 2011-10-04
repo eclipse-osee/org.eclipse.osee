@@ -29,6 +29,10 @@ public class OseeCoreException extends CoreException {
       super(createSafeStatus(message, cause));
    }
 
+   public OseeCoreException(Throwable cause, String message, Object... args) {
+      super(createSafeStatus(formatMessage(message, args), cause));
+   }
+
    public OseeCoreException(Throwable cause) {
       super(createSafeStatus(null, cause));
    }
