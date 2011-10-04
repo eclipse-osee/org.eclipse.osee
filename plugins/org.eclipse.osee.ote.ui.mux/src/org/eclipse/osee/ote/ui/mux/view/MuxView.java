@@ -214,7 +214,9 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
 					@Override
 					public void run() {
 						 MuxChannelComposite muxChannelComposite = addChannelToView(channel);
-		            	   muxChannelComposite.onDataAvailable(buffer);
+						 muxChannelComposite.updateColors(true);
+						 muxChannelComposite.setMuxProbe(muxProbe);
+		            	 muxChannelComposite.onDataAvailable(buffer);
 					}
             	   });
                }
@@ -340,7 +342,7 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
                      task.start();
                   }
                   for(MuxChannelComposite mux:channelComposites.values()){
-               		mux.updateColors(false);
+               		mux.updateColors(true);
                		mux.setMuxProbe(muxProbe);
                	}
                }
