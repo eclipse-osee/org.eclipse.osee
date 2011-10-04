@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.util;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -33,7 +34,7 @@ public class Resource implements IResource {
    public InputStream getContent() throws OseeCoreException {
       InputStream stream = null;
       try {
-         stream = uri.toURL().openStream();
+         stream = new BufferedInputStream(uri.toURL().openStream());
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
