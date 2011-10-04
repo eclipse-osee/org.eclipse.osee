@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public abstract class ArtifactQuery {
+public abstract class ArtifactQueryOld {
 
    /**
     * Return single artifact or throw exception

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-public abstract class QueryResult {
+public abstract class ArtifactQueryResult {
 
    public abstract Artifact getOneOrNull() throws OseeCoreException;
 
@@ -36,5 +36,13 @@ public abstract class QueryResult {
       //      ArtifactQueryService.getFromName("WPN_PAGE", null).getArtifactList(LoadLevel.FULL, QueryOption.IncludeDeleted).getCount();
       //
       //      ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(LoadLevel.FULL, QueryOption.IncludeDeleted).getCount();
+      //
+      //      ArtifactQueryService.getFromName("WPN_PAGE", null).fullLoadWithDeleted().getCount();\
+      //
+      //      ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(new OptionsObject(LoadLevel.FULL, ).getCount();
+      //
+      //      ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(new FullLoadwithDeletedAndSomething()).getCount();
+      //
+
    }
 }

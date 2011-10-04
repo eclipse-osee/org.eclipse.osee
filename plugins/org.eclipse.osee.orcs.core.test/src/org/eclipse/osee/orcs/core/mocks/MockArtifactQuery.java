@@ -15,11 +15,11 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.Artifact;
-import org.eclipse.osee.orcs.ArtifactQuery;
+import org.eclipse.osee.orcs.ArtifactQueryOld;
 import org.eclipse.osee.orcs.QueryOption;
 import org.eclipse.osee.orcs.TransactionRecord;
 
-public class MockArtifactQuery extends ArtifactQuery {
+public class MockArtifactQuery extends ArtifactQueryOld {
 
    @Override
    public Artifact getArtifactExactlyOne(LoadLevel loadLevel, QueryOption... queryOptions) throws OseeCoreException {
