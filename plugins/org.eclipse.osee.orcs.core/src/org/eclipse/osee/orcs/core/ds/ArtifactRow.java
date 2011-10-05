@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  * @author Roberto E. Escobar
  */
 public class ArtifactRow {
+
    private int artifactId = -1;
    private int branchId = -1;
 
@@ -118,6 +119,76 @@ public class ArtifactRow {
    @Override
    public String toString() {
       return "ArtifactRow [artifactId=" + artifactId + ", branchId=" + branchId + ", transactionId=" + transactionId + ", artTypeUuid=" + artTypeUuid + ", guid=" + guid + ", humanReadableId=" + humanReadableId + ", gammaId=" + gammaId + ", modType=" + modType + "]";
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (int) (artTypeUuid ^ (artTypeUuid >>> 32));
+      result = prime * result + artifactId;
+      result = prime * result + branchId;
+      result = prime * result + gammaId;
+      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      result = prime * result + ((humanReadableId == null) ? 0 : humanReadableId.hashCode());
+      result = prime * result + (isHistorical ? 1231 : 1237);
+      result = prime * result + ((modType == null) ? 0 : modType.hashCode());
+      result = prime * result + stripeId;
+      result = prime * result + transactionId;
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      ArtifactRow other = (ArtifactRow) obj;
+      if (artTypeUuid != other.artTypeUuid) {
+         return false;
+      }
+      if (artifactId != other.artifactId) {
+         return false;
+      }
+      if (branchId != other.branchId) {
+         return false;
+      }
+      if (gammaId != other.gammaId) {
+         return false;
+      }
+      if (guid == null) {
+         if (other.guid != null) {
+            return false;
+         }
+      } else if (!guid.equals(other.guid)) {
+         return false;
+      }
+      if (humanReadableId == null) {
+         if (other.humanReadableId != null) {
+            return false;
+         }
+      } else if (!humanReadableId.equals(other.humanReadableId)) {
+         return false;
+      }
+      if (isHistorical != other.isHistorical) {
+         return false;
+      }
+      if (modType != other.modType) {
+         return false;
+      }
+      if (stripeId != other.stripeId) {
+         return false;
+      }
+      if (transactionId != other.transactionId) {
+         return false;
+      }
+      return true;
    }
 
 }

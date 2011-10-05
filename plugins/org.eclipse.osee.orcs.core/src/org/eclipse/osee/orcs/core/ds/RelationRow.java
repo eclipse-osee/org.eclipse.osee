@@ -90,4 +90,74 @@ public class RelationRow {
    public int getParentId() {
       return parentId;
    }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + artIdA;
+      result = prime * result + artIdB;
+      result = prime * result + branchId;
+      result = prime * result + gammaId;
+      result = prime * result + ((modType == null) ? 0 : modType.hashCode());
+      result = prime * result + parentId;
+      result = prime * result + ((rationale == null) ? 0 : rationale.hashCode());
+      result = prime * result + relationId;
+      result = prime * result + relationTypeId;
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      RelationRow other = (RelationRow) obj;
+      if (artIdA != other.artIdA) {
+         return false;
+      }
+      if (artIdB != other.artIdB) {
+         return false;
+      }
+      if (branchId != other.branchId) {
+         return false;
+      }
+      if (gammaId != other.gammaId) {
+         return false;
+      }
+      if (modType != other.modType) {
+         return false;
+      }
+      if (parentId != other.parentId) {
+         return false;
+      }
+      if (rationale == null) {
+         if (other.rationale != null) {
+            return false;
+         }
+      } else if (!rationale.equals(other.rationale)) {
+         return false;
+      }
+      if (relationId != other.relationId) {
+         return false;
+      }
+      if (relationTypeId != other.relationTypeId) {
+         return false;
+      }
+      return true;
+   }
+
+   @Override
+   public String toString() {
+      return String.format(
+         "RelationRow: parent[%d] relation[%d] artA[%d] artB[%d] branch[%d] gamma[%d], relationType[%d] rationale[%s]",
+         parentId, relationId, artIdA, artIdB, branchId, gammaId, relationTypeId, rationale, modType.name());
+   }
+
 }

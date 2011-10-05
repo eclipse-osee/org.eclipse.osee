@@ -1,0 +1,150 @@
+/*
+ * Created on Oct 4, 2011
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.orcs.db.internal.loader;
+
+import java.util.ArrayList;
+import java.util.List;
+import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
+import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.orcs.core.ds.RelationRow;
+import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
+import org.eclipse.osee.orcs.db.internal.SqlProvider;
+import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
+import org.eclipse.osee.orcs.db.mock.H2Preferences;
+import org.eclipse.osee.orcs.db.mock.MockLog;
+import org.eclipse.osee.orcs.db.mock.OseeDatabase;
+import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.junit.Rule;
+
+public class RelationLoaderTest {
+
+   @Rule
+   public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+
+   @org.junit.Test
+   public void testRelationLoadingData() throws OseeCoreException {
+
+      IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
+      MockLog log = new MockLog();
+      SqlProvider sqlProvider = new StaticSqlProvider(log, new H2Preferences());
+
+      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService);
+
+      ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
+      OseeConnection connection = oseeDbService.getConnection();
+      artJoinQuery.add(1, 2, -1);
+      artJoinQuery.store(connection);
+      int queryId = artJoinQuery.getQueryId();
+
+      final List<RelationRow> expected = new ArrayList<RelationRow>();
+      expected.add(getRelationRow(1, 8, 2, 36, 1, 1, "", 2, 397));
+      expected.add(getRelationRow(1, 17, 2, 60, 1, 1, "", 4, 397));
+      expected.add(getRelationRow(1, 22, 2, 94, 1, 1, "", 9, 397));
+
+      RelationRow notExpected = getRelationRow(1, 22, 2, 94, 1, 1, "Idon'tExist", 9, 397);
+
+      final List<RelationRow> actuals = new ArrayList<RelationRow>();
+
+      relationLoader.loadRelationData(new RelationRowHandler() {
+         @Override
+         public void onRow(RelationRow nextRelation) {
+            actuals.add(nextRelation);
+         }
+      }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
+
+      artJoinQuery.delete(connection);
+      connection.close();
+
+      Assert.assertEquals(expected.size(), actuals.size());
+      for (RelationRow row : expected) {
+         Assert.assertTrue(String.format("Row [%s] could not be found.", row.toString()), actuals.contains(row));
+      }
+      Assert.assertTrue(String.format("Row [%s] should not be found.", notExpected.toString()),
+         !actuals.contains(notExpected));
+   }
+
+   @org.junit.Test
+   public void testNoRelationsFound() throws OseeCoreException {
+
+      IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
+      MockLog log = new MockLog();
+      SqlProvider sqlProvider = new StaticSqlProvider(log, new H2Preferences());
+
+      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService);
+
+      ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
+      OseeConnection connection = oseeDbService.getConnection();
+      artJoinQuery.add(789, 2, -1);
+      artJoinQuery.store(connection);
+      int queryId = artJoinQuery.getQueryId();
+
+      final List<RelationRow> actuals = new ArrayList<RelationRow>();
+
+      relationLoader.loadRelationData(new RelationRowHandler() {
+         @Override
+         public void onRow(RelationRow nextRelation) {
+            actuals.add(nextRelation);
+         }
+      }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
+
+      artJoinQuery.delete(connection);
+      connection.close();
+
+      Assert.assertEquals(0, actuals.size());
+
+   }
+
+   @org.junit.Test
+   public void testHistoricalLoad() throws OseeCoreException {
+      IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
+      MockLog log = new MockLog();
+      SqlProvider sqlProvider = new StaticSqlProvider(log, new H2Preferences());
+
+      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService);
+
+      ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
+      OseeConnection connection = oseeDbService.getConnection();
+      artJoinQuery.add(1, 2, -1);
+      artJoinQuery.store(connection);
+      int queryId = artJoinQuery.getQueryId();
+
+      final List<RelationRow> actuals = new ArrayList<RelationRow>();
+      relationLoader.loadRelationData(new RelationRowHandler() {
+         @Override
+         public void onRow(RelationRow nextRelation) {
+            actuals.add(nextRelation);
+         }
+      }, new LoadOptions(true, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 100, queryId);
+
+      artJoinQuery.delete(connection);
+      connection.close();
+
+      Assert.assertEquals(0, actuals.size());
+
+   }
+
+   private RelationRow getRelationRow(int artIdA, int artIdB, int branchId, int gammaId, int modType, int parentId, String rationale, int relationId, int relationTypeId) throws OseeArgumentException {
+      RelationRow row = new RelationRow();
+      row.setArtIdA(artIdA);
+      row.setArtIdB(artIdB);
+      row.setBranchId(branchId);
+      row.setGammaId(gammaId);
+      row.setModType(ModificationType.getMod(modType));
+      row.setParentId(parentId);
+      row.setRationale(rationale);
+      row.setRelationId(relationId);
+      row.setRelationTypeId(relationTypeId);
+      return row;
+   }
+}
