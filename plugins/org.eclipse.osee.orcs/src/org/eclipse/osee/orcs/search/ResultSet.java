@@ -11,18 +11,15 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface ResultSet<T> {
 
-   int getCount() throws OseeCoreException;
+   T getOneOrNull() throws OseeCoreException;
 
-   T getOneOrNull(LoadLevel level) throws OseeCoreException;
+   T getExactlyOne() throws OseeCoreException;
 
-   T getExactlyOne(LoadLevel level) throws OseeCoreException;
+   List<T> getList() throws OseeCoreException;
 
-   List<T> getList(LoadLevel level) throws OseeCoreException;
-
-   Iterable<T> getIterable(LoadLevel level, int fetchSize) throws OseeCoreException;
+   Iterable<T> getIterable(int fetchSize) throws OseeCoreException;
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 public interface QueryFactory {
 
@@ -34,7 +35,7 @@ public interface QueryFactory {
 
    QueryBuilder fromArtifact(IOseeBranch branch, IArtifactToken artifactToken);
 
-   QueryBuilder fromArtifacts(Collection<? extends IArtifactToken> artifacts);
+   QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts);
 
    QueryBuilder fromName(IOseeBranch branch, String artifactName);
 

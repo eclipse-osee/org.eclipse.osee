@@ -8,22 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.search;
+package org.eclipse.osee.orcs.core.ds;
 
-public enum Operator {
-   EQUAL("="), // Exact Match as in Strings.equals
-   NOT_EQUAL("<>"), // inverse of exact match - !Strings.equals
-   LESS_THAN("<"),
-   GREATER_THAN(">");
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-   private String expression;
+/**
+ * @author Roberto E. Escobar
+ */
+public class Criteria {
+   //
 
-   private Operator(String expression) {
-      this.expression = expression;
-   }
-
-   @Override
-   public String toString() {
-      return expression;
+   @SuppressWarnings("unused")
+   public void checkValid(QueryOptions options) throws OseeCoreException {
+      //
    }
 }

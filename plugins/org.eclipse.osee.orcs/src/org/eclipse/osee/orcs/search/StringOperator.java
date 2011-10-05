@@ -10,20 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-public enum Operator {
-   EQUAL("="), // Exact Match as in Strings.equals
-   NOT_EQUAL("<>"), // inverse of exact match - !Strings.equals
-   LESS_THAN("<"),
-   GREATER_THAN(">");
-
-   private String expression;
-
-   private Operator(String expression) {
-      this.expression = expression;
-   }
-
-   @Override
-   public String toString() {
-      return expression;
-   }
+public enum StringOperator {
+   EQUALS(), // Exact Match as in Strings.equals
+   NOT_EQUALS(), // inverse of exact match - !Strings.equals
+   CONTAINS,
+   TOKENIZED_ANY_ORDER,
+   TOKENIZED_MATCH_ORDER;
 }

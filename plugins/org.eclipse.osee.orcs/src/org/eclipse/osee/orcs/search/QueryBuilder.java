@@ -13,40 +13,52 @@ package org.eclipse.osee.orcs.search;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 public interface QueryBuilder {
 
-   QueryBuilder resetToDefaults();
+   public static IAttributeType ANY_ATTRIBUTE_TYPE = TokenFactory.createAttributeType(Long.MIN_VALUE,
+      "Any Attribute Type");
 
    QueryBuilder includeCache();
 
    QueryBuilder includeCache(boolean enabled);
 
-   QueryBuilder excludeCache();
+   boolean isCacheIncluded();
 
    QueryBuilder includeDeleted();
 
    QueryBuilder includeDeleted(boolean enabled);
 
-   QueryBuilder excludeDeleted();
+   boolean areDeletedIncluded();
 
    QueryBuilder includeTypeInheritance();
 
    QueryBuilder includeTypeInheritance(boolean enabled);
 
-   QueryBuilder excludeTypeInheritance();
-
-   QueryBuilder matchCase();
-
-   QueryBuilder matchCase(boolean enabled);
-
-   QueryBuilder dontMatchCase();
+   boolean isTypeInheritanceIncluded();
 
    QueryBuilder fromTransaction(int transactionId);
 
+   int getFromTransaction();
+
    QueryBuilder headTransaction();
+
+   boolean isHeadTransaction();
+
+   QueryBuilder excludeCache();
+
+   QueryBuilder excludeDeleted();
+
+   QueryBuilder excludeTypeInheritance();
+
+   /**
+    * Resets query builder to default settings. This also clear all criteria added to original query.
+    */
+   QueryBuilder resetToDefaults();
 
    /**
     * Search criteria that checks for the existence of an attribute type.
@@ -73,5 +85,15 @@ public interface QueryBuilder {
     */
    QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException;
 
-   <T extends ReadableArtifact> ResultSet<T> build();
+   /**
+    * Creates a result set based on query settings
+    * 
+    * @see LoadLevel level
+    */
+   ResultSet<ReadableArtifact> build(LoadLevel loadLevel) throws OseeCoreException;
+
+   /**
+    * Counts the number of items available
+    */
+   int getCount() throws OseeCoreException;
 }

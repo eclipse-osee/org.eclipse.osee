@@ -25,6 +25,7 @@ public class ApiTester {
       return null;
    }
 
+   @SuppressWarnings("unused")
    public static void main(String[] args) throws OseeCoreException {
       OseeApi api = getApi();
 
@@ -34,15 +35,15 @@ public class ApiTester {
       ReadableArtifact art1 = query.fromName(CoreBranches.COMMON, "WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
-      .build()//
-      .getExactlyOne(LoadLevel.FULL);
+      .build(LoadLevel.FULL)//
+      .getExactlyOne();
 
       List<ReadableArtifact> arts = query//
       .fromName(CoreBranches.COMMON, "WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
-      .build()//
-      .getList(LoadLevel.ATTRIBUTE);
+      .build(LoadLevel.ATTRIBUTE)//
+      .getList();
 
       /// Chained
       ReadableArtifact art2 = query//
@@ -52,8 +53,8 @@ public class ApiTester {
       .and(CoreAttributeTypes.ParagraphNumber, Operator.LESS_THAN, "1.2.3")//
       .and(CoreAttributeTypes.Company, Operator.NOT_EQUAL, "company")//
       .andExists(CoreAttributeTypes.Active)//
-      .build()//
-      .getExactlyOne(LoadLevel.FULL);
+      .build(LoadLevel.FULL)//
+      .getExactlyOne();
 
       // None Chained
       QueryBuilder builder1 = query.fromBranch(CoreBranches.COMMON);
@@ -61,13 +62,13 @@ public class ApiTester {
       builder1.and(CoreAttributeTypes.ParagraphNumber, Operator.LESS_THAN, "1.2.3");
       builder1.and(CoreAttributeTypes.Company, Operator.NOT_EQUAL, "company");
 
-      ResultSet<ReadableArtifact> result = builder1.build();
-      ReadableArtifact art3 = result.getExactlyOne(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> result = builder1.build(LoadLevel.FULL);
+      ReadableArtifact art3 = result.getExactlyOne();
 
       // One liner
-      int count1 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").includeDeleted(true).build().getCount();
-      int count2 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").includeDeleted().build().getCount();
-      int count3 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").build().getCount();
+      int count1 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").includeDeleted(true).getCount();
+      int count2 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").includeDeleted().getCount();
+      int count3 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").getCount();
 
       //factory.fromName("WPN_PAGE", CoreBranches.COMMON).setOptions(new OptionsObject(LoadLevel.FULL, ).getCount();
       //factory.fromName("WPN_PAGE", CoreBranches.COMMON).setOptions(new FullLoadwithDeletedAndSomething()).getCount();
@@ -78,19 +79,13 @@ public class ApiTester {
       return null;
    }
 
-   //      ArtifactQueryService.getFromName("WPN_PAGE", null).getArtifactList(LoadLevel.FULL, QueryOption.IncludeDeleted).getCount();
+   //   ArtifactQueryService.getFromName("WPN_PAGE", null).getArtifactList(LoadLevel.FULL, QueryOption.IncludeDeleted).getCount();
+   //   ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(LoadLevel.FULL, QueryOption.IncludeDeleted).getCount();
+   //   ArtifactQueryService.getFromName("WPN_PAGE", null).fullLoadWithDeleted().getCount();\
+   //   ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(new OptionsObject(LoadLevel.FULL, ).getCount();
+   //   ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(new FullLoadwithDeletedAndSomething()).getCount();
+   //   ArtifactQueryService.getFromName("WPN_PAGE", null, ).getCount();
    //
-   //      ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(LoadLevel.FULL, QueryOption.IncludeDeleted).getCount();
-   //
-   //      ArtifactQueryService.getFromName("WPN_PAGE", null).fullLoadWithDeleted().getCount();\
-   //
-   //      ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(new OptionsObject(LoadLevel.FULL, ).getCount();
-   //
-   //      ArtifactQueryService.getFromName("WPN_PAGE", null).setOptions(new FullLoadwithDeletedAndSomething()).getCount();
-   //
-   //      ArtifactQueryService.getFromName("WPN_PAGE", null, ).getCount();
-   //
-   //   
    //   QueryFactory queryFactory = orcs.createQuery(); // Create Composes the services
    //
    //   QueryBuilder query = queryFactory.getFromName("WPN_PAGE", null);
