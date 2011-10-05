@@ -43,7 +43,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
          for (StateDefinition state : states) {
             if (state.getOrdinal() == x) {
                orderedPages.add(state);
-            } else if (state.getOrdinal() == 0) {
+            } else if (state.getOrdinal() == 0 && !unOrderedPages.contains(state)) {
                unOrderedPages.add(state);
             }
          }
