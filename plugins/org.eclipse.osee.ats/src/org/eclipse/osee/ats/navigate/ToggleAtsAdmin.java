@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -59,11 +60,13 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                SystemGroup.OseeAdmin.addMember(UserManager.getUser());
             }
             AtsNavigateViewItems.getInstance().clearCaches();
+            for (SMAEditor editor : SMAEditor.getSmaEditors()) {
+               editor.refreshPages();
+            }
             NavigateView.getNavigateView().refreshData();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
-
 }

@@ -472,6 +472,19 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       return null;
    }
 
+   public static List<SMAEditor> getSmaEditors() {
+      List<SMAEditor> results = new ArrayList<SMAEditor>();
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IEditorReference editors[] = page.getEditorReferences();
+      for (int j = 0; j < editors.length; j++) {
+         IEditorReference editor = editors[j];
+         if (editor.getPart(false) instanceof SMAEditor) {
+            results.add((SMAEditor) editor.getPart(false));
+         }
+      }
+      return results;
+   }
+
    public void closeEditor() {
       final MultiPageEditorPart editor = this;
       Displays.ensureInDisplayThread(new Runnable() {
