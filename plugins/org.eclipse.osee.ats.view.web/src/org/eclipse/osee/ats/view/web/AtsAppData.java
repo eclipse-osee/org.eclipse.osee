@@ -12,9 +12,9 @@ he Eclipse Public License v1.0
 package org.eclipse.osee.ats.view.web;
 
 import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.OseeAppData;
-import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
 
 /**
@@ -49,11 +49,11 @@ public class AtsAppData extends OseeAppData {
    }
 
    public static AtsWebSearchPresenter getAtsWebSearchPresenter() {
-      return (AtsWebSearchPresenter) OseeAppData.getAtsBackend();
+      return (AtsWebSearchPresenter) OseeAppData.getSearchPresenter();
    }
 
    @Override
-   protected Navigator createNavigator() {
+   protected SearchNavigator createNavigator() {
       return new AtsNavigator();
    }
 

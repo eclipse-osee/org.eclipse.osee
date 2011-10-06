@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.display.api.components;
 
+import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.WebId;
 
 public interface RelationComponent {
@@ -15,5 +16,5 @@ public interface RelationComponent {
 
    void clearRelations();
 
-   void addRelation(WebId id);
+   void addRelation(WebArtifact id);
 }

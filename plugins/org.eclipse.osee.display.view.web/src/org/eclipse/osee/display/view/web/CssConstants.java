@@ -38,10 +38,16 @@ public final class CssConstants {
    public static final String OSEE_TITLE_LARGE_TEXT = "osee-title-large-text";
    public static final String OSEE_TITLE_MEDIUM_TEXT = "osee-title-medium-text";
    public static final String OSEE_SEARCH_TEXTFIELD = "osee-search-textfield";
+
    public static final String OSEE_SEARCHRESULT_ARTNAME = "osee-searchresult-artname";
    public static final String OSEE_SEARCHRESULT_ARTTYPE = "osee-searchresult-arttype";
-   public static final String OSEE_HORIZONTAL_LINE = "osee-horizontal-line";
    public static final String OSEE_SEARCHRESULT_MATCH = "osee-searchresult-match";
    public static final String OSEE_SEARCHRESULT_MATCH_MANY = "osee-searchresult-match-many";
+
+   public static final String OSEE_HORIZONTAL_LINE = "osee-horizontal-line";
    public static final String OSEE_BREADCRUMB_ARTNAME = "osee-breadcrumb-artname";
+
+   public static final String OSEE_ATTRIBUTELABEL = "osee-attributelabel";
+   public static final String OSEE_ATTRIBUTEVALUE = "osee-attributevalue";
+
 }

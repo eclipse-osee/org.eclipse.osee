@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,11 +53,17 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
    WebId program2 = new WebId("taiwan_guid", "Taiwan");
 
    WebArtifact defaultroot = new WebArtifact("defaultHierarchRoot_GUID", "Default Hierarchy Root", "Root Artifact");
-   WebArtifact swreqs = new WebArtifact("SWReq_GUID", "Software Requirements", "Folder");
-   WebArtifact crewIntreqs = new WebArtifact("CrewInt_GUID", "Crew Interface", "Folder");
+   WebArtifact swreqs = new WebArtifact("SWReq_GUID", "Software Requirements", "Folder",
+      Arrays.asList(defaultroot.getWebId()), new WebId("branch_id1", "branch_id1"));
+   WebArtifact crewIntreqs = new WebArtifact("CrewInt_GUID", "Crew Interface", "Folder", Arrays.asList(
+      swreqs.getWebId(), defaultroot.getWebId()), new WebId("branch_id2", "branch_id2"));
    WebArtifact commSubSysCrewIntreqs = new WebArtifact("commSubSysCrewInt_GUID",
-      "Communication Subsystem Crew Interface", "Heading");
-   WebArtifact comm_page_Intreqs = new WebArtifact("com_page_GUID", "{COM_PAGE}", "Software Requirement");
+      "Communication Subsystem Crew Interface", "Heading", Arrays.asList(crewIntreqs.getWebId(), swreqs.getWebId(),
+         defaultroot.getWebId()), new WebId("branch_id3", "branch_id3"));
+   WebArtifact comm_page_Intreqs =
+      new WebArtifact("com_page_GUID", "{COM_PAGE}", "Software Requirement", Arrays.asList(
+         commSubSysCrewIntreqs.getWebId(), crewIntreqs.getWebId(), swreqs.getWebId(), defaultroot.getWebId()),
+         new WebId("branch_id4", "branch_id4"));
 
    private final Map<WebId, Collection<WebId>> programsAndBuilds = new HashMap<WebId, Collection<WebId>>();
    private final Map<String, WebArtifact> artifacts = new HashMap<String, WebArtifact>();
@@ -96,6 +102,17 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
       artifacts.put(commSubSysCrewIntreqs.getGuid(), commSubSysCrewIntreqs);
       artifacts.put(comm_page_Intreqs.getGuid(), comm_page_Intreqs);
 
+      Set<Entry<String, WebArtifact>> artifactsSet = artifacts.entrySet();
+      for (Entry<String, WebArtifact> entry : artifactsSet) {
+         WebArtifact artifact = entry.getValue();
+         artifact.setAttr_Category("B");
+         artifact.setAttr_DevAssurLevel("E");
+         artifact.setAttr_ImpoParaNum("3.2.1.1");
+         artifact.setAttr_Partition("CND, DP, SP, WP");
+         artifact.setAttr_QualMethod("Test");
+         artifact.setAttr_Subsystm("Communications");
+         artifact.setAttr_TechPerfParam("False");
+      }
    }
 
    @Override
@@ -133,6 +150,55 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
       }
    }
 
+   @Override
+   public void initSearchHome(SearchHeaderComponent searchHeaderComp) {
+      searchHeaderComp.clearAll();
+   }
+
+   @Override
+   public void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator) {
+      String url = String.format("/artifact/%s", artifact.getGuid());
+      oseeNavigator.navigateArtifactPage(url);
+   }
+
+   @Override
+   public void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
+      initSearchHome(searchHeaderComp);
+      setSearchHeaderCriteria(url, (AtsSearchHeaderComponentInterface) searchHeaderComp);
+      artHeaderComp.clearAll();
+      Map<String, String> params = requestStringToParameterMap(url);
+      if (params != null && params.size() > 0) {
+         String artGuid = params.get(UrlParamNameConstants.PARAMNAME_ARTIFACT);
+         if (artGuid != null && !artGuid.isEmpty()) {
+            WebArtifact artifact = artifacts.get(artGuid);
+            if (artifact != null) {
+               artHeaderComp.setArtifact(artifact);
+
+               relComp.clearAll();
+               WebId parentRelationType = new WebId("guid1", "Parent");
+               WebId childRelationType = new WebId("guid2", "Child");
+               WebId swReqRelationType = new WebId("guid3", "SW Requirement");
+               relComp.addRelationType(parentRelationType);
+               relComp.addRelationType(childRelationType);
+               relComp.addRelationType(swReqRelationType);
+
+               attrComp.clearAll();
+               attrComp.setArtifact(artifact);
+            }
+         }
+      }
+   }
+
+   @Override
+   public void selectRelationType(WebId id, RelationComponent relationComponent) {
+      relationComponent.clearRelations();
+      Set<Entry<String, WebArtifact>> artifactsSet = artifacts.entrySet();
+      for (Entry<String, WebArtifact> entry : artifactsSet) {
+         WebArtifact artifact = entry.getValue();
+         relationComponent.addRelation(artifact);
+      }
+   }
+
    public static AtsWebSearchPresenter getInstance() {
       return atsBackend;
    }
@@ -142,15 +208,21 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
       if (program != null && headerComponent != null) {
          Collection<WebId> builds = programsAndBuilds.get(program);
          headerComponent.clearBuilds();
-         for (WebId build : builds) {
-            headerComponent.addBuild(build);
+         if (builds != null) {
+            for (WebId build : builds) {
+               headerComponent.addBuild(build);
+            }
+            //      headerComponent.setBuild(builds.iterator().next());
          }
-         //      headerComponent.setBuild(builds.iterator().next());
       }
    }
 
    @Override
-   public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
+   public void initSearchResults(String url, SearchHeaderComponent searchHeaderComp, SearchResultsListComponent searchResultsComp) {
+      //Do nothing
+   }
+
+   private void setSearchHeaderCriteria(String url, AtsSearchHeaderComponentInterface searchHeaderComponent) {
       Map<String, String> params = requestStringToParameterMap(url);
       WebId program = new WebId("", "");
       WebId build = new WebId("", "");
@@ -178,13 +250,16 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
       }
 
       if (searchHeaderComponent != null) {
-         searchHeaderComponent.clearAll();
-         Set<Entry<WebId, Collection<WebId>>> entrySetProg = programsAndBuilds.entrySet();
-         for (Entry<WebId, Collection<WebId>> entry : entrySetProg) {
-            searchHeaderComponent.addProgram(entry.getKey());
-         }
+         this.selectProgram(program, searchHeaderComponent);
          searchHeaderComponent.setSearchCriteria(program, build, nameOnly, searchPhrase);
       }
+   }
+
+   @Override
+   public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
+
+      initSearchHome(searchHeaderComponent);
+      setSearchHeaderCriteria(url, searchHeaderComponent);
 
       if (resultsComponent != null) {
          resultsComponent.clearAll();
@@ -266,25 +341,5 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
       }
 
       return null;
-   }
-
-   @Override
-   public void initSearchHome(SearchHeaderComponent searchHeaderComp) {
-   }
-
-   @Override
-   public void initSearchResults(String url, SearchHeaderComponent searchHeaderComp, SearchResultsListComponent searchResultsComp) {
-   }
-
-   @Override
-   public void selectArtifact(WebId id) {
-   }
-
-   @Override
-   public void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
-   }
-
-   @Override
-   public void selectRelationType(WebId id) {
    }
 }

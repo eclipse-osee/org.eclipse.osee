@@ -20,6 +20,5 @@ public class OseeLogoLink extends Link {
       Resource logoIconRes = new ThemeResource("../osee/osee_large.png");
       setIcon(logoIconRes);
       setStyleName(styleName);
-
    }
 }

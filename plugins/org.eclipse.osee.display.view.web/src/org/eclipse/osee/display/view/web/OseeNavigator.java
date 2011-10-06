@@ -8,33 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.view.web.search;
+package org.eclipse.osee.display.view.web;
 
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
-import com.vaadin.ui.VerticalLayout;
+import org.eclipse.osee.display.api.search.SearchNavigator;
 
 /**
  * @author Shawn F. Cook
  */
-@SuppressWarnings("serial")
-public class OseeSearchHeaderComponent extends VerticalLayout implements SearchHeaderComponent {
+public class OseeNavigator implements SearchNavigator {
 
    @Override
-   public void attach() {
-      createLayout();
-   }
-
-   protected void createLayout() {
+   public void navigateSearchResults(String url) {
       //Do nothing.
    }
 
    @Override
-   public void clearAll() {
-      //Do nothing.
-   }
-
-   @Override
-   public void setErrorMessage(String message) {
+   public void navigateArtifactPage(String url) {
       //Do nothing.
    }
 

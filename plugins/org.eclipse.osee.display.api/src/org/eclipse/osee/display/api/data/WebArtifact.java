@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.data;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * @author Shawn F. Cook
  */
@@ -24,11 +27,23 @@ public class WebArtifact {
    private String attr_QualMethod;
    private String attr_Subsystm;
    private String attr_TechPerfParam;
+   private final WebId branch;
 
-   public WebArtifact(String guid, String artifactName, String artifactType) {
+   //ancestry should include all parental Artifacts starting with parent(index 0), grandparent(index 1), great-grandparent(index 2), etc. 
+   private final Collection<WebId> ancestry = new ArrayList<WebId>();
+
+   public WebArtifact(String guid, String artifactName, String artifactType, Collection<WebId> ancestry, WebId branch) {
       this.guid = guid;
       this.artifactName = artifactName;
       this.artifactType = artifactType;
+      if (ancestry != null) {
+         this.ancestry.addAll(ancestry);
+      }
+      this.branch = branch;
+   }
+
+   public WebArtifact(String guid, String artifactName, String artifactType) {
+      this(guid, artifactName, artifactType, (Collection<WebId>) null, null);
    }
 
    public String getArtifactName() {
@@ -43,26 +58,13 @@ public class WebArtifact {
       return guid;
    }
 
-   //   public Artifact getParent() {
-   //      Collection<Artifact> listOfParents = relations.get(RelationType.PARENT);
-   //      if (listOfParents == null || listOfParents.size() <= 0) {
-   //         return null;
-   //      }
-   //      return listOfParents.iterator().next();
-   //   }
-   //
-   //   /*
-   //    * Returns list of ancestor Artifacts or empty list if there are no ancestors (i.e.: parent is null).
-   //    */
-   //   public Collection<Artifact> getAncestry() {
-   //      Collection<Artifact> ancestry = new ArrayList<Artifact>();
-   //      Artifact parent = this.getParent();
-   //      if (parent != null) {
-   //         ancestry.addAll(parent.getAncestry());
-   //         ancestry.add(parent);
-   //      }
-   //      return ancestry;
-   //   }
+   public WebId getBranch() {
+      return branch;
+   }
+
+   public Collection<WebId> getAncestry() {
+      return ancestry;
+   }
 
    @Override
    public String toString() {
@@ -125,4 +127,8 @@ public class WebArtifact {
       this.attr_TechPerfParam = attr_TechPerfParam;
    }
 
+   public WebId getWebId() {
+      WebId ret = new WebId(getGuid(), getArtifactName());
+      return ret;
+   }
 }

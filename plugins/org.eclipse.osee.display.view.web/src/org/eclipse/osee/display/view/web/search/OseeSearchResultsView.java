@@ -25,43 +25,48 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchResultsView extends CustomComponent implements Navigator.View {
 
-   protected OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
-   protected OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
+   protected OseeSearchHeaderComponent oseeSearchHeader;
+   protected OseeSearchResultsListComponent searchResultsListComponent;
 
-   @Override
-   public void init(Navigator navigator, Application application) {
-      initComponents();
+   public OseeSearchResultsView() {
+      oseeSearchHeader = getOseeSearchHeader();
+      searchResultsListComponent = new OseeSearchResultsListComponent();
+   }
 
+   private void initLayout() {
       setSizeFull();
-
-      final HorizontalLayout headerHorzLayout = new HorizontalLayout();
-      headerHorzLayout.addComponent(oseeSearchHeader);
-      headerHorzLayout.setComponentAlignment(oseeSearchHeader, Alignment.TOP_LEFT);
-      oseeSearchHeader.setSizeUndefined();
-
-      //This is a fixed-height spacer that simply forms a nice margin between the search
-      //  results and the search header.
-      //      Label topSpacer = new Label("");
-      //      topSpacer.setHeight(85, UNITS_PIXELS);
-      //      topSpacer.setSizeUndefined();
 
       HorizontalLayout leftMarginAndBody = new HorizontalLayout();
       leftMarginAndBody.setSizeFull();
       Label leftMarginSpace = new Label("");
       leftMarginSpace.setWidth(80, UNITS_PIXELS);
       leftMarginAndBody.addComponent(leftMarginSpace);
+
+      VerticalLayout bodyVertLayout = new VerticalLayout();
       leftMarginAndBody.addComponent(searchResultsListComponent);
       searchResultsListComponent.setSizeFull();
       leftMarginAndBody.setExpandRatio(searchResultsListComponent, 1.0f);
 
+      leftMarginAndBody.addComponent(bodyVertLayout);
+      bodyVertLayout.setSizeFull();
+      leftMarginAndBody.setExpandRatio(bodyVertLayout, 1.0f);
+
       final VerticalLayout vertLayout = new VerticalLayout();
-      vertLayout.addComponent(headerHorzLayout);
-      //      vertLayout.addComponent(topSpacer);
+      vertLayout.addComponent(oseeSearchHeader);
+      vertLayout.setComponentAlignment(oseeSearchHeader, Alignment.TOP_LEFT);
+      oseeSearchHeader.setWidth(100, UNITS_PERCENTAGE);
+      oseeSearchHeader.setHeight(null);
       vertLayout.addComponent(leftMarginAndBody);
       vertLayout.setExpandRatio(leftMarginAndBody, 1.0f);
 
       vertLayout.setSizeFull();
       setCompositionRoot(vertLayout);
+   }
+
+   @Override
+   public void init(Navigator navigator, Application application) {
+      initComponents();
+      initLayout();
    }
 
    protected OseeSearchHeaderComponent getOseeSearchHeader() {

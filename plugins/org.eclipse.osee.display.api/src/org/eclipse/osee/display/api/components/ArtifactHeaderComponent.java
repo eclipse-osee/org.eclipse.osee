@@ -12,4 +12,6 @@ public interface ArtifactHeaderComponent {
    void clearAll();
 
    void setArtifact(WebArtifact artifact);
+
+   void setErrorMessage(String message);
 }

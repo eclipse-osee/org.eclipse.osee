@@ -16,9 +16,6 @@ import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.view.web.CssConstants;
-import org.eclipse.osee.display.view.web.OseeAppData;
-import org.eclipse.osee.display.view.web.internal.search.OseeBreadcrumbComponent;
-import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -30,7 +27,6 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchResultComponent extends VerticalLayout implements SearchResultComponent {
 
-   private final Navigator navigator = OseeAppData.getNavigator();
    private WebArtifact artifact;
    private final Collection<SearchResultMatch> matches = new ArrayList<SearchResultMatch>();
 
@@ -51,8 +47,8 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
 
       HorizontalLayout row0 = new HorizontalLayout();
 
-      ArtifactNameLinkComponent artifactName =
-         new ArtifactNameLinkComponent(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
+      OseeArtifactNameLinkComponent artifactName =
+         new OseeArtifactNameLinkComponent(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
       Label spacer1 = new Label("");
       spacer1.setHeight(null);
       spacer1.setWidth(15, UNITS_PIXELS);
@@ -64,7 +60,7 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
       row0.setComponentAlignment(artifactName, Alignment.BOTTOM_LEFT);
       row0.setComponentAlignment(artifactType, Alignment.MIDDLE_LEFT);
 
-      OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(navigator, artifact);
+      OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(artifact);
 
       addComponent(row0);
       addComponent(breadcrumbComp);

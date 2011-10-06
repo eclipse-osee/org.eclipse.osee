@@ -89,7 +89,7 @@
 	font-size: 100px;
 }
 
-.osee-title-medium-text {
+.osee-title-medium-text a img {
 	font-size: 70px;
 	width: 70px;
 	height: 70px;
@@ -124,4 +124,10 @@
 	background-repeat:repeat-x;
 }
 
+.osee-attributelabel {
+}
+
+.osee-attributevalue {
+	font-weight:bold;
+}
 

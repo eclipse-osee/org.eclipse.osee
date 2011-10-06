@@ -75,6 +75,9 @@ public class OseeRoadMapAndNavigation {
       return parameters;
    }
 
+   /*
+    * Returns: parameter string starting with '/' and ending without a delim character. example: "/program/blk3_guid"
+    */
    public static String parameterMapToRequestString(Map<String, String> parameters) {
       String requestedDataId = "/";
 

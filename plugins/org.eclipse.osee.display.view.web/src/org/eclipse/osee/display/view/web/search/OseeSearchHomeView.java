@@ -22,7 +22,11 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchHomeView extends CustomComponent implements Navigator.View {
 
-   protected OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
+   protected OseeSearchHeaderComponent oseeSearchHeader;
+
+   public OseeSearchHomeView() {
+      oseeSearchHeader = getOseeSearchHeader();
+   }
 
    @Override
    public void init(Navigator navigator, Application application) {

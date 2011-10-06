@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,9 @@ import org.eclipse.osee.display.view.web.components.OseeLogoLink;
 import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -35,27 +38,54 @@ import com.vaadin.ui.VerticalLayout;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implements AtsSearchHeaderComponentInterface {
+public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implements AtsSearchHeaderComponentInterface, Handler {
 
    private boolean populated;
-   private final ComboBox programCombo = new ComboBox("Program:");
-   private final ComboBox buildCombo = new ComboBox("Build:");
-   private final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", false);
-   private final TextField searchTextField = new TextField();
+   private final ComboBox programCombo;
+   private final ComboBox buildCombo;
+   private final CheckBox nameOnlyCheckBox;
+   private final TextField searchTextField;
    private final boolean showOseeTitleAbove;
-   private final AtsWebSearchPresenter atsBackend = AtsAppData.getAtsWebSearchPresenter();
-   private final AtsNavigator atsNavigator = AtsAppData.getAtsNavigator();
+   private final AtsWebSearchPresenter atsBackend;
+   private final AtsNavigator atsNavigator;
+   private boolean lockProgramCombo = false;
+
+   @Override
+   public void attach() {
+      if (populated) {
+         // Only populate the layout once
+         return;
+      }
+
+      createLayout();
+
+      populated = true;
+   }
+
+   private void selectSearch() {
+      WebId program = (WebId) programCombo.getValue();
+      atsBackend.selectProgram(program, this);
+   }
 
    public AtsSearchHeaderComponent(boolean showOseeTitleAbove) {
       this.showOseeTitleAbove = showOseeTitleAbove;
+
+      programCombo = new ComboBox("Program:");
+      buildCombo = new ComboBox("Build:");
+      nameOnlyCheckBox = new CheckBox("Name Only", false);
+      searchTextField = new TextField();
+      atsBackend = AtsAppData.getAtsWebSearchPresenter();
+      atsNavigator = AtsAppData.getAtsNavigator();
+
       if (programCombo != null) {
          programCombo.setNullSelectionAllowed(false);
          final AtsSearchHeaderComponentInterface me = this;
          programCombo.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-               WebId program = (WebId) programCombo.getValue();
-               atsBackend.selectProgram(program, me);
+               if (!lockProgramCombo) {
+                  selectSearch();
+               }
             }
          });
          programCombo.setImmediate(true);
@@ -69,11 +99,6 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
 
    @Override
    protected void createLayout() {
-      if (populated) {
-         // Only populate the layout once
-         return;
-      }
-
       setHeight(null);
       setWidth(100, UNITS_PERCENTAGE);
       setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT);
@@ -165,14 +190,14 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
          addComponent(hLayoutRow0);
          addComponent(spacer5);
       }
-
-      populated = true;
    }
 
    @Override
    public void addProgram(WebId program) {
       if (programCombo != null) {
+         lockProgramCombo = true;
          programCombo.addItem(program);
+         lockProgramCombo = false;
       }
    }
 
@@ -193,7 +218,9 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
    @Override
    public void setSearchCriteria(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
       if (programCombo != null) {
+         lockProgramCombo = true;
          programCombo.setValue(program);
+         lockProgramCombo = false;
       }
       if (buildCombo != null) {
          buildCombo.setValue(build);
@@ -240,6 +267,27 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
 
    @Override
    public void setErrorMessage(String message) {
+      //TODO:
+   }
+
+   //TODO: None of this works because Vaadin only supports key actions for Windows and Panel Objects. (this is
+   // a Component)
+   private final Action action_enter = new ShortcutAction("Enter key", ShortcutAction.KeyCode.ENTER, null);
+   private final Action[] actions = new Action[] {action_enter};
+
+   @Override
+   public Action[] getActions(Object target, Object sender) {
+      if (sender == searchTextField) {
+         return actions;
+      }
+      return null;
+   }
+
+   @Override
+   public void handleAction(Action action, Object sender, Object target) {
+      if (sender == searchTextField && action == action_enter) {
+         selectSearch();
+      }
    }
 
 }

@@ -22,7 +22,12 @@ import org.eclipse.osee.display.view.web.search.OseeSearchHomeView;
 @SuppressWarnings("serial")
 public class AtsSearchHomeView extends OseeSearchHomeView {
 
-   private final AtsWebSearchPresenter atsBackend = AtsAppData.getAtsWebSearchPresenter();
+   private final AtsWebSearchPresenter atsBackend;
+
+   public AtsSearchHomeView() {
+      super();
+      atsBackend = AtsAppData.getAtsWebSearchPresenter();
+   }
 
    @Override
    protected OseeSearchHeaderComponent getOseeSearchHeader() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.view.web.CssConstants;
-import org.eclipse.osee.display.view.web.OseeAppData;
-import org.eclipse.osee.display.view.web.internal.search.OseeArtifactView;
 import org.eclipse.osee.display.view.web.internal.search.OseeRoadMapAndNavigation;
-import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Link;
@@ -26,22 +23,28 @@ import com.vaadin.ui.Link;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class ArtifactNameLinkComponent extends Link {
+public class OseeArtifactNameLinkComponent extends Link {
 
-   private final Navigator navigator = OseeAppData.getNavigator();
-
-   public ArtifactNameLinkComponent(WebArtifact artifact) {
+   public OseeArtifactNameLinkComponent(WebArtifact artifact) {
       this(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
    }
 
-   public ArtifactNameLinkComponent(WebArtifact artifact, String styleName) {
+   public OseeArtifactNameLinkComponent(WebArtifact artifact, String styleName) {
+      this(artifact.getArtifactName(), artifact.getGuid(), styleName);
+   }
+
+   public OseeArtifactNameLinkComponent(String artName, String artGuid) {
+      this(artName, artGuid, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
+   }
+
+   public OseeArtifactNameLinkComponent(String artName, String artGuid, String styleName) {
       super();
 
-      this.setCaption(artifact.getArtifactName());
+      this.setCaption(artName);
       Map<String, String> parameterMap = new HashMap<String, String>();
-      parameterMap.put(OseeRoadMapAndNavigation.ARTIFACT, artifact.getGuid());
+      parameterMap.put(OseeRoadMapAndNavigation.ARTIFACT, artGuid);
       String paramString = OseeRoadMapAndNavigation.parameterMapToRequestString(parameterMap);
-      Resource artifactLink = new ExternalResource(String.format("%s", navigator.getUri(OseeArtifactView.class)));
+      Resource artifactLink = new ExternalResource(String.format("ats#AtsArtifactView%s", paramString));
       this.setResource(artifactLink);
 
       setStyleName(styleName);

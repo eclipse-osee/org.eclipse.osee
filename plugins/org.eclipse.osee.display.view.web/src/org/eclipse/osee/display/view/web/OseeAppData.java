@@ -11,8 +11,8 @@ he Eclipse Public License v1.0
  *******************************************************************************/
 package org.eclipse.osee.display.view.web;
 
+import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
-import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
 import com.vaadin.service.ApplicationContext.TransactionListener;
 
@@ -26,8 +26,8 @@ public class OseeAppData implements TransactionListener {
    protected final Application app; // For distinguishing between apps
    protected static ThreadLocal<OseeAppData> instance = new ThreadLocal<OseeAppData>();
 
-   private final Navigator navigator = createNavigator();
-   private final SearchPresenter atsBackend = createSearchPresenter();
+   private final SearchNavigator navigator = createNavigator();
+   private final SearchPresenter searchPresenter = createSearchPresenter();
 
    public OseeAppData(Application app) {
       this.app = app;
@@ -44,19 +44,19 @@ public class OseeAppData implements TransactionListener {
    public void transactionEnd(Application application, Object transactionData) {
    }
 
-   protected Navigator createNavigator() {
-      return new Navigator();
+   protected SearchNavigator createNavigator() {
+      return new OseeNavigator();
    }
 
    protected SearchPresenter createSearchPresenter() {
       return null;
    }
 
-   public static Navigator getNavigator() {
+   public static SearchNavigator getNavigator() {
       return instance.get().navigator;
    }
 
-   public static SearchPresenter getAtsBackend() {
-      return instance.get().atsBackend;
+   public static SearchPresenter getSearchPresenter() {
+      return instance.get().searchPresenter;
    }
 }
