@@ -31,7 +31,7 @@ public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   private WorkPackageColumn() {
+   protected WorkPackageColumn() {
       super(AtsAttributeTypes.WorkPackage, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackage",
          AtsAttributeTypes.WorkPackage.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, true, "");
    }

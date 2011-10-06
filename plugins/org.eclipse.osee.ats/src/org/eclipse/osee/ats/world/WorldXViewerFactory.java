@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
+import org.eclipse.osee.ats.column.ActivityIdColumn;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.BranchStatusColumn;
@@ -143,6 +144,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       EstimatedCompletionDateColumn.getInstance(),
       ReleaseDateColumn.getInstance(),
       WorkPackageColumn.getInstance(),
+      ActivityIdColumn.getInstance(),
       CategoryColumn.getCategory1Instance(),
       CategoryColumn.getCategory2Instance(),
       CategoryColumn.getCategory3Instance(),
