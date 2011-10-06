@@ -40,10 +40,10 @@ import org.eclipse.search.ui.text.Match;
 /**
  * @author Roberto E. Escobar
  */
-final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
+public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private final SearchRequest searchRequest;
 
-   RemoteArtifactSearch(SearchRequest searchRequest) {
+   public RemoteArtifactSearch(SearchRequest searchRequest) {
       this.searchRequest = searchRequest;
    }
 
@@ -112,8 +112,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                      resultCollector.acceptArtifactMatch(artifactMatch);
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.logf(Activator.class, Level.SEVERE,
-                     ex, "Error processing attribute line matches for [%s]", artifactMatch.getArtifact());
+                  OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing attribute line matches for [%s]",
+                     artifactMatch.getArtifact());
                   resultCollector.acceptArtifactMatch(artifactMatch);
                }
             } else {
@@ -125,7 +125,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       } finally {
-         OseeLog.logf(Activator.class, Level.INFO, 
+         OseeLog.logf(Activator.class, Level.INFO,
             "Quick Search: [%s] artifacts with [%s] location matches loaded in [%s secs] collected in [%s]",
             artifactCount, lineMatches, (endOfloadTime - startTime) / 1000.0, Lib.getElapseString(startCollectTime));
       }
