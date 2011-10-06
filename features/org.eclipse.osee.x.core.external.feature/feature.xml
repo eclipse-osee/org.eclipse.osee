@@ -29,6 +29,7 @@
       <import plugin="javax.servlet.jsp"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.slf4j.api" version="1.6.1" match="equivalent"/>
+      <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
    </requires>
 
    <plugin

@@ -19,6 +19,8 @@
 		<module>../../plugins/org.eclipse.osee.framework.database</module>
 		<module>../../plugins/org.eclipse.osee.framework.database.test</module>
 
+		<module>../../plugins/org.eclipse.osee.database</module>
+
 		<module>../../plugins/org.eclipse.osee.display.api</module>
 		<module>../../plugins/org.eclipse.osee.display.view.web</module>
 
