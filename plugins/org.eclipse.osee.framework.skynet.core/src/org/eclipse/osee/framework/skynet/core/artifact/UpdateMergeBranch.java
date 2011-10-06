@@ -47,7 +47,7 @@ public class UpdateMergeBranch extends DbTransaction {
       " END";
 
    private static final String UPDATE_ARTIFACTS =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", txs1.branch_id FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.branch_id = ? AND txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", ? FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.branch_id = ? AND txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
 
    private static final String PURGE_ATTRIBUTE_FROM_MERGE_BRANCH =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.art_id = ?)";
@@ -128,8 +128,9 @@ public class UpdateMergeBranch extends DbTransaction {
       int baselineTransaction = mergeBranch.getBaseTransaction().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, artifact.getArtId(),
-               sourceBranch.getId(), TxChange.NOT_CURRENT.getValue(), mergeBranch.getId(), baselineTransaction);
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, mergeBranch.getId(),
+               artifact.getArtId(), sourceBranch.getId(), TxChange.NOT_CURRENT.getValue(), mergeBranch.getId(),
+               baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",
