@@ -63,4 +63,5 @@ public interface ITeamWorkflowProvider {
     */
    public String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt);
 
+   public String getBranchName(TeamWorkFlowArtifact teamArt);
 }

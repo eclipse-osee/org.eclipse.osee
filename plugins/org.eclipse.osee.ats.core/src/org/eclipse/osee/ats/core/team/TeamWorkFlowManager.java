@@ -247,6 +247,16 @@ public class TeamWorkFlowManager {
       return null;
    }
 
+   public static String getBranchName(TeamWorkFlowArtifact teamArt) {
+      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
+         String name = teamExtension.getBranchName(teamArt);
+         if (Strings.isValid(name)) {
+            return name;
+         }
+      }
+      return teamArt.getBranchName();
+   }
+
    public static ITeamWorkflowProvider getTeamWorkflowProvider(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
       for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
          boolean isResponsible = false;

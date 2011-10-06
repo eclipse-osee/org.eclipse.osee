@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.review.DecisionReviewDefinitionManager;
 import org.eclipse.osee.ats.core.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
@@ -341,7 +342,8 @@ public class AtsBranchManager implements IBranchEventListener {
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
    public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, String pageId, final IOseeBranch parentBranch) {
-      final String branchName = Strings.truncate(teamArt.getBranchName(), 195, true);
+
+      final String branchName = Strings.truncate(TeamWorkFlowManager.getBranchName(teamArt), 195, true);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          @Override

@@ -46,4 +46,9 @@ public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
       return "";
    }
 
+   @Override
+   public String getBranchName(TeamWorkFlowArtifact teamArt) {
+      return null;
+   }
+
 }
