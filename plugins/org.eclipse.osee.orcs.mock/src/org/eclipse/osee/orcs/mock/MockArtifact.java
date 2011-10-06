@@ -10,6 +10,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -93,4 +94,10 @@ public class MockArtifact implements ReadableArtifact {
    public String getName() {
       return null;
    }
+
+   @Override
+   public Collection<IRelationType> getValidRelationTypes() {
+      return null;
+   }
+
 }

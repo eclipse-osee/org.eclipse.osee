@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
 import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
 import org.eclipse.osee.ats.api.tokens.AtsArtifactToken;
@@ -29,13 +31,21 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
-/*
+/**
  * @author John Misinco
  */
 public class WebProgramsPresenter extends WebSearchPresenter implements AtsWebSearchPresenter {
 
+   private final static Pattern buildPattern = Pattern.compile("build=([0-9A-Za-z\\+_=]{20,22})");
+   private final static Pattern programPattern = Pattern.compile("program=([0-9A-Za-z\\+_=]{20,22})");
+
+   private final Matcher buildMatcher;
+   private final Matcher programMatcher;
+
    public WebProgramsPresenter(ArtifactProvider artifactProvider) {
       super(artifactProvider);
+      buildMatcher = buildPattern.matcher("");
+      programMatcher = programPattern.matcher("");
    }
 
    @Override
@@ -170,12 +180,27 @@ public class WebProgramsPresenter extends WebSearchPresenter implements AtsWebSe
    }
 
    private SearchParameters decode(String url) {
-      String[] tokens = url.split("\\?");
-      WebId program = new WebId(tokens[0].split("=")[1], "unknown");
-      WebId build = new WebId(tokens[1].split("=")[1], "unknown");
-      boolean nameOnly = tokens[2].split("=")[1].equalsIgnoreCase("true") ? true : false;
-      String searchPhrase = tokens[3].split("=")[1];
-      searchPhrase = searchPhrase.replaceAll("%20", " ");
+      WebId program = null, build = null;
+      String searchPhrase = "";
+      boolean nameOnly = true;
+
+      programMatcher.reset(url);
+      buildMatcher.reset(url);
+      nameOnlyMatcher.reset(url);
+      searchPhraseMatcher.reset(url);
+
+      if (programMatcher.find()) {
+         program = new WebId(programMatcher.group(1), "");
+      }
+      if (buildMatcher.find()) {
+         build = new WebId(buildMatcher.group(1), "");
+      }
+      if (nameOnlyMatcher.find()) {
+         nameOnly = nameOnlyMatcher.group(1).equalsIgnoreCase("true") ? true : false;
+      }
+      if (searchPhraseMatcher.find()) {
+         searchPhrase = searchPhraseMatcher.group(1).replaceAll("%20", " ");
+      }
       return new SearchParameters(program, build, nameOnly, searchPhrase);
    }
 

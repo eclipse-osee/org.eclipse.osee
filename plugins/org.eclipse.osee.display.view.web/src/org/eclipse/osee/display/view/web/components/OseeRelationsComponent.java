@@ -140,4 +140,8 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
          lockRelsListener = false;
       }
    }
+
+   @Override
+   public void setErrorMessage(String message) {
+   }
 }

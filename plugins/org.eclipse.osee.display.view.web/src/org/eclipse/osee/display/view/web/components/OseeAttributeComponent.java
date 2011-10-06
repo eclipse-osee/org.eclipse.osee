@@ -100,4 +100,8 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
       createLayout();
    }
 
+   @Override
+   public void setErrorMessage(String message) {
+   }
+
 }

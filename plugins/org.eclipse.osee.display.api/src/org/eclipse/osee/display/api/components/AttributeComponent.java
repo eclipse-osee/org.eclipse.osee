@@ -12,4 +12,6 @@ public interface AttributeComponent {
    void clearAll();
 
    void setArtifact(WebArtifact artifact);
+
+   void setErrorMessage(String message);
 }

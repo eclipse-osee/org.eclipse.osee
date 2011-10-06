@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,8 @@ import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -90,18 +93,40 @@ public class WebSearchPresenter implements SearchPresenter {
       ArtifactParameters params = decodeArtifactUrl(url);
       String branch = params.getBranchId();
       String art = params.getArtifactId();
-      ReadableArtifact artifactByGuid = null;
+      ReadableArtifact displayArt = null;
       try {
-         artifactByGuid = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
+         displayArt = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
       } catch (OseeCoreException e) {
          artHeaderComp.setErrorMessage(String.format("Error while loading artifact[%s] from branch:[%s]", art, branch));
          return;
       }
-      WebId artBranch = new WebId(artifactByGuid.getBranch().getGuid(), artifactByGuid.getBranch().getName());
+      WebId artBranch = new WebId(displayArt.getBranch().getGuid(), displayArt.getBranch().getName());
       WebArtifact artifact =
-         new WebArtifact(artifactByGuid.getGuid(), artifactByGuid.getName(),
-            artifactByGuid.getArtifactType().getName(), null, artBranch);
+         new WebArtifact(displayArt.getGuid(), displayArt.getName(), displayArt.getArtifactType().getName(), null,
+            artBranch);
       artHeaderComp.setArtifact(artifact);
+
+      relComp.clearAll();
+      Collection<IRelationType> relationTypes = null;
+      try {
+         relationTypes = displayArt.getValidRelationTypes();
+      } catch (OseeCoreException ex1) {
+         relComp.setErrorMessage(String.format("Error loading relation types for: [%s]", displayArt.getName()));
+      }
+      for (IRelationType relType : relationTypes) {
+         relComp.addRelationType(new WebId(relType.getGuid().toString(), relType.getName()));
+      }
+
+      attrComp.clearAll();
+      Collection<IAttributeType> attributeTypes = null;
+      try {
+         attributeTypes = displayArt.getAttributeTypes();
+      } catch (OseeCoreException ex) {
+         attrComp.setErrorMessage(String.format("Error loading attributes for: [%s]", displayArt.getName()));
+      }
+      for (IAttributeType attrType : attributeTypes) {
+         //john
+      }
    }
 
    @Override
@@ -160,7 +185,7 @@ public class WebSearchPresenter implements SearchPresenter {
          nameOnly = nameOnlyMatcher.group(1).equalsIgnoreCase("true") ? true : false;
       }
       if (searchPhraseMatcher.find()) {
-         searchPhrase = searchPhraseMatcher.group(1);
+         searchPhrase = searchPhraseMatcher.group(1).replaceAll("%20", " ");
       }
       return new SearchParameters(branch, nameOnly, searchPhrase);
    }

@@ -17,4 +17,6 @@ public interface RelationComponent {
    void clearRelations();
 
    void addRelation(WebArtifact id);
+
+   void setErrorMessage(String message);
 }
