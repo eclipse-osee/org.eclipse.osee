@@ -22,13 +22,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.osee.display.api.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.display.presenter.source"
          download-size="0"
          install-size="0"
@@ -43,7 +36,56 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.osee.orcs.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.orcs.core.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.orcs.db.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.osee.framework.core.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.model.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.resource.management.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.database.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.display.api.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -55,5 +97,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
 </feature>
