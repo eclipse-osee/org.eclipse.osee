@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
@@ -60,6 +61,11 @@ public class Artifact implements AttributeContainer {
 
    @Override
    public <T> ReadableAttribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public NamedIdentity<String> getParent() {
       return null;
    }
 }

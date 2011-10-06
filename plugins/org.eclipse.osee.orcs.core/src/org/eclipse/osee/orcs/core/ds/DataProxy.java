@@ -18,11 +18,15 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
  */
 public interface DataProxy {
 
+   public void setResolver(ResourceNameResolver resolver);
+
+   public ResourceNameResolver getResolver();
+
    public String getDisplayableString() throws OseeCoreException;
 
    public void setDisplayableString(String toDisplay) throws OseeDataStoreException;
 
-   public void loadData(Object... objects) throws OseeCoreException;
+   public void setData(Object... objects) throws OseeCoreException;
 
    public Object[] getData() throws OseeDataStoreException;
 

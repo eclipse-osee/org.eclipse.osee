@@ -46,7 +46,8 @@ public class ResourceHandler implements DataHandler {
       Conditions.checkNotNull(path, "resource path");
 
       IResourceLocator locator = resourceLocator.getResourceLocator(path);
-      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]", dataResource.getName());
+      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]",
+         dataResource.getStorageName());
 
       IResource resource = resourceManager.acquire(locator, DEFAULT_OPTIONS);
       resource.getName();
@@ -64,8 +65,8 @@ public class ResourceHandler implements DataHandler {
          dataResource.setEncoding("ISO-8859-1");
          return Lib.inputStreamToBytes(inputStream);
       } catch (IOException ex) {
-         throw new OseeCoreException(ex, "Error acquiring resource - name[%s] locator[%s]", dataResource.getName(),
-            dataResource.getLocator());
+         throw new OseeCoreException(ex, "Error acquiring resource - name[%s] locator[%s]",
+            dataResource.getStorageName(), dataResource.getLocator());
       } finally {
          Lib.close(inputStream);
       }
@@ -73,15 +74,19 @@ public class ResourceHandler implements DataHandler {
 
    @Override
    public void save(int storageId, DataResource dataResource, byte[] rawContent) throws OseeCoreException {
-      String name = dataResource.getName();
+      StringBuilder storageName = new StringBuilder();
+      storageName.append(dataResource.getStorageName());
       String extension = dataResource.getExtension();
       if (Strings.isValid(extension)) {
-         name += "." + extension;
+         storageName.append(".");
+         storageName.append(extension);
       }
-      boolean isCompressed = false;
 
       String seed = Integer.toString(storageId);
-      IResourceLocator locatorHint = resourceLocator.generateResourceLocator("attr", seed, name);
+      IResourceLocator locatorHint = resourceLocator.generateResourceLocator("attr", seed, storageName.toString());
+
+      String contentType = dataResource.getContentType();
+      boolean isCompressed = Strings.isValid(contentType) && contentType.contains("zip");
 
       IResource resource = new ByteStreamResource(locatorHint, rawContent, isCompressed);
       IResourceLocator locator = resourceManager.save(locatorHint, resource, DEFAULT_OPTIONS);
@@ -91,25 +96,17 @@ public class ResourceHandler implements DataHandler {
    }
 
    @Override
-   public void purge(DataResource dataResource) throws OseeCoreException {
+   public void delete(DataResource dataResource) throws OseeCoreException {
       String path = dataResource.getLocator();
       Conditions.checkNotNull(path, "resource path");
 
       IResourceLocator locator = resourceLocator.getResourceLocator(path);
-      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]", dataResource.getName());
+      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]",
+         dataResource.getStorageName());
 
       int result = resourceManager.delete(locator);
       if (IResourceManager.OK != result) {
          throw new OseeDataStoreException("Error deleting resource located at [%s]", dataResource.getLocator());
       }
    }
-
-   //   public static PropertyStore getOptions(HttpServletRequest request) {
-   //      PropertyStore options = new PropertyStore();
-   //      options.put(StandardOptions.CompressOnSave.name(), request.getParameter(COMPRESS_ON_SAVE));
-   //      options.put(StandardOptions.CompressOnAcquire.name(), request.getParameter(COMPRESS_ON_ACQUIRE));
-   //      options.put(StandardOptions.DecompressOnAquire.name(), request.getParameter(DECOMPRESS_ON_ACQUIRE));
-   //      options.put(StandardOptions.Overwrite.name(), request.getParameter(IS_OVERWRITE_ALLOWED));
-   //      return options;
-   //}
 }

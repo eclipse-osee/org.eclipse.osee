@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.proxy;
+package org.eclipse.osee.orcs.db.internal;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
-import org.eclipse.osee.orcs.db.internal.DataProxyFactoryProvider;
+import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 
@@ -116,7 +116,7 @@ public class DataProxyFactoryProviderImpl implements DataProxyFactoryProvider {
    }
 
    @Override
-   public DataProxyFactory getProxy(String factoryAlias) {
+   public DataProxyFactory getFactory(String factoryAlias) {
       return proxyClassMap.get(factoryAlias);
    }
 

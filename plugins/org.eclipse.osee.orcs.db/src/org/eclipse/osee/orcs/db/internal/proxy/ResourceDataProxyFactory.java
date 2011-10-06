@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +30,8 @@ import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
  */
 public class ResourceDataProxyFactory implements DataProxyFactory {
 
-   private final Map<String, Class<? extends AbstractDataSourceProxy>> proxyClassMap =
-      new HashMap<String, Class<? extends AbstractDataSourceProxy>>();
+   private final Map<String, Class<? extends AbstractDataProxy>> proxyClassMap =
+      new HashMap<String, Class<? extends AbstractDataProxy>>();
 
    private Log logger;
    private IResourceManager resourceManager;
@@ -62,7 +61,7 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
       this.resourceLocator = resourceLocator;
    }
 
-   private Class<? extends AbstractDataSourceProxy> getProxyClazz(String id) {
+   private Class<? extends AbstractDataProxy> getProxyClazz(String id) {
       return proxyClassMap.get(id);
    }
 
@@ -77,7 +76,7 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
       proxyClassMap.put("DefaultAttributeDataProvider", ClobDataProxy.class);
       proxyClassMap.put("ClobAttributeDataProvider", ClobDataProxy.class);
       proxyClassMap.put("UriAttributeDataProvider", UriDataProxy.class);
-      proxyClassMap.put("MappedAttributeDataProvider", MappedFileDataProxy.class);
+      proxyClassMap.put("MappedAttributeDataProvider", UriDataProxy.class);
 
       List<String> aliases = Arrays.asList(factoryAliases);
       Set<String> keys = proxyClassMap.keySet();
@@ -94,25 +93,26 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
 
    @Override
    public DataProxy createInstance(String factoryAlias) throws OseeCoreException {
-
-      IResourceManager resourceManager = getResourceManager();
-      IResourceLocatorManager locatorManager = getResourceLocator();
-
-      DataHandler handler = new ResourceHandler(resourceManager, locatorManager);
-      DataResource resource = new DataResource();
-      Storage dataStore = new Storage(resource, handler);
-
-      Class<? extends AbstractDataSourceProxy> clazz = getProxyClazz(factoryAlias);
+      Class<? extends AbstractDataProxy> clazz = getProxyClazz(factoryAlias);
       Conditions.checkNotNull(clazz, "DataProxy", "Unable to find data proxy clazz [%s]", factoryAlias);
 
-      DataProxy dataProxy = null;
+      AbstractDataProxy dataProxy = null;
       try {
-         Constructor<? extends DataProxy> constructor = clazz.getConstructor(new Class[] {Storage.class});
-         dataProxy = constructor.newInstance(new Object[] {dataStore});
+         dataProxy = clazz.newInstance();
       } catch (Exception ex) {
          getLogger().error(ex, "Error creating data proxy for [%s]", factoryAlias);
          OseeExceptions.wrapAndThrow(ex);
       }
+      dataProxy.setLogger(getLogger());
+      dataProxy.setStorage(createStorage());
       return dataProxy;
+   }
+
+   private Storage createStorage() {
+      IResourceManager resourceManager = getResourceManager();
+      IResourceLocatorManager locatorManager = getResourceLocator();
+
+      DataHandler handler = new ResourceHandler(resourceManager, locatorManager);
+      return new Storage(handler);
    }
 }

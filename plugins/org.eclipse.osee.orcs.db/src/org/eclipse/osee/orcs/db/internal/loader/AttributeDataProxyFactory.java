@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
-import org.eclipse.osee.orcs.db.internal.DataProxyFactoryProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -34,12 +33,12 @@ public class AttributeDataProxyFactory implements AttributeLoader.DataProxyFacto
    }
 
    @Override
-   public DataProxy createProxy(int proxyId, long typeUuid, String value, String uri) throws OseeCoreException {
+   public DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException {
       AttributeType attributeType = attributeTypeCache.getByGuid(typeUuid);
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
       String dataProxyFactoryId = attributeType.getAttributeProviderId();
-      DataProxyFactory factory = proxyProvider.getProxy(dataProxyFactoryId);
+      DataProxyFactory factory = proxyProvider.getFactory(dataProxyFactoryId);
       Conditions.checkNotNull(factory, "DataProxyFactory", "Unable to find data proxy factory for [%s]",
          dataProxyFactoryId);
 
@@ -49,7 +48,7 @@ public class AttributeDataProxyFactory implements AttributeLoader.DataProxyFacto
       }
 
       DataProxy proxy = factory.createInstance(dataProxyFactoryId);
-      proxy.loadData(shortValue, uri);
+      proxy.setData(shortValue, uri);
       return proxy;
    }
 

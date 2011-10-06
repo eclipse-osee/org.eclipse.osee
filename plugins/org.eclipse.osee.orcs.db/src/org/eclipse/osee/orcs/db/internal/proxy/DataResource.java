@@ -10,30 +10,39 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DataResource {
 
+   private ResourceNameResolver resolver;
    private String contentType;
    private String encoding;
    private String extension;
    private String locator;
-   private String name;
 
    public DataResource() {
-
    }
 
-   public DataResource(String contentType, String encoding, String extension, String locator, String name) {
+   public DataResource(String contentType, String encoding, String extension, String locator) {
       super();
       this.contentType = contentType;
       this.encoding = encoding;
       this.extension = extension;
       this.locator = locator;
-      this.name = name;
+   }
+
+   public void setResolver(ResourceNameResolver resolver) {
+      this.resolver = resolver;
+   }
+
+   public ResourceNameResolver getResolver() {
+      return resolver;
    }
 
    public String getContentType() {
@@ -52,10 +61,6 @@ public class DataResource {
       return locator;
    }
 
-   public String getName() {
-      return name;
-   }
-
    public void setContentType(String contentType) {
       this.contentType = contentType;
    }
@@ -72,11 +77,13 @@ public class DataResource {
       this.locator = locator;
    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
-
    public boolean isLocatorValid() {
       return Strings.isValid(getLocator());
+   }
+
+   public String getStorageName() throws OseeCoreException {
+      ResourceNameResolver resolver = getResolver();
+      Conditions.checkNotNull(resolver, "resource name resolver");
+      return resolver.getStorageName();
    }
 }

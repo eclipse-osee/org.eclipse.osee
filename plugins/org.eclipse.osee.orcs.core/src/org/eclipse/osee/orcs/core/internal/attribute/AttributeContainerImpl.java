@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -24,7 +25,12 @@ public class AttributeContainerImpl implements AttributeContainer {
 
    private final AttributeCollection collection = new AttributeCollection();
 
+   private final NamedIdentity<String> parent;
    private boolean isLoaded;
+
+   public AttributeContainerImpl(NamedIdentity<String> parent) {
+      this.parent = parent;
+   }
 
    @Override
    public boolean isLoaded() {
@@ -74,5 +80,10 @@ public class AttributeContainerImpl implements AttributeContainer {
    @Override
    public <T> ReadableAttribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
       return null;
+   }
+
+   @Override
+   public NamedIdentity<String> getParent() {
+      return parent;
    }
 }

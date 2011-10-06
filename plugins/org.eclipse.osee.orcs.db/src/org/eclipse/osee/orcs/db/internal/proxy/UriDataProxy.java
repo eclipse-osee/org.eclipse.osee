@@ -24,11 +24,11 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 /**
  * @author Roberto E. Escobar
  */
-public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy, BinaryDataProxy {
+public class UriDataProxy extends AbstractDataProxy implements CharacterDataProxy, BinaryDataProxy {
    private String displayable;
 
-   public UriDataProxy(Storage storage) {
-      super(storage);
+   public UriDataProxy() {
+      super();
       this.displayable = "";
    }
 
@@ -49,7 +49,7 @@ public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDa
          if (!Arrays.equals(getStorage().getContent(), data != null ? data.array() : null)) {
             if (data != null) {
                byte[] compressed;
-               compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getStorage().getFileName());
+               compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getResolver().getInternalFileName());
                getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
                response = true;
             } else {
@@ -115,7 +115,7 @@ public class UriDataProxy extends AbstractDataSourceProxy implements CharacterDa
    }
 
    @Override
-   public void loadData(Object... objects) {
+   public void setData(Object... objects) {
       if (objects != null && objects.length > 1) {
          getStorage().setLocator((String) objects[1]);
       }

@@ -20,13 +20,13 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 /**
  * @author Roberto E. Escobar
  */
-public class ClobDataProxy extends AbstractDataSourceProxy implements CharacterDataProxy {
+public class ClobDataProxy extends AbstractDataProxy implements CharacterDataProxy {
 
    public static final int MAX_VARCHAR_LENGTH = 4000;
    private String rawStringValue;
 
-   public ClobDataProxy(Storage storage) {
-      super(storage);
+   public ClobDataProxy() {
+      super();
       this.rawStringValue = "";
    }
 
@@ -73,7 +73,8 @@ public class ClobDataProxy extends AbstractDataSourceProxy implements CharacterD
       if (value != null && value.length() > MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
-               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getStorage().getFileName());
+               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")),
+                  getResolver().getInternalFileName());
             getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
             this.rawStringValue = "";
          } catch (IOException ex) {
@@ -91,7 +92,7 @@ public class ClobDataProxy extends AbstractDataSourceProxy implements CharacterD
    }
 
    @Override
-   public void loadData(Object... objects) throws OseeCoreException {
+   public void setData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
          storeValue((String) objects[0]);
          getStorage().setLocator((String) objects[1]);

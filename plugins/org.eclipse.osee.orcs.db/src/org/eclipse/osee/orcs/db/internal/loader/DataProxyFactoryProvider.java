@@ -8,19 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.proxy;
+package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface DataHandler {
+public interface DataProxyFactoryProvider {
 
-   byte[] acquire(DataResource resource) throws OseeCoreException;
-
-   void save(int storageId, DataResource resource, byte[] rawContent) throws OseeCoreException;
-
-   void delete(DataResource resource) throws OseeCoreException;
+   DataProxyFactory getFactory(String factoryAlias);
 
 }

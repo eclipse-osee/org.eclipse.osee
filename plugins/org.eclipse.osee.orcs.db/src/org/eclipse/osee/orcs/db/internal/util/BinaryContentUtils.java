@@ -10,25 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.util;
 
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.net.URLConnection;
-import java.net.URLEncoder;
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BinaryContentUtils {
+public final class BinaryContentUtils {
 
-   private final static int MAX_NAME_SIZE = 60;
+   private BinaryContentUtils() {
+      // Utility Class
+   }
+
+   public static String getContentType(IResource resource) throws OseeCoreException {
+      String mimeType;
+      try {
+         mimeType = URLConnection.guessContentTypeFromStream(resource.getContent());
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex, "Error determining mime type for - [%s]", resource.getName());
+      }
+      if (mimeType == null) {
+         mimeType = URLConnection.guessContentTypeFromName(resource.getLocation().toASCIIString());
+         if (mimeType == null) {
+            mimeType = "application/*";
+         }
+      }
+      return mimeType;
+   }
 
    public static String getContentType(String extension) {
       String contentType = null;
@@ -39,46 +50,4 @@ public class BinaryContentUtils {
       }
       return contentType;
    }
-
-   public static String generateFileName(NamedIdentity<String> identity, String fileTypeExtension) throws OseeCoreException {
-      StringBuilder builder = new StringBuilder();
-      try {
-         String name = identity.getName();
-         if (name.length() > MAX_NAME_SIZE) {
-            name = name.substring(0, MAX_NAME_SIZE);
-         }
-         builder.append(URLEncoder.encode(name, "UTF-8"));
-         builder.append(".");
-      } catch (UnsupportedEncodingException ex) {
-         // Do Nothing - this is not important
-      }
-
-      builder.append(getStorageName(identity));
-
-      if (Strings.isValid(fileTypeExtension)) {
-         builder.append(".");
-         builder.append(fileTypeExtension);
-      }
-      return builder.toString();
-   }
-
-   private static String getStorageName(Identity<String> identity) throws OseeCoreException {
-      String guid = identity.getGuid();
-      Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid), "Item has an invalid guid [%s]", guid);
-      return guid;
-   }
-
-   private static String getExtension(ReadableAttribute<String> attribute) throws OseeCoreException {
-      AttributeType attributeType = (AttributeType) attribute.getAttributeType();
-
-      String fileTypeExtension = null;
-      if (attributeType.equals(CoreAttributeTypes.NativeContent)) {
-         fileTypeExtension = attribute.getValue();
-      }
-      if (!Strings.isValid(fileTypeExtension)) {
-         fileTypeExtension = attributeType.getFileTypeExtension();
-      }
-      return fileTypeExtension;
-   }
-
 }

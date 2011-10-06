@@ -10,17 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import junit.framework.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
+ * Test Case for {@link UriDataProxy}
+ * 
  * @author Roberto E. Escobar
  */
-public interface DataHandler {
+public class UriDataProxyTest {
 
-   byte[] acquire(DataResource resource) throws OseeCoreException;
-
-   void save(int storageId, DataResource resource, byte[] rawContent) throws OseeCoreException;
-
-   void delete(DataResource resource) throws OseeCoreException;
+   @Test
+   @Ignore
+   public void test() {
+      Assert.assertEquals(1, 1);
+   }
 
 }

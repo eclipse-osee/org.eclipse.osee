@@ -8,19 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.proxy;
+package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface DataHandler {
-
-   byte[] acquire(DataResource resource) throws OseeCoreException;
-
-   void save(int storageId, DataResource resource, byte[] rawContent) throws OseeCoreException;
-
-   void delete(DataResource resource) throws OseeCoreException;
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ArtifactLoaderTest.class, RelationLoaderTest.class})
+public class LoaderTestSuite {
+   // Test Suite
 }

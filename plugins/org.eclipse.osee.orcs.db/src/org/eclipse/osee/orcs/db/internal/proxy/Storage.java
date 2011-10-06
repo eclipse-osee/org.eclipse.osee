@@ -18,52 +18,25 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public class Storage {
+public class Storage extends DataResource {
 
-   private final DataResource resource;
    private final DataHandler handler;
-
    private byte[] rawContent;
-   private boolean needToReadFromRemote;
+   private boolean initialized;
 
-   public Storage(DataResource resource, DataHandler handler) {
+   public Storage(DataHandler handler) {
       super();
-      this.resource = resource;
       this.handler = handler;
       clear();
-      this.needToReadFromRemote = true;
+      setInitialized(false);
    }
 
-   public String getLocator() {
-      return resource.getLocator();
-   }
-
+   @Override
    public void setLocator(String locator) {
-      resource.setLocator(locator);
-      needToReadFromRemote = true;
+      super.setLocator(locator);
+      setInitialized(false);
    }
 
-   public boolean isLocatorValid() {
-      return resource.isLocatorValid();
-   }
-
-   public String getContentType() {
-      return resource.getContentType();
-   }
-
-   public String getEncoding() {
-      return resource.getEncoding();
-   }
-
-   public String getExtension() {
-      return resource.getExtension();
-   }
-
-   public String getFileName() {
-      return resource.getName();
-   }
-
-   //////// START OF DATA ////////////
    public boolean isDataValid() {
       return this.rawContent != null && this.rawContent.length > 0;
    }
@@ -72,38 +45,54 @@ public class Storage {
       return new ByteArrayInputStream(getContent());
    }
 
+   public boolean isInitialized() {
+      return initialized;
+   }
+
+   private void setInitialized(boolean initialized) {
+      this.initialized = initialized;
+   }
+
+   public boolean isLoadingAllowed() {
+      return !isInitialized() && isLocatorValid();
+   }
+
    public byte[] getContent() throws OseeCoreException {
-      if (isLocatorValid() != false && needToReadFromRemote) {
-         rawContent = handler.acquire(resource);
-         needToReadFromRemote = false;
+      if (isLoadingAllowed()) {
+         rawContent = handler.acquire(this);
+         setInitialized(true);
       }
       return this.rawContent;
    }
 
    public void persist(int storageId) throws OseeCoreException {
-      if (this.rawContent != null && this.rawContent.length > 0) {
-         handler.save(storageId, resource, rawContent);
+      if (isDataValid()) {
+         handler.save(storageId, this, rawContent);
       }
    }
 
    public void purge() throws OseeCoreException {
       if (isLocatorValid()) {
-         handler.purge(resource);
+         handler.delete(this);
       }
    }
 
    public void setContent(byte[] rawContent, String extension, String contentType, String encoding) {
       this.rawContent = rawContent;
-      this.resource.setContentType(contentType);
-      this.resource.setEncoding(encoding);
+      setContentType(contentType);
+      setEncoding(encoding);
+      setExtension(extension);
    }
 
    public void copyTo(Storage other) {
-      other.rawContent = Arrays.copyOf(this.rawContent, this.rawContent.length);
-
-      other.resource.setContentType(this.resource.getContentType());
-      other.resource.setEncoding(this.resource.getEncoding());
-      other.resource.setExtension(this.resource.getExtension());
+      if (this.rawContent != null) {
+         other.rawContent = Arrays.copyOf(this.rawContent, this.rawContent.length);
+      } else {
+         other.rawContent = null;
+      }
+      other.setContentType(this.getContentType());
+      other.setEncoding(this.getEncoding());
+      other.setExtension(this.getExtension());
    }
 
    public void clear() {

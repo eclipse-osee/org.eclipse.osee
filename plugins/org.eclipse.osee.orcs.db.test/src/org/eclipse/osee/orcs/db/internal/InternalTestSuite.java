@@ -8,22 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.proxy;
+package org.eclipse.osee.orcs.db.internal;
 
-import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.db.internal.proxy.ClobDataProxyTest;
+import org.eclipse.osee.orcs.db.internal.proxy.ProxyTestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractDataSourceProxy implements DataProxy {
-   private final Storage storage;
-
-   public AbstractDataSourceProxy(Storage storage) {
-      super();
-      this.storage = storage;
-   }
-
-   protected Storage getStorage() {
-      return storage;
-   }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ClobDataProxyTest.class, ProxyTestSuite.class})
+public class InternalTestSuite {
+   // Test Suite
 }

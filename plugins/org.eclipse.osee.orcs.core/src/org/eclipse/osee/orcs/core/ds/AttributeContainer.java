@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -21,6 +22,8 @@ import org.eclipse.osee.orcs.data.ReadableAttribute;
  * @author Roberto E. Escobar
  */
 public interface AttributeContainer {
+
+   NamedIdentity<String> getParent();
 
    void add(IAttributeType type, Attribute<?> attribute);
 

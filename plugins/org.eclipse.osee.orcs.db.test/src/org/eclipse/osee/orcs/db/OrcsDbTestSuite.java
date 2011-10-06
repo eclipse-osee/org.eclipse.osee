@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db;
 
-import org.eclipse.osee.orcs.db.internal.loader.ArtifactLoaderTest;
-import org.eclipse.osee.orcs.db.internal.loader.RelationLoaderTest;
+import org.eclipse.osee.orcs.db.internal.InternalTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({RelationLoaderTest.class, ArtifactLoaderTest.class})
+@Suite.SuiteClasses({InternalTestSuite.class})
 public class OrcsDbTestSuite {
    // Test Suite
 }

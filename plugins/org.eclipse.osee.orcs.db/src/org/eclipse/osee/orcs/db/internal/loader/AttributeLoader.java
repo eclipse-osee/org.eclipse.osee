@@ -28,7 +28,7 @@ public class AttributeLoader {
 
    public static interface DataProxyFactory {
 
-      DataProxy createProxy(int proxyId, long typeUuid, String value, String uri) throws OseeCoreException;
+      DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException;
    }
 
    private final SqlProvider sqlProvider;
@@ -83,8 +83,7 @@ public class AttributeLoader {
 
             String value = chStmt.getString("value");
             String uri = chStmt.getString("uri");
-            DataProxy proxy =
-               proxyFactory.createProxy(nextAttr.getArtifactId(), nextAttr.getAttrTypeUuid(), value, uri);
+            DataProxy proxy = proxyFactory.createProxy(nextAttr.getAttrTypeUuid(), value, uri);
             nextAttr.setDataProxy(proxy);
 
             if (options.isHistorical()) {

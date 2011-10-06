@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
+import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.junit.Rule;
 
 /**
@@ -26,7 +26,7 @@ public class SqlTest {
 
    @org.junit.Test
    public void testOne() throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = OsgiUtil.getService(IOseeStatement.class);
       chStmt.runPreparedQuery("select * from osee.osee_branch");
       while (chStmt.next()) {
          System.out.println(chStmt.getString("branch_name"));
