@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLConnection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.orcs.db.internal.util.BinaryContentUtils;
 import org.eclipse.osee.orcs.db.internal.util.ByteStreamResource;
 
 /**
@@ -50,26 +50,25 @@ public class ResourceHandler implements DataHandler {
          dataResource.getStorageName());
 
       IResource resource = resourceManager.acquire(locator, DEFAULT_OPTIONS);
-      resource.getName();
+      String mimeType = BinaryContentUtils.getContentType(resource);
 
+      byte[] data = null;
       InputStream inputStream = resource.getContent();
       try {
-         String mimeType = URLConnection.guessContentTypeFromStream(inputStream);
-         if (mimeType == null) {
-            mimeType = URLConnection.guessContentTypeFromName(resource.getLocation().toASCIIString());
-            if (mimeType == null) {
-               mimeType = "application/*";
-            }
-         }
-         dataResource.setContentType(mimeType);
-         dataResource.setEncoding("ISO-8859-1");
-         return Lib.inputStreamToBytes(inputStream);
+         data = Lib.inputStreamToBytes(inputStream);
       } catch (IOException ex) {
          throw new OseeCoreException(ex, "Error acquiring resource - name[%s] locator[%s]",
             dataResource.getStorageName(), dataResource.getLocator());
       } finally {
          Lib.close(inputStream);
       }
+      String extension = Lib.getExtension(resource.getName());
+      if (Strings.isValid(extension)) {
+         dataResource.setExtension(extension);
+      }
+      dataResource.setContentType(mimeType);
+      dataResource.setEncoding("ISO-8859-1");
+      return data;
    }
 
    @Override

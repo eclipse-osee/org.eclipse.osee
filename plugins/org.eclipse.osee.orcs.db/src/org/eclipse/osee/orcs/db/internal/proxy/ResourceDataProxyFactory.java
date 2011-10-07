@@ -75,6 +75,7 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
 
       proxyClassMap.put("DefaultAttributeDataProvider", ClobDataProxy.class);
       proxyClassMap.put("ClobAttributeDataProvider", ClobDataProxy.class);
+
       proxyClassMap.put("UriAttributeDataProvider", UriDataProxy.class);
       proxyClassMap.put("MappedAttributeDataProvider", UriDataProxy.class);
 

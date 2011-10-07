@@ -21,11 +21,13 @@ import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
  */
 public class MockResourceLocatorManager implements IResourceLocatorManager {
 
+   @SuppressWarnings("unused")
    @Override
    public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException {
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
       return null;

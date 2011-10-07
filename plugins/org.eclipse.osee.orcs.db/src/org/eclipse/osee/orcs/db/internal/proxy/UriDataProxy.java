@@ -14,12 +14,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
+import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar
@@ -46,17 +47,20 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    public boolean setValue(ByteBuffer data) throws OseeCoreException {
       boolean response = false;
       try {
-         if (!Arrays.equals(getStorage().getContent(), data != null ? data.array() : null)) {
+         ByteBuffer original = getValueAsBytes();
+         if ((original != null && data == null) || (original == null && data != null) || //
+         !original.equals(data)) {
             if (data != null) {
-               byte[] compressed;
-               compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getResolver().getInternalFileName());
+               ResourceNameResolver resolver = getResolver();
+               Conditions.checkNotNull(resolver, "ResourceNameResolver", "Unable to determine internal file name");
+
+               byte[] compressed =
+                  Lib.compressStream(Lib.byteBufferToInputStream(data), resolver.getInternalFileName());
                getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
-               response = true;
             } else {
-               String loc = getStorage().getLocator();
-               getStorage().clear();
-               getStorage().setLocator(loc);
+               getStorage().setContent(null, "txt", "txt/plain", "UTF-8");
             }
+            response = true;
          }
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -105,8 +109,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
             OseeExceptions.wrapAndThrow(ex);
          }
       }
-      setValue(toSet);
-      return true;
+      return setValue(toSet);
    }
 
    @Override

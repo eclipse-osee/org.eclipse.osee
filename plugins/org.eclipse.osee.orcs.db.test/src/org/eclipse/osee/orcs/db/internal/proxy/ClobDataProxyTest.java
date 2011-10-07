@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.db.mock.MockLog;
 import org.eclipse.osee.orcs.db.mocks.MockDataHandler;
-import org.junit.Ignore;
+import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
+import org.eclipse.osee.orcs.db.mocks.Utility;
 import org.junit.Test;
 
 /**
@@ -24,36 +28,204 @@ import org.junit.Test;
  */
 public class ClobDataProxyTest {
 
-   @Test
-   @Ignore
-   public void testSetDisplay() {
-
+   @Test(expected = UnsupportedOperationException.class)
+   public void testSetDisplayable() throws Exception {
+      ClobDataProxy proxy = new ClobDataProxy();
+      proxy.setDisplayableString("hello");
    }
 
    @Test
-   @Ignore
-   public void test() throws OseeCoreException {
-      Assert.assertEquals(1, 1);
+   public void testGetBigStringValue() throws Exception {
+      String rawData = Utility.generateData(4001);
+      byte[] zippedData = Utility.asZipped(rawData, "testData.txt");
 
-      DataHandler handler = new MockDataHandler();
+      MockDataHandler handler = new MockDataHandler();
+      handler.setContent(zippedData);
+
+      Storage storage = new Storage(handler);
+      storage.setLocator("validPath");
 
       ClobDataProxy proxy = new ClobDataProxy();
       proxy.setLogger(new MockLog());
-      proxy.setStorage(new Storage(handler));
+      proxy.setStorage(storage);
 
-      String toDisplay = "Hello";
-      proxy.setDisplayableString(toDisplay);
-      String todisplay = proxy.getDisplayableString();
-      Assert.assertEquals("Hello", todisplay);
+      String value = proxy.getValueAsString();
+      Assert.assertEquals(rawData, value);
+
+      String displayable = proxy.getDisplayableString();
+      Assert.assertEquals(rawData, displayable);
    }
 
-   // getData()
-   // setData(Object...)
-   //
-   // getValueAsString()
-   // persist(int)
-   // purge()
-   // 
-   // setValue(String)
+   @Test
+   public void testSetGetData() throws Exception {
+      String longData = Utility.generateData(ClobDataProxy.MAX_VARCHAR_LENGTH + 1);
+      byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
+
+      String shortStringData = Utility.generateData(ClobDataProxy.MAX_VARCHAR_LENGTH);
+
+      MockDataHandler handler = new MockDataHandler();
+      handler.setContent(zippedData);
+
+      Storage storage = new Storage(handler);
+      Assert.assertFalse(storage.isLocatorValid());
+      Assert.assertNull(storage.getLocator());
+
+      ClobDataProxy proxy = new ClobDataProxy();
+      proxy.setLogger(new MockLog());
+      proxy.setStorage(storage);
+
+      // Short String data
+      proxy.setData(shortStringData, "");
+      Assert.assertFalse(storage.isLocatorValid());
+      Assert.assertEquals("", storage.getLocator());
+
+      String actual = proxy.getValueAsString();
+      Assert.assertEquals(shortStringData, actual);
+
+      checkData(proxy.getData(), shortStringData, "");
+
+      // Long String data
+      proxy.setData(shortStringData, "valid");
+      Assert.assertTrue(storage.isLocatorValid());
+      Assert.assertEquals("valid", storage.getLocator());
+
+      String actual1 = proxy.getValueAsString();
+      Assert.assertEquals(longData, actual1);
+
+      checkData(proxy.getData(), shortStringData, "valid");
+   }
+
+   @Test
+   public void testSetValue() throws Exception {
+      String longData = Utility.generateData(ClobDataProxy.MAX_VARCHAR_LENGTH + 1);
+      byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
+
+      MockDataHandler handler = new MockDataHandler();
+      handler.setContent(zippedData);
+
+      Storage storage = new Storage(handler);
+      Assert.assertFalse(storage.isLocatorValid());
+      Assert.assertNull(storage.getLocator());
+
+      ClobDataProxy proxy = new ClobDataProxy();
+      proxy.setLogger(new MockLog());
+      proxy.setStorage(storage);
+
+      Assert.assertTrue(proxy.setValue(null));
+      Assert.assertTrue(proxy.setValue(null));
+
+      Assert.assertTrue(proxy.setValue("hello"));
+      Assert.assertFalse(proxy.setValue("hello"));
+   }
+
+   private static void checkData(Object[] data, String dbValue, String locator) {
+      Assert.assertEquals(2, data.length);
+      Assert.assertEquals(dbValue, data[0]);
+      Assert.assertEquals(locator, data[1]);
+   }
+
+   @Test
+   public void testPersist() throws Exception {
+      String longData = Utility.generateData(ClobDataProxy.MAX_VARCHAR_LENGTH + 1);
+      byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
+
+      String shortData = Utility.generateData(ClobDataProxy.MAX_VARCHAR_LENGTH);
+
+      MockDataHandler handler = new MockDataHandler();
+      handler.setContent(zippedData);
+
+      Storage storage = new Storage(handler);
+
+      Assert.assertFalse(storage.isLocatorValid());
+      Assert.assertNull(storage.getLocator());
+
+      ClobDataProxy proxy = new ClobDataProxy();
+      proxy.setLogger(new MockLog());
+      proxy.setStorage(storage);
+
+      // No call to save if data is not valid
+      Assert.assertFalse(storage.isDataValid());
+      proxy.persist(49);
+      Assert.assertFalse(handler.isSave());
+      Assert.assertEquals(-1, handler.getStorageId());
+
+      // No call to save if short Data
+      proxy.setValue(shortData);
+      Assert.assertEquals(shortData, proxy.getValueAsString());
+      Assert.assertFalse(storage.isDataValid());
+      proxy.persist(50);
+      Assert.assertFalse(handler.isSave());
+      Assert.assertEquals(-1, handler.getStorageId());
+
+      // Save long data
+      MockResourceNameResolver resolver = new MockResourceNameResolver("remoteStorageName", "internalFileName");
+      proxy.setResolver(resolver);
+
+      proxy.setValue(longData);
+      Assert.assertEquals(longData, proxy.getValueAsString());
+      Assert.assertTrue(storage.isDataValid());
+
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      byte[] compressedData = storage.getContent();
+      String fileName = Lib.decompressStream(new ByteArrayInputStream(compressedData), outputStream);
+      Assert.assertEquals(resolver.getInternalFileName(), fileName);
+      Assert.assertEquals(longData, outputStream.toString("UTF-8"));
+
+      proxy.persist(51);
+      Assert.assertTrue(handler.isSave());
+      Assert.assertEquals(51, handler.getStorageId());
+      Assert.assertEquals(longData, proxy.getValueAsString());
+   }
+
+   @Test(expected = OseeCoreException.class)
+   public void testPersistResolverException() throws Exception {
+      String longData = Utility.generateData(ClobDataProxy.MAX_VARCHAR_LENGTH + 1);
+      byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
+
+      MockDataHandler handler = new MockDataHandler();
+      handler.setContent(zippedData);
+
+      Storage storage = new Storage(handler);
+
+      Assert.assertFalse(storage.isLocatorValid());
+      Assert.assertNull(storage.getLocator());
+
+      ClobDataProxy proxy = new ClobDataProxy();
+      proxy.setLogger(new MockLog());
+      proxy.setStorage(storage);
+
+      // Save long data
+      proxy.setValue(longData);
+      Assert.assertEquals(longData, proxy.getValueAsString());
+      Assert.assertTrue(storage.isDataValid());
+      proxy.persist(51);
+   }
+
+   @Test
+   public void testPurge() throws Exception {
+      String longData = Utility.generateData(ClobDataProxy.MAX_VARCHAR_LENGTH + 1);
+      byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
+
+      MockDataHandler handler = new MockDataHandler();
+      handler.setContent(zippedData);
+
+      Storage storage = new Storage(handler);
+
+      Assert.assertFalse(storage.isLocatorValid());
+      Assert.assertNull(storage.getLocator());
+
+      ClobDataProxy proxy = new ClobDataProxy();
+      proxy.setLogger(new MockLog());
+      proxy.setStorage(storage);
+
+      Assert.assertFalse(storage.isLocatorValid());
+      proxy.purge();
+      Assert.assertFalse(handler.isDelete());
+
+      storage.setLocator("hello");
+      Assert.assertTrue(storage.isLocatorValid());
+      proxy.purge();
+      Assert.assertTrue(handler.isDelete());
+   }
 
 }
