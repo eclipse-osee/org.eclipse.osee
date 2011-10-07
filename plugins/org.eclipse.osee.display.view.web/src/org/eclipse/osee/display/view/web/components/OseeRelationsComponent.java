@@ -18,8 +18,6 @@ import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.OseeAppData;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
@@ -42,18 +40,17 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       removeAllComponents();
 
       final HorizontalLayout listBoxesLayout = new HorizontalLayout();
-      final Button showHideButton = new Button("- Relations");
-      showHideButton.addListener(new Button.ClickListener() {
+
+      final OseeShowHideButton showHideButton = new OseeShowHideButton("Relations");
+      showHideButton.addListener(new OseeShowHideButton.ClickListener() {
+
          @Override
-         public void buttonClick(ClickEvent event) {
-            listBoxesLayout.setVisible(!listBoxesLayout.isVisible());
-            if (listBoxesLayout.isVisible()) {
-               showHideButton.setCaption("- Relations");
-            } else {
-               showHideButton.setCaption("+ Relations");
-            }
+         public void buttonClick(OseeShowHideButton.ClickEvent event) {
+            listBoxesLayout.setVisible(showHideButton.isStateShow());
          }
       });
+      //Initialize listBoxesLayout visibility
+      listBoxesLayout.setVisible(showHideButton.isStateShow());
 
       relationTypesListSelect.setNullSelectionAllowed(false);
       relationTypesListSelect.setImmediate(true);

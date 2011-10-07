@@ -19,8 +19,6 @@ import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -38,18 +36,14 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
 
       if (artifact != null) {
          final HorizontalLayout attributesLayout = new HorizontalLayout();
-         final Button showHideButton = new Button("- Attributes");
-         showHideButton.addListener(new Button.ClickListener() {
+         final OseeShowHideButton showHideButton = new OseeShowHideButton("Attributes");
+         showHideButton.addListener(new OseeShowHideButton.ClickListener() {
             @Override
-            public void buttonClick(ClickEvent event) {
-               attributesLayout.setVisible(!attributesLayout.isVisible());
-               if (attributesLayout.isVisible()) {
-                  showHideButton.setCaption("- Attributes");
-               } else {
-                  showHideButton.setCaption("+ Attributes");
-               }
+            public void buttonClick(OseeShowHideButton.ClickEvent event) {
+               attributesLayout.setVisible(showHideButton.isStateShow());
             }
          });
+         attributesLayout.setVisible(showHideButton.isStateShow());
 
          Map<String, String> attributes = new HashMap<String, String>();
          attributes.put("Category", artifact.getAttr_Category());
