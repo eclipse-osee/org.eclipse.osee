@@ -95,13 +95,11 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
    }
 
    @Override
-   public void setArtifact(WebArtifact artifact) {
-      this.artifact = artifact;
-      createLayout();
+   public void setErrorMessage(String message) {
    }
 
    @Override
-   public void setErrorMessage(String message) {
+   public void addAttribute(String type, String value) {
    }
 
 }

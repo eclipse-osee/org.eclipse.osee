@@ -5,13 +5,12 @@
  */
 package org.eclipse.osee.display.api.components;
 
-import org.eclipse.osee.display.api.data.WebArtifact;
 
 public interface AttributeComponent {
 
    void clearAll();
 
-   void setArtifact(WebArtifact artifact);
+   void addAttribute(String type, String value);
 
    void setErrorMessage(String message);
 }

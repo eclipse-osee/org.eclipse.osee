@@ -183,7 +183,7 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
                relComp.addRelationType(swReqRelationType);
 
                attrComp.clearAll();
-               attrComp.setArtifact(artifact);
+               attrComp.addAttribute("type1", "value1");
             }
          }
       }

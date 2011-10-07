@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
 
 /*
  * @author John Misinco
@@ -57,6 +58,7 @@ public class WebSearchPresenter implements SearchPresenter {
 
    @Override
    public void initSearchHome(SearchHeaderComponent searchHeaderComp) {
+      searchHeaderComp.clearAll();
    }
 
    @Override
@@ -78,7 +80,7 @@ public class WebSearchPresenter implements SearchPresenter {
          WebArtifact displayArtifact =
             new WebArtifact(art.getGuid(), art.getName(), art.getArtifactType().getName(), null, branch);
          searchResult.setArtifact(displayArtifact);
-         SearchResultMatch match = null; //ew SearchResultMatch(attributeType, matchHint, manyMatches);
+         SearchResultMatch match = null; // SearchResultMatch(attributeType, matchHint, manyMatches);
          searchResult.addSearchResultMatch(match);
       }
    }
@@ -125,7 +127,15 @@ public class WebSearchPresenter implements SearchPresenter {
          attrComp.setErrorMessage(String.format("Error loading attributes for: [%s]", displayArt.getName()));
       }
       for (IAttributeType attrType : attributeTypes) {
-         //john
+         List<ReadableAttribute<Object>> attributesValues = null;
+         try {
+            attributesValues = displayArt.getAttributes(attrType);
+            for (ReadableAttribute<Object> value : attributesValues) {
+               attrComp.addAttribute(attrType.getName(), value.getDisplayableString());
+            }
+         } catch (OseeCoreException ex) {
+            attrComp.setErrorMessage(String.format("Error loading attributes for: [%s]", displayArt.getName()));
+         }
       }
    }
 

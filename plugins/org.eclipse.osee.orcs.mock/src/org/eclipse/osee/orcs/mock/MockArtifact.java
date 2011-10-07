@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.orcs.mock;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -15,10 +16,21 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 
 public class MockArtifact implements ReadableArtifact {
+
+   private final HashCollection<IRelationType, ReadableArtifact> relations =
+      new HashCollection<IRelationType, ReadableArtifact>();
+
+   private final String name, guid;
+
+   public MockArtifact(String guid, String name) {
+      this.guid = guid;
+      this.name = name;
+   }
 
    @Override
    public int getGammaId() {
@@ -67,12 +79,12 @@ public class MockArtifact implements ReadableArtifact {
 
    @Override
    public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationSide) throws OseeCoreException {
-      return null;
+      return relations.getValues(relationSide).iterator().next();
    }
 
    @Override
    public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationEnum) throws OseeCoreException {
-      return null;
+      return new ArrayList<ReadableArtifact>(relations.getValues(relationEnum));
    }
 
    @Override
@@ -82,7 +94,7 @@ public class MockArtifact implements ReadableArtifact {
 
    @Override
    public String getGuid() {
-      return null;
+      return guid;
    }
 
    @Override
@@ -92,12 +104,16 @@ public class MockArtifact implements ReadableArtifact {
 
    @Override
    public String getName() {
-      return null;
+      return name;
    }
 
    @Override
    public Collection<IRelationType> getValidRelationTypes() {
-      return null;
+      return relations.keySet();
+   }
+
+   public void addRelation(IRelationType relation, ReadableArtifact artifact) {
+      relations.put(relation, artifact);
    }
 
 }

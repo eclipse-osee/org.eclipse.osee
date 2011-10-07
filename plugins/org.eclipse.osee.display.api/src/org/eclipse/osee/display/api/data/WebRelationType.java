@@ -8,19 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.presenter;
+package org.eclipse.osee.display.api.data;
 
-import org.eclipse.osee.display.presenter.internal.WebSearchPresenterTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({//
-WebSearchPresenterTest.class,//
-})
-/**
- * @author John Misinco
+/*
+ * @author Shawn Cook
  */
-public class DisplayPresenterTestSuite {
-   //Test Suite class
+public enum WebRelationType {
+   PARENT("Default Hierarchical - parent");
+
+   private final String stringValue;
+
+   private WebRelationType(String stringValue) {
+      this.stringValue = stringValue;
+   }
+
+   public String getStringValue() {
+      return stringValue;
+   }
 }

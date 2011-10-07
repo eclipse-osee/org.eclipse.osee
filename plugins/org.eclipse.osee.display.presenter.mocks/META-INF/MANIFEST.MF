@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Display Presenter Mocks
+Bundle-SymbolicName: org.eclipse.osee.display.presenter.mocks
+Bundle-Version: 0.9.9.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.display.api.components,
+ org.eclipse.osee.display.api.data,
+ org.eclipse.osee.display.api.search,
+ org.eclipse.osee.display.presenter,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.orcs.data
+Export-Package: org.eclipse.osee.display.presenter.mocks
