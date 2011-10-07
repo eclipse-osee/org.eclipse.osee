@@ -12,7 +12,6 @@ package org.eclipse.osee.display.view.web.components;
 
 import java.util.Collection;
 import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -28,14 +27,13 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
       this.removeAllComponents();
 
       if (artifact != null && artifact.getAncestry() != null) {
-         Collection<WebId> ancestryList = artifact.getAncestry();
+         Collection<WebArtifact> ancestryList = artifact.getAncestry();
          if (ancestryList.size() > 0) {
             Object[] ancestryArray = ancestryList.toArray();
             for (int i = ancestryArray.length - 1; i >= 0; i--) {
-               WebId ancestor = (WebId) ancestryArray[i];
+               WebArtifact ancestor = (WebArtifact) ancestryArray[i];
                OseeArtifactNameLinkComponent crumbLabel =
-                  new OseeArtifactNameLinkComponent(ancestor.getName(), ancestor.getGuid(),
-                     CssConstants.OSEE_BREADCRUMB_ARTNAME);
+                  new OseeArtifactNameLinkComponent(ancestor, CssConstants.OSEE_BREADCRUMB_ARTNAME);
                addComponent(crumbLabel);
                if (i > 0) {
                   Label delimiter = new Label("&nbsp; >> &nbsp;", Label.CONTENT_XHTML);

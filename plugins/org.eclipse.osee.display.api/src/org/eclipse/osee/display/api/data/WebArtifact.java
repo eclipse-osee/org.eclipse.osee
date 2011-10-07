@@ -30,9 +30,9 @@ public class WebArtifact {
    private final WebId branch;
 
    //ancestry should include all parental Artifacts starting with parent(index 0), grandparent(index 1), great-grandparent(index 2), etc. 
-   private final Collection<WebId> ancestry = new ArrayList<WebId>();
+   private final Collection<WebArtifact> ancestry = new ArrayList<WebArtifact>();
 
-   public WebArtifact(String guid, String artifactName, String artifactType, Collection<WebId> ancestry, WebId branch) {
+   public WebArtifact(String guid, String artifactName, String artifactType, Collection<WebArtifact> ancestry, WebId branch) {
       this.guid = guid;
       this.artifactName = artifactName;
       this.artifactType = artifactType;
@@ -43,7 +43,7 @@ public class WebArtifact {
    }
 
    public WebArtifact(String guid, String artifactName, String artifactType) {
-      this(guid, artifactName, artifactType, (Collection<WebId>) null, null);
+      this(guid, artifactName, artifactType, (Collection<WebArtifact>) null, null);
    }
 
    public String getArtifactName() {
@@ -62,7 +62,7 @@ public class WebArtifact {
       return branch;
    }
 
-   public Collection<WebId> getAncestry() {
+   public Collection<WebArtifact> getAncestry() {
       return ancestry;
    }
 
@@ -125,10 +125,5 @@ public class WebArtifact {
 
    public void setAttr_TechPerfParam(String attr_TechPerfParam) {
       this.attr_TechPerfParam = attr_TechPerfParam;
-   }
-
-   public WebId getWebId() {
-      WebId ret = new WebId(getGuid(), getArtifactName());
-      return ret;
    }
 }

@@ -53,17 +53,15 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
    WebId program2 = new WebId("taiwan_guid", "Taiwan");
 
    WebArtifact defaultroot = new WebArtifact("defaultHierarchRoot_GUID", "Default Hierarchy Root", "Root Artifact");
-   WebArtifact swreqs = new WebArtifact("SWReq_GUID", "Software Requirements", "Folder",
-      Arrays.asList(defaultroot.getWebId()), new WebId("branch_id1", "branch_id1"));
-   WebArtifact crewIntreqs = new WebArtifact("CrewInt_GUID", "Crew Interface", "Folder", Arrays.asList(
-      swreqs.getWebId(), defaultroot.getWebId()), new WebId("branch_id2", "branch_id2"));
+   WebArtifact swreqs = new WebArtifact("SWReq_GUID", "Software Requirements", "Folder", Arrays.asList(defaultroot),
+      new WebId("branch_id1", "branch_id1"));
+   WebArtifact crewIntreqs = new WebArtifact("CrewInt_GUID", "Crew Interface", "Folder", Arrays.asList(swreqs,
+      defaultroot), new WebId("branch_id2", "branch_id2"));
    WebArtifact commSubSysCrewIntreqs = new WebArtifact("commSubSysCrewInt_GUID",
-      "Communication Subsystem Crew Interface", "Heading", Arrays.asList(crewIntreqs.getWebId(), swreqs.getWebId(),
-         defaultroot.getWebId()), new WebId("branch_id3", "branch_id3"));
-   WebArtifact comm_page_Intreqs =
-      new WebArtifact("com_page_GUID", "{COM_PAGE}", "Software Requirement", Arrays.asList(
-         commSubSysCrewIntreqs.getWebId(), crewIntreqs.getWebId(), swreqs.getWebId(), defaultroot.getWebId()),
-         new WebId("branch_id4", "branch_id4"));
+      "Communication Subsystem Crew Interface", "Heading", Arrays.asList(crewIntreqs, swreqs, defaultroot), new WebId(
+         "branch_id3", "branch_id3"));
+   WebArtifact comm_page_Intreqs = new WebArtifact("com_page_GUID", "{COM_PAGE}", "Software Requirement",
+      Arrays.asList(commSubSysCrewIntreqs, crewIntreqs, swreqs, defaultroot), new WebId("branch_id4", "branch_id4"));
 
    private final Map<WebId, Collection<WebId>> programsAndBuilds = new HashMap<WebId, Collection<WebId>>();
    private final Map<String, WebArtifact> artifacts = new HashMap<String, WebArtifact>();

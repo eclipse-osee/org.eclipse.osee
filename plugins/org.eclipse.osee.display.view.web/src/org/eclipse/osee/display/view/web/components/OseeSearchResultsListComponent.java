@@ -73,7 +73,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       int manySearchResultComponents = getManySearchResultComponents();
       manySearchResultsHorizLayout.removeAllComponents();
 
-      Label manySearchResults = new Label(String.format("[%d]", manySearchResultComponents));
+      Label manySearchResults = new Label(String.format("[%d] ", manySearchResultComponents));
       Label manySearchResults_suffix = new Label("search result(s) found.");
       manySearchResultsHorizLayout.addComponent(manySearchResults);
       manySearchResultsHorizLayout.addComponent(manySearchResults_suffix);

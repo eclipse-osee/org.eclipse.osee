@@ -13,7 +13,10 @@ package org.eclipse.osee.display.view.web.components;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.search.SearchNavigator;
+import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
+import org.eclipse.osee.display.view.web.OseeAppData;
 import org.eclipse.osee.display.view.web.internal.search.OseeRoadMapAndNavigation;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
@@ -25,24 +28,19 @@ import com.vaadin.ui.Link;
 @SuppressWarnings("serial")
 public class OseeArtifactNameLinkComponent extends Link {
 
+   private final SearchPresenter searchPresenter = OseeAppData.getSearchPresenter();
+   private final SearchNavigator navigator = OseeAppData.getNavigator();
+
    public OseeArtifactNameLinkComponent(WebArtifact artifact) {
       this(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
    }
 
-   public OseeArtifactNameLinkComponent(WebArtifact artifact, String styleName) {
-      this(artifact.getArtifactName(), artifact.getGuid(), styleName);
-   }
-
-   public OseeArtifactNameLinkComponent(String artName, String artGuid) {
-      this(artName, artGuid, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
-   }
-
-   public OseeArtifactNameLinkComponent(String artName, String artGuid, String styleName) {
+   public OseeArtifactNameLinkComponent(final WebArtifact artifact, String styleName) {
       super();
 
-      this.setCaption(artName);
+      this.setCaption(artifact.getArtifactName());
       Map<String, String> parameterMap = new HashMap<String, String>();
-      parameterMap.put(OseeRoadMapAndNavigation.ARTIFACT, artGuid);
+      parameterMap.put(OseeRoadMapAndNavigation.ARTIFACT, artifact.getGuid());
       String paramString = OseeRoadMapAndNavigation.parameterMapToRequestString(parameterMap);
       Resource artifactLink = new ExternalResource(String.format("ats#AtsArtifactView%s", paramString));
       this.setResource(artifactLink);
