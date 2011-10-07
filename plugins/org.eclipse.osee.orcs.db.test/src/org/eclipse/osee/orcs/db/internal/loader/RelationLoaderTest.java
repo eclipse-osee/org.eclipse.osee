@@ -61,7 +61,7 @@ public class RelationLoaderTest {
 
       final List<RelationRow> actuals = new ArrayList<RelationRow>();
 
-      relationLoader.loadRelationData(new RelationRowHandler() {
+      relationLoader.loadFromQueryId(new RelationRowHandler() {
          @Override
          public void onRow(RelationRow nextRelation) {
             actuals.add(nextRelation);
@@ -96,7 +96,7 @@ public class RelationLoaderTest {
 
       final List<RelationRow> actuals = new ArrayList<RelationRow>();
 
-      relationLoader.loadRelationData(new RelationRowHandler() {
+      relationLoader.loadFromQueryId(new RelationRowHandler() {
          @Override
          public void onRow(RelationRow nextRelation) {
             actuals.add(nextRelation);
@@ -125,7 +125,7 @@ public class RelationLoaderTest {
       int queryId = artJoinQuery.getQueryId();
 
       final List<RelationRow> actuals = new ArrayList<RelationRow>();
-      relationLoader.loadRelationData(new RelationRowHandler() {
+      relationLoader.loadFromQueryId(new RelationRowHandler() {
          @Override
          public void onRow(RelationRow nextRelation) {
             actuals.add(nextRelation);

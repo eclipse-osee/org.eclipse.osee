@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
  */
 public class AttributeLoader {
 
-   public static interface DataProxyFactory {
+   public static interface ProxyDataFactory {
 
       DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException;
    }
@@ -34,9 +34,9 @@ public class AttributeLoader {
    private final SqlProvider sqlProvider;
    private final IOseeDatabaseService dbService;
    private final IdentityService identityService;
-   private final DataProxyFactory proxyFactory;
+   private final ProxyDataFactory proxyFactory;
 
-   public AttributeLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService, DataProxyFactory proxyFactory) {
+   public AttributeLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService, ProxyDataFactory proxyFactory) {
       this.sqlProvider = sqlProvider;
       this.dbService = dbService;
       this.identityService = identityService;
@@ -61,7 +61,7 @@ public class AttributeLoader {
       return identityService.getUniversalId(localId);
    }
 
-   public void loadAttributeData(AttributeRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
+   public void loadFromQueryId(AttributeRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       String sql = getSql(options);
 
       IOseeStatement chStmt = dbService.getStatement();

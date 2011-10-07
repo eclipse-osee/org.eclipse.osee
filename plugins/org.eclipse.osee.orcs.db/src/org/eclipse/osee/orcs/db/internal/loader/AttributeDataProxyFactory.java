@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataProxyFactory implements AttributeLoader.DataProxyFactory {
+public class AttributeDataProxyFactory implements AttributeLoader.ProxyDataFactory {
 
    private final DataProxyFactoryProvider proxyProvider;
    private final AttributeTypeCache attributeTypeCache;

@@ -83,7 +83,6 @@ public class ArtifactLoaderTest {
          for (ArtifactRow row : expected) {
             Assert.assertTrue(String.format("Row [%s] could not be found.", row.toString()), actuals.contains(row));
          }
-         System.out.println("asdfsdkjk");
          Assert.assertTrue(String.format("Row [%s] should not be found.", notExpected.toString()),
             !actuals.contains(notExpected));
       } finally {

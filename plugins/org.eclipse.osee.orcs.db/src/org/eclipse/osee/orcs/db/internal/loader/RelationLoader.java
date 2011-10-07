@@ -32,7 +32,7 @@ public class RelationLoader {
       this.dbService = dbService;
    }
 
-   public void loadRelationData(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
+   public void loadFromQueryId(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       if (options.isHistorical()) {//should this be done by the MasterLoader
          return; // TODO: someday we might have a use for historical relations, but not now
       }

@@ -26,7 +26,7 @@ public final class OsgiUtil {
       // Utility Class;
    }
 
-   public static void close(ServiceTracker tracker) {
+   public static void close(ServiceTracker<?, ?> tracker) {
       if (tracker != null) {
          try {
             tracker.close();
@@ -36,12 +36,12 @@ public final class OsgiUtil {
       }
    }
 
-   public static void close(ServiceRegistration registration) {
+   public static void close(ServiceRegistration<?> registration) {
       if (registration != null) {
          try {
             registration.unregister();
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex);
+            //            OseeLog.log(Activator.class, Level.WARNING, ex);
          }
       }
    }
