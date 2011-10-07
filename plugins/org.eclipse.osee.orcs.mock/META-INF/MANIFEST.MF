@@ -5,4 +5,9 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.mock
 Bundle-Version: 0.9.9.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.eclipse.osee.framework.core.model.type
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model.type,
+ org.eclipse.osee.orcs.data
+Require-Bundle: org.eclipse.core.runtime
