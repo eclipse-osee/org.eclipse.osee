@@ -27,23 +27,6 @@ public class AtsAppData extends OseeAppData {
       super(app);
    }
 
-   @Override
-   public void transactionStart(Application application, Object transactionData) {
-      // Set this data instance of this application
-      // as the one active in the current thread. 
-      if (this.app == application) {
-         instance.set(this);
-      }
-   }
-
-   @Override
-   public void transactionEnd(Application application, Object transactionData) {
-      // Clear the reference to avoid potential problems
-      if (this.app == application) {
-         instance.set(null);
-      }
-   }
-
    public static AtsNavigator getAtsNavigator() {
       return (AtsNavigator) OseeAppData.getNavigator();
    }
