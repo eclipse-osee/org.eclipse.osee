@@ -64,6 +64,7 @@ public class ApiTester {
 
       ResultSet<ReadableArtifact> result = builder1.build(LoadLevel.FULL);
       ReadableArtifact art3 = result.getExactlyOne();
+      List<ReadableArtifact> items = result.getList();
 
       // One liner
       int count1 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").includeDeleted(true).getCount();

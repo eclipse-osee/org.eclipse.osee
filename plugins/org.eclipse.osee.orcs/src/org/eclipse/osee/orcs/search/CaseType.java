@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
+/**
+ * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
+ */
 public enum CaseType {
    MATCH_CASE,
    IGNORE_CASE;

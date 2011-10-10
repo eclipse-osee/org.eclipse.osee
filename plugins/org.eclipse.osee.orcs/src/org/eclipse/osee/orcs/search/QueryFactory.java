@@ -17,6 +17,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
+/**
+ * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
+ */
 public interface QueryFactory {
 
    QueryBuilder fromBranch(IOseeBranch branch);

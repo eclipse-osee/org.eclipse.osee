@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
  * @author Roberto E. Escobar

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
+/**
+ * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
+ */
 public enum StringOperator {
    EQUALS(), // Exact Match as in Strings.equals
    NOT_EQUALS(), // inverse of exact match - !Strings.equals

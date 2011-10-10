@@ -17,7 +17,12 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
 
+/**
+ * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
+ */
 public interface QueryBuilder {
 
    public static IAttributeType ANY_ATTRIBUTE_TYPE = TokenFactory.createAttributeType(Long.MIN_VALUE,
@@ -104,6 +109,13 @@ public interface QueryBuilder {
     * @see LoadLevel level
     */
    ResultSet<ReadableArtifact> build(LoadLevel loadLevel) throws OseeCoreException;
+
+   /**
+    * Creates a result set based on query settings
+    * 
+    * @see LoadLevel level
+    */
+   ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> buildMatches(LoadLevel loadLevel) throws OseeCoreException;
 
    /**
     * Counts the number of items available

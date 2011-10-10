@@ -10,23 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+
 /**
- * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
  */
-public enum Operator {
-   EQUAL("="), // Exact Match as in Strings.equals
-   NOT_EQUAL("<>"), // inverse of exact match - !Strings.equals
-   LESS_THAN("<"),
-   GREATER_THAN(">");
+public interface Match<T, K> {
 
-   private String expression;
+   public boolean hasMetaData();
 
-   private Operator(String expression) {
-      this.expression = expression;
-   }
+   public T getItem();
 
-   @Override
-   public String toString() {
-      return expression;
-   }
+   public List<K> getElements() throws OseeCoreException;
+
+   public List<MatchLocation> getLocation(K element) throws OseeCoreException;
 }
