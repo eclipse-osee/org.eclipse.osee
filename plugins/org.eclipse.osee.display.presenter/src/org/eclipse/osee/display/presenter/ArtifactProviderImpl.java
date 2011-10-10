@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.display.presenter;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -21,13 +22,15 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    private final QueryFactory factory;
 
-   private static final String[] notAllowed = {
-      "Technical Approaches",
-      "Technical Performance Parameters",
-      "Recent Imports",
-      "Test",
-      "Interface Requirements",
-      "Test Procedures"};
+   protected static final List<String> notAllowed = new ArrayList<String>();
+   static {
+      notAllowed.add("Technical Approaches");
+      notAllowed.add("Technical Performance Parameters");
+      notAllowed.add("Recent Imports");
+      notAllowed.add("Test");
+      notAllowed.add("Interface Requirements");
+      notAllowed.add("Test Procedures");
+   }
 
    public ArtifactProviderImpl(QueryFactory factory) {
       this.factory = factory;
@@ -71,7 +74,14 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    private ReadableArtifact sanitizeResult(ReadableArtifact result) {
       boolean allowed = true;
-      //john do check here
+      ReadableArtifact current = result;
+      while (current != null) {
+         if (notAllowed.contains(current.getName())) {
+            allowed = false;
+            break;
+         }
+         current = current.hasParent() ? current.getParent() : null;
+      }
       if (allowed) {
          return result;
       } else {

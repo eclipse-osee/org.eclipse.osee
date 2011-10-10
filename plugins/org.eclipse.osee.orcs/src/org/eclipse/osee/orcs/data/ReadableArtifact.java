@@ -47,6 +47,10 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    Collection<IRelationType> getValidRelationTypes() throws OseeCoreException;
 
+   boolean hasParent();
+
+   ReadableArtifact getParent();
+
    @Override
    String toString();
 }

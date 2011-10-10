@@ -116,4 +116,14 @@ public class MockArtifact implements ReadableArtifact {
       relations.put(relation, artifact);
    }
 
+   @Override
+   public boolean hasParent() {
+      return false;
+   }
+
+   @Override
+   public ReadableArtifact getParent() {
+      return null;
+   }
+
 }
