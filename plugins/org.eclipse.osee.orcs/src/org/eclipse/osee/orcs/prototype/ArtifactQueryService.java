@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.prototype;
 
 import java.util.Collection;
 import java.util.List;
@@ -122,6 +122,6 @@ public abstract class ArtifactQueryService {
     * @param findAllMatchLocations when set to <b>true</b> returns all match locations instead of just returning the
     * first one. When returning all match locations, search performance may be slow.
     */
-   public abstract List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(SearchRequest searchRequest);
+   //   public abstract List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(SearchRequest searchRequest);
 
 }

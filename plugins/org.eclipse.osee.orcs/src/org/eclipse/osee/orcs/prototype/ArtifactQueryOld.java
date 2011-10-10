@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.prototype;
 
 import java.util.List;
 import java.util.concurrent.Callable;
