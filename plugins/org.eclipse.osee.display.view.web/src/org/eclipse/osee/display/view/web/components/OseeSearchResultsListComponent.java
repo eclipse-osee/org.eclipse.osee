@@ -17,42 +17,42 @@ import java.util.Iterator;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
-import com.vaadin.Application;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchResultsListComponent extends VerticalLayout implements SearchResultsListComponent {
+public class OseeSearchResultsListComponent extends Panel implements SearchResultsListComponent {
 
+   VerticalLayout mainLayout = new VerticalLayout();
    VerticalLayout bottomSpacer = new VerticalLayout();
    HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
 
-   @Override
-   public void attach() {
-      super.attach();
-      Application app = this.getApplication();
-   }
-
    public OseeSearchResultsListComponent() {
-      addComponent(manySearchResultsHorizLayout);
+      this.setSizeFull();
+      this.setScrollable(true);
+      this.setContent(mainLayout);
+      mainLayout.setMargin(false, false, false, true);
+
+      mainLayout.addComponent(manySearchResultsHorizLayout);
       Label spacer2 = new Label("");
       spacer2.setHeight(15, UNITS_PIXELS);
-      addComponent(spacer2);
+      mainLayout.addComponent(spacer2);
 
       bottomSpacer.setSizeFull();
-      addComponent(bottomSpacer);
-      setExpandRatio(bottomSpacer, 1.0f);
+      mainLayout.addComponent(bottomSpacer);
+      mainLayout.setExpandRatio(bottomSpacer, 1.0f);
    }
 
    @Override
    public void clearAll() {
       Collection<Component> removeTheseComponents = new ArrayList<Component>();
-      for (Iterator<Component> iter = getComponentIterator(); iter.hasNext();) {
+      for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
          Component component = iter.next();
          if (component.getClass() == OseeSearchResultComponent.class) {
             removeTheseComponents.add(component);
@@ -61,13 +61,13 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
       //Remove the components
       for (Component component : removeTheseComponents) {
-         removeComponent(component);
+         mainLayout.removeComponent(component);
       }
    }
 
    private int getManySearchResultComponents() {
       int many = 0;
-      for (Iterator<Component> iter = getComponentIterator(); iter.hasNext();) {
+      for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
          Component component = iter.next();
          if (component.getClass() == OseeSearchResultComponent.class) {
             many++;
@@ -91,8 +91,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    @Override
    public SearchResultComponent createSearchResult() {
       OseeSearchResultComponent searchResultComp = new OseeSearchResultComponent();
-      int spacerIndex = this.getComponentIndex(bottomSpacer);
-      addComponent(searchResultComp, spacerIndex);
+      int spacerIndex = mainLayout.getComponentIndex(bottomSpacer);
+      mainLayout.addComponent(searchResultComp, spacerIndex);
       updateManySearchResultsLabel();
 
       return searchResultComp;
@@ -100,5 +100,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    @Override
    public void setErrorMessage(String message) {
+      //TODO:
    }
 }

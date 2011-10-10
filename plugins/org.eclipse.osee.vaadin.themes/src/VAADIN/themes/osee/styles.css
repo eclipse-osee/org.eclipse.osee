@@ -131,3 +131,16 @@
 	font-weight:bold;
 }
 
+.osee-attributestitlelabel {
+	font-size: 14px;
+	color: black;
+	font-weight:bold;
+}
+
+.osee-attributesborder {
+	border-style:solid;
+	border-width:1px;
+}
+
+
+

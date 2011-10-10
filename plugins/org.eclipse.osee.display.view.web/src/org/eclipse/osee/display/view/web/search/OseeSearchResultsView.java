@@ -42,10 +42,6 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
       searchResultsListComponent.setSizeFull();
       leftMarginAndBody.setExpandRatio(searchResultsListComponent, 1.0f);
 
-      leftMarginAndBody.addComponent(bodyVertLayout);
-      bodyVertLayout.setSizeFull();
-      leftMarginAndBody.setExpandRatio(bodyVertLayout, 1.0f);
-
       final VerticalLayout vertLayout = new VerticalLayout();
       vertLayout.addComponent(oseeSearchHeader);
       vertLayout.setComponentAlignment(oseeSearchHeader, Alignment.TOP_LEFT);

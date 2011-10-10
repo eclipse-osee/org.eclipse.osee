@@ -56,18 +56,28 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
 
       if (artifact != null) {
          VerticalLayout bodyVertLayout = new VerticalLayout();
+
          breadcrumbComp.setArtifact(artifact);
-         OseeArtifactNameLinkComponent artifactName = new OseeArtifactNameLinkComponent(artifact);
          bodyVertLayout.addComponent(breadcrumbComp);
+
+         OseeArtifactNameLinkComponent artifactName = new OseeArtifactNameLinkComponent(artifact);
          bodyVertLayout.addComponent(artifactName);
+
+         Label artifactType = new Label(String.format("[%s]", artifact.getArtifactType()), Label.CONTENT_XHTML);
+         bodyVertLayout.addComponent(artifactType);
+
          VerticalLayout artRelSpacer = new VerticalLayout();
          artRelSpacer.setHeight(15, UNITS_PIXELS);
          bodyVertLayout.addComponent(artRelSpacer);
+
          bodyVertLayout.addComponent(relationsComp);
+
          VerticalLayout relAttrSpacer = new VerticalLayout();
          relAttrSpacer.setHeight(15, UNITS_PIXELS);
          bodyVertLayout.addComponent(relAttrSpacer);
+
          bodyVertLayout.addComponent(attributeComp);
+
          VerticalLayout bottomSpacer = new VerticalLayout();
          bodyVertLayout.addComponent(bottomSpacer);
          bodyVertLayout.setExpandRatio(bottomSpacer, 1.0f);

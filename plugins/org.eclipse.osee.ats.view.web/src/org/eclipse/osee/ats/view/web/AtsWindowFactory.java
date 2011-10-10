@@ -68,13 +68,13 @@ public class AtsWindowFactory {
       layout.setWidth("100%");
       for (final Class<?> viewClass : provider.getViews()) {
          navigator.addView(viewClass.getSimpleName(), viewClass);
-         menu.addItem(viewClass.getSimpleName(), new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-               navigator.navigateTo(viewClass);
-            }
-         });
+         //         menu.addItem(viewClass.getSimpleName(), new MenuBar.Command() {
+         //
+         //            @Override
+         //            public void menuSelected(MenuBar.MenuItem selectedItem) {
+         //               navigator.navigateTo(viewClass);
+         //            }
+         //         });
       }
 
       MenuBar menuBar = new AccountMenuBar();

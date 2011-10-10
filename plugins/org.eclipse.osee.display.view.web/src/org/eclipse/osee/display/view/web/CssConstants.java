@@ -49,5 +49,7 @@ public final class CssConstants {
 
    public static final String OSEE_ATTRIBUTELABEL = "osee-attributelabel";
    public static final String OSEE_ATTRIBUTEVALUE = "osee-attributevalue";
+   public static final String OSEE_ATTRIBUTESTITLELABEL = "osee-attributestitlelabel";
+   public static final String OSEE_ATTRIBUTESBORDER = "osee-attributesborder";
 
 }

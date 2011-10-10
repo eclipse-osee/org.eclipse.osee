@@ -53,14 +53,18 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
       removeAllComponents();
 
       final HorizontalLayout attributesLayout = new HorizontalLayout();
-      final OseeShowHideButton showHideButton = new OseeShowHideButton("Attributes");
-      showHideButton.addListener(new OseeShowHideButton.ClickListener() {
-         @Override
-         public void buttonClick(OseeShowHideButton.ClickEvent event) {
-            attributesLayout.setVisible(showHideButton.isStateShow());
-         }
-      });
-      attributesLayout.setVisible(showHideButton.isStateShow());
+
+      //      final OseeShowHideButton showHideButton = new OseeShowHideButton("Attributes");
+      //      showHideButton.addListener(new OseeShowHideButton.ClickListener() {
+      //         @Override
+      //         public void buttonClick(OseeShowHideButton.ClickEvent event) {
+      //            attributesLayout.setVisible(showHideButton.isStateShow());
+      //         }
+      //      });
+      //      attributesLayout.setVisible(showHideButton.isStateShow());
+
+      Label titleLabel = new Label("Attributes");
+      titleLabel.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
 
       VerticalLayout attrLabelsLayout = new VerticalLayout();
       VerticalLayout attrValuesLayout = new VerticalLayout();
@@ -80,13 +84,20 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
 
       Label spacer = new Label("");
       spacer.setWidth(15, UNITS_PIXELS);
-      attributesLayout.addComponent(attrLabelsLayout);
+      Label spacer2 = new Label("");
+      spacer2.setWidth(15, UNITS_PIXELS);
       attributesLayout.addComponent(spacer);
+      attributesLayout.addComponent(attrLabelsLayout);
+      attributesLayout.addComponent(spacer2);
       attributesLayout.addComponent(attrValuesLayout);
 
-      addComponent(showHideButton);
+      addComponent(titleLabel);
+      //      addComponent(showHideButton);
       addComponent(attributesLayout);
       setExpandRatio(attributesLayout, 1.0f);
+
+      attrLabelsLayout.setWidth(200, UNITS_PIXELS);
+      attrValuesLayout.setWidth(200, UNITS_PIXELS);
    }
 
    @Override
