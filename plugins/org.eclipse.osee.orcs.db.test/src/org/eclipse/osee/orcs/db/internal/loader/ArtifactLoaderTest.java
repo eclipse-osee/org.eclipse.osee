@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
-import org.eclipse.osee.orcs.core.ds.LoadType;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.H2Preferences;
@@ -62,8 +61,7 @@ public class ArtifactLoaderTest {
             public void onRow(ArtifactRow row) {
                actuals.add(row);
             }
-         }, LoadType.RELOAD_CACHE, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10,
-            queryId);
+         }, new LoadOptions(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
 
          final List<ArtifactRow> expected = new ArrayList<ArtifactRow>();
          expected.add(getArtifactRow(6, identityService.getUniversalId(346), 2, 7, "AEmKsTkcwh02JspUtYQA", false,
@@ -115,8 +113,7 @@ public class ArtifactLoaderTest {
             public void onRow(ArtifactRow row) {
                actuals.add(row);
             }
-         }, LoadType.RELOAD_CACHE, new LoadOptions(false, DeletionFlag.INCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10,
-            queryId);
+         }, new LoadOptions(false, DeletionFlag.INCLUDE_DELETED, LoadLevel.ALL_CURRENT), 10, queryId);
 
          final List<ArtifactRow> expected = new ArrayList<ArtifactRow>();
          expected.add(getArtifactRow(169, identityService.getUniversalId(309), 7, 1101, "AEmPlVKm+mTccO2TMlAA", false,

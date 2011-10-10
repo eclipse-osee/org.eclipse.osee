@@ -15,17 +15,16 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
-import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.Confirmer;
 import org.eclipse.osee.orcs.core.ds.LoadType;
 
-public class MasterLoader {
+public class DataLoader {
 
    private final ArtifactLoader artifactLoader;
    private final AttributeLoader attributeLoader;
    private final RelationLoader relationLoader;
 
-   public MasterLoader(ArtifactLoader artifactLoader, AttributeLoader attributeLoader, RelationLoader relationLoader) {
+   public DataLoader(ArtifactLoader artifactLoader, AttributeLoader attributeLoader, RelationLoader relationLoader) {
       super();
       this.artifactLoader = artifactLoader;
       this.attributeLoader = attributeLoader;
@@ -39,15 +38,8 @@ public class MasterLoader {
       int fetchSize = -1;
       int queryId = -1;
 
-      ArtifactRowHandler handler = new ArtifactRowHandler() {
-
-         @Override
-         public void onRow(ArtifactRow row) throws OseeCoreException {
-            rows.add(row);
-         }
-      };
-
-      artifactLoader.loadFromQueryId(handler, reload, options, fetchSize, queryId);
+      //      ArtifactRowHandler handler = new ArtifactRowHandler();
+      //      artifactLoader.loadFromQueryId(handler, options, fetchSize, queryId);
 
       if (confirmer == null || confirmer.canProceed(rows.size())) {
          if (reload == LoadType.RELOAD_CACHE) {
@@ -59,12 +51,14 @@ public class MasterLoader {
          LoadLevel loadLevel = options.getLoadLevel();
          if (!loadLevel.isShallow()) {
             if (!loadLevel.isRelationsOnly()) {
-               //               AttributeRowMapper mapper = new AttributeRowMapper();
-               //               attributeLoader.loadAttributeData(mapper, options, queryId);
+               //AttributeRowMapper mapper = new AttributeRowMapper();
+               //attributeLoader.loadFromQueryId(AttributeRowHandler handler, LoadOptions options, int fetchSize, int queryId);
             }
 
             if (!loadLevel.isAttributesOnly()) {
-               //               relationLoader.loadRelationData(handler, options, queryId);
+               //Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(22);
+               //RelationRowMapper relationRowMapper = new RelationRowMapper(log, providersThatWillBeLoaded);
+               //relationLoader.loadFromQueryId(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId);
             }
          }
       }

@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
-import org.eclipse.osee.orcs.core.ds.LoadType;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
@@ -65,7 +64,7 @@ public class ArtifactLoader {
       return identityService.getUniversalId(localId);
    }
 
-   public void loadFromQueryId(ArtifactRowHandler handler, LoadType reload, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
+   public void loadFromQueryId(ArtifactRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       String sql = getSql(options);
       IOseeStatement chStmt = dbService.getStatement();
       try {
@@ -110,7 +109,7 @@ public class ArtifactLoader {
       }
    }
 
-   public void loadFromIds(Collection<Integer> artIds, int branchId, int transactionId, ArtifactRowHandler handler, LoadType reload, LoadOptions options) throws OseeCoreException {
+   public void loadFromIds(Collection<Integer> artIds, int branchId, int transactionId, ArtifactRowHandler handler, LoadOptions options) throws OseeCoreException {
       if (artIds != null && !artIds.isEmpty()) {
          Collection<Integer> unique;
          if (artIds instanceof Set) {
@@ -134,7 +133,7 @@ public class ArtifactLoader {
             try {
                try {
                   query.store(connection);
-                  loadFromQueryId(handler, reload, options, query.size(), query.getQueryId());
+                  loadFromQueryId(handler, options, query.size(), query.getQueryId());
                } finally {
                   query.delete(connection);
                }
