@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.presenter;
+package org.eclipse.osee.ats.presenter.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
-import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.api.tokens.AtsArtifactToken;
 import org.eclipse.osee.ats.api.tokens.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author John Misinco
  */
-public class WebProgramsPresenter extends WebSearchPresenter implements AtsWebSearchPresenter {
+public class AtsSearchPresenterImpl extends WebSearchPresenter implements AtsSearchPresenter {
 
    private final static Pattern buildPattern = Pattern.compile("build=([0-9A-Za-z\\+_=]{20,22})");
    private final static Pattern programPattern = Pattern.compile("program=([0-9A-Za-z\\+_=]{20,22})");
@@ -42,7 +42,7 @@ public class WebProgramsPresenter extends WebSearchPresenter implements AtsWebSe
    private final Matcher buildMatcher;
    private final Matcher programMatcher;
 
-   public WebProgramsPresenter(ArtifactProvider artifactProvider) {
+   public AtsSearchPresenterImpl(ArtifactProvider artifactProvider) {
       super(artifactProvider);
       buildMatcher = buildPattern.matcher("");
       programMatcher = programPattern.matcher("");

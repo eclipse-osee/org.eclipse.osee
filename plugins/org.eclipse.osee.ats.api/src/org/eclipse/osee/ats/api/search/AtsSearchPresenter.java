@@ -19,7 +19,7 @@ import org.eclipse.osee.display.api.search.SearchPresenter;
 /*
  * @author John Misinco
  */
-public interface AtsWebSearchPresenter extends SearchPresenter {
+public interface AtsSearchPresenter extends SearchPresenter {
 
    void selectProgram(WebId program, AtsSearchHeaderComponentInterface headerComponent);
 

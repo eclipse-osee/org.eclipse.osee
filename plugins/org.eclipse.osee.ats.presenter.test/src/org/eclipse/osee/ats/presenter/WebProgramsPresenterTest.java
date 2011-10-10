@@ -7,6 +7,7 @@ package org.eclipse.osee.ats.presenter;
 
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
+import org.eclipse.osee.ats.presenter.internal.AtsSearchPresenterImpl;
 import org.eclipse.osee.ats.presenter.mock.MockAtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
@@ -31,7 +32,7 @@ public class WebProgramsPresenterTest {
       teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, build3Artifact);
       MockArtifactProvider provider = new MockArtifactProvider();
       provider.setArtifact(programArtifact);
-      WebProgramsPresenter presenter = new WebProgramsPresenter(provider);
+      AtsSearchPresenterImpl presenter = new AtsSearchPresenterImpl(provider);
       MockAtsSearchHeaderComponent comp = new MockAtsSearchHeaderComponent();
       WebId program = new WebId("prg1Guid", "Program1");
       presenter.selectProgram(program, comp);
@@ -41,7 +42,7 @@ public class WebProgramsPresenterTest {
 
    @Test
    public void testSelectSearch() {
-      WebProgramsPresenter presenter = new WebProgramsPresenter(null);
+      AtsSearchPresenterImpl presenter = new AtsSearchPresenterImpl(null);
       MockSearchNavigator navigator = new MockSearchNavigator();
       WebId program = new WebId("prgGuid", "prgName");
       WebId build = new WebId("bldGuid", "bldName");
@@ -58,7 +59,7 @@ public class WebProgramsPresenterTest {
       webPrograms.addRelation(CoreRelationTypes.Universal_Grouping__Members, program1);
       MockArtifactProvider provider = new MockArtifactProvider();
       provider.setArtifact(webPrograms);
-      WebProgramsPresenter presenter = new WebProgramsPresenter(provider);
+      AtsSearchPresenterImpl presenter = new AtsSearchPresenterImpl(provider);
       MockAtsSearchHeaderComponent headerComp = new MockAtsSearchHeaderComponent();
       presenter.initSearchHome(headerComp);
       Assert.assertTrue(headerComp.isClearAllCalled());

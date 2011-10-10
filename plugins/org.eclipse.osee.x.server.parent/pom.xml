@@ -23,10 +23,13 @@
 
 		<module>../../plugins/org.eclipse.osee.display.api</module>
 		<module>../../plugins/org.eclipse.osee.display.view.web</module>
-
 		<module>../../plugins/org.eclipse.osee.display.presenter</module>
 		<module>../../plugins/org.eclipse.osee.display.presenter.mocks</module>
 		<module>../../plugins/org.eclipse.osee.display.presenter.test</module>
+
+		<module>../../plugins/org.eclipse.osee.ats.api</module>
+		<module>../../plugins/org.eclipse.osee.ats.view.web</module>
+		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs</module>
 		<module>../../plugins/org.eclipse.osee.orcs.mock</module>

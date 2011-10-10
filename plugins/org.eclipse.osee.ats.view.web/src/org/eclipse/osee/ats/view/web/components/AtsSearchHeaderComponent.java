@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.view.web.components;
 
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
-import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsAppData;
 import org.eclipse.osee.ats.view.web.AtsNavigator;
 import org.eclipse.osee.ats.view.web.search.AtsSearchHomeView;
@@ -46,7 +46,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
    private final CheckBox nameOnlyCheckBox;
    private final TextField searchTextField;
    private final boolean showOseeTitleAbove;
-   private final AtsWebSearchPresenter atsBackend;
+   private final AtsSearchPresenter atsBackend;
    private final AtsNavigator atsNavigator;
    private boolean lockProgramCombo = false;
 

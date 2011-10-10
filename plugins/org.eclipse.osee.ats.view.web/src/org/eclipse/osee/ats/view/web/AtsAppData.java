@@ -11,7 +11,7 @@ he Eclipse Public License v1.0
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web;
 
-import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.OseeAppData;
@@ -48,8 +48,8 @@ public class AtsAppData extends OseeAppData {
       return (AtsNavigator) OseeAppData.getNavigator();
    }
 
-   public static AtsWebSearchPresenter getAtsWebSearchPresenter() {
-      return (AtsWebSearchPresenter) OseeAppData.getSearchPresenter();
+   public static AtsSearchPresenter getAtsWebSearchPresenter() {
+      return (AtsSearchPresenter) OseeAppData.getSearchPresenter();
    }
 
    @Override

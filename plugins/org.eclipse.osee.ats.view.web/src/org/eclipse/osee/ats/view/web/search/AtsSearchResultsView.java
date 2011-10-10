@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.view.web.search;
 
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
-import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsAppData;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
@@ -23,7 +23,7 @@ import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
 @SuppressWarnings("serial")
 public class AtsSearchResultsView extends OseeSearchResultsView {
 
-   private final AtsWebSearchPresenter atsBackend;
+   private final AtsSearchPresenter atsBackend;
 
    public AtsSearchResultsView() {
       super();

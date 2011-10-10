@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
-import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
@@ -34,9 +34,9 @@ import org.eclipse.osee.display.view.web.UrlParamNameConstants;
 /**
  * @author Shawn F. Cook
  */
-public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter {
+public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
 
-   private static final AtsWebSearchPresenter atsBackend = new AtsWebSearchPresenter_TestBackend();
+   private static final AtsSearchPresenter atsBackend = new AtsWebSearchPresenter_TestBackend();
 
    //*** TEST DATA ***
    WebId build0 = new WebId("baseline_guid", "Baseline");
@@ -199,7 +199,7 @@ public class AtsWebSearchPresenter_TestBackend implements AtsWebSearchPresenter 
       }
    }
 
-   public static AtsWebSearchPresenter getInstance() {
+   public static AtsSearchPresenter getInstance() {
       return atsBackend;
    }
 

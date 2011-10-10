@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web;
 
-import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -23,7 +23,7 @@ import com.vaadin.ui.Window;
 @SuppressWarnings("serial")
 public class AtsUiApplication extends Application {
 
-   private final AtsWebSearchPresenter atsBackend = AtsWebSearchPresenter_TestBackend.getInstance();
+   private final AtsSearchPresenter atsBackend = AtsWebSearchPresenter_TestBackend.getInstance();
 
    @Override
    public void init() {
@@ -43,7 +43,7 @@ public class AtsUiApplication extends Application {
       return bundle.getVersion().toString();
    }
 
-   public AtsWebSearchPresenter getAtsWebSearchPresenter() {
+   public AtsSearchPresenter getAtsWebSearchPresenter() {
       return atsBackend;
    }
 

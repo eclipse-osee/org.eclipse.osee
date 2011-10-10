@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web.search;
 
-import org.eclipse.osee.ats.api.search.AtsWebSearchPresenter;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsAppData;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
@@ -22,7 +22,7 @@ import org.eclipse.osee.display.view.web.search.OseeSearchHomeView;
 @SuppressWarnings("serial")
 public class AtsSearchHomeView extends OseeSearchHomeView {
 
-   private final AtsWebSearchPresenter atsBackend;
+   private final AtsSearchPresenter atsBackend;
 
    public AtsSearchHomeView() {
       super();
