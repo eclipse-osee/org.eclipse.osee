@@ -29,8 +29,7 @@ import com.vaadin.ui.Window;
 @SuppressWarnings("serial")
 public class AtsWindowFactory {
 
-   public Window createNavigatableWindow(HasViews provider) {
-      AtsNavigator navigator = AtsAppData.getAtsNavigator();
+   public Window createNavigatableWindow(HasViews provider, AtsNavigator navigator) {
 
       VerticalLayout layout = new VerticalLayout();
       final Window w = new Window("OSEE", layout);

@@ -14,7 +14,7 @@ import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
-import org.eclipse.osee.display.view.web.OseeAppData;
+import org.eclipse.osee.display.view.web.OseeUiApplication;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -26,11 +26,27 @@ import com.vaadin.ui.Link;
 @SuppressWarnings("serial")
 public class OseeArtifactNameLinkComponent extends HorizontalLayout {
 
-   private final SearchPresenter searchPresenter = OseeAppData.getSearchPresenter();
-   private final SearchNavigator navigator = OseeAppData.getNavigator();
+   private boolean populated = false;
+   private SearchPresenter searchPresenter = null;
+   private SearchNavigator navigator = null;
 
    public OseeArtifactNameLinkComponent(WebArtifact artifact) {
       this(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
+   }
+
+   @Override
+   public void attach() {
+      if (!populated) {
+         super.attach();
+         try {
+            OseeUiApplication app = (OseeUiApplication) this.getApplication();
+            searchPresenter = app.getSearchPresenter();
+            navigator = app.getNavigator();
+         } catch (Exception e) {
+            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (OseeUiApplication) this.getApplication() threw an exception.");
+         }
+      }
+      populated = true;
    }
 
    public OseeArtifactNameLinkComponent(final WebArtifact artifact, String styleName) {

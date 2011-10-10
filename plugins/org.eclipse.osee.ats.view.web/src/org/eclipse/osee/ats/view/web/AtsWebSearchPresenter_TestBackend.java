@@ -37,8 +37,14 @@ import org.eclipse.osee.display.view.web.UrlParamNameConstants;
 public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
 
    private static final AtsSearchPresenter atsBackend = new AtsWebSearchPresenter_TestBackend();
+   private String url = "";
 
-   //*** TEST DATA ***
+   private WebId program = new WebId("", "");
+   private WebId build = new WebId("", "");
+   private boolean nameOnly = false;
+   private String searchPhrase = "";
+
+   // *** TEST DATA ***
    WebId build0 = new WebId("baseline_guid", "Baseline");
    WebId build1 = new WebId("bld_1_guid", "Bld_1");
    WebId build2 = new WebId("ftb0_guid", "FTP0");
@@ -69,30 +75,10 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
    public AtsWebSearchPresenter_TestBackend() {
       super();
 
-      //populate test data
+      // populate test data
       programsAndBuilds.put(program0, Arrays.asList(build0, build1, build2));
       programsAndBuilds.put(program1, Arrays.asList(build3, build4, build5));
       programsAndBuilds.put(program2, Arrays.asList(build6, build7));
-
-      //      Map<RelationType, Collection<Artifact>> swreqsRelations = new HashMap<RelationType, Collection<Artifact>>();
-      //      swreqsRelations.put(RelationType.PARENT, Arrays.asList(defaultroot));
-      //      Artifact swreqs = new Artifact("SWReq_GUID", "Software Requirements", "Folder", swreqsRelations);
-      //
-      //      Map<RelationType, Collection<Artifact>> crewIntRelations = new HashMap<RelationType, Collection<Artifact>>();
-      //      crewIntRelations.put(RelationType.PARENT, Arrays.asList(swreqs));
-      //      Artifact crewIntreqs = new Artifact("CrewInt_GUID", "Crew Interface", "Folder", crewIntRelations);
-      //
-      //      Map<RelationType, Collection<Artifact>> commSubSysCrewIntRelations =
-      //         new HashMap<RelationType, Collection<Artifact>>();
-      //      commSubSysCrewIntRelations.put(RelationType.PARENT, Arrays.asList(crewIntreqs));
-      //      Artifact commSubSysCrewIntreqs =
-      //         new Artifact("commSubSysCrewInt_GUID", "Communication Subsystem Crew Interface", "Heading",
-      //            commSubSysCrewIntRelations);
-      //
-      //      Map<RelationType, Collection<Artifact>> comm_page_Relations = new HashMap<RelationType, Collection<Artifact>>();
-      //      comm_page_Relations.put(RelationType.PARENT, Arrays.asList(commSubSysCrewIntreqs));
-      //      Artifact comm_page_Intreqs =
-      //         new Artifact("com_page_GUID", "{COM_PAGE}", "Software Requirement", comm_page_Relations);
 
       artifacts.put(defaultroot.getGuid(), defaultroot);
       artifacts.put(swreqs.getGuid(), swreqs);
@@ -111,6 +97,17 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
          artifact.setAttr_Subsystm("Communications");
          artifact.setAttr_TechPerfParam("False");
       }
+
+      // Create a large list of artifacts
+      // for (int i = 0; i < 20; i++) {
+      // WebArtifact art =
+      // new WebArtifact(String.format("SWReq_GUID_%d", i),
+      // String.format("SW Req Bulk Artifact (%d)", i),
+      // "Software Requirement", Arrays.asList(swreqs), new
+      // WebId(String.format("branch_id_bulk_", i),
+      // String.format("branch_id_bulk_", i)));
+      // artifacts.put(art.getGuid(), art);
+      // }
    }
 
    @Override
@@ -144,7 +141,8 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
                headerComponent.addProgram(entry.getKey());
             }
          }
-         //      headerComponent.setProgram(program0);
+         setSearchHeaderCriteria(headerComponent);
+         // headerComponent.setProgram(program0);
       }
    }
 
@@ -161,8 +159,13 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
 
    @Override
    public void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
-      initSearchHome(searchHeaderComp);
-      setSearchHeaderCriteria(url, (AtsSearchHeaderComponentInterface) searchHeaderComp);
+      this.url = url;
+      updateSearchHeaderCriteria(url);
+      try {
+         initSearchHome((AtsSearchHeaderComponentInterface) searchHeaderComp);
+      } catch (Exception e) {
+         System.out.println("AtsWebSearchPresenter_TestBackend.initArtifactPage - CRITICAL ERROR: cast threw exception.");
+      }
       artHeaderComp.clearAll();
       Map<String, String> params = requestStringToParameterMap(url);
       if (params != null && params.size() > 0) {
@@ -181,7 +184,7 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
                relComp.addRelationType(swReqRelationType);
 
                attrComp.clearAll();
-               attrComp.addAttribute("type1", "value1");
+               attrComp.addAttribute("type", "value");
             }
          }
       }
@@ -210,22 +213,18 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
             for (WebId build : builds) {
                headerComponent.addBuild(build);
             }
-            //      headerComponent.setBuild(builds.iterator().next());
+            // headerComponent.setBuild(builds.iterator().next());
          }
       }
    }
 
    @Override
    public void initSearchResults(String url, SearchHeaderComponent searchHeaderComp, SearchResultsListComponent searchResultsComp) {
-      //Do nothing
+      // Do nothing
    }
 
-   private void setSearchHeaderCriteria(String url, AtsSearchHeaderComponentInterface searchHeaderComponent) {
+   private void updateSearchHeaderCriteria(String url) {
       Map<String, String> params = requestStringToParameterMap(url);
-      WebId program = new WebId("", "");
-      WebId build = new WebId("", "");
-      boolean nameOnly = false;
-      String searchPhrase = "";
 
       if (params != null) {
          String programGuid = params.get(UrlParamNameConstants.PARAMNAME_PROGRAM);
@@ -241,12 +240,14 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
             nameOnly = nameOnlyStr.equalsIgnoreCase("true");
          }
 
-         searchPhrase = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
-         if (searchPhrase == null) {
-            searchPhrase = "";
+         String searchPhrase_local = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
+         if (searchPhrase_local != null) {
+            searchPhrase = searchPhrase_local;
          }
       }
+   }
 
+   private void setSearchHeaderCriteria(AtsSearchHeaderComponentInterface searchHeaderComponent) {
       if (searchHeaderComponent != null) {
          this.selectProgram(program, searchHeaderComponent);
          searchHeaderComponent.setSearchCriteria(program, build, nameOnly, searchPhrase);
@@ -255,9 +256,9 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
 
    @Override
    public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
-
+      this.url = url;
+      updateSearchHeaderCriteria(url);
       initSearchHome(searchHeaderComponent);
-      setSearchHeaderCriteria(url, searchHeaderComponent);
 
       if (resultsComponent != null) {
          resultsComponent.clearAll();
@@ -277,7 +278,8 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
    private static Map<String, String> requestStringToParameterMap(String requestedDataId) {
       Map<String, String> parameters = new HashMap<String, String>();
 
-      //TODO: Need better error detection for malformed parameter strings here.
+      // TODO: Need better error detection for malformed parameter strings
+      // here.
 
       if (requestedDataId != null) {
          String[] tokens = requestedDataId.split("/");
@@ -297,7 +299,7 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
    private static String parameterMapToRequestString(Map<String, String> parameters) {
       String requestedDataId = "/";
 
-      //TODO: Need to properly encode the URI parameters here.
+      // TODO: Need to properly encode the URI parameters here.
 
       Set<Entry<String, String>> keyValuePairs = parameters.entrySet();
       for (Iterator<Entry<String, String>> iter = keyValuePairs.iterator(); iter.hasNext();) {

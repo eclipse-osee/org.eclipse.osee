@@ -15,7 +15,7 @@ import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
-import org.eclipse.osee.display.view.web.OseeAppData;
+import org.eclipse.osee.display.view.web.OseeUiApplication;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.HorizontalLayout;
@@ -29,12 +29,29 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeRelationsComponent extends VerticalLayout implements RelationComponent {
 
+   private boolean populated = false;
    private final ListSelect relationTypesListSelect = new ListSelect("Relation Types:");
    private final ListSelect relationsListSelect = new ListSelect("Relations:");
-   SearchPresenter searchPresenter = OseeAppData.getSearchPresenter();
-   SearchNavigator navigator = OseeAppData.getNavigator();
+   private SearchPresenter searchPresenter = null;
+   private SearchNavigator navigator = null;
    private boolean lockRelTypesListener = false;
    private boolean lockRelsListener = false;
+
+   @Override
+   public void attach() {
+      if (!populated) {
+         try {
+            OseeUiApplication app = (OseeUiApplication) this.getApplication();
+            searchPresenter = app.getSearchPresenter();
+            navigator = app.getNavigator();
+         } catch (Exception e) {
+            System.out.println("OseeRelationsComponent.attach - CRITICAL ERROR: (OseeUiApplication) this.getApplication() threw an exception.");
+         }
+      }
+      populated = true;
+
+      createLayout();
+   }
 
    private void createLayout() {
       removeAllComponents();
@@ -64,8 +81,14 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
          @Override
          public void valueChange(ValueChangeEvent event) {
             if (!lockRelTypesListener) {
-               WebId relationType = (WebId) relationTypesListSelect.getValue();
-               searchPresenter.selectRelationType(relationType, OseeRelationsComponent.this);
+               try {
+                  WebId relationType = (WebId) relationTypesListSelect.getValue();
+                  if (relationType != null) {
+                     searchPresenter.selectRelationType(relationType, OseeRelationsComponent.this);
+                  }
+               } catch (Exception e) {
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
+               }
             }
          }
       });
@@ -74,8 +97,14 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
          @Override
          public void valueChange(ValueChangeEvent event) {
             if (!lockRelsListener) {
-               WebArtifact artifact = (WebArtifact) relationsListSelect.getValue();
-               searchPresenter.selectArtifact(artifact, navigator);
+               try {
+                  WebArtifact artifact = (WebArtifact) relationsListSelect.getValue();
+                  if (artifact != null) {
+                     searchPresenter.selectArtifact(artifact, navigator);
+                  }
+               } catch (Exception e) {
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
+               }
             }
          }
       });
@@ -140,5 +169,6 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
 
    @Override
    public void setErrorMessage(String message) {
+      //TODO: 
    }
 }

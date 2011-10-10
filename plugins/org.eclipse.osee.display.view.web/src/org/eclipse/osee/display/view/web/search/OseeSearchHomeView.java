@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,16 +22,9 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchHomeView extends CustomComponent implements Navigator.View {
 
-   protected OseeSearchHeaderComponent oseeSearchHeader;
+   protected final OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
 
-   public OseeSearchHomeView() {
-      oseeSearchHeader = getOseeSearchHeader();
-   }
-
-   @Override
-   public void init(Navigator navigator, Application application) {
-      initComponents();
-
+   protected void createLayout() {
       this.setSizeFull();
 
       final VerticalLayout vertLayout = new VerticalLayout();
@@ -41,10 +34,6 @@ public class OseeSearchHomeView extends CustomComponent implements Navigator.Vie
       vertLayout.setComponentAlignment(oseeSearchHeader, Alignment.MIDDLE_CENTER);
 
       setCompositionRoot(vertLayout);
-   }
-
-   protected void initComponents() {
-      //Do nothing
    }
 
    protected OseeSearchHeaderComponent getOseeSearchHeader() {
@@ -59,5 +48,10 @@ public class OseeSearchHomeView extends CustomComponent implements Navigator.Vie
    @Override
    public String getWarningForNavigatingFrom() {
       return null;
+   }
+
+   @Override
+   public void init(Navigator navigator, Application application) {
+      //Do nothing.
    }
 }

@@ -1,7 +1,5 @@
 package org.eclipse.osee.display.view.web;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
@@ -19,13 +17,13 @@ public class OseeFooter extends VerticalLayout {
          return;
       }
 
-      Label ll = new Label("Add Navigation Links Here");
-      ll.setWidth(null);
-      addComponent(ll);
-      setComponentAlignment(ll, Alignment.MIDDLE_CENTER);
-
-      Label summary = new Label(getApplicationInfo());
-      addComponent(summary);
+      //      Label ll = new Label("Add Navigation Links Here");
+      //      ll.setWidth(null);
+      //      addComponent(ll);
+      //      setComponentAlignment(ll, Alignment.MIDDLE_CENTER);
+      //
+      //      Label summary = new Label(getApplicationInfo());
+      //      addComponent(summary);
       populated = true;
    }
 

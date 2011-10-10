@@ -25,15 +25,10 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchResultsView extends CustomComponent implements Navigator.View {
 
-   protected OseeSearchHeaderComponent oseeSearchHeader;
-   protected OseeSearchResultsListComponent searchResultsListComponent;
+   protected final OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
+   protected final OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
 
-   public OseeSearchResultsView() {
-      oseeSearchHeader = getOseeSearchHeader();
-      searchResultsListComponent = new OseeSearchResultsListComponent();
-   }
-
-   private void initLayout() {
+   protected void createLayout() {
       setSizeFull();
 
       HorizontalLayout leftMarginAndBody = new HorizontalLayout();
@@ -65,8 +60,7 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
 
    @Override
    public void init(Navigator navigator, Application application) {
-      initComponents();
-      initLayout();
+      //Do nothing.
    }
 
    protected OseeSearchHeaderComponent getOseeSearchHeader() {
@@ -81,10 +75,6 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
    @Override
    public String getWarningForNavigatingFrom() {
       return null;
-   }
-
-   protected void initComponents() {
-      //Do nothing
    }
 
 }

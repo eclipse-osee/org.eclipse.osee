@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.view.web.search;
 
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.ats.view.web.AtsAppData;
+import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchHomeView;
@@ -22,11 +22,22 @@ import org.eclipse.osee.display.view.web.search.OseeSearchHomeView;
 @SuppressWarnings("serial")
 public class AtsSearchHomeView extends OseeSearchHomeView {
 
-   private final AtsSearchPresenter atsBackend;
+   private boolean populated = false;
+   private AtsSearchPresenter searchPresenter = null;
 
-   public AtsSearchHomeView() {
-      super();
-      atsBackend = AtsAppData.getAtsWebSearchPresenter();
+   @Override
+   public void attach() {
+      if (!populated) {
+         try {
+            AtsUiApplication app = (AtsUiApplication) getApplication();
+            searchPresenter = app.getAtsWebSearchPresenter();
+            callInitSearchHome();
+            createLayout();
+         } catch (Exception e) {
+            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: casting threw an exception.");
+         }
+      }
+      populated = true;
    }
 
    @Override
@@ -34,10 +45,19 @@ public class AtsSearchHomeView extends OseeSearchHomeView {
       return new AtsSearchHeaderComponent(true);
    }
 
-   @Override
-   protected void initComponents() {
-      if (atsBackend != null) {
-         atsBackend.initSearchHome((AtsSearchHeaderComponent) oseeSearchHeader);
+   private void callInitSearchHome() {
+      if (searchPresenter != null) {
+         try {
+            AtsSearchHeaderComponent atsSearchHeaderComp = (AtsSearchHeaderComponent) oseeSearchHeader;
+            searchPresenter.initSearchHome(atsSearchHeaderComp);
+         } catch (Exception e) {
+            System.out.println("OseeArtifactNameLinkComponent.navigateTo - CRITICAL ERROR: casting threw an exception.");
+         }
       }
+   }
+
+   @Override
+   public void navigateTo(String requestedDataId) {
+      callInitSearchHome();
    }
 }

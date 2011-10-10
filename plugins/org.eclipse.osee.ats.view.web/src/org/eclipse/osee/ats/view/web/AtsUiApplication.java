@@ -11,62 +11,57 @@
 package org.eclipse.osee.ats.view.web;
 
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.display.api.search.SearchNavigator;
+import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.view.web.OseeUiApplication;
 import org.eclipse.osee.vaadin.widgets.HasViews;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
-import com.vaadin.Application;
 import com.vaadin.ui.Window;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsUiApplication extends Application {
-
-   private final AtsSearchPresenter atsBackend = AtsWebSearchPresenter_TestBackend.getInstance();
+public class AtsUiApplication extends OseeUiApplication {
 
    @Override
    public void init() {
-      setTheme("osee");
-      @SuppressWarnings("unused")
-      AtsAppData sessionData = new AtsAppData(this);
+      super.init();
+
       AtsWindowFactory factory = new AtsWindowFactory();
       HasViews viewProvider = new AtsUiViews();
-      Window mainWindow = factory.createNavigatableWindow(viewProvider);
+      Window mainWindow = factory.createNavigatableWindow(viewProvider, getAtsNavigator());
       setMainWindow(mainWindow);
       mainWindow.setApplication(this);
    }
 
-   @Override
-   public String getVersion() {
-      Bundle bundle = FrameworkUtil.getBundle(this.getClass());
-      return bundle.getVersion().toString();
+   public AtsNavigator getAtsNavigator() {
+      AtsNavigator nav = null;
+      try {
+         nav = (AtsNavigator) this.navigator;
+      } catch (Exception e) {
+         System.out.println("AtsUiApplication.getAtsNavigator() - CRITICAL ERROR: (AtsNavigator) this.navigator threw an exception.");
+      }
+      return nav;
    }
 
    public AtsSearchPresenter getAtsWebSearchPresenter() {
-      return atsBackend;
+      AtsSearchPresenter pres = null;
+      try {
+         pres = (AtsSearchPresenter) this.searchPresenter;
+      } catch (Exception e) {
+         System.out.println("AtsUiApplication.getAtsWebSearchPresenter() - CRITICAL ERROR: (AtsWebSearchPresenter) this.searchPresenter threw an exception.");
+      }
+      return pres;
    }
 
-   //   @Override
-   //   public Window getWindow(String name) {
-   //      // If the window is identified by name, we are good to go
-   //      Window w = super.getWindow(name);
-   //
-   //      // If not, we must create a new window for this new browser window/tab
-   //      if (w == null) {
-   //
-   //         // Use the random name given by the framework to identify this
-   //         // window in future
-   //         AtsWindowFactory factory = new AtsWindowFactory();
-   //         HasViews viewProvider = new AtsUiViews();
-   //         Window mainWindow = factory.createNavigatableWindow(viewProvider);
-   //         mainWindow.setName(name);
-   //         addWindow(mainWindow);
-   //
-   //         // Move to the url to remember the name in the future
-   //         mainWindow.open(new ExternalResource(mainWindow.getURL()));
-   //      }
-   //
-   //      return w;
-   //   }
+   @Override
+   protected SearchNavigator createNavigator() {
+      return new AtsNavigator();
+   }
+
+   @Override
+   protected SearchPresenter createSearchPresenter() {
+      return AtsWebSearchPresenter_TestBackend.getInstance();
+   }
+
 }

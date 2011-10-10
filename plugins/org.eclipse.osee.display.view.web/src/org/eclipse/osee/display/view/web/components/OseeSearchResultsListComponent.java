@@ -17,6 +17,7 @@ import java.util.Iterator;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
+import com.vaadin.Application;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -30,6 +31,12 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    VerticalLayout bottomSpacer = new VerticalLayout();
    HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
+
+   @Override
+   public void attach() {
+      super.attach();
+      Application app = this.getApplication();
+   }
 
    public OseeSearchResultsListComponent() {
       addComponent(manySearchResultsHorizLayout);

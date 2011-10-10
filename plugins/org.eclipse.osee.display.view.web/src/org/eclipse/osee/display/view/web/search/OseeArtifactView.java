@@ -13,7 +13,7 @@ package org.eclipse.osee.display.view.web.search;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.search.SearchPresenter;
-import org.eclipse.osee.display.view.web.OseeAppData;
+import org.eclipse.osee.display.view.web.OseeUiApplication;
 import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponent;
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
 import org.eclipse.osee.display.view.web.components.OseeBreadcrumbComponent;
@@ -32,14 +32,20 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeArtifactView extends CustomComponent implements Navigator.View, ArtifactHeaderComponent {
 
-   protected SearchPresenter searchPresenter = OseeAppData.getSearchPresenter();
+   private boolean populated = false;
+   protected SearchPresenter searchPresenter = null;
    protected OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
    protected OseeRelationsComponent relationsComp = new OseeRelationsComponent();
    protected OseeAttributeComponent attributeComp = new OseeAttributeComponent();
    private final OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(null);
    private WebArtifact artifact;
 
-   private void initLayout() {
+   @Override
+   public void attach() {
+      //TODO: remove?
+   }
+
+   private void createLayout() {
       setSizeFull();
 
       HorizontalLayout leftMarginAndBody = new HorizontalLayout();
@@ -85,12 +91,25 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
 
    @Override
    public void init(Navigator navigator, Application application) {
-      initLayout();
+      //Do nothing.
    }
 
    @Override
    public void navigateTo(String requestedDataId) {
-      searchPresenter.initArtifactPage(requestedDataId, oseeSearchHeader, this, relationsComp, attributeComp);
+      if (!populated) {
+         try {
+            OseeUiApplication app = (OseeUiApplication) this.getApplication();
+            searchPresenter = app.getSearchPresenter();
+         } catch (Exception e) {
+            System.out.println("OseeArtifactView.attach - CRITICAL ERROR: (OseeUiApplication) this.getApplication() threw an exception.");
+         }
+      }
+      populated = true;
+
+      if (searchPresenter != null) {
+         searchPresenter.initArtifactPage(requestedDataId, oseeSearchHeader, this, relationsComp, attributeComp);
+      }
+      createLayout();
    }
 
    @Override
@@ -105,13 +124,13 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    @Override
    public void clearAll() {
       this.artifact = null;
-      initLayout();
+      createLayout();
    }
 
    @Override
    public void setArtifact(WebArtifact artifact) {
       this.artifact = artifact;
-      initLayout();
+      createLayout();
    }
 
    @Override

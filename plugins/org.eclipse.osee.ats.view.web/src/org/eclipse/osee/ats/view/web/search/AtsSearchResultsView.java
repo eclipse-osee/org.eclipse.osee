@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,12 @@ package org.eclipse.osee.ats.view.web.search;
 
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.ats.view.web.AtsAppData;
+import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
+import org.eclipse.osee.vaadin.widgets.Navigator;
+import com.vaadin.Application;
 
 /**
  * @author Shawn F. Cook
@@ -23,11 +25,22 @@ import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
 @SuppressWarnings("serial")
 public class AtsSearchResultsView extends OseeSearchResultsView {
 
-   private final AtsSearchPresenter atsBackend;
+   private boolean populated = false;
+   private AtsSearchPresenter searchPresenter;
 
-   public AtsSearchResultsView() {
-      super();
-      atsBackend = AtsAppData.getAtsWebSearchPresenter();
+   @Override
+   public void attach() {
+      if (!populated) {
+         try {
+            AtsUiApplication app = (AtsUiApplication) this.getApplication();
+            searchPresenter = app.getAtsWebSearchPresenter();
+            callInitSearchHome();
+            createLayout();
+         } catch (Exception e) {
+            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
+         }
+      }
+      populated = true;
    }
 
    @Override
@@ -35,16 +48,26 @@ public class AtsSearchResultsView extends OseeSearchResultsView {
       return new AtsSearchHeaderComponent(false);
    }
 
-   @Override
-   protected void initComponents() {
-      //      searchResultsListComponent.setSearchPresenter(atsBackend);
+   private void callInitSearchHome() {
+      if (searchPresenter != null) {
+         try {
+            searchPresenter.initSearchResults(requestedDataId, (AtsSearchHeaderComponentInterface) oseeSearchHeader,
+               searchResultsListComponent);
+         } catch (Exception e) {
+            System.out.println("AtsSearchResultsView.callInitSearchHome - CRITICAL ERROR: casting threw an exception.");
+         }
+      }
    }
+   private String requestedDataId = "";
 
    @Override
    public void navigateTo(String requestedDataId) {
-      if (atsBackend != null) {
-         atsBackend.initSearchResults(requestedDataId, (AtsSearchHeaderComponentInterface) oseeSearchHeader,
-            searchResultsListComponent);
-      }
+      this.requestedDataId = requestedDataId;
+      callInitSearchHome();
+   }
+
+   @Override
+   public void init(Navigator navigator, Application application) {
+      super.init(navigator, application);
    }
 }

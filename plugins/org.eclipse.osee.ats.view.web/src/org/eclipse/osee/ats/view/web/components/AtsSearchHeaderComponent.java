@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.view.web.components;
 
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.ats.view.web.AtsAppData;
 import org.eclipse.osee.ats.view.web.AtsNavigator;
+import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.search.AtsSearchHomeView;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.view.web.CssConstants;
@@ -40,31 +40,34 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implements AtsSearchHeaderComponentInterface, Handler {
 
-   private boolean populated;
+   private boolean populated = false;
    private final ComboBox programCombo;
    private final ComboBox buildCombo;
    private final CheckBox nameOnlyCheckBox;
    private final TextField searchTextField;
    private final boolean showOseeTitleAbove;
-   private final AtsSearchPresenter atsBackend;
-   private final AtsNavigator atsNavigator;
+   private AtsSearchPresenter searchPresenter;
+   private AtsNavigator navigator;
    private boolean lockProgramCombo = false;
 
    @Override
    public void attach() {
-      if (populated) {
-         // Only populate the layout once
-         return;
+      if (!populated) {
+         try {
+            AtsUiApplication app = (AtsUiApplication) this.getApplication();
+            searchPresenter = app.getAtsWebSearchPresenter();
+            navigator = app.getAtsNavigator();
+            createLayout();
+         } catch (Exception e) {
+            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
+         }
       }
-
-      createLayout();
-
       populated = true;
    }
 
    private void selectSearch() {
       WebId program = (WebId) programCombo.getValue();
-      atsBackend.selectProgram(program, this);
+      searchPresenter.selectProgram(program, this);
    }
 
    public AtsSearchHeaderComponent(boolean showOseeTitleAbove) {
@@ -74,8 +77,6 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
       buildCombo = new ComboBox("Build:");
       nameOnlyCheckBox = new CheckBox("Name Only", false);
       searchTextField = new TextField();
-      atsBackend = AtsAppData.getAtsWebSearchPresenter();
-      atsNavigator = AtsAppData.getAtsNavigator();
 
       if (programCombo != null) {
          programCombo.setNullSelectionAllowed(false);
@@ -136,7 +137,9 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
             WebId build = (WebId) buildCombo.getValue();
             boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
             String searchPhrase = (String) searchTextField.getValue();
-            atsBackend.selectSearch(program, build, nameOnly, searchPhrase, atsNavigator);
+            if (searchPresenter != null) {
+               searchPresenter.selectSearch(program, build, nameOnly, searchPhrase, navigator);
+            }
          }
       });
       hLayoutRow2.addComponent(searchTextField);
@@ -147,7 +150,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
 
       if (showOseeTitleAbove) {
          OseeLogoLink oseeTitleLabel =
-            new OseeLogoLink(atsNavigator, CssConstants.OSEE_TITLE_LARGE_TEXT, AtsSearchHomeView.class);
+            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_LARGE_TEXT, AtsSearchHomeView.class);
          hLayoutRow0.addComponent(oseeTitleLabel);
          hLayoutRow0.setComponentAlignment(oseeTitleLabel, Alignment.MIDDLE_CENTER);
          oseeTitleLabel.setStyleName(CssConstants.OSEE_TITLE_LARGE_TEXT);
@@ -164,7 +167,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
          setComponentAlignment(hLayoutRow2, Alignment.MIDDLE_CENTER);
       } else {
          OseeLogoLink oseeTitleLabel =
-            new OseeLogoLink(atsNavigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchHomeView.class);
+            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchHomeView.class);
          Label spacer4 = new Label("");
          spacer4.setWidth(15, UNITS_PIXELS);
          oseeTitleLabel.setHeight(70, UNITS_PIXELS);
