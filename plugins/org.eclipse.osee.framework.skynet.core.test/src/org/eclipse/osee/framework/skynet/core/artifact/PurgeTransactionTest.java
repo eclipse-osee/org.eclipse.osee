@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.BeforeClass;
 
 /**
  * @author Ryan Schmitt
@@ -50,6 +51,11 @@ public class PurgeTransactionTest {
    private Map<String, Integer> postCreatePurgeCount;
    private static final List<String> tables = Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link",
       "osee_tx_details", "osee_txs");
+
+   @BeforeClass
+   public static void setUpOnce() throws Exception {
+      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+   }
 
    @org.junit.Test
    public void testPurgeTransaction() throws Exception {

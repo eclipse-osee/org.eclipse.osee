@@ -20,12 +20,15 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.mocks.DbTestUtil;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -59,35 +62,39 @@ public class BranchPurgeTest {
    public void testPurgeBranch() throws Exception {
       Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
 
+      String name = getClass().getSimpleName();
+
       // Count rows in tables prior to purge
       DbTestUtil.getTableRowCounts(preCreateCount, tables);
 
       // create a new working branch
       Branch branch =
-         BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, getClass().getSimpleName(),
-            UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, name, UserManager.getUser(SystemUser.OseeSystem));
 
       // create some software artifacts
       Collection<Artifact> softArts =
-         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
-            branch);
+         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, name, branch);
       Artifacts.persistInTransaction("Test purge branch", softArts);
 
+      SkynetTransaction transaction = new SkynetTransaction(branch, name);
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
-         softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
-         softArt.persist(getClass().getSimpleName());
+         softArt.addAttribute(CoreAttributeTypes.StaticId, name);
+         softArt.persist(transaction);
       }
+      transaction.execute();
 
       // Count rows and check that increased
       DbTestUtil.getTableRowCounts(postCreateBranchCount, tables);
       TestUtil.checkThatIncreased(preCreateCount, postCreateBranchCount);
 
-      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
+      CompositeOperation operation =
+         new CompositeOperation("PurgeBranchHttpRequest and PurgeUnusedBackingDataAndTransactions Ops",
+            Activator.PLUGIN_ID, new PurgeBranchHttpRequestOperation(branch, false),
+            new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
 
-      TestUtil.sleep(4000);
+      Operations.executeWorkAndCheckStatus(operation);
 
-      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
       // Count rows and check that same as when began
       DbTestUtil.getTableRowCounts(postPurgeCount, tables);
       // TODO looks like artifacts are not being removed when purge a branch

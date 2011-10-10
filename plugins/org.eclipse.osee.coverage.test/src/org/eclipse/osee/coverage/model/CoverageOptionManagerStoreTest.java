@@ -22,15 +22,20 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class CoverageOptionManagerStoreTest {
+
+   @Rule
+   public OseeHousekeepingRule hk = new OseeHousekeepingRule();
 
    @BeforeClass
    public static void setUp() throws OseeCoreException {

@@ -34,10 +34,12 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -52,6 +54,9 @@ public class CoverageUnitPersistTest {
    public static CoverageImport coverageImport;
    public static CoveragePackage saveCoveragePackage;
    public static CoveragePackage loadCoveragePackage;
+
+   @Rule
+   public OseeHousekeepingRule hk = new OseeHousekeepingRule();
 
    @BeforeClass
    @AfterClass

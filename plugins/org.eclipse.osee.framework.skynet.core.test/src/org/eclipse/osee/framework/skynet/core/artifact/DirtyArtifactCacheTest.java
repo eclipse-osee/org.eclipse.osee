@@ -26,12 +26,12 @@ public class DirtyArtifactCacheTest {
    @org.junit.Test
    public void testArtifactCacheNotDirty() {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
-      Assert.assertTrue(String.format(
-         "After all tests are run, there should be no dirty artifacts in Artifact Cache; Found [%s]",
-         Artifacts.getNames(dirtyArtifacts)), dirtyArtifacts.isEmpty());
       for (Artifact artifact : dirtyArtifacts) {
          OseeLog.logf(getClass(), Level.WARNING, "Name: %s Type: %s ", artifact.getName(),
             artifact.getArtifactTypeName());
       }
+      Assert.assertTrue(String.format(
+         "After all tests are run, there should be no dirty artifacts in Artifact Cache; \n Found [%s]",
+         Artifacts.getNames(dirtyArtifacts)), dirtyArtifacts.isEmpty());
    }
 }

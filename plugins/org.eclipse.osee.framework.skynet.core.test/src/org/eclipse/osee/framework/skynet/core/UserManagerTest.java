@@ -27,7 +27,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * @author Karol M. Wilk
@@ -47,7 +50,7 @@ public final class UserManagerTest {
       return user;
    }
 
-   @org.junit.Test
+   @Test
    public void testCreateUser() throws Exception {
 
       SkynetTransaction transaction =
@@ -80,12 +83,12 @@ public final class UserManagerTest {
       Assert.assertTrue("Members not subscribed to right groups.", verifiedNames.size() == TEST_DEFAULT_GROUPS.length);
    }
 
-   @org.junit.BeforeClass
+   @BeforeClass
    public static void setUpOnce() throws Exception {
       createSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
    }
 
-   @org.junit.AfterClass
+   @AfterClass
    public static void tearDownOnce() throws Exception {
       deleteSampleDefaultGroups(CoreBranches.COMMON, TEST_DEFAULT_GROUPS);
    }
@@ -102,7 +105,7 @@ public final class UserManagerTest {
          //Create relation between containing folder and new UserGroup
          Artifact groupRoot = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "User Groups", branch);
          groupRoot.addRelation(CoreRelationTypes.Default_Hierarchical__Child, groupArt);
-         groupRoot.persist("Create user group");
+         groupRoot.persist(UserManagerTest.class.getSimpleName() + ": Create user group");
       }
    }
 

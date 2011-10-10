@@ -26,13 +26,18 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class CoverageParametersTest {
+
+   @Rule
+   public OseeHousekeepingRule hk = new OseeHousekeepingRule();
 
    public static CoverageImport coverageImport = null;
 

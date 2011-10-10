@@ -27,12 +27,17 @@ import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author John Misinco
  */
 public class TestUnitCacheTest {
+
+   @Rule
+   public OseeHousekeepingRule hk = new OseeHousekeepingRule();
 
    private CoverageItem createCoverageItem(TestUnitCache tc) throws OseeCoreException {
       CoverageUnit parent = new CoverageUnit(null, "Top", "C:/UserData/", null);
