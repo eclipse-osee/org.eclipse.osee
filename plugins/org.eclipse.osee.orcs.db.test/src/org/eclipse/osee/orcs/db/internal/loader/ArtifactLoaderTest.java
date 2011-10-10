@@ -103,9 +103,9 @@ public class ArtifactLoaderTest {
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
       try {
-         artJoinQuery.add(6, 2, -1);
-         artJoinQuery.add(7, 2, -1);
-         artJoinQuery.add(8, 2, -1);
+         artJoinQuery.add(169, 7, -1);
+         artJoinQuery.add(170, 7, -1);
+         artJoinQuery.add(171, 7, -1);
          artJoinQuery.store(connection);
          int queryId = artJoinQuery.getQueryId();
 
@@ -119,28 +119,28 @@ public class ArtifactLoaderTest {
             queryId);
 
          final List<ArtifactRow> expected = new ArrayList<ArtifactRow>();
-         expected.add(getArtifactRow(6, identityService.getUniversalId(346), 2, 7, "AEmKsTkcwh02JspUtYQA", false,
-            "NYN46", ModificationType.getMod(1), -1, -1));
-         expected.add(getArtifactRow(7, identityService.getUniversalId(346), 2, 9, "AEmKsWXLBwVrvjcQvPwA", false,
-            "7NPJR", ModificationType.getMod(1), -1, -1));
-         expected.add(getArtifactRow(8, identityService.getUniversalId(295), 2, 33, "AEmK_YNYKmA66ynLWVgA", false,
-            "QHXXC", ModificationType.getMod(1), -1, -1));
+         expected.add(getArtifactRow(169, identityService.getUniversalId(309), 7, 1101, "AEmPlVKm+mTccO2TMlAA", false,
+            "DD0WL", ModificationType.getMod(3), -1, -1));
+         expected.add(getArtifactRow(170, identityService.getUniversalId(309), 7, 1103, "AEmPmMM0Ahco9TfgjTwA", false,
+            "9P19Q", ModificationType.getMod(3), -1, -1));
+         expected.add(getArtifactRow(171, identityService.getUniversalId(309), 7, 1097, "AEmPvkGYwn0XgAIig0QA", false,
+            "LF8CM", ModificationType.getMod(3), -1, -1));
 
          ArtifactRow notExpected =
             getArtifactRow(7, identityService.getUniversalId(295), 2, 9, "AEmKsWXLBwVrvjcQvPwA", false, "7NPJR",
                ModificationType.getMod(1), -1, -1);
 
          artJoinQuery.delete(connection);
+
+         Assert.assertEquals(expected.size(), actuals.size());
+         for (ArtifactRow row : expected) {
+            Assert.assertTrue(String.format("Row [%s] could not be found.", row.toString()), actuals.contains(row));
+         }
+         Assert.assertTrue(String.format("Row [%s] should not be found.", notExpected.toString()),
+            !actuals.contains(notExpected));
       } finally {
          connection.close();
       }
-      //      Assert.assertEquals(expected.size(), actuals.size());
-      //      for (ArtifactRow row : expected) {
-      //         Assert.assertTrue(String.format("Row [%s] could not be found.", row.toString()), actuals.contains(row));
-      //      }
-      //      System.out.println("asdfsdkjk");
-      //      Assert.assertTrue(String.format("Row [%s] should not be found.", notExpected.toString()),
-      //         !actuals.contains(notExpected));
    }
 
    private ArtifactRow getArtifactRow(int artId, long artTypeUUID, int branchId, int gammaId, String guid, boolean historical, String humanReadableId, ModificationType modType, int stripeId, int transactionId) {
