@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -145,6 +146,24 @@ public class ResultsEditor extends AbstractArtifactEditor {
             return tabs;
          }
       });
+   }
+
+   public static void open(final String name, final XResultData data) {
+      ResultsEditor.open(new IResultsEditorProvider() {
+
+         @Override
+         public String getEditorName() {
+            return name;
+         }
+
+         @Override
+         public List<IResultsEditorTab> getResultsEditorTabs() {
+            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            tabs.add(new ResultsEditorHtmlTab(XResultDataUI.getReport(data, name)));
+            return tabs;
+         }
+      });
+
    }
 
    public static void open(final XResultPage xResultPage) {
