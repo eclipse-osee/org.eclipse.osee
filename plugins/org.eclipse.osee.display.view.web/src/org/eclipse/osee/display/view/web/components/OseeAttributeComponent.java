@@ -11,12 +11,9 @@ he Eclipse Public License v1.0
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.components;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.eclipse.osee.display.api.components.AttributeComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -29,71 +26,86 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeAttributeComponent extends VerticalLayout implements AttributeComponent {
 
-   private WebArtifact artifact;
+   private Collection<labelValuePair> attributes = new ArrayList<labelValuePair>();
+
+   private class labelValuePair {
+      private final String label;
+      private final String value;
+
+      public labelValuePair(String label, String value) {
+         super();
+         this.label = label;
+         this.value = value;
+      }
+
+      @SuppressWarnings("unused")
+      public String getLabel() {
+         return label;
+      }
+
+      @SuppressWarnings("unused")
+      public String getValue() {
+         return value;
+      }
+   }
 
    private void createLayout() {
       removeAllComponents();
 
-      if (artifact != null) {
-         final HorizontalLayout attributesLayout = new HorizontalLayout();
-         final OseeShowHideButton showHideButton = new OseeShowHideButton("Attributes");
-         showHideButton.addListener(new OseeShowHideButton.ClickListener() {
-            @Override
-            public void buttonClick(OseeShowHideButton.ClickEvent event) {
-               attributesLayout.setVisible(showHideButton.isStateShow());
-            }
-         });
-         attributesLayout.setVisible(showHideButton.isStateShow());
-
-         Map<String, String> attributes = new HashMap<String, String>();
-         attributes.put("Category", artifact.getAttr_Category());
-         attributes.put("Developmental Assurance Level", artifact.getAttr_DevAssurLevel());
-         attributes.put("Imported Paragraph Number", artifact.getAttr_ImpoParaNum());
-         attributes.put("Partition", artifact.getAttr_Partition());
-         attributes.put("Qualification Method", artifact.getAttr_QualMethod());
-         attributes.put("Subsystem", artifact.getAttr_Subsystm());
-         attributes.put("Technical Performance Parameter", artifact.getAttr_TechPerfParam());
-         Set<Entry<String, String>> set = attributes.entrySet();
-         VerticalLayout attrLabelsLayout = new VerticalLayout();
-         VerticalLayout attrValuesLayout = new VerticalLayout();
-
-         for (Entry<String, String> entry : set) {
-            Label attrLabel = new Label(String.format("%s:", entry.getKey()));
-            Label attrValue = new Label(entry.getValue());
-            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
-            attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
-
-            attrLabelsLayout.addComponent(attrLabel);
-            attrValuesLayout.addComponent(attrValue);
-
-            attrLabelsLayout.setComponentAlignment(attrLabel, Alignment.MIDDLE_RIGHT);
-            attrValuesLayout.setComponentAlignment(attrValue, Alignment.MIDDLE_LEFT);
+      final HorizontalLayout attributesLayout = new HorizontalLayout();
+      final OseeShowHideButton showHideButton = new OseeShowHideButton("Attributes");
+      showHideButton.addListener(new OseeShowHideButton.ClickListener() {
+         @Override
+         public void buttonClick(OseeShowHideButton.ClickEvent event) {
+            attributesLayout.setVisible(showHideButton.isStateShow());
          }
+      });
+      attributesLayout.setVisible(showHideButton.isStateShow());
 
-         Label spacer = new Label("");
-         spacer.setWidth(15, UNITS_PIXELS);
-         attributesLayout.addComponent(attrLabelsLayout);
-         attributesLayout.addComponent(spacer);
-         attributesLayout.addComponent(attrValuesLayout);
+      VerticalLayout attrLabelsLayout = new VerticalLayout();
+      VerticalLayout attrValuesLayout = new VerticalLayout();
 
-         addComponent(showHideButton);
-         addComponent(attributesLayout);
-         setExpandRatio(attributesLayout, 1.0f);
+      for (labelValuePair pair : attributes) {
+         Label attrLabel = new Label(String.format("%s:", pair.getLabel()));
+         Label attrValue = new Label(pair.getValue());
+         attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
+         attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
+
+         attrLabelsLayout.addComponent(attrLabel);
+         attrValuesLayout.addComponent(attrValue);
+
+         attrLabelsLayout.setComponentAlignment(attrLabel, Alignment.MIDDLE_RIGHT);
+         attrValuesLayout.setComponentAlignment(attrValue, Alignment.MIDDLE_LEFT);
       }
+
+      Label spacer = new Label("");
+      spacer.setWidth(15, UNITS_PIXELS);
+      attributesLayout.addComponent(attrLabelsLayout);
+      attributesLayout.addComponent(spacer);
+      attributesLayout.addComponent(attrValuesLayout);
+
+      addComponent(showHideButton);
+      addComponent(attributesLayout);
+      setExpandRatio(attributesLayout, 1.0f);
    }
 
    @Override
    public void clearAll() {
-      this.artifact = null;
+      attributes.clear();
       createLayout();
    }
 
    @Override
    public void setErrorMessage(String message) {
+      //TODO:
    }
 
    @Override
    public void addAttribute(String type, String value) {
+      if (type != null && !type.isEmpty() && value != null && !value.isEmpty()) {
+         attributes.add(new labelValuePair(type, value));
+      }
+      createLayout();
    }
 
 }

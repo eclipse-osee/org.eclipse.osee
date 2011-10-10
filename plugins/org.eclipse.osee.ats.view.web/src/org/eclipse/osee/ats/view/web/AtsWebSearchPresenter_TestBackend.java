@@ -184,7 +184,13 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
                relComp.addRelationType(swReqRelationType);
 
                attrComp.clearAll();
-               attrComp.addAttribute("type", "value");
+               attrComp.addAttribute("Category", "B");
+               attrComp.addAttribute("Developmental Assurance Level", "E");
+               attrComp.addAttribute("Imported Paragraph Number", "3.2.1.1");
+               attrComp.addAttribute("Partition", "CND");
+               attrComp.addAttribute("Qualification Method", "Test");
+               attrComp.addAttribute("Subsystem", "Communications");
+               attrComp.addAttribute("Technical Performance Parameter", "False");
             }
          }
       }
