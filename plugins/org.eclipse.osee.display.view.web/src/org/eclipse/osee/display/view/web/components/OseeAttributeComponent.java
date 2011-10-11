@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -77,9 +76,6 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
 
          attrLabelsLayout.addComponent(attrLabel);
          attrValuesLayout.addComponent(attrValue);
-
-         attrLabelsLayout.setComponentAlignment(attrLabel, Alignment.MIDDLE_RIGHT);
-         attrValuesLayout.setComponentAlignment(attrValue, Alignment.MIDDLE_LEFT);
       }
 
       Label spacer = new Label("");

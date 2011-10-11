@@ -125,10 +125,12 @@
 }
 
 .osee-attributelabel {
+	text-align:right;
 }
 
 .osee-attributevalue {
 	font-weight:bold;
+	text-align:left;
 }
 
 .osee-attributestitlelabel {
