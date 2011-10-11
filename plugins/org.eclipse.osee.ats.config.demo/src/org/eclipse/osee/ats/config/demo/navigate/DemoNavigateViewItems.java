@@ -83,16 +83,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
             return items;
          }
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
-         return items;
-      }
-      // If Demo Teams not configured, ignore these navigate items
-      try {
-         if (getTeamDef(DemoTeam.Process_Team) == null) {
-            return items;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Demo Teams Not Cofigured", ex);
          return items;
       }
       XNavigateItem jhuItem = new XNavigateItemFolder(parentItem, "John Hopkins Univ (JHU)");
