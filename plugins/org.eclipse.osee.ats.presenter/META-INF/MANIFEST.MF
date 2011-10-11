@@ -17,3 +17,4 @@ Import-Package: org.eclipse.osee.ats.api.components,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data
+Require-Bundle: org.eclipse.core.runtime
