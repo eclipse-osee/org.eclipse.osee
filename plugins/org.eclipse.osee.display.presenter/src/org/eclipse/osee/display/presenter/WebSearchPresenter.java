@@ -32,10 +32,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 
-/*
+/**
  * @author John Misinco
  */
-public class WebSearchPresenter implements SearchPresenter {
+public class WebSearchPresenter<T extends SearchHeaderComponent> implements SearchPresenter<T> {
 
    protected final ArtifactProvider artifactProvider;
    private final static Pattern branchPattern = Pattern.compile("branch=([0-9A-Za-z\\+_=]{20,22})");
@@ -57,12 +57,12 @@ public class WebSearchPresenter implements SearchPresenter {
    }
 
    @Override
-   public void initSearchHome(SearchHeaderComponent searchHeaderComp) {
+   public void initSearchHome(T searchHeaderComp) {
       searchHeaderComp.clearAll();
    }
 
    @Override
-   public void initSearchResults(String url, SearchHeaderComponent searchHeaderComp, SearchResultsListComponent searchResultsComp) {
+   public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp) {
       searchResultsComp.clearAll();
       SearchParameters params = decodeSearchUrl(url);
       List<ReadableArtifact> searchResults = null;

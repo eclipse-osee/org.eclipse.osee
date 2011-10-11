@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.search;
 
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
-import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
@@ -19,15 +18,10 @@ import org.eclipse.osee.display.api.search.SearchPresenter;
 /*
  * @author John Misinco
  */
-public interface AtsSearchPresenter extends SearchPresenter {
+public interface AtsSearchPresenter<T extends AtsSearchHeaderComponentInterface> extends SearchPresenter<T> {
 
-   void selectProgram(WebId program, AtsSearchHeaderComponentInterface headerComponent);
+   void selectProgram(WebId program, T headerComponent);
 
    void selectSearch(WebId program, WebId build, boolean nameOnly, String searchPhrase, SearchNavigator atsNavigator);
 
-   //overloaded to avoid casting
-   void initSearchHome(AtsSearchHeaderComponentInterface headerComponent);
-
-   //overloaded to avoid casting
-   void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent);
 }

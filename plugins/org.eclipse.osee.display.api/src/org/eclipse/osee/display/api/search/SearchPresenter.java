@@ -21,15 +21,15 @@ import org.eclipse.osee.display.api.data.WebId;
 /*
  * @author John Misinco
  */
-public interface SearchPresenter {
+public interface SearchPresenter<T extends SearchHeaderComponent> {
 
-   void initSearchHome(SearchHeaderComponent searchHeaderComp);
+   void initSearchHome(T searchHeaderComp);
 
-   void initSearchResults(String url, SearchHeaderComponent searchHeaderComp, SearchResultsListComponent searchResultsComp);
+   void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp);
 
    void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator);
 
-   void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp);
+   void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp);
 
    void selectRelationType(WebId id, RelationComponent relationComponent);
 

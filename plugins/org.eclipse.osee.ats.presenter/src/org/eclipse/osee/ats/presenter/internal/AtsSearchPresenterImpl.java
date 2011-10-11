@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author John Misinco
  */
-public class AtsSearchPresenterImpl extends WebSearchPresenter implements AtsSearchPresenter {
+public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface> extends WebSearchPresenter<T> implements AtsSearchPresenter<T> {
 
    private final static Pattern buildPattern = Pattern.compile("build=([0-9A-Za-z\\+_=]{20,22})");
    private final static Pattern programPattern = Pattern.compile("program=([0-9A-Za-z\\+_=]{20,22})");
@@ -55,7 +55,7 @@ public class AtsSearchPresenterImpl extends WebSearchPresenter implements AtsSea
    }
 
    @Override
-   public void initSearchHome(AtsSearchHeaderComponentInterface headerComponent) {
+   public void initSearchHome(T headerComponent) {
       headerComponent.clearAll();
       Collection<WebId> programs = null;
       try {
@@ -70,10 +70,10 @@ public class AtsSearchPresenterImpl extends WebSearchPresenter implements AtsSea
    }
 
    @Override
-   public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
+   public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent) {
       SearchParameters params = decode(url);
       WebId program = null, build = null;
-      searchHeaderComponent.clearAll();
+      //      searchHeaderComponent.clearAll();
       Collection<WebId> programs = null;
 
       try {
@@ -83,7 +83,7 @@ public class AtsSearchPresenterImpl extends WebSearchPresenter implements AtsSea
          return;
       }
       for (WebId p : programs) {
-         searchHeaderComponent.addProgram(p);
+         //         searchHeaderComponent.addProgram(p);
          if (p.getGuid().equals(params.getProgram().getGuid())) {
             program = p;
          }
@@ -102,7 +102,7 @@ public class AtsSearchPresenterImpl extends WebSearchPresenter implements AtsSea
          return;
       }
       for (WebId b : builds) {
-         searchHeaderComponent.addBuild(b);
+         //         searchHeaderComponent.addBuild(b);
          if (b.getGuid().equals(params.getBuild().getGuid())) {
             build = b;
          }
@@ -122,14 +122,14 @@ public class AtsSearchPresenterImpl extends WebSearchPresenter implements AtsSea
          return;
       }
 
-      searchHeaderComponent.setSearchCriteria(program, build, params.getNameOnly(), params.getSearchPhrase());
+      //      searchHeaderComponent.setSearchCriteria(program, build, params.getNameOnly(), params.getSearchPhrase());
       String newUrl = encode(new WebId(branchGuid, ""), params.getNameOnly(), params.getSearchPhrase());
       initSearchResults(newUrl, searchHeaderComponent, resultsComponent);
 
    }
 
    @Override
-   public void selectProgram(WebId program, AtsSearchHeaderComponentInterface headerComponent) {
+   public void selectProgram(WebId program, T headerComponent) {
       Collection<WebId> builds = null;
       try {
          builds = getbuilds(program);

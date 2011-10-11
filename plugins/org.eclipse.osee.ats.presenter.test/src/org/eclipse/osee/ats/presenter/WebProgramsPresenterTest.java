@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.presenter;
 
 import junit.framework.Assert;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
 import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
 import org.eclipse.osee.ats.presenter.internal.AtsSearchPresenterImpl;
 import org.eclipse.osee.ats.presenter.mock.MockAtsSearchHeaderComponent;
@@ -39,8 +40,9 @@ public class WebProgramsPresenterTest {
       teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, build2Artifact);
       teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, build3Artifact);
       MockArtifactProvider provider = new MockArtifactProvider();
-      provider.setArtifact(programArtifact);
-      AtsSearchPresenterImpl presenter = new AtsSearchPresenterImpl(provider);
+      provider.addArtifact(programArtifact);
+      AtsSearchPresenterImpl<AtsSearchHeaderComponentInterface> presenter =
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponentInterface>(provider);
       MockAtsSearchHeaderComponent comp = new MockAtsSearchHeaderComponent();
       WebId program = new WebId("prg1Guid", "Program1");
       presenter.selectProgram(program, comp);
@@ -50,7 +52,8 @@ public class WebProgramsPresenterTest {
 
    @Test
    public void testSelectSearch() {
-      AtsSearchPresenterImpl presenter = new AtsSearchPresenterImpl(null);
+      AtsSearchPresenterImpl<AtsSearchHeaderComponentInterface> presenter =
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponentInterface>(null);
       MockSearchNavigator navigator = new MockSearchNavigator();
       WebId program = new WebId("prgGuid", "prgName");
       WebId build = new WebId("bldGuid", "bldName");
@@ -62,12 +65,13 @@ public class WebProgramsPresenterTest {
 
    @Test
    public void testInitSearchHome() {
-      MockArtifact webPrograms = new MockArtifact("webPrgGuid", "Web Programs");
+      MockArtifact webPrograms = new MockArtifact("Awsk_RtncCochcuSxagA", "Web Programs");
       MockArtifact program1 = new MockArtifact("prg1Guid", "Program1");
       webPrograms.addRelation(CoreRelationTypes.Universal_Grouping__Members, program1);
       MockArtifactProvider provider = new MockArtifactProvider();
-      provider.setArtifact(webPrograms);
-      AtsSearchPresenterImpl presenter = new AtsSearchPresenterImpl(provider);
+      provider.addArtifact(webPrograms);
+      AtsSearchPresenterImpl<AtsSearchHeaderComponentInterface> presenter =
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponentInterface>(provider);
       MockAtsSearchHeaderComponent headerComp = new MockAtsSearchHeaderComponent();
       presenter.initSearchHome(headerComp);
       Assert.assertTrue(headerComp.isClearAllCalled());

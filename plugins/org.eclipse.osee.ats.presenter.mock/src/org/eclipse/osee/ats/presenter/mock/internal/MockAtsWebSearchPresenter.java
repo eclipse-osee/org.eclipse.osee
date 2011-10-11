@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
@@ -33,9 +32,10 @@ import org.eclipse.osee.display.api.search.SearchNavigator;
 /**
  * @author Shawn F. Cook
  */
-public class MockAtsWebSearchPresenter implements AtsSearchPresenter {
+public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHeaderComponentInterface> {
 
-   private static final AtsSearchPresenter atsBackend = new MockAtsWebSearchPresenter();
+   private static final AtsSearchPresenter<AtsSearchHeaderComponentInterface> atsBackend =
+      new MockAtsWebSearchPresenter();
    private String url = "";
 
    private WebId program = new WebId("", "");
@@ -146,22 +146,17 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter {
    }
 
    @Override
-   public void initSearchHome(SearchHeaderComponent searchHeaderComp) {
-      searchHeaderComp.clearAll();
-   }
-
-   @Override
    public void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator) {
       String url = String.format("/artifact/%s", artifact.getGuid());
       oseeNavigator.navigateArtifactPage(url);
    }
 
    @Override
-   public void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
+   public void initArtifactPage(String url, AtsSearchHeaderComponentInterface searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
       this.url = url;
       updateSearchHeaderCriteria(url);
       try {
-         initSearchHome((AtsSearchHeaderComponentInterface) searchHeaderComp);
+         initSearchHome(searchHeaderComp);
       } catch (Exception e) {
          System.out.println("AtsWebSearchPresenter_TestBackend.initArtifactPage - CRITICAL ERROR: cast threw exception.");
       }
@@ -221,11 +216,6 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter {
             // headerComponent.setBuild(builds.iterator().next());
          }
       }
-   }
-
-   @Override
-   public void initSearchResults(String url, SearchHeaderComponent searchHeaderComp, SearchResultsListComponent searchResultsComp) {
-      // Do nothing
    }
 
    private void updateSearchHeaderCriteria(String url) {
