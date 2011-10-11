@@ -61,7 +61,7 @@ public class AtsUiApplication extends OseeUiApplication {
 
    @Override
    protected SearchPresenter createSearchPresenter() {
-      return AtsWebSearchPresenter_TestBackend.getInstance();
+      return null;
    }
 
 }

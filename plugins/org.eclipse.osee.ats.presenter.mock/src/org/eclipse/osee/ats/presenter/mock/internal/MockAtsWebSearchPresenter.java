@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.view.web;
+package org.eclipse.osee.ats.presenter.mock.internal;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,14 +29,13 @@ import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.view.web.UrlParamNameConstants;
 
 /**
  * @author Shawn F. Cook
  */
-public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
+public class MockAtsWebSearchPresenter implements AtsSearchPresenter {
 
-   private static final AtsSearchPresenter atsBackend = new AtsWebSearchPresenter_TestBackend();
+   private static final AtsSearchPresenter atsBackend = new MockAtsWebSearchPresenter();
    private String url = "";
 
    private WebId program = new WebId("", "");
@@ -72,7 +71,7 @@ public class AtsWebSearchPresenter_TestBackend implements AtsSearchPresenter {
    private final Map<WebId, Collection<WebId>> programsAndBuilds = new HashMap<WebId, Collection<WebId>>();
    private final Map<String, WebArtifact> artifacts = new HashMap<String, WebArtifact>();
 
-   public AtsWebSearchPresenter_TestBackend() {
+   public MockAtsWebSearchPresenter() {
       super();
 
       // populate test data

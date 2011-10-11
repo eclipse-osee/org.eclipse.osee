@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.view.web;
+package org.eclipse.osee.ats.presenter.mock.internal;
 
 /**
  * @author Shawn F. Cook
