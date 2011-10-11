@@ -8,23 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.history.column;
+package org.eclipse.osee.ats.editor.log.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.swt.SWT;
 
-public class AuthorColumn extends XViewerValueColumn {
-   private static AuthorColumn instance = new AuthorColumn();
+public class LogMessageColumn extends XViewerValueColumn {
 
-   public static AuthorColumn getInstance() {
+   private static LogMessageColumn instance = new LogMessageColumn();
+
+   public static LogMessageColumn getInstance() {
       return instance;
    }
 
-   public AuthorColumn() {
-      super("ats.history.Author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, "");
+   public LogMessageColumn() {
+      super("ats.log.Message", "Message", 175, SWT.LEFT, true, SortDataType.String, false, "");
    }
 
    /**
@@ -32,16 +32,16 @@ public class AuthorColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public AuthorColumn copy() {
-      AuthorColumn newXCol = new AuthorColumn();
+   public LogMessageColumn copy() {
+      LogMessageColumn newXCol = new LogMessageColumn();
       copy(this, newXCol);
       return newXCol;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof Change) {
-         return UserManager.getUserNameById(((Change) element).getTxDelta().getEndTx().getAuthor());
+      if (element instanceof LogItem) {
+         return ((LogItem) element).getMsg();
       }
       return "";
    }

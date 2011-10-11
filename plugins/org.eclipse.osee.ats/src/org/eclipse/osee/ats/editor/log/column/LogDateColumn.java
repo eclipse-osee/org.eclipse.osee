@@ -8,23 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.history.column;
+package org.eclipse.osee.ats.editor.log.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.swt.SWT;
 
-public class AuthorColumn extends XViewerValueColumn {
-   private static AuthorColumn instance = new AuthorColumn();
+public class LogDateColumn extends XViewerValueColumn {
 
-   public static AuthorColumn getInstance() {
+   private static LogDateColumn instance = new LogDateColumn();
+
+   public static LogDateColumn getInstance() {
       return instance;
    }
 
-   public AuthorColumn() {
-      super("ats.history.Author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, "");
+   public LogDateColumn() {
+      super("ats.log.Date", "Date", 120, SWT.LEFT, true, SortDataType.Date, false, "");
    }
 
    /**
@@ -32,17 +33,18 @@ public class AuthorColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public AuthorColumn copy() {
-      AuthorColumn newXCol = new AuthorColumn();
+   public LogDateColumn copy() {
+      LogDateColumn newXCol = new LogDateColumn();
       copy(this, newXCol);
       return newXCol;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof Change) {
-         return UserManager.getUserNameById(((Change) element).getTxDelta().getEndTx().getAuthor());
+      if (element instanceof LogItem) {
+         return DateUtil.getMMDDYYHHMM(((LogItem) element).getDate());
       }
+
       return "";
    }
 }

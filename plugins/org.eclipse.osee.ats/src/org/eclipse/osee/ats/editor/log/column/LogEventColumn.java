@@ -8,18 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.history.column;
+package org.eclipse.osee.ats.editor.log.column;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.SMAState;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.core.util.WorkPageType;
@@ -32,16 +33,16 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
-public class EventColumn extends XViewerValueColumn {
+public class LogEventColumn extends XViewerValueColumn {
 
-   private static EventColumn instance = new EventColumn();
+   private static LogEventColumn instance = new LogEventColumn();
 
-   public static EventColumn getInstance() {
+   public static LogEventColumn getInstance() {
       return instance;
    }
 
-   public EventColumn() {
-      super("ats.history.Event", "Event", 290, SWT.LEFT, true, SortDataType.String, false, "");
+   public LogEventColumn() {
+      super("ats.log.Event", "Event", 115, SWT.LEFT, true, SortDataType.String, false, "");
    }
 
    /**
@@ -49,8 +50,8 @@ public class EventColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public EventColumn copy() {
-      EventColumn newXCol = new EventColumn();
+   public LogEventColumn copy() {
+      LogEventColumn newXCol = new LogEventColumn();
       copy(this, newXCol);
       return newXCol;
    }
@@ -61,21 +62,12 @@ public class EventColumn extends XViewerValueColumn {
          if (element instanceof String) {
             return (String) element;
          }
-         if (element instanceof Change) {
-            Change change = (Change) element;
-            if (change.getItemTypeName().equals(AtsAttributeTypes.CurrentState.getName())) {
-               return processCurrentStateChange(change);
-            }
-            if (change.getItemTypeName().equals(AtsAttributeTypes.CurrentStateType.getName())) {
-               if (change.getIsValue().equals(WorkPageType.Completed.name())) {
-                  return "Completed";
-               } else if (change.getIsValue().equals(WorkPageType.Cancelled.name())) {
-                  return "Cancelled";
-               }
-            }
+         if (element instanceof LogItem) {
+            return ((LogItem) element).getType().name();
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }
@@ -83,7 +75,7 @@ public class EventColumn extends XViewerValueColumn {
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) {
       if (col.getName().equals("Event")) {
-         String text = getColumnText(element, EventColumn.getInstance(), columnIndex);
+         String text = getColumnText(element, LogEventColumn.getInstance(), columnIndex);
          if (text.startsWith("Assigned") || text.equals("UnAssigned")) {
             return ImageManager.getImage(FrameworkImage.USERS);
          } else if (text.startsWith("Statused")) {

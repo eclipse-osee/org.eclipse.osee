@@ -8,23 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.history.column;
+package org.eclipse.osee.ats.editor.log.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.osee.ats.core.workflow.log.LogItem;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
-public class AuthorColumn extends XViewerValueColumn {
-   private static AuthorColumn instance = new AuthorColumn();
+public class LogAuthorColumn extends XViewerValueColumn {
+   private static LogAuthorColumn instance = new LogAuthorColumn();
 
-   public static AuthorColumn getInstance() {
+   public static LogAuthorColumn getInstance() {
       return instance;
    }
 
-   public AuthorColumn() {
-      super("ats.history.Author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, "");
+   public LogAuthorColumn() {
+      super("ats.log.Author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, "");
    }
 
    /**
@@ -32,16 +34,20 @@ public class AuthorColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public AuthorColumn copy() {
-      AuthorColumn newXCol = new AuthorColumn();
+   public LogAuthorColumn copy() {
+      LogAuthorColumn newXCol = new LogAuthorColumn();
       copy(this, newXCol);
       return newXCol;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof Change) {
-         return UserManager.getUserNameById(((Change) element).getTxDelta().getEndTx().getAuthor());
+      if (element instanceof LogItem) {
+         try {
+            return UserManager.getUser(((LogItem) element).getUser()).getName();
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       }
       return "";
    }

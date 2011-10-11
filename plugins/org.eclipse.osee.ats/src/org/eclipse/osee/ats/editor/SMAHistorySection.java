@@ -13,12 +13,13 @@ package org.eclipse.osee.ats.editor;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.history.XHistoryViewer;
+import org.eclipse.osee.ats.editor.log.XLogViewer;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,7 +50,7 @@ public class SMAHistorySection extends SectionPart {
    public void initialize(IManagedForm form) {
       super.initialize(form);
       Section section = getSection();
-      section.setText("History");
+      section.setText("Log / History");
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
@@ -71,9 +72,16 @@ public class SMAHistorySection extends SectionPart {
       AbstractWorkflowArtifact awa = editor.getAwa();
       final FormToolkit toolkit = getManagedForm().getToolkit();
       Composite composite = toolkit.createComposite(getSection(), SWT.WRAP);
-      composite.setLayout(ALayout.getZeroMarginLayout());
+      composite.setLayout(new GridLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      Label logLabel = toolkit.createLabel(composite, "ATS Log:", SWT.NONE);
+      logLabel.setFont(FontManager.getCourierNew12Bold());
+      XLogViewer xLogViewer = new XLogViewer(awa);
+      xLogViewer.createWidgets(composite, 2);
+
+      Label historyLabel = toolkit.createLabel(composite, "Detailed History (if available):", SWT.NONE);
+      historyLabel.setFont(FontManager.getCourierNew12Bold());
       XHistoryViewer xHistoryViewer = new XHistoryViewer(awa);
       xHistoryViewer.createWidgets(composite, 2);
 

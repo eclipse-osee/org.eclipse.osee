@@ -9,13 +9,10 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.editor.history;
+package org.eclipse.osee.ats.editor.log;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -32,14 +29,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XHistoryViewer extends GenericXWidget {
+public class XLogViewer extends GenericXWidget {
 
-   private HistoryXViewer xViewer;
+   private LogXViewer xViewer;
    private ToolBar toolBar;
    protected final AbstractWorkflowArtifact awa;
-   protected final Collection<Change> changes = new ArrayList<Change>();
+   private Composite mainComp;
 
-   public XHistoryViewer(AbstractWorkflowArtifact awa) {
+   public XLogViewer(AbstractWorkflowArtifact awa) {
       super("");
       this.awa = awa;
    }
@@ -55,7 +52,7 @@ public class XHistoryViewer extends GenericXWidget {
          }
       }
 
-      final Composite mainComp = new Composite(parent, SWT.BORDER);
+      mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       if (toolkit != null) {
@@ -63,14 +60,14 @@ public class XHistoryViewer extends GenericXWidget {
       }
 
       createToolBar(mainComp);
-      HistoryRefreshAction refreshAction = new HistoryRefreshAction("Refresh History", SWT.PUSH, this);
+      LogRefreshAction refreshAction = new LogRefreshAction("Refresh Log", SWT.PUSH, this);
 
       ActionContributionItem item = new ActionContributionItem(refreshAction);
       item.fill(toolBar, 0);
 
-      xViewer = new HistoryXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      xViewer = new LogXViewer(awa, mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xViewer.setContentProvider(new ArrayTreeContentProvider());
-      xViewer.setLabelProvider(new HistoryLabelProvider(xViewer));
+      xViewer.setLabelProvider(new LogLabelProvider(xViewer));
       new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
 
       if (toolkit != null) {
@@ -131,10 +128,7 @@ public class XHistoryViewer extends GenericXWidget {
 
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
-   public HistoryXViewer getXViewer() {
+   public LogXViewer getXViewer() {
       return xViewer;
    }
 
@@ -151,6 +145,7 @@ public class XHistoryViewer extends GenericXWidget {
    @Override
    public void refresh() {
       getXViewer().refresh();
+      refreshTableSize();
    }
 
    @Override
