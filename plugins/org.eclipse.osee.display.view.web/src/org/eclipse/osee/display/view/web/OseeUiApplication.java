@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web;
 
+import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import com.vaadin.Application;
@@ -23,6 +25,7 @@ public class OseeUiApplication extends Application {
 
    protected final SearchNavigator navigator = createNavigator();
    protected SearchPresenter searchPresenter;
+   protected SearchHeaderComponent searchHeaderComponent = createSearchHeaderComponent();
 
    public OseeUiApplication(SearchPresenter searchPresenter) {
       this.searchPresenter = searchPresenter;
@@ -53,5 +56,9 @@ public class OseeUiApplication extends Application {
 
    public SearchPresenter getSearchPresenter() {
       return searchPresenter;
+   }
+
+   protected SearchHeaderComponent createSearchHeaderComponent() {
+      return new OseeSearchHeaderComponent();
    }
 }

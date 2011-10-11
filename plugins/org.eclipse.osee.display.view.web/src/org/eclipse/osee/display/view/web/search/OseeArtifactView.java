@@ -13,7 +13,6 @@ package org.eclipse.osee.display.view.web.search;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.search.SearchPresenter;
-import org.eclipse.osee.display.view.web.OseeUiApplication;
 import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponent;
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
 import org.eclipse.osee.display.view.web.components.OseeBreadcrumbComponent;
@@ -32,9 +31,8 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeArtifactView extends CustomComponent implements Navigator.View, ArtifactHeaderComponent {
 
-   private boolean populated = false;
    protected SearchPresenter searchPresenter = null;
-   protected OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
+   protected OseeSearchHeaderComponent searchHeader;
    protected OseeRelationsComponent relationsComp = new OseeRelationsComponent();
    protected OseeAttributeComponent attributeComp = new OseeAttributeComponent();
    private final OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(null);
@@ -45,7 +43,7 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
       //TODO: remove?
    }
 
-   private void createLayout() {
+   protected void createLayout() {
       setSizeFull();
 
       HorizontalLayout leftMarginAndBody = new HorizontalLayout();
@@ -88,10 +86,10 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
       }
 
       final VerticalLayout vertLayout = new VerticalLayout();
-      vertLayout.addComponent(oseeSearchHeader);
-      vertLayout.setComponentAlignment(oseeSearchHeader, Alignment.TOP_LEFT);
-      oseeSearchHeader.setWidth(100, UNITS_PERCENTAGE);
-      oseeSearchHeader.setHeight(null);
+      vertLayout.addComponent(searchHeader);
+      vertLayout.setComponentAlignment(searchHeader, Alignment.TOP_LEFT);
+      searchHeader.setWidth(100, UNITS_PERCENTAGE);
+      searchHeader.setHeight(null);
       vertLayout.addComponent(leftMarginAndBody);
       vertLayout.setExpandRatio(leftMarginAndBody, 1.0f);
 
@@ -105,30 +103,8 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    }
 
    @Override
-   public void navigateTo(String requestedDataId) {
-      if (!populated) {
-         try {
-            OseeUiApplication app = (OseeUiApplication) this.getApplication();
-            searchPresenter = app.getSearchPresenter();
-         } catch (Exception e) {
-            System.out.println("OseeArtifactView.attach - CRITICAL ERROR: (OseeUiApplication) this.getApplication() threw an exception.");
-         }
-      }
-      populated = true;
-
-      if (searchPresenter != null) {
-         searchPresenter.initArtifactPage(requestedDataId, oseeSearchHeader, this, relationsComp, attributeComp);
-      }
-      createLayout();
-   }
-
-   @Override
    public String getWarningForNavigatingFrom() {
       return null;
-   }
-
-   protected OseeSearchHeaderComponent getOseeSearchHeader() {
-      return new OseeSearchHeaderComponent();
    }
 
    @Override
@@ -146,5 +122,13 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    @Override
    public void setErrorMessage(String message) {
       //TODO:
+   }
+
+   @Override
+   public void navigateTo(String requestedDataId) {
+      if (searchHeader != null) {
+         searchHeader.createLayout();
+      }
+      createLayout();
    }
 }

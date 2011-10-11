@@ -36,12 +36,6 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
 
    private static final AtsSearchPresenter<AtsSearchHeaderComponentInterface> atsBackend =
       new MockAtsWebSearchPresenter();
-   private String url = "";
-
-   private WebId program = new WebId("", "");
-   private WebId build = new WebId("", "");
-   private boolean nameOnly = false;
-   private String searchPhrase = "";
 
    // *** TEST DATA ***
    WebId build0 = new WebId("baseline_guid", "Baseline");
@@ -96,17 +90,6 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
          artifact.setAttr_Subsystm("Communications");
          artifact.setAttr_TechPerfParam("False");
       }
-
-      // Create a large list of artifacts
-      // for (int i = 0; i < 20; i++) {
-      // WebArtifact art =
-      // new WebArtifact(String.format("SWReq_GUID_%d", i),
-      // String.format("SW Req Bulk Artifact (%d)", i),
-      // "Software Requirement", Arrays.asList(swreqs), new
-      // WebId(String.format("branch_id_bulk_", i),
-      // String.format("branch_id_bulk_", i)));
-      // artifacts.put(art.getGuid(), art);
-      // }
    }
 
    @Override
@@ -140,8 +123,6 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
                headerComponent.addProgram(entry.getKey());
             }
          }
-         setSearchHeaderCriteria(headerComponent);
-         // headerComponent.setProgram(program0);
       }
    }
 
@@ -153,13 +134,6 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
 
    @Override
    public void initArtifactPage(String url, AtsSearchHeaderComponentInterface searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
-      this.url = url;
-      updateSearchHeaderCriteria(url);
-      try {
-         initSearchHome(searchHeaderComp);
-      } catch (Exception e) {
-         System.out.println("AtsWebSearchPresenter_TestBackend.initArtifactPage - CRITICAL ERROR: cast threw exception.");
-      }
       artHeaderComp.clearAll();
       Map<String, String> params = requestStringToParameterMap(url);
       if (params != null && params.size() > 0) {
@@ -218,42 +192,40 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       }
    }
 
-   private void updateSearchHeaderCriteria(String url) {
-      Map<String, String> params = requestStringToParameterMap(url);
-
-      if (params != null) {
-         String programGuid = params.get(UrlParamNameConstants.PARAMNAME_PROGRAM);
-         if (programGuid != null) {
-            program = getProgramWithGuid(programGuid);
-         }
-         String buildGuid = params.get(UrlParamNameConstants.PARAMNAME_BUILD);
-         if (buildGuid != null) {
-            build = getBuildWithGuid(buildGuid);
-         }
-         String nameOnlyStr = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
-         if (nameOnlyStr != null) {
-            nameOnly = nameOnlyStr.equalsIgnoreCase("true");
-         }
-
-         String searchPhrase_local = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
-         if (searchPhrase_local != null) {
-            searchPhrase = searchPhrase_local;
-         }
-      }
-   }
-
-   private void setSearchHeaderCriteria(AtsSearchHeaderComponentInterface searchHeaderComponent) {
-      if (searchHeaderComponent != null) {
-         this.selectProgram(program, searchHeaderComponent);
-         searchHeaderComponent.setSearchCriteria(program, build, nameOnly, searchPhrase);
-      }
-   }
+   //   private void updateAndSetSearchHeaderCriteria(String url, AtsSearchHeaderComponentInterface searchHeaderComponent) {
+   //      Map<String, String> params = requestStringToParameterMap(url);
+   //      WebId program = new WebId("", "");
+   //      WebId build = new WebId("", "");
+   //      boolean nameOnly = false;
+   //      String searchPhrase = "";
+   //
+   //      if (params != null) {
+   //         String programGuid = params.get(UrlParamNameConstants.PARAMNAME_PROGRAM);
+   //         if (programGuid != null) {
+   //            program = getProgramWithGuid(programGuid);
+   //         }
+   //         String buildGuid = params.get(UrlParamNameConstants.PARAMNAME_BUILD);
+   //         if (buildGuid != null) {
+   //            build = getBuildWithGuid(buildGuid);
+   //         }
+   //         String nameOnlyStr = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
+   //         if (nameOnlyStr != null) {
+   //            nameOnly = nameOnlyStr.equalsIgnoreCase("true");
+   //         }
+   //
+   //         String searchPhrase_local = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
+   //         if (searchPhrase_local != null) {
+   //            searchPhrase = searchPhrase_local;
+   //         }
+   //      }
+   //      if (searchHeaderComponent != null) {
+   //         this.selectProgram(program, searchHeaderComponent);
+   //         searchHeaderComponent.setSearchCriteria(program, build, nameOnly, searchPhrase);
+   //      }
+   //   }
 
    @Override
    public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
-      this.url = url;
-      updateSearchHeaderCriteria(url);
-      initSearchHome(searchHeaderComponent);
 
       if (resultsComponent != null) {
          resultsComponent.clearAll();

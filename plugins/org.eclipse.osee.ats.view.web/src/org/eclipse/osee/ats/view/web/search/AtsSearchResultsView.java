@@ -27,13 +27,15 @@ public class AtsSearchResultsView extends OseeSearchResultsView {
 
    private boolean populated = false;
    private AtsSearchPresenter searchPresenter;
+   private String requestedDataId = "";
 
    @Override
    public void attach() {
       if (!populated) {
          try {
-            AtsUiApplication app = (AtsUiApplication) this.getApplication();
-            searchPresenter = app.getAtsWebSearchPresenter();
+            AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
+            searchPresenter = atsApp.getAtsWebSearchPresenter();
+            searchHeader = atsApp.getAtsSearchHeaderComponent();
             callInitSearchHome();
             createLayout();
          } catch (Exception e) {
@@ -51,17 +53,17 @@ public class AtsSearchResultsView extends OseeSearchResultsView {
    private void callInitSearchHome() {
       if (searchPresenter != null) {
          try {
-            searchPresenter.initSearchResults(requestedDataId, (AtsSearchHeaderComponentInterface) oseeSearchHeader,
+            searchPresenter.initSearchResults(requestedDataId, (AtsSearchHeaderComponentInterface) searchHeader,
                searchResultsListComponent);
          } catch (Exception e) {
             System.out.println("AtsSearchResultsView.callInitSearchHome - CRITICAL ERROR: casting threw an exception.");
          }
       }
    }
-   private String requestedDataId = "";
 
    @Override
    public void navigateTo(String requestedDataId) {
+      super.navigateTo(requestedDataId);
       this.requestedDataId = requestedDataId;
       callInitSearchHome();
    }

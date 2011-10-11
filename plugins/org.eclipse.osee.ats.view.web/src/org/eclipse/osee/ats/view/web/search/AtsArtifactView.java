@@ -10,18 +10,44 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web.search;
 
-import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
+import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.display.view.web.search.OseeArtifactView;
-import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 
 /**
  * @author Shawn F. Cook
  */
 public class AtsArtifactView extends OseeArtifactView {
 
+   private boolean populated = false;
+   private String requestedDataId = "";
+
    @Override
-   protected OseeSearchHeaderComponent getOseeSearchHeader() {
-      return new AtsSearchHeaderComponent(false);
+   public void attach() {
+      if (!populated) {
+         try {
+            AtsUiApplication atsApp = (AtsUiApplication) getApplication();
+            searchPresenter = atsApp.getAtsWebSearchPresenter();
+            searchHeader = atsApp.getAtsSearchHeaderComponent();
+            callInitArtifactPage();
+            createLayout();
+         } catch (Exception e) {
+            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: casting threw an exception.");
+         }
+      }
+      populated = true;
+   }
+
+   @Override
+   public void navigateTo(String requestedDataId) {
+      super.navigateTo(requestedDataId);
+      this.requestedDataId = requestedDataId;
+      callInitArtifactPage();
+   }
+
+   private void callInitArtifactPage() {
+      if (searchPresenter != null) {
+         searchPresenter.initArtifactPage(requestedDataId, searchHeader, this, relationsComp, attributeComp);
+      }
    }
 
 }

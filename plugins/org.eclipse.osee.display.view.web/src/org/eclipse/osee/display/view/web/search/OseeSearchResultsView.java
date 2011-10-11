@@ -25,7 +25,7 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchResultsView extends CustomComponent implements Navigator.View {
 
-   protected final OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
+   protected OseeSearchHeaderComponent searchHeader;
    protected final OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
 
    protected void createLayout() {
@@ -43,10 +43,13 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
       leftMarginAndBody.setExpandRatio(searchResultsListComponent, 1.0f);
 
       final VerticalLayout vertLayout = new VerticalLayout();
-      vertLayout.addComponent(oseeSearchHeader);
-      vertLayout.setComponentAlignment(oseeSearchHeader, Alignment.TOP_LEFT);
-      oseeSearchHeader.setWidth(100, UNITS_PERCENTAGE);
-      oseeSearchHeader.setHeight(null);
+      if (searchHeader != null) {
+         searchHeader.setShowOseeTitleAbove(false);
+         vertLayout.addComponent(searchHeader);
+         vertLayout.setComponentAlignment(searchHeader, Alignment.TOP_LEFT);
+         searchHeader.setWidth(100, UNITS_PERCENTAGE);
+         searchHeader.setHeight(null);
+      }
       vertLayout.addComponent(leftMarginAndBody);
       vertLayout.setExpandRatio(leftMarginAndBody, 1.0f);
 
@@ -65,7 +68,10 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
 
    @Override
    public void navigateTo(String requestedDataId) {
-      //Do nothing
+      if (searchHeader != null) {
+         searchHeader.createLayout();
+      }
+      createLayout();
    }
 
    @Override

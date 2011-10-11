@@ -45,7 +45,6 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
    private final ComboBox buildCombo;
    private final CheckBox nameOnlyCheckBox;
    private final TextField searchTextField;
-   private final boolean showOseeTitleAbove;
    private AtsSearchPresenter searchPresenter;
    private AtsNavigator navigator;
    private boolean lockProgramCombo = false;
@@ -57,11 +56,11 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
             AtsUiApplication app = (AtsUiApplication) this.getApplication();
             searchPresenter = app.getAtsWebSearchPresenter();
             navigator = app.getAtsNavigator();
-            createLayout();
          } catch (Exception e) {
             System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
          }
       }
+      createLayout();
       populated = true;
    }
 
@@ -80,7 +79,6 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
 
       if (programCombo != null) {
          programCombo.setNullSelectionAllowed(false);
-         final AtsSearchHeaderComponentInterface me = this;
          programCombo.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -98,8 +96,13 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
       searchTextField.setImmediate(true);
    }
 
+   public AtsSearchHeaderComponent() {
+      this(true);
+   }
+
    @Override
-   protected void createLayout() {
+   public void createLayout() {
+      this.removeAllComponents();
       setHeight(null);
       setWidth(100, UNITS_PERCENTAGE);
       setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT);

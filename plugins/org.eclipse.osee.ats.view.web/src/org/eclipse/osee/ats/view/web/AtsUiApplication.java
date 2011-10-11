@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.view.web;
 
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
+import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.view.web.OseeUiApplication;
 import org.eclipse.osee.vaadin.widgets.HasViews;
@@ -42,7 +44,7 @@ public class AtsUiApplication extends OseeUiApplication {
       try {
          nav = (AtsNavigator) this.navigator;
       } catch (Exception e) {
-         System.out.println("AtsUiApplication.getAtsNavigator() - CRITICAL ERROR: (AtsNavigator) this.navigator threw an exception.");
+         System.out.println("AtsUiApplication.getAtsNavigator() - CRITICAL ERROR: cast threw an exception.");
       }
       return nav;
    }
@@ -52,7 +54,7 @@ public class AtsUiApplication extends OseeUiApplication {
       try {
          pres = (AtsSearchPresenter) this.searchPresenter;
       } catch (Exception e) {
-         System.out.println("AtsUiApplication.getAtsWebSearchPresenter() - CRITICAL ERROR: (AtsWebSearchPresenter) this.searchPresenter threw an exception.");
+         System.out.println("AtsUiApplication.getAtsWebSearchPresenter() - CRITICAL ERROR: cast threw an exception.");
       }
       return pres;
    }
@@ -60,5 +62,20 @@ public class AtsUiApplication extends OseeUiApplication {
    @Override
    protected SearchNavigator createNavigator() {
       return new AtsNavigator();
+   }
+
+   @Override
+   protected SearchHeaderComponent createSearchHeaderComponent() {
+      return new AtsSearchHeaderComponent();
+   }
+
+   public AtsSearchHeaderComponent getAtsSearchHeaderComponent() {
+      AtsSearchHeaderComponent searchHeader = null;
+      try {
+         searchHeader = (AtsSearchHeaderComponent) this.searchHeaderComponent;
+      } catch (Exception e) {
+         System.out.println("AtsUiApplication.getAtsSearchHeaderComponent() - CRITICAL ERROR: cast threw an exception.");
+      }
+      return searchHeader;
    }
 }

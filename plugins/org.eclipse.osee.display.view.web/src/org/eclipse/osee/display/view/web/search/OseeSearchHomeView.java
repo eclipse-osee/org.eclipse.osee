@@ -22,7 +22,7 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchHomeView extends CustomComponent implements Navigator.View {
 
-   protected final OseeSearchHeaderComponent oseeSearchHeader = getOseeSearchHeader();
+   protected OseeSearchHeaderComponent searchHeader;
 
    protected void createLayout() {
       this.setSizeFull();
@@ -30,19 +30,21 @@ public class OseeSearchHomeView extends CustomComponent implements Navigator.Vie
       final VerticalLayout vertLayout = new VerticalLayout();
       vertLayout.setSizeFull();
 
-      vertLayout.addComponent(oseeSearchHeader);
-      vertLayout.setComponentAlignment(oseeSearchHeader, Alignment.MIDDLE_CENTER);
+      if (searchHeader != null) {
+         searchHeader.setShowOseeTitleAbove(true);
+         vertLayout.addComponent(searchHeader);
+         vertLayout.setComponentAlignment(searchHeader, Alignment.MIDDLE_CENTER);
+      }
 
       setCompositionRoot(vertLayout);
    }
 
-   protected OseeSearchHeaderComponent getOseeSearchHeader() {
-      return new OseeSearchHeaderComponent();
-   }
-
    @Override
    public void navigateTo(String requestedDataId) {
-      //Do nothing
+      if (searchHeader != null) {
+         searchHeader.createLayout();
+      }
+      createLayout();
    }
 
    @Override

@@ -18,6 +18,7 @@ import org.eclipse.osee.vaadin.widgets.Navigator;
 /**
  * @author Shawn F. Cook
  */
+@SuppressWarnings("serial")
 public class AtsNavigator extends Navigator implements SearchNavigator {
 
    @Override

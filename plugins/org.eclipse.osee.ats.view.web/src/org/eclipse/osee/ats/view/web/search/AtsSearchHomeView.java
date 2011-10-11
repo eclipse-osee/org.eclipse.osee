@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.view.web.search;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
-import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchHomeView;
 
 /**
@@ -29,8 +28,9 @@ public class AtsSearchHomeView extends OseeSearchHomeView {
    public void attach() {
       if (!populated) {
          try {
-            AtsUiApplication app = (AtsUiApplication) getApplication();
-            searchPresenter = app.getAtsWebSearchPresenter();
+            AtsUiApplication atsApp = (AtsUiApplication) getApplication();
+            searchPresenter = atsApp.getAtsWebSearchPresenter();
+            searchHeader = atsApp.getAtsSearchHeaderComponent();
             callInitSearchHome();
             createLayout();
          } catch (Exception e) {
@@ -40,15 +40,10 @@ public class AtsSearchHomeView extends OseeSearchHomeView {
       populated = true;
    }
 
-   @Override
-   protected OseeSearchHeaderComponent getOseeSearchHeader() {
-      return new AtsSearchHeaderComponent(true);
-   }
-
    private void callInitSearchHome() {
       if (searchPresenter != null) {
          try {
-            AtsSearchHeaderComponent atsSearchHeaderComp = (AtsSearchHeaderComponent) oseeSearchHeader;
+            AtsSearchHeaderComponent atsSearchHeaderComp = (AtsSearchHeaderComponent) searchHeader;
             searchPresenter.initSearchHome(atsSearchHeaderComp);
          } catch (Exception e) {
             System.out.println("OseeArtifactNameLinkComponent.navigateTo - CRITICAL ERROR: casting threw an exception.");
@@ -58,6 +53,7 @@ public class AtsSearchHomeView extends OseeSearchHomeView {
 
    @Override
    public void navigateTo(String requestedDataId) {
+      super.navigateTo(requestedDataId);
       callInitSearchHome();
    }
 }
