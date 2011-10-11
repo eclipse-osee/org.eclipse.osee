@@ -43,6 +43,8 @@ public class TransitionManager {
    private final ITransitionHelper helper;
    private String completedCancellationReason = null;
    private SkynetTransaction transaction;
+   private IBasicUser transitionAsUser;
+   private Date transitionOnDate;
 
    public TransitionManager(ITransitionHelper helper) {
       this(helper, null);
@@ -246,8 +248,8 @@ public class TransitionManager {
                StateDefinition fromState = awa.getStateDefinition();
                StateDefinition toState = awa.getStateDefinitionByName(helper.getToStateName());
 
-               Date transitionDate = new Date();
-               User transitionUser = UserManager.getUser();
+               Date transitionDate = getTransitionOnDate();
+               User transitionUser = UserManager.getUser(getTransitionAsUser());
                // Log transition
                if (toState.isCancelledPage()) {
                   logWorkflowCancelledEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
@@ -441,11 +443,12 @@ public class TransitionManager {
    }
 
    private void logStateCompletedEvent(AbstractWorkflowArtifact awa, String fromStateName, String reason, Date date, IBasicUser user) throws OseeCoreException {
-      awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "");
+      awa.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date,
+         UserManager.getUser(user));
    }
 
    public static void logStateStartedEvent(AbstractWorkflowArtifact awa, IWorkPage state, Date date, IBasicUser user) throws OseeCoreException {
-      awa.getLog().addLog(LogType.StateEntered, state.getPageName(), "");
+      awa.getLog().addLog(LogType.StateEntered, state.getPageName(), "", date, UserManager.getUser(user));
    }
 
    public SkynetTransaction getTransaction() {
@@ -462,6 +465,36 @@ public class TransitionManager {
 
    public static void removeListener(ITransitionListener listener) {
       TransitionListeners.removeListener(listener);
+   }
+
+   /**
+    * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
+    * programatic transitions.
+    */
+   public IBasicUser getTransitionAsUser() throws OseeCoreException {
+      if (transitionAsUser == null) {
+         return UserManager.getUser();
+      }
+      return transitionAsUser;
+   }
+
+   public void setTransitionAsUser(IBasicUser transitionAsUser) {
+      this.transitionAsUser = transitionAsUser;
+   }
+
+   /**
+    * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
+    * programatic transitions.
+    */
+   public Date getTransitionOnDate() {
+      if (transitionOnDate == null) {
+         return new Date();
+      }
+      return transitionOnDate;
+   }
+
+   public void setTransitionOnDate(Date transitionOnDate) {
+      this.transitionOnDate = transitionOnDate;
    }
 
 }
