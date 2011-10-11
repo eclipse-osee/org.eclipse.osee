@@ -5,4 +5,5 @@
    <service>
       <provide interface="org.eclipse.osee.vaadin.ApplicationFactory"/>
    </service>
+   <reference bind="setPresenterFactory" cardinality="1..1" interface="org.eclipse.osee.ats.api.search.AtsPresenterFactory" name="AtsPresenterFactory" policy="static"/>
 </scr:component>

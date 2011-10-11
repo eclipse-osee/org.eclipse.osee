@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.view.web;
 
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.OseeUiApplication;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import com.vaadin.ui.Window;
@@ -22,6 +21,10 @@ import com.vaadin.ui.Window;
  */
 @SuppressWarnings("serial")
 public class AtsUiApplication extends OseeUiApplication {
+
+   public AtsUiApplication(AtsSearchPresenter searchPresenter) {
+      super(searchPresenter);
+   }
 
    @Override
    public void init() {
@@ -58,10 +61,4 @@ public class AtsUiApplication extends OseeUiApplication {
    protected SearchNavigator createNavigator() {
       return new AtsNavigator();
    }
-
-   @Override
-   protected SearchPresenter createSearchPresenter() {
-      return null;
-   }
-
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web;
 
+import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
+import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.vaadin.ApplicationFactory;
 import com.vaadin.Application;
 
@@ -18,14 +20,24 @@ import com.vaadin.Application;
  */
 public class AtsUiApplicationFactory implements ApplicationFactory {
 
+   private AtsPresenterFactory presenterFactory;
+
    @Override
    public Application createInstance() {
-      return new AtsUiApplication();
+      AtsSearchPresenter searchPresenter = null;
+      if (presenterFactory != null) {
+         searchPresenter = presenterFactory.createInstance();
+      }
+      return new AtsUiApplication(searchPresenter);
    }
 
    @Override
    public Class<? extends Application> getApplicationClass() {
       return AtsUiApplication.class;
+   }
+
+   public void setPresenterFactory(AtsPresenterFactory presenterFactory) {
+      this.presenterFactory = presenterFactory;
    }
 
 }

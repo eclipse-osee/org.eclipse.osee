@@ -22,7 +22,11 @@ import com.vaadin.Application;
 public class OseeUiApplication extends Application {
 
    protected final SearchNavigator navigator = createNavigator();
-   protected final SearchPresenter searchPresenter = createSearchPresenter();
+   protected SearchPresenter searchPresenter;
+
+   public OseeUiApplication(SearchPresenter searchPresenter) {
+      this.searchPresenter = searchPresenter;
+   }
 
    @Override
    public void init() {
