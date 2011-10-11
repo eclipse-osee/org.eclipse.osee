@@ -34,6 +34,9 @@ public class AtsWindowFactory {
       VerticalLayout layout = new VerticalLayout();
       final Window w = new Window("OSEE", layout);
 
+      for (final Class<?> viewClass : provider.getViews()) {
+         navigator.addView(viewClass.getSimpleName(), viewClass);
+      }
       w.addComponent(createNavigationBar(navigator, provider));
       w.addComponent(navigator);
       w.addComponent(createFooter());
@@ -48,7 +51,7 @@ public class AtsWindowFactory {
          public void navigatorViewChange(View previous, View current) {
             Window mainWindow = w.getApplication().getMainWindow();
             mainWindow.setCaption("OSEE - " + current.getClass().getSimpleName());
-            mainWindow.showNotification("Navigated to " + current.getClass().getName());
+            //            mainWindow.showNotification("Navigated to " + current.getClass().getName());
          }
       });
       return w;
@@ -66,16 +69,6 @@ public class AtsWindowFactory {
 
       menu.setWidth("100%");
       layout.setWidth("100%");
-      for (final Class<?> viewClass : provider.getViews()) {
-         navigator.addView(viewClass.getSimpleName(), viewClass);
-         //         menu.addItem(viewClass.getSimpleName(), new MenuBar.Command() {
-         //
-         //            @Override
-         //            public void menuSelected(MenuBar.MenuItem selectedItem) {
-         //               navigator.navigateTo(viewClass);
-         //            }
-         //         });
-      }
 
       MenuBar menuBar = new AccountMenuBar();
       layout.addComponent(menuBar);

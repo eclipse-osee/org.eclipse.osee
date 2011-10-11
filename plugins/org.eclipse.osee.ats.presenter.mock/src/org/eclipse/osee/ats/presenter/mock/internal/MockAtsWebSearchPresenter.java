@@ -90,6 +90,15 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
          artifact.setAttr_Subsystm("Communications");
          artifact.setAttr_TechPerfParam("False");
       }
+
+      //Generate large data set
+      for (int i = 5; i < 150; i++) {
+         WebArtifact art =
+            new WebArtifact(String.format("bulkArt_GUID_%d", i), String.format("Bulk Artifact %d", i),
+               "Software Requirement", Arrays.asList(swreqs, defaultroot), new WebId(String.format("branch_id%d", i),
+                  String.format("branch_id%d", i)));
+         artifacts.put(art.getGuid(), art);
+      }
    }
 
    @Override

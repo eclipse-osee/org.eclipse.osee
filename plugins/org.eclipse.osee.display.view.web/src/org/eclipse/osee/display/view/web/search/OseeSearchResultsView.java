@@ -37,7 +37,6 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
       leftMarginSpace.setWidth(80, UNITS_PIXELS);
       leftMarginAndBody.addComponent(leftMarginSpace);
 
-      VerticalLayout bodyVertLayout = new VerticalLayout();
       leftMarginAndBody.addComponent(searchResultsListComponent);
       searchResultsListComponent.setSizeFull();
       leftMarginAndBody.setExpandRatio(searchResultsListComponent, 1.0f);

@@ -14,9 +14,12 @@ package org.eclipse.osee.display.view.web.components;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
+import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedEvent;
+import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -27,73 +30,107 @@ import com.vaadin.ui.VerticalLayout;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchResultsListComponent extends Panel implements SearchResultsListComponent {
+public class OseeSearchResultsListComponent extends VerticalLayout implements SearchResultsListComponent, PageSelectedListener {
 
-   VerticalLayout mainLayout = new VerticalLayout();
-   VerticalLayout bottomSpacer = new VerticalLayout();
-   HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
+   private VerticalLayout mainLayout = new VerticalLayout();
+   private VerticalLayout bottomSpacer = new VerticalLayout();
+   private HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
+   private OseePagingComponent pagingComponent = new OseePagingComponent();
+   private List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
 
    public OseeSearchResultsListComponent() {
       this.setSizeFull();
-      this.setScrollable(true);
-      this.setContent(mainLayout);
-      mainLayout.setMargin(false, false, false, true);
 
-      mainLayout.addComponent(manySearchResultsHorizLayout);
-      Label spacer2 = new Label("");
-      spacer2.setHeight(15, UNITS_PIXELS);
-      mainLayout.addComponent(spacer2);
+      this.addComponent(manySearchResultsHorizLayout);
+      manySearchResultsHorizLayout.setSizeUndefined();
+
+      mainLayout.setMargin(false, false, false, true);
+      Panel mainLayoutPanel = new Panel();
+      mainLayoutPanel.setScrollable(true);
+      mainLayoutPanel.getContent().setSizeUndefined();
+      mainLayoutPanel.setContent(mainLayout);
+      this.addComponent(mainLayoutPanel);
+      mainLayoutPanel.setSizeFull();
+      this.setExpandRatio(mainLayoutPanel, 1.0f);
 
       bottomSpacer.setSizeFull();
       mainLayout.addComponent(bottomSpacer);
       mainLayout.setExpandRatio(bottomSpacer, 1.0f);
+
+      this.addComponent(pagingComponent);
+      pagingComponent.addListener(this);
    }
 
    @Override
    public void clearAll() {
-      Collection<Component> removeTheseComponents = new ArrayList<Component>();
-      for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
-         Component component = iter.next();
-         if (component.getClass() == OseeSearchResultComponent.class) {
-            removeTheseComponents.add(component);
-         }
-      }
-
-      //Remove the components
-      for (Component component : removeTheseComponents) {
-         mainLayout.removeComponent(component);
-      }
-   }
-
-   private int getManySearchResultComponents() {
-      int many = 0;
-      for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
-         Component component = iter.next();
-         if (component.getClass() == OseeSearchResultComponent.class) {
-            many++;
-         }
-      }
-      return many;
+      resultList.clear();
+      pagingComponent.gotoFirstPage();
+      updateManySearchResultsLabel();
+      updateSearchResultsLayout();
    }
 
    private void updateManySearchResultsLabel() {
-      int manySearchResultComponents = getManySearchResultComponents();
+      int manySearchResultComponents = resultList.size();
       manySearchResultsHorizLayout.removeAllComponents();
 
       Label manySearchResults = new Label(String.format("[%d] ", manySearchResultComponents));
       Label manySearchResults_suffix = new Label("search result(s) found.");
       manySearchResultsHorizLayout.addComponent(manySearchResults);
       manySearchResultsHorizLayout.addComponent(manySearchResults_suffix);
+      manySearchResults.setSizeUndefined();
+      manySearchResults_suffix.setSizeUndefined();
       manySearchResults.setStyleName(CssConstants.OSEE_SEARCHRESULT_MATCH_MANY);
 
+      pagingComponent.setManyItemsTotal(manySearchResultComponents);
+
+   }
+
+   private Collection<Integer> prevResultListIndices = new ArrayList<Integer>();
+
+   private void updateSearchResultsLayout() {
+      //if the list of currently visible items has not changed, then don't bother updating the layout
+      pagingComponent.setManyItemsTotal(resultList.size());
+      Collection<Integer> resultListIndices = pagingComponent.getCurrentVisibleItemIndices();
+      if (!resultListIndices.equals(prevResultListIndices)) {
+         //First, get a list of all the search results components currently in the layout
+         Collection<Component> removeTheseComponents = new ArrayList<Component>();
+         for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
+            Component component = iter.next();
+            if (component.getClass() == OseeSearchResultComponent.class) {
+               removeTheseComponents.add(component);
+            }
+         }
+
+         //Second, remove the search result components
+         for (Component component : removeTheseComponents) {
+            mainLayout.removeComponent(component);
+         }
+
+         //Next, add the result components to the layout that are on the current 'page'
+         int spacerIndex = mainLayout.getComponentIndex(bottomSpacer);
+         for (Integer i : resultListIndices) {
+            try {
+               OseeSearchResultComponent searchResultComp = resultList.get(i);
+               mainLayout.addComponent(searchResultComp, 0);
+            } catch (IndexOutOfBoundsException e) {
+               System.out.println("OseeSearchResultsListComponent.updateSearchResultsLayout - CRITICAL ERROR: IndexOutOfBoundsException e");
+            }
+         }
+
+         //Update prevResultListIndices
+         prevResultListIndices.clear();
+         prevResultListIndices.addAll(resultListIndices);
+      }
    }
 
    @Override
    public SearchResultComponent createSearchResult() {
       OseeSearchResultComponent searchResultComp = new OseeSearchResultComponent();
-      int spacerIndex = mainLayout.getComponentIndex(bottomSpacer);
-      mainLayout.addComponent(searchResultComp, spacerIndex);
+      resultList.add(searchResultComp);
+      //      int spacerIndex = mainLayout.getComponentIndex(bottomSpacer);
+      //      mainLayout.addComponent(searchResultComp, spacerIndex);
       updateManySearchResultsLabel();
+      updateSearchResultsLayout();
 
       return searchResultComp;
    }
@@ -101,5 +138,10 @@ public class OseeSearchResultsListComponent extends Panel implements SearchResul
    @Override
    public void setErrorMessage(String message) {
       //TODO:
+   }
+
+   @Override
+   public void pageSelected(PageSelectedEvent source) {
+      updateSearchResultsLayout();
    }
 }

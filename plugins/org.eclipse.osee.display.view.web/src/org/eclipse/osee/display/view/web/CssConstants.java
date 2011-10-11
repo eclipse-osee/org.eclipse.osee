@@ -52,4 +52,6 @@ public final class CssConstants {
    public static final String OSEE_ATTRIBUTESTITLELABEL = "osee-attributestitlelabel";
    public static final String OSEE_ATTRIBUTESBORDER = "osee-attributesborder";
 
+   public static final String OSEE_CURRENTPAGELABEL = "osee-currentpagelabel";
+
 }
