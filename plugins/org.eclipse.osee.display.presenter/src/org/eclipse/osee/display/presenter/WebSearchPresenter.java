@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -29,8 +30,10 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author John Misinco
@@ -65,7 +68,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp) {
       searchResultsComp.clearAll();
       SearchParameters params = decodeSearchUrl(url);
-      List<ReadableArtifact> searchResults = null;
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults = null;
       try {
          searchResults =
             artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
@@ -74,14 +77,30 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          searchResultsComp.setErrorMessage("Error while searching");
          return;
       }
-      for (ReadableArtifact art : searchResults) {
+      try {
+         processSearchResults(searchResults, searchResultsComp);
+      } catch (OseeCoreException ex) {
+         searchResultsComp.setErrorMessage("Error while processing results");
+      }
+   }
+
+   private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp) throws OseeCoreException {
+      for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
+         ReadableArtifact matchedArtifact = match.getItem();
+         List<WebArtifact> ancestry = getAncestry(matchedArtifact);
+         WebId webBranch = new WebId(matchedArtifact.getBranch().getGuid(), matchedArtifact.getBranch().getName());
+         WebArtifact webArt =
+            new WebArtifact(matchedArtifact.getGuid(), matchedArtifact.getName(),
+               matchedArtifact.getArtifactType().getName(), ancestry, webBranch);
          SearchResultComponent searchResult = searchResultsComp.createSearchResult();
-         WebId branch = new WebId(art.getBranch().getGuid(), art.getBranch().getName());
-         WebArtifact displayArtifact =
-            new WebArtifact(art.getGuid(), art.getName(), art.getArtifactType().getName(), null, branch);
-         searchResult.setArtifact(displayArtifact);
-         SearchResultMatch match = null; // SearchResultMatch(attributeType, matchHint, manyMatches);
-         searchResult.addSearchResultMatch(match);
+         searchResult.setArtifact(webArt);
+         for (ReadableAttribute<?> element : match.getElements()) {
+            List<MatchLocation> locations = match.getLocation(element);
+            SearchResultMatch srm =
+               new SearchResultMatch(element.getAttributeType().getName(), locations.iterator().next().toString(),
+                  locations.size());
+            searchResult.addSearchResultMatch(srm);
+         }
       }
    }
 
@@ -161,6 +180,20 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       sb.append("?search=");
       sb.append(searchPhrase);
       return sb.toString().replaceAll("\\s", "%20");
+   }
+
+   protected List<WebArtifact> getAncestry(ReadableArtifact art) {
+      ReadableArtifact cur = art;
+      List<WebArtifact> ancestry = new ArrayList<WebArtifact>();
+      while (cur != null) {
+         ancestry.add(new WebArtifact(cur.getGuid(), cur.getName(), cur.getArtifactType().getName()));
+         if (cur.hasParent()) {
+            cur = cur.getParent();
+         } else {
+            break;
+         }
+      }
+      return ancestry;
    }
 
    private ArtifactParameters decodeArtifactUrl(String url) {

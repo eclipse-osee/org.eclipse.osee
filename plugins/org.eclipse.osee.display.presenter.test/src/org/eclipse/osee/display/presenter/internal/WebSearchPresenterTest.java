@@ -37,7 +37,7 @@ public class WebSearchPresenterTest {
       MockArtifactProvider provider = new MockArtifactProvider();
       List<ReadableArtifact> results = new ArrayList<ReadableArtifact>();
       results.add(new MockArtifact("guid1", "name1"));
-      provider.setArtifactList(results);
+      //      provider.setArtifactList(results);
       WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();

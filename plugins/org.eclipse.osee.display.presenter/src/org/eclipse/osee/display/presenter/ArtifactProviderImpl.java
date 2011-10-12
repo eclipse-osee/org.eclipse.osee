@@ -11,16 +11,20 @@
 package org.eclipse.osee.display.presenter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.CaseType;
+import org.eclipse.osee.orcs.search.Match;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.ResultSet;
 import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
@@ -55,26 +59,37 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public List<ReadableArtifact> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
-      List<ReadableArtifact> results = null;
-      if (nameOnly) {
-         results =
-            factory.fromBranch(branch).and(CoreAttributeTypes.Name, StringOperator.CONTAINS, CaseType.IGNORE_CASE,
-               searchPhrase).build(LoadLevel.FULL).getList();
-      } else {
-         results = null;
-      }
-      return sanitizeResults(results);
-   }
+   public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
+         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      IAttributeType type;
 
-   private List<ReadableArtifact> sanitizeResults(List<ReadableArtifact> results) {
-      if (results != null) {
-         Iterator<ReadableArtifact> it = results.iterator();
-         while (it.hasNext()) {
-            ReadableArtifact result = it.next();
-            if (sanitizeResult(result) == null) {
-               it.remove();
-            }
+      if (nameOnly) {
+         type = CoreAttributeTypes.Name;
+      } else {
+         type = QueryBuilder.ANY_ATTRIBUTE_TYPE;
+      }
+
+      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> resultSet =
+         factory.fromBranch(branch).and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase).buildMatches(
+            LoadLevel.FULL);
+      for (Match<ReadableArtifact, ReadableAttribute<?>> match : resultSet.getList()) {
+         ReadableArtifact matchedArtifact = match.getItem();
+         if (sanitizeResult(matchedArtifact) != null) {
+            results.add(match);
+            //            List<WebArtifact> ancestry = getAncestry(matchedArtifact);
+            //            WebId webBranch = new WebId(matchedArtifact.getBranch().getGuid(), matchedArtifact.getBranch().getName());
+            //            WebArtifact webArt =
+            //               new WebArtifact(matchedArtifact.getGuid(), matchedArtifact.getName(),
+            //                  matchedArtifact.getArtifactType().getName(), ancestry, webBranch);
+            //
+            //            for (ReadableAttribute<?> element : match.getElements()) {
+            //               List<MatchLocation> locations = match.getLocation(element);
+            //               SearchResultMatch srm =
+            //                  new SearchResultMatch(element.getAttributeType().getName(), locations.iterator().next().toString(),
+            //                     locations.size());
+            //               results.put(webArt, srm);
+            //            }
          }
       }
       return results;

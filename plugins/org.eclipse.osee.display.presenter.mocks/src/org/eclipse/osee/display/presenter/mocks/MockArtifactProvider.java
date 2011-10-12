@@ -17,6 +17,8 @@ import org.eclipse.osee.display.presenter.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author John Misinco
@@ -24,14 +26,14 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 public class MockArtifactProvider implements ArtifactProvider {
 
    private final Map<String, ReadableArtifact> artifacts = new HashMap<String, ReadableArtifact>();
-   private List<ReadableArtifact> artList;
+   private List<Match<ReadableArtifact, ReadableAttribute<?>>> resultList;
 
    public void addArtifact(ReadableArtifact artifact) {
       artifacts.put(artifact.getGuid(), artifact);
    }
 
-   public void setArtifactList(List<ReadableArtifact> artList) {
-      this.artList = artList;
+   public void setResultList(List<Match<ReadableArtifact, ReadableAttribute<?>>> resultList) {
+      this.resultList = resultList;
    }
 
    @Override
@@ -45,8 +47,8 @@ public class MockArtifactProvider implements ArtifactProvider {
    }
 
    @Override
-   public List<ReadableArtifact> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) {
-      return artList;
+   public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) {
+      return resultList;
    }
 
 }
