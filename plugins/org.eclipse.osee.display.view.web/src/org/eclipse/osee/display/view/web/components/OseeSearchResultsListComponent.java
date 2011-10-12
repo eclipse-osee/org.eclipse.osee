@@ -20,11 +20,14 @@ import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedEvent;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedListener;
+import com.vaadin.Application;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Shawn F. Cook
@@ -137,7 +140,17 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    @Override
    public void setErrorMessage(String message) {
-      //TODO:
+      Application app = this.getApplication();
+      if (app != null) {
+         Window mainWindow = app.getMainWindow();
+         if (mainWindow != null) {
+            mainWindow.showNotification(message, Notification.TYPE_ERROR_MESSAGE);
+         } else {
+            System.out.println("OseeSearchResultsListComponent.setErrorMessage - ERROR: Application.getMainWindow() returns null value.");
+         }
+      } else {
+         System.out.println("OseeSearchResultsListComponent.setErrorMessage - ERROR: getApplication() returns null value.");
+      }
    }
 
    @Override

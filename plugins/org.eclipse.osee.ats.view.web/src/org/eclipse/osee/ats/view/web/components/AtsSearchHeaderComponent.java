@@ -19,6 +19,7 @@ import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
 import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
+import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.Action;
@@ -33,6 +34,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Shawn F. Cook
@@ -273,7 +276,17 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
 
    @Override
    public void setErrorMessage(String message) {
-      //TODO:
+      Application app = this.getApplication();
+      if (app != null) {
+         Window mainWindow = app.getMainWindow();
+         if (mainWindow != null) {
+            mainWindow.showNotification(message, Notification.TYPE_ERROR_MESSAGE);
+         } else {
+            System.out.println("AtsSearchHeaderComponent.setErrorMessage - ERROR: Application.getMainWindow() returns null value.");
+         }
+      } else {
+         System.out.println("AtsSearchHeaderComponent.setErrorMessage - ERROR: getApplication() returns null value.");
+      }
    }
 
    //TODO: None of this works because Vaadin only supports key actions for Windows and Panel Objects. (this is
