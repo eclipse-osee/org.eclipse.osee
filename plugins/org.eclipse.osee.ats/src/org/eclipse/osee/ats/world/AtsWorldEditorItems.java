@@ -10,71 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.osgi.framework.Bundle;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsWorldEditorItems {
 
-   private static List<IAtsWorldEditorItem> items = new ArrayList<IAtsWorldEditorItem>();
+   private static final ExtensionDefinedObjects<IAtsWorldEditorItem> items =
+      new ExtensionDefinedObjects<IAtsWorldEditorItem>("org.eclipse.osee.ats.AtsWorldEditorItem", "AtsWorldEditorItem",
+         "classname");
 
-   private static void loadAllStateItems() {
-      if (items.size() > 0) {
-         return;
-      }
-      IExtensionPoint point =
-         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWorldEditorItem");
-      if (point == null) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWorldEditorItem extension point");
-         return;
-      }
-      IExtension[] extensions = point.getExtensions();
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         String classname = null;
-         String bundleName = null;
-         for (IConfigurationElement el : elements) {
-            if (el.getName().equals("AtsWorldEditorItem")) {
-               classname = el.getAttribute("classname");
-               bundleName = el.getContributor().getName();
-               if (classname != null && bundleName != null) {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  try {
-                     @SuppressWarnings("rawtypes")
-                     Class taskClass = bundle.loadClass(classname);
-                     Object obj = taskClass.newInstance();
-                     if (obj == null) {
-                        OseeLog.log(Activator.class, Level.SEVERE,
-                           "Error Instantiating AtsWorldEditorItem extension \"" + classname + "\"", null);
-                     } else {
-                        items.add((IAtsWorldEditorItem) obj);
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading AtsWorldEditorItem extension",
-                        ex);
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   /**
-    * @return the stateItems
-    */
    public static List<IAtsWorldEditorItem> getItems() {
-      loadAllStateItems();
-      return items;
+      return items.getObjects();
    }
 }
