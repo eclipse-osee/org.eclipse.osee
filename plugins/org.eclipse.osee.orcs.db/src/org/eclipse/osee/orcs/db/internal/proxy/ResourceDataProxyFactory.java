@@ -82,9 +82,9 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
       List<String> aliases = Arrays.asList(factoryAliases);
       Set<String> keys = proxyClassMap.keySet();
 
-      Conditions.checkExpressionFailOnTrue(Collections.setComplement(aliases, keys).isEmpty(),
+      Conditions.checkExpressionFailOnTrue(!Collections.setComplement(aliases, keys).isEmpty(),
          "Check osgi.ds declaration - property mismatch detected");
-      Conditions.checkExpressionFailOnTrue(Collections.setComplement(keys, aliases).isEmpty(),
+      Conditions.checkExpressionFailOnTrue(!Collections.setComplement(keys, aliases).isEmpty(),
          "Check osgi.ds declaration - property mismatch detected");
    }
 

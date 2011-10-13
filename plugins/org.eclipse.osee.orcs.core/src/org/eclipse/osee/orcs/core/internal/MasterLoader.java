@@ -80,8 +80,6 @@ public class MasterLoader {
       }
 
       public void loadRemaining() throws OseeCoreException {
-         System.out.println("load attributes and relastions");
-
          Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();
          Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
 

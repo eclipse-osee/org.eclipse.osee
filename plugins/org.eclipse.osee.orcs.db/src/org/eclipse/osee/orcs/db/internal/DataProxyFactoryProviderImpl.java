@@ -96,12 +96,17 @@ public class DataProxyFactoryProviderImpl implements DataProxyFactoryProvider {
    }
 
    private void register(ServiceReference<DataProxyFactory> reference) throws OseeCoreException {
-      Bundle bundle = reference.getBundle();
-      DataProxyFactory factory = bundle.getBundleContext().getService(reference);
-      Conditions.checkNotNull(factory, "DataProxyFactory");
-      String[] aliases = getAliases(reference);
-      for (String alias : aliases) {
-         proxyClassMap.put(alias, factory);
+      try {
+         Bundle bundle = reference.getBundle();
+         DataProxyFactory factory = bundle.getBundleContext().getService(reference);
+         Conditions.checkNotNull(factory, "DataProxyFactory");
+         String[] aliases = getAliases(reference);
+         for (String alias : aliases) {
+            proxyClassMap.put(alias, factory);
+         }
+      } catch (Throwable th) {
+         th.printStackTrace();
+         System.out.println("stopme");
       }
    }
 

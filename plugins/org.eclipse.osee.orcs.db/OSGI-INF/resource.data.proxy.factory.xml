@@ -7,8 +7,10 @@
    <service>
       <provide interface="org.eclipse.osee.orcs.core.ds.DataProxyFactory"/>
    </service>
-   <property name="proxy.factory.alias" type="String">DefaultAttributeDataProvider
+   <property name="proxy.factory.alias" type="String">
+DefaultAttributeDataProvider
 ClobAttributeDataProvider
 UriAttributeDataProvider
+MappedAttributeDataProvider
    </property>
 </scr:component>

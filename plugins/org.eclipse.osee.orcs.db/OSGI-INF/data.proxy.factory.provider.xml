@@ -8,4 +8,5 @@
    <service>
       <provide interface="org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider"/>
    </service>
+   <reference bind="addFactory" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.DataProxyFactory" name="DataProxyFactory" policy="static"/>
 </scr:component>
