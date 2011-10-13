@@ -8,19 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal;
-
-import org.eclipse.osee.orcs.db.internal.proxy.ProxyTestSuite;
-import org.eclipse.osee.orcs.db.internal.resource.ResourceTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.SearchTestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+package org.eclipse.osee.orcs.db.internal.resource;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ProxyTestSuite.class, ResourceTestSuite.class, SearchTestSuite.class})
-public class InternalTestSuite {
-   // Test Suite
+public final class ResourceConstants {
+
+   private ResourceConstants() {
+      // Constants class
+   }
+
+   public static final String RESOURCE_PROTOCOL = "attr";
+
+   public static final String BINARY_DATA_PATH = "osee.application.server.data";
 }
