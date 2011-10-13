@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: org.eclipse.osee.orcs.core.integration.test
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.9.9.qualifier
 Fragment-Host: org.eclipse.osee.orcs.core;bundle-version="0.9.9"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.model.mocks,
+ org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.orcs.db.mock

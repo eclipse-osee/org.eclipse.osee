@@ -7,4 +7,6 @@
    </service>
    <reference bind="setOseeDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
    <reference bind="setIdentityService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IdentityService" name="IdentityService" policy="static"/>
+   <reference bind="setDataProxyFactoryProvider" cardinality="1..1" interface="org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider" name="DataProxyFactoryProvider" policy="static"/>
+   <reference bind="setDataStoreTypeCache" cardinality="1..1" interface="org.eclipse.osee.orcs.core.DataStoreTypeCache" name="DataStoreTypeCache" policy="static"/>
 </scr:component>

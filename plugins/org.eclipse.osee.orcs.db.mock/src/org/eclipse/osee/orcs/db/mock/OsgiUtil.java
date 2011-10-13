@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.orcs.db.mock;
 
+import java.util.Dictionary;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.junit.Assert;
@@ -12,6 +13,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -41,5 +43,23 @@ public class OsgiUtil {
 
       Assert.assertNotNull(service);
       return service;
+   }
+
+   public static <S> ServiceRegistration<S> registerService(Class<S> class1, S service, Dictionary<String, ?> properties) throws OseeCoreException {
+      Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
+      Assert.assertNotNull(bundle);
+
+      int bundleState = bundle.getState();
+      if (bundleState != Bundle.STARTING && bundleState != Bundle.ACTIVE) {
+         try {
+            bundle.start();
+         } catch (BundleException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
+      }
+      BundleContext context = bundle.getBundleContext();
+      Assert.assertNotNull(context);
+
+      return context.registerService(class1, service, properties);
    }
 }

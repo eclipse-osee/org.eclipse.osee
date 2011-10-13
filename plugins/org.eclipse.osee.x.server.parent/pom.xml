@@ -41,6 +41,8 @@
 		<module>../../plugins/org.eclipse.osee.framework.h2</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 
+		<module>../../plugins/org.eclipse.osee.orcs.core.integration.test</module>
+
 		<module>../../features/org.eclipse.osee.x.server.feature</module>
 		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
 		<module>../../features/org.eclipse.osee.x.server.feature.source</module>

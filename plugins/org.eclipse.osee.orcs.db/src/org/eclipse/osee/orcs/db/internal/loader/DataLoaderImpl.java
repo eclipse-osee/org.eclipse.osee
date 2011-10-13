@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
@@ -21,7 +22,6 @@ import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.db.internal.DbSystemPreferences;
-import org.eclipse.osee.orcs.db.internal.loader.AttributeLoader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
 public class DataLoaderImpl implements DataLoader {
@@ -30,7 +30,8 @@ public class DataLoaderImpl implements DataLoader {
    private StaticSqlProvider sqlProvider;
    private IOseeDatabaseService oseeDatabaseService;
    private IdentityService identityService;
-   private ProxyDataFactory proxyDataFactory;
+   private DataStoreTypeCache dataStoreTypeCache;
+   private DataProxyFactoryProvider dataProxyFactoryProvider;
 
    private ArtifactLoader artifactLoader;
    private AttributeLoader attributeLoader;
@@ -43,7 +44,10 @@ public class DataLoaderImpl implements DataLoader {
       sqlProvider.setLogger(logger);
       sqlProvider.setPreferences(preferences);
       artifactLoader = new ArtifactLoader(logger, sqlProvider, oseeDatabaseService, identityService);
-      attributeLoader = new AttributeLoader(sqlProvider, oseeDatabaseService, identityService, proxyDataFactory);
+      AttributeDataProxyFactory attributeDataProxyFactory =
+         new AttributeDataProxyFactory(dataProxyFactoryProvider, dataStoreTypeCache.getAttributeTypeCache());
+      attributeLoader =
+         new AttributeLoader(sqlProvider, oseeDatabaseService, identityService, attributeDataProxyFactory);
       relationLoader = new RelationLoader(sqlProvider, oseeDatabaseService);
    }
 
@@ -59,8 +63,12 @@ public class DataLoaderImpl implements DataLoader {
       this.identityService = identityService;
    }
 
-   public void setProxyDataFactory(ProxyDataFactory proxyDataFactory) {
-      this.proxyDataFactory = proxyDataFactory;
+   public void setDataProxyFactoryProvider(DataProxyFactoryProvider dataProxyFactoryProvider) {
+      this.dataProxyFactoryProvider = dataProxyFactoryProvider;
+   }
+
+   public void setDataStoreTypeCache(DataStoreTypeCache dataStoreTypeCache) {
+      this.dataStoreTypeCache = dataStoreTypeCache;
    }
 
    @Override

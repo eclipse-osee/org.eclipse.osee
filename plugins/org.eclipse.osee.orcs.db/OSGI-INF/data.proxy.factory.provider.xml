@@ -5,4 +5,7 @@
    	cardinality="1..1"  
    	policy="static" 
    	bind="setLogger" />
+   <service>
+      <provide interface="org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider"/>
+   </service>
 </scr:component>
