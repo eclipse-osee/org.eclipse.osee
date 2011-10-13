@@ -8,29 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.mocks;
+package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
+import java.util.Comparator;
+import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockSessionContext implements SessionContext {
+public class SqlHandlerComparator implements Comparator<SqlHandler> {
 
    @Override
-   public <T extends AttributeContainer> T getHistorical(int artId, int stripeId) {
-      return null;
+   public int compare(SqlHandler o1, SqlHandler o2) {
+      return o1.getPriority() - o2.getPriority();
    }
-
-   @Override
-   public <T extends AttributeContainer> T getActive(int artId, int branchId) {
-      return null;
-   }
-
-   @Override
-   public String getSessionId() {
-      return null;
-   }
-
 }

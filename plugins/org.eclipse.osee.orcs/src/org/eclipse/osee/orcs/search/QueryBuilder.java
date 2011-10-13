@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -66,9 +67,44 @@ public interface QueryBuilder {
    QueryBuilder resetToDefaults();
 
    /**
-    * Search criteria that checks for the existence of an attribute type.
+    * Search criteria that finds a given artifact id
     */
-   QueryBuilder andExists(IAttributeType attributeType) throws OseeCoreException;
+   QueryBuilder withLocalId(int... artifactId) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds a given artifact ids
+    */
+   QueryBuilder withLocalIds(Collection<Integer> artifactIds) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds a given artifact with guids or hrids
+    */
+   QueryBuilder withGuidsOrHrids(String... ids) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds a given artifact with guids or hrids
+    */
+   QueryBuilder withGuidsOrHrids(Collection<String> ids) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds a given artifact type
+    */
+   QueryBuilder and(IArtifactType... artifactType) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds a given artifact types
+    */
+   QueryBuilder and(Collection<? extends IArtifactType> artifactType) throws OseeCoreException;
+
+   /**
+    * Search criteria that checks for the existence of an attribute type(s).
+    */
+   QueryBuilder andExists(IAttributeType... attributeType) throws OseeCoreException;
+
+   /**
+    * Search criteria that checks for the existence of an attribute types.
+    */
+   QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
 
    /**
     * Search criteria that follows the relation link ending on the given side
@@ -121,4 +157,5 @@ public interface QueryBuilder {
     * Counts the number of items available
     */
    int getCount() throws OseeCoreException;
+
 }

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import org.eclipse.osee.orcs.db.internal.proxy.ClobDataProxyTest;
 import org.eclipse.osee.orcs.db.internal.proxy.ProxyTestSuite;
+import org.eclipse.osee.orcs.db.internal.search.SearchTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ClobDataProxyTest.class, ProxyTestSuite.class})
+@Suite.SuiteClasses({ProxyTestSuite.class, SearchTestSuite.class})
 public class InternalTestSuite {
    // Test Suite
 }

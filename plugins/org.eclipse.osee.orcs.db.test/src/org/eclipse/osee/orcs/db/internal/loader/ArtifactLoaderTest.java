@@ -22,14 +22,16 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.H2Preferences;
 import org.eclipse.osee.orcs.db.mock.MockLog;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 
 public class ArtifactLoaderTest {
@@ -37,12 +39,26 @@ public class ArtifactLoaderTest {
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
+   private static StaticSqlProvider sqlProvider;
+   private static Log log;
+
+   @BeforeClass
+   public static void setUp() {
+      log = new MockLog();
+      sqlProvider = new StaticSqlProvider();
+      sqlProvider.setLogger(new MockLog());
+      sqlProvider.setPreferences(new H2Preferences());
+   }
+
+   @AfterClass
+   public static void tearDown() {
+      sqlProvider = null;
+   }
+
    @org.junit.Test
    public void testArtifactLoadingData() throws OseeCoreException {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      MockLog log = new MockLog();
-      SqlProvider sqlProvider = new StaticSqlProvider(log, new H2Preferences());
 
       ArtifactLoader loader = new ArtifactLoader(log, sqlProvider, oseeDbService, identityService);
 
@@ -93,8 +109,6 @@ public class ArtifactLoaderTest {
 
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      MockLog log = new MockLog();
-      SqlProvider sqlProvider = new StaticSqlProvider(log, new H2Preferences());
 
       ArtifactLoader loader = new ArtifactLoader(log, sqlProvider, oseeDbService, identityService);
 

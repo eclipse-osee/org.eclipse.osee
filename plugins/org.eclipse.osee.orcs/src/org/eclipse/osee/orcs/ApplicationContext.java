@@ -11,5 +11,5 @@
 package org.eclipse.osee.orcs;
 
 public interface ApplicationContext {
-
+   //
 }

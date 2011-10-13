@@ -10,27 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaSet implements Cloneable {
+public class CriteriaSet implements Cloneable, Iterable<Criteria> {
 
-   private final Set<Criteria> criterias = new HashSet<Criteria>();
-   private Criteria baseCriteria;
+   private final List<Criteria> criterias = new LinkedList<Criteria>();
+   private final IOseeBranch branch;
 
-   public CriteriaSet() {
-
+   public CriteriaSet(IOseeBranch branch) {
+      this.branch = branch;
    }
 
-   public Criteria getBaseCriteria() {
-      return baseCriteria;
-   }
-
-   public void setBaseCriteria(Criteria baseCriteria) {
-      this.baseCriteria = baseCriteria;
+   public IOseeBranch getBranch() {
+      return branch;
    }
 
    public void add(Criteria criteria) {
@@ -41,7 +40,7 @@ public class CriteriaSet implements Cloneable {
       return criterias.remove(criteria);
    }
 
-   public Set<Criteria> getCriterias() {
+   public Collection<Criteria> getCriterias() {
       return criterias;
    }
 
@@ -51,10 +50,14 @@ public class CriteriaSet implements Cloneable {
 
    @Override
    public CriteriaSet clone() {
-      CriteriaSet clone = new CriteriaSet();
-      clone.baseCriteria = this.baseCriteria;
+      CriteriaSet clone = new CriteriaSet(this.branch);
       clone.criterias.addAll(this.criterias);
       return clone;
+   }
+
+   @Override
+   public Iterator<Criteria> iterator() {
+      return criterias.iterator();
    }
 
 }

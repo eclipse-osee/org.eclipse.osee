@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface QueryEngine {
 
-   Object create(CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException;
+   Object createCount(String sessionId, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException;
 
+   Object create(String sessionId, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException;
 }

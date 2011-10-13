@@ -25,6 +25,18 @@ public enum Operator {
       this.expression = expression;
    }
 
+   public boolean isEquals() {
+      return EQUAL == this;
+   }
+
+   public boolean isNotEquals() {
+      return NOT_EQUAL == this;
+   }
+
+   public boolean isGreaterThanOrLessThan() {
+      return GREATER_THAN == this || LESS_THAN == this;
+   }
+
    @Override
    public String toString() {
       return expression;

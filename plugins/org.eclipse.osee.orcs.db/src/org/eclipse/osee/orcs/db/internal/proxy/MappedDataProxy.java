@@ -93,6 +93,7 @@ public class MappedDataProxy extends AbstractDataProxy implements CharacterDataP
 
    @Override
    public void purge() throws OseeCoreException {
+      // TODO
       //      try {
       //         if (isRemoteUriValid()) {
       //            URL url = AttributeURL.getAcquireURL(remoteUri);

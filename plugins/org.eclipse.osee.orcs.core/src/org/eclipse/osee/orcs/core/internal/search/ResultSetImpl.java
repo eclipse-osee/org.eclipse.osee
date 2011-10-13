@@ -21,8 +21,10 @@ import org.eclipse.osee.orcs.search.ResultSet;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("unused")
 public class ResultSetImpl implements ResultSet<ReadableArtifact> {
 
+   // TODO implements ResultSetFactory tie in with ArtifactLoader
    private final QueryEngine queryEngine;
    private final CriteriaSet criteriaSet;
    private final QueryOptions options;
@@ -36,9 +38,8 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
 
    @Override
    public ReadableArtifact getOneOrNull() throws OseeCoreException {
-      // SearchCallable callable = queryEngine.search(criteriaSet, options);
-      // LoaderCallable callable = loader.load(search);
-      // ArtifactFactory
+      // SearchCallable call = queryEngine.search(criteriaSet, options);
+      // LoaderCallable call = loader.load(search);
       return null;
    }
 
@@ -49,6 +50,7 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
 
    @Override
    public List<ReadableArtifact> getList() throws OseeCoreException {
+
       return null;
    }
 

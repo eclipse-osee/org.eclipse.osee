@@ -8,29 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.mocks;
+package org.eclipse.osee.orcs.db.internal.search;
 
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
+import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockSessionContext implements SessionContext {
+public interface SqlHandlerFactory {
 
-   @Override
-   public <T extends AttributeContainer> T getHistorical(int artId, int stripeId) {
-      return null;
-   }
-
-   @Override
-   public <T extends AttributeContainer> T getActive(int artId, int branchId) {
-      return null;
-   }
-
-   @Override
-   public String getSessionId() {
-      return null;
-   }
+   List<SqlHandler> createHandlers(CriteriaSet criteriaSet) throws OseeCoreException;
 
 }

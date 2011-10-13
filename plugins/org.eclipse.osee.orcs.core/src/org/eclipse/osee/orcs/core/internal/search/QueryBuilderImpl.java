@@ -10,11 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
@@ -144,8 +152,72 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andExists(IAttributeType attributeType) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createExistsCriteria(attributeType);
+   public QueryBuilder withLocalId(int... artifactIds) throws OseeCoreException {
+      Set<Integer> ids = new HashSet<Integer>();
+      for (Integer id : artifactIds) {
+         ids.add(id);
+      }
+      return withLocalIds(ids);
+   }
+
+   @Override
+   public QueryBuilder withGuidsOrHrids(String... ids) throws OseeCoreException {
+      return withGuidsOrHrids(Arrays.asList(ids));
+   }
+
+   @Override
+   public QueryBuilder withLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
+      return addAndCheck(criteria);
+   }
+
+   @Override
+   public QueryBuilder withGuidsOrHrids(Collection<String> ids) throws OseeCoreException {
+      Set<String> guids = new HashSet<String>();
+      Set<String> hrids = new HashSet<String>();
+      Set<String> invalids = new HashSet<String>();
+      for (String id : ids) {
+         if (GUID.isValid(id)) {
+            guids.add(id);
+         } else if (HumanReadableId.isValid(id)) {
+            hrids.add(id);
+         } else {
+            invalids.add(id);
+         }
+      }
+      Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids or hrids detected - %s", invalids);
+      if (guids.isEmpty()) {
+         Criteria guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
+         addAndCheck(guidCriteria);
+      }
+
+      if (hrids.isEmpty()) {
+         Criteria hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
+         addAndCheck(hridCriteria);
+      }
+      return this;
+   }
+
+   @Override
+   public QueryBuilder and(IArtifactType... artifactType) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createArtifactTypeCriteria(Arrays.asList(artifactType));
+      return addAndCheck(criteria);
+   }
+
+   @Override
+   public QueryBuilder and(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
+      return addAndCheck(criteria);
+   }
+
+   @Override
+   public QueryBuilder andExists(IAttributeType... attributeType) throws OseeCoreException {
+      return andExists(Arrays.asList(attributeType));
+   }
+
+   @Override
+   public QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createExistsCriteria(attributeTypes);
       return addAndCheck(criteria);
    }
 
@@ -157,13 +229,27 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, value);
+      Criteria criteria =
+         criteriaFactory.createAttributeCriteria(attributeType, operator, Collections.singleton(value));
       return addAndCheck(criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, values);
+      return addAndCheck(criteria);
+   }
+
+   @Override
+   public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
+      Criteria criteria =
+         criteriaFactory.createAttributeCriteria(attributeType, operator, match, Collections.singleton(value));
+      return addAndCheck(criteria);
+   }
+
+   @Override
+   public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, match, values);
       return addAndCheck(criteria);
    }
 
@@ -179,22 +265,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
+   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> buildMatches(LoadLevel loadLevel) throws OseeCoreException {
+      return rsetFactory.createMatchesResultSet(criteriaSet.clone(), options.clone());
+   }
+
+   @Override
    public int getCount() throws OseeCoreException {
       return rsetFactory.getCount(criteriaSet.clone(), options.clone());
-   }
-
-   @Override
-   public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> buildMatches(LoadLevel loadLevel) throws OseeCoreException {
-      return null;
    }
 }

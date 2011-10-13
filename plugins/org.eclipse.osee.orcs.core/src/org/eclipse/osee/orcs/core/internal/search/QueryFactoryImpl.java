@@ -11,14 +11,19 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -30,66 +35,85 @@ public class QueryFactoryImpl implements QueryFactory {
    private final CriteriaFactory criteriaFctry = new CriteriaFactory();
    private final ResultSetFactory rsetFctry = new ResultSetFactory();
 
-   private QueryBuilder createBuilder(Criteria baseCriteria) {
+   @SuppressWarnings("unused")
+   private QueryBuilder createBuilder(IOseeBranch branch) throws OseeCoreException {
       QueryOptions options = new QueryOptions();
-      CriteriaSet criteriaSet = new CriteriaSet();
-      criteriaSet.setBaseCriteria(baseCriteria);
-      return new QueryBuilderImpl(rsetFctry, criteriaFctry, criteriaSet, options);
+      CriteriaSet criteriaSet = new CriteriaSet(branch);
+      QueryBuilder builder = new QueryBuilderImpl(rsetFctry, criteriaFctry, criteriaSet, options);
+      return builder;
    }
 
    @Override
-   public QueryBuilder fromBranch(IOseeBranch branch) {
-      return null;
+   public QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException {
+      return createBuilder(branch);
    }
 
    @Override
-   public QueryBuilder fromArtifactType(IOseeBranch branch, IArtifactType artifactType) {
-      return null;
+   public QueryBuilder fromArtifactType(IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+      return fromArtifactTypes(branch, Collections.singleton(artifactType));
    }
 
    @Override
-   public QueryBuilder fromArtifactTypes(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes) {
-      return null;
+   public QueryBuilder fromArtifactTypes(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
+      QueryBuilder builder = fromBranch(branch);
+      builder.and(artifactTypes);
+      return builder;
    }
 
    @Override
-   public QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) {
-      return null;
+   public QueryBuilder fromUuids(IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
+      QueryBuilder builder = fromBranch(branch);
+      builder.withLocalIds(artifactIds);
+      return builder;
    }
 
    @Override
-   public QueryBuilder fromUuids(IOseeBranch branch, Collection<Integer> artifactIds) {
-      return null;
+   public QueryBuilder fromGuidOrHrid(IOseeBranch branch, String guidOrHrid) throws OseeCoreException {
+      return fromGuidOrHrids(branch, Collections.singleton(guidOrHrid));
    }
 
    @Override
-   public QueryBuilder fromGuidOrHrid(IOseeBranch branch, String guidOrHrid) {
-      return null;
+   public QueryBuilder fromGuidOrHrids(IOseeBranch branch, Collection<String> guidOrHrids) throws OseeCoreException {
+      QueryBuilder builder = fromBranch(branch);
+      builder.withGuidsOrHrids(guidOrHrids);
+      return builder;
    }
 
    @Override
-   public QueryBuilder fromGuidOrHrids(IOseeBranch branch, List<String> guidOrHrids) {
-      return null;
+   public QueryBuilder fromArtifact(IOseeBranch branch, IArtifactToken artifactToken) throws OseeCoreException {
+      return fromGuidOrHrid(branch, artifactToken.getGuid());
    }
 
    @Override
-   public QueryBuilder fromArtifact(IOseeBranch branch, IArtifactToken artifactToken) {
-      return null;
+   public QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts) throws OseeCoreException {
+      Conditions.checkNotNullOrEmpty(artifacts, "artifacts");
+      ReadableArtifact artifact = artifacts.iterator().next();
+      IOseeBranch branch = artifact.getBranch();
+      Set<String> guids = new HashSet<String>();
+      for (ReadableArtifact art : artifacts) {
+         guids.add(art.getGuid());
+      }
+      return fromGuidOrHrids(branch, guids);
    }
 
    @Override
-   public QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts) {
-      return null;
+   public QueryBuilder fromName(IOseeBranch branch, String artifactName) throws OseeCoreException {
+      QueryBuilder builder = fromBranch(branch);
+      builder.and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
+      return builder;
    }
 
    @Override
-   public QueryBuilder fromName(IOseeBranch branch, String artifactName) {
-      return null;
+   public QueryBuilder fromArtifactTypeAndName(IOseeBranch branch, IArtifactType artifactType, String artifactName) throws OseeCoreException {
+      QueryBuilder builder = fromArtifactType(branch, artifactType);
+      builder.and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
+      return builder;
    }
 
    @Override
-   public QueryBuilder fromArtifactTypeAndName(IOseeBranch branch, IArtifactType artifactType, String artifactName) {
-      return null;
+   public QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) throws OseeCoreException {
+      QueryBuilder builder = createBuilder(null);
+      builder.and(artifactType);
+      return builder;
    }
-
 }

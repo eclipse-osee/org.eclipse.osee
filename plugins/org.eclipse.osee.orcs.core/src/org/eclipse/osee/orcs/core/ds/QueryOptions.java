@@ -76,6 +76,10 @@ public class QueryOptions implements Cloneable {
       includeTypeInheritance = enabled;
    }
 
+   public boolean isHistorical() {
+      return !isHeadTransaction();
+   }
+
    @Override
    public String toString() {
       return "QueryOptions [includeCache=" + includeCache + ", includeDeleted=" + includeDeleted + ", includeTypeInheritance=" + includeTypeInheritance + ", transactionId=" + transactionId + "]";

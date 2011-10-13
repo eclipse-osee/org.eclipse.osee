@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
@@ -23,25 +23,25 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
  */
 public interface QueryFactory {
 
-   QueryBuilder fromBranch(IOseeBranch branch);
+   QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException;
 
-   QueryBuilder fromArtifactType(IOseeBranch branch, IArtifactType artifactType);
+   QueryBuilder fromArtifactType(IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException;
 
-   QueryBuilder fromArtifactTypes(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes);
+   QueryBuilder fromArtifactTypes(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException;
 
-   QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType);
+   QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) throws OseeCoreException;
 
-   QueryBuilder fromUuids(IOseeBranch branch, Collection<Integer> artifactIds);
+   QueryBuilder fromUuids(IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
 
-   QueryBuilder fromGuidOrHrid(IOseeBranch branch, String guidOrHrid);
+   QueryBuilder fromGuidOrHrid(IOseeBranch branch, String guidOrHrid) throws OseeCoreException;
 
-   QueryBuilder fromGuidOrHrids(IOseeBranch branch, List<String> guidOrHrids);
+   QueryBuilder fromGuidOrHrids(IOseeBranch branch, Collection<String> guidOrHrids) throws OseeCoreException;
 
-   QueryBuilder fromArtifact(IOseeBranch branch, IArtifactToken artifactToken);
+   QueryBuilder fromArtifact(IOseeBranch branch, IArtifactToken artifactToken) throws OseeCoreException;
 
-   QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts);
+   QueryBuilder fromArtifacts(Collection<? extends ReadableArtifact> artifacts) throws OseeCoreException;
 
-   QueryBuilder fromName(IOseeBranch branch, String artifactName);
+   QueryBuilder fromName(IOseeBranch branch, String artifactName) throws OseeCoreException;
 
-   QueryBuilder fromArtifactTypeAndName(IOseeBranch branch, IArtifactType artifactType, String artifactName);
+   QueryBuilder fromArtifactTypeAndName(IOseeBranch branch, IArtifactType artifactType, String artifactName) throws OseeCoreException;
 }

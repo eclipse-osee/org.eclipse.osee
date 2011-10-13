@@ -18,7 +18,8 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
  */
 public interface SqlProvider {
 
+   String getSql(OseeSql key) throws OseeCoreException;
+
    String getSql(String key) throws OseeCoreException;
 
-   String getSql(OseeSql key) throws OseeCoreException;
 }

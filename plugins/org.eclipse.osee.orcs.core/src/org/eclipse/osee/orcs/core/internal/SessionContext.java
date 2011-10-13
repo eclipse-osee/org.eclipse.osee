@@ -17,6 +17,8 @@ import org.eclipse.osee.orcs.core.ds.AttributeContainer;
  */
 public interface SessionContext {
 
+   String getSessionId();
+
    <T extends AttributeContainer> T getHistorical(int artId, int stripeId);
 
    <T extends AttributeContainer> T getActive(int artId, int branchId);

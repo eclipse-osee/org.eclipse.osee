@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -25,23 +24,32 @@ import org.eclipse.osee.orcs.db.internal.SqlProvider;
 public class StaticSqlProvider implements SqlProvider {
 
    private final Map<String, String> sqlMap = new HashMap<String, String>();
-   private final Log logger;
-   private final SystemPreferences preferences;
+
+   private Log logger;
+   private SystemPreferences preferences;
    private boolean wasPopulated;
 
-   public StaticSqlProvider(Log logger, SystemPreferences preferences) {
+   public StaticSqlProvider() {
       super();
-      this.logger = logger;
-      this.preferences = preferences;
       this.wasPopulated = false;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   public void setPreferences(SystemPreferences preferences) {
+      this.preferences = preferences;
    }
 
    @Override
    public String getSql(String key) throws OseeCoreException {
       Conditions.checkNotNull(key, "Sql Key");
       ensurePopulated();
-      String query = sqlMap.get(key);
-      if (!Strings.isValid(query)) {
+      String query = null;
+      if (sqlMap.containsKey(key)) {
+         query = sqlMap.get(key);
+      } else {
          logger.error("Unable to find - SqlKey [%s]", key);
       }
       return query;

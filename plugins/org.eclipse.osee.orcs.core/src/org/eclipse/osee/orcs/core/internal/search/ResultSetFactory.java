@@ -16,12 +16,17 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.ResultSet;
 
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("unused")
 public class ResultSetFactory {
+
+   // TODO implements ResultSetFactory tie in with ArtifactLoader
 
    private Log logger;
    private QueryEngine queryEngine;
@@ -32,7 +37,17 @@ public class ResultSetFactory {
       return new ResultSetImpl(queryEngine, criteriaSet, options);
    }
 
+   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> createMatchesResultSet(CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {
+      //      return new ResultSetImpl(queryEngine, criteriaSet, options)
+      return null;
+   }
+
    public int getCount(CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {
-      return -1;
+      String sessionId = "fromContext";
+      Object object = queryEngine.createCount(sessionId, criteriaSet, options);
+      // Execute Query
+      // Return results;
+      int results = -1;
+      return results;
    }
 }

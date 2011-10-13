@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.AttributeRow;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.AttributeLoader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.H2Preferences;
@@ -33,6 +32,8 @@ import org.eclipse.osee.orcs.db.mock.MockLog;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.eclipse.osee.orcs.db.mocks.MockDataProxy;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 
 /**
@@ -43,12 +44,24 @@ public class AttributeLoaderTest {
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
+   private static StaticSqlProvider sqlProvider;
+
+   @BeforeClass
+   public static void setUp() {
+      sqlProvider = new StaticSqlProvider();
+      sqlProvider.setLogger(new MockLog());
+      sqlProvider.setPreferences(new H2Preferences());
+   }
+
+   @AfterClass
+   public static void tearDown() {
+      sqlProvider = null;
+   }
+
    @org.junit.Test
    public void testAttributeLoadingData() throws OseeCoreException {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      MockLog log = new MockLog();
-      SqlProvider sqlProvider = new StaticSqlProvider(log, new H2Preferences());
 
       final List<AttributeRow> actuals = new ArrayList<AttributeRow>();
 
@@ -121,6 +134,7 @@ public class AttributeLoaderTest {
       return row;
    }
 
+   @SuppressWarnings("unused")
    private final class AttributeDataProxy extends MockDataProxy {
       private final long typeUuid;
       private final String value;
