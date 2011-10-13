@@ -21,14 +21,13 @@ import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.db.internal.DbSystemPreferences;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.AttributeLoader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
 public class DataLoaderImpl implements DataLoader {
 
    private Log logger;
-   private SqlProvider sqlProvider;
+   private StaticSqlProvider sqlProvider;
    private IOseeDatabaseService oseeDatabaseService;
    private IdentityService identityService;
    private ProxyDataFactory proxyDataFactory;
@@ -40,7 +39,9 @@ public class DataLoaderImpl implements DataLoader {
    public void start() {
       SystemPreferences preferences = new DbSystemPreferences(); // Needs to be a service;
 
-      sqlProvider = new StaticSqlProvider(logger, preferences);
+      sqlProvider = new StaticSqlProvider();
+      sqlProvider.setLogger(logger);
+      sqlProvider.setPreferences(preferences);
       artifactLoader = new ArtifactLoader(logger, sqlProvider, oseeDatabaseService, identityService);
       attributeLoader = new AttributeLoader(sqlProvider, oseeDatabaseService, identityService, proxyDataFactory);
       relationLoader = new RelationLoader(sqlProvider, oseeDatabaseService);
