@@ -30,45 +30,72 @@ public class JoinUtility {
       return random.nextInt();
    }
 
+   private static IJoinAccessor createAccessor(IOseeDatabaseService service) {
+      return new DatabaseJoinAccessor(service);
+   }
+
+   private static IJoinAccessor createAccessor(IOseeDatabaseService service, String sessionId) {
+      return new DatabaseJoinAccessor(service, sessionId);
+   }
+
+   public static TransactionJoinQuery createTransactionJoinQuery(IOseeDatabaseService service) {
+      return new TransactionJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
+   public static IdJoinQuery createIdJoinQuery(IOseeDatabaseService service) {
+      return new IdJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
+   public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service) {
+      return new ArtifactJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
+   public static SearchTagJoinQuery createSearchTagJoinQuery(IOseeDatabaseService service) {
+      return new SearchTagJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
+   public static TagQueueJoinQuery createTagQueueJoinQuery(IOseeDatabaseService service) {
+      return new TagQueueJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
+   public static ExportImportJoinQuery createExportImportJoinQuery(IOseeDatabaseService service) {
+      return new ExportImportJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
+   public static CharJoinQuery createCharJoinQuery(IOseeDatabaseService service, String sessionId) {
+      return new CharJoinQuery(createAccessor(service, sessionId), getNewQueryId());
+   }
+
+   ////////////////// Static Legacy Calls /////////////////////////
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
       return Activator.getInstance().getOseeDatabaseService();
    }
 
-   private static IJoinAccessor createAccessor() throws OseeDataStoreException {
-      IOseeDatabaseService service = getDatabase();
-      return new DatabaseJoinAccessor(service);
-   }
-
-   private static IJoinAccessor createAccessor(String sessionId) throws OseeDataStoreException {
-      IOseeDatabaseService service = getDatabase();
-      return new DatabaseJoinAccessor(service, sessionId);
-   }
-
    public static TransactionJoinQuery createTransactionJoinQuery() throws OseeDataStoreException {
-      return new TransactionJoinQuery(createAccessor(), getNewQueryId());
+      return new TransactionJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
    public static IdJoinQuery createIdJoinQuery() throws OseeDataStoreException {
-      return new IdJoinQuery(createAccessor(), getNewQueryId());
+      return new IdJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
    public static ArtifactJoinQuery createArtifactJoinQuery() throws OseeDataStoreException {
-      return new ArtifactJoinQuery(createAccessor(), getNewQueryId());
+      return new ArtifactJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
    public static SearchTagJoinQuery createSearchTagJoinQuery() throws OseeDataStoreException {
-      return new SearchTagJoinQuery(createAccessor(), getNewQueryId());
+      return new SearchTagJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
    public static TagQueueJoinQuery createTagQueueJoinQuery() throws OseeDataStoreException {
-      return new TagQueueJoinQuery(createAccessor(), getNewQueryId());
+      return new TagQueueJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
    public static ExportImportJoinQuery createExportImportJoinQuery() throws OseeDataStoreException {
-      return new ExportImportJoinQuery(createAccessor(), getNewQueryId());
+      return new ExportImportJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
    public static CharJoinQuery createCharJoinQuery(String sessionId) throws OseeDataStoreException {
-      return new CharJoinQuery(createAccessor(sessionId), getNewQueryId());
+      return new CharJoinQuery(createAccessor(getDatabase(), sessionId), getNewQueryId());
    }
 }
