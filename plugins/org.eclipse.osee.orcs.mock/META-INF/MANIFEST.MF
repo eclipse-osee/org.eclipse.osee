@@ -10,6 +10,8 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.orcs.data
+ org.eclipse.osee.orcs.data,
+ org.junit;version="4.8.2",
+ org.junit.runners.model;version="4.8.2"
 Require-Bundle: org.eclipse.core.runtime
 Export-Package: org.eclipse.osee.orcs.mock

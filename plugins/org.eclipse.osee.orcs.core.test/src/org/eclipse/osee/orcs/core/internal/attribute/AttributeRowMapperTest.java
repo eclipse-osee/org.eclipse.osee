@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.AttributeRow;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.mocks.MockLog;
@@ -33,8 +36,8 @@ public class AttributeRowMapperTest {
       SessionContext context = new MockSessionContext();
       AttributeFactory factory = null;
       AttributeRow row = new AttributeRow();
-
-      AttributeRowMapper mapper = new AttributeRowMapper(logger, context, factory);
+      Map<Integer, ? extends AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
+      AttributeRowMapper mapper = new AttributeRowMapper(logger, factory, attributeContainers);
       mapper.onRow(row);
    }
 }

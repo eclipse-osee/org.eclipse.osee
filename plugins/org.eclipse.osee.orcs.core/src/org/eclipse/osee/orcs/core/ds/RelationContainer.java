@@ -10,8 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+
 public interface RelationContainer {
 
    void add(RelationRow nextRelation);
 
+   void getArtifactIds(List<Integer> results, int relationTypeId, RelationSide side);
+
+   int getRelationCount(int relationTypeId, RelationSide side);
 }

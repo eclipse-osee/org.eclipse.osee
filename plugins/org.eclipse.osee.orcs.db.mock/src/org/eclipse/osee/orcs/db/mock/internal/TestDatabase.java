@@ -16,10 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
+import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.junit.Assert;
 import org.junit.runners.model.FrameworkMethod;
 import org.osgi.framework.Bundle;
@@ -79,6 +82,16 @@ public class TestDatabase {
       System.setProperty("osee.application.server.data", tempFolder.getAbsolutePath());
       BundleContext context = getContext(bundle);
       registration = context.registerService(IDatabaseInfoProvider.class, provider, null);
+
+      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
+      Assert.assertNotNull(dbService);
+
+      OseeConnection connection = dbService.getConnection();
+      try {
+         Assert.assertNotNull(connection);
+      } finally {
+         connection.close();
+      }
    }
 
    private String getDbHomePath(File tempFolder, String dbFolder) {

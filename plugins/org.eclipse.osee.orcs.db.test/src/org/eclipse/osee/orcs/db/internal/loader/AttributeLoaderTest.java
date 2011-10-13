@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.orcs.core.ds.AttributeRow;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.AttributeLoader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.H2Preferences;

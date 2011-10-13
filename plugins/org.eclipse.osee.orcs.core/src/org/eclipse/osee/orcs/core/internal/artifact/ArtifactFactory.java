@@ -20,7 +20,10 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
  */
 public class ArtifactFactory {
 
-   public Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
-      return null;
+   public ReadableArtifact loadExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
+      //TODO implement an artifact class resolver for specific artifact types
+      return new Artifact(artId, guid, humandReadableId, artifactType, gammaId, branch, transactionId, modType,
+         historical);
+
    }
 }

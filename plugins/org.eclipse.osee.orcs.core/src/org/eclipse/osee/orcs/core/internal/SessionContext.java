@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import org.eclipse.osee.orcs.core.ds.AttributeContainer;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
  * @author Roberto E. Escobar
@@ -19,8 +19,9 @@ public interface SessionContext {
 
    String getSessionId();
 
-   <T extends AttributeContainer> T getHistorical(int artId, int stripeId);
+   <T extends ReadableArtifact> T getHistorical(int artId, int stripeId);
 
-   <T extends AttributeContainer> T getActive(int artId, int branchId);
+
+   <T extends ReadableArtifact> T getActive(int artId, int branchId);
 
 }

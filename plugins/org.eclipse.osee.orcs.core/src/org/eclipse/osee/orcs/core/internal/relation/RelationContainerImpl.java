@@ -14,7 +14,7 @@ public class RelationContainerImpl implements RelationContainer {
 
    private final RelationRowCollection rows;
 
-   RelationContainerImpl(int parentId) {
+   public RelationContainerImpl(int parentId) {
       this.rows = new RelationRowCollection(parentId);
    }
 
@@ -23,11 +23,13 @@ public class RelationContainerImpl implements RelationContainer {
       rows.add(nextRelation);
    }
 
-   void getArtifactIds(List<Integer> results, int relationTypeId, RelationSide side) {
+   @Override
+   public void getArtifactIds(List<Integer> results, int relationTypeId, RelationSide side) {
       rows.getArtifactIds(results, relationTypeId, side);
    }
 
-   int getRelationCount(int relationTypeId, RelationSide side) {
+   @Override
+   public int getRelationCount(int relationTypeId, RelationSide side) {
       return rows.getArtifactCount(relationTypeId, side);
    }
 }

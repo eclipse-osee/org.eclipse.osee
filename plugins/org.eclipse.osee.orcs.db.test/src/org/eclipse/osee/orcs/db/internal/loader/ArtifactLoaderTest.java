@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
+import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mock.H2Preferences;
 import org.eclipse.osee.orcs.db.mock.MockLog;

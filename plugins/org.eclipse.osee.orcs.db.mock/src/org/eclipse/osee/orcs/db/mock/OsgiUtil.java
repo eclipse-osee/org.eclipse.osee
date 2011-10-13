@@ -20,7 +20,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class OsgiUtil {
 
    public static <T> T getService(Class<T> clazz) throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(OseeDatabase.class);
+      Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
       Assert.assertNotNull(bundle);
 
       int bundleState = bundle.getState();

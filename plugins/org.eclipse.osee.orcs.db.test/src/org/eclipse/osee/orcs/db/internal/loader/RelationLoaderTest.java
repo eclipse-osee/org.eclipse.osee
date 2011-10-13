@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;

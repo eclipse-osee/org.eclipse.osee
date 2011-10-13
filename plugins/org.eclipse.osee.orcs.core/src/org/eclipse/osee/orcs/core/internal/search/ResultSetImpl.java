@@ -51,6 +51,7 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
    @Override
    public List<ReadableArtifact> getList() throws OseeCoreException {
 
+
       return null;
    }
 

@@ -9,6 +9,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: junit.framework;version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.orcs.mock,
  org.junit;version="4.8.2",
  org.junit.runner;version="4.8.2",
  org.junit.runners;version="4.8.2"
+Require-Bundle: org.junit

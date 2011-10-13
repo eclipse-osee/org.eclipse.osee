@@ -10,20 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
+import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 
@@ -109,41 +104,16 @@ public class ArtifactLoader {
       }
    }
 
-   public void loadFromIds(Collection<Integer> artIds, int branchId, int transactionId, ArtifactRowHandler handler, LoadOptions options) throws OseeCoreException {
-      if (artIds != null && !artIds.isEmpty()) {
-         Collection<Integer> unique;
-         if (artIds instanceof Set) {
-            unique = artIds;
-         } else {
-            unique = new HashSet<Integer>();
-            unique.addAll(artIds);
-         }
-
-         Integer transactionInfo = null;
-         if (options.isHistorical()) {
-            transactionInfo = transactionId;
-         }
-
-         ArtifactJoinQuery query = JoinUtility.createArtifactJoinQuery();
-         for (int artId : unique) {
-            query.add(artId, branchId, transactionInfo);
-         }
-         if (!query.isEmpty()) {
-            OseeConnection connection = dbService.getConnection();
-            try {
-               try {
-                  query.store(connection);
-                  loadFromQueryId(handler, options, query.size(), query.getQueryId());
-               } finally {
-                  query.delete(connection);
-               }
-            } finally {
-               connection.close();
-            }
-         }
-      }
-   }
-
+   /*
+    * public void loadFromIds(Collection<Integer> artIds, int branchId, int transactionId, ArtifactRowHandler handler,
+    * LoadOptions options) throws OseeCoreException { if (artIds != null && !artIds.isEmpty()) { Collection<Integer>
+    * unique; if (artIds instanceof Set) { unique = artIds; } else { unique = new HashSet<Integer>();
+    * unique.addAll(artIds); } Integer transactionInfo = null; if (options.isHistorical()) { transactionInfo =
+    * transactionId; } ArtifactJoinQuery query = JoinUtility.createArtifactJoinQuery(); for (int artId : unique) {
+    * query.add(artId, branchId, transactionInfo); } if (!query.isEmpty()) { OseeConnection connection =
+    * dbService.getConnection(); try { try { query.store(connection); loadFromQueryId(handler, options, query.size(),
+    * query.getQueryId()); } finally { query.delete(connection); } } finally { connection.close(); } } } }
+    */
    //   /**
    //    * (re)loads the artifacts selected by sql and then returns them in a list
    //    */
