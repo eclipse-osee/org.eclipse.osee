@@ -37,6 +37,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.primitives.PrimitiveAttribu
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.junit.Ignore;
 import org.junit.Rule;
 
 public class MasterLoaderTest {
@@ -44,6 +45,7 @@ public class MasterLoaderTest {
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
+   @Ignore
    @org.junit.Test
    public void testMasterLoader() throws Exception {
 
