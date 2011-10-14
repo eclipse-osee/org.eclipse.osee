@@ -29,7 +29,10 @@ import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -96,11 +99,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp) throws OseeCoreException {
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
          ReadableArtifact matchedArtifact = match.getItem();
-         List<WebArtifact> ancestry = getAncestry(matchedArtifact);
-         WebId webBranch = new WebId(matchedArtifact.getBranch().getGuid(), matchedArtifact.getBranch().getName());
-         WebArtifact webArt =
-            new WebArtifact(matchedArtifact.getGuid(), matchedArtifact.getName(),
-               matchedArtifact.getArtifactType().getName(), ancestry, webBranch);
+         WebArtifact webArt = convertToWebArtifact(matchedArtifact);
          SearchResultComponent searchResult = searchResultsComp.createSearchResult();
          searchResult.setArtifact(webArt);
          for (ReadableAttribute<?> element : match.getElements()) {
@@ -141,14 +140,11 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          setErrorMessage(artHeaderComp, String.format("No artifact[%s] found on branch:[%s]", art, branch));
          return;
       }
-      WebId artBranch = new WebId(displayArt.getBranch().getGuid(), displayArt.getBranch().getName());
-      List<WebArtifact> ancestry = getAncestry(displayArt);
-      WebArtifact artifact =
-         new WebArtifact(displayArt.getGuid(), displayArt.getName(), displayArt.getArtifactType().getName(), ancestry,
-            artBranch);
+      WebArtifact artifact = convertToWebArtifact(displayArt);
       artHeaderComp.setArtifact(artifact);
 
       relComp.clearAll();
+      relComp.setArtifact(artifact);
       Collection<RelationType> relationTypes = null;
       try {
          relationTypes = displayArt.getValidRelationTypes();
@@ -183,7 +179,39 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    @Override
    public void selectRelationType(WebArtifact artifact, WebId relation, RelationComponent relationComponent) {
       relationComponent.clearRelations();
-      //artifactProvider.getRelatedArtifacts(artifact.getGuid(), side)
+      if (artifact == null || relation == null) {
+         setErrorMessage(relationComponent, "Error: Null detected in selectRelationType parameters");
+         return;
+      }
+      String relGuid = relation.getGuid().split(":")[0];
+      String sideId = relation.getGuid().split(":")[1];
+      RelationSide side = RelationSide.SIDE_B;
+      if (sideId.equalsIgnoreCase("A")) {
+         side = RelationSide.SIDE_A;
+      }
+      IRelationType type = TokenFactory.createRelationType(Long.parseLong(relGuid), relation.getName());
+      IOseeBranch branch = TokenFactory.createBranch(artifact.getBranch().getGuid(), "");
+      ReadableArtifact sourceArt;
+      Collection<ReadableArtifact> related = null;
+      try {
+         sourceArt = artifactProvider.getArtifactByGuid(branch, artifact.getGuid());
+         related = sourceArt.getRelatedArtifacts(type, side);
+      } catch (OseeCoreException ex) {
+         setErrorMessage(relationComponent,
+            String.format("Error loading relations for artifact[%s]", artifact.getGuid()));
+      }
+      for (ReadableArtifact rel : related) {
+         WebArtifact id = convertToWebArtifact(rel);
+         relationComponent.addRelation(id);
+      }
+   }
+
+   protected WebArtifact convertToWebArtifact(ReadableArtifact artifact) {
+      WebId branch = new WebId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
+      WebArtifact toReturn =
+         new WebArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(),
+            getAncestry(artifact), branch);
+      return toReturn;
    }
 
    protected String encode(WebArtifact artifact) {
@@ -210,9 +238,10 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       ReadableArtifact cur = art.getParent();
       List<WebArtifact> ancestry = new ArrayList<WebArtifact>();
       while (cur != null) {
-         WebId branch = new WebId(cur.getBranch().getGuid(), cur.getBranch().getName());
-         ancestry.add(new WebArtifact(cur.getGuid(), cur.getName(), cur.getArtifactType().getName(), getAncestry(cur),
-            branch));
+         //         WebId branch = new WebId(cur.getBranch().getGuid(), cur.getBranch().getName());
+         //         ancestry.add(new WebArtifact(cur.getGuid(), cur.getName(), cur.getArtifactType().getName(), getAncestry(cur),
+         //            branch));
+         ancestry.add(convertToWebArtifact(cur));
          if (cur.hasParent()) {
             cur = cur.getParent();
          } else {
@@ -223,7 +252,9 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    }
 
    protected void setErrorMessage(DisplaysErrorComponent component, String message) {
-      component.setErrorMessage(message);
+      if (component != null) {
+         component.setErrorMessage(message);
+      }
    }
 
    private ArtifactParameters decodeArtifactUrl(String url) {

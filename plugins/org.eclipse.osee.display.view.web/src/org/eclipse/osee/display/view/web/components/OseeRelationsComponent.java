@@ -192,4 +192,8 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
          System.out.println("OseeRelationsComponent.setErrorMessage - ERROR: getApplication() returns null value.");
       }
    }
+
+   @Override
+   public void setArtifact(WebArtifact artifact) {
+   }
 }

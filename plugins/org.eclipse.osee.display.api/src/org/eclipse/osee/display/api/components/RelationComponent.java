@@ -18,6 +18,8 @@ import org.eclipse.osee.display.api.data.WebId;
  */
 public interface RelationComponent extends DisplaysErrorComponent {
 
+   void setArtifact(WebArtifact artifact);
+
    void clearAll();
 
    void addRelationType(WebId id);
