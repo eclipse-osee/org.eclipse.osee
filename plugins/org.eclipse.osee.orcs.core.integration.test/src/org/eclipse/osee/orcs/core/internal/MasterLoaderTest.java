@@ -7,6 +7,7 @@ package org.eclipse.osee.orcs.core.internal;
 
 import java.util.Hashtable;
 import java.util.List;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -37,7 +38,6 @@ import org.eclipse.osee.orcs.core.internal.attribute.primitives.PrimitiveAttribu
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
-import org.junit.Ignore;
 import org.junit.Rule;
 
 public class MasterLoaderTest {
@@ -45,7 +45,6 @@ public class MasterLoaderTest {
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
-   @Ignore
    @org.junit.Test
    public void testMasterLoader() throws Exception {
 
@@ -74,7 +73,6 @@ public class MasterLoaderTest {
       };
 
       OsgiUtil.registerService(DataStoreTypeCache.class, dataStoreTypeCache, new Hashtable<String, Object>());
-      //      OsgiUtil.registerService(Log.class, new MockLog(), new Hashtable<String, Object>());
 
       OsgiUtil.getService(IOseeDatabaseService.class);
       OsgiUtil.getService(IdentityService.class);
@@ -109,6 +107,9 @@ public class MasterLoaderTest {
       artJoinQuery.add(9, 2, -1);
       artJoinQuery.store(connection);
       List<ReadableArtifact> arts = masterLoader.load(options, 10, artJoinQuery.getQueryId(), new MockSessionContext());
+
+      Assert.assertEquals(arts.size(), 3);
+
       artJoinQuery.delete();
 
    }
