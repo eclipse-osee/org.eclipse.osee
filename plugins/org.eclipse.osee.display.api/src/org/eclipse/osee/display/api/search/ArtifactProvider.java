@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.presenter;
+package org.eclipse.osee.display.api.search;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -28,4 +28,5 @@ public interface ArtifactProvider {
    ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException;
 
    List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException;
+
 }

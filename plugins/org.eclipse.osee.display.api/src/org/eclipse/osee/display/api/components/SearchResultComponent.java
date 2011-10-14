@@ -16,7 +16,7 @@ import org.eclipse.osee.display.api.data.WebArtifact;
 /**
  * @author Shawn F. Cook
  */
-public interface SearchResultComponent {
+public interface SearchResultComponent extends DisplaysErrorComponent {
 
    void setArtifact(WebArtifact artifact);
 

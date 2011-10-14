@@ -16,12 +16,13 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
@@ -122,22 +123,7 @@ public class Artifact implements ReadableArtifact {
    }
 
    @Override
-   public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationSide) {
-      return null;
-   }
-
-   @Override
-   public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationEnum) {
-      return null;
-   }
-
-   @Override
    public String getSoleAttributeAsString(IAttributeType attributeType) {
-      return null;
-   }
-
-   @Override
-   public Collection<IRelationType> getValidRelationTypes() {
       return null;
    }
 
@@ -157,6 +143,21 @@ public class Artifact implements ReadableArtifact {
 
    public RelationContainer getRelationContainer() {
       return relationContainer;
+   }
+
+   @Override
+   public List<ReadableArtifact> getRelatedArtifacts(IRelationType type, RelationSide side) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public ReadableArtifact getRelatedArtifact(IRelationType type, RelationSide side) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public Collection<RelationType> getValidRelationTypes() throws OseeCoreException {
+      return null;
    }
 
 }

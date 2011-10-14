@@ -31,6 +31,6 @@ public interface SearchPresenter<T extends SearchHeaderComponent> {
 
    void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp);
 
-   void selectRelationType(WebId id, RelationComponent relationComponent);
+   void selectRelationType(WebArtifact artifact, WebId relation, RelationComponent relationComponent);
 
 }

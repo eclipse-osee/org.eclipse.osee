@@ -20,10 +20,15 @@ import org.eclipse.osee.display.presenter.WebSearchPresenter;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
 import org.eclipse.osee.display.presenter.mocks.MockSearchHeaderComponent;
 import org.eclipse.osee.display.presenter.mocks.MockSearchNavigator;
+import org.eclipse.osee.display.presenter.mocks.MockSearchResultComponent;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.mock.MockArtifact;
-import org.junit.Ignore;
+import org.eclipse.osee.orcs.mock.MockAttribute;
+import org.eclipse.osee.orcs.mock.MockMatch;
+import org.eclipse.osee.orcs.search.Match;
 import org.junit.Test;
 
 /**
@@ -31,18 +36,27 @@ import org.junit.Test;
  */
 public class WebSearchPresenterTest {
 
+   private List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchReslts() {
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
+         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      MockArtifact art = new MockArtifact("guid1", "matchArt");
+      MockAttribute attr = new MockAttribute(CoreAttributeTypes.Name, "matchArt");
+      Match match = new MockMatch(art, attr);
+      toReturn.add(match);
+      return toReturn;
+   }
+
    @Test
-   @Ignore
    public void testInitSearchResults() {
       MockArtifactProvider provider = new MockArtifactProvider();
-      List<ReadableArtifact> results = new ArrayList<ReadableArtifact>();
-      results.add(new MockArtifact("guid1", "name1"));
-      //      provider.setArtifactList(results);
+      provider.setResultList(getSearchReslts());
       WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
       String url = "branch=branch1?nameOnly=true?search=this%20is%20a%20test";
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp);
+      List<MockSearchResultComponent> searchResults = searchResultsComp.getSearchResults();
+      Assert.assertEquals(1, searchResults.size());
    }
 
    @Test

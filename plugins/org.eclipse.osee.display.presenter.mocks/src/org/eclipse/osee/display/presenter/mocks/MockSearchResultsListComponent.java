@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.mocks;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 
@@ -20,6 +22,7 @@ public class MockSearchResultsListComponent implements SearchResultsListComponen
 
    private boolean clearAllCalled = false;
    private String errorMessage = "";
+   private final List<MockSearchResultComponent> searchResults = new LinkedList<MockSearchResultComponent>();
 
    public boolean isClearAllCalled() {
       return clearAllCalled;
@@ -29,6 +32,10 @@ public class MockSearchResultsListComponent implements SearchResultsListComponen
       return errorMessage;
    }
 
+   public List<MockSearchResultComponent> getSearchResults() {
+      return searchResults;
+   }
+
    @Override
    public void clearAll() {
       clearAllCalled = true;
@@ -36,7 +43,9 @@ public class MockSearchResultsListComponent implements SearchResultsListComponen
 
    @Override
    public SearchResultComponent createSearchResult() {
-      return new MockSearchResultComponent();
+      MockSearchResultComponent toReturn = new MockSearchResultComponent();
+      searchResults.add(toReturn);
+      return toReturn;
    }
 
    @Override

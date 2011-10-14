@@ -22,14 +22,14 @@ import org.eclipse.osee.display.api.data.WebArtifact;
 public class MockSearchResultComponent implements SearchResultComponent {
 
    private WebArtifact artifact;
-   private final List<SearchResultMatch> match = new ArrayList<SearchResultMatch>();
+   private final List<SearchResultMatch> matches = new ArrayList<SearchResultMatch>();
 
    public WebArtifact getArtifact() {
       return artifact;
    }
 
-   public List<SearchResultMatch> getMatch() {
-      return match;
+   public List<SearchResultMatch> getMatches() {
+      return matches;
    }
 
    @Override
@@ -39,6 +39,10 @@ public class MockSearchResultComponent implements SearchResultComponent {
 
    @Override
    public void addSearchResultMatch(SearchResultMatch match) {
-      this.match.add(match);
+      this.matches.add(match);
+   }
+
+   @Override
+   public void setErrorMessage(String message) {
    }
 }

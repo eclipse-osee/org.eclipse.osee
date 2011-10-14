@@ -8,15 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.presenter.mock.internal;
+package org.eclipse.osee.display.api.components;
 
 /**
- * @author Shawn F. Cook
+ * @author John Misinco
  */
-public class UrlParamNameConstants {
-   public final static String PARAMNAME_ARTIFACT = "artifact";
-   public final static String PARAMNAME_PROGRAM = "program";
-   public final static String PARAMNAME_BUILD = "build";
-   public final static String PARAMNAME_NAMEONLY = "nameonly";
-   public final static String PARAMNAME_SEARCHPHRASE = "searchphrase";
+public interface DisplaysErrorComponent {
+
+   void setErrorMessage(String message);
+
 }

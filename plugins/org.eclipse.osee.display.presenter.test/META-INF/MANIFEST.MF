@@ -11,4 +11,5 @@ Import-Package: org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs.mock
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.eclipse.osee.display.api

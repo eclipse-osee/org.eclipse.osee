@@ -13,11 +13,10 @@ package org.eclipse.osee.display.api.components;
 /**
  * @author Shawn F. Cook
  */
-public interface AttributeComponent {
+public interface AttributeComponent extends DisplaysErrorComponent {
 
    void clearAll();
 
    void addAttribute(String type, String value);
 
-   void setErrorMessage(String message);
 }

@@ -13,8 +13,8 @@ package org.eclipse.osee.display.view.web.components;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
+import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -107,5 +107,9 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
          addComponent(spacer3);
          addComponent(matchManyLabel);
       }
+   }
+
+   @Override
+   public void setErrorMessage(String message) {
    }
 }

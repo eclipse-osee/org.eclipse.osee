@@ -86,7 +86,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                try {
                   WebId relationType = (WebId) relationTypesListSelect.getValue();
                   if (relationType != null) {
-                     searchPresenter.selectRelationType(relationType, OseeRelationsComponent.this);
+                     searchPresenter.selectRelationType(null, relationType, OseeRelationsComponent.this);
                   }
                } catch (Exception e) {
                   System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");

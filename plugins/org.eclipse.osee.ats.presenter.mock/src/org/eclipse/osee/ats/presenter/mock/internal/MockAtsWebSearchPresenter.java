@@ -191,12 +191,12 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void selectRelationType(WebId id, RelationComponent relationComponent) {
+   public void selectRelationType(WebArtifact artifact, WebId relation, RelationComponent relationComponent) {
       relationComponent.clearRelations();
       Set<Entry<String, WebArtifact>> artifactsSet = artifacts.entrySet();
       for (Entry<String, WebArtifact> entry : artifactsSet) {
-         WebArtifact artifact = entry.getValue();
-         relationComponent.addRelation(artifact);
+         WebArtifact art = entry.getValue();
+         relationComponent.addRelation(art);
       }
    }
 
@@ -336,5 +336,13 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       }
 
       return null;
+   }
+
+   public class UrlParamNameConstants {
+      public final static String PARAMNAME_ARTIFACT = "artifact";
+      public final static String PARAMNAME_PROGRAM = "program";
+      public final static String PARAMNAME_BUILD = "build";
+      public final static String PARAMNAME_NAMEONLY = "nameonly";
+      public final static String PARAMNAME_SEARCHPHRASE = "searchphrase";
    }
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.display.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -32,7 +33,7 @@ import org.eclipse.osee.orcs.search.StringOperator;
  */
 public class ArtifactProviderImpl implements ArtifactProvider {
 
-   private final QueryFactory factory;
+   protected final QueryFactory factory;
 
    protected static final List<String> notAllowed = new ArrayList<String>();
    static {
@@ -77,19 +78,6 @@ public class ArtifactProviderImpl implements ArtifactProvider {
          ReadableArtifact matchedArtifact = match.getItem();
          if (sanitizeResult(matchedArtifact) != null) {
             results.add(match);
-            //            List<WebArtifact> ancestry = getAncestry(matchedArtifact);
-            //            WebId webBranch = new WebId(matchedArtifact.getBranch().getGuid(), matchedArtifact.getBranch().getName());
-            //            WebArtifact webArt =
-            //               new WebArtifact(matchedArtifact.getGuid(), matchedArtifact.getName(),
-            //                  matchedArtifact.getArtifactType().getName(), ancestry, webBranch);
-            //
-            //            for (ReadableAttribute<?> element : match.getElements()) {
-            //               List<MatchLocation> locations = match.getLocation(element);
-            //               SearchResultMatch srm =
-            //                  new SearchResultMatch(element.getAttributeType().getName(), locations.iterator().next().toString(),
-            //                     locations.size());
-            //               results.put(webArt, srm);
-            //            }
          }
       }
       return results;

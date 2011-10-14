@@ -8,22 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.api.components;
+package org.eclipse.osee.ats.mocks;
 
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
- * @author Shawn F. Cook
+ * @author John Misinco
  */
-public interface RelationComponent extends DisplaysErrorComponent {
+public class MockOseeApi implements OseeApi {
 
-   void clearAll();
-
-   void addRelationType(WebId id);
-
-   void clearRelations();
-
-   void addRelation(WebArtifact id);
+   @Override
+   public QueryFactory getQueryFactory(ApplicationContext context) {
+      return null;
+   }
 
 }

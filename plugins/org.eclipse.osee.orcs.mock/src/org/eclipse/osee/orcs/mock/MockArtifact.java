@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.mock;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -19,8 +20,15 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -30,14 +38,58 @@ import org.eclipse.osee.orcs.data.ReadableAttribute;
  */
 public class MockArtifact implements ReadableArtifact {
 
-   private final HashCollection<IRelationType, ReadableArtifact> relations =
-      new HashCollection<IRelationType, ReadableArtifact>();
+   private final CompositeKeyHashMap<IRelationType, RelationSide, List<ReadableArtifact>> relationMap =
+      new CompositeKeyHashMap<IRelationType, RelationSide, List<ReadableArtifact>>();
+   private final List<RelationType> validRelationTypes = new LinkedList<RelationType>();
+
+   private final HashCollection<IAttributeType, String> attributes = new HashCollection<IAttributeType, String>();
 
    private final String name, guid;
+   private final IArtifactType type;
+   private final IOseeBranch branch;
+   private ReadableArtifact parent;
+   private boolean hasParent = false;
 
    public MockArtifact(String guid, String name) {
+      this(guid, name, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
+   }
+
+   public MockArtifact(String guid, String name, IArtifactType type, IOseeBranch branch) {
       this.guid = guid;
       this.name = name;
+      this.type = type;
+      this.branch = branch;
+      addAttribute(CoreAttributeTypes.Name, name);
+   }
+
+   public void setParent(ReadableArtifact parent) {
+      this.parent = parent;
+      if (this.parent != null) {
+         hasParent = true;
+      }
+   }
+
+   public void addAttribute(IAttributeType type, String value) {
+      attributes.put(type, value);
+   }
+
+   public void addRelationType(RelationType relationType) {
+      if (!validRelationTypes.contains(relationType)) {
+         validRelationTypes.add(relationType);
+      }
+   }
+
+   public void addRelation(IRelationTypeSide relation, ReadableArtifact artifact) {
+      List<ReadableArtifact> artList = relationMap.get(relation, relation.getSide());
+      if (artList == null) {
+         artList = new LinkedList<ReadableArtifact>();
+         relationMap.put(relation, relation.getSide(), artList);
+      }
+      artList.add(artifact);
+      RelationType type =
+         new RelationType(0L, relation.getName(), "sideA", "sideB", CoreArtifactTypes.Artifact,
+            CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
+      addRelationType(type);
    }
 
    @Override
@@ -57,7 +109,7 @@ public class MockArtifact implements ReadableArtifact {
 
    @Override
    public IOseeBranch getBranch() {
-      return null;
+      return branch;
    }
 
    @Override
@@ -72,31 +124,39 @@ public class MockArtifact implements ReadableArtifact {
 
    @Override
    public IArtifactType getArtifactType() {
-      return null;
+      return type;
    }
 
    @Override
-   public Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
-      return null;
+   public Collection<IAttributeType> getAttributeTypes() {
+      return attributes.keySet();
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) {
+      Collection<String> values = attributes.getValues(attributeType);
+      List<ReadableAttribute<T>> toReturn = null;
+      if (values != null && !values.isEmpty()) {
+         toReturn = new LinkedList<ReadableAttribute<T>>();
+         for (String value : values) {
+            ReadableAttribute<T> attr = (ReadableAttribute<T>) new MockAttribute(attributeType, value);
+            toReturn.add(attr);
+         }
+      } else {
+         toReturn = Collections.emptyList();
+      }
+      return toReturn;
    }
 
    @Override
-   public <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
-      return null;
+   public List<ReadableArtifact> getRelatedArtifacts(IRelationType type, RelationSide side) {
+      List<ReadableArtifact> artList = relationMap.get(type, side);
+      return artList != null ? artList : Collections.<ReadableArtifact> emptyList();
    }
 
    @Override
-   public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationSide) throws OseeCoreException {
-      return relations.getValues(relationSide).iterator().next();
-   }
-
-   @Override
-   public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationEnum) throws OseeCoreException {
-      return new ArrayList<ReadableArtifact>(relations.getValues(relationEnum));
-   }
-
-   @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
+   public String getSoleAttributeAsString(IAttributeType attributeType) {
       return null;
    }
 
@@ -116,22 +176,23 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public Collection<IRelationType> getValidRelationTypes() {
-      return relations.keySet();
-   }
-
-   public void addRelation(IRelationType relation, ReadableArtifact artifact) {
-      relations.put(relation, artifact);
+   public Collection<RelationType> getValidRelationTypes() {
+      return validRelationTypes;
    }
 
    @Override
    public boolean hasParent() {
-      return false;
+      return hasParent;
    }
 
    @Override
    public ReadableArtifact getParent() {
-      return null;
+      return parent;
+   }
+
+   @Override
+   public ReadableArtifact getRelatedArtifact(IRelationType type, RelationSide side) throws OseeCoreException {
+      return getRelatedArtifacts(type, side).iterator().next();
    }
 
 }

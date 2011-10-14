@@ -13,12 +13,10 @@ package org.eclipse.osee.display.api.components;
 /**
  * @author Shawn F. Cook
  */
-public interface SearchResultsListComponent {
+public interface SearchResultsListComponent extends DisplaysErrorComponent {
 
    void clearAll();
 
    SearchResultComponent createSearchResult();
-
-   void setErrorMessage(String message);
 
 }

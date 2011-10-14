@@ -11,10 +11,9 @@
 package org.eclipse.osee.ats.presenter.internal;
 
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.display.presenter.ArtifactProvider;
-import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
 import org.eclipse.osee.orcs.OseeApi;
 
 /**
@@ -30,7 +29,8 @@ public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponentInterface
 
    @Override
    public AtsSearchPresenter<T> createInstance() {
-      ArtifactProvider provider = new ArtifactProviderImpl(oseeApi.getQueryFactory(null));
+      AtsArtifactProvider provider =
+         AtsArtifactProviderFactory.createAtsArtifactProvider(oseeApi.getQueryFactory(null));
       AtsSearchPresenterImpl<T> instance = new AtsSearchPresenterImpl<T>(provider);
       return instance;
    }

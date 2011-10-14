@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
+import org.eclipse.osee.display.api.components.DisplaysErrorComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
@@ -24,13 +25,15 @@ import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.WebArtifact;
 import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
@@ -68,19 +71,25 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp) {
       searchResultsComp.clearAll();
       SearchParameters params = decodeSearchUrl(url);
+      if (!params.isValid()) {
+         setErrorMessage(searchResultsComp, String.format("Invalid url received: %s", url));
+         return;
+      }
       List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults = null;
       try {
          searchResults =
             artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
                params.getSearchPhrase());
       } catch (OseeCoreException ex) {
-         searchResultsComp.setErrorMessage("Error while searching");
+         setErrorMessage(searchResultsComp, "Error while searching");
          return;
       }
-      try {
-         processSearchResults(searchResults, searchResultsComp);
-      } catch (OseeCoreException ex) {
-         searchResultsComp.setErrorMessage("Error while processing results");
+      if (searchResults != null && searchResults.size() > 0) {
+         try {
+            processSearchResults(searchResults, searchResultsComp);
+         } catch (OseeCoreException ex) {
+            setErrorMessage(searchResultsComp, "Error while processing results");
+         }
       }
    }
 
@@ -112,30 +121,43 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    @Override
    public void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
       ArtifactParameters params = decodeArtifactUrl(url);
+
+      if (!params.isValid()) {
+         setErrorMessage(artHeaderComp, String.format("Invalid url received: %s", url));
+         return;
+      }
+
       String branch = params.getBranchId();
       String art = params.getArtifactId();
+
       ReadableArtifact displayArt = null;
       try {
          displayArt = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
       } catch (OseeCoreException e) {
-         artHeaderComp.setErrorMessage(String.format("Error while loading artifact[%s] from branch:[%s]", art, branch));
+         setErrorMessage(artHeaderComp, String.format("Error while loading artifact[%s] from branch:[%s]", art, branch));
+         return;
+      }
+      if (displayArt == null) {
+         setErrorMessage(artHeaderComp, String.format("No artifact[%s] found on branch:[%s]", art, branch));
          return;
       }
       WebId artBranch = new WebId(displayArt.getBranch().getGuid(), displayArt.getBranch().getName());
+      List<WebArtifact> ancestry = getAncestry(displayArt);
       WebArtifact artifact =
-         new WebArtifact(displayArt.getGuid(), displayArt.getName(), displayArt.getArtifactType().getName(), null,
+         new WebArtifact(displayArt.getGuid(), displayArt.getName(), displayArt.getArtifactType().getName(), ancestry,
             artBranch);
       artHeaderComp.setArtifact(artifact);
 
       relComp.clearAll();
-      Collection<IRelationType> relationTypes = null;
+      Collection<RelationType> relationTypes = null;
       try {
          relationTypes = displayArt.getValidRelationTypes();
       } catch (OseeCoreException ex1) {
-         relComp.setErrorMessage(String.format("Error loading relation types for: [%s]", displayArt.getName()));
+         setErrorMessage(relComp, String.format("Error loading relation types for: [%s]", displayArt.getName()));
       }
-      for (IRelationType relType : relationTypes) {
-         relComp.addRelationType(new WebId(relType.getGuid().toString(), relType.getName()));
+      for (RelationType relType : relationTypes) {
+         relComp.addRelationType(new WebId(relType.getGuid().toString() + ":A", relType.getSideAName()));
+         relComp.addRelationType(new WebId(relType.getGuid().toString() + ":B", relType.getSideBName()));
       }
 
       attrComp.clearAll();
@@ -143,7 +165,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       try {
          attributeTypes = displayArt.getAttributeTypes();
       } catch (OseeCoreException ex) {
-         attrComp.setErrorMessage(String.format("Error loading attributes for: [%s]", displayArt.getName()));
+         setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
       }
       for (IAttributeType attrType : attributeTypes) {
          List<ReadableAttribute<Object>> attributesValues = null;
@@ -153,18 +175,20 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
                attrComp.addAttribute(attrType.getName(), value.getDisplayableString());
             }
          } catch (OseeCoreException ex) {
-            attrComp.setErrorMessage(String.format("Error loading attributes for: [%s]", displayArt.getName()));
+            setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
          }
       }
    }
 
    @Override
-   public void selectRelationType(WebId id, RelationComponent relationComponent) {
+   public void selectRelationType(WebArtifact artifact, WebId relation, RelationComponent relationComponent) {
+      relationComponent.clearRelations();
+      //artifactProvider.getRelatedArtifacts(artifact.getGuid(), side)
    }
 
    protected String encode(WebArtifact artifact) {
       StringBuilder sb = new StringBuilder();
-      sb.append("branch=");
+      sb.append("/branch=");
       sb.append(artifact.getBranch().getGuid());
       sb.append("?artifact=");
       sb.append(artifact.getGuid());
@@ -173,7 +197,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
 
    protected String encode(WebId branch, boolean nameOnly, String searchPhrase) {
       StringBuilder sb = new StringBuilder();
-      sb.append("branch=");
+      sb.append("/branch=");
       sb.append(branch.getGuid());
       sb.append("?nameOnly=");
       sb.append(nameOnly);
@@ -183,10 +207,12 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    }
 
    protected List<WebArtifact> getAncestry(ReadableArtifact art) {
-      ReadableArtifact cur = art;
+      ReadableArtifact cur = art.getParent();
       List<WebArtifact> ancestry = new ArrayList<WebArtifact>();
       while (cur != null) {
-         ancestry.add(new WebArtifact(cur.getGuid(), cur.getName(), cur.getArtifactType().getName()));
+         WebId branch = new WebId(cur.getBranch().getGuid(), cur.getBranch().getName());
+         ancestry.add(new WebArtifact(cur.getGuid(), cur.getName(), cur.getArtifactType().getName(), getAncestry(cur),
+            branch));
          if (cur.hasParent()) {
             cur = cur.getParent();
          } else {
@@ -196,6 +222,10 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       return ancestry;
    }
 
+   protected void setErrorMessage(DisplaysErrorComponent component, String message) {
+      component.setErrorMessage(message);
+   }
+
    private ArtifactParameters decodeArtifactUrl(String url) {
       String branch = "";
       String artifact = "";
@@ -203,10 +233,10 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       branchMatcher.reset(url);
       artifactMatcher.reset(url);
 
-      if (branchMatcher.matches()) {
+      if (branchMatcher.find()) {
          branch = branchMatcher.group(1);
       }
-      if (artifactMatcher.matches()) {
+      if (artifactMatcher.find()) {
          artifact = artifactMatcher.group(1);
       }
       return new ArtifactParameters(branch, artifact);
@@ -221,7 +251,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       nameOnlyMatcher.reset(url);
       searchPhraseMatcher.reset(url);
 
-      if (branchMatcher.matches()) {
+      if (branchMatcher.find()) {
          branch = branchMatcher.group(1);
       }
       if (nameOnlyMatcher.find()) {
@@ -249,6 +279,10 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       public String getArtifactId() {
          return artifactId;
       }
+
+      public boolean isValid() {
+         return Strings.isValid(branchId) && Strings.isValid(artifactId);
+      }
    }
 
    private class SearchParameters {
@@ -273,6 +307,10 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
 
       public String getSearchPhrase() {
          return searchPhrase;
+      }
+
+      public boolean isValid() {
+         return Strings.isValid(branchId);
       }
    }
 

@@ -13,10 +13,8 @@ package org.eclipse.osee.display.api.components;
 /**
  * @author Shawn F. Cook
  */
-public interface SearchHeaderComponent {
+public interface SearchHeaderComponent extends DisplaysErrorComponent {
 
    void clearAll();
-
-   void setErrorMessage(String message);
 
 }

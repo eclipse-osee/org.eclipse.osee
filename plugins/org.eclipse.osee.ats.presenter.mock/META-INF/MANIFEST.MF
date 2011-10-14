@@ -8,7 +8,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.osee.ats.api.components,
  org.eclipse.osee.ats.api.search,
+ org.eclipse.osee.ats.mocks,
  org.eclipse.osee.display.api.components,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search,
+ org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.core.data

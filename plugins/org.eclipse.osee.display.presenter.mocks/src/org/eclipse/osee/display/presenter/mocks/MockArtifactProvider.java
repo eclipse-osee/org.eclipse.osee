@@ -13,7 +13,7 @@ package org.eclipse.osee.display.presenter.mocks;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.display.presenter.ArtifactProvider;
+import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
