@@ -55,7 +55,7 @@ public class DataProxyFactoryProviderImpl implements DataProxyFactoryProvider {
             for (ServiceReference<DataProxyFactory> reference : pending) {
                try {
                   register(reference);
-               } catch (OseeCoreException ex) {
+               } catch (Throwable ex) {
                   getLogger().error(ex, "Error registering pending data proxy factories");
                }
             }
@@ -95,7 +95,7 @@ public class DataProxyFactoryProviderImpl implements DataProxyFactoryProvider {
       }
    }
 
-   private void register(ServiceReference<DataProxyFactory> reference) throws OseeCoreException {
+   private void register(ServiceReference<DataProxyFactory> reference) {
       try {
          Bundle bundle = reference.getBundle();
          DataProxyFactory factory = bundle.getBundleContext().getService(reference);
@@ -105,8 +105,7 @@ public class DataProxyFactoryProviderImpl implements DataProxyFactoryProvider {
             proxyClassMap.put(alias, factory);
          }
       } catch (Throwable th) {
-         th.printStackTrace();
-         System.out.println("stopme");
+         getLogger().error(th, "Error registering data proxy [%s]", reference.getProperty("component.name"));
       }
    }
 
