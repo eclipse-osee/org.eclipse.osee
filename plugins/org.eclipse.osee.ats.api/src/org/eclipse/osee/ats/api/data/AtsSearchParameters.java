@@ -8,21 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.search;
+package org.eclipse.osee.ats.api.data;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
-import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.display.api.data.WebId;
-import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.api.data.WebSearchParameters;
 
-/*
+/**
  * @author John Misinco
  */
-public interface AtsSearchPresenter<T extends AtsSearchHeaderComponentInterface> extends SearchPresenter<T> {
+public class AtsSearchParameters extends WebSearchParameters {
 
-   void selectProgram(WebId program, T headerComponent);
+   private final WebId build, program;
 
-   void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator);
+   public AtsSearchParameters(String searchString, boolean nameOnly, boolean verboseResults, WebId build, WebId program) {
+      super(searchString, nameOnly, verboseResults);
+      this.build = build;
+      this.program = program;
+   }
+
+   public WebId getBuild() {
+      return build;
+   }
+
+   public WebId getProgram() {
+      return program;
+   }
 
 }

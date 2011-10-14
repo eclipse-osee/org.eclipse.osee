@@ -43,7 +43,7 @@ public class WebProgramsPresenterTest {
       MockSearchNavigator navigator = new MockSearchNavigator();
       WebId program = new WebId("prgGuid", "prgName");
       WebId build = new WebId("bldGuid", "bldName");
-      presenter.selectSearch(program, build, true, "test search phrase", navigator);
+      //      presenter.selectSearch(program, build, true, "test search phrase", navigator);
       String url = navigator.getResultsUrl();
       String expected = "program=prgGuid?build=bldGuid?nameOnly=true?search=test%20search%20phrase";
       Assert.assertEquals(expected, url);

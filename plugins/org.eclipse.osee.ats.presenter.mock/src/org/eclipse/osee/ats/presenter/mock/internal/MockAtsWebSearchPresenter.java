@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
@@ -102,18 +103,18 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void selectSearch(WebId program, WebId build, boolean nameOnly, String searchPhrase, SearchNavigator atsNavigator) {
-      if (atsNavigator != null) {
+   public void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator) {
+      if (atsNavigator != null && params != null) {
          Map<String, String> parameters = new HashMap<String, String>();
-         if (program != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, program.getGuid());
+         if (params.getProgram() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, params.getProgram().getGuid());
          }
-         if (build != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, build.getGuid());
+         if (params.getBuild() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, params.getBuild().getGuid());
          }
-         parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, nameOnly ? "true" : "false");
-         if (searchPhrase != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, searchPhrase);
+         parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
+         if (params.getSearchString() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
          }
          if (parameters.size() > 0) {
             String url = parameterMapToRequestString(parameters);

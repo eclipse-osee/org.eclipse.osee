@@ -10,4 +10,5 @@ Export-Package: org.eclipse.osee.ats.api.components,
  org.eclipse.osee.ats.api.tokens
 Require-Bundle: org.eclipse.osee.display.api,
  org.eclipse.osee.framework.core
+ org.eclipse.osee.ats.api.data,
 Import-Package: org.eclipse.osee.orcs.data

@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
@@ -45,8 +46,8 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
    }
 
    @Override
-   public void selectSearch(WebId program, WebId build, boolean nameOnly, String searchPhrase, SearchNavigator atsNavigator) {
-      String url = encode(program, build, nameOnly, searchPhrase);
+   public void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator) {
+      String url = encode(params.getProgram(), params.getBuild(), params.isNameOnly(), params.getSearchString());
       atsNavigator.navigateSearchResults(url);
    }
 

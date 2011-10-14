@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.view.web.components;
 
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsNavigator;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
@@ -143,8 +144,10 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
             WebId build = (WebId) buildCombo.getValue();
             boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
             String searchPhrase = (String) searchTextField.getValue();
+            boolean verbose = false;
+            AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, verbose, build, program);
             if (searchPresenter != null) {
-               searchPresenter.selectSearch(program, build, nameOnly, searchPhrase, navigator);
+               searchPresenter.selectSearch(params, navigator);
             }
          }
       });
