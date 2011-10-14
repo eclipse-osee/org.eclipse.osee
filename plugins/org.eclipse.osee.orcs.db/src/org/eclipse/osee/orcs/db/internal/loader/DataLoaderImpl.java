@@ -21,7 +21,6 @@ import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
-import org.eclipse.osee.orcs.db.internal.DbSystemPreferences;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
 public class DataLoaderImpl implements DataLoader {
@@ -30,6 +29,7 @@ public class DataLoaderImpl implements DataLoader {
    private StaticSqlProvider sqlProvider;
    private IOseeDatabaseService oseeDatabaseService;
    private IdentityService identityService;
+   private SystemPreferences preferences;
    private DataStoreTypeCache dataStoreTypeCache;
    private DataProxyFactoryProvider dataProxyFactoryProvider;
 
@@ -38,8 +38,6 @@ public class DataLoaderImpl implements DataLoader {
    private RelationLoader relationLoader;
 
    public void start() {
-      SystemPreferences preferences = new DbSystemPreferences(); // Needs to be a service;
-
       sqlProvider = new StaticSqlProvider();
       sqlProvider.setLogger(logger);
       sqlProvider.setPreferences(preferences);
@@ -53,6 +51,10 @@ public class DataLoaderImpl implements DataLoader {
 
    public void setLogger(Log logger) {
       this.logger = logger;
+   }
+
+   public void setSystemPreferences(SystemPreferences preferences) {
+      this.preferences = preferences;
    }
 
    public void setOseeDatabaseService(IOseeDatabaseService oseeDatabaseService) {
