@@ -8,24 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.proxy;
+package org.eclipse.osee.orcs.db.internal.accessor;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * Test Case for {@link ResourceDataProxyFactory}
- * 
  * @author Roberto E. Escobar
  */
-public class ResourceDataProxyFactoryTest {
-
-   @Test
-   @Ignore
-   public void test() {
-      Assert.assertEquals(1, 1);
-
-      //      public DataProxy createInstance(String factoryAlias) throws OseeCoreException {
-   }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({OseeInfoDataAccessorTest.class})
+public class AccessorTestSuite {
+   // Test Suite
 }

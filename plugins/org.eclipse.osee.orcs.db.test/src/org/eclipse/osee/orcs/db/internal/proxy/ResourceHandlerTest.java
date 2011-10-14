@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -30,6 +29,7 @@ import org.eclipse.osee.orcs.db.mocks.MockResourceLocatorManager;
 import org.eclipse.osee.orcs.db.mocks.MockResourceManager;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
 import org.eclipse.osee.orcs.db.mocks.Utility;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

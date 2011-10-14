@@ -12,12 +12,12 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 
 import java.io.IOException;
 import java.util.Arrays;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.db.mocks.MockDataHandler;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

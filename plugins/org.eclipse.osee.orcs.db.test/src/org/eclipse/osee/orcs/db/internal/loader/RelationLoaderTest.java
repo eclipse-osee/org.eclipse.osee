@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -26,14 +25,20 @@ import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
-import org.eclipse.osee.orcs.db.mock.H2Preferences;
-import org.eclipse.osee.orcs.db.mock.MockLog;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.db.mocks.MockLog;
+import org.eclipse.osee.orcs.db.mocks.MockSystemPreferences;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 
+/**
+ * Test Case for {@link RelationLoader}
+ * 
+ * @author Andrew M. Finkbeiner
+ */
 public class RelationLoaderTest {
 
    @Rule
@@ -45,7 +50,7 @@ public class RelationLoaderTest {
    public static void setUp() {
       sqlProvider = new StaticSqlProvider();
       sqlProvider.setLogger(new MockLog());
-      sqlProvider.setPreferences(new H2Preferences());
+      sqlProvider.setPreferences(new MockSystemPreferences());
    }
 
    @AfterClass

@@ -19,7 +19,11 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Roberto E. Escobar
  */
-public class OsgiUtil {
+public final class OsgiUtil {
+
+   private OsgiUtil() {
+      // Utility class
+   }
 
    public static <T> T getService(Class<T> clazz) throws OseeCoreException {
       Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);

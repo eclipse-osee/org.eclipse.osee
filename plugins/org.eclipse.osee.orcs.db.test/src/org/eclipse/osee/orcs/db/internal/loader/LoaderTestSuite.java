@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactLoaderTest.class, RelationLoaderTest.class})
+@Suite.SuiteClasses({ArtifactLoaderTest.class, AttributeLoaderTest.class, RelationLoaderTest.class})
 public class LoaderTestSuite {
    // Test Suite
 }

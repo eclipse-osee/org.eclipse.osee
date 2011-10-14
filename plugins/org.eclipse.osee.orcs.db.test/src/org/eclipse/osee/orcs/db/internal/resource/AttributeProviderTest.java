@@ -37,6 +37,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
+ * Test Case for {@link AttributeProvider}
+ * 
  * @author Roberto E. Escobar
  */
 public class AttributeProviderTest {

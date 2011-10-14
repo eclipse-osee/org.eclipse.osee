@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

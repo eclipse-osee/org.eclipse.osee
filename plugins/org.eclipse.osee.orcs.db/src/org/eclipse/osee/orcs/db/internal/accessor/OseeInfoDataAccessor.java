@@ -96,7 +96,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    private String internalGetOseeApplicationServerData() {
       String toReturn = System.getProperty(ResourceConstants.BINARY_DATA_PATH);
-      if (toReturn == null) {
+      if (!Strings.isValid(toReturn)) {
          String userHome = System.getProperty("user.home");
          if (Strings.isValid(userHome)) {
             toReturn = userHome;

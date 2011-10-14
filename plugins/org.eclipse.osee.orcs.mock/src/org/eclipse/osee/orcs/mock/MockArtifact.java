@@ -190,6 +190,7 @@ public class MockArtifact implements ReadableArtifact {
       return parent;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public ReadableArtifact getRelatedArtifact(IRelationType type, RelationSide side) throws OseeCoreException {
       return getRelatedArtifacts(type, side).iterator().next();

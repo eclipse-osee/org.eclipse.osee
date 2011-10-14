@@ -8,10 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.mock;
+package org.eclipse.osee.orcs.db.mocks;
 
 import org.eclipse.osee.logger.Log;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class MockLog implements Log {
 
    @Override

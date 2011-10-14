@@ -1,15 +1,18 @@
-/*
- * Created on Oct 11, 2011
+/*******************************************************************************
+ * Copyright (c) 2011 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.mock;
-
-import org.junit.runners.model.FrameworkMethod;
 
 public interface SampleDataStore {
 
    void stopDataStore();
 
-   void startDataStore(FrameworkMethod method, Object target) throws Exception;
+   void startDataStore() throws Exception;
 }

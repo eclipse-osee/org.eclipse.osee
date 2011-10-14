@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import org.eclipse.osee.orcs.db.internal.proxy.ProxyTestSuite;
-import org.eclipse.osee.orcs.db.internal.resource.ResourceTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.SearchTestSuite;
+import org.eclipse.osee.orcs.db.internal.accessor.AccessorTestSuite;
+import org.eclipse.osee.orcs.db.internal.loader.LoaderTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,7 +19,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ProxyTestSuite.class, ResourceTestSuite.class, SearchTestSuite.class})
-public class InternalTestSuite {
+@Suite.SuiteClasses({AccessorTestSuite.class, LoaderTestSuite.class})
+public class InternalPdeJunitTestSuite {
    // Test Suite
 }

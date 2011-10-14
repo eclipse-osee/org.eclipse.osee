@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.db.internal.search.SqlBuilder.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
-import org.eclipse.osee.orcs.db.mock.MockLog;
+import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.eclipse.osee.orcs.db.mocks.MockSystemPreferences;
 import org.eclipse.osee.orcs.db.mocks.SqlUtility;
 import org.junit.AfterClass;
