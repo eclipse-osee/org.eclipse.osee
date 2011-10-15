@@ -30,6 +30,8 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.accessor.ArtifactTypeDataAccessor;
 import org.eclipse.osee.orcs.db.internal.accessor.DatabaseBranchAccessor;
@@ -41,6 +43,8 @@ import org.eclipse.osee.orcs.db.internal.accessor.DatabaseTransactionRecordAcces
 public class CacheFactoryService implements IOseeCachingServiceFactory {
 
    private IOseeDatabaseService dbService;
+   private IResourceLocatorManager resourceLocator;
+   private IResourceManager resourceManager;
    private IOseeModelFactoryService factoryService;
    private IOseeModelingService modelingService;
    private IdentityService identityService;
@@ -64,6 +68,14 @@ public class CacheFactoryService implements IOseeCachingServiceFactory {
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
+   }
+
+   public void setResourceLocator(IResourceLocatorManager resourceLocator) {
+      this.resourceLocator = resourceLocator;
+   }
+
+   public void setResourceManager(IResourceManager resourceManager) {
+      this.resourceManager = resourceManager;
    }
 
    public void setIdentityService(IdentityService identityService) {
@@ -92,13 +104,17 @@ public class CacheFactoryService implements IOseeCachingServiceFactory {
          factoryService.getTransactionFactory()));
 
       OseeEnumTypeCache oseeEnumTypeCache =
-         new OseeEnumTypeCache(new ArtifactTypeDataAccessor<OseeEnumType>(modelingService, identityService));
+         new OseeEnumTypeCache(new ArtifactTypeDataAccessor<OseeEnumType>(modelingService, identityService, dbService,
+            resourceLocator, resourceManager, branchCache));
       AttributeTypeCache attributeCache =
-         new AttributeTypeCache(new ArtifactTypeDataAccessor<AttributeType>(modelingService, identityService));
+         new AttributeTypeCache(new ArtifactTypeDataAccessor<AttributeType>(modelingService, identityService,
+            dbService, resourceLocator, resourceManager, branchCache));
       ArtifactTypeCache artifactCache =
-         new ArtifactTypeCache(new ArtifactTypeDataAccessor<ArtifactType>(modelingService, identityService));
+         new ArtifactTypeCache(new ArtifactTypeDataAccessor<ArtifactType>(modelingService, identityService, dbService,
+            resourceLocator, resourceManager, branchCache));
       RelationTypeCache relationCache =
-         new RelationTypeCache(new ArtifactTypeDataAccessor<RelationType>(modelingService, identityService));
+         new RelationTypeCache(new ArtifactTypeDataAccessor<RelationType>(modelingService, identityService, dbService,
+            resourceLocator, resourceManager, branchCache));
 
       return new OseeCachingService(branchCache, txCache, artifactCache, attributeCache, relationCache,
          oseeEnumTypeCache, identityService);

@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
@@ -38,6 +39,10 @@ public class AttributeDataProxyFactory implements AttributeLoader.ProxyDataFacto
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
       String dataProxyFactoryId = attributeType.getAttributeProviderId();
+      if (dataProxyFactoryId.contains(".")) {
+         dataProxyFactoryId = Lib.getExtension(dataProxyFactoryId);
+      }
+
       DataProxyFactory factory = proxyProvider.getFactory(dataProxyFactoryId);
       Conditions.checkNotNull(factory, "DataProxyFactory", "Unable to find data proxy factory for [%s]",
          dataProxyFactoryId);

@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ResultSet<T> {
 
-   int getCount() throws OseeCoreException;
-
    T getOneOrNull() throws OseeCoreException;
 
    T getExactlyOne() throws OseeCoreException;

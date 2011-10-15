@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core;
 
-import org.eclipse.osee.orcs.core.internal.MasterLoaderTest;
+import org.eclipse.osee.orcs.core.internal.OseeApiTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MasterLoaderTest.class})
+@Suite.SuiteClasses({OseeApiTest.class})
 public class OrcsCoreIntTestSuite {
    // Test Suite
 }

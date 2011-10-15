@@ -47,7 +47,7 @@ public class ArtifactLoader {
       OseeSql sqlKey;
       if (options.isHistorical()) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ARTIFACTS;
-      } else if (options.areDeletedAllowed()) {
+      } else if (options.areDeletedIncluded()) {
          sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS_WITH_DELETED;
       } else {
          sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS;
@@ -73,7 +73,7 @@ public class ArtifactLoader {
             // assumption: SQL is returning rows ordered by branch_id, art_id, transaction_id in descending order
             if (previousArtId != artifactId || previousBranchId != branchId) {
                // assumption: SQL is returning unwanted deleted artifacts only in the historical case
-               if (!options.isHistorical() || options.areDeletedAllowed() || modType != ModificationType.DELETED) {
+               if (!options.isHistorical() || options.areDeletedIncluded() || modType != ModificationType.DELETED) {
 
                   ArtifactRow row = new ArtifactRow();
 

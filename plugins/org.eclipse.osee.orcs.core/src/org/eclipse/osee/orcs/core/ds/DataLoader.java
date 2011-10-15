@@ -15,6 +15,8 @@ public interface DataLoader {
    //
    //   void loadRelations(RelationRowHandler handler, Object dataStoreContext, LoadOptions options) throws OseeCoreException;
 
-   void loadArtifacts(ArtifactRowHandler handler, Object dataStoreContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
+   void loadArtifacts(ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
+
+   int countArtifacts(QueryContext queryContext) throws OseeCoreException;
 
 }

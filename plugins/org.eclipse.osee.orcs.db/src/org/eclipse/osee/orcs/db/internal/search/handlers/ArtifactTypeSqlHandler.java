@@ -32,6 +32,8 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
    private CriteriaArtifactType criteria;
 
    private String jIdAlias;
+   private String artAlias;
+   private String txsAlias;
    private AbstractJoinQuery joinQuery;
 
    @Override
@@ -43,6 +45,15 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
    public void addTables(SqlWriter writer) throws OseeCoreException {
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
+      }
+
+      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
+      if (aliases.isEmpty()) {
+         artAlias = writer.writeTable(TableEnum.ARTIFACT_TABLE);
+      }
+      if (txs.isEmpty()) {
+         txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
       }
    }
 
@@ -90,6 +101,16 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
             }
          }
       }
+
+      if (artAlias != null && txsAlias != null) {
+         writer.write(" AND ");
+         writer.write(artAlias);
+         writer.write(".gamma_id = ");
+         writer.write(txsAlias);
+         writer.write(".gamma_id AND ");
+         writer.writeTxBranchFilter(txsAlias);
+      }
+
    }
 
    @Override

@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.AttributeClassProvider;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
@@ -78,6 +79,9 @@ public class AttributeClassResolver {
 
    public Class<? extends Attribute<?>> getBaseClazz(AttributeType attributeType) {
       String alias = attributeType.getBaseAttributeTypeId();
+      if (alias.contains(".")) {
+         alias = Lib.getExtension(alias);
+      }
       return getBaseClazz(alias);
    }
 

@@ -8,10 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.core.ds;
 
-public interface ApplicationContext {
+/**
+ * @author Roberto E. Escobar
+ */
+public interface QueryContext {
    //
-
-   String getSessionId();
 }

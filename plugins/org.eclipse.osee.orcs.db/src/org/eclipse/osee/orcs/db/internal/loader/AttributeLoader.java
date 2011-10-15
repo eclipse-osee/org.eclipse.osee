@@ -50,7 +50,7 @@ public class AttributeLoader {
          sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
       } else if (options.getLoadLevel().isHead()) {
          sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
-      } else if (options.areDeletedAllowed()) {
+      } else if (options.areDeletedIncluded()) {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
       } else {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;

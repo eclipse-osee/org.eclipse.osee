@@ -1,8 +1,13 @@
-/*
- * Created on Oct 11, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
@@ -31,7 +37,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeRowMapper;
 import org.eclipse.osee.orcs.core.internal.relation.RelationRowMapper;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
-public class MasterLoader {
+public class OrcsObjectLoader {
 
    private final DataLoader dataLoader;
    private final Log logger;
@@ -40,26 +46,31 @@ public class MasterLoader {
    private final ArtifactFactory artifactFactory;
    private final AttributeFactory attributeFactory;
 
-   MasterLoader(DataLoader dataLoader, Log logger, ArtifactTypeCache artifactTypeCache, BranchCache branchCache, ArtifactFactory artifactFactory, AttributeFactory attributeFactory) {
-      this.dataLoader = dataLoader;
-      this.artifactTypeCache = artifactTypeCache;
+   public OrcsObjectLoader(Log logger, DataLoader dataLoader, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, ArtifactTypeCache artifactTypeCache, BranchCache branchCache) {
+      super();
       this.logger = logger;
-      this.branchCache = branchCache;
+      this.dataLoader = dataLoader;
       this.artifactFactory = artifactFactory;
       this.attributeFactory = attributeFactory;
+
+      this.artifactTypeCache = artifactTypeCache;
+      this.branchCache = branchCache;
    }
 
-   public List<ReadableArtifact> load(Object dataStoreContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
+   public int countObjects(QueryContext queryContext) throws OseeCoreException {
+      return dataLoader.countArtifacts(queryContext);
+   }
+
+   public List<ReadableArtifact> load(QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
       ArtifactRecieveHandler artifactHandler =
          new ArtifactRecieveHandler(loadOptions, dataLoader, logger, attributeFactory);
 
       ArtifactRowHandler artifactRowHandler =
          new ArtifactRowMapper(logger, sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
 
-      dataLoader.loadArtifacts(artifactRowHandler, dataStoreContext, loadOptions, artifactHandler, artifactHandler);
+      dataLoader.loadArtifacts(artifactRowHandler, queryContext, loadOptions, artifactHandler, artifactHandler);
 
       return artifactHandler.get();
-
    }
 
    private static class ArtifactRecieveHandler implements ArtifactReciever, RelationRowHandlerFactory, AttributeRowHandlerFactory {
@@ -100,7 +111,7 @@ public class MasterLoader {
       }
 
       @Override
-      public void onArtifact(ReadableArtifact artifact, boolean isArtifactAlreadyLoaded) throws OseeCoreException {
+      public void onArtifact(ReadableArtifact artifact, boolean isArtifactAlreadyLoaded) {
          arts.add(artifact);
       }
 

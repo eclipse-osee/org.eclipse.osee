@@ -25,11 +25,14 @@ import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.search.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
 public class DataLoaderImpl implements DataLoader {
+
+   private static final int MAX_FETCH_SIZE = 10000;
 
    private Log logger;
    private StaticSqlProvider sqlProvider;
@@ -79,35 +82,65 @@ public class DataLoaderImpl implements DataLoader {
       this.dataStoreTypeCache = dataStoreTypeCache;
    }
 
-   @Override
-   public void loadArtifacts(ArtifactRowHandler handler, Object dataStoreContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   private SqlContext toSqlContext(QueryContext queryContext) throws OseeCoreException {
       SqlContext sqlContext = null;
-      if (dataStoreContext instanceof SqlContext) {
-         sqlContext = (SqlContext) dataStoreContext;
+      if (queryContext instanceof SqlContext) {
+         sqlContext = (SqlContext) queryContext;
       } else {
          throw new OseeCoreException(String.format("Invalid data store context type[%s], expected SqlContext.",
-            dataStoreContext.getClass().getName()));
+            queryContext.getClass().getName()));
       }
-      ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
-      populateJoinQuery(artifactJoin, sqlContext, loadOptions, sqlContext.getFetchSize());
+      return sqlContext;
+   }
+
+   @Override
+   public int countArtifacts(QueryContext queryContext) throws OseeCoreException {
+      SqlContext sqlContext = toSqlContext(queryContext);
+      for (AbstractJoinQuery join : sqlContext.getJoins()) {
+         join.store();
+      }
+      String query = sqlContext.getSql();
+      List<Object> params = sqlContext.getParameters();
       try {
-         artifactJoin.store();
-
-         //load artifacts
-         artifactLoader.loadFromQueryId(handler, loadOptions, sqlContext.getFetchSize(), artifactJoin.getQueryId());
-         //load otheres
-
-         attributeLoader.loadFromQueryId(attributeRowHandlerFactory.createAttributeRowHandler(), loadOptions,
-            sqlContext.getFetchSize(), artifactJoin.getQueryId());
-         relationLoader.loadFromQueryId(relationRowHandlerFactory.createRelationRowHandler(), loadOptions,
-            sqlContext.getFetchSize(), artifactJoin.getQueryId());
-
+         return oseeDatabaseService.runPreparedQueryFetchObject(-1, query, params.toArray());
       } finally {
-         artifactJoin.delete();
+         for (AbstractJoinQuery join : sqlContext.getJoins()) {
+            join.delete();
+         }
       }
    }
 
-   private void populateJoinQuery(ArtifactJoinQuery artifactJoin, SqlContext sqlContext, LoadOptions loadOptions, int fetchSize) throws OseeCoreException {
+   @Override
+   public void loadArtifacts(ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+      SqlContext sqlContext = toSqlContext(queryContext);
+      int fetchSize = computeFetchSize(sqlContext);
+
+      ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
+      populateArtifactJoin(join, sqlContext, fetchSize);
+      try {
+         join.store();
+         artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, join.getQueryId());
+         attributeLoader.loadFromQueryId(attributeRowHandlerFactory.createAttributeRowHandler(), loadOptions,
+            fetchSize, join.getQueryId());
+         relationLoader.loadFromQueryId(relationRowHandlerFactory.createRelationRowHandler(), loadOptions, fetchSize,
+            join.getQueryId());
+      } finally {
+         join.delete();
+      }
+   }
+
+   private int computeFetchSize(SqlContext sqlContext) {
+      int fetchSize = Integer.MIN_VALUE;
+      for (AbstractJoinQuery join : sqlContext.getJoins()) {
+         fetchSize = Math.max(fetchSize, join.size());
+      }
+      if (fetchSize < 0 || fetchSize > MAX_FETCH_SIZE) {
+         fetchSize = MAX_FETCH_SIZE;
+      }
+      return fetchSize;
+   }
+
+   private void populateArtifactJoin(ArtifactJoinQuery artifactJoin, SqlContext sqlContext, int fetchSize) throws OseeCoreException {
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
          join.store();
       }
@@ -135,4 +168,5 @@ public class DataLoaderImpl implements DataLoader {
          }
       }
    }
+
 }

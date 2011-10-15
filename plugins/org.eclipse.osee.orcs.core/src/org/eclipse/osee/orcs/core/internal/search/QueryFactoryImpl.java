@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -32,14 +33,22 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class QueryFactoryImpl implements QueryFactory {
 
-   private final CriteriaFactory criteriaFctry = new CriteriaFactory();
-   private final ResultSetFactory rsetFctry = new ResultSetFactory();
+   private final SessionContext context;
+   private final CriteriaFactory criteriaFctry;
+   private final ResultSetFactory rsetFctry;
+
+   public QueryFactoryImpl(CriteriaFactory criteriaFctry, ResultSetFactory rsetFctry, SessionContext context) {
+      super();
+      this.context = context;
+      this.criteriaFctry = criteriaFctry;
+      this.rsetFctry = rsetFctry;
+   }
 
    @SuppressWarnings("unused")
    private QueryBuilder createBuilder(IOseeBranch branch) throws OseeCoreException {
       QueryOptions options = new QueryOptions();
       CriteriaSet criteriaSet = new CriteriaSet(branch);
-      QueryBuilder builder = new QueryBuilderImpl(rsetFctry, criteriaFctry, criteriaSet, options);
+      QueryBuilder builder = new QueryBuilderImpl(rsetFctry, criteriaFctry, context, criteriaSet, options);
       return builder;
    }
 

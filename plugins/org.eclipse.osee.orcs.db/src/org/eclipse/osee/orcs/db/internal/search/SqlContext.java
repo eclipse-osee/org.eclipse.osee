@@ -13,17 +13,17 @@ package org.eclipse.osee.orcs.db.internal.search;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
+import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SqlContext {
+public class SqlContext implements QueryContext {
 
    private final List<Object> parameters = new ArrayList<Object>();
    private final List<AbstractJoinQuery> joinTables = new ArrayList<AbstractJoinQuery>();
    private String sql;
-   private int fetchSize = 100;
 
    private final String sessionId;
    private final QueryOptions options;
@@ -55,14 +55,6 @@ public class SqlContext {
 
    public QueryOptions getOptions() {
       return options;
-   }
-
-   public int getFetchSize() {
-      return fetchSize;
-   }
-
-   public void setFetchSize(int fetchSize) {
-      this.fetchSize = fetchSize;
    }
 
    public void clear() {

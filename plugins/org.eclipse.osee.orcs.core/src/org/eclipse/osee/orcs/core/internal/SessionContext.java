@@ -21,7 +21,6 @@ public interface SessionContext {
 
    <T extends ReadableArtifact> T getHistorical(int artId, int stripeId);
 
-
    <T extends ReadableArtifact> T getActive(int artId, int branchId);
 
 }

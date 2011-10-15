@@ -3,6 +3,8 @@
    <implementation class="org.eclipse.osee.orcs.db.internal.CacheFactoryService"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="setResourceLocator" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceLocatorManager" name="IResourceLocatorManager" policy="static"/>
+   <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
    <reference bind="setIdentityService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IdentityService" name="IdentityService" policy="static"/>
    <reference bind="setFactoryService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>
    <reference bind="setModelService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelingService" name="IOseeModelingService" policy="static"/>

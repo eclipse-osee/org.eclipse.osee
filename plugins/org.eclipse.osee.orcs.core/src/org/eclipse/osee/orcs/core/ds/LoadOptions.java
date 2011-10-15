@@ -19,17 +19,21 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 public class LoadOptions {
 
    private boolean historical;
-   private DeletionFlag allowDeletedArtifacts;
+   private DeletionFlag includeDeleted;
    private LoadLevel loadLevel;
 
    public LoadOptions() {
       this(false, DeletionFlag.EXCLUDE_DELETED, LoadLevel.SHALLOW);
    }
 
-   public LoadOptions(boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) {
+   public LoadOptions(boolean historical, boolean includeDeleted, LoadLevel loadLevel) {
+      this(historical, DeletionFlag.allowDeleted(includeDeleted), loadLevel);
+   }
+
+   public LoadOptions(boolean historical, DeletionFlag includeDeleted, LoadLevel loadLevel) {
       super();
       this.historical = historical;
-      this.allowDeletedArtifacts = allowDeletedArtifacts;
+      this.includeDeleted = includeDeleted;
       this.loadLevel = loadLevel;
    }
 
@@ -37,8 +41,12 @@ public class LoadOptions {
       return historical;
    }
 
-   public boolean areDeletedAllowed() {
-      return allowDeletedArtifacts.areDeletedAllowed();
+   public boolean areDeletedIncluded() {
+      return includeDeleted.areDeletedAllowed();
+   }
+
+   public void setIncludeDeleted(boolean enabled) {
+      includeDeleted = DeletionFlag.allowDeleted(enabled);
    }
 
    public LoadLevel getLoadLevel() {
@@ -49,17 +57,13 @@ public class LoadOptions {
       this.historical = historical;
    }
 
-   public void setAllowDeletedArtifacts(DeletionFlag allowDeletedArtifacts) {
-      this.allowDeletedArtifacts = allowDeletedArtifacts;
-   }
-
    public void setLoadLevel(LoadLevel loadLevel) {
       this.loadLevel = loadLevel;
    }
 
    @Override
    public String toString() {
-      return "LoadOptions [historical=" + historical + ", allowDeletedArtifacts=" + allowDeletedArtifacts + ", loadLevel=" + loadLevel + "]";
+      return "LoadOptions [historical=" + historical + ", includeDeleted=" + includeDeleted + ", loadLevel=" + loadLevel + "]";
    }
 
 }

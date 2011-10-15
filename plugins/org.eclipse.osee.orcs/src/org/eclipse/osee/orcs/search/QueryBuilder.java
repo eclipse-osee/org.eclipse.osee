@@ -154,8 +154,7 @@ public interface QueryBuilder {
    ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> buildMatches(LoadLevel loadLevel) throws OseeCoreException;
 
    /**
-    * Counts the number of items available
+    * Count potential results
     */
    int getCount() throws OseeCoreException;
-
 }

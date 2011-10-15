@@ -12,9 +12,12 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface QueryEngine {
 
-   Object createCount(String sessionId, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException;
+   QueryContext createCount(String sessionId, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException;
 
-   Object create(String sessionId, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException;
+   QueryContext create(String sessionId, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException;
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.CaseType;
@@ -43,12 +44,14 @@ public class QueryBuilderImpl implements QueryBuilder {
    private final ResultSetFactory rsetFactory;
    private final CriteriaFactory criteriaFactory;
 
+   private final SessionContext sessionContext;
    private final CriteriaSet criteriaSet;
    private final QueryOptions options;
 
-   public QueryBuilderImpl(ResultSetFactory rsetFactory, CriteriaFactory criteriaFactory, CriteriaSet criteriaSet, QueryOptions options) {
+   public QueryBuilderImpl(ResultSetFactory rsetFactory, CriteriaFactory criteriaFactory, SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
       this.rsetFactory = rsetFactory;
       this.criteriaFactory = criteriaFactory;
+      this.sessionContext = sessionContext;
       this.criteriaSet = criteriaSet;
       this.options = options;
    }
@@ -261,16 +264,16 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public ResultSet<ReadableArtifact> build(LoadLevel loadLevel) throws OseeCoreException {
-      return rsetFactory.createResultSet(criteriaSet.clone(), options.clone());
+      return rsetFactory.createResultSet(sessionContext, loadLevel, criteriaSet.clone(), options.clone());
    }
 
    @Override
    public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> buildMatches(LoadLevel loadLevel) throws OseeCoreException {
-      return rsetFactory.createMatchesResultSet(criteriaSet.clone(), options.clone());
+      return rsetFactory.createMatchesResultSet(sessionContext, loadLevel, criteriaSet.clone(), options.clone());
    }
 
    @Override
    public int getCount() throws OseeCoreException {
-      return rsetFactory.createResultSet(criteriaSet.clone(), options.clone()).getCount();
+      return rsetFactory.getCount(sessionContext, criteriaSet.clone(), options.clone());
    }
 }

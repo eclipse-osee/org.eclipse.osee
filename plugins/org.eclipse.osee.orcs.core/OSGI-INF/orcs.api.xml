@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.orcs.core.internal.OrcsApiImpl">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.osee.orcs.core.internal.OrcsApiImpl">
    <implementation class="org.eclipse.osee.orcs.core.internal.OrcsApiImpl"/>
    <service>
       <provide interface="org.eclipse.osee.orcs.OseeApi"/>
    </service>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <reference bind="setQueryEngine" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.QueryEngine" name="QueryEngine" policy="static"/>
+   <reference bind="setAttributeClassResolver" cardinality="1..1" interface="org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver" name="AttributeClassResolver" policy="static"/>
+   <reference bind="setDataLoader" cardinality="1..1" interface="org.eclipse.osee.orcs.core.ds.DataLoader" name="DataLoader" policy="static"/>
+   <reference bind="setCacheService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
 </scr:component>
