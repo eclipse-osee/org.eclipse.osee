@@ -63,4 +63,9 @@ public class SqlContext implements QueryContext {
       joinTables.clear();
    }
 
+   @Override
+   public String toString() {
+      return "SqlContext [sessionId=" + sessionId + ", sql=" + sql + ", params=" + parameters + ", options=" + options + "]";
+   }
+
 }
