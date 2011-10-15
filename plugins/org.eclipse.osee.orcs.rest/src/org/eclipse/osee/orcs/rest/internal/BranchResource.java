@@ -17,6 +17,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Roberto E. Escobar
@@ -43,7 +47,13 @@ public class BranchResource {
 
    @GET
    @Produces(MediaType.TEXT_PLAIN)
-   public String getAsText() {
-      return String.format("BranchUuid [%s]", branchUuid);
+   public String getAsText() throws OseeCoreException {
+      IOseeBranch token = TokenFactory.createBranch(branchUuid, "");
+      Branch branch = OrcsApplication.getOseeApi().getBranchCache().get(token);
+
+      StringBuilder builder = new StringBuilder(String.format("BranchUuid [%s]\n", branchUuid));
+      builder.append(branch.toStringWithId());
+      builder.append("\n");
+      return builder.toString();
    }
 }

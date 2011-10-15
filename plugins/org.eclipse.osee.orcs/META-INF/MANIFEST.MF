@@ -8,6 +8,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util

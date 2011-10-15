@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 public interface OseeApi {
 
    QueryFactory getQueryFactory(ApplicationContext context);
+
+   BranchCache getBranchCache();
 
 }

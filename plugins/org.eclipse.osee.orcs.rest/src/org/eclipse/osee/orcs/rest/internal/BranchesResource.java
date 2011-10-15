@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.util.Collection;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,6 +19,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Roberto E. Escobar
@@ -39,7 +42,13 @@ public class BranchesResource {
 
    @GET
    @Produces(MediaType.TEXT_PLAIN)
-   public String getAllBranchesAsText() {
-      return "All Branches";
+   public String getAsText() throws OseeCoreException {
+      Collection<Branch> branches = OrcsApplication.getOseeApi().getBranchCache().getAll();
+      StringBuilder builder = new StringBuilder("All Branches\n");
+      for (Branch branch : branches) {
+         builder.append(branch.toStringWithId());
+         builder.append("\n");
+      }
+      return builder.toString();
    }
 }

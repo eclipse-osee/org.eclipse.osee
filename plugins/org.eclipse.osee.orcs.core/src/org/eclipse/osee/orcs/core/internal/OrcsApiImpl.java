@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -88,5 +89,10 @@ public class OrcsApiImpl implements OseeApi {
    private SessionContext getSessionContext(String sessionId) {
       // TODO get sessions from a session context cache
       return new SessionContextImpl(sessionId);
+   }
+
+   @Override
+   public BranchCache getBranchCache() {
+      return cacheService.getBranchCache();
    }
 }
