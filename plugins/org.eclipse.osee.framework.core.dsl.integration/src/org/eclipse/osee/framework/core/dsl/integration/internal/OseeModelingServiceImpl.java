@@ -28,16 +28,16 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.message.IOseeModelingService;
-import org.eclipse.osee.framework.core.message.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.message.OseeImportModelResponse;
-import org.eclipse.osee.framework.core.message.TableData;
+import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
+import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
+import org.eclipse.osee.framework.core.model.TableData;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -45,16 +45,39 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class OseeModelingServiceImpl implements IOseeModelingService {
 
-   private final IOseeModelFactoryService modelFactoryService;
-   private final IOseeCachingService systemCachingService;
-   private final IOseeCachingServiceFactory cachingFactoryService;
-   private final OseeDslFactory modelFactory;
+   private IOseeModelFactoryService modelFactoryService;
+   private IOseeCachingService systemCachingService;
+   private IOseeCachingServiceFactory cachingFactoryService;
+   private OseeDslFactory modelFactory;
 
-   public OseeModelingServiceImpl(IOseeModelFactoryService modelFactoryService, IOseeCachingService systemCachingService, IOseeCachingServiceFactory cachingFactoryService, OseeDslFactory dslFactory) {
+   public void setFactoryService(IOseeModelFactoryService modelFactoryService) {
       this.modelFactoryService = modelFactoryService;
+   }
+
+   // This needs to be dynamic since there is a cycle
+   public void setCacheService(IOseeCachingService systemCachingService) {
       this.systemCachingService = systemCachingService;
+   }
+
+   public void unsetCacheService(IOseeCachingService systemCachingService) {
+      this.systemCachingService = systemCachingService;
+   }
+
+   // This needs to be dynamic since there is a cycle
+   public void setCacheFactory(IOseeCachingServiceFactory cachingFactoryService) {
       this.cachingFactoryService = cachingFactoryService;
-      this.modelFactory = dslFactory;
+   }
+
+   public void unsetCacheFactory(IOseeCachingServiceFactory cachingFactoryService) {
+      this.cachingFactoryService = cachingFactoryService;
+   }
+
+   public void start() {
+      modelFactory = OseeDslFactory.eINSTANCE;
+   }
+
+   public void stop() {
+      modelFactory = null;
    }
 
    @Override

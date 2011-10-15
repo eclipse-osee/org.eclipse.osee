@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.core.message.internal.translation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.message.TableData;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
+import org.eclipse.osee.framework.core.model.TableData;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 

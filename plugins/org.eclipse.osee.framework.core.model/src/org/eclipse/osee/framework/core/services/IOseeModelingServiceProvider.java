@@ -8,35 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message;
+package org.eclipse.osee.framework.core.services;
 
-import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TableData {
+public interface IOseeModelingServiceProvider {
 
-   private final String title;
-   private final String[] columns;
-   private final List<String[]> rows;
-
-   public TableData(String title, String[] columns, List<String[]> rows) {
-      this.title = title;
-      this.columns = columns;
-      this.rows = rows;
-   }
-
-   public String getTitle() {
-      return title;
-   }
-
-   public String[] getColumns() {
-      return columns;
-   }
-
-   public List<String[]> getRows() {
-      return rows;
-   }
-
+   IOseeModelingService getOseeModelingService() throws OseeCoreException;
 }

@@ -106,24 +106,38 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.ats.presenter"
+         id="org.eclipse.osee.ats.presenter.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.ats.view.web"
+         id="org.eclipse.osee.ats.view.web.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.ats.api"
+         id="org.eclipse.osee.ats.api.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.eclipse.osee.framework.core.dsl.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.dsl.integration.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
 </feature>

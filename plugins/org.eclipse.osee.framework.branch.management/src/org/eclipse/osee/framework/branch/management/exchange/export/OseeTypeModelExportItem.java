@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.core.message.IOseeModelingService;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**

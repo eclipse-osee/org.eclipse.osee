@@ -12,11 +12,11 @@ import java.net.URI;
 import java.net.URL;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
-import org.eclipse.osee.framework.core.message.IOseeModelingService;
-import org.eclipse.osee.framework.core.message.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.message.OseeImportModelResponse;
+import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
+import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public class ImportOseeModelHandler extends AbstractOperation {

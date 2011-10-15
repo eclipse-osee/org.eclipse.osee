@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
-import org.eclipse.osee.framework.core.message.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;

@@ -6,15 +6,15 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.core.runtime,
- org.eclipse.emf.compare.diff.metamodel,
+Import-Package: org.eclipse.emf.compare.diff.metamodel,
  org.eclipse.emf.compare.diff.service,
  org.eclipse.emf.compare.match.metamodel,
  org.eclipse.emf.compare.match.service,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.dsl,
+ org.eclipse.osee.framework.core.dsl.oseeDsl,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.core.message,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.access,
  org.eclipse.osee.framework.core.model.cache,
@@ -22,18 +22,12 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.database.core,
- org.eclipse.osee.framework.jdk.core.text.change,
- org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.osgi.framework,
- org.osgi.util.tracker
-Require-Bundle: org.eclipse.osee.framework.core.dsl,
- org.eclipse.emf.ecore,
- org.eclipse.emf.common,
- org.eclipse.xtext
+ org.osgi.framework
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.core.runtime
 Eclipse-ExtensibleAPI: true 
 Bundle-Activator: org.eclipse.osee.framework.core.dsl.integration.internal.Activator
 Export-Package: org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.dsl.integration.util
+Service-Component: OSGI-INF/osee.dsl.modeling.service.xml

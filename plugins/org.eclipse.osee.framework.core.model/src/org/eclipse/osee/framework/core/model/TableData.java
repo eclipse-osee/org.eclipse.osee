@@ -8,19 +8,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message;
+package org.eclipse.osee.framework.core.model;
 
-import java.io.OutputStream;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import java.util.List;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeModelingService {
+public class TableData {
 
-   void importOseeTypes(IProgressMonitor monitor, boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException;
+   private final String title;
+   private final String[] columns;
+   private final List<String[]> rows;
 
-   void exportOseeTypes(IProgressMonitor monitor, OutputStream outputStream) throws OseeCoreException;
+   public TableData(String title, String[] columns, List<String[]> rows) {
+      this.title = title;
+      this.columns = columns;
+      this.rows = rows;
+   }
+
+   public String getTitle() {
+      return title;
+   }
+
+   public String[] getColumns() {
+      return columns;
+   }
+
+   public List<String[]> getRows() {
+      return rows;
+   }
 
 }
