@@ -189,12 +189,12 @@ public class QueryBuilderImpl implements QueryBuilder {
          }
       }
       Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids or hrids detected - %s", invalids);
-      if (guids.isEmpty()) {
+      if (!guids.isEmpty()) {
          Criteria guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
          addAndCheck(guidCriteria);
       }
 
-      if (hrids.isEmpty()) {
+      if (!hrids.isEmpty()) {
          Criteria hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
          addAndCheck(hridCriteria);
       }

@@ -67,7 +67,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
          }
          joinQuery = writer.writeIdJoin(typeIds);
          writer.write(jIdAlias);
-         writer.write(".query_id=?");
+         writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
 
          List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
@@ -77,7 +77,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
             for (int index = 0; index < aSize; index++) {
                String artAlias = aliases.get(index);
                writer.write(artAlias);
-               writer.write(".art_type_id=");
+               writer.write(".art_type_id = ");
                writer.write(jIdAlias);
                writer.write(".id");
                if (index + 1 < aSize) {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
@@ -28,10 +29,15 @@ import org.eclipse.osee.orcs.search.Operator;
 public class AttributeOtherSqlHandler extends SqlHandler {
 
    private CriteriaAttributeOther criteria;
-   private String attrAlias;
+   private String artAlias;
    private String txsAlias;
+
+   private String attrAlias;
+   private String txsAlias1;
+
    private String joinAlias;
    private String value;
+
    private AbstractJoinQuery joinQuery;
 
    @Override
@@ -50,8 +56,18 @@ public class AttributeOtherSqlHandler extends SqlHandler {
       if (joinQuery != null && criteria.getOperator().isEquals()) {
          joinAlias = writer.writeTable(TableEnum.CHAR_JOIN_TABLE);
       }
+      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
+
       attrAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+      txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
+
+      if (aliases.isEmpty()) {
+         artAlias = writer.writeTable(TableEnum.ARTIFACT_TABLE);
+      }
+      if (txs.isEmpty()) {
+         txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+      }
    }
 
    @Override
@@ -61,12 +77,14 @@ public class AttributeOtherSqlHandler extends SqlHandler {
 
       if (attributeType != null) {
          writer.write(attrAlias);
-         writer.write(".attr_type_id = ? AND ");
+         writer.write(".attr_type_id = ?");
          writer.addParameter(toLocalId(attributeType));
       }
+
       if (value != null) {
+         writer.write(" AND ");
          writer.write(attrAlias);
-         writer.write(".value");
+         writer.write(".value ");
          if (value.contains("%")) {
             if (operator.isNotEquals()) {
                writer.write(" NOT");
@@ -75,11 +93,12 @@ public class AttributeOtherSqlHandler extends SqlHandler {
          } else {
             writer.write(operator.toString());
          }
-         writer.write("? AND ");
+         writer.write(" ?");
          writer.addParameter(value);
       }
 
       if (joinQuery != null) {
+         writer.write(" AND ");
          if (operator.isEquals()) {
             writer.write(attrAlias);
             writer.write(".value = ");
@@ -98,12 +117,28 @@ public class AttributeOtherSqlHandler extends SqlHandler {
          joinQuery.store();
       }
 
+      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      if (!aliases.isEmpty()) {
+         writer.write(" AND ");
+         int aSize = aliases.size();
+         for (int index = 0; index < aSize; index++) {
+            String artAlias = aliases.get(index);
+            writer.write(artAlias);
+            writer.write(".art_id = ");
+            writer.write(attrAlias);
+            writer.write(".art_id");
+            if (index + 1 < aSize) {
+               writer.write(" AND ");
+            }
+         }
+      }
+
       writer.write(" AND ");
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
-      writer.write(txsAlias);
+      writer.write(txsAlias1);
       writer.write(".gamma_id AND ");
-      writer.writeTxBranchFilter(txsAlias);
+      writer.writeTxBranchFilter(txsAlias1);
    }
 
    @Override
