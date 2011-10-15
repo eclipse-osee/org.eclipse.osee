@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test;
 
+import org.eclipse.osee.framework.core.test.data.DataTestSuite;
 import org.eclipse.osee.framework.core.test.enums.EnumsTestSuite;
 import org.eclipse.osee.framework.core.test.exception.ExceptionTestSuite;
 import org.eclipse.osee.framework.core.test.internal.InternalCoreTestSuite;
@@ -22,6 +23,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   DataTestSuite.class,
    EnumsTestSuite.class,
    ExceptionTestSuite.class,
    InternalCoreTestSuite.class,

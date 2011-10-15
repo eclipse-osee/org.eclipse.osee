@@ -11,9 +11,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 import org.eclipse.osee.orcs.core.mocks.MockLog;
@@ -25,7 +31,8 @@ public class TestRelationLoading {
    @Test
    public void testRelationCountMatches() throws OseeCoreException, IOException {
       Log log = new MockLog();
-      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(22);
+      RelationTypeCache cache = createAndPopulate();
+      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(log, providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
@@ -42,7 +49,8 @@ public class TestRelationLoading {
    @Test
    public void testRelatedArtifactsMatch() throws OseeCoreException, IOException {
       Log log = new MockLog();
-      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(22);
+      RelationTypeCache cache = createAndPopulate();
+      Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(log, providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
@@ -56,15 +64,23 @@ public class TestRelationLoading {
    }
    //@formatter:on
 
+   public RelationTypeCache createAndPopulate() throws OseeCoreException {
+      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
+      cache.cache(new RelationType(1l, "test", "sideAName", "sideBName", CoreArtifactTypes.Artifact,
+         CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, ""));
+      return cache;
+   }
+
    private void checkRelationCount(RelationContainerImpl relationContainer, RelationSide side, int size) {
-      int count = relationContainer.getRelationCount(1, side);
+      //      int count = relationContainer.getRelationCount(1, side);
+      int count = relationContainer.getRelationCount(TokenFactory.createRelationTypeSide(side, 1, "blah"));
       Assert.assertEquals(
          String.format("We did not get the expected number of relations back [%d != %d]", size, count), size, count);
    }
 
    private void checkRelatedArtifacts(List<Integer> relatedArtifacts, RelationContainerImpl relationContainer, RelationSide side, int[] expected) {
       relatedArtifacts.clear();
-      relationContainer.getArtifactIds(relatedArtifacts, 1, side);
+      relationContainer.getArtifactIds(relatedArtifacts, TokenFactory.createRelationTypeSide(side, 1, "blah"));
       Assert.assertTrue(String.format("Expected %d matches found %d", expected.length, relatedArtifacts.size()),
          expected.length == relatedArtifacts.size());
       for (int value : expected) {
@@ -72,10 +88,10 @@ public class TestRelationLoading {
       }
    }
 
-   private Map<Integer, RelationContainerImpl> getRelationProviderList(int size) {
+   private Map<Integer, RelationContainerImpl> getRelationProviderList(RelationTypeCache relationTypeCache, int size) {
       Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = new HashMap<Integer, RelationContainerImpl>();
       for (int i = 1; i <= size; i++) {
-         providersThatWillBeLoaded.put(i, new RelationContainerImpl(i));
+         providersThatWillBeLoaded.put(i, new RelationContainerImpl(i, relationTypeCache));
       }
       return providersThatWillBeLoaded;
    }

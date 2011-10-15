@@ -15,7 +15,7 @@ public class RelationRow {
    private int artIdB = -1;
    private int branchId = -1;
    private int gammaId = -1;
-   private int relationTypeId = -1;
+   private long relationTypeUUId = -1l;
    private String rationale = "";
    private ModificationType modType = null;
 
@@ -39,8 +39,8 @@ public class RelationRow {
       this.gammaId = gammaId;
    }
 
-   public void setRelationTypeId(int relationTypeId) {
-      this.relationTypeId = relationTypeId;
+   public void setRelationTypeId(long relationTypeUUId) {
+      this.relationTypeUUId = relationTypeUUId;
    }
 
    public void setRationale(String rationale) {
@@ -71,8 +71,8 @@ public class RelationRow {
       return gammaId;
    }
 
-   public int getRelationTypeId() {
-      return relationTypeId;
+   public long getRelationTypeUUId() {
+      return relationTypeUUId;
    }
 
    public String getRationale() {
@@ -103,7 +103,7 @@ public class RelationRow {
       result = prime * result + parentId;
       result = prime * result + ((rationale == null) ? 0 : rationale.hashCode());
       result = prime * result + relationId;
-      result = prime * result + relationTypeId;
+      result = (int) (prime * result + relationTypeUUId);
       return result;
    }
 
@@ -147,7 +147,7 @@ public class RelationRow {
       if (relationId != other.relationId) {
          return false;
       }
-      if (relationTypeId != other.relationTypeId) {
+      if (relationTypeUUId != other.relationTypeUUId) {
          return false;
       }
       return true;
@@ -157,7 +157,7 @@ public class RelationRow {
    public String toString() {
       return String.format(
          "RelationRow: parent[%d] relation[%d] artA[%d] artB[%d] branch[%d] gamma[%d], relationType[%d] rationale[%s]",
-         parentId, relationId, artIdA, artIdB, branchId, gammaId, relationTypeId, rationale, modType.name());
+         parentId, relationId, artIdA, artIdB, branchId, gammaId, relationTypeUUId, rationale, modType.name());
    }
 
 }

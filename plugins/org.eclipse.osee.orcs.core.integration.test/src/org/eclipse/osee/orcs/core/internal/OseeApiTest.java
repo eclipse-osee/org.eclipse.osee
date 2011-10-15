@@ -11,9 +11,12 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OseeApi;
@@ -36,22 +39,33 @@ public class OseeApiTest {
 
       ApplicationContext context = null; // TODO use real application context
 
-      QueryFactory factory = oseeApi.getQueryFactory(context);
-      QueryBuilder builder = factory.fromUuids(CoreBranches.COMMON, Arrays.asList(7, 8, 9));
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.SHALLOW);
+      QueryFactory queryFactory = oseeApi.getQueryFactory(context);
+      QueryBuilder builder = queryFactory.fromUuids(CoreBranches.COMMON, Arrays.asList(7, 8, 9));
+      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertEquals(3, moreArts.size());
       Assert.assertEquals(3, builder.getCount());
 
-      //      Map<Integer, ReadableArtifact> lookup = creatLookup(arts);
+      Map<Integer, ReadableArtifact> lookup = creatLookup(moreArts);
+      ReadableArtifact art7 = lookup.get(7);
+      ReadableArtifact art8 = lookup.get(8);
+      ReadableArtifact art9 = lookup.get(9);
+
       //art 7 has no relations
+      Assert.assertEquals(0, art7.getAvailableRelationTypes().size());
       //art 8 has 4 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
       //      2  397   1  8     36 1  1  2  6  36
       //      3  397   8  16    37 1  1  2  6  37
       //      1  397   8  9     41 1  1  2  6  41
       //      173   397   8  121      699   1  1  2  16
+      Assert.assertEquals(2, art8.getAvailableRelationTypes().size());
+      Assert.assertEquals(3,
+         art8.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, queryFactory).size());
+      Assert.assertEquals(1,
+         art8.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, queryFactory).size());
+
       //art9 has 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
       //      1  397   8  9     41 1  1  2  6  41
@@ -75,40 +89,18 @@ public class OseeApiTest {
       //      34 382   9  47    348   1  1  2  14 348
       //      35 382   9  48    349   1  1  2  14 349
       //      218   382   9  166      898   1  1  2  21 898
-
-      //      Iterable<ReadableArtifact> it =
-      //         masterLoader.getIterable(options, 1, artJoinQuery.getQueryId(), new MockSessionContext());
-      //
-      //      int count = 0;
-      //      for (ReadableArtifact readableArtifact : it) {
-      //         count++;
-      //      }
-      //      Assert.assertEquals(count, 3);
-      //      artJoinQuery.delete();
+      Assert.assertEquals(2, art9.getAvailableRelationTypes().size());
+      Assert.assertEquals(1,
+         art9.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, queryFactory).size());
+      Assert.assertEquals(20, art9.getRelatedArtifacts(CoreRelationTypes.Users_User, queryFactory).size());
 
    }
-   //   Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {
-   //      Map<Integer, ReadableArtifact> lookup = new HashMap<Integer, ReadableArtifact>();
-   //      for (ReadableArtifact artifact : arts) {
-   //         lookup.put(artifact.getId(), artifact);
-   //      }
-   //      return lookup;
-   //   }
 
-   //   private void setupAttributeTypeCache(AttributeTypeCache cache) throws OseeCoreException {
-   //      AttributeTypeFactory typeFactory = new AttributeTypeFactory();
-   //      addType(cache, typeFactory, CoreAttributeTypes.Name, "StringAttribute", "DefaultAttributeDataProvider");
-   //      addType(cache, typeFactory, CoreAttributeTypes.UriGeneralStringData, "StringAttribute",
-   //         "DefaultAttributeDataProvider");
-   //      addType(cache, typeFactory, CoreAttributeTypes.Active, "StringAttribute", "DefaultAttributeDataProvider");
-   //      addType(cache, typeFactory, CoreAttributeTypes.DefaultGroup, "StringAttribute", "DefaultAttributeDataProvider");
-   //
-   //   }
-   //
-   //   private void addType(AttributeTypeCache cache, AttributeTypeFactory typeFactory, IAttributeType type, String attributeType, String providerType) throws OseeCoreException {
-   //      typeFactory.createOrUpdate(cache, type.getGuid(), type.getName(), attributeType, providerType, "name", "name",
-   //         new OseeEnumType(type.getGuid(), type.getName()), 1, 1, "", "");
-   //
-   //   }
-
+   Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {
+      Map<Integer, ReadableArtifact> lookup = new HashMap<Integer, ReadableArtifact>();
+      for (ReadableArtifact artifact : arts) {
+         lookup.put(artifact.getId(), artifact);
+      }
+      return lookup;
+   }
 }

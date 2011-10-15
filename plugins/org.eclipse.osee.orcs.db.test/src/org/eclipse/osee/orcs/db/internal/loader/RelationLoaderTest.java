@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -62,7 +63,8 @@ public class RelationLoaderTest {
    public void testRelationLoadingData() throws OseeCoreException {
 
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
-      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService);
+      IdentityService identityService = OsgiUtil.getService(IdentityService.class);
+      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService, identityService);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -101,7 +103,8 @@ public class RelationLoaderTest {
    public void testNoRelationsFound() throws OseeCoreException {
 
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
-      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService);
+      IdentityService identityService = OsgiUtil.getService(IdentityService.class);
+      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService, identityService);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -128,7 +131,8 @@ public class RelationLoaderTest {
    @org.junit.Test
    public void testHistoricalLoad() throws OseeCoreException {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
-      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService);
+      IdentityService identityService = OsgiUtil.getService(IdentityService.class);
+      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService, identityService);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();

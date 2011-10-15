@@ -10,25 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainerImpl;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.ResultSet;
 
 public class Artifact implements ReadableArtifact {
 
@@ -44,7 +50,7 @@ public class Artifact implements ReadableArtifact {
    private final ModificationType modType;
    private final boolean historical;
 
-   public Artifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
+   public Artifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical, RelationTypeCache relationTypeCache) {
 
       this.artId = artId;
       this.guid = guid;
@@ -55,10 +61,9 @@ public class Artifact implements ReadableArtifact {
       this.transactionId = transactionId;
       this.modType = modType;
       this.historical = historical;
-
       NamedIdentity<String> namedIdentity = new NamedIdentity<String>(guid, humandReadableId);
       attributeContainer = new AttributeContainerImpl(namedIdentity);
-      relationContainer = new RelationContainerImpl(artId);
+      relationContainer = new RelationContainerImpl(artId, relationTypeCache);
 
    }
 
@@ -146,18 +151,30 @@ public class Artifact implements ReadableArtifact {
    }
 
    @Override
-   public List<ReadableArtifact> getRelatedArtifacts(IRelationType type, RelationSide side) throws OseeCoreException {
+   public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
+      List<Integer> results = new ArrayList<Integer>();
+      relationContainer.getArtifactIds(results, relationTypeSide);
+      if (results.size() > 0) {
+         QueryBuilder builder = queryFactory.fromUuids(getBranch(), results);
+         ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+         return resultSet.getList();
+      } else {
+         return Collections.EMPTY_LIST;//TODO
+      }
+   }
+
+   @Override
+   public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public ReadableArtifact getRelatedArtifact(IRelationType type, RelationSide side) throws OseeCoreException {
+   public Collection<IRelationType> getValidRelationTypes() throws OseeCoreException {
       return null;
    }
 
    @Override
-   public Collection<RelationType> getValidRelationTypes() throws OseeCoreException {
-      return null;
+   public Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException {
+      return relationContainer.getAvailableRelationTypes();
    }
-
 }

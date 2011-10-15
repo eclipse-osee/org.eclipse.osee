@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
@@ -27,10 +28,12 @@ public class RelationLoader {
 
    private final IOseeDatabaseService dbService;
    private final SqlProvider sqlProvider;
+   private final IdentityService identityService;
 
-   public RelationLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService) {
+   public RelationLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService) {
       this.sqlProvider = sqlProvider;
       this.dbService = dbService;
+      this.identityService = identityService;
    }
 
    public void loadFromQueryId(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
@@ -48,7 +51,7 @@ public class RelationLoader {
             nextRelation.setArtIdA(statement.getInt("a_art_id"));
             nextRelation.setArtIdB(statement.getInt("b_art_id"));
             nextRelation.setBranchId(statement.getInt("branch_id"));
-            nextRelation.setRelationTypeId(statement.getInt("rel_link_type_id"));
+            nextRelation.setRelationTypeId(identityService.getUniversalId(statement.getInt("rel_link_type_id")));
             nextRelation.setGammaId(statement.getInt("gamma_id"));
             nextRelation.setRationale(statement.getString("rationale"));
             nextRelation.setModType(ModificationType.getMod(statement.getInt("mod_type")));

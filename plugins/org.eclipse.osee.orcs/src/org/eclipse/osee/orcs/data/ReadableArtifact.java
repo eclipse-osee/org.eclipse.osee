@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -42,11 +42,13 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
-   Collection<RelationType> getValidRelationTypes() throws OseeCoreException;
+   Collection<IRelationType> getValidRelationTypes() throws OseeCoreException;
 
-   List<ReadableArtifact> getRelatedArtifacts(IRelationType type, RelationSide side) throws OseeCoreException;
+   Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException;
 
-   ReadableArtifact getRelatedArtifact(IRelationType type, RelationSide side) throws OseeCoreException;
+   List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException;
+
+   ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException;
 
    boolean hasParent();
 

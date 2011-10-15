@@ -5,8 +5,11 @@
  */
 package org.eclipse.osee.orcs.core.internal.relation;
 
+import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 
@@ -14,22 +17,27 @@ public class RelationContainerImpl implements RelationContainer {
 
    private final RelationRowCollection rows;
 
-   public RelationContainerImpl(int parentId) {
-      this.rows = new RelationRowCollection(parentId);
+   public RelationContainerImpl(int parentId, RelationTypeCache relationTypeCache) {
+      this.rows = new RelationRowCollection(parentId, relationTypeCache);
    }
 
    @Override
-   public void add(RelationRow nextRelation) {
+   public void add(RelationRow nextRelation) throws OseeCoreException {
       rows.add(nextRelation);
    }
 
    @Override
-   public void getArtifactIds(List<Integer> results, int relationTypeId, RelationSide side) {
-      rows.getArtifactIds(results, relationTypeId, side);
+   public void getArtifactIds(List<Integer> results, IRelationTypeSide relationTypeSide) {
+      rows.getArtifactIds(results, relationTypeSide);
    }
 
    @Override
-   public int getRelationCount(int relationTypeId, RelationSide side) {
-      return rows.getArtifactCount(relationTypeId, side);
+   public int getRelationCount(IRelationTypeSide relationTypeSide) {
+      return rows.getArtifactCount(relationTypeSide);
+   }
+
+   @Override
+   public Collection<IRelationTypeSide> getAvailableRelationTypes() {
+      return rows.getRelationTypes();
    }
 }

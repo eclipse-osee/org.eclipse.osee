@@ -10,14 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface RelationContainer {
 
-   void add(RelationRow nextRelation);
+   void add(RelationRow nextRelation) throws OseeCoreException;
 
-   void getArtifactIds(List<Integer> results, int relationTypeId, RelationSide side);
+   //   void getArtifactIds(List<Integer> results, long relationTypeUUId, RelationSide side);
 
-   int getRelationCount(int relationTypeId, RelationSide side);
+   //   int getRelationCount(long relationTypeUUId, RelationSide side);
+
+   Collection<IRelationTypeSide> getAvailableRelationTypes();
+
+   void getArtifactIds(List<Integer> results, IRelationTypeSide relationTypeSide);
+
+   int getRelationCount(IRelationTypeSide relationTypeSide);
 }

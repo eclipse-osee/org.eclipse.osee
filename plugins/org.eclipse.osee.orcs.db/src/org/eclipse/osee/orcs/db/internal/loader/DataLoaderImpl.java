@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -55,7 +56,7 @@ public class DataLoaderImpl implements DataLoader {
          new AttributeDataProxyFactory(dataProxyFactoryProvider, dataStoreTypeCache.getAttributeTypeCache());
       attributeLoader =
          new AttributeLoader(sqlProvider, oseeDatabaseService, identityService, attributeDataProxyFactory);
-      relationLoader = new RelationLoader(sqlProvider, oseeDatabaseService);
+      relationLoader = new RelationLoader(sqlProvider, oseeDatabaseService, identityService);
    }
 
    public void setLogger(Log logger) {
@@ -120,10 +121,14 @@ public class DataLoaderImpl implements DataLoader {
       try {
          join.store();
          artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, join.getQueryId());
-         attributeLoader.loadFromQueryId(attributeRowHandlerFactory.createAttributeRowHandler(), loadOptions,
-            fetchSize, join.getQueryId());
-         relationLoader.loadFromQueryId(relationRowHandlerFactory.createRelationRowHandler(), loadOptions, fetchSize,
-            join.getQueryId());
+         if (loadOptions.getLoadLevel() == LoadLevel.ATTRIBUTE || loadOptions.getLoadLevel() == LoadLevel.ALL_CURRENT || loadOptions.getLoadLevel() == LoadLevel.FULL) {
+            attributeLoader.loadFromQueryId(attributeRowHandlerFactory.createAttributeRowHandler(), loadOptions,
+               fetchSize, join.getQueryId());
+         }
+         if (loadOptions.getLoadLevel() == LoadLevel.RELATION || loadOptions.getLoadLevel() == LoadLevel.ALL_CURRENT || loadOptions.getLoadLevel() == LoadLevel.FULL) {
+            relationLoader.loadFromQueryId(relationRowHandlerFactory.createRelationRowHandler(), loadOptions,
+               fetchSize, join.getQueryId());
+         }
       } finally {
          join.delete();
       }

@@ -169,6 +169,26 @@ public final class TokenFactory {
       public RelationSide getSide() {
          return relationSide;
       }
+
+      @Override
+      public int hashCode() {
+         // Do not add relation side to hash code because it will violate the hash code contract
+         return super.hashCode();
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         if (obj instanceof IRelationTypeSide) {
+            IRelationTypeSide otherSide = (IRelationTypeSide) obj;
+            if (relationSide != otherSide.getSide()) {
+               return false;
+            }
+         }
+         if (obj instanceof IRelationType) {
+            return super.equals(obj);
+         }
+         return false;
+      }
    }
 
 }

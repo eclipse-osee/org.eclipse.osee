@@ -63,7 +63,7 @@ public class OrcsApiImpl implements OseeApi {
    }
 
    public void start() {
-      ArtifactFactory artifactFactory = new ArtifactFactory();
+      ArtifactFactory artifactFactory = new ArtifactFactory(cacheService.getRelationTypeCache());
       AttributeFactory attributeFactory = new AttributeFactory(logger, resolver, cacheService.getAttributeTypeCache());
       objectLoader =
          new OrcsObjectLoader(logger, dataLoader, artifactFactory, attributeFactory,

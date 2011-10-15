@@ -12,8 +12,10 @@ package org.eclipse.osee.orcs.mock;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -24,23 +26,22 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author John Misinco
  */
 public class MockArtifact implements ReadableArtifact {
 
-   private final CompositeKeyHashMap<IRelationType, RelationSide, List<ReadableArtifact>> relationMap =
-      new CompositeKeyHashMap<IRelationType, RelationSide, List<ReadableArtifact>>();
-   private final List<RelationType> validRelationTypes = new LinkedList<RelationType>();
+   private final Map<IRelationTypeSide, List<ReadableArtifact>> relationMap =
+      new HashMap<IRelationTypeSide, List<ReadableArtifact>>();
+   private final List<IRelationType> validRelationTypes = new LinkedList<IRelationType>();
 
    private final HashCollection<IAttributeType, String> attributes = new HashCollection<IAttributeType, String>();
 
@@ -80,10 +81,10 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    public void addRelation(IRelationTypeSide relation, ReadableArtifact artifact) {
-      List<ReadableArtifact> artList = relationMap.get(relation, relation.getSide());
+      List<ReadableArtifact> artList = relationMap.get(relation);
       if (artList == null) {
          artList = new LinkedList<ReadableArtifact>();
-         relationMap.put(relation, relation.getSide(), artList);
+         relationMap.put(relation, artList);
       }
       artList.add(artifact);
       RelationType type =
@@ -150,8 +151,8 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public List<ReadableArtifact> getRelatedArtifacts(IRelationType type, RelationSide side) {
-      List<ReadableArtifact> artList = relationMap.get(type, side);
+   public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) {
+      List<ReadableArtifact> artList = relationMap.get(relationTypeSide);
       return artList != null ? artList : Collections.<ReadableArtifact> emptyList();
    }
 
@@ -176,7 +177,7 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public Collection<RelationType> getValidRelationTypes() {
+   public Collection<IRelationType> getValidRelationTypes() {
       return validRelationTypes;
    }
 
@@ -192,8 +193,13 @@ public class MockArtifact implements ReadableArtifact {
 
    @SuppressWarnings("unused")
    @Override
-   public ReadableArtifact getRelatedArtifact(IRelationType type, RelationSide side) throws OseeCoreException {
-      return getRelatedArtifacts(type, side).iterator().next();
+   public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
+      return getRelatedArtifacts(relationTypeSide, queryFactory).iterator().next();
+   }
+
+   @Override
+   public Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException {
+      return null;
    }
 
 }

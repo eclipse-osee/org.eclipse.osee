@@ -8,56 +8,76 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 
 public class RelationRowCollection {
 
-   private final Map<Integer, List<RelationRow>> relations;
+   private final Map<IRelationTypeSide, List<RelationRow>> relations;
    private final int parentId;
+   private final RelationTypeCache relationTypeCache;
 
-   RelationRowCollection(int parentId) {
+   RelationRowCollection(int parentId, RelationTypeCache relationTypeCache) {
       this.parentId = parentId;
-      relations = new ConcurrentHashMap<Integer, List<RelationRow>>();
+      this.relationTypeCache = relationTypeCache;
+      relations = new ConcurrentHashMap<IRelationTypeSide, List<RelationRow>>();
    }
 
-   public void add(RelationRow nextRelation) {
-      List<RelationRow> rows = relations.get(nextRelation.getRelationTypeId());
+   public void add(RelationRow nextRelation) throws OseeCoreException {
+      IRelationType type = relationTypeCache.getByGuid(nextRelation.getRelationTypeUUId());
+      if (type == null) {
+         throw new OseeCoreException("Unknown relation type.  UUID[%d]", nextRelation.getRelationTypeUUId());
+      }
+      IRelationTypeSide relationTypeSide =
+         TokenFactory.createRelationTypeSide(getRelationSide(nextRelation), type.getGuid(), type.getName());
+      List<RelationRow> rows = relations.get(relationTypeSide);
       if (rows == null) {
          rows = new CopyOnWriteArrayList<RelationRow>();
-         relations.put(nextRelation.getRelationTypeId(), rows);
+         relations.put(relationTypeSide, rows);
       }
       rows.add(nextRelation);
    }
 
-   public void getArtifactIds(Collection<Integer> results, int relationTypeId, RelationSide side) {
-      List<RelationRow> rows = relations.get(relationTypeId);
+   private RelationSide getRelationSide(RelationRow row) {
+      if (row.getArtIdA() == parentId) {
+         return RelationSide.SIDE_B;
+      } else { //row.getArtIdB() == parentId
+         return RelationSide.SIDE_A;
+      }
+   }
+
+   public void getArtifactIds(Collection<Integer> results, IRelationTypeSide relationTypeSide) {
+      List<RelationRow> rows = relations.get(relationTypeSide);
       if (rows != null) {
          for (RelationRow row : rows) {
-            if (side.equals(RelationSide.SIDE_B) && row.getArtIdA() == parentId) {
+            if (relationTypeSide.getSide().equals(RelationSide.SIDE_B)) {
                results.add(row.getArtIdB());
-            } else if (side.equals(RelationSide.SIDE_A) && row.getArtIdB() == parentId) {
+            } else {
                results.add(row.getArtIdA());
             }
          }
       }
    }
 
-   public int getArtifactCount(int relationTypeId, RelationSide side) {
-      List<RelationRow> rows = relations.get(relationTypeId);
-      int count = 0;
-      if (rows != null) {
-         for (RelationRow row : rows) {
-            if (row.getArtIdA() == parentId && side.equals(RelationSide.SIDE_B)) {
-               count++;
-            } else if (row.getArtIdB() == parentId && side.equals(RelationSide.SIDE_A)) {
-               count++;
-            }
-         }
+   public int getArtifactCount(IRelationTypeSide relationTypeSide) {
+      List<RelationRow> rows = relations.get(relationTypeSide);
+      if (rows == null) {
+         return 0;
+      } else {
+         return rows.size();
       }
-      return count;
+   }
+
+   public Set<IRelationTypeSide> getRelationTypes() {
+      return relations.keySet();
    }
 
 }
