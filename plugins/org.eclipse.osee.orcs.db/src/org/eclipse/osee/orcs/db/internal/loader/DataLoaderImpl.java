@@ -10,17 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
-import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
-import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
+import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
+import org.eclipse.osee.orcs.db.internal.search.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
 public class DataLoaderImpl implements DataLoader {
@@ -74,18 +80,59 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public void loadArtifacts(ArtifactRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
-      artifactLoader.loadFromQueryId(handler, options, fetchSize, queryId);
+   public void loadArtifacts(ArtifactRowHandler handler, Object dataStoreContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+      SqlContext sqlContext = null;
+      if (dataStoreContext instanceof SqlContext) {
+         sqlContext = (SqlContext) dataStoreContext;
+      } else {
+         throw new OseeCoreException(String.format("Invalid data store context type[%s], expected SqlContext.",
+            dataStoreContext.getClass().getName()));
+      }
+      ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
+      populateJoinQuery(artifactJoin, sqlContext, loadOptions, sqlContext.getFetchSize());
+      try {
+         artifactJoin.store();
+
+         //load artifacts
+         artifactLoader.loadFromQueryId(handler, loadOptions, sqlContext.getFetchSize(), artifactJoin.getQueryId());
+         //load otheres
+
+         attributeLoader.loadFromQueryId(attributeRowHandlerFactory.createAttributeRowHandler(), loadOptions,
+            sqlContext.getFetchSize(), artifactJoin.getQueryId());
+         relationLoader.loadFromQueryId(relationRowHandlerFactory.createRelationRowHandler(), loadOptions,
+            sqlContext.getFetchSize(), artifactJoin.getQueryId());
+
+      } finally {
+         artifactJoin.delete();
+      }
    }
 
-   @Override
-   public void loadAttributes(AttributeRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
-      attributeLoader.loadFromQueryId(handler, options, fetchSize, queryId);
+   private void populateJoinQuery(ArtifactJoinQuery artifactJoin, SqlContext sqlContext, LoadOptions loadOptions, int fetchSize) throws OseeCoreException {
+      for (AbstractJoinQuery join : sqlContext.getJoins()) {
+         join.store();
+      }
+      String query = sqlContext.getSql();
+      List<Object> params = sqlContext.getParameters();
+      try {
+         IOseeStatement chStmt = oseeDatabaseService.getStatement();
+         try {
+            chStmt.runPreparedQuery(fetchSize, query, params.toArray());
+            while (chStmt.next()) {
+               Integer artId = chStmt.getInt("art_id");
+               Integer branchId = chStmt.getInt("branch_id");
+               Integer transactionId = -1;
+               if (sqlContext.getOptions().isHistorical()) {
+                  transactionId = chStmt.getInt("transaction_id");
+               }
+               artifactJoin.add(artId, branchId, transactionId);
+            }
+         } finally {
+            chStmt.close();
+         }
+      } finally {
+         for (AbstractJoinQuery join : sqlContext.getJoins()) {
+            join.delete();
+         }
+      }
    }
-
-   @Override
-   public void loadRelations(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
-      relationLoader.loadFromQueryId(handler, options, fetchSize, queryId);
-   }
-
 }

@@ -34,7 +34,7 @@ public class ResultSetFactory {
    // private ArtifactLoader loadingService;  
 
    public ResultSet<ReadableArtifact> createResultSet(CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {
-      return new ResultSetImpl(queryEngine, criteriaSet, options);
+      return null;//new ResultSetImpl(queryEngine, criteriaSet, options);
    }
 
    public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> createMatchesResultSet(CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {
@@ -42,12 +42,4 @@ public class ResultSetFactory {
       return null;
    }
 
-   public int getCount(CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {
-      String sessionId = "fromContext";
-      Object object = queryEngine.createCount(sessionId, criteriaSet, options);
-      // Execute Query
-      // Return results;
-      int results = -1;
-      return results;
-   }
 }

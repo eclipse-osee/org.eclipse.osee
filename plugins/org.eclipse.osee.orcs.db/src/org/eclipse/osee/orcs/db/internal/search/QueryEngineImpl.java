@@ -81,7 +81,7 @@ public class QueryEngineImpl implements QueryEngine {
 
    private SqlContext createQuery(String sessionId, CriteriaSet criteriaSet, QueryOptions options, QueryType queryType) throws OseeCoreException {
       IOseeBranch branch = criteriaSet.getBranch();
-      int branchId = branchCache.getLocalId(branch);
+      int branchId = 2;//branchCache.getLocalId(branch);//TODO integrate the branch cache
 
       List<SqlHandler> handlers = handlerFactory.createHandlers(criteriaSet);
       SqlContext context = createContext(sessionId, options);

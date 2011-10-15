@@ -9,10 +9,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface DataLoader {
 
-   void loadArtifacts(ArtifactRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException;
+   //   void loadArtifacts(ArtifactRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException;
 
-   void loadAttributes(AttributeRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException;
+   //   void loadAttributes(AttributeRowHandler handler, Object dataStoreContext, LoadOptions options) throws OseeCoreException;
+   //
+   //   void loadRelations(RelationRowHandler handler, Object dataStoreContext, LoadOptions options) throws OseeCoreException;
 
-   void loadRelations(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException;
+   void loadArtifacts(ArtifactRowHandler handler, Object dataStoreContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
 
 }

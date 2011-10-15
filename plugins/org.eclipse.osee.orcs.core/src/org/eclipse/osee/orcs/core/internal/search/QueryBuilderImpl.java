@@ -271,6 +271,6 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public int getCount() throws OseeCoreException {
-      return rsetFactory.getCount(criteriaSet.clone(), options.clone());
+      return rsetFactory.createResultSet(criteriaSet.clone(), options.clone()).getCount();
    }
 }

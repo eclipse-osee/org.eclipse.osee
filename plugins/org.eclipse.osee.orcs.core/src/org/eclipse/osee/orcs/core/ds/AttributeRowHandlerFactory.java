@@ -8,24 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.search;
-
-import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+package org.eclipse.osee.orcs.core.ds;
 
 /**
- * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
-public interface ResultSet<T> {
-
-   int getCount() throws OseeCoreException;
-
-   T getOneOrNull() throws OseeCoreException;
-
-   T getExactlyOne() throws OseeCoreException;
-
-   List<T> getList() throws OseeCoreException;
-
-   Iterable<T> getIterable(int fetchSize) throws OseeCoreException;
+public interface AttributeRowHandlerFactory {
+   AttributeRowHandler createAttributeRowHandler();
 }

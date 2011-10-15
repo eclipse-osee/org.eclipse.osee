@@ -15,9 +15,13 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
+import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
+import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
+import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactReciever;
@@ -45,62 +49,59 @@ public class MasterLoader {
       this.attributeFactory = attributeFactory;
    }
 
-   List<ReadableArtifact> load(LoadOptions options, int fetchSize, int queryId, SessionContext sessionContext) throws OseeCoreException {
-
+   public List<ReadableArtifact> load(Object dataStoreContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
       ArtifactRecieveHandler artifactHandler =
-         new ArtifactRecieveHandler(options, fetchSize, queryId, dataLoader, logger, attributeFactory);
+         new ArtifactRecieveHandler(loadOptions, dataLoader, logger, attributeFactory);
 
       ArtifactRowHandler artifactRowHandler =
          new ArtifactRowMapper(logger, sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
 
-      dataLoader.loadArtifacts(artifactRowHandler, options, fetchSize, queryId);
+      dataLoader.loadArtifacts(artifactRowHandler, dataStoreContext, loadOptions, artifactHandler, artifactHandler);
 
-      artifactHandler.loadRemaining();
       return artifactHandler.get();
 
    }
 
-   private static class ArtifactRecieveHandler implements ArtifactReciever {
+   private static class ArtifactRecieveHandler implements ArtifactReciever, RelationRowHandlerFactory, AttributeRowHandlerFactory {
 
       private final List<ReadableArtifact> arts = new ArrayList<ReadableArtifact>();
-      private final int fetchSize;
-      private final LoadOptions options;
-      private final int queryId;
-      private final DataLoader dataLoader;
       private final Log logger;
       private final AttributeFactory attributeFactory;
 
-      public ArtifactRecieveHandler(LoadOptions options, int fetchSize, int queryId, DataLoader dataLoader, Log logger, AttributeFactory attributeFactory) {
-         this.fetchSize = fetchSize;
-         this.options = options;
-         this.queryId = queryId;
-         this.dataLoader = dataLoader;
+      public ArtifactRecieveHandler(LoadOptions options, DataLoader dataLoader, Log logger, AttributeFactory attributeFactory) {
          this.logger = logger;
          this.attributeFactory = attributeFactory;
       }
 
-      public void loadRemaining() throws OseeCoreException {
+      private RelationRowHandler getRelationRowHandler() {
          Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();
-         Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
-
          for (ReadableArtifact artifact : arts) {
             relationContainers.put(artifact.getId(), ((Artifact) artifact).getRelationContainer());
+         }
+         return new RelationRowMapper(logger, relationContainers);
+      }
+
+      private AttributeRowHandler getAttributeRowHandler() {
+         Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
+         for (ReadableArtifact artifact : arts) {
             attributeContainers.put(artifact.getId(), ((Artifact) artifact).getAttributeContainer());
          }
+         return new AttributeRowMapper(logger, attributeFactory, attributeContainers);
+      }
 
-         AttributeRowMapper attributeHandler = new AttributeRowMapper(logger, attributeFactory, attributeContainers);
-         RelationRowMapper relationHandler = new RelationRowMapper(logger, relationContainers);
+      @Override
+      public AttributeRowHandler createAttributeRowHandler() {
+         return getAttributeRowHandler();
+      }
 
-         dataLoader.loadAttributes(attributeHandler, options, fetchSize, queryId);
-         dataLoader.loadRelations(relationHandler, options, fetchSize, queryId);
+      @Override
+      public RelationRowHandler createRelationRowHandler() {
+         return getRelationRowHandler();
       }
 
       @Override
       public void onArtifact(ReadableArtifact artifact, boolean isArtifactAlreadyLoaded) throws OseeCoreException {
          arts.add(artifact);
-         if (arts.size() >= fetchSize) {
-            loadRemaining();
-         }
       }
 
       List<ReadableArtifact> get() {

@@ -75,9 +75,11 @@ public class SqlWriter {
             write("\n AND \n");
          }
       }
-      write("\n AND \n");
       List<String> aliases = aliasManager.getAliases(TableEnum.TXS_TABLE);
-      writeTxsJoin(aliases);
+      if (aliases.size() > 1) {
+         write("\n AND \n");
+         writeTxsJoin(aliases);
+      }
    }
 
    private void writeTxsJoin(List<String> aliases) throws OseeCoreException {

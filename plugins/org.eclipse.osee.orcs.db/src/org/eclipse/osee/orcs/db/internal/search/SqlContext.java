@@ -23,6 +23,7 @@ public class SqlContext {
    private final List<Object> parameters = new ArrayList<Object>();
    private final List<AbstractJoinQuery> joinTables = new ArrayList<AbstractJoinQuery>();
    private String sql;
+   private int fetchSize = 100;
 
    private final String sessionId;
    private final QueryOptions options;
@@ -54,6 +55,14 @@ public class SqlContext {
 
    public QueryOptions getOptions() {
       return options;
+   }
+
+   public int getFetchSize() {
+      return fetchSize;
+   }
+
+   public void setFetchSize(int fetchSize) {
+      this.fetchSize = fetchSize;
    }
 
    public void clear() {

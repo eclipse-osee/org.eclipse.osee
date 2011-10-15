@@ -13,8 +13,11 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.internal.MasterLoader;
+import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.search.ResultSet;
 
@@ -28,12 +31,18 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
    private final QueryEngine queryEngine;
    private final CriteriaSet criteriaSet;
    private final QueryOptions options;
+   private final MasterLoader loader;
+   private final SessionContext sessionContext;
+   private final LoadOptions loadOptions;
 
-   public ResultSetImpl(QueryEngine queryEngine, CriteriaSet criteriaSet, QueryOptions options) {
+   public ResultSetImpl(MasterLoader loader, QueryEngine queryEngine, CriteriaSet criteriaSet, QueryOptions options, SessionContext sessionContext, LoadOptions loadOptions) {
       super();
       this.queryEngine = queryEngine;
       this.criteriaSet = criteriaSet;
       this.options = options;
+      this.loader = loader;
+      this.sessionContext = sessionContext;
+      this.loadOptions = loadOptions;
    }
 
    @Override
@@ -50,14 +59,19 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
 
    @Override
    public List<ReadableArtifact> getList() throws OseeCoreException {
-
-
-      return null;
+      Object query = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);//TODO
+      List<ReadableArtifact> arts = loader.load(query, loadOptions, sessionContext);
+      return arts;
    }
 
    @Override
    public Iterable<ReadableArtifact> getIterable(int fetchSize) throws OseeCoreException {
-      return null;
+      return getList();
+   }
+
+   @Override
+   public int getCount() throws OseeCoreException {
+      return getList().size();//TODO run queryCount instead
    }
 
 }
