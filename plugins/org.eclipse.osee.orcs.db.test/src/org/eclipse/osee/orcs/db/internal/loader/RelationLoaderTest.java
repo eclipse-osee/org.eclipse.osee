@@ -73,9 +73,9 @@ public class RelationLoaderTest {
       int queryId = artJoinQuery.getQueryId();
 
       final List<RelationRow> expected = new ArrayList<RelationRow>();
-      expected.add(getRelationRow(1, 8, 2, 36, 1, 1, "", 2, 397));
-      expected.add(getRelationRow(1, 17, 2, 60, 1, 1, "", 4, 397));
-      expected.add(getRelationRow(1, 22, 2, 94, 1, 1, "", 9, 397));
+      expected.add(getRelationRow(1, 8, 2, 36, 1, 1, "", 2, identityService.getUniversalId(397)));
+      expected.add(getRelationRow(1, 17, 2, 60, 1, 1, "", 4, identityService.getUniversalId(397)));
+      expected.add(getRelationRow(1, 22, 2, 94, 1, 1, "", 9, identityService.getUniversalId(397)));
 
       RelationRow notExpected = getRelationRow(1, 22, 2, 94, 1, 1, "Idon'tExist", 9, 397);
 
@@ -155,7 +155,7 @@ public class RelationLoaderTest {
 
    }
 
-   private RelationRow getRelationRow(int artIdA, int artIdB, int branchId, int gammaId, int modType, int parentId, String rationale, int relationId, int relationTypeId) throws OseeArgumentException {
+   private RelationRow getRelationRow(int artIdA, int artIdB, int branchId, int gammaId, int modType, int parentId, String rationale, int relationId, long relationTypeId) throws OseeArgumentException {
       RelationRow row = new RelationRow();
       row.setArtIdA(artIdA);
       row.setArtIdB(artIdB);

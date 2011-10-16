@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.mocks;
 
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OseeApi;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -21,6 +22,11 @@ public class MockOseeApi implements OseeApi {
 
    @Override
    public QueryFactory getQueryFactory(ApplicationContext context) {
+      return null;
+   }
+
+   @Override
+   public BranchCache getBranchCache() {
       return null;
    }
 

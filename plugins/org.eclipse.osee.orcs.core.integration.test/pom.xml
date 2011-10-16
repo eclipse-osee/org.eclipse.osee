@@ -71,6 +71,11 @@
 						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.osee.orcs.core</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.equinox.ds</artifactId>
 							<version>0.0.0</version>
 						</dependency>
@@ -99,6 +104,40 @@
 							<artifactId>org.eclipse.osee.event.osgi</artifactId>
 							<version>0.0.0</version>
 						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.osgi.services</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.osgi</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.equinox.app</artifactId>
+							<version>0.0.0</version>
+						</dependency>			
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.equinox.common</artifactId>
+							<version>0.0.0</version>
+						</dependency>			
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.equinox.preferences</artifactId>
+							<version>0.0.0</version>
+						</dependency>			
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.eclipse.equinox.util</artifactId>
+							<version>0.0.0</version>
+						</dependency>			
+						
+
+						
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.xtext</artifactId>
@@ -164,6 +203,9 @@
 							<artifactId>org.eclipse.emf.edit</artifactId>
 							<version>0.0.0</version>
 						</dependency>
+						
+						
+												
 					</dependencies>
 				</configuration>
 			</plugin>

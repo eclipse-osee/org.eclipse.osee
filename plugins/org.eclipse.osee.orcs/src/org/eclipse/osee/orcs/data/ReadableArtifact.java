@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -42,7 +42,7 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
-   Collection<IRelationType> getValidRelationTypes() throws OseeCoreException;
+   Collection<RelationType> getValidRelationTypes() throws OseeCoreException;//TODO what type should we us here IRelationType, RelationType
 
    Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException;
 

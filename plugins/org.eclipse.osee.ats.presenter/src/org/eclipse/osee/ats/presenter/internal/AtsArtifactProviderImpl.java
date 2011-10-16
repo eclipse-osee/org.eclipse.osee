@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
 import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -40,7 +39,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
          getArtifactByArtifactToken(CoreBranches.COMMON, AtsArtifactToken.WebPrograms);
       if (webProgramsArtifact != null) {
          programs =
-            webProgramsArtifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members, RelationSide.SIDE_B);
+            webProgramsArtifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members, getFactory());
       }
       return programs;
    }
@@ -51,12 +50,10 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
       ReadableArtifact teamDef = null;
       ReadableArtifact programArtifact = getArtifactByGuid(CoreBranches.COMMON, programGuid);
       if (programArtifact != null) {
-         teamDef =
-            programArtifact.getRelatedArtifact(CoreRelationTypes.SupportingInfo_SupportingInfo, RelationSide.SIDE_B);
+         teamDef = programArtifact.getRelatedArtifact(CoreRelationTypes.SupportingInfo_SupportingInfo, getFactory());
       }
       if (teamDef != null) {
-         relatedArtifacts =
-            teamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version, RelationSide.SIDE_B);
+         relatedArtifacts = teamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version, getFactory());
       }
       return relatedArtifacts;
    }

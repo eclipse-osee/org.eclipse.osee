@@ -19,7 +19,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -41,7 +40,7 @@ public class MockArtifact implements ReadableArtifact {
 
    private final Map<IRelationTypeSide, List<ReadableArtifact>> relationMap =
       new HashMap<IRelationTypeSide, List<ReadableArtifact>>();
-   private final List<IRelationType> validRelationTypes = new LinkedList<IRelationType>();
+   private final List<RelationType> validRelationTypes = new LinkedList<RelationType>();
 
    private final HashCollection<IAttributeType, String> attributes = new HashCollection<IAttributeType, String>();
 
@@ -177,7 +176,7 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public Collection<IRelationType> getValidRelationTypes() {
+   public Collection<RelationType> getValidRelationTypes() {
       return validRelationTypes;
    }
 

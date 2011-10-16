@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -63,7 +62,7 @@ public class ArtifactsResource {
       ResultSet<ReadableArtifact> results = factory.fromName(branch, DEFAULT_HIERARCHY_ROOT_NAME).build(LoadLevel.FULL);
       ReadableArtifact rootArtifact = results.getExactlyOne();
       List<ReadableArtifact> arts =
-         rootArtifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, RelationSide.SIDE_B);
+         rootArtifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, factory);
 
       StringBuilder builder = new StringBuilder(String.format("All artifacts at branch uuid[%s]\n", branchUuid));
       for (ReadableArtifact art : arts) {

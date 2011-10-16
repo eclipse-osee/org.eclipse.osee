@@ -195,7 +195,9 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       Collection<ReadableArtifact> related = null;
       try {
          sourceArt = artifactProvider.getArtifactByGuid(branch, artifact.getGuid());
-         related = sourceArt.getRelatedArtifacts(type, side);
+         related =
+            sourceArt.getRelatedArtifacts(TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName()),
+               null);
       } catch (OseeCoreException ex) {
          setErrorMessage(relationComponent,
             String.format("Error loading relations for artifact[%s]", artifact.getGuid()));

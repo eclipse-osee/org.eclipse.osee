@@ -49,6 +49,10 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       this.factory = factory;
    }
 
+   protected QueryFactory getFactory() {
+      return factory;
+   }
+
    @Override
    public ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
       return sanitizeResult(factory.fromArtifact(branch, token).build(LoadLevel.FULL).getOneOrNull());
