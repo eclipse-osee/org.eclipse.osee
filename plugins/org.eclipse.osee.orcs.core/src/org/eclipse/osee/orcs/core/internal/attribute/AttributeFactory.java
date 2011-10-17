@@ -42,6 +42,10 @@ public class AttributeFactory {
       boolean markDirty = false;
 
       Class<? extends Attribute<?>> attributeClass = classResolver.getBaseClazz(type);
+      if (attributeClass == null) {
+         // TODO Word Attributes etc -  Default to StringAttribute if Null
+         attributeClass = classResolver.getBaseClazz("StringAttribute");
+      }
       Attribute<T> attribute = createAttribute(attributeClass);
 
       DataProxy proxy = row.getDataProxy();
