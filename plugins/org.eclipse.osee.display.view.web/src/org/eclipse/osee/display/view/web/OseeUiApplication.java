@@ -21,13 +21,14 @@ import com.vaadin.Application;
 /**
  * @author Shawn F. Cook
  */
+@SuppressWarnings("serial")
 public class OseeUiApplication extends Application {
 
    protected final SearchNavigator navigator = createNavigator();
-   protected SearchPresenter searchPresenter;
+   protected SearchPresenter<?> searchPresenter;
    protected SearchHeaderComponent searchHeaderComponent = createSearchHeaderComponent();
 
-   public OseeUiApplication(SearchPresenter searchPresenter) {
+   public OseeUiApplication(SearchPresenter<?> searchPresenter) {
       this.searchPresenter = searchPresenter;
    }
 
@@ -46,7 +47,7 @@ public class OseeUiApplication extends Application {
       return new OseeNavigator();
    }
 
-   protected SearchPresenter createSearchPresenter() {
+   protected SearchPresenter<?> createSearchPresenter() {
       return null;
    }
 
@@ -54,7 +55,7 @@ public class OseeUiApplication extends Application {
       return navigator;
    }
 
-   public SearchPresenter getSearchPresenter() {
+   public SearchPresenter<?> getSearchPresenter() {
       return searchPresenter;
    }
 

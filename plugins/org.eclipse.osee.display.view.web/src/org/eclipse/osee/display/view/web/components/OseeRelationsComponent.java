@@ -36,10 +36,11 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    private boolean populated = false;
    private final ListSelect relationTypesListSelect = new ListSelect();
    private final ListSelect relationsListSelect = new ListSelect();
-   private SearchPresenter searchPresenter = null;
+   private SearchPresenter<?> searchPresenter = null;
    private SearchNavigator navigator = null;
    private boolean lockRelTypesListener = false;
    private boolean lockRelsListener = false;
+   private WebArtifact artifact = null;
 
    @Override
    public void attach() {
@@ -89,7 +90,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                try {
                   WebId relationType = (WebId) relationTypesListSelect.getValue();
                   if (relationType != null) {
-                     searchPresenter.selectRelationType(null, relationType, OseeRelationsComponent.this);
+                     searchPresenter.selectRelationType(artifact, relationType, OseeRelationsComponent.this);
                   }
                } catch (Exception e) {
                   System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
@@ -195,5 +196,6 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
 
    @Override
    public void setArtifact(WebArtifact artifact) {
+      this.artifact = artifact;
    }
 }
