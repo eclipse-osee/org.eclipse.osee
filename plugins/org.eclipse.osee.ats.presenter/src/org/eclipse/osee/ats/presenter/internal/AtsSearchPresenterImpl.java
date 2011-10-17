@@ -98,7 +98,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
 
       Collection<WebId> builds = null;
       try {
-         builds = getbuilds(program);
+         builds = getBuilds(program);
       } catch (Exception ex) {
          setErrorMessage(searchHeaderComponent, ex.getMessage());
          return;
@@ -134,7 +134,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
       headerComponent.clearBuilds();
       Collection<WebId> builds = null;
       try {
-         builds = getbuilds(program);
+         builds = getBuilds(program);
       } catch (OseeCoreException ex) {
          setErrorMessage(headerComponent, ex.getMessage());
          return;
@@ -155,7 +155,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
       return toReturn;
    }
 
-   private Collection<WebId> getbuilds(WebId program) throws OseeCoreException {
+   private Collection<WebId> getBuilds(WebId program) throws OseeCoreException {
       Collection<ReadableArtifact> relatedBuilds = atsArtifactProvider.getBuilds(program.getGuid());
       Collection<WebId> builds = new ArrayList<WebId>();
       if (relatedBuilds != null) {

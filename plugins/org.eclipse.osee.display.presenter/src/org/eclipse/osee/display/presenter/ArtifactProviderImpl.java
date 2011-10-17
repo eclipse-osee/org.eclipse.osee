@@ -55,7 +55,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
-      return sanitizeResult(factory.fromArtifact(branch, token).build(LoadLevel.FULL).getOneOrNull());
+      return getArtifactByGuid(branch, token.getGuid());
    }
 
    @Override
@@ -77,7 +77,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
       ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> resultSet =
          factory.fromBranch(branch).and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase).buildMatches(
-            LoadLevel.FULL);
+            LoadLevel.SHALLOW);
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : resultSet.getList()) {
          ReadableArtifact matchedArtifact = match.getItem();
          if (sanitizeResult(matchedArtifact) != null) {

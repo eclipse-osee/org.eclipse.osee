@@ -20,12 +20,14 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
@@ -89,7 +91,13 @@ public class Artifact implements ReadableArtifact {
 
    @Override
    public String getName() {
-      return null;
+      String name;
+      try {
+         name = getSoleAttributeAsString(CoreAttributeTypes.Name);
+      } catch (Exception ex) {
+         name = Lib.exceptionToString(ex);
+      }
+      return name;
    }
 
    @Override
@@ -128,8 +136,8 @@ public class Artifact implements ReadableArtifact {
    }
 
    @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType) {
-      return null;
+   public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
+      return (String) attributeContainer.getAttributes(attributeType).iterator().next().getValue();
    }
 
    @Override
@@ -165,7 +173,7 @@ public class Artifact implements ReadableArtifact {
 
    @Override
    public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
-      return null;
+      return getRelatedArtifacts(relationTypeSide, queryFactory).iterator().next();
    }
 
    @Override

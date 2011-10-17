@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -71,6 +72,11 @@ public class OrcsApiImpl implements OseeApi {
 
       criteriaFctry = new CriteriaFactory();
       rsetFctry = new ResultSetFactory(queryEngine, objectLoader);
+      try {
+         cacheService.reloadAll();
+      } catch (OseeCoreException ex) {
+         //         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
    }
 
    public void stop() {
