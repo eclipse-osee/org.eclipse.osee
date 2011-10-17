@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,11 +27,13 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.db.internal.search.SqlBuilder.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.eclipse.osee.orcs.db.mocks.MockSystemPreferences;
 import org.eclipse.osee.orcs.db.mocks.SqlUtility;
+import org.eclipse.osee.orcs.search.Operator;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -47,7 +50,8 @@ public class SqlBuilderTest {
    private static final Criteria IDS = new CriteriaArtifactIds(Arrays.asList(1, 2, 3, 4, 5));
    private static final Criteria HRIDS = new CriteriaArtifactHrids(Arrays.asList("ABCDE", "FGHIJ"));
    private static final Criteria TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit));
-
+   private static final Criteria ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name,
+      Arrays.asList("Hello"), Operator.EQUAL);
    //   private static final Criteria TWO_TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit,
    //      CoreArtifactTypes.Artifact));
 
@@ -272,5 +276,97 @@ public class SqlBuilderTest {
       Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(9));
       Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(10));
       Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(11));
+   }
+
+   @Test
+   public void testBuildGuidsSql() throws OseeCoreException {
+      int branchId = 4;
+      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, IDS);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      QueryOptions options = new QueryOptions();
+      SqlContext context = new SqlContext("mysession", options);
+      SqlBuilder builder = new SqlBuilder(sqlProvider, null);
+      builder.generateSql(context, branchId, handlers, QueryType.SELECT_ARTIFACTS);
+
+      String sql = context.getSql();
+      Assert.assertEquals(
+         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
+         " WHERE \n" + //
+         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " ORDER BY art_id, branch_id",//
+         sql);
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(2, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(1, joins.size());
+
+      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
+      Assert.assertEquals(branchId, parameters.get(1));
+   }
+
+   @Test
+   public void testBuildArtifactTypesSql() throws OseeCoreException {
+      int branchId = 4;
+      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, TYPES);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      QueryOptions options = new QueryOptions();
+      SqlContext context = new SqlContext("mysession", options);
+      SqlBuilder builder = new SqlBuilder(sqlProvider, null);
+      builder.generateSql(context, branchId, handlers, QueryType.SELECT_ARTIFACTS);
+
+      String sql = context.getSql();
+      Assert.assertEquals("SELECT art1.art_id, txs1.branch_id\n" + // 
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " ORDER BY art_id, branch_id",//
+         sql);
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(2, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(0));
+      Assert.assertEquals(branchId, parameters.get(1));
+   }
+
+   @Test
+   public void testBuildAttributeSql() throws OseeCoreException {
+      int branchId = 4;
+      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, ATTRIBUTE);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      QueryOptions options = new QueryOptions();
+      SqlContext context = new SqlContext("mysession", options);
+      SqlBuilder builder = new SqlBuilder(sqlProvider, null);
+      builder.generateSql(context, branchId, handlers, QueryType.SELECT_ARTIFACTS);
+
+      String sql = context.getSql();
+      Assert.assertEquals(
+         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
+         " WHERE \n" + //
+         "att1.attr_type_id = ? AND att1.value = ? AND art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " AND \n" + //
+         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
+         " ORDER BY art_id, branch_id",//
+         sql);
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(3, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), parameters.get(0));
+      Assert.assertEquals("Hello", parameters.get(1));
+      Assert.assertEquals(branchId, parameters.get(2));
    }
 }
