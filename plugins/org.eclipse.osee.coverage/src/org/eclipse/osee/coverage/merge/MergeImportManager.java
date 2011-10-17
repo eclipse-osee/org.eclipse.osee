@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.merge;
 
 import java.util.Collection;
+
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -159,7 +160,6 @@ public class MergeImportManager {
    private void updateTestUnits(IMergeItem mergeItem, XResultData rd) throws OseeCoreException {
       CoverageItem importItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
       CoverageItem packageItem = (CoverageItem) ((MergeItem) mergeItem).getPackageItem();
-      packageItem.setCoverageMethod(importItem.getCoverageMethod());
       if (!Collections.isEqual(packageItem.getTestUnits(), importItem.getTestUnits())) {
          packageItem.setTestUnits(importItem.getTestUnits());
       }
