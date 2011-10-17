@@ -18,7 +18,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -52,20 +51,12 @@ public class ArtifactResource {
    }
 
    @GET
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getAsText() throws OseeCoreException {
+   @Produces(MediaType.TEXT_HTML)
+   public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOseeApi().getQueryFactory(null);
       List<ReadableArtifact> arts = factory.fromGuidOrHrid(branch, artifactUuid).build(LoadLevel.SHALLOW).getList();
-
-      StringBuilder builder =
-         new StringBuilder(String.format("BranchUuid [%s] ArtifactUuid [%s]\n", branchUuid, artifactUuid));
-      for (ReadableArtifact art : arts) {
-         for (IAttributeType type : art.getAttributeTypes()) {
-            builder.append(art.getAttributes(type).toString());
-            builder.append("\n");
-         }
-      }
-      return builder.toString();
+      HtmlWriter writer = new HtmlWriter(uriInfo, factory);
+      return writer.toHtml(arts);
    }
 }

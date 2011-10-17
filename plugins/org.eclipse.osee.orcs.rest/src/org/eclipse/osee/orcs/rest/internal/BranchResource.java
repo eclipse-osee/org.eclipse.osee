@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.util.Collections;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -46,14 +47,11 @@ public class BranchResource {
    }
 
    @GET
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getAsText() throws OseeCoreException {
+   @Produces(MediaType.TEXT_HTML)
+   public String getAsHtml() throws OseeCoreException {
       IOseeBranch token = TokenFactory.createBranch(branchUuid, "");
       Branch branch = OrcsApplication.getOseeApi().getBranchCache().get(token);
-
-      StringBuilder builder = new StringBuilder(String.format("BranchUuid [%s]\n", branchUuid));
-      builder.append(branch.toStringWithId());
-      builder.append("\n");
-      return builder.toString();
+      HtmlWriter writer = new HtmlWriter(uriInfo);
+      return writer.toHtml(Collections.singleton(branch));
    }
 }

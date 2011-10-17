@@ -41,14 +41,10 @@ public class BranchesResource {
    }
 
    @GET
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getAsText() throws OseeCoreException {
+   @Produces(MediaType.TEXT_HTML)
+   public String getAsHtml() throws OseeCoreException {
       Collection<Branch> branches = OrcsApplication.getOseeApi().getBranchCache().getAll();
-      StringBuilder builder = new StringBuilder("All Branches\n");
-      for (Branch branch : branches) {
-         builder.append(branch.toStringWithId());
-         builder.append("\n");
-      }
-      return builder.toString();
+      HtmlWriter writer = new HtmlWriter(uriInfo);
+      return writer.toHtml(branches);
    }
 }

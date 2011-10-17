@@ -19,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -55,23 +54,17 @@ public class ArtifactsResource {
    }
 
    @GET
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getAsText() throws OseeCoreException {
+   @Produces(MediaType.TEXT_HTML)
+   public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOseeApi().getQueryFactory(null);
       ResultSet<ReadableArtifact> results = factory.fromName(branch, DEFAULT_HIERARCHY_ROOT_NAME).build(LoadLevel.FULL);
       ReadableArtifact rootArtifact = results.getExactlyOne();
       List<ReadableArtifact> arts =
          rootArtifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, factory);
-
-      StringBuilder builder = new StringBuilder(String.format("All artifacts at branch uuid[%s]\n", branchUuid));
-      for (ReadableArtifact art : arts) {
-         for (IAttributeType type : art.getAttributeTypes()) {
-            builder.append(art.getAttributes(type).toString());
-            builder.append("\n");
-         }
-      }
-      return builder.toString();
+      HtmlWriter writer = new HtmlWriter(uriInfo, factory);
+      return writer.toHtml(arts);
    }
+
    private static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 }
