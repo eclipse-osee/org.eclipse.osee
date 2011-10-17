@@ -17,4 +17,6 @@ public interface SearchHeaderComponent extends DisplaysErrorComponent {
 
    void clearAll();
 
+   void setShowVerboseSearchResults(boolean showVerboseSearchResults);
+
 }

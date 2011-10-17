@@ -26,7 +26,7 @@ import com.vaadin.ui.VerticalLayout;
 public class OseeSearchResultsView extends CustomComponent implements Navigator.View {
 
    protected OseeSearchHeaderComponent searchHeader;
-   protected final OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
+   protected OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
 
    protected void createLayout() {
       setSizeFull();

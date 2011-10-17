@@ -21,4 +21,8 @@ public interface PagingComponent {
 
    public Collection<Integer> getCurrentVisibleItemIndices();
 
+   public void setManyItemsPerPage(int manyItemsPerPage);
+
+   public int getManyItemsPerPage();
+
 }

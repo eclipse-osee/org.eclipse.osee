@@ -20,6 +20,7 @@ import com.vaadin.ui.VerticalLayout;
 public class OseeSearchHeaderComponent extends VerticalLayout implements SearchHeaderComponent {
 
    protected boolean showOseeTitleAbove;
+   protected boolean showVerboseSearchResults = true;
 
    @Override
    public void attach() {
@@ -46,6 +47,16 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchH
 
    public void setShowOseeTitleAbove(boolean showOseeTitleAbove) {
       this.showOseeTitleAbove = showOseeTitleAbove;
+   }
+
+   @Override
+   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
+      this.showVerboseSearchResults = showVerboseSearchResults;
+      //      selectSearch();
+   }
+
+   protected void selectSearch() {
+      //Do nothing.  Needs override
    }
 
 }

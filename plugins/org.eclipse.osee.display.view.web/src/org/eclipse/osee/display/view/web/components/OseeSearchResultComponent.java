@@ -29,6 +29,7 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
 
    private WebArtifact artifact;
    private final Collection<SearchResultMatch> matches = new ArrayList<SearchResultMatch>();
+   private boolean showVerboseSearchResults = true;
 
    public OseeSearchResultComponent() {
       //Stupid hack. Web layout is driving me crazy.
@@ -47,32 +48,36 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
 
       HorizontalLayout row0 = new HorizontalLayout();
 
-      OseeArtifactNameLinkComponent artifactName =
-         new OseeArtifactNameLinkComponent(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
-      Label spacer1 = new Label("");
-      spacer1.setHeight(null);
-      spacer1.setWidth(15, UNITS_PIXELS);
-      Label artifactType = new Label(String.format("[%s]", artifact.getArtifactType()), Label.CONTENT_XHTML);
-      artifactType.setStyleName(CssConstants.OSEE_SEARCHRESULT_ARTTYPE);
-      row0.addComponent(artifactName);
-      row0.addComponent(spacer1);
-      row0.addComponent(artifactType);
-      row0.setComponentAlignment(artifactName, Alignment.BOTTOM_LEFT);
-      row0.setComponentAlignment(artifactType, Alignment.MIDDLE_LEFT);
+      if (artifact != null) {
+         OseeArtifactNameLinkComponent artifactName =
+            new OseeArtifactNameLinkComponent(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
+         Label spacer1 = new Label("");
+         spacer1.setHeight(null);
+         spacer1.setWidth(15, UNITS_PIXELS);
+         Label artifactType = new Label(String.format("[%s]", artifact.getArtifactType()), Label.CONTENT_XHTML);
+         artifactType.setStyleName(CssConstants.OSEE_SEARCHRESULT_ARTTYPE);
+         row0.addComponent(artifactName);
+         row0.addComponent(spacer1);
+         row0.addComponent(artifactType);
+         row0.setComponentAlignment(artifactName, Alignment.BOTTOM_LEFT);
+         row0.setComponentAlignment(artifactType, Alignment.MIDDLE_LEFT);
+         addComponent(row0);
 
-      OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(artifact);
+         if (showVerboseSearchResults) {
+            OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(artifact);
 
-      addComponent(row0);
-      addComponent(breadcrumbComp);
+            addComponent(breadcrumbComp);
 
-      for (SearchResultMatch match : matches) {
-         OseeSearchResultMatchComponent matchComp = new OseeSearchResultMatchComponent(match);
-         addComponent(matchComp);
+            for (SearchResultMatch match : matches) {
+               OseeSearchResultMatchComponent matchComp = new OseeSearchResultMatchComponent(match);
+               addComponent(matchComp);
+            }
+         }
+
+         Label spacer2 = new Label("");
+         spacer2.setHeight(15, UNITS_PIXELS);
+         addComponent(spacer2);
       }
-
-      Label spacer2 = new Label("");
-      spacer2.setHeight(15, UNITS_PIXELS);
-      addComponent(spacer2);
    }
 
    @Override
@@ -111,5 +116,12 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
 
    @Override
    public void setErrorMessage(String message) {
+   }
+
+   @Override
+   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
+      this.showVerboseSearchResults = showVerboseSearchResults;
+      removeAllComponents();
+      createLayout();
    }
 }

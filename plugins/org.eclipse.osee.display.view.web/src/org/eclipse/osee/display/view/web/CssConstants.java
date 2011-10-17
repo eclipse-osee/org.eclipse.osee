@@ -39,6 +39,7 @@ public final class CssConstants {
    public static final String OSEE_TITLE_MEDIUM_TEXT = "osee-title-medium-text";
    public static final String OSEE_SEARCH_TEXTFIELD = "osee-search-textfield";
 
+   public static final String OSEE_SEARCHRESULTS_MANYRESULTSFIELD = "osee-searchresults-manyresultsfield";
    public static final String OSEE_SEARCHRESULT_ARTNAME = "osee-searchresult-artname";
    public static final String OSEE_SEARCHRESULT_ARTTYPE = "osee-searchresult-arttype";
    public static final String OSEE_SEARCHRESULT_MATCH = "osee-searchresult-match";

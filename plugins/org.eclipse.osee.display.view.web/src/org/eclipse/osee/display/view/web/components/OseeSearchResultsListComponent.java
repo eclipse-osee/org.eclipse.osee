@@ -15,16 +15,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedEvent;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedListener;
 import com.vaadin.Application;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
@@ -40,28 +46,69 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
    private OseePagingComponent pagingComponent = new OseePagingComponent();
    private List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
+   private SearchHeaderComponent searchHeaderComponent;
+   private final CheckBox showVerboseCheckBox = new CheckBox("Show Verbose Search Results", true);
+   private final TextField manyResultsTextField = new TextField();
 
    public OseeSearchResultsListComponent() {
+      this(null);
+   }
+
+   public OseeSearchResultsListComponent(SearchHeaderComponent searchHeaderComponent) {
+      this.setSearchHeaderComponent(searchHeaderComponent);
       this.setSizeFull();
 
-      this.addComponent(manySearchResultsHorizLayout);
       manySearchResultsHorizLayout.setSizeUndefined();
+
+      Label spacer = new Label();
+      spacer.setHeight(5, UNITS_PIXELS);
 
       mainLayout.setMargin(false, false, false, true);
       Panel mainLayoutPanel = new Panel();
       mainLayoutPanel.setScrollable(true);
       mainLayoutPanel.getContent().setSizeUndefined();
       mainLayoutPanel.setContent(mainLayout);
-      this.addComponent(mainLayoutPanel);
       mainLayoutPanel.setSizeFull();
-      this.setExpandRatio(mainLayoutPanel, 1.0f);
 
       bottomSpacer.setSizeFull();
       mainLayout.addComponent(bottomSpacer);
       mainLayout.setExpandRatio(bottomSpacer, 1.0f);
 
-      this.addComponent(pagingComponent);
       pagingComponent.addListener(this);
+
+      this.addComponent(manySearchResultsHorizLayout);
+      this.addComponent(spacer);
+      this.addComponent(mainLayoutPanel);
+      this.setExpandRatio(mainLayoutPanel, 1.0f);
+      this.addComponent(pagingComponent);
+
+      showVerboseCheckBox.setImmediate(true);
+      showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
+         @Override
+         public void valueChange(ValueChangeEvent event) {
+            boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
+            OseeSearchResultsListComponent.this.searchHeaderComponent.setShowVerboseSearchResults(showVerbose);
+            for (OseeSearchResultComponent resultComp : resultList) {
+               resultComp.setShowVerboseSearchResults(showVerbose);
+            }
+            updateSearchResultsLayout();
+         }
+      });
+
+      manyResultsTextField.setImmediate(true);
+      manyResultsTextField.setStyleName(CssConstants.OSEE_SEARCHRESULTS_MANYRESULTSFIELD);
+      manyResultsTextField.setValue(pagingComponent.getManyItemsPerPage());
+      manyResultsTextField.addListener(new Property.ValueChangeListener() {
+         @Override
+         public void valueChange(ValueChangeEvent event) {
+            if (pagingComponent != null) {
+               String manyItemsPerPage_str = manyResultsTextField.toString();
+               int manyItemsPerPage = Integer.parseInt(manyItemsPerPage_str);
+               pagingComponent.setManyItemsPerPage(manyItemsPerPage);
+               updateSearchResultsLayout();
+            }
+         }
+      });
    }
 
    @Override
@@ -74,20 +121,41 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    private void updateManySearchResultsLabel() {
       int manySearchResultComponents = resultList.size();
-      manySearchResultsHorizLayout.removeAllComponents();
 
       Label manySearchResults = new Label(String.format("[%d] ", manySearchResultComponents));
+      Label spacer = new Label();
+      spacer.setWidth(5, UNITS_PIXELS);
       Label manySearchResults_suffix = new Label("search result(s) found.");
-      manySearchResultsHorizLayout.addComponent(manySearchResults);
-      manySearchResultsHorizLayout.addComponent(manySearchResults_suffix);
       manySearchResults.setSizeUndefined();
       manySearchResults_suffix.setSizeUndefined();
       manySearchResults.setStyleName(CssConstants.OSEE_SEARCHRESULT_MATCH_MANY);
 
+      manySearchResultsHorizLayout.removeAllComponents();
+      manySearchResultsHorizLayout.addComponent(manySearchResults);
+      manySearchResultsHorizLayout.addComponent(spacer);
+      manySearchResultsHorizLayout.addComponent(manySearchResults_suffix);
+
+      if (manySearchResultComponents > 0 && searchHeaderComponent != null) {
+         searchHeaderComponent.setShowVerboseSearchResults(showVerboseCheckBox.toString().equalsIgnoreCase("true"));
+         Label spacer1 = new Label();
+         spacer1.setWidth(30, UNITS_PIXELS);
+         manySearchResultsHorizLayout.addComponent(spacer1);
+         manySearchResultsHorizLayout.addComponent(showVerboseCheckBox);
+      }
+
+      Label spacer2 = new Label();
+      spacer2.setWidth(30, UNITS_PIXELS);
+      Label spacer3 = new Label();
+      spacer3.setWidth(5, UNITS_PIXELS);
+      Label manyResultsLabel = new Label("Many Results Per Page");
+      manySearchResultsHorizLayout.addComponent(spacer2);
+      manySearchResultsHorizLayout.addComponent(manyResultsTextField);
+      manySearchResultsHorizLayout.setComponentAlignment(manyResultsTextField, Alignment.TOP_CENTER);
+      manySearchResultsHorizLayout.addComponent(spacer3);
+      manySearchResultsHorizLayout.addComponent(manyResultsLabel);
+
       pagingComponent.setManyItemsTotal(manySearchResultComponents);
-
    }
-
    private Collection<Integer> prevResultListIndices = new ArrayList<Integer>();
 
    private void updateSearchResultsLayout() {
@@ -156,5 +224,13 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    @Override
    public void pageSelected(PageSelectedEvent source) {
       updateSearchResultsLayout();
+   }
+
+   public SearchHeaderComponent getSearchHeaderComponent() {
+      return searchHeaderComponent;
+   }
+
+   public void setSearchHeaderComponent(SearchHeaderComponent searchHeaderComponent) {
+      this.searchHeaderComponent = searchHeaderComponent;
    }
 }

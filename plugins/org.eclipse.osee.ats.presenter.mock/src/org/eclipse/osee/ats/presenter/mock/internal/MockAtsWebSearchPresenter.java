@@ -116,6 +116,7 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
          if (params.getSearchString() != null) {
             parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
          }
+         parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE, params.isVerboseResults() ? "true" : "false");
          if (parameters.size() > 0) {
             String url = parameterMapToRequestString(parameters);
             atsNavigator.navigateSearchResults(url);
@@ -238,12 +239,21 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
 
       if (resultsComponent != null) {
+         boolean showVerboseSearchResults = true;
+         Map<String, String> params = requestStringToParameterMap(url);
+         if (params != null && params.size() > 0) {
+            String showVerbose_str = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
+            if (showVerbose_str != null && !showVerbose_str.isEmpty()) {
+               showVerboseSearchResults = showVerbose_str.equalsIgnoreCase("true");
+            }
+         }
          resultsComponent.clearAll();
          Set<Entry<String, WebArtifact>> entrySet = artifacts.entrySet();
          for (Entry<String, WebArtifact> artifactEntry : entrySet) {
             SearchResultComponent searchResultComp = resultsComponent.createSearchResult();
             if (searchResultComp != null) {
                WebArtifact artifact = artifactEntry.getValue();
+               searchResultComp.setShowVerboseSearchResults(showVerboseSearchResults);
                searchResultComp.setArtifact(artifact);
                searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", "...{COM_PAGE}...",
                   10));
@@ -326,5 +336,6 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       public final static String PARAMNAME_BUILD = "build";
       public final static String PARAMNAME_NAMEONLY = "nameonly";
       public final static String PARAMNAME_SEARCHPHRASE = "searchphrase";
+      public final static String PARAMNAME_SHOWVERBOSE = "showverbose";
    }
 }

@@ -45,4 +45,8 @@ public class MockSearchResultComponent implements SearchResultComponent {
    @Override
    public void setErrorMessage(String message) {
    }
+
+   @Override
+   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
+   }
 }

@@ -30,7 +30,7 @@ import com.vaadin.ui.Label;
 public class OseePagingComponent extends HorizontalLayout implements PagingComponent {
 
    private int manyItemsTotal = 0;
-   private final int manyItemsPerPage = 10;
+   private int manyItemsPerPage = 10;
    private int manyPages = 0;
    private int currentPage = 0;
    private final int MAX_PAGE_NUMBERS_SHOWN = 10;
@@ -283,5 +283,16 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
          }
       }
       return ret;
+   }
+
+   @Override
+   public void setManyItemsPerPage(int manyItemsPerPage) {
+      this.manyItemsPerPage = manyItemsPerPage;
+      createLayout();
+   }
+
+   @Override
+   public int getManyItemsPerPage() {
+      return this.manyItemsPerPage;
    }
 }

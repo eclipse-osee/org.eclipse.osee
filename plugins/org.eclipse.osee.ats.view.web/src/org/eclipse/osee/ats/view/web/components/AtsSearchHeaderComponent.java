@@ -68,9 +68,11 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
       populated = true;
    }
 
-   private void selectSearch() {
-      WebId program = (WebId) programCombo.getValue();
-      searchPresenter.selectProgram(program, this);
+   private void selectProgram() {
+      if (programCombo != null) {
+         WebId program = (WebId) programCombo.getValue();
+         searchPresenter.selectProgram(program, this);
+      }
    }
 
    public AtsSearchHeaderComponent(boolean showOseeTitleAbove) {
@@ -87,7 +89,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
             @Override
             public void valueChange(ValueChangeEvent event) {
                if (!lockProgramCombo) {
-                  selectSearch();
+                  selectProgram();
                }
             }
          });
@@ -102,6 +104,20 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
 
    public AtsSearchHeaderComponent() {
       this(true);
+   }
+
+   protected void selectSearch() {
+      if (searchPresenter != null && programCombo != null && buildCombo != null && nameOnlyCheckBox != null && searchTextField != null) {
+         WebId program = (WebId) programCombo.getValue();
+         WebId build = (WebId) buildCombo.getValue();
+         boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
+         String searchPhrase = (String) searchTextField.getValue();
+         AtsSearchParameters params =
+            new AtsSearchParameters(searchPhrase, nameOnly, showVerboseSearchResults, build, program);
+         searchPresenter.selectSearch(params, navigator);
+      } else {
+         System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
+      }
    }
 
    @Override
@@ -140,15 +156,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
       Button searchButton = new Button("Search", new Button.ClickListener() {
          @Override
          public void buttonClick(ClickEvent event) {
-            WebId program = (WebId) programCombo.getValue();
-            WebId build = (WebId) buildCombo.getValue();
-            boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
-            String searchPhrase = (String) searchTextField.getValue();
-            boolean verbose = false;
-            AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, verbose, build, program);
-            if (searchPresenter != null) {
-               searchPresenter.selectSearch(params, navigator);
-            }
+            selectSearch();
          }
       });
       hLayoutRow2.addComponent(searchTextField);
@@ -308,7 +316,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
    @Override
    public void handleAction(Action action, Object sender, Object target) {
       if (sender == searchTextField && action == action_enter) {
-         selectSearch();
+         selectProgram();
       }
    }
 

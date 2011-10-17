@@ -91,4 +91,8 @@ public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponentInt
       selectedBuild = build;
    }
 
+   @Override
+   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
+   }
+
 }

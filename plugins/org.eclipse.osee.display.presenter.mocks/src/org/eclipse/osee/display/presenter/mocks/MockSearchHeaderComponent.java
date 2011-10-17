@@ -38,4 +38,8 @@ public class MockSearchHeaderComponent implements SearchHeaderComponent {
       clearAllCalled = true;
    }
 
+   @Override
+   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
+   }
+
 }

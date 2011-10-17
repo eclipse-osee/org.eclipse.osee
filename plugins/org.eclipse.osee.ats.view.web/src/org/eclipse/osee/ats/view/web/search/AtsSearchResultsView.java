@@ -36,6 +36,7 @@ public class AtsSearchResultsView extends OseeSearchResultsView {
             AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
             searchPresenter = atsApp.getAtsWebSearchPresenter();
             searchHeader = atsApp.getAtsSearchHeaderComponent();
+            searchResultsListComponent.setSearchHeaderComponent(searchHeader);
             callInitSearchHome();
             createLayout();
          } catch (Exception e) {

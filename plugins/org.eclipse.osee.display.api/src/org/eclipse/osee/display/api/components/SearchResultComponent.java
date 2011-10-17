@@ -18,6 +18,8 @@ import org.eclipse.osee.display.api.data.WebArtifact;
  */
 public interface SearchResultComponent extends DisplaysErrorComponent {
 
+   void setShowVerboseSearchResults(boolean showVerboseSearchResults);
+
    void setArtifact(WebArtifact artifact);
 
    void addSearchResultMatch(SearchResultMatch match);
