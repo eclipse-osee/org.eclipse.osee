@@ -15,9 +15,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -155,27 +157,27 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder withLocalId(int... artifactIds) throws OseeCoreException {
+   public QueryBuilder andLocalId(int... artifactIds) throws OseeCoreException {
       Set<Integer> ids = new HashSet<Integer>();
       for (Integer id : artifactIds) {
          ids.add(id);
       }
-      return withLocalIds(ids);
+      return andLocalIds(ids);
    }
 
    @Override
-   public QueryBuilder withGuidsOrHrids(String... ids) throws OseeCoreException {
-      return withGuidsOrHrids(Arrays.asList(ids));
+   public QueryBuilder andGuidsOrHrids(String... ids) throws OseeCoreException {
+      return andGuidsOrHrids(Arrays.asList(ids));
    }
 
    @Override
-   public QueryBuilder withLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
+   public QueryBuilder andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
       return addAndCheck(criteria);
    }
 
    @Override
-   public QueryBuilder withGuidsOrHrids(Collection<String> ids) throws OseeCoreException {
+   public QueryBuilder andGuidsOrHrids(Collection<String> ids) throws OseeCoreException {
       Set<String> guids = new HashSet<String>();
       Set<String> hrids = new HashSet<String>();
       Set<String> invalids = new HashSet<String>();
@@ -275,5 +277,24 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public int getCount() throws OseeCoreException {
       return rsetFactory.getCount(sessionContext, criteriaSet.clone(), options.clone());
+   }
+
+   @Override
+   public QueryBuilder andNameEquals(String artifactName) throws OseeCoreException {
+      return and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
+   }
+
+   @Override
+   public QueryBuilder andIds(IArtifactToken... artifactToken) throws OseeCoreException {
+      return andIds(Arrays.asList(artifactToken));
+   }
+
+   @Override
+   public QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) throws OseeCoreException {
+      Set<String> guids = new HashSet<String>();
+      for (IArtifactToken token : artifactTokens) {
+         guids.add(token.getGuid());
+      }
+      return andGuidsOrHrids(guids);
    }
 }

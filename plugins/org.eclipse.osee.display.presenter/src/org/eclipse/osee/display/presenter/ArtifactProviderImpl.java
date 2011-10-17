@@ -60,7 +60,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
-      return sanitizeResult(factory.fromGuidOrHrid(branch, guid).build(LoadLevel.FULL).getOneOrNull());
+      return sanitizeResult(factory.fromBranch(branch).andGuidsOrHrids(guid).build(LoadLevel.FULL).getOneOrNull());
    }
 
    @Override

@@ -163,7 +163,7 @@ public class Artifact implements ReadableArtifact {
       List<Integer> results = new ArrayList<Integer>();
       relationContainer.getArtifactIds(results, relationTypeSide);
       if (results.size() > 0) {
-         QueryBuilder builder = queryFactory.fromUuids(getBranch(), results);
+         QueryBuilder builder = queryFactory.fromBranch(getBranch()).andLocalIds(results);
          ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
          return resultSet.getList();
       } else {

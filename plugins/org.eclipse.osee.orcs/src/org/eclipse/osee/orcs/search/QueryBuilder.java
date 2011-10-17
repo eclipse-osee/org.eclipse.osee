@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -69,22 +70,32 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact id
     */
-   QueryBuilder withLocalId(int... artifactId) throws OseeCoreException;
+   QueryBuilder andLocalId(int... artifactId) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact ids
     */
-   QueryBuilder withLocalIds(Collection<Integer> artifactIds) throws OseeCoreException;
+   QueryBuilder andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact with guids or hrids
     */
-   QueryBuilder withGuidsOrHrids(String... ids) throws OseeCoreException;
+   QueryBuilder andGuidsOrHrids(String... ids) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact with guids or hrids
     */
-   QueryBuilder withGuidsOrHrids(Collection<String> ids) throws OseeCoreException;
+   QueryBuilder andGuidsOrHrids(Collection<String> ids) throws OseeCoreException;
+
+   /**
+    * Artifacts matching token id(s)
+    */
+   QueryBuilder andIds(IArtifactToken... artifactToken) throws OseeCoreException;
+
+   /**
+    * Artifacts matching token id(s)
+    */
+   QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact type
@@ -112,6 +123,11 @@ public interface QueryBuilder {
     * @param relationType the type-side to start following the link from
     */
    QueryBuilder andExists(IRelationTypeSide relationType) throws OseeCoreException;
+
+   /**
+    * Artifact name equals value
+    */
+   QueryBuilder andNameEquals(String artifactName) throws OseeCoreException;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value relative to the given value based

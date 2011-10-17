@@ -65,7 +65,7 @@ public class OseeApiTest {
       ApplicationContext context = null; // TODO use real application context
 
       QueryFactory queryFactory = oseeApi.getQueryFactory(context);
-      QueryBuilder builder = queryFactory.fromUuids(CoreBranches.COMMON, Arrays.asList(7, 8, 9));
+      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
       ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
       List<ReadableArtifact> moreArts = resultSet.getList();
 

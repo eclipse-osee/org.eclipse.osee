@@ -55,7 +55,8 @@ public class ArtifactResource {
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOseeApi().getQueryFactory(null);
-      List<ReadableArtifact> arts = factory.fromGuidOrHrid(branch, artifactUuid).build(LoadLevel.SHALLOW).getList();
+      List<ReadableArtifact> arts =
+         factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).build(LoadLevel.SHALLOW).getList();
       HtmlWriter writer = new HtmlWriter(uriInfo, factory);
       return writer.toHtml(arts);
    }

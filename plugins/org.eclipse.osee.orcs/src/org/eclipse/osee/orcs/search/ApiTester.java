@@ -32,14 +32,14 @@ public class ApiTester {
       ApplicationContext context = getContext();
       QueryFactory query = api.getQueryFactory(context);
 
-      ReadableArtifact art1 = query.fromName(CoreBranches.COMMON, "WPN_PAGE")//
+      ReadableArtifact art1 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
       .build(LoadLevel.FULL)//
       .getExactlyOne();
 
       List<ReadableArtifact> arts = query//
-      .fromName(CoreBranches.COMMON, "WPN_PAGE")//
+      .fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
       .build(LoadLevel.ATTRIBUTE)//
@@ -67,9 +67,9 @@ public class ApiTester {
       List<ReadableArtifact> items = result.getList();
 
       // One liner
-      int count1 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").includeDeleted(true).getCount();
-      int count2 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").includeDeleted().getCount();
-      int count3 = query.fromName(CoreBranches.COMMON, "WPN_PAGE").getCount();
+      int count1 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE").includeDeleted(true).getCount();
+      int count2 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE").includeDeleted().getCount();
+      int count3 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE").getCount();
 
       //factory.fromName("WPN_PAGE", CoreBranches.COMMON).setOptions(new OptionsObject(LoadLevel.FULL, ).getCount();
       //factory.fromName("WPN_PAGE", CoreBranches.COMMON).setOptions(new FullLoadwithDeletedAndSomething()).getCount();
