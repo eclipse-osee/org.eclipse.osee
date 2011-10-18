@@ -23,6 +23,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -56,21 +57,34 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
       leftMarginAndBody.addComponent(leftMarginSpace);
 
       if (artifact != null) {
-         VerticalLayout bodyVertLayout = new VerticalLayout();
+         VerticalLayout artNameVertLayout = new VerticalLayout();
+         artNameVertLayout.setSizeFull();
 
          breadcrumbComp.setArtifact(artifact);
-         bodyVertLayout.addComponent(breadcrumbComp);
+         artNameVertLayout.addComponent(breadcrumbComp);
 
          OseeArtifactNameLinkComponent artifactName = new OseeArtifactNameLinkComponent(artifact);
-         bodyVertLayout.addComponent(artifactName);
-
+         artifactName.setSizeUndefined();
+         Label spacer1 = new Label();
+         spacer1.setWidth(10, UNITS_PIXELS);
+         spacer1.setHeight(null);
          Label artifactType = new Label(String.format("[%s]", artifact.getArtifactType()), Label.CONTENT_XHTML);
-         bodyVertLayout.addComponent(artifactType);
+         artifactType.setSizeUndefined();
+         HorizontalLayout artNameAndTypeLayout = new HorizontalLayout();
+         artNameAndTypeLayout.setSizeUndefined();
+         artNameAndTypeLayout.addComponent(artifactName);
+         artNameAndTypeLayout.addComponent(spacer1);
+         artNameAndTypeLayout.addComponent(artifactType);
+         artNameAndTypeLayout.setComponentAlignment(artifactType, Alignment.BOTTOM_CENTER);
+         artNameVertLayout.addComponent(artNameAndTypeLayout);
 
          VerticalLayout artRelSpacer = new VerticalLayout();
          artRelSpacer.setHeight(15, UNITS_PIXELS);
-         bodyVertLayout.addComponent(artRelSpacer);
+         artNameVertLayout.addComponent(artRelSpacer);
 
+         VerticalLayout bodyVertLayout = new VerticalLayout();
+         bodyVertLayout.setMargin(true);
+         bodyVertLayout.setSizeFull();
          bodyVertLayout.addComponent(relationsComp);
 
          VerticalLayout relAttrSpacer = new VerticalLayout();
@@ -83,9 +97,16 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
          bodyVertLayout.addComponent(bottomSpacer);
          bodyVertLayout.setExpandRatio(bottomSpacer, 1.0f);
 
-         leftMarginAndBody.addComponent(bodyVertLayout);
-         bodyVertLayout.setSizeFull();
-         leftMarginAndBody.setExpandRatio(bodyVertLayout, 1.0f);
+         Panel mainLayoutPanel = new Panel();
+         mainLayoutPanel.setScrollable(true);
+         mainLayoutPanel.getContent().setSizeUndefined();
+         mainLayoutPanel.setContent(bodyVertLayout);
+         mainLayoutPanel.setSizeFull();
+
+         artNameVertLayout.addComponent(mainLayoutPanel);
+         artNameVertLayout.setExpandRatio(mainLayoutPanel, 1.0f);
+         leftMarginAndBody.addComponent(artNameVertLayout);
+         leftMarginAndBody.setExpandRatio(artNameVertLayout, 1.0f);
       }
 
       final VerticalLayout vertLayout = new VerticalLayout();
