@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.mock;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.presenter.mock.internal.MockAtsWebSearchPresenter;
@@ -18,10 +18,10 @@ import org.eclipse.osee.ats.presenter.mock.internal.MockAtsWebSearchPresenter;
 /**
  * @author John Misinco
  */
-public class MockAtsPresenterFactory implements AtsPresenterFactory<AtsSearchHeaderComponentInterface> {
+public class MockAtsPresenterFactory implements AtsPresenterFactory<AtsSearchHeaderComponent> {
 
    @Override
-   public AtsSearchPresenter<AtsSearchHeaderComponentInterface> createInstance() {
+   public AtsSearchPresenter<AtsSearchHeaderComponent> createInstance() {
       return new MockAtsWebSearchPresenter();
    }
 

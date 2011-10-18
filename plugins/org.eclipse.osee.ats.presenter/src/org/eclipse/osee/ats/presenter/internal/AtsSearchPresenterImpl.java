@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author John Misinco
  */
-public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface> extends WebSearchPresenter<T> implements AtsSearchPresenter<T> {
+public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends WebSearchPresenter<T> implements AtsSearchPresenter<T> {
 
    private final static Pattern buildPattern = Pattern.compile("build=([0-9A-Za-z\\+_=]{20,22})");
    private final static Pattern programPattern = Pattern.compile("program=([0-9A-Za-z\\+_=]{20,22})");
@@ -47,7 +47,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
 
    @Override
    public void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator) {
-      String url = encode(params.getProgram(), params.getBuild(), params.isNameOnly(), params.getSearchString());
+      String url = encode(params);
       atsNavigator.navigateSearchResults(url);
    }
 
@@ -69,55 +69,55 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
    @Override
    public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent) {
       SearchParameters params = decode(url);
-      WebId program = null, build = null;
-      Collection<WebId> programs = null;
+      //      WebId program = null, build = null;
+      //      Collection<WebId> programs = null;
 
       if (!params.isValid()) {
          setErrorMessage(searchHeaderComponent, String.format("Invalid url received: %s", url));
          return;
       }
 
-      try {
-         programs = getPrograms();
-      } catch (Exception ex) {
-         setErrorMessage(searchHeaderComponent, ex.getMessage());
-         return;
-      }
-      for (WebId p : programs) {
-         if (p.getGuid().equals(params.getProgram().getGuid())) {
-            program = p;
-            break;
-         }
-      }
-
-      if (program == null) {
-         setErrorMessage(searchHeaderComponent,
-            String.format("Invalid program id: [%s]", params.getProgram().getGuid()));
-         return;
-      }
-
-      Collection<WebId> builds = null;
-      try {
-         builds = getBuilds(program);
-      } catch (Exception ex) {
-         setErrorMessage(searchHeaderComponent, ex.getMessage());
-         return;
-      }
-      for (WebId b : builds) {
-         if (b.getGuid().equals(params.getBuild().getGuid())) {
-            build = b;
-            break;
-         }
-      }
-
-      if (build == null) {
-         setErrorMessage(searchHeaderComponent, String.format("Invalid build id: [%s]", params.getBuild().getGuid()));
-         return;
-      }
+      //      try {
+      //         programs = getPrograms();
+      //      } catch (Exception ex) {
+      //         setErrorMessage(searchHeaderComponent, ex.getMessage());
+      //         return;
+      //      }
+      //      for (WebId p : programs) {
+      //         if (p.getGuid().equals(params.getProgram().getGuid())) {
+      //            program = p;
+      //            break;
+      //         }
+      //      }
+      //
+      //      if (program == null) {
+      //         setErrorMessage(searchHeaderComponent,
+      //            String.format("Invalid program id: [%s]", params.getProgram().getGuid()));
+      //         return;
+      //      }
+      //
+      //      Collection<WebId> builds = null;
+      //      try {
+      //         builds = getBuilds(program);
+      //      } catch (Exception ex) {
+      //         setErrorMessage(searchHeaderComponent, ex.getMessage());
+      //         return;
+      //      }
+      //      for (WebId b : builds) {
+      //         if (b.getGuid().equals(params.getBuild().getGuid())) {
+      //            build = b;
+      //            break;
+      //         }
+      //      }
+      //
+      //      if (build == null) {
+      //         setErrorMessage(searchHeaderComponent, String.format("Invalid build id: [%s]", params.getBuild().getGuid()));
+      //         return;
+      //      }
 
       String branchGuid;
       try {
-         branchGuid = atsArtifactProvider.getBaselineBranchGuid(build.getGuid());
+         branchGuid = atsArtifactProvider.getBaselineBranchGuid(params.getBuild().getGuid());
       } catch (OseeCoreException ex) {
          setErrorMessage(searchHeaderComponent,
             String.format("Cannot resolve branch id from build id: [%s]", params.getBuild().getGuid()));
@@ -144,7 +144,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
       }
    }
 
-   private Collection<WebId> getPrograms() throws OseeCoreException {
+   protected Collection<WebId> getPrograms() throws OseeCoreException {
       Collection<WebId> toReturn = new LinkedList<WebId>();
       Collection<ReadableArtifact> programs = atsArtifactProvider.getPrograms();
       if (programs != null) {
@@ -155,7 +155,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
       return toReturn;
    }
 
-   private Collection<WebId> getBuilds(WebId program) throws OseeCoreException {
+   protected Collection<WebId> getBuilds(WebId program) throws OseeCoreException {
       Collection<ReadableArtifact> relatedBuilds = atsArtifactProvider.getBuilds(program.getGuid());
       Collection<WebId> builds = new ArrayList<WebId>();
       if (relatedBuilds != null) {
@@ -166,12 +166,10 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
       return builds;
    }
 
-   private String encode(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
+   protected String encode(WebId branch, boolean nameOnly, String searchPhrase) {
       StringBuilder sb = new StringBuilder();
-      sb.append("/program=");
-      sb.append(program.getGuid());
-      sb.append("?build=");
-      sb.append(build.getGuid());
+      sb.append("/branch=");
+      sb.append(branch.getGuid());
       sb.append("?nameOnly=");
       sb.append(nameOnly);
       sb.append("?search=");
@@ -179,7 +177,22 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
       return sb.toString().replaceAll("\\s", "%20");
    }
 
-   private SearchParameters decode(String url) {
+   protected String encode(AtsSearchParameters params) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("/program=");
+      sb.append(params.getProgram().getGuid());
+      sb.append("?build=");
+      sb.append(params.getBuild().getGuid());
+      sb.append("?nameOnly=");
+      sb.append(params.isNameOnly());
+      sb.append("?search=");
+      sb.append(params.getSearchString());
+      sb.append("?verbose=");
+      sb.append(params.isVerboseResults());
+      return sb.toString().replaceAll("\\s", "%20");
+   }
+
+   protected SearchParameters decode(String url) {
       WebId program = null, build = null;
       String searchPhrase = "";
       boolean nameOnly = true;
@@ -204,7 +217,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponentInterface>
       return new SearchParameters(program, build, nameOnly, searchPhrase);
    }
 
-   private class SearchParameters {
+   protected class SearchParameters {
 
       private final WebId program, build;
       private final boolean nameOnly;

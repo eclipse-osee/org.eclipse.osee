@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web.components;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsNavigator;
@@ -42,7 +42,7 @@ import com.vaadin.ui.Window.Notification;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implements AtsSearchHeaderComponentInterface, Handler {
+public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements AtsSearchHeaderComponent, Handler {
 
    private boolean populated = false;
    private final ComboBox programCombo;
@@ -75,7 +75,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
       }
    }
 
-   public AtsSearchHeaderComponent(boolean showOseeTitleAbove) {
+   public AtsSearchHeaderImpl(boolean showOseeTitleAbove) {
       this.showOseeTitleAbove = showOseeTitleAbove;
 
       programCombo = new ComboBox("Program:");
@@ -102,7 +102,7 @@ public class AtsSearchHeaderComponent extends OseeSearchHeaderComponent implemen
       searchTextField.setImmediate(true);
    }
 
-   public AtsSearchHeaderComponent() {
+   public AtsSearchHeaderImpl() {
       this(true);
    }
 

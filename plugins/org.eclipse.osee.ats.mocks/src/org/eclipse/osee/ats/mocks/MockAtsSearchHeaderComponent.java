@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.mocks;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.WebId;
 
 /**
  * @author John Misinco
  */
-public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponentInterface {
+public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
 
    List<WebId> programs = new LinkedList<WebId>();
    List<WebId> builds = new LinkedList<WebId>();

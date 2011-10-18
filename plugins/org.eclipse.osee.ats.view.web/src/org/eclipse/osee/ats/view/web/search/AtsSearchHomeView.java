@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.view.web.search;
 
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
-import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
+import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderImpl;
 import org.eclipse.osee.display.view.web.search.OseeSearchHomeView;
 
 /**
@@ -43,7 +43,7 @@ public class AtsSearchHomeView extends OseeSearchHomeView {
    private void callInitSearchHome() {
       if (searchPresenter != null) {
          try {
-            AtsSearchHeaderComponent atsSearchHeaderComp = (AtsSearchHeaderComponent) searchHeader;
+            AtsSearchHeaderImpl atsSearchHeaderComp = (AtsSearchHeaderImpl) searchHeader;
             searchPresenter.initSearchHome(atsSearchHeaderComp);
          } catch (Exception e) {
             System.out.println("OseeArtifactNameLinkComponent.navigateTo - CRITICAL ERROR: casting threw an exception.");

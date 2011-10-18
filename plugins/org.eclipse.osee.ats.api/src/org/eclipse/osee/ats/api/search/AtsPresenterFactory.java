@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.search;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 
 /**
  * @author John Misinco
  */
-public interface AtsPresenterFactory<T extends AtsSearchHeaderComponentInterface> {
+public interface AtsPresenterFactory<T extends AtsSearchHeaderComponent> {
 
    AtsSearchPresenter<T> createInstance();
 

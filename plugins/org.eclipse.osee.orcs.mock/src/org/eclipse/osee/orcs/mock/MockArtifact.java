@@ -89,7 +89,7 @@ public class MockArtifact implements ReadableArtifact {
       }
       artList.add(artifact);
       RelationType type =
-         new RelationType(0L, relation.getName(), "sideA", "sideB", CoreArtifactTypes.Artifact,
+         new RelationType(relation.getGuid(), relation.getName(), "sideA", "sideB", CoreArtifactTypes.Artifact,
             CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
       addRelationType(type);
    }

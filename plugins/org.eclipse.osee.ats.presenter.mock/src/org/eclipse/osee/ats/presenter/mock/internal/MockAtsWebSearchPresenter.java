@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponentInterface;
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
@@ -33,9 +33,9 @@ import org.eclipse.osee.display.api.search.SearchNavigator;
 /**
  * @author Shawn F. Cook
  */
-public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHeaderComponentInterface> {
+public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHeaderComponent> {
 
-   private static final AtsSearchPresenter<AtsSearchHeaderComponentInterface> atsBackend =
+   private static final AtsSearchPresenter<AtsSearchHeaderComponent> atsBackend =
       new MockAtsWebSearchPresenter();
 
    // *** TEST DATA ***
@@ -125,7 +125,7 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void initSearchHome(AtsSearchHeaderComponentInterface headerComponent) {
+   public void initSearchHome(AtsSearchHeaderComponent headerComponent) {
       if (headerComponent != null) {
          headerComponent.clearAll();
          Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();
@@ -144,7 +144,7 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void initArtifactPage(String url, AtsSearchHeaderComponentInterface searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
+   public void initArtifactPage(String url, AtsSearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
       artHeaderComp.clearAll();
       Map<String, String> params = requestStringToParameterMap(url);
       if (params != null && params.size() > 0) {
@@ -190,7 +190,7 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void selectProgram(WebId program, AtsSearchHeaderComponentInterface headerComponent) {
+   public void selectProgram(WebId program, AtsSearchHeaderComponent headerComponent) {
       if (program != null && headerComponent != null) {
          Collection<WebId> builds = programsAndBuilds.get(program);
          headerComponent.clearBuilds();
@@ -236,7 +236,7 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    //   }
 
    @Override
-   public void initSearchResults(String url, AtsSearchHeaderComponentInterface searchHeaderComponent, SearchResultsListComponent resultsComponent) {
+   public void initSearchResults(String url, AtsSearchHeaderComponent searchHeaderComponent, SearchResultsListComponent resultsComponent) {
 
       if (resultsComponent != null) {
          boolean showVerboseSearchResults = true;

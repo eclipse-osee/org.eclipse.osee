@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.view.web;
 
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderComponent;
+import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderImpl;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.view.web.OseeUiApplication;
@@ -66,13 +66,13 @@ public class AtsUiApplication extends OseeUiApplication {
 
    @Override
    protected SearchHeaderComponent createSearchHeaderComponent() {
-      return new AtsSearchHeaderComponent();
+      return new AtsSearchHeaderImpl();
    }
 
-   public AtsSearchHeaderComponent getAtsSearchHeaderComponent() {
-      AtsSearchHeaderComponent searchHeader = null;
+   public AtsSearchHeaderImpl getAtsSearchHeaderComponent() {
+      AtsSearchHeaderImpl searchHeader = null;
       try {
-         searchHeader = (AtsSearchHeaderComponent) this.searchHeaderComponent;
+         searchHeader = (AtsSearchHeaderImpl) this.searchHeaderComponent;
       } catch (Exception e) {
          System.out.println("AtsUiApplication.getAtsSearchHeaderComponent() - CRITICAL ERROR: cast threw an exception.");
       }

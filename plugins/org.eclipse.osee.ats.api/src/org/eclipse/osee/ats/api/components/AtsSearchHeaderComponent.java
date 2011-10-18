@@ -8,26 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.mocks;
+package org.eclipse.osee.ats.api.components;
 
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OseeApi;
-import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.display.api.components.SearchHeaderComponent;
+import org.eclipse.osee.display.api.data.WebId;
 
 /**
  * @author John Misinco
  */
-public class MockOseeApi implements OseeApi {
+public interface AtsSearchHeaderComponent extends SearchHeaderComponent {
 
-   @Override
-   public QueryFactory getQueryFactory(ApplicationContext context) {
-      return null;
-   }
+   void addProgram(WebId program);
 
-   @Override
-   public BranchCache getBranchCache() {
-      return null;
-   }
+   void clearBuilds();
+
+   void addBuild(WebId build);
+
+   void setSearchCriteria(WebId program, WebId build, boolean nameOnly, String searchPhrase);
+
+   void setProgram(WebId program);
+
+   void setBuild(WebId build);
 
 }

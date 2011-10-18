@@ -10,4 +10,5 @@ Import-Package: org.eclipse.osee.ats.mocks,
  org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs.mock

@@ -55,7 +55,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
-      return getArtifactByGuid(branch, token.getGuid());
+      return sanitizeResult(getArtifactByGuid(branch, token.getGuid()));
    }
 
    @Override

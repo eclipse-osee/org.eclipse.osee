@@ -92,6 +92,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
             processSearchResults(searchResults, searchResultsComp);
          } catch (OseeCoreException ex) {
             setErrorMessage(searchResultsComp, "Error while processing results");
+            return;
          }
       }
    }
@@ -150,6 +151,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          relationTypes = displayArt.getValidRelationTypes();
       } catch (OseeCoreException ex1) {
          setErrorMessage(relComp, String.format("Error loading relation types for: [%s]", displayArt.getName()));
+         return;
       }
       for (RelationType relType : relationTypes) {
          relComp.addRelationType(new WebId(relType.getGuid().toString() + ":A", relType.getSideAName()));
@@ -162,6 +164,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          attributeTypes = displayArt.getAttributeTypes();
       } catch (OseeCoreException ex) {
          setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
+         return;
       }
       for (IAttributeType attrType : attributeTypes) {
          List<ReadableAttribute<Object>> attributesValues = null;
@@ -172,6 +175,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
             }
          } catch (OseeCoreException ex) {
             setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
+            return;
          }
       }
    }
@@ -201,6 +205,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       } catch (OseeCoreException ex) {
          setErrorMessage(relationComponent,
             String.format("Error loading relations for artifact[%s]", artifact.getGuid()));
+         return;
       }
       for (ReadableArtifact rel : related) {
          WebArtifact id = convertToWebArtifact(rel);
@@ -225,24 +230,10 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       return sb.toString();
    }
 
-   protected String encode(WebId branch, boolean nameOnly, String searchPhrase) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("/branch=");
-      sb.append(branch.getGuid());
-      sb.append("?nameOnly=");
-      sb.append(nameOnly);
-      sb.append("?search=");
-      sb.append(searchPhrase);
-      return sb.toString().replaceAll("\\s", "%20");
-   }
-
    protected List<WebArtifact> getAncestry(ReadableArtifact art) {
       ReadableArtifact cur = art.getParent();
       List<WebArtifact> ancestry = new ArrayList<WebArtifact>();
       while (cur != null) {
-         //         WebId branch = new WebId(cur.getBranch().getGuid(), cur.getBranch().getName());
-         //         ancestry.add(new WebArtifact(cur.getGuid(), cur.getName(), cur.getArtifactType().getName(), getAncestry(cur),
-         //            branch));
          ancestry.add(convertToWebArtifact(cur));
          if (cur.hasParent()) {
             cur = cur.getParent();
