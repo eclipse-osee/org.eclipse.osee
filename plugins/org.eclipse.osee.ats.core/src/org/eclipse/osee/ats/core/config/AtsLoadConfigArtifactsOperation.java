@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.config;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.internal.Activator;
@@ -43,12 +44,20 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
 
    public synchronized void ensureLoaded() throws OseeCoreException {
       if (!loaded) {
+         //         ElapsedTime loadConfigTime = new ElapsedTime(getName());
          loaded = true;
          OseeLog.log(Activator.class, Level.INFO, "Loading ATS Configuration");
-         cacheStaticIds(ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.TeamDefinition,
-            AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version, AtsArtifactTypes.WorkDefinition),
-            AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED));
+         //         ElapsedTime time = new ElapsedTime("  - QueryListFromType");
+         List<Artifact> artifactListFromType =
+            ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.TeamDefinition,
+               AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version, AtsArtifactTypes.WorkDefinition),
+               AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED);
+         //         time.end();
+         //         time = new ElapsedTime("  - CacheStaticIds");
+         cacheStaticIds(artifactListFromType);
+         //         time.end();
          loaded = true;
+         //         loadConfigTime.end();
       }
    }
 
