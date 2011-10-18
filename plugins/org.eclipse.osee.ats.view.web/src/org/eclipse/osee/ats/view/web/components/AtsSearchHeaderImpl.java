@@ -125,7 +125,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       this.removeAllComponents();
       setHeight(null);
       setWidth(100, UNITS_PERCENTAGE);
-      setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT);
 
       HorizontalLayout hLayoutRow0 = new HorizontalLayout();
       HorizontalLayout hLayoutRow1 = new HorizontalLayout();
@@ -166,6 +165,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       hLayoutRow2.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
 
       if (showOseeTitleAbove) {
+         setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_LARGE);
          OseeLogoLink oseeTitleLabel =
             new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_LARGE_TEXT, AtsSearchHomeView.class);
          hLayoutRow0.addComponent(oseeTitleLabel);
@@ -183,6 +183,8 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          setComponentAlignment(hLayoutRow1, Alignment.MIDDLE_CENTER);
          setComponentAlignment(hLayoutRow2, Alignment.MIDDLE_CENTER);
       } else {
+         setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
+
          OseeLogoLink oseeTitleLabel =
             new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchHomeView.class);
          Label spacer4 = new Label("");
@@ -204,9 +206,12 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          hLayoutRow0.setComponentAlignment(rightSideVLayout, Alignment.TOP_CENTER);
 
          Label spacer5 = new Label("");
-         spacer5.setHeight(15, UNITS_PIXELS);
-         spacer5.setStyleName(CssConstants.OSEE_HORIZONTAL_LINE);
+         spacer5.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
 
+         Label spacer6 = new Label("");
+         spacer6.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
+
+         addComponent(spacer6);
          addComponent(hLayoutRow0);
          addComponent(spacer5);
       }

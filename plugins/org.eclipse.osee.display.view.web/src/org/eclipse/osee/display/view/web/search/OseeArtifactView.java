@@ -46,6 +46,9 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    protected void createLayout() {
       setSizeFull();
 
+      Label spacer = new Label();
+      spacer.setHeight(5, UNITS_PIXELS);
+
       HorizontalLayout leftMarginAndBody = new HorizontalLayout();
       leftMarginAndBody.setSizeFull();
       Label leftMarginSpace = new Label("");
@@ -87,6 +90,7 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
 
       final VerticalLayout vertLayout = new VerticalLayout();
       vertLayout.addComponent(searchHeader);
+      vertLayout.addComponent(spacer);
       vertLayout.setComponentAlignment(searchHeader, Alignment.TOP_LEFT);
       searchHeader.setWidth(100, UNITS_PERCENTAGE);
       searchHeader.setHeight(null);

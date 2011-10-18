@@ -64,7 +64,6 @@
 	background: #333333 repeat-x;
 	background-image: url(img/bg.png);
 	color: #d1d3d6;
-	text-shadow: rgba(0, 0, 0, .9) 0 1px 0;
 }
 
 .osee-product-summary {
@@ -77,8 +76,16 @@
 	
 }
 
-.osee-search-header-component {
-	background: blue;
+.osee-search-header-component-large {
+}
+
+.osee-search-header-component-small {
+	background: #AAAAAA;
+}
+
+.osee-search-header-component-footer {
+	background: #555555;
+	height: 1px;
 }
 
 .osee-title-large {
@@ -95,6 +102,7 @@
 }
 
 .osee-search-textfield {
+	width: 335px;
 }
 
 .osee-searchresult-artname {
@@ -125,6 +133,13 @@
 .osee-horizontal-line {
 	background-image:url('linespacer.png');
 	background-repeat:repeat-x;
+}
+
+.osee-rightarrow {
+	background-image:url('woodsonArrow.png');
+	width: 35px;
+	height: 35px;
+	background-repeat:no-repeat;
 }
 
 .osee-attributelabel {

@@ -31,6 +31,9 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
    protected void createLayout() {
       setSizeFull();
 
+      Label spacer = new Label();
+      spacer.setHeight(5, UNITS_PIXELS);
+
       HorizontalLayout leftMarginAndBody = new HorizontalLayout();
       leftMarginAndBody.setSizeFull();
       Label leftMarginSpace = new Label("");
@@ -49,6 +52,7 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
          searchHeader.setWidth(100, UNITS_PERCENTAGE);
          searchHeader.setHeight(null);
       }
+      vertLayout.addComponent(spacer);
       vertLayout.addComponent(leftMarginAndBody);
       vertLayout.setExpandRatio(leftMarginAndBody, 1.0f);
 

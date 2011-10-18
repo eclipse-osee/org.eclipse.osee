@@ -20,6 +20,7 @@ import org.eclipse.osee.display.view.web.OseeUiApplication;
 import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
@@ -117,11 +118,14 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
 
       Label spacer = new Label();
       spacer.setWidth(15, UNITS_PIXELS);
-      Label spacer2 = new Label();
-      spacer2.setWidth(15, UNITS_PIXELS);
+
+      Label rightArrow = new Label();
+      rightArrow.setStyleName(CssConstants.OSEE_RIGHTARROW);
+
       listBoxesLayout.addComponent(spacer);
       listBoxesLayout.addComponent(relationTypesListSelect);
-      listBoxesLayout.addComponent(spacer2);
+      listBoxesLayout.addComponent(rightArrow);
+      listBoxesLayout.setComponentAlignment(rightArrow, Alignment.MIDDLE_CENTER);
       listBoxesLayout.addComponent(relationsListSelect);
 
       addComponent(titleLabel);
@@ -130,8 +134,8 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       setExpandRatio(listBoxesLayout, 1.0f);
 
       //Fixed width lists make for a prettier layout
-      relationTypesListSelect.setWidth(200, UNITS_PIXELS);
-      relationsListSelect.setWidth(200, UNITS_PIXELS);
+      //      relationTypesListSelect.setWidth(200, UNITS_PIXELS);
+      //      relationsListSelect.setWidth(200, UNITS_PIXELS);
    }
 
    public OseeRelationsComponent() {
