@@ -235,4 +235,12 @@
          </action>
       </actionSet>
    </extension>
+ <extension
+       id="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
+       name="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD">
+    </Operation>
+ </extension>
 </plugin>
