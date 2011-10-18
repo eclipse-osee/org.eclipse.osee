@@ -6,7 +6,8 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Foundation
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.osee.ats.api.components,
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.osee.ats.api.components,
  org.eclipse.osee.ats.api.data,
  org.eclipse.osee.ats.api.search,
  org.eclipse.osee.ats.api.tokens,
@@ -14,6 +15,7 @@ Import-Package: org.eclipse.osee.ats.api.components,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search,
  org.eclipse.osee.display.presenter,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.orcs,
