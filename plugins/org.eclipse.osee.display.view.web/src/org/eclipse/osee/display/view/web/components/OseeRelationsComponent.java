@@ -42,6 +42,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    private boolean lockRelTypesListener = false;
    private boolean lockRelsListener = false;
    private WebArtifact artifact = null;
+   private final int LISTBOX_MINWIDTH = 100;
 
    @Override
    public void attach() {
@@ -63,17 +64,6 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       removeAllComponents();
 
       final HorizontalLayout listBoxesLayout = new HorizontalLayout();
-
-      //      final OseeShowHideButton showHideButton = new OseeShowHideButton("Relations");
-      //      showHideButton.addListener(new OseeShowHideButton.ClickListener() {
-      //
-      //         @Override
-      //         public void buttonClick(OseeShowHideButton.ClickEvent event) {
-      //            listBoxesLayout.setVisible(showHideButton.isStateShow());
-      //         }
-      //      });
-      //      //Initialize listBoxesLayout visibility
-      //      listBoxesLayout.setVisible(showHideButton.isStateShow());
 
       Label titleLabel = new Label("Relationships");
       titleLabel.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
@@ -129,13 +119,12 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       listBoxesLayout.addComponent(relationsListSelect);
 
       addComponent(titleLabel);
-      //      addComponent(showHideButton);
       addComponent(listBoxesLayout);
       setExpandRatio(listBoxesLayout, 1.0f);
 
       //Fixed width lists make for a prettier layout
-      //      relationTypesListSelect.setWidth(200, UNITS_PIXELS);
-      //      relationsListSelect.setWidth(200, UNITS_PIXELS);
+      relationTypesListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      relationsListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
    }
 
    public OseeRelationsComponent() {
@@ -147,11 +136,13 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       if (relationTypesListSelect != null) {
          lockRelTypesListener = true;
          relationTypesListSelect.removeAllItems();
+         relationTypesListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
          lockRelTypesListener = false;
       }
       if (relationsListSelect != null) {
          lockRelsListener = true;
          relationsListSelect.removeAllItems();
+         relationsListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
          lockRelsListener = false;
       }
    }
@@ -161,6 +152,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       if (relationTypesListSelect != null) {
          lockRelTypesListener = true;
          relationTypesListSelect.addItem(id);
+         relationTypesListSelect.setWidth(null);
          lockRelTypesListener = false;
       }
    }
@@ -170,6 +162,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       if (relationsListSelect != null) {
          lockRelsListener = true;
          relationsListSelect.removeAllItems();
+         relationsListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
          lockRelsListener = false;
       }
    }
@@ -178,6 +171,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       if (relationsListSelect != null) {
          lockRelsListener = true;
          relationsListSelect.addItem(id);
+         relationsListSelect.setWidth(null);
          lockRelsListener = false;
       }
    }
