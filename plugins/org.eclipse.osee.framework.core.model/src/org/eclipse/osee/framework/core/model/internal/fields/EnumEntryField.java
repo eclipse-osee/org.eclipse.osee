@@ -11,8 +11,11 @@
 package org.eclipse.osee.framework.core.model.internal.fields;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -62,21 +65,26 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
    }
 
    private void checkEnumEntryIntegrity(Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
+      // Use maps to speed up validation
+      Map<String, OseeEnumEntry> nameToEnum = new HashMap<String, OseeEnumEntry>();
+      Map<Integer, OseeEnumEntry> ordinalToEnum = new HashMap<Integer, OseeEnumEntry>();
       for (OseeEnumEntry entry : oseeEnumEntries) {
          Conditions.checkNotNullOrEmpty(entry.getName(), "Osee Enum Entry name");
 
          Conditions.checkExpressionFailOnTrue(entry.ordinal() < 0, "Osee Enum Entry ordinal must be greater than zero");
 
-         for (OseeEnumEntry existingEntry : oseeEnumEntries) {
-            if (!entry.equals(existingEntry)) {
-               Conditions.checkExpressionFailOnTrue(entry.getName().equals(existingEntry.getName()),
-                  "Unique enumEntry name violation - %s already exists.", entry);
-
-               Conditions.checkExpressionFailOnTrue(
-                  entry.ordinal() == existingEntry.ordinal(),
-                  "Unique enumEntry ordinal violation - ordinal [%d] is used by existing entry:[%s] and new entry:[%s]",
-                  entry.ordinal(), existingEntry, entry);
-            }
+         if (nameToEnum.containsKey(entry.getName())) {
+            throw new OseeArgumentException("Unique enumEntry name violation - %s already exists.", entry);
+         } else {
+            nameToEnum.put(entry.getName(), entry);
+         }
+         if (ordinalToEnum.containsKey(entry.ordinal())) {
+            OseeEnumEntry existingEntry = ordinalToEnum.get(entry.ordinal());
+            throw new OseeArgumentException(
+               "Unique enumEntry ordinal violation - ordinal [%d] is used by existing entry:[%s] and new entry:[%s]",
+               entry.ordinal(), existingEntry, entry);
+         } else {
+            ordinalToEnum.put(entry.ordinal(), entry);
          }
       }
    }
