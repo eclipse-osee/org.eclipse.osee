@@ -37,7 +37,6 @@ import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.osgi.service.event.EventAdmin;
 
@@ -46,7 +45,6 @@ public class OseeApiTest {
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
-   @Ignore
    @org.junit.Test
    public void testSearchById() throws Exception {
       OsgiUtil.getService(Log.class);
@@ -56,10 +54,8 @@ public class OseeApiTest {
       OsgiUtil.getService(IOseeModelFactoryService.class);
       OsgiUtil.getService(IOseeModelingService.class);
       OsgiUtil.getService(EventAdmin.class);
-      OsgiUtil.getService(EventService.class);//TODO this is not getting loaded from maven, causes failure
-
+      OsgiUtil.getService(EventService.class);
       OsgiUtil.getService(IOseeCachingService.class);
-
       OsgiUtil.getService(QueryEngine.class);
       OsgiUtil.getService(DataLoader.class);
       OsgiUtil.getService(AttributeClassResolver.class);

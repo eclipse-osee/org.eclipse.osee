@@ -136,6 +136,7 @@
 							<version>0.0.0</version>
 						</dependency>			
 						
+						<!-- 
 
 						
 						<dependency>
@@ -203,7 +204,7 @@
 							<artifactId>org.eclipse.emf.edit</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						
+						 -->
 						
 												
 					</dependencies>

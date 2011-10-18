@@ -10,3 +10,4 @@ Import-Package: org.eclipse.osee.event,
  org.eclipse.osee.logger,
  org.osgi.framework,
  org.osgi.service.event
+Bundle-ActivationPolicy: lazy

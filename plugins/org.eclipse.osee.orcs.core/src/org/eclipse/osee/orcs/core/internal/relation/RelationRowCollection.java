@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 
 public class RelationRowCollection {
@@ -33,9 +34,8 @@ public class RelationRowCollection {
 
    public void add(RelationRow nextRelation) throws OseeCoreException {
       IRelationType type = relationTypeCache.getByGuid(nextRelation.getRelationTypeUUId());
-      if (type == null) {
-         throw new OseeCoreException("Unknown relation type.  UUID[%d]", nextRelation.getRelationTypeUUId());
-      }
+      Conditions.checkNotNull(type, "RelationType", "Unknown relation type.  UUID[%d]",
+         nextRelation.getRelationTypeUUId());
       IRelationTypeSide relationTypeSide =
          TokenFactory.createRelationTypeSide(getRelationSide(nextRelation), type.getGuid(), type.getName());
       List<RelationRow> rows = relations.get(relationTypeSide);
