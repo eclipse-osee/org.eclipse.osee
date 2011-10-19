@@ -39,6 +39,10 @@ public class RelationLoader {
       this.logger = logger;
    }
 
+   private long toUuid(int localId) throws OseeCoreException {
+      return identityService.getUniversalId(localId);
+   }
+
    public void loadFromQueryId(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
       if (options.isHistorical()) {//should this be done by the MasterLoader
          return; // TODO: someday we might have a use for historical relations, but not now
@@ -65,7 +69,7 @@ public class RelationLoader {
             nextRelation.setArtIdA(statement.getInt("a_art_id"));
             nextRelation.setArtIdB(statement.getInt("b_art_id"));
             nextRelation.setBranchId(statement.getInt("branch_id"));
-            nextRelation.setRelationTypeId(identityService.getUniversalId(statement.getInt("rel_link_type_id")));
+            nextRelation.setRelationTypeId(toUuid(statement.getInt("rel_link_type_id")));
             nextRelation.setGammaId(statement.getInt("gamma_id"));
             nextRelation.setRationale(statement.getString("rationale"));
             nextRelation.setModType(ModificationType.getMod(statement.getInt("mod_type")));

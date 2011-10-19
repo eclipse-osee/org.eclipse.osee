@@ -112,8 +112,10 @@ public class IdentityServiceImpl implements IdentityService {
          Integer localId = getLocalId(remoteId);
          data.add(new Object[] {remoteId, localId});
       }
-      service.runBatchUpdate(INSERT_SQL, data);
-      persistedIds.addAll(toPersist);
+      if (!data.isEmpty() && !toPersist.isEmpty()) {
+         service.runBatchUpdate(INSERT_SQL, data);
+         persistedIds.addAll(toPersist);
+      }
    }
 
    @Override
