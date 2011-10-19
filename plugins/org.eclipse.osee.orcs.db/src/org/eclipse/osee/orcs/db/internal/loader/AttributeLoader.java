@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeRow;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -36,12 +37,14 @@ public class AttributeLoader {
    private final IOseeDatabaseService dbService;
    private final IdentityService identityService;
    private final ProxyDataFactory proxyFactory;
+   private final Log logger;
 
-   public AttributeLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService, ProxyDataFactory proxyFactory) {
+   public AttributeLoader(Log logger, SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService, ProxyDataFactory proxyFactory) {
       this.sqlProvider = sqlProvider;
       this.dbService = dbService;
       this.identityService = identityService;
       this.proxyFactory = proxyFactory;
+      this.logger = logger;
    }
 
    public String getSql(LoadOptions options) throws OseeCoreException {
@@ -67,9 +70,19 @@ public class AttributeLoader {
 
       IOseeStatement chStmt = dbService.getStatement();
       try {
+         long startTime = 0;
+         int rowCount = 0;
+         if (logger.isTraceEnabled()) {
+            startTime = System.currentTimeMillis();
+         }
          chStmt.runPreparedQuery(fetchSize, sql, queryId);
-
+         if (logger.isTraceEnabled()) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            logger.trace("%d ms, for SQL[%s] fetchSize[%d] queryid[%d]", elapsedTime, sql, fetchSize, queryId);
+            startTime = System.currentTimeMillis();
+         }
          while (chStmt.next()) {
+            rowCount++;
             AttributeRow nextAttr = new AttributeRow();
             nextAttr.setArtifactId(chStmt.getInt("art_id"));
             nextAttr.setBranchId(chStmt.getInt("branch_id"));
@@ -91,6 +104,10 @@ public class AttributeLoader {
                nextAttr.setStripeId(chStmt.getInt("stripe_transaction_id"));
             }
             handler.onRow(nextAttr);
+         }
+         if (logger.isTraceEnabled()) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            logger.trace("%d ms for %d rows, to iterate over resultset", elapsedTime, rowCount);
          }
       } finally {
          chStmt.close();

@@ -76,7 +76,7 @@ public class AttributeLoaderTest {
          }
 
       };
-      AttributeLoader loader = new AttributeLoader(sqlProvider, oseeDbService, identityService, factory);
+      AttributeLoader loader = new AttributeLoader(new MockLog(), sqlProvider, oseeDbService, identityService, factory);
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
       try {

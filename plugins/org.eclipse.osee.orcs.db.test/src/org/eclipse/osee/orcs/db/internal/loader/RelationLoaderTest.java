@@ -64,7 +64,7 @@ public class RelationLoaderTest {
 
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService, identityService);
+      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, identityService);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -104,7 +104,7 @@ public class RelationLoaderTest {
 
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService, identityService);
+      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, identityService);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();
@@ -132,7 +132,7 @@ public class RelationLoaderTest {
    public void testHistoricalLoad() throws OseeCoreException {
       IOseeDatabaseService oseeDbService = OsgiUtil.getService(IOseeDatabaseService.class);
       IdentityService identityService = OsgiUtil.getService(IdentityService.class);
-      RelationLoader relationLoader = new RelationLoader(sqlProvider, oseeDbService, identityService);
+      RelationLoader relationLoader = new RelationLoader(new MockLog(), sqlProvider, oseeDbService, identityService);
 
       ArtifactJoinQuery artJoinQuery = JoinUtility.createArtifactJoinQuery();
       OseeConnection connection = oseeDbService.getConnection();

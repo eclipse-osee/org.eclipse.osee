@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
@@ -29,11 +30,13 @@ public class RelationLoader {
    private final IOseeDatabaseService dbService;
    private final SqlProvider sqlProvider;
    private final IdentityService identityService;
+   private final Log logger;
 
-   public RelationLoader(SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService) {
+   public RelationLoader(Log logger, SqlProvider sqlProvider, IOseeDatabaseService dbService, IdentityService identityService) {
       this.sqlProvider = sqlProvider;
       this.dbService = dbService;
       this.identityService = identityService;
+      this.logger = logger;
    }
 
    public void loadFromQueryId(RelationRowHandler handler, LoadOptions options, int fetchSize, int queryId) throws OseeCoreException {
@@ -43,8 +46,19 @@ public class RelationLoader {
       String sqlQuery = sqlProvider.getSql(OseeSql.LOAD_RELATIONS_NEWER);
       IOseeStatement statement = dbService.getStatement();
       try {
+         long startTime = 0;
+         int rowCount = 0;
+         if (logger.isTraceEnabled()) {
+            startTime = System.currentTimeMillis();
+         }
          statement.runPreparedQuery(fetchSize, sqlQuery, queryId);
+         if (logger.isTraceEnabled()) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            logger.trace("%d ms, for SQL[%s] fetchSize[%d] queryid[%d]", elapsedTime, sqlQuery, fetchSize, queryId);
+            startTime = System.currentTimeMillis();
+         }
          while (statement.next()) {
+            rowCount++;
             RelationRow nextRelation = new RelationRow();
             nextRelation.setParentId(statement.getInt("art_id"));
             nextRelation.setRelationId(statement.getInt("rel_link_id"));
@@ -56,6 +70,10 @@ public class RelationLoader {
             nextRelation.setRationale(statement.getString("rationale"));
             nextRelation.setModType(ModificationType.getMod(statement.getInt("mod_type")));
             handler.onRow(nextRelation);
+         }
+         if (logger.isTraceEnabled()) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            logger.trace("%d ms for %d rows, to iterate over resultset", elapsedTime, rowCount);
          }
       } finally {
          statement.close();

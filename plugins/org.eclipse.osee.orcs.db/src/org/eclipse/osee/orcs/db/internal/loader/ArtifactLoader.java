@@ -63,10 +63,23 @@ public class ArtifactLoader {
       String sql = getSql(options);
       IOseeStatement chStmt = dbService.getStatement();
       try {
+         long startTime = 0;
+         int rowCount = 0;
+         if (logger.isTraceEnabled()) {
+            startTime = System.currentTimeMillis();
+         }
          chStmt.runPreparedQuery(fetchSize, sql, queryId);
+         if (logger.isTraceEnabled()) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            logger.trace("%d ms, for SQL[%s] fetchSize[%d] queryid[%d]", elapsedTime, sql, fetchSize, queryId);
+            startTime = System.currentTimeMillis();
+         }
          int previousArtId = -1;
          int previousBranchId = -1;
          while (chStmt.next()) {
+            if (logger.isTraceEnabled()) {
+               rowCount++;
+            }
             int artifactId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
@@ -98,6 +111,10 @@ public class ArtifactLoader {
                previousArtId = artifactId;
                previousBranchId = branchId;
             }
+         }
+         if (logger.isTraceEnabled()) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            logger.trace("%d ms for %d rows, to iterate over resultset", elapsedTime, rowCount);
          }
       } finally {
          chStmt.close();

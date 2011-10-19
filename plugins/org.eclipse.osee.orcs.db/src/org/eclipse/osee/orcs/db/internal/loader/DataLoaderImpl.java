@@ -59,9 +59,8 @@ public class DataLoaderImpl implements DataLoader {
       AttributeDataProxyFactory attributeDataProxyFactory =
          new AttributeDataProxyFactory(dataProxyFactoryProvider, dataStoreTypeCache.getAttributeTypeCache());
       attributeLoader =
-         new AttributeLoader(sqlProvider, oseeDatabaseService, identityService, attributeDataProxyFactory);
-
-      relationLoader = new RelationLoader(sqlProvider, oseeDatabaseService, identityService);
+         new AttributeLoader(logger, sqlProvider, oseeDatabaseService, identityService, attributeDataProxyFactory);
+      relationLoader = new RelationLoader(logger, sqlProvider, oseeDatabaseService, identityService);
    }
 
    public void stop() {
