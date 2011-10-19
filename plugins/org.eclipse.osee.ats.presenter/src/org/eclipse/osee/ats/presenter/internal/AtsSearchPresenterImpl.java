@@ -52,8 +52,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       atsNavigator.navigateSearchResults(url);
    }
 
-   @Override
-   public void initSearchHome(T headerComponent) {
+   private void addProgramsToSearchHeader(T headerComponent) {
       headerComponent.clearAll();
       Collection<WebId> programs = null;
       try {
@@ -69,6 +68,11 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
 
    @Override
    public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent) {
+      if (!Strings.isValid(url)) {
+         addProgramsToSearchHeader(searchHeaderComponent);
+         return;
+      }
+
       AtsSearchParameters params = decode(url);
       //      WebId program = null, build = null;
       //      Collection<WebId> programs = null;

@@ -123,8 +123,7 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       }
    }
 
-   @Override
-   public void initSearchHome(AtsSearchHeaderComponent headerComponent) {
+   private void initSearchHome(AtsSearchHeaderComponent headerComponent) {
       if (headerComponent != null) {
          headerComponent.clearAll();
          Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();

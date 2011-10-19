@@ -214,4 +214,9 @@ public class MockArtifact implements ReadableArtifact {
       }
       return toReturn;
    }
+
+   public void clearRelations() {
+      validRelationTypes.clear();
+      relationMap.clear();
+   }
 }

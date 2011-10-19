@@ -13,5 +13,6 @@ Import-Package: org.eclipse.osee.display.api.components,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.orcs.data,
+ org.eclipse.osee.orcs.mock,
  org.eclipse.osee.orcs.search
 Export-Package: org.eclipse.osee.display.presenter.mocks

@@ -73,11 +73,6 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    }
 
    @Override
-   public void initSearchHome(T searchHeaderComp) {
-      searchHeaderComp.clearAll();
-   }
-
-   @Override
    public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp) {
       searchResultsComp.clearAll();
       SearchParameters params = decodeSearchUrl(url);
@@ -313,7 +308,6 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       String branch = "";
       boolean nameOnly = true;
       String searchPhrase = "";
-
       branchMatcher.reset(url);
       nameOnlyMatcher.reset(url);
       searchPhraseMatcher.reset(url);

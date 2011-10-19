@@ -23,8 +23,6 @@ import org.eclipse.osee.display.api.data.WebId;
  */
 public interface SearchPresenter<T extends SearchHeaderComponent> {
 
-   void initSearchHome(T searchHeaderComp);
-
    void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp);
 
    void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator);

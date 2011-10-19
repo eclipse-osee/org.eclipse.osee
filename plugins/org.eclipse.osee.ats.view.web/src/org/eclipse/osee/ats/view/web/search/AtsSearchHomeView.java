@@ -44,7 +44,7 @@ public class AtsSearchHomeView extends OseeSearchHomeView {
       if (searchPresenter != null) {
          try {
             AtsSearchHeaderImpl atsSearchHeaderComp = (AtsSearchHeaderImpl) searchHeader;
-            searchPresenter.initSearchHome(atsSearchHeaderComp);
+            //            searchPresenter.initSearchHome(atsSearchHeaderComp);
          } catch (Exception e) {
             System.out.println("OseeArtifactNameLinkComponent.navigateTo - CRITICAL ERROR: casting threw an exception.");
          }

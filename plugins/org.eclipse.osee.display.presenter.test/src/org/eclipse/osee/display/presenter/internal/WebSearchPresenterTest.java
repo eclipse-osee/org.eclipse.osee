@@ -48,7 +48,7 @@ import org.junit.Test;
  */
 public class WebSearchPresenterTest {
 
-   private List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchReslts() {
+   private List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults() {
       List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
       MockArtifact art = new MockArtifact("guid1", "matchArt");
@@ -61,11 +61,11 @@ public class WebSearchPresenterTest {
    @Test
    public void testInitSearchResults() {
       MockArtifactProvider provider = new MockArtifactProvider();
-      provider.setResultList(getSearchReslts());
+      provider.setResultList(getSearchResults());
       WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
-      String url = "/branch=" + GUID.create() + "?nameOnly=true?search=this%20is%20a%20test";
+      String url = "/branch=" + GUID.create() + "&nameOnly=true&search=this%20is%20a%20test";
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp);
       List<MockSearchResultComponent> searchResults = searchResultsComp.getSearchResults();
       Assert.assertEquals(1, searchResults.size());
@@ -84,7 +84,7 @@ public class WebSearchPresenterTest {
       presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
       searchHeaderComp = new MockSearchHeaderComponent();
       searchResultsComp = new MockSearchResultsListComponent();
-      url = "/branch=" + GUID.create() + "?nameOnly=true?search=this%20is%20a%20test";
+      url = "/branch=" + GUID.create() + "&nameOnly=true&search=this%20is%20a%20test";
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp);
       Assert.assertNotNull(searchResultsComp.getErrorMessage());
    }
@@ -97,22 +97,14 @@ public class WebSearchPresenterTest {
       String artGuid = GUID.create();
       WebArtifact artifact = new WebArtifact(artGuid, "name", "type", null, new WebId(branchGuid, "branchName"));
       presenter.selectArtifact(artifact, navigator);
-      String expectedUrl = "/branch=" + branchGuid + "?artifact=" + artGuid;
+      String expectedUrl = "/branch=" + branchGuid + "&artifact=" + artGuid;
       Assert.assertEquals(expectedUrl, navigator.getArtifactUrl());
-   }
-
-   @Test
-   public void testInitSearchHome() {
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(null);
-      MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
-      presenter.initSearchHome(searchHeaderComp);
-      Assert.assertTrue(searchHeaderComp.isClearAllCalled());
    }
 
    @Test
    public void testInitArtifactPage() {
       MockArtifactProvider provider = new MockArtifactProvider();
-      provider.setResultList(getSearchReslts());
+      provider.setResultList(getSearchResults());
       WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
       String artGuid = GUID.create();
       MockArtifact testArt = new MockArtifact(artGuid, "name");
@@ -125,14 +117,14 @@ public class WebSearchPresenterTest {
             CoreArtifactTypes.AbstractTestResult, RelationTypeMultiplicity.ONE_TO_ONE, "");
       testArt.addRelationType(relType);
       provider.addArtifact(testArt);
-      String url = "/branch=" + GUID.create() + "?artifact=" + artGuid;
+      String url = "/branch=" + GUID.create() + "&artifact=" + artGuid;
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
       MockRelationComponent relComp = new MockRelationComponent();
       MockAttributeComponent attrComp = new MockAttributeComponent();
       presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp);
       Assert.assertEquals(artGuid, artHeaderComp.getArtifact().getGuid());
-      Assert.assertEquals(2, relComp.getRelationTypes().size());
+      Assert.assertEquals(1, relComp.getRelationTypes().size());
       Assert.assertEquals(1, attrComp.getAttributes().keySet().size());
 
       provider = new MockArtifactProvider();
@@ -152,7 +144,7 @@ public class WebSearchPresenterTest {
       presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp);
       Assert.assertNotNull(artHeaderComp.getErrorMessage());
 
-      url = "/branch=" + GUID.create() + "?artifact=" + GUID.create();
+      url = "/branch=" + GUID.create() + "&artifact=" + GUID.create();
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
       presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
       searchHeaderComp = new MockSearchHeaderComponent();
@@ -166,27 +158,52 @@ public class WebSearchPresenterTest {
    @Test
    public void testSelectRelationType() {
       MockArtifactProvider provider = new MockArtifactProvider();
-      provider.setResultList(getSearchReslts());
+      MockRelationComponent relComp = new MockRelationComponent();
+
+      provider.setResultList(getSearchResults());
       WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
       String artGuid = GUID.create();
-      String artGuid2 = GUID.create();
+      String artGuidA = GUID.create();
+      String artGuidB = GUID.create();
+
       MockArtifact testArt = new MockArtifact(artGuid, "name");
-      MockArtifact relatedArt = new MockArtifact(artGuid2, "related");
-      testArt.addRelation(CoreRelationTypes.Allocation__Component, relatedArt);
       long relGuid = CoreRelationTypes.Allocation__Component.getGuid();
       String relName = CoreRelationTypes.Allocation__Component.getName();
       RelationType relType =
          new RelationType(relGuid, relName, "sideA", "sideB", CoreArtifactTypes.AbstractSoftwareRequirement,
             CoreArtifactTypes.AbstractTestResult, RelationTypeMultiplicity.ONE_TO_ONE, "");
       testArt.addRelationType(relType);
+
       provider.addArtifact(testArt);
-      MockRelationComponent relComp = new MockRelationComponent();
+
       WebId branch = new WebId(GUID.create(), "branchName");
       WebArtifact artifact = new WebArtifact(artGuid, "artName", "artType", null, branch);
-      String strRelGuid = Long.toString(relGuid);
-      WebId relation = new WebId(strRelGuid, relName);
+      WebId relation = new WebId(Long.toString(relGuid), relName);
       presenter.selectRelationType(artifact, relation, relComp);
-      Assert.assertEquals(relatedArt.getGuid(), relComp.getRightRelations().iterator().next().getGuid());
+      Assert.assertEquals(0, relComp.getLeftRelations().size());
+      Assert.assertEquals(0, relComp.getRightRelations().size());
+
+      //      Assert.assertEquals(relatedArtB.getGuid(), relComp.getLeftRelations().iterator().next().getGuid());
+
+      MockArtifact relatedArtA = new MockArtifact(artGuidA, "related");
+      testArt.addRelation(CoreRelationTypes.Allocation__Requirement, relatedArtA);
+      presenter.selectRelationType(artifact, relation, relComp);
+      Assert.assertEquals(0, relComp.getLeftRelations().size());
+      Assert.assertEquals(1, relComp.getRightRelations().size());
+
+      MockArtifact relatedArtB = new MockArtifact(artGuidB, "related");
+      testArt.addRelation(CoreRelationTypes.Allocation__Component, relatedArtB);
+      presenter.selectRelationType(artifact, relation, relComp);
+      Assert.assertEquals(1, relComp.getLeftRelations().size());
+      Assert.assertEquals(1, relComp.getRightRelations().size());
+
+      testArt.clearRelations();
+      testArt.addRelationType(relType);
+      testArt.addRelation(CoreRelationTypes.Allocation__Component, relatedArtB);
+      presenter.selectRelationType(artifact, relation, relComp);
+      Assert.assertEquals(0, relComp.getLeftRelations().size());
+      Assert.assertEquals(1, relComp.getRightRelations().size());
+
    }
 
    @Test
