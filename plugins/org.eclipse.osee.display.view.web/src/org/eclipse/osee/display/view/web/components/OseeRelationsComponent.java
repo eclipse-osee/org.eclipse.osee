@@ -170,7 +170,6 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       }
    }
 
-   @Override
    public void addRelation(WebArtifact id) {
       if (relationsListSelect != null) {
          lockRelsListener = true;
@@ -197,5 +196,21 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    @Override
    public void setArtifact(WebArtifact artifact) {
       this.artifact = artifact;
+   }
+
+   @Override
+   public void addLeftRelated(WebArtifact id) {
+   }
+
+   @Override
+   public void addRightRelated(WebArtifact id) {
+   }
+
+   @Override
+   public void setLeftName(String name) {
+   }
+
+   @Override
+   public void setRightName(String name) {
    }
 }

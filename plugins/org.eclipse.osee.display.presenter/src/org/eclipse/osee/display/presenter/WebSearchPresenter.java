@@ -12,6 +12,7 @@ package org.eclipse.osee.display.presenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,11 +52,16 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    private final static Pattern artifactPattern = Pattern.compile("artifact=([0-9A-Za-z\\+_=]{20,22})");
    private final static Pattern nameOnlyPattern = Pattern.compile("nameOnly=(true|false)");
    private final static Pattern searchPhrasePattern = Pattern.compile("search=([\\d\\w%]*)");
+   private final static Pattern verbosePattern = Pattern.compile("verbose=(true|false)");
+
+   private final static String SIDE_A_KEY = "sideAName";
+   private final static String SIDE_B_KEY = "sideBName";
 
    protected final Matcher branchMatcher;
    protected final Matcher artifactMatcher;
    protected final Matcher nameOnlyMatcher;
    protected final Matcher searchPhraseMatcher;
+   protected final Matcher verboseMatcher;
 
    public WebSearchPresenter(ArtifactProvider artifactProvider) {
       this.artifactProvider = artifactProvider;
@@ -63,6 +69,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       artifactMatcher = artifactPattern.matcher("");
       nameOnlyMatcher = nameOnlyPattern.matcher("");
       searchPhraseMatcher = searchPhrasePattern.matcher("");
+      verboseMatcher = verbosePattern.matcher("");
    }
 
    @Override
@@ -83,14 +90,14 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          searchResults =
             artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
                params.getSearchPhrase());
-      } catch (OseeCoreException ex) {
-         setErrorMessage(searchResultsComp, "Error while searching");
+      } catch (Exception ex) {
+         setErrorMessage(searchResultsComp, "An error occured while searching");
          return;
       }
       if (searchResults != null && searchResults.size() > 0) {
          try {
             processSearchResults(searchResults, searchResultsComp);
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             setErrorMessage(searchResultsComp, "Error while processing results");
             return;
          }
@@ -133,7 +140,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       ReadableArtifact displayArt = null;
       try {
          displayArt = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
-      } catch (OseeCoreException e) {
+      } catch (Exception e) {
          setErrorMessage(artHeaderComp, String.format("Error while loading artifact[%s] from branch:[%s]", art, branch));
          return;
       }
@@ -149,20 +156,22 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       Collection<RelationType> relationTypes = null;
       try {
          relationTypes = displayArt.getValidRelationTypes();
-      } catch (OseeCoreException ex1) {
+      } catch (Exception e) {
          setErrorMessage(relComp, String.format("Error loading relation types for: [%s]", displayArt.getName()));
          return;
       }
       for (RelationType relType : relationTypes) {
-         relComp.addRelationType(new WebId(relType.getGuid().toString() + ":A", relType.getSideAName()));
-         relComp.addRelationType(new WebId(relType.getGuid().toString() + ":B", relType.getSideBName()));
+         WebId toAdd = new WebId(relType.getGuid().toString(), relType.getName());
+         toAdd.setAttribute(SIDE_A_KEY, relType.getSideAName());
+         toAdd.setAttribute(SIDE_B_KEY, relType.getSideBName());
+         relComp.addRelationType(toAdd);
       }
 
       attrComp.clearAll();
       Collection<IAttributeType> attributeTypes = null;
       try {
          attributeTypes = displayArt.getAttributeTypes();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
          return;
       }
@@ -173,7 +182,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
             for (ReadableAttribute<Object> value : attributesValues) {
                attrComp.addAttribute(attrType.getName(), value.getDisplayableString());
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
             return;
          }
@@ -187,29 +196,63 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          setErrorMessage(relationComponent, "Error: Null detected in selectRelationType parameters");
          return;
       }
-      String relGuid = relation.getGuid().split(":")[0];
-      String sideId = relation.getGuid().split(":")[1];
-      RelationSide side = RelationSide.SIDE_B;
-      if (sideId.equalsIgnoreCase("A")) {
-         side = RelationSide.SIDE_A;
-      }
+      String relGuid = relation.getGuid();
+
       IRelationType type = TokenFactory.createRelationType(Long.parseLong(relGuid), relation.getName());
       IOseeBranch branch = TokenFactory.createBranch(artifact.getBranch().getGuid(), "");
       ReadableArtifact sourceArt;
+      Collection<ReadableArtifact> relatedSideA = null;
+      Collection<ReadableArtifact> relatedSideB = null;
       Collection<ReadableArtifact> related = null;
       try {
          sourceArt = artifactProvider.getArtifactByGuid(branch, artifact.getGuid());
-         related =
-            sourceArt.getRelatedArtifacts(TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName()),
-               null);
-      } catch (OseeCoreException ex) {
+         for (RelationSide side : RelationSide.values()) {
+            related =
+               sourceArt.getRelatedArtifacts(TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName()),
+                  null);
+            if (side.isSideA()) {
+               relatedSideA = related;
+            } else {
+               relatedSideB = related;
+            }
+         }
+      } catch (Exception ex) {
          setErrorMessage(relationComponent,
             String.format("Error loading relations for artifact[%s]", artifact.getGuid()));
          return;
       }
-      for (ReadableArtifact rel : related) {
+
+      Collection<ReadableArtifact> relatedLeftSide = null;
+      Collection<ReadableArtifact> relatedRightSide = null;
+      String leftSideName = null, rightSideName = null;
+      if (relatedSideA.size() == 0 && relatedSideB.size() != 0) {
+         relatedRightSide = relatedSideB;
+         relatedLeftSide = Collections.emptyList();
+         rightSideName = relation.getAttribute(SIDE_B_KEY);
+      } else if (relatedSideA.size() != 0 && relatedSideB.size() == 0) {
+         relatedRightSide = relatedSideA;
+         relatedLeftSide = Collections.emptyList();
+         rightSideName = relation.getAttribute(SIDE_A_KEY);
+      } else if (relatedSideA.size() == 0 && relatedSideB.size() == 0) {
+         relatedRightSide = Collections.emptyList();
+         relatedLeftSide = Collections.emptyList();
+      } else {
+         relatedRightSide = relatedSideA;
+         relatedLeftSide = relatedSideB;
+         rightSideName = relation.getAttribute(SIDE_A_KEY);
+         leftSideName = relation.getAttribute(SIDE_B_KEY);
+      }
+
+      relationComponent.setLeftName(leftSideName);
+      relationComponent.setRightName(rightSideName);
+
+      for (ReadableArtifact rel : relatedLeftSide) {
          WebArtifact id = convertToWebArtifact(rel);
-         relationComponent.addRelation(id);
+         relationComponent.addLeftRelated(id);
+      }
+      for (ReadableArtifact rel : relatedRightSide) {
+         WebArtifact id = convertToWebArtifact(rel);
+         relationComponent.addRightRelated(id);
       }
    }
 
@@ -225,7 +268,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       StringBuilder sb = new StringBuilder();
       sb.append("/branch=");
       sb.append(artifact.getBranch().getGuid());
-      sb.append("?artifact=");
+      sb.append("&artifact=");
       sb.append(artifact.getGuid());
       return sb.toString();
    }

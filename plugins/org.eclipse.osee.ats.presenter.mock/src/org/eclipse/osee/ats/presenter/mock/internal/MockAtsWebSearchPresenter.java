@@ -35,8 +35,7 @@ import org.eclipse.osee.display.api.search.SearchNavigator;
  */
 public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHeaderComponent> {
 
-   private static final AtsSearchPresenter<AtsSearchHeaderComponent> atsBackend =
-      new MockAtsWebSearchPresenter();
+   private static final AtsSearchPresenter<AtsSearchHeaderComponent> atsBackend = new MockAtsWebSearchPresenter();
 
    // *** TEST DATA ***
    WebId build0 = new WebId("baseline_guid", "Baseline");
@@ -181,7 +180,8 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       Set<Entry<String, WebArtifact>> artifactsSet = artifacts.entrySet();
       for (Entry<String, WebArtifact> entry : artifactsSet) {
          WebArtifact art = entry.getValue();
-         relationComponent.addRelation(art);
+         relationComponent.addRightRelated(art);
+         relationComponent.addLeftRelated(art);
       }
    }
 

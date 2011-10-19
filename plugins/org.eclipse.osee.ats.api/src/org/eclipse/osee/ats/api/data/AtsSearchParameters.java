@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.data;
 
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.api.data.WebSearchParameters;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author John Misinco
@@ -32,6 +33,10 @@ public class AtsSearchParameters extends WebSearchParameters {
 
    public WebId getProgram() {
       return program;
+   }
+
+   public boolean isValid() {
+      return (build != null && program != null && Strings.isValid(getSearchString()));
    }
 
 }

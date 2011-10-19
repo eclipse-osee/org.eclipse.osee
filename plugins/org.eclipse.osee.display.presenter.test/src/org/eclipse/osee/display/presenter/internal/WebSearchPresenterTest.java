@@ -183,17 +183,17 @@ public class WebSearchPresenterTest {
       MockRelationComponent relComp = new MockRelationComponent();
       WebId branch = new WebId(GUID.create(), "branchName");
       WebArtifact artifact = new WebArtifact(artGuid, "artName", "artType", null, branch);
-      String strRelGuid = Long.toString(relGuid) + ":B";
+      String strRelGuid = Long.toString(relGuid);
       WebId relation = new WebId(strRelGuid, relName);
       presenter.selectRelationType(artifact, relation, relComp);
-      Assert.assertEquals(relatedArt.getGuid(), relComp.getRelations().iterator().next().getGuid());
+      Assert.assertEquals(relatedArt.getGuid(), relComp.getRightRelations().iterator().next().getGuid());
    }
 
    @Test
    public void testSelectRelationTypeErrors() {
       WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(null);
       MockRelationComponent relComp = new MockRelationComponent();
-      WebId relation = new WebId("0:A", "Name");
+      WebId relation = new WebId("0", "Name");
       presenter.selectRelationType(null, relation, relComp);
       Assert.assertNotNull(relComp.getErrorMessage());
 

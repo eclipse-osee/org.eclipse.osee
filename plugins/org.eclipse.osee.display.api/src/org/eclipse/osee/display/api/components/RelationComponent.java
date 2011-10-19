@@ -26,6 +26,12 @@ public interface RelationComponent extends DisplaysErrorComponent {
 
    void clearRelations();
 
-   void addRelation(WebArtifact id);
+   void setLeftName(String name);
+
+   void setRightName(String name);
+
+   void addLeftRelated(WebArtifact id);
+
+   void addRightRelated(WebArtifact id);
 
 }

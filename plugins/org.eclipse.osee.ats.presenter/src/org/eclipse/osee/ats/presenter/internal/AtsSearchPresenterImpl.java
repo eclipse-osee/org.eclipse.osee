@@ -24,6 +24,7 @@ import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.WebSearchPresenter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
@@ -47,7 +48,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
 
    @Override
    public void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator) {
-      String url = encode(params);
+      String url = encode(params, null);
       atsNavigator.navigateSearchResults(url);
    }
 
@@ -68,7 +69,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
 
    @Override
    public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent) {
-      SearchParameters params = decode(url);
+      AtsSearchParameters params = decode(url);
       //      WebId program = null, build = null;
       //      Collection<WebId> programs = null;
 
@@ -118,13 +119,13 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       String branchGuid;
       try {
          branchGuid = atsArtifactProvider.getBaselineBranchGuid(params.getBuild().getGuid());
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          setErrorMessage(searchHeaderComponent,
             String.format("Cannot resolve branch id from build id: [%s]", params.getBuild().getGuid()));
          return;
       }
 
-      String newUrl = encode(new WebId(branchGuid, ""), params.getNameOnly(), params.getSearchPhrase());
+      String newUrl = encode(params, branchGuid);
       super.initSearchResults(newUrl, searchHeaderComponent, resultsComponent);
 
    }
@@ -135,7 +136,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       Collection<WebId> builds = null;
       try {
          builds = getBuilds(program);
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          setErrorMessage(headerComponent, ex.getMessage());
          return;
       }
@@ -166,41 +167,50 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       return builds;
    }
 
-   protected String encode(WebId branch, boolean nameOnly, String searchPhrase) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("/branch=");
-      sb.append(branch.getGuid());
-      sb.append("?nameOnly=");
-      sb.append(nameOnly);
-      sb.append("?search=");
-      sb.append(searchPhrase);
-      return sb.toString().replaceAll("\\s", "%20");
-   }
+   //   protected String encode(String branchId, boolean nameOnly, String searchPhrase) {
+   //      StringBuilder sb = new StringBuilder();
+   //      sb.append("/");
+   //      sb.append("branch=");
+   //      sb.append(branchId);
+   //      sb.append("&nameOnly=");
+   //      sb.append(nameOnly);
+   //      sb.append("&search=");
+   //      sb.append(searchPhrase);
+   //      return sb.toString().replaceAll("\\s", "%20");
+   //   }
 
-   protected String encode(AtsSearchParameters params) {
+   protected String encode(AtsSearchParameters params, String branchId) {
       StringBuilder sb = new StringBuilder();
-      sb.append("/program=");
+      sb.append("/");
+      if (Strings.isValid(branchId)) {
+         sb.append("branch=");
+         sb.append(branchId);
+         sb.append("&");
+      }
+      sb.append("program=");
       sb.append(params.getProgram().getGuid());
-      sb.append("?build=");
+      sb.append("&build=");
       sb.append(params.getBuild().getGuid());
-      sb.append("?nameOnly=");
+      sb.append("&nameOnly=");
       sb.append(params.isNameOnly());
-      sb.append("?search=");
+      sb.append("&search=");
       sb.append(params.getSearchString());
-      sb.append("?verbose=");
+      sb.append("&verbose=");
       sb.append(params.isVerboseResults());
       return sb.toString().replaceAll("\\s", "%20");
    }
 
-   protected SearchParameters decode(String url) {
+   protected AtsSearchParameters decode(String url) {
       WebId program = null, build = null;
       String searchPhrase = "";
       boolean nameOnly = true;
+      boolean verboseResults = true;
 
       programMatcher.reset(url);
       buildMatcher.reset(url);
       nameOnlyMatcher.reset(url);
       searchPhraseMatcher.reset(url);
+      verboseMatcher.reset(url);
 
       if (programMatcher.find()) {
          program = new WebId(programMatcher.group(1), "");
@@ -214,7 +224,11 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       if (searchPhraseMatcher.find()) {
          searchPhrase = searchPhraseMatcher.group(1).replaceAll("%20", " ");
       }
-      return new SearchParameters(program, build, nameOnly, searchPhrase);
+      if (verboseMatcher.find()) {
+         verboseResults = verboseMatcher.group(1).equalsIgnoreCase("true") ? true : false;
+      }
+
+      return new AtsSearchParameters(searchPhrase, nameOnly, verboseResults, build, program);
    }
 
    protected class SearchParameters {

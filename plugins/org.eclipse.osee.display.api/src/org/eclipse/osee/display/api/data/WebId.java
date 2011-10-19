@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.data;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
@@ -17,8 +19,17 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
  */
 public class WebId extends NamedIdentity<String> {
 
+   Map<String, String> attributes = new HashMap<String, String>();
+
    public WebId(String guid, String name) {
       super(guid, name);
    }
 
+   public void setAttribute(String key, String value) {
+      attributes.put(key, value);
+   }
+
+   public String getAttribute(String key) {
+      return attributes.containsKey(key) ? attributes.get(key) : null;
+   }
 }

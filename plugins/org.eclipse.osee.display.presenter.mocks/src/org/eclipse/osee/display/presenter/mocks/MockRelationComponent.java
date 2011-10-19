@@ -23,7 +23,8 @@ public class MockRelationComponent implements RelationComponent {
 
    private WebArtifact artifact;
    private final List<WebId> relationTypes = new LinkedList<WebId>();
-   private final List<WebArtifact> relations = new LinkedList<WebArtifact>();
+   private final List<WebArtifact> leftRelations = new LinkedList<WebArtifact>();
+   private final List<WebArtifact> rightRelations = new LinkedList<WebArtifact>();
    private String errorMessage;
 
    public WebArtifact getArtifact() {
@@ -34,8 +35,12 @@ public class MockRelationComponent implements RelationComponent {
       return relationTypes;
    }
 
-   public List<WebArtifact> getRelations() {
-      return relations;
+   public List<WebArtifact> getRightRelations() {
+      return rightRelations;
+   }
+
+   public List<WebArtifact> getLeftRelations() {
+      return leftRelations;
    }
 
    public String getErrorMessage() {
@@ -65,12 +70,26 @@ public class MockRelationComponent implements RelationComponent {
 
    @Override
    public void clearRelations() {
-      relations.clear();
+      rightRelations.clear();
+      leftRelations.clear();
    }
 
    @Override
-   public void addRelation(WebArtifact id) {
-      relations.add(id);
+   public void addLeftRelated(WebArtifact id) {
+      leftRelations.add(id);
+   }
+
+   @Override
+   public void addRightRelated(WebArtifact id) {
+      rightRelations.add(id);
+   }
+
+   @Override
+   public void setLeftName(String name) {
+   }
+
+   @Override
+   public void setRightName(String name) {
    }
 
 }

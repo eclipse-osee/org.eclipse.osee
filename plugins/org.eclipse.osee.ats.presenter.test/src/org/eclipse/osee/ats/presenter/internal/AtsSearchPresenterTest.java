@@ -50,7 +50,7 @@ public class AtsSearchPresenterTest {
       presenter.selectSearch(params, navigator);
       String url = navigator.getResultsUrl();
       String expected =
-         "/program=" + programGuid + "?build=" + buildGuid + "?nameOnly=true?search=test%20search%20phrase";
+         "/program=" + programGuid + "&build=" + buildGuid + "&nameOnly=true&search=test%20search%20phrase";
       Assert.assertEquals(expected, url);
    }
 
@@ -70,7 +70,7 @@ public class AtsSearchPresenterTest {
       MockAtsArtifactProvider provider = new MockAtsArtifactProvider();
       AtsSearchPresenterImpl<AtsSearchHeaderComponent> presenter =
          new AtsSearchPresenterImpl<AtsSearchHeaderComponent>(provider);
-      String url;
+      String url = null;
       MockAtsSearchHeaderComponent headerComp = new MockAtsSearchHeaderComponent();
       MockSearchResultsListComponent resultsComponent = new MockSearchResultsListComponent();
       presenter.initSearchResults(url, headerComp, resultsComponent);
