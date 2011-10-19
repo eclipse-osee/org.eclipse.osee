@@ -37,6 +37,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    private boolean populated = false;
    private final ListSelect relationTypesListSelect = new ListSelect();
    private final ListSelect relationsListSelect = new ListSelect();
+   private final ListSelect sideBSelect = new ListSelect();
    private SearchPresenter<?> searchPresenter = null;
    private SearchNavigator navigator = null;
    private boolean lockRelTypesListener = false;
@@ -117,6 +118,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       listBoxesLayout.addComponent(rightArrow);
       listBoxesLayout.setComponentAlignment(rightArrow, Alignment.MIDDLE_CENTER);
       listBoxesLayout.addComponent(relationsListSelect);
+      listBoxesLayout.addComponent(sideBSelect);
 
       addComponent(titleLabel);
       addComponent(listBoxesLayout);
@@ -125,6 +127,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       //Fixed width lists make for a prettier layout
       relationTypesListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
       relationsListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      sideBSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
    }
 
    public OseeRelationsComponent() {

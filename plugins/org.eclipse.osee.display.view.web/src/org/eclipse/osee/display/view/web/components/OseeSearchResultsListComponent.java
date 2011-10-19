@@ -48,7 +48,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
    private SearchHeaderComponent searchHeaderComponent;
    private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
-   //   private final TextField manyResultsTextField = new TextField();
    private final ComboBox manyResultsComboBox = new ComboBox();
    private final int INIT_MANY_RES_PER_PAGE = 15;
 
@@ -85,17 +84,22 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       this.addComponent(pagingComponent);
 
       showVerboseCheckBox.setImmediate(true);
+      final boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
       showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
-            boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
-            OseeSearchResultsListComponent.this.searchHeaderComponent.setShowVerboseSearchResults(showVerbose);
+            if (OseeSearchResultsListComponent.this.searchHeaderComponent != null) {
+               OseeSearchResultsListComponent.this.searchHeaderComponent.setShowVerboseSearchResults(showVerbose);
+            }
             for (OseeSearchResultComponent resultComp : resultList) {
                resultComp.setShowVerboseSearchResults(showVerbose);
             }
             updateSearchResultsLayout();
          }
       });
+      if (searchHeaderComponent != null) {
+         searchHeaderComponent.setShowVerboseSearchResults(showVerbose);
+      }
 
       manyResultsComboBox.setImmediate(true);
       manyResultsComboBox.setTextInputAllowed(false);

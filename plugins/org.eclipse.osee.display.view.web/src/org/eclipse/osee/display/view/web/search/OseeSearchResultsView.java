@@ -27,6 +27,7 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
 
    protected OseeSearchHeaderComponent searchHeader;
    protected OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
+   private final int LEFTMARGIN_WIDTH = 5;
 
    protected void createLayout() {
       setSizeFull();
@@ -37,7 +38,7 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
       HorizontalLayout leftMarginAndBody = new HorizontalLayout();
       leftMarginAndBody.setSizeFull();
       Label leftMarginSpace = new Label("");
-      leftMarginSpace.setWidth(80, UNITS_PIXELS);
+      leftMarginSpace.setWidth(LEFTMARGIN_WIDTH, UNITS_PIXELS);
       leftMarginAndBody.addComponent(leftMarginSpace);
 
       leftMarginAndBody.addComponent(searchResultsListComponent);

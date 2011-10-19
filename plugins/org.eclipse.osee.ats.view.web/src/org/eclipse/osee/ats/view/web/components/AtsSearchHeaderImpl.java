@@ -192,6 +192,10 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          rightSideVLayout.addComponent(hLayoutRow2);
          rightSideVLayout.setSizeUndefined();
 
+         Label spacer7 = new Label();
+         spacer7.setWidth(5, UNITS_PIXELS);
+
+         hLayoutRow0.addComponent(spacer7);
          hLayoutRow0.addComponent(oseeTitleLabel);
          hLayoutRow0.addComponent(spacer4);
          hLayoutRow0.addComponent(rightSideVLayout);
