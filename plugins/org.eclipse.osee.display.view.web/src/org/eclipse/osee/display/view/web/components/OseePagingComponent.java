@@ -31,6 +31,7 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
 
    private int manyItemsTotal = 0;
    private int manyItemsPerPage = 15;
+   private boolean allItemsPerPage = false;//If TRUE then manyItemsPerPage is ignored.
    private int manyPages = 0;
    private int currentPage = 0;
    private final int MAX_PAGE_NUMBERS_SHOWN = 4;
@@ -73,63 +74,73 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    }
 
    private void createPageNumberLayout() {
-      int startPage = 0;
-      int endPage = manyPages - 1;
-
-      //If there are more pages than MAX_PAGE_NUMBERS_SHOWN, then we need to reduce
-      //  the number of pages shown.
-      //      if (manyPages > 0 && manyPages > currentPage && MAX_PAGE_NUMBERS_SHOWN > (manyPages - currentPage)) {
-      int pageSetIndex = currentPage / MAX_PAGE_NUMBERS_SHOWN;
-      startPage = pageSetIndex * MAX_PAGE_NUMBERS_SHOWN;
-      endPage = startPage + MAX_PAGE_NUMBERS_SHOWN;
-      //      }
-
-      if (endPage >= manyPages) {
-         endPage = manyPages - 1;
-      }
-
-      if (startPage != 0) {
-         Label pageLabel = new Label("...");
+      if (this.allItemsPerPage) {
+         Label pageLabel = new Label(String.format("1"));
          this.addComponent(pageLabel);
+         pageLabel.setStyleName(CssConstants.OSEE_CURRENTPAGELABEL);
 
          Label spacer = new Label();
          spacer.setWidth(7, UNITS_PIXELS);
          this.addComponent(spacer);
-      }
+      } else {
+         int startPage = 0;
+         int endPage = manyPages - 1;
 
-      for (int i = startPage; i <= endPage; i++) {
-         if (i == currentPage) {
-            Label pageLabel = new Label(String.format("%d", i + 1));
-            this.addComponent(pageLabel);
-            pageLabel.setStyleName(CssConstants.OSEE_CURRENTPAGELABEL);
-         } else {
-            Button pageButton = new Button(String.format("%d", i + 1));
-            pageButton.setStyleName("link");
-            this.addComponent(pageButton);
-            final int index = i;//needs to be 'final' for use with listener below
-            pageButton.addListener(new Button.ClickListener() {
-               @Override
-               public void buttonClick(ClickEvent event) {
-                  OseePagingComponent.this.setCurrentPage(index);
-                  fireEvent(new PageSelectedEvent(OseePagingComponent.this));
-               }
-            });
+         //If there are more pages than MAX_PAGE_NUMBERS_SHOWN, then we need to reduce
+         //  the number of pages shown.
+         //      if (manyPages > 0 && manyPages > currentPage && MAX_PAGE_NUMBERS_SHOWN > (manyPages - currentPage)) {
+         int pageSetIndex = currentPage / MAX_PAGE_NUMBERS_SHOWN;
+         startPage = pageSetIndex * MAX_PAGE_NUMBERS_SHOWN;
+         endPage = startPage + MAX_PAGE_NUMBERS_SHOWN;
+         //      }
+
+         if (endPage >= manyPages) {
+            endPage = manyPages - 1;
          }
 
-         if (i <= endPage) {
+         if (startPage != 0) {
+            Label pageLabel = new Label("...");
+            this.addComponent(pageLabel);
+
             Label spacer = new Label();
             spacer.setWidth(7, UNITS_PIXELS);
             this.addComponent(spacer);
          }
-      }
 
-      if (endPage != manyPages - 1) {
-         Label pageLabel = new Label("...");
-         this.addComponent(pageLabel);
+         for (int i = startPage; i <= endPage; i++) {
+            if (i == currentPage) {
+               Label pageLabel = new Label(String.format("%d", i + 1));
+               this.addComponent(pageLabel);
+               pageLabel.setStyleName(CssConstants.OSEE_CURRENTPAGELABEL);
+            } else {
+               Button pageButton = new Button(String.format("%d", i + 1));
+               pageButton.setStyleName("link");
+               this.addComponent(pageButton);
+               final int index = i;//needs to be 'final' for use with listener below
+               pageButton.addListener(new Button.ClickListener() {
+                  @Override
+                  public void buttonClick(ClickEvent event) {
+                     OseePagingComponent.this.setCurrentPage(index);
+                     fireEvent(new PageSelectedEvent(OseePagingComponent.this));
+                  }
+               });
+            }
 
-         Label spacer = new Label();
-         spacer.setWidth(7, UNITS_PIXELS);
-         this.addComponent(spacer);
+            if (i <= endPage) {
+               Label spacer = new Label();
+               spacer.setWidth(7, UNITS_PIXELS);
+               this.addComponent(spacer);
+            }
+         }
+
+         if (endPage != manyPages - 1) {
+            Label pageLabel = new Label("...");
+            this.addComponent(pageLabel);
+
+            Label spacer = new Label();
+            spacer.setWidth(7, UNITS_PIXELS);
+            this.addComponent(spacer);
+         }
       }
    }
 
@@ -274,7 +285,11 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    @Override
    public Collection<Integer> getCurrentVisibleItemIndices() {
       Collection<Integer> ret = new ArrayList<Integer>();
-      if (currentPage <= manyPages) {
+      if (allItemsPerPage) {
+         for (int i = 0; i < manyItemsTotal; i++) {
+            ret.add(new Integer(i));
+         }
+      } else if (currentPage <= manyPages) {
          for (int i = 0; i < manyItemsPerPage; i++) {
             int itemIndex = (currentPage * manyItemsPerPage) + i;
             if (itemIndex < manyItemsTotal) {
@@ -288,11 +303,18 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    @Override
    public void setManyItemsPerPage(int manyItemsPerPage) {
       this.manyItemsPerPage = manyItemsPerPage;
+      this.allItemsPerPage = false;
       createLayout();
    }
 
    @Override
    public int getManyItemsPerPage() {
       return this.manyItemsPerPage;
+   }
+
+   @Override
+   public void setAllItemsPerPage() {
+      this.allItemsPerPage = true;
+      createLayout();
    }
 }

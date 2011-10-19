@@ -23,6 +23,8 @@ public interface PagingComponent {
 
    public void setManyItemsPerPage(int manyItemsPerPage);
 
+   public void setAllItemsPerPage();
+
    public int getManyItemsPerPage();
 
 }

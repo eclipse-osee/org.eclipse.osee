@@ -26,11 +26,11 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
@@ -48,7 +48,9 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
    private SearchHeaderComponent searchHeaderComponent;
    private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
-   private final TextField manyResultsTextField = new TextField();
+   //   private final TextField manyResultsTextField = new TextField();
+   private final ComboBox manyResultsComboBox = new ComboBox();
+   private final int INIT_MANY_RES_PER_PAGE = 15;
 
    public OseeSearchResultsListComponent() {
       this(null);
@@ -95,16 +97,28 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
          }
       });
 
-      manyResultsTextField.setImmediate(true);
-      manyResultsTextField.setStyleName(CssConstants.OSEE_SEARCHRESULTS_MANYRESULTSFIELD);
-      manyResultsTextField.setValue(pagingComponent.getManyItemsPerPage());
-      manyResultsTextField.addListener(new Property.ValueChangeListener() {
+      manyResultsComboBox.setImmediate(true);
+      manyResultsComboBox.setTextInputAllowed(false);
+      manyResultsComboBox.setNullSelectionAllowed(false);
+      manyResultsComboBox.addItem("5");
+      manyResultsComboBox.addItem("15");
+      manyResultsComboBox.addItem("50");
+      manyResultsComboBox.addItem("100");
+      manyResultsComboBox.addItem("All");
+      manyResultsComboBox.setValue((new Integer(INIT_MANY_RES_PER_PAGE)).toString());
+      pagingComponent.setManyItemsPerPage(INIT_MANY_RES_PER_PAGE);
+      manyResultsComboBox.setWidth(50, UNITS_PIXELS);
+      manyResultsComboBox.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
             if (pagingComponent != null) {
-               String manyItemsPerPage_str = manyResultsTextField.toString();
-               int manyItemsPerPage = Integer.parseInt(manyItemsPerPage_str);
-               pagingComponent.setManyItemsPerPage(manyItemsPerPage);
+               String manyItemsPerPage_str = (String) manyResultsComboBox.getValue();
+               if (manyItemsPerPage_str.equalsIgnoreCase("All")) {
+                  pagingComponent.setAllItemsPerPage();
+               } else {
+                  int manyItemsPerPage = Integer.parseInt(manyItemsPerPage_str);
+                  pagingComponent.setManyItemsPerPage(manyItemsPerPage);
+               }
                updateSearchResultsLayout();
             }
          }
@@ -149,8 +163,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       spacer3.setWidth(5, UNITS_PIXELS);
       Label manyResultsLabel = new Label("Results Per Page");
       manySearchResultsHorizLayout.addComponent(spacer2);
-      manySearchResultsHorizLayout.addComponent(manyResultsTextField);
-      manySearchResultsHorizLayout.setComponentAlignment(manyResultsTextField, Alignment.TOP_CENTER);
+      manySearchResultsHorizLayout.addComponent(manyResultsComboBox);
+      manySearchResultsHorizLayout.setComponentAlignment(manyResultsComboBox, Alignment.TOP_CENTER);
       manySearchResultsHorizLayout.addComponent(spacer3);
       manySearchResultsHorizLayout.addComponent(manyResultsLabel);
 
