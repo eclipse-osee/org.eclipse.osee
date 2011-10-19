@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.mocks;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
+import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.display.api.data.WebId;
 
 /**
@@ -78,17 +79,7 @@ public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
    }
 
    @Override
-   public void setSearchCriteria(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
-   }
-
-   @Override
-   public void setProgram(WebId program) {
-      selectedProgram = program;
-   }
-
-   @Override
-   public void setBuild(WebId build) {
-      selectedBuild = build;
+   public void setSearchCriteria(AtsSearchParameters params) {
    }
 
    @Override

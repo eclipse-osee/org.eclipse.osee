@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsNavigator;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
-import org.eclipse.osee.ats.view.web.search.AtsSearchHomeView;
+import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.WebId;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
@@ -162,7 +162,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       if (showOseeTitleAbove) {
          setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_LARGE);
          OseeLogoLink oseeTitleLabel =
-            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_LARGE_TEXT, AtsSearchHomeView.class);
+            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_LARGE_TEXT, AtsSearchResultsView.class);
          hLayoutRow0.addComponent(oseeTitleLabel);
          hLayoutRow0.setComponentAlignment(oseeTitleLabel, Alignment.MIDDLE_CENTER);
          oseeTitleLabel.setStyleName(CssConstants.OSEE_TITLE_LARGE_TEXT);
@@ -181,7 +181,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
 
          OseeLogoLink oseeTitleLabel =
-            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchHomeView.class);
+            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
          Label spacer4 = new Label("");
          spacer4.setWidth(15, UNITS_PIXELS);
          oseeTitleLabel.setHeight(70, UNITS_PIXELS);
@@ -238,20 +238,22 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    }
 
    @Override
-   public void setSearchCriteria(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
-      if (programCombo != null) {
-         lockProgramCombo = true;
-         programCombo.setValue(program);
-         lockProgramCombo = false;
-      }
-      if (buildCombo != null) {
-         buildCombo.setValue(build);
-      }
-      if (nameOnlyCheckBox != null) {
-         nameOnlyCheckBox.setValue(nameOnly);
-      }
-      if (searchTextField != null) {
-         searchTextField.setValue(searchPhrase);
+   public void setSearchCriteria(AtsSearchParameters params) {
+      if (params != null) {
+         if (programCombo != null) {
+            lockProgramCombo = true;
+            programCombo.setValue(params.getProgram());
+            lockProgramCombo = false;
+         }
+         if (buildCombo != null) {
+            buildCombo.setValue(params.getBuild());
+         }
+         if (nameOnlyCheckBox != null) {
+            nameOnlyCheckBox.setValue(params.isNameOnly());
+         }
+         if (searchTextField != null) {
+            searchTextField.setValue(params.getSearchString());
+         }
       }
    }
 
@@ -270,20 +272,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       }
       if (searchTextField != null) {
          searchTextField.setValue("");
-      }
-   }
-
-   @Override
-   public void setProgram(WebId program) {
-      if (programCombo != null) {
-         programCombo.setValue(program);
-      }
-   }
-
-   @Override
-   public void setBuild(WebId build) {
-      if (buildCombo != null) {
-         buildCombo.setValue(build);
       }
    }
 

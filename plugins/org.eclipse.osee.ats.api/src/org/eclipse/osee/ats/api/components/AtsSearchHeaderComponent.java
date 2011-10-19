@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.components;
 
+import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.data.WebId;
 
@@ -24,10 +25,6 @@ public interface AtsSearchHeaderComponent extends SearchHeaderComponent {
 
    void addBuild(WebId build);
 
-   void setSearchCriteria(WebId program, WebId build, boolean nameOnly, String searchPhrase);
-
-   void setProgram(WebId program);
-
-   void setBuild(WebId build);
+   void setSearchCriteria(AtsSearchParameters params);
 
 }

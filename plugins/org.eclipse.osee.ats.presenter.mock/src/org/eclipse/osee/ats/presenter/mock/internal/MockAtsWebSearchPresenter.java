@@ -123,17 +123,18 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       }
    }
 
-   private void initSearchHome(AtsSearchHeaderComponent headerComponent) {
-      if (headerComponent != null) {
-         headerComponent.clearAll();
-         Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();
-         if (entrySet != null) {
-            for (Entry<WebId, Collection<WebId>> entry : entrySet) {
-               headerComponent.addProgram(entry.getKey());
-            }
-         }
-      }
-   }
+   //   @Override
+   //   public void initSearchHome(AtsSearchHeaderComponent headerComponent) {
+   //      if (headerComponent != null) {
+   //         headerComponent.clearAll();
+   //         Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();
+   //         if (entrySet != null) {
+   //            for (Entry<WebId, Collection<WebId>> entry : entrySet) {
+   //               headerComponent.addProgram(entry.getKey());
+   //            }
+   //         }
+   //      }
+   //   }
 
    @Override
    public void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator) {
