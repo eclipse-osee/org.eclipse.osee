@@ -237,25 +237,56 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    @Override
    public void initSearchResults(String url, AtsSearchHeaderComponent searchHeaderComponent, SearchResultsListComponent resultsComponent) {
 
+      if ((url == null || url.isEmpty()) && searchHeaderComponent != null) {
+         searchHeaderComponent.clearAll();
+         Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();
+         if (entrySet != null) {
+            for (Entry<WebId, Collection<WebId>> entry : entrySet) {
+               searchHeaderComponent.addProgram(entry.getKey());
+            }
+         }
+      }
+
       if (resultsComponent != null) {
          boolean showVerboseSearchResults = true;
+         String searchPhrase = "";
+         boolean nameOnly = false;
          Map<String, String> params = requestStringToParameterMap(url);
          if (params != null && params.size() > 0) {
             String showVerbose_str = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
             if (showVerbose_str != null && !showVerbose_str.isEmpty()) {
                showVerboseSearchResults = showVerbose_str.equalsIgnoreCase("true");
             }
+
+            searchPhrase = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
+            if (searchPhrase == null) {
+               searchPhrase = "";
+            }
+
+            String nameOnly_str = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
+            if (nameOnly_str != null && !nameOnly_str.isEmpty()) {
+               nameOnly = nameOnly_str.equalsIgnoreCase("true");
+            }
          }
          resultsComponent.clearAll();
-         Set<Entry<String, WebArtifact>> entrySet = artifacts.entrySet();
-         for (Entry<String, WebArtifact> artifactEntry : entrySet) {
-            SearchResultComponent searchResultComp = resultsComponent.createSearchResult();
-            if (searchResultComp != null) {
+         if (!searchPhrase.isEmpty()) {
+            Set<Entry<String, WebArtifact>> entrySet = artifacts.entrySet();
+            for (Entry<String, WebArtifact> artifactEntry : entrySet) {
                WebArtifact artifact = artifactEntry.getValue();
-               searchResultComp.setShowVerboseSearchResults(showVerboseSearchResults);
-               searchResultComp.setArtifact(artifact);
-               searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", "...{COM_PAGE}...",
-                  10));
+               if (artifact.getArtifactName().toLowerCase().contains(searchPhrase.toLowerCase())) {
+                  SearchResultComponent searchResultComp = resultsComponent.createSearchResult();
+                  if (searchResultComp != null) {
+                     if (showVerboseSearchResults) {
+                        artifact =
+                           new WebArtifact(artifact.getGuid(), artifact.getArtifactName(), artifact.getArtifactType());
+                     }
+                     searchResultComp.setArtifact(artifact);
+                     if (!nameOnly && !showVerboseSearchResults) {
+                        searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content",
+                           "...{COM_PAGE}...", 10));
+                     }
+                  }
+               }
             }
          }
       }

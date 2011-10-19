@@ -118,7 +118,6 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
    public void setErrorMessage(String message) {
    }
 
-   @Override
    public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
       this.showVerboseSearchResults = showVerboseSearchResults;
       removeAllComponents();

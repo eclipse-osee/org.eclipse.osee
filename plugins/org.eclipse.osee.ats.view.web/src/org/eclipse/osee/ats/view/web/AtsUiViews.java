@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.view.web;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.view.web.search.AtsArtifactView;
-import org.eclipse.osee.ats.view.web.search.AtsSearchHomeView;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.eclipse.osee.vaadin.widgets.Navigator;
@@ -25,9 +24,8 @@ public class AtsUiViews implements HasViews {
 
    @Override
    public List<Class<? extends Navigator.View>> getViews() {
-      // Dynamic View Registration?
       List<Class<? extends Navigator.View>> views = new ArrayList<Class<? extends Navigator.View>>();
-      views.add(AtsSearchHomeView.class);
+      //      views.add(AtsSearchHomeView.class);
       views.add(AtsSearchResultsView.class);
       views.add(AtsArtifactView.class);
       return views;
