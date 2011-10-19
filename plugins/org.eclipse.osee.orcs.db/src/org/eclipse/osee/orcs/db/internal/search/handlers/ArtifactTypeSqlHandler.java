@@ -60,6 +60,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
    @Override
    public void addPredicates(SqlWriter writer) throws OseeCoreException {
       Collection<? extends IArtifactType> types = criteria.getTypes();
+
       if (types.size() > 1) {
          Set<Integer> typeIds = new HashSet<Integer>();
          for (IArtifactType type : types) {

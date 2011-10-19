@@ -100,12 +100,12 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact type
     */
-   QueryBuilder and(IArtifactType... artifactType) throws OseeCoreException;
+   QueryBuilder andIsOfType(IArtifactType... artifactType) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact types
     */
-   QueryBuilder and(Collection<? extends IArtifactType> artifactType) throws OseeCoreException;
+   QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException;
 
    /**
     * Search criteria that checks for the existence of an attribute type(s).

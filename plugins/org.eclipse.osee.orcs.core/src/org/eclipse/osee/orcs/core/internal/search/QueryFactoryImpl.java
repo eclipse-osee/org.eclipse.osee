@@ -68,7 +68,7 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) throws OseeCoreException {
       QueryBuilder builder = createBuilder(null);
-      builder.and(artifactType);
+      builder.andIsOfType(artifactType);
       return builder;
    }
 }

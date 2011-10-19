@@ -204,13 +204,13 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder and(IArtifactType... artifactType) throws OseeCoreException {
+   public QueryBuilder andIsOfType(IArtifactType... artifactType) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createArtifactTypeCriteria(Arrays.asList(artifactType));
       return addAndCheck(criteria);
    }
 
    @Override
-   public QueryBuilder and(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
+   public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
       return addAndCheck(criteria);
    }
