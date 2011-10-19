@@ -29,8 +29,6 @@ import org.eclipse.osee.orcs.search.Operator;
 public class AttributeOtherSqlHandler extends SqlHandler {
 
    private CriteriaAttributeOther criteria;
-   private String artAlias;
-   private String txsAlias;
 
    private String attrAlias;
    private String txsAlias1;
@@ -63,10 +61,10 @@ public class AttributeOtherSqlHandler extends SqlHandler {
       txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
 
       if (aliases.isEmpty()) {
-         artAlias = writer.writeTable(TableEnum.ARTIFACT_TABLE);
+         writer.writeTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txs.isEmpty()) {
-         txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
+         writer.writeTable(TableEnum.TXS_TABLE);
       }
    }
 

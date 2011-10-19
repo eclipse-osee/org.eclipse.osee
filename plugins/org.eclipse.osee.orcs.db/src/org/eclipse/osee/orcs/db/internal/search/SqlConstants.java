@@ -25,7 +25,8 @@ public final class SqlConstants {
       ATTRIBUTE_TABLE("osee_attribute", "att"),
       RELATION_TABLE("osee_relation_link", "rel"),
       CHAR_JOIN_TABLE("osee_join_char_id", "jch"),
-      ID_JOIN_TABLE("osee_join_id", "jid");
+      ID_JOIN_TABLE("osee_join_id", "jid"),
+      SEARCH_TAGS_TABLE("osee_search_tags", "tag");
 
       private String tableName;
       private String aliasPrefix;

@@ -20,6 +20,9 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -47,7 +50,8 @@ public final class SqlUtility {
          }
 
       };
-      SqlHandlerFactory factory = new SqlHandlerFactoryImpl(service);
+      TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(new MockLog()), new TagEncoder());
+      SqlHandlerFactory factory = new SqlHandlerFactoryImpl(service, tagProcessor);
       return factory.createHandlers(criteriaSet);
    }
 }

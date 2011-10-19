@@ -86,4 +86,9 @@ public class AttributeContainerImpl implements AttributeContainer {
    public NamedIdentity<String> getParent() {
       return parent;
    }
+
+   @Override
+   public <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException {
+      return collection.getAll();
+   }
 }

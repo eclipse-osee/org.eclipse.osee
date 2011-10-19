@@ -24,6 +24,10 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.SqlBuilder.QueryType;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
 /**
  * @author Roberto E. Escobar
@@ -32,6 +36,8 @@ public class QueryEngineImpl implements QueryEngine {
 
    private SqlHandlerFactory handlerFactory;
    private SqlBuilder builder;
+   private TagProcessor tagProcessor;
+   private TaggingEngine taggingEngine;
 
    private SqlProvider sqlProvider;
    private IOseeDatabaseService dbService;
@@ -61,7 +67,10 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    public void start() {
-      handlerFactory = new SqlHandlerFactoryImpl(identityService);
+      tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
+      taggingEngine = new TaggingEngine(tagProcessor, cacheService.getAttributeTypeCache());
+
+      handlerFactory = new SqlHandlerFactoryImpl(identityService, tagProcessor);
       builder = new SqlBuilder(sqlProvider, dbService);
    }
 

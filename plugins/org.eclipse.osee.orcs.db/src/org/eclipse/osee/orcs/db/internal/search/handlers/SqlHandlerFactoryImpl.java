@@ -30,6 +30,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandlerFactory;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -41,9 +42,11 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler>>();
 
    private final IdentityService idService;
+   private final TagProcessor tagProcessor;
 
-   public SqlHandlerFactoryImpl(IdentityService idService) {
+   public SqlHandlerFactoryImpl(IdentityService idService, TagProcessor tagProcessor) {
       this.idService = idService;
+      this.tagProcessor = tagProcessor;
 
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactHrids.class, ArtifactHridsSqlHandler.class);
@@ -65,6 +68,7 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
             SqlHandler handler = item.newInstance();
             handler.setData(criteria);
             handler.setIdentityService(idService);
+            handler.setTagProcessor(tagProcessor);
             handlers.add(handler);
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);

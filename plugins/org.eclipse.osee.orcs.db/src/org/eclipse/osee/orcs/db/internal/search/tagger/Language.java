@@ -8,17 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.search;
+package org.eclipse.osee.orcs.db.internal.search.tagger;
 
 /**
- * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
-public enum CaseType {
-   MATCH_CASE,
-   IGNORE_CASE;
+public interface Language {
 
-   public boolean isCaseSensitive() {
-      return MATCH_CASE == this;
-   }
+   public boolean isWord(String rawText);
+
+   public String toSingular(String rawText);
 }

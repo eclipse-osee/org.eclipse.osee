@@ -14,10 +14,12 @@ import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 
 public abstract class SqlHandler {
 
    private IdentityService idService;
+   private TagProcessor tagProcessor;
 
    public void setIdentityService(IdentityService idService) {
       this.idService = idService;
@@ -38,5 +40,13 @@ public abstract class SqlHandler {
    @SuppressWarnings("unused")
    public void addOrderBy(SqlWriter sqlWriter) throws OseeCoreException {
       // Do nothing
+   }
+
+   public void setTagProcessor(TagProcessor tagProcessor) {
+      this.tagProcessor = tagProcessor;
+   }
+
+   protected TagProcessor getTagProcessor() {
+      return tagProcessor;
    }
 }

@@ -36,11 +36,21 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    IArtifactType getArtifactType();
 
+   boolean hasParent();
+
+   ReadableArtifact getParent();
+
+   // Attribute API
+
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
+
+   <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException;
 
    <T> List<ReadableAttribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
 
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
+
+   // Relation API
 
    Collection<RelationType> getValidRelationTypes() throws OseeCoreException;//TODO what type should we us here IRelationType, RelationType
 
@@ -50,10 +60,7 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException;
 
-   boolean hasParent();
-
-   ReadableArtifact getParent();
-
    @Override
    String toString();
+
 }

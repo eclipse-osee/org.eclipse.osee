@@ -20,4 +20,5 @@ public enum StringOperator {
    CONTAINS,
    TOKENIZED_ANY_ORDER,
    TOKENIZED_MATCH_ORDER;
+
 }

@@ -39,4 +39,6 @@ public interface AttributeContainer {
    boolean isLoaded();
 
    void setLoaded(boolean value);
+
+   <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException;
 }

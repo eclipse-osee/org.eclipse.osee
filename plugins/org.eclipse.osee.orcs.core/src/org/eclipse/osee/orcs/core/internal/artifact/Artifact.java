@@ -185,4 +185,9 @@ public class Artifact implements ReadableArtifact {
    public Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException {
       return relationContainer.getAvailableRelationTypes();
    }
+
+   @Override
+   public <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException {
+      return getAttributeContainer().getAttributes();
+   }
 }

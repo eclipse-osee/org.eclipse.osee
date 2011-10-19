@@ -21,8 +21,8 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.search.CaseType;
@@ -47,7 +47,7 @@ public class CriteriaFactory {
       return new CriteriaAttributeOther(attributeType, values, operator);
    }
 
-   public Criteria createAttributeCriteria(IAttributeType attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException {
+   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException {
       return new CriteriaAttributeKeyword(attributeType, values, operator, match);
    }
 
