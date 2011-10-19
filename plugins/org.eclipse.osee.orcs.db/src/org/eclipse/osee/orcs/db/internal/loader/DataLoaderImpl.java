@@ -157,7 +157,7 @@ public class DataLoaderImpl implements DataLoader {
    private int computeFetchSize(SqlContext sqlContext) {
       int fetchSize = Integer.MIN_VALUE;
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
-         fetchSize = Math.max(fetchSize, join.size());
+         fetchSize = Math.max(fetchSize, join.size() * 20);//added *20 to account for # of attributes/relations
       }
       if (fetchSize < 0 || fetchSize > MAX_FETCH_SIZE) {
          fetchSize = MAX_FETCH_SIZE;

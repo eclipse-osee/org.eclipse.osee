@@ -71,7 +71,6 @@ public class IdentityServiceImpl implements IdentityService {
       try {
          chStmt = service.getStatement();
          chStmt.runPreparedQuery(1000, SELECT_ALL);
-         clear();
          while (chStmt.next()) {
             Long remoteId = chStmt.getLong("remote_id");
             Integer localId = chStmt.getInt("local_id");
@@ -98,6 +97,7 @@ public class IdentityServiceImpl implements IdentityService {
 
    private synchronized void ensurePopulate() throws OseeCoreException {
       if (!ensurePopulatedRanOnce) {
+         clear();
          ensurePopulatedRanOnce = true;
          reloadCache();
       }
