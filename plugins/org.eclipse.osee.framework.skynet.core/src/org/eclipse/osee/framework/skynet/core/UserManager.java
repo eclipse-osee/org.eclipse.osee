@@ -68,6 +68,13 @@ public final class UserManager {
       ClientUser.releaseUser();
    }
 
+   public static void clearCache() throws OseeCoreException {
+      for (Artifact art : ArtifactCache.getArtifactsByType(CoreArtifactTypes.User)) {
+         ArtifactCache.deCache(art);
+      }
+      userCacheIsLoaded = false;
+   }
+
    public static List<IBasicUser> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
       List<IBasicUser> users = new ArrayList<IBasicUser>();
       for (String userId : userIds) {
