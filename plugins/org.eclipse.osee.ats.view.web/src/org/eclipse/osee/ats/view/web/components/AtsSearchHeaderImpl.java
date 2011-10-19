@@ -45,10 +45,10 @@ import com.vaadin.ui.Window.Notification;
 public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements AtsSearchHeaderComponent, Handler {
 
    private boolean populated = false;
-   private final ComboBox programCombo;
-   private final ComboBox buildCombo;
-   private final CheckBox nameOnlyCheckBox;
-   private final TextField searchTextField;
+   private final ComboBox programCombo = new ComboBox("Program:");
+   private final ComboBox buildCombo = new ComboBox("Build:");
+   private final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", true);
+   private final TextField searchTextField = new TextField();
    private AtsSearchPresenter searchPresenter;
    private AtsNavigator navigator;
    private boolean lockProgramCombo = false;
@@ -77,11 +77,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    public AtsSearchHeaderImpl(boolean showOseeTitleAbove) {
       this.showOseeTitleAbove = showOseeTitleAbove;
-
-      programCombo = new ComboBox("Program:");
-      buildCombo = new ComboBox("Build:");
-      nameOnlyCheckBox = new CheckBox("Name Only", false);
-      searchTextField = new TextField();
 
       if (programCombo != null) {
          programCombo.setNullSelectionAllowed(false);
@@ -197,8 +192,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          rightSideVLayout.addComponent(hLayoutRow2);
          rightSideVLayout.setSizeUndefined();
 
-         //TODO: Make the title logo a hyper link to the search home
-
          hLayoutRow0.addComponent(oseeTitleLabel);
          hLayoutRow0.addComponent(spacer4);
          hLayoutRow0.addComponent(rightSideVLayout);
@@ -269,7 +262,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          buildCombo.setValue(null);
       }
       if (nameOnlyCheckBox != null) {
-         nameOnlyCheckBox.setValue(false);
+         nameOnlyCheckBox.setValue(true);
       }
       if (searchTextField != null) {
          searchTextField.setValue("");

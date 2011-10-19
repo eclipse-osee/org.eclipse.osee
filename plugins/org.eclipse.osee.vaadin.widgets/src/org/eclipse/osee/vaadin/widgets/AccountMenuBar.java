@@ -11,8 +11,6 @@
 package org.eclipse.osee.vaadin.widgets;
 
 import com.vaadin.Application;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Window;
 
@@ -39,49 +37,49 @@ public class AccountMenuBar extends MenuBar {
       final MenuBar menuBar = this;
 
       String userName = getUserName(menuBar.getApplication());
-      if (userName.equalsIgnoreCase("guest")) {
-         menuBar.addItem("Log In", new Command() {
-            @Override
-            public void menuSelected(MenuItem selectedItem) {
-               System.out.printf("Log In Page: %s\n", getLogInUrl());
-            }
-         });
-
-         menuBar.addItem("Register", new Command() {
-            @Override
-            public void menuSelected(MenuItem selectedItem) {
-               String registrationUrl = getRegistrationUrl();
-               System.out.printf("Registration Page: %s \n", registrationUrl);
-               showClientDetails(menuBar.getApplication());
-            }
-         });
-      } else {
-         MenuItem accountItem = menuBar.addItem("Account", null);
-
-         accountItem.addItem("Change Password", new Command() {
-            @Override
-            public void menuSelected(MenuItem selectedItem) {
-               System.out.printf("Change Password");
-            }
-         });
-
-         accountItem.addItem("Log Off", new Command() {
-            @Override
-            public void menuSelected(MenuItem selectedItem) {
-               String logoutUrl = getLogOutUrl(menuBar.getApplication());
-               System.out.printf("LogOut: %s \n", logoutUrl);
-            }
-         });
-
-         Resource settingsIcon = new ThemeResource("../runo/icons/16/settings.png");
-         MenuItem item = accountItem.addItem("", settingsIcon, new MenuBar.Command() {
-            @Override
-            public void menuSelected(MenuItem selectedItem) {
-               System.out.println("Options");
-            }
-         });
-         item.setDescription("Options");
-      }
+      //      if (userName.equalsIgnoreCase("guest")) {
+      //         menuBar.addItem("Log In", new Command() {
+      //            @Override
+      //            public void menuSelected(MenuItem selectedItem) {
+      //               System.out.printf("Log In Page: %s\n", getLogInUrl());
+      //            }
+      //         });
+      //
+      //         menuBar.addItem("Register", new Command() {
+      //            @Override
+      //            public void menuSelected(MenuItem selectedItem) {
+      //               String registrationUrl = getRegistrationUrl();
+      //               System.out.printf("Registration Page: %s \n", registrationUrl);
+      //               showClientDetails(menuBar.getApplication());
+      //            }
+      //         });
+      //      } else {
+      //         MenuItem accountItem = menuBar.addItem("Account", null);
+      //
+      //         accountItem.addItem("Change Password", new Command() {
+      //            @Override
+      //            public void menuSelected(MenuItem selectedItem) {
+      //               System.out.printf("Change Password");
+      //            }
+      //         });
+      //
+      //         accountItem.addItem("Log Off", new Command() {
+      //            @Override
+      //            public void menuSelected(MenuItem selectedItem) {
+      //               String logoutUrl = getLogOutUrl(menuBar.getApplication());
+      //               System.out.printf("LogOut: %s \n", logoutUrl);
+      //            }
+      //         });
+      //
+      //         Resource settingsIcon = new ThemeResource("../runo/icons/16/settings.png");
+      //         MenuItem item = accountItem.addItem("", settingsIcon, new MenuBar.Command() {
+      //            @Override
+      //            public void menuSelected(MenuItem selectedItem) {
+      //               System.out.println("Options");
+      //            }
+      //         });
+      //         item.setDescription("Options");
+      //      }
       populated = true;
    }
 

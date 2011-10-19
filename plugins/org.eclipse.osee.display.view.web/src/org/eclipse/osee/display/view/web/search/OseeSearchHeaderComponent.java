@@ -20,7 +20,7 @@ import com.vaadin.ui.VerticalLayout;
 public class OseeSearchHeaderComponent extends VerticalLayout implements SearchHeaderComponent {
 
    protected boolean showOseeTitleAbove;
-   protected boolean showVerboseSearchResults = true;
+   protected boolean showVerboseSearchResults = false;
 
    @Override
    public void attach() {

@@ -47,7 +47,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private OseePagingComponent pagingComponent = new OseePagingComponent();
    private List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
    private SearchHeaderComponent searchHeaderComponent;
-   private final CheckBox showVerboseCheckBox = new CheckBox("Show Verbose Search Results", true);
+   private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
    private final TextField manyResultsTextField = new TextField();
 
    public OseeSearchResultsListComponent() {
@@ -125,7 +125,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       Label manySearchResults = new Label(String.format("[%d] ", manySearchResultComponents));
       Label spacer = new Label();
       spacer.setWidth(5, UNITS_PIXELS);
-      Label manySearchResults_suffix = new Label("search result(s) found.");
+      Label manySearchResults_suffix = new Label("Results Found");
       manySearchResults.setSizeUndefined();
       manySearchResults_suffix.setSizeUndefined();
       manySearchResults.setStyleName(CssConstants.OSEE_SEARCHRESULT_MATCH_MANY);
@@ -147,7 +147,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       spacer2.setWidth(30, UNITS_PIXELS);
       Label spacer3 = new Label();
       spacer3.setWidth(5, UNITS_PIXELS);
-      Label manyResultsLabel = new Label("Many Results Per Page");
+      Label manyResultsLabel = new Label("Results Per Page");
       manySearchResultsHorizLayout.addComponent(spacer2);
       manySearchResultsHorizLayout.addComponent(manyResultsTextField);
       manySearchResultsHorizLayout.setComponentAlignment(manyResultsTextField, Alignment.TOP_CENTER);

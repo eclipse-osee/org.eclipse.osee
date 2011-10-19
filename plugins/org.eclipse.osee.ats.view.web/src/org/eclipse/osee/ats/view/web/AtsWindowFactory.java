@@ -39,7 +39,7 @@ public class AtsWindowFactory {
       }
       w.addComponent(createNavigationBar(navigator, provider));
       w.addComponent(navigator);
-      w.addComponent(createFooter());
+      //w.addComponent(createFooter());
 
       layout.setMargin(false);
       layout.setSpacing(true);

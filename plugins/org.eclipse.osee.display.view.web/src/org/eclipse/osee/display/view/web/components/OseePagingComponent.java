@@ -30,10 +30,10 @@ import com.vaadin.ui.Label;
 public class OseePagingComponent extends HorizontalLayout implements PagingComponent {
 
    private int manyItemsTotal = 0;
-   private int manyItemsPerPage = 10;
+   private int manyItemsPerPage = 15;
    private int manyPages = 0;
    private int currentPage = 0;
-   private final int MAX_PAGE_NUMBERS_SHOWN = 10;
+   private final int MAX_PAGE_NUMBERS_SHOWN = 4;
 
    public OseePagingComponent() {
       super();
@@ -137,14 +137,14 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
       this.removeAllComponents();
       this.setSizeUndefined();
 
-      Button firstButton = new Button("<<first");
+      Button firstButton = new Button("<< First");
       this.addComponent(firstButton);
 
       Label spacer1 = new Label();
       spacer1.setWidth(15, UNITS_PIXELS);
       this.addComponent(spacer1);
 
-      Button previousButton = new Button("<prev");
+      Button previousButton = new Button("< Prev");
       this.addComponent(previousButton);
 
       Label spacer2 = new Label();
@@ -157,14 +157,14 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
       spacer3.setWidth(15, UNITS_PIXELS);
       this.addComponent(spacer3);
 
-      Button nextButton = new Button("next>");
+      Button nextButton = new Button("Next >");
       this.addComponent(nextButton);
 
       Label spacer4 = new Label();
       spacer4.setWidth(15, UNITS_PIXELS);
       this.addComponent(spacer4);
 
-      Button lastButton = new Button("last>>");
+      Button lastButton = new Button("Last >>");
       this.addComponent(lastButton);
 
       if (manyPages <= 0) {
