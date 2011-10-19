@@ -56,7 +56,7 @@ public class ArtifactResource {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOseeApi().getQueryFactory(null);
       List<ReadableArtifact> arts =
-         factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).build(LoadLevel.SHALLOW).getList();
+         factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).build(LoadLevel.FULL).getList();
       HtmlWriter writer = new HtmlWriter(uriInfo, factory);
       return writer.toHtml(arts);
    }

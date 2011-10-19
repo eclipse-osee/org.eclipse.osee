@@ -19,8 +19,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 
 /**
  * @author Roberto E. Escobar
@@ -43,7 +46,9 @@ public class BranchesResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      Collection<Branch> branches = OrcsApplication.getOseeApi().getBranchCache().getAll();
+      Collection<Branch> branches =
+         OrcsApplication.getOseeApi().getBranchCache().getBranches(
+            new BranchFilter(BranchArchivedState.UNARCHIVED, BranchType.BASELINE, BranchType.WORKING));//getAll();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(branches);
    }
