@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -38,7 +37,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
 
-public class Artifact implements ReadableArtifact {
+public class Artifact extends NamedIdentity<String> implements ReadableArtifact {
 
    private final AttributeContainer attributeContainer;
    private final RelationContainer relationContainer;
@@ -53,7 +52,7 @@ public class Artifact implements ReadableArtifact {
    private final boolean historical;
 
    public Artifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical, RelationTypeCache relationTypeCache) {
-
+      super(guid, "");
       this.artId = artId;
       this.guid = guid;
       this.humandReadableId = humandReadableId;
@@ -63,8 +62,7 @@ public class Artifact implements ReadableArtifact {
       this.transactionId = transactionId;
       this.modType = modType;
       this.historical = historical;
-      NamedIdentity<String> namedIdentity = new NamedIdentity<String>(guid, humandReadableId);
-      attributeContainer = new AttributeContainerImpl(namedIdentity);
+      attributeContainer = new AttributeContainerImpl(this);
       relationContainer = new RelationContainerImpl(artId, relationTypeCache);
 
    }
@@ -77,16 +75,6 @@ public class Artifact implements ReadableArtifact {
    @Override
    public ModificationType getModificationType() {
       return modType;
-   }
-
-   @Override
-   public String getGuid() {
-      return guid;
-   }
-
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      return false;
    }
 
    @Override
@@ -162,12 +150,12 @@ public class Artifact implements ReadableArtifact {
    public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
       List<Integer> results = new ArrayList<Integer>();
       relationContainer.getArtifactIds(results, relationTypeSide);
-      if (results.size() > 0) {
+      if (!results.isEmpty()) {
          QueryBuilder builder = queryFactory.fromBranch(getBranch()).andLocalIds(results);
          ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
          return resultSet.getList();
       } else {
-         return Collections.EMPTY_LIST;//TODO
+         return Collections.emptyList();
       }
    }
 

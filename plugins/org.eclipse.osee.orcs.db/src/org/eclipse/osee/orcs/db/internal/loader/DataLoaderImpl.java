@@ -23,10 +23,12 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
+import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandlerFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
+import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.search.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
@@ -51,12 +53,22 @@ public class DataLoaderImpl implements DataLoader {
       sqlProvider = new StaticSqlProvider();
       sqlProvider.setLogger(logger);
       sqlProvider.setPreferences(preferences);
+
       artifactLoader = new ArtifactLoader(logger, sqlProvider, oseeDatabaseService, identityService);
+
       AttributeDataProxyFactory attributeDataProxyFactory =
          new AttributeDataProxyFactory(dataProxyFactoryProvider, dataStoreTypeCache.getAttributeTypeCache());
       attributeLoader =
          new AttributeLoader(sqlProvider, oseeDatabaseService, identityService, attributeDataProxyFactory);
+
       relationLoader = new RelationLoader(sqlProvider, oseeDatabaseService, identityService);
+   }
+
+   public void stop() {
+      sqlProvider = null;
+      artifactLoader = null;
+      attributeLoader = null;
+      relationLoader = null;
    }
 
    public void setLogger(Log logger) {
@@ -88,8 +100,8 @@ public class DataLoaderImpl implements DataLoader {
       if (queryContext instanceof SqlContext) {
          sqlContext = (SqlContext) queryContext;
       } else {
-         throw new OseeCoreException(String.format("Invalid data store context type[%s], expected SqlContext.",
-            queryContext.getClass().getName()));
+         throw new OseeCoreException("Invalid query context type [%s] - expected SqlContext",
+            queryContext.getClass().getName());
       }
       return sqlContext;
    }
@@ -116,22 +128,31 @@ public class DataLoaderImpl implements DataLoader {
       SqlContext sqlContext = toSqlContext(queryContext);
       int fetchSize = computeFetchSize(sqlContext);
 
-      ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
-      populateArtifactJoin(join, sqlContext, fetchSize);
+      AbstractJoinQuery join = createArtifactIdJoin(sqlContext, fetchSize);
       try {
          join.store();
-         artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, join.getQueryId());
-         if (loadOptions.getLoadLevel() == LoadLevel.ATTRIBUTE || loadOptions.getLoadLevel() == LoadLevel.ALL_CURRENT || loadOptions.getLoadLevel() == LoadLevel.FULL) {
-            attributeLoader.loadFromQueryId(attributeRowHandlerFactory.createAttributeRowHandler(), loadOptions,
-               fetchSize, join.getQueryId());
+         int queryId = join.getQueryId();
+
+         artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, queryId);
+         if (isAttributeLoadingAllowed(loadOptions.getLoadLevel())) {
+            AttributeRowHandler attrHandler = attributeRowHandlerFactory.createAttributeRowHandler();
+            attributeLoader.loadFromQueryId(attrHandler, loadOptions, fetchSize, queryId);
          }
-         if (loadOptions.getLoadLevel() == LoadLevel.RELATION || loadOptions.getLoadLevel() == LoadLevel.ALL_CURRENT || loadOptions.getLoadLevel() == LoadLevel.FULL) {
-            relationLoader.loadFromQueryId(relationRowHandlerFactory.createRelationRowHandler(), loadOptions,
-               fetchSize, join.getQueryId());
+         if (isRelationLoadingAllowed(loadOptions.getLoadLevel())) {
+            RelationRowHandler relHandler = relationRowHandlerFactory.createRelationRowHandler();
+            relationLoader.loadFromQueryId(relHandler, loadOptions, fetchSize, queryId);
          }
       } finally {
          join.delete();
       }
+   }
+
+   private boolean isAttributeLoadingAllowed(LoadLevel level) {
+      return level != LoadLevel.SHALLOW && level != LoadLevel.RELATION;
+   }
+
+   private boolean isRelationLoadingAllowed(LoadLevel level) {
+      return level != LoadLevel.SHALLOW && level != LoadLevel.ATTRIBUTE;
    }
 
    private int computeFetchSize(SqlContext sqlContext) {
@@ -145,20 +166,21 @@ public class DataLoaderImpl implements DataLoader {
       return fetchSize;
    }
 
-   private void populateArtifactJoin(ArtifactJoinQuery artifactJoin, SqlContext sqlContext, int fetchSize) throws OseeCoreException {
+   private AbstractJoinQuery createArtifactIdJoin(SqlContext sqlContext, int fetchSize) throws OseeCoreException {
+      ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
          join.store();
       }
       String query = sqlContext.getSql();
       List<Object> params = sqlContext.getParameters();
       try {
+         Integer transactionId = -1;
          IOseeStatement chStmt = oseeDatabaseService.getStatement();
          try {
             chStmt.runPreparedQuery(fetchSize, query, params.toArray());
             while (chStmt.next()) {
                Integer artId = chStmt.getInt("art_id");
                Integer branchId = chStmt.getInt("branch_id");
-               Integer transactionId = -1;
                if (sqlContext.getOptions().isHistorical()) {
                   transactionId = chStmt.getInt("transaction_id");
                }
@@ -172,6 +194,7 @@ public class DataLoaderImpl implements DataLoader {
             join.delete();
          }
       }
+      return artifactJoin;
    }
 
 }

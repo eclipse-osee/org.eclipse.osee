@@ -23,6 +23,10 @@ public class OrcsTypeCacheImpl implements DataStoreTypeCache {
 
    private IOseeCachingService cachingService;
 
+   public OrcsTypeCacheImpl() {
+      super();
+   }
+
    public void setCache(IOseeCachingService cachingService) {
       this.cachingService = cachingService;
    }

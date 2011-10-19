@@ -62,61 +62,50 @@ public class OrcsObjectLoader {
    }
 
    public List<ReadableArtifact> load(QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
-      ArtifactRecieveHandler artifactHandler =
-         new ArtifactRecieveHandler(loadOptions, dataLoader, logger, attributeFactory);
+
+      List<ReadableArtifact> artifacts = new ArrayList<ReadableArtifact>();
+
+      ArtifactCollector artifactHandler = new ArtifactCollector(logger, attributeFactory, artifacts);
 
       ArtifactRowHandler artifactRowHandler =
          new ArtifactRowMapper(logger, sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
 
       dataLoader.loadArtifacts(artifactRowHandler, queryContext, loadOptions, artifactHandler, artifactHandler);
 
-      return artifactHandler.get();
+      return artifacts;
    }
 
-   private static class ArtifactRecieveHandler implements ArtifactReciever, RelationRowHandlerFactory, AttributeRowHandlerFactory {
+   private static class ArtifactCollector implements ArtifactReciever, RelationRowHandlerFactory, AttributeRowHandlerFactory {
 
-      private final List<ReadableArtifact> arts = new ArrayList<ReadableArtifact>();
+      private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
+      private final Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
+
+      private final List<ReadableArtifact> artifacts;
+
       private final Log logger;
       private final AttributeFactory attributeFactory;
 
-      public ArtifactRecieveHandler(LoadOptions options, DataLoader dataLoader, Log logger, AttributeFactory attributeFactory) {
+      public ArtifactCollector(Log logger, AttributeFactory attributeFactory, List<ReadableArtifact> artifacts) {
          this.logger = logger;
          this.attributeFactory = attributeFactory;
-      }
-
-      private RelationRowHandler getRelationRowHandler() {
-         Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();
-         for (ReadableArtifact artifact : arts) {
-            relationContainers.put(artifact.getId(), ((Artifact) artifact).getRelationContainer());
-         }
-         return new RelationRowMapper(logger, relationContainers);
-      }
-
-      private AttributeRowHandler getAttributeRowHandler() {
-         Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
-         for (ReadableArtifact artifact : arts) {
-            attributeContainers.put(artifact.getId(), ((Artifact) artifact).getAttributeContainer());
-         }
-         return new AttributeRowMapper(logger, attributeFactory, attributeContainers);
+         this.artifacts = artifacts;
       }
 
       @Override
       public AttributeRowHandler createAttributeRowHandler() {
-         return getAttributeRowHandler();
+         return new AttributeRowMapper(logger, attributeFactory, attributeContainers);
       }
 
       @Override
       public RelationRowHandler createRelationRowHandler() {
-         return getRelationRowHandler();
+         return new RelationRowMapper(logger, relationContainers);
       }
 
       @Override
       public void onArtifact(ReadableArtifact artifact, boolean isArtifactAlreadyLoaded) {
-         arts.add(artifact);
-      }
-
-      List<ReadableArtifact> get() {
-         return arts;
+         artifacts.add(artifact);
+         relationContainers.put(artifact.getId(), ((Artifact) artifact).getRelationContainer());
+         attributeContainers.put(artifact.getId(), ((Artifact) artifact).getAttributeContainer());
       }
 
    }

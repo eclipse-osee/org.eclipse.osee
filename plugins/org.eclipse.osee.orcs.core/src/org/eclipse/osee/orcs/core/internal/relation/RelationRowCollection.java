@@ -22,14 +22,15 @@ import org.eclipse.osee.orcs.core.ds.RelationRow;
 
 public class RelationRowCollection {
 
-   private final Map<IRelationTypeSide, List<RelationRow>> relations;
+   private final Map<IRelationTypeSide, List<RelationRow>> relations =
+      new ConcurrentHashMap<IRelationTypeSide, List<RelationRow>>();
+
    private final int parentId;
    private final RelationTypeCache relationTypeCache;
 
    RelationRowCollection(int parentId, RelationTypeCache relationTypeCache) {
       this.parentId = parentId;
       this.relationTypeCache = relationTypeCache;
-      relations = new ConcurrentHashMap<IRelationTypeSide, List<RelationRow>>();
    }
 
    public void add(RelationRow nextRelation) throws OseeCoreException {
@@ -38,6 +39,7 @@ public class RelationRowCollection {
          nextRelation.getRelationTypeUUId());
       IRelationTypeSide relationTypeSide =
          TokenFactory.createRelationTypeSide(getRelationSide(nextRelation), type.getGuid(), type.getName());
+
       List<RelationRow> rows = relations.get(relationTypeSide);
       if (rows == null) {
          rows = new CopyOnWriteArrayList<RelationRow>();
@@ -58,22 +60,15 @@ public class RelationRowCollection {
       List<RelationRow> rows = relations.get(relationTypeSide);
       if (rows != null) {
          for (RelationRow row : rows) {
-            if (relationTypeSide.getSide().equals(RelationSide.SIDE_B)) {
-               results.add(row.getArtIdB());
-            } else {
-               results.add(row.getArtIdA());
-            }
+            Integer artId = row.getArtIdOn(relationTypeSide.getSide());
+            results.add(artId);
          }
       }
    }
 
    public int getArtifactCount(IRelationTypeSide relationTypeSide) {
       List<RelationRow> rows = relations.get(relationTypeSide);
-      if (rows == null) {
-         return 0;
-      } else {
-         return rows.size();
-      }
+      return rows != null ? rows.size() : 0;
    }
 
    public Set<IRelationTypeSide> getRelationTypes() {

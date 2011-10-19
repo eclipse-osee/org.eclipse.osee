@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
@@ -48,7 +48,7 @@ public class ArtifactRowMapper implements ArtifactRowHandler {
       ReadableArtifact artifact = getLoadedArtifact(row);
       if (artifact == null) {
          isArtifactAlreadyLoaded = false;
-         IArtifactType artifactType = typeCache.getByGuid(row.getArtTypeUuid());
+         ArtifactType artifactType = typeCache.getByGuid(row.getArtTypeUuid());
          Branch branch = branchCache.getById(row.getBranchId());
          artifact =
             artifactFactory.loadExisitingArtifact(row.getArtifactId(), row.getGuid(), row.getHumanReadableId(),

@@ -6,6 +6,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 
 public class RelationRow {
 
@@ -89,6 +90,10 @@ public class RelationRow {
 
    public int getParentId() {
       return parentId;
+   }
+
+   public int getArtIdOn(RelationSide side) {
+      return RelationSide.SIDE_A == side ? getArtIdA() : getArtIdB();
    }
 
    @Override

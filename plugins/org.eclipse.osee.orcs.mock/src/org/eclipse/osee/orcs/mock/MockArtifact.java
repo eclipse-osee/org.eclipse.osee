@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.mock;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -201,4 +203,15 @@ public class MockArtifact implements ReadableArtifact {
       return null;
    }
 
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> List<ReadableAttribute<T>> getAttributes() {
+      List<ReadableAttribute<T>> toReturn = new ArrayList<ReadableAttribute<T>>();
+      for (Entry<IAttributeType, Collection<String>> entry : attributes.entrySet()) {
+         for (String value : entry.getValue()) {
+            toReturn.add((ReadableAttribute<T>) new MockAttribute(entry.getKey(), value));
+         }
+      }
+      return toReturn;
+   }
 }
