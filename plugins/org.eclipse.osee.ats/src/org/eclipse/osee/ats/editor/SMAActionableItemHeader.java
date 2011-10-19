@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -68,7 +70,12 @@ public class SMAActionableItemHeader extends Composite {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
-                  AtsUtil.editActionableItems(teamWf.getParentActionArtifact());
+                  ActionArtifact parentAction = teamWf.getParentActionArtifact();
+                  if (parentAction == null) {
+                     AWorkbench.popup("No Parent Action; Aborting");
+                     return;
+                  }
+                  AtsUtil.editActionableItems(parentAction);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -88,15 +95,19 @@ public class SMAActionableItemHeader extends Composite {
          return;
       }
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
+      ActionArtifact parentAction = teamWf.getParentActionArtifact();
       if (!sma.isCancelled() && !sma.isCompleted()) {
-         if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
+         if (parentAction == null) {
+            label.setText(" " + "Error: No Parent Action.");
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         } else if (parentAction.getActionableItems().isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
             StringBuffer sb = new StringBuffer(teamWf.getActionableItemsDam().getActionableItemsStr());
-            if (ActionManager.getTeams(teamWf.getParentActionArtifact()).size() > 1) {
+            if (ActionManager.getTeams(parentAction).size() > 1) {
                sb.append("         Other: ");
-               for (TeamWorkFlowArtifact workflow : ActionManager.getTeams(teamWf.getParentActionArtifact())) {
+               for (TeamWorkFlowArtifact workflow : ActionManager.getTeams(parentAction)) {
                   if (!workflow.equals(teamWf)) {
                      sb.append(workflow.getActionableItemsDam().getActionableItemsStr());
                      sb.append(", ");
@@ -109,11 +120,14 @@ public class SMAActionableItemHeader extends Composite {
          label.update();
          layout();
       } else {
-         if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
+         if (parentAction == null) {
+            label.setText(" " + "Error: No Parent Action.");
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         } else if (parentAction.getActionableItems().isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
-            label.setText(" " + ActionableItemsColumn.getActionableItemsStr(teamWf.getParentActionArtifact()));
+            label.setText(" " + ActionableItemsColumn.getActionableItemsStr(parentAction));
             label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }

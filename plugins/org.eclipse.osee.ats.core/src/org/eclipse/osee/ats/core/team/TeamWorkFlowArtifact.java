@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.core.team;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +53,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    private final ActionableItemManagerCore actionableItemsDam;
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
+   private final Set<String> teamArtsWithNoAction = new HashSet<String>();
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -81,8 +83,11 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    public void saveSMA(SkynetTransaction transaction) {
       super.saveSMA(transaction);
       try {
-         ActionArtifactRollup rollup = new ActionArtifactRollup(getParentActionArtifact(), transaction);
-         rollup.resetAttributesOffChildren();
+         ActionArtifact parentAction = getParentActionArtifact();
+         if (parentAction != null) {
+            ActionArtifactRollup rollup = new ActionArtifactRollup(parentAction, transaction);
+            rollup.resetAttributesOffChildren();
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't reset Action parent of children", ex);
       }
@@ -170,11 +175,18 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       }
       Collection<Artifact> arts = getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action);
       if (arts.isEmpty()) {
-         throw new OseeStateException("Team [%s] has no parent Action", getGuid());
+         // Only show exception once in log
+         if (!teamArtsWithNoAction.contains(getGuid())) {
+            OseeLog.log(Activator.class, Level.SEVERE,
+               String.format("Team Workflow has no parent Action [%s]", toStringWithId()));
+            teamArtsWithNoAction.add(getGuid());
+         }
       } else if (arts.size() > 1) {
          throw new OseeStateException("Team [%s] has multiple parent Actions", getGuid());
       }
-      parentAction = (ActionArtifact) arts.iterator().next();
+      if (arts.size() > 0) {
+         parentAction = (ActionArtifact) arts.iterator().next();
+      }
       return parentAction;
    }
 

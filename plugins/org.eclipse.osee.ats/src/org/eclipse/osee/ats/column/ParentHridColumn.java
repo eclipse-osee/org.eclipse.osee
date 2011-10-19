@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
@@ -50,7 +51,10 @@ public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueC
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-            return ((TeamWorkFlowArtifact) element).getParentActionArtifact().getHumanReadableId();
+            ActionArtifact parentAction = ((TeamWorkFlowArtifact) element).getParentActionArtifact();
+            if (parentAction != null) {
+               return parentAction.getHumanReadableId();
+            }
          } else if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
             return ((AbstractWorkflowArtifact) element).getParentAWA().getHumanReadableId();
          }

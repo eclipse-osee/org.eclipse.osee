@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
@@ -71,7 +70,6 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -98,7 +96,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private final CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
    private HashCollection<String, String> testNameToResultsMap = null;
    private String emailOnComplete = null;
-   private static Artifact tempParentAction;
 
    public ValidateAtsDatabase(XNavigateItem parent) {
       this("Validate ATS Database", parent);
@@ -575,42 +572,17 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
-         try {
-            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               boolean noParent = false;
-               try {
-                  if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
-                     testNameToResultsMap.put("testAtsWorkflowsHaveAction",
-                        "Error: Team " + XResultDataUI.getHyperlink(artifact) + " has no parent Action\n");
-                     noParent = true;
-                  }
-               } catch (Exception ex) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            try {
+               if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
                   testNameToResultsMap.put("testAtsWorkflowsHaveAction",
-                     "Error: Team " + XResultDataUI.getHyperlink(artifact) + " has no parent Action: exception " + ex);
-                  noParent = true;
+                     "Error: Team " + XResultDataUI.getHyperlink(artifact) + " has no parent Action\n");
                }
-               // Create temporary action so these can be either purged or re-assigned
-               if (noParent) {
-                  if (tempParentAction == null) {
-                     tempParentAction =
-                        ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
-                     tempParentAction.setName("Temp Parent Action");
-                     testNameToResultsMap.put(
-                        "testAtsWorkflowsHaveAction",
-                        "Error: Temp Parent Action " + XResultDataUI.getHyperlink(tempParentAction) + " created for orphaned teams.");
-
-                  }
-                  tempParentAction.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, artifact);
-                  tempParentAction.persist(getClass().getSimpleName());
-               }
+            } catch (Exception ex) {
+               testNameToResultsMap.put("testAtsWorkflowsHaveAction",
+                  "Error: Team " + XResultDataUI.getHyperlink(artifact) + " has no parent Action: exception " + ex);
             }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-            testNameToResultsMap.put("testAtsWorkflowsHaveAction", "Error: Exception: " + ex.getLocalizedMessage());
          }
-      }
-      if (tempParentAction != null) {
-         AtsUtil.openATSAction(tempParentAction, AtsOpenOption.AtsWorld);
       }
       logTestTimeSpent(date, "testAtsWorkflowsHaveAction", testNameToTimeSpentMap);
    }

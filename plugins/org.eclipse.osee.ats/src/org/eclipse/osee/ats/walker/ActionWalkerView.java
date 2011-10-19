@@ -182,11 +182,13 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       try {
          if (!GoalManager.isGoalArtifact(activeAwa) && !PeerToPeerReviewManager.isStandAlongReview(activeAwa)) {
             ActionArtifact actionArt = (ActionArtifact) activeAwa.getParentActionArtifact();
-            for (TeamWorkFlowArtifact teamArt : actionArt.getTeams()) {
-               GraphItem item = viewer.findGraphItem(teamArt);
-               if (item != null && item instanceof GraphNode) {
-                  GraphNode node = (GraphNode) item;
-                  node.setTooltip(new Label(getToolTip(teamArt)));
+            if (actionArt != null) {
+               for (TeamWorkFlowArtifact teamArt : actionArt.getTeams()) {
+                  GraphItem item = viewer.findGraphItem(teamArt);
+                  if (item != null && item instanceof GraphNode) {
+                     GraphNode node = (GraphNode) item;
+                     node.setTooltip(new Label(getToolTip(teamArt)));
+                  }
                }
             }
          }

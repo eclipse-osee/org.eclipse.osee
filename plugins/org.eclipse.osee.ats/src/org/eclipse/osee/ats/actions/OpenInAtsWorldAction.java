@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -42,8 +43,15 @@ public class OpenInAtsWorldAction extends Action {
       try {
          if (sma.isTeamWorkflow()) {
             Artifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
-            WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
-               Arrays.asList(actionArt)));
+            if (actionArt != null) {
+               WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
+                  Arrays.asList(actionArt)));
+            } else {
+               AWorkbench.popup("No Parent Action; Opening Team Workflow");
+               WorldEditor.open(new WorldEditorSimpleProvider(
+                  sma.getArtifactTypeName() + " " + sma.getHumanReadableId(), Arrays.asList(sma)));
+               return;
+            }
             return;
          } else {
             WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),

@@ -132,7 +132,11 @@ public class ActionableItemManager {
    }
 
    public static Result editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return ActionableItemManager.editActionableItems(teamArt.getParentActionArtifact());
+      ActionArtifact parentAction = teamArt.getParentActionArtifact();
+      if (parentAction == null) {
+         return new Result("No Parent Action; Aborting");
+      }
+      return ActionableItemManager.editActionableItems(parentAction);
    }
 
    public static Set<ActionableItemArtifact> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {

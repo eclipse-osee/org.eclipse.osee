@@ -146,9 +146,9 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
             if (art.isOfType(AtsArtifactTypes.Action)) {
                arts.add(art);
             } else if (art instanceof AbstractWorkflowArtifact) {
-               Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
-               if (parentArt != null) {
-                  arts.add(parentArt);
+               Artifact parentAction = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
+               if (parentAction != null) {
+                  arts.add(parentAction);
                }
             }
          }

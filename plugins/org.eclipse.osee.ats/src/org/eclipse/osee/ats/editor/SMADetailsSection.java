@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -107,8 +108,11 @@ public class SMADetailsSection extends SectionPart {
 
    private void addSMADetails(AbstractWorkflowArtifact workflow, Map<String, String> details) throws OseeCoreException {
       details.put("Workflow Definition", workflow.getWorkDefinition().getName());
-      if (workflow.getParentActionArtifact() != null) {
-         details.put("Action Id", workflow.getParentActionArtifact().getHumanReadableId());
+      Artifact parentAction = workflow.getParentActionArtifact();
+      if (parentAction == null) {
+         details.put("Action Id", "No Parent Action");
+      } else {
+         details.put("Action Id", parentAction.getHumanReadableId());
       }
       if (!(workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) && workflow.getParentTeamWorkflow() != null) {
          details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getHumanReadableId());

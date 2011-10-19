@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.ReviewManager;
@@ -168,7 +169,8 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
             // list of actionable items when a sibling changes
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(awa.getParentActionArtifact())) {
-               if (!awa.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) || artifactEvent.isRelAddedChangedDeleted(teamWf.getParentActionArtifact()))) {
+               ActionArtifact parentAction = teamWf.getParentActionArtifact();
+               if (!awa.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) || (parentAction != null && artifactEvent.isRelAddedChangedDeleted(parentAction)))) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override

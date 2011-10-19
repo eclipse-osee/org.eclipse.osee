@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -83,7 +84,10 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact art : getSearchVersionArtifact().getTargetedForTeamArtifacts()) {
          if (returnAction) {
-            arts.add(((TeamWorkFlowArtifact) art).getParentActionArtifact());
+            ActionArtifact parentAction = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
+            if (parentAction != null) {
+               arts.add(parentAction);
+            }
          } else {
             arts.add(art);
          }
