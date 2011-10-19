@@ -63,7 +63,7 @@ public class StaticSqlProvider implements SqlProvider {
    }
 
    public boolean areHintsSupported() throws OseeCoreException {
-      return true;//preferences.isBoolean("hintsSupported");//TODO find an appropriate place to set hints supported... based on db type i would assume
+      return preferences.isBoolean(SQL_DATABASE_HINTS_SUPPORTED_KEY);
    }
 
    private synchronized void ensurePopulated() throws OseeCoreException {

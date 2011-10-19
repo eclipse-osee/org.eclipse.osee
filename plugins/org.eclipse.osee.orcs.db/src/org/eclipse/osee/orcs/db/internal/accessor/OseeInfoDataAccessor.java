@@ -11,13 +11,17 @@
 package org.eclipse.osee.orcs.db.internal.accessor;
 
 import java.io.File;
+import java.sql.DatabaseMetaData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
+import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 
 /**
@@ -32,6 +36,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    private Log logger;
    private IOseeDatabaseService dbService;
    private boolean wasBinaryDataChecked = false;
+   private Boolean areHintsSupported;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -42,11 +47,13 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    }
 
    public void start() {
+      areHintsSupported = null;
       // Do Nothing
    }
 
    public void stop() {
       wasBinaryDataChecked = false;
+      areHintsSupported = null;
    }
 
    @Override
@@ -54,6 +61,8 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       String toReturn = null;
       if (ResourceConstants.BINARY_DATA_PATH.equals(key)) {
          toReturn = getOseeApplicationServerData();
+      } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
+         toReturn = String.valueOf(areHintsSupported());
       } else {
          toReturn = dbService.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
       }
@@ -65,8 +74,12 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       boolean wasUpdated = false;
       if (ResourceConstants.BINARY_DATA_PATH.equals(key)) {
          throw new OseeStateException(
-            "Attempt to modify binary data path detected. Sets are startup through -D%s=<PATH>",
+            "Unsupported modification - attempt to modify binary data path. Sets are startup through -D%s=<PATH>",
             ResourceConstants.BINARY_DATA_PATH);
+      } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
+         throw new OseeStateException(
+            "Unsupported modification - attempt to modify database hints supported. This is an unmodifiable database specific setting.",
+            SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
       } else {
          ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
          int updated = ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
@@ -103,5 +116,19 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
          }
       }
       return toReturn;
+   }
+
+   private boolean areHintsSupported() throws OseeCoreException {
+      if (areHintsSupported == null) {
+         areHintsSupported = false;
+         OseeConnection connection = dbService.getConnection();
+         try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            areHintsSupported = SupportedDatabase.areHintsSupported(metaData);
+         } finally {
+            connection.close();
+         }
+      }
+      return areHintsSupported;
    }
 }

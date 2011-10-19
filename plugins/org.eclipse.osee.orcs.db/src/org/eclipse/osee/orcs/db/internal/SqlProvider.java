@@ -18,6 +18,8 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
  */
 public interface SqlProvider {
 
+   public static String SQL_DATABASE_HINTS_SUPPORTED_KEY = "are.database.hints.supported.key";
+
    String getSql(OseeSql key) throws OseeCoreException;
 
    String getSql(String key) throws OseeCoreException;

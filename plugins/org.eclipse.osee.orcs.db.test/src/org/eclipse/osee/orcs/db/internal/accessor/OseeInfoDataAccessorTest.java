@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.accessor;
 
+import java.sql.DatabaseMetaData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
@@ -77,5 +81,37 @@ public class OseeInfoDataAccessorTest {
       } finally {
          System.setProperty(ResourceConstants.BINARY_DATA_PATH, original);
       }
+   }
+
+   @org.junit.Test(expected = OseeStateException.class)
+   public void testSetDatabaseHintsSupported() throws OseeCoreException {
+      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
+
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      accessor.putValue(SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY, "dummy");
+   }
+
+   @org.junit.Test
+   public void testGetDatabaseHintsSupported() throws OseeCoreException {
+      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
+
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      String original = accessor.getValue(SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
+
+      boolean expected = false;
+      OseeConnection connection = dbService.getConnection();
+      try {
+         DatabaseMetaData metaData = connection.getMetaData();
+         expected = SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.oracle);
+      } finally {
+         connection.close();
+      }
+      Assert.assertEquals(expected, Boolean.parseBoolean(original));
    }
 }

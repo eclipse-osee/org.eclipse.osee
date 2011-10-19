@@ -111,4 +111,5 @@ public enum OseeSql {
       private static final String SELECT_CURRENT_ARTIFACTS_PREFIX =
          "SELECT%s aj.art_id, txs.gamma_id, mod_type, art_type_id, guid, human_readable_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.tx_current ";
    }
+
 }
