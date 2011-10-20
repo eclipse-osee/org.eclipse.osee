@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.notify.EmailActionsBlam;
+import org.eclipse.osee.ats.operation.MoveTeamWorkflowsBlam;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.ConvertAIsAndTeamDefinitions;
@@ -245,6 +246,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
          new MassEditDirtyArtifactOperation());
       new ClearAtsWorkDefinitionCache(utilItems);
+      new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
 
       items.add(utilItems);
    }

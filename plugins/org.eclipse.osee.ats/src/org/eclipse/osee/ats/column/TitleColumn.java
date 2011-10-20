@@ -10,10 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.core.action.ActionManager;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class TitleColumn extends XViewerAtsAttributeValueColumn {
@@ -42,10 +53,32 @@ public class TitleColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof Artifact && ((Artifact) element).isDeleted()) {
-         return "<deleted>";
+      try {
+         if (element instanceof Artifact && ((Artifact) element).isDeleted()) {
+            return "<deleted>";
+         }
+         if (element instanceof AbstractWorkflowArtifact) {
+            return ((AbstractWorkflowArtifact) element).getAttributesToStringUnique(getAttributeType(), ";");
+         }
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+            Collection<TeamWorkFlowArtifact> teams = ActionManager.getTeams(element);
+            Set<String> strs = new HashSet<String>();
+            strs.add(((Artifact) element).getName());
+            for (TeamWorkFlowArtifact team : teams) {
+               String str = getColumnText(team, column, columnIndex);
+               if (Strings.isValid(str)) {
+                  strs.add(str);
+               }
+            }
+            if (strs.size() > 5) {
+               return ((Artifact) element).getName();
+            }
+            return Collections.toString("; ", strs);
+         }
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
       }
-      return super.getColumnText(element, column, columnIndex);
+      return null;
    }
 
 }

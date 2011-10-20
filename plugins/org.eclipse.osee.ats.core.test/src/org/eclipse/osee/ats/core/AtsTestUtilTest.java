@@ -57,6 +57,24 @@ public class AtsTestUtilTest extends AtsTestUtil {
    }
 
    @org.junit.Test
+   public void testGetTeamWf2() throws OseeCoreException {
+
+      AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetTeamWf2");
+      AtsTestUtil.validateArtifactCache();
+
+      Assert.assertNotNull(AtsTestUtil.getTeamWf2());
+      Assert.assertNotNull(AtsTestUtil.getTeamWf2().getStateDefinition());
+      Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf2());
+      Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt2());
+      Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
+         AtsTestUtil.getTeamWf2().getActionableItemsDam().getActionableItems().iterator().next());
+
+      AtsTestUtil.cleanup();
+
+      AtsTestUtil.validateArtifactCache();
+   }
+
+   @org.junit.Test
    public void testTransitionTo() throws OseeCoreException {
 
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest");

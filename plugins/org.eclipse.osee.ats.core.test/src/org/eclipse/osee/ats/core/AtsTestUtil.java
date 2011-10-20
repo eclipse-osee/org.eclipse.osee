@@ -65,18 +65,24 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
+ * Test utility that will create a new work definition, team definition, versions and allow tests to easily
+ * create/cleanup team workflows, tasks and reviews.
+ * 
  * @author Donald G. Dunne
  */
 public class AtsTestUtil {
 
    private static TeamWorkFlowArtifact teamArt = null;
+   private static TeamWorkFlowArtifact teamArt2 = null;
    private static TeamDefinitionArtifact teamDef = null;
    private static VersionArtifact verArt1 = null, verArt2 = null;
    private static DecisionReviewArtifact decRevArt = null;
    private static PeerToPeerReviewArtifact peerRevArt = null;
    private static TaskArtifact taskArt = null;
    private static ActionableItemArtifact testAi = null;
+   private static ActionableItemArtifact testAi2 = null;
    private static ActionArtifact actionArt = null;
+   private static ActionArtifact actionArt2 = null;
    private static StateDefinition analyze = null, implement = null, completed = null, cancelled = null;
    private static WorkDefinition workDef = null;
    public static String WORK_DEF_NAME = "Test_Team _Workflow_Definition";
@@ -96,6 +102,7 @@ public class AtsTestUtil {
 
    public static void validateObjectsNull() throws OseeStateException {
       validateObjectsNull("teamArt", teamArt);
+      validateObjectsNull("teamArt2", teamArt2);
       validateObjectsNull("teamDef", teamDef);
       validateObjectsNull("verArt1", verArt1);
       validateObjectsNull("verArt2", verArt2);
@@ -103,7 +110,9 @@ public class AtsTestUtil {
       validateObjectsNull("peerRevArt", peerRevArt);
       validateObjectsNull("taskArt", taskArt);
       validateObjectsNull("testAi", testAi);
+      validateObjectsNull("testAi2", testAi2);
       validateObjectsNull("actionArt", actionArt);
+      validateObjectsNull("actionArt2", actionArt2);
       validateObjectsNull("analyze", analyze);
       validateObjectsNull("implement", implement);
       validateObjectsNull("completed", completed);
@@ -172,10 +181,13 @@ public class AtsTestUtil {
       estHoursWidgetDef = null;
       workPackageWidgetDef = null;
       teamArt = null;
+      teamArt2 = null;
       teamDef = null;
       taskArt = null;
       testAi = null;
+      testAi2 = null;
       actionArt = null;
+      actionArt2 = null;
       verArt1 = null;
       verArt2 = null;
    }
@@ -250,6 +262,12 @@ public class AtsTestUtil {
       testAi.setSoleAttributeValue(AtsAttributeTypes.Active, true);
       testAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
 
+      testAi2 =
+         (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
+            AtsUtilCore.getAtsBranchToken(), getTitle("AI2", postFixName));
+      testAi2.setSoleAttributeValue(AtsAttributeTypes.Active, true);
+      testAi2.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
+
       teamDef =
          (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
             AtsUtilCore.getAtsBranchToken(), getTitle("Team Def", postFixName));
@@ -259,6 +277,7 @@ public class AtsTestUtil {
       teamDef.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
 
       testAi.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
+      testAi2.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDef);
 
       verArt1 =
          (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken(),
@@ -277,6 +296,7 @@ public class AtsTestUtil {
       teamArt = actionArt.getFirstTeam();
 
       testAi.persist(transaction);
+      testAi2.persist(transaction);
       teamDef.persist(transaction);
       verArt1.persist(transaction);
       verArt2.persist(transaction);
@@ -362,13 +382,22 @@ public class AtsTestUtil {
          }
          teamArt.deleteAndPersist(transaction);
       }
+      if (teamArt2 != null) {
+         teamArt2.deleteAndPersist(transaction);
+      }
       if (actionArt != null) {
          actionArt.deleteAndPersist(transaction);
+      }
+      if (actionArt2 != null) {
+         actionArt2.deleteAndPersist(transaction);
       }
       transaction.execute();
       transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup");
       if (testAi != null) {
          testAi.deleteAndPersist(transaction);
+      }
+      if (testAi2 != null) {
+         testAi2.deleteAndPersist(transaction);
       }
       if (verArt1 != null) {
          verArt1.deleteAndPersist(transaction);
@@ -487,5 +516,36 @@ public class AtsTestUtil {
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getPageName(), transaction);
       }
       return peerRevArt;
+   }
+
+   public static TeamWorkFlowArtifact getTeamWf2() throws OseeCoreException {
+      ensureLoaded();
+      if (teamArt2 == null) {
+         SkynetTransaction transaction =
+            new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
+         actionArt2 =
+            ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
+               "1", false, null, Arrays.asList(testAi2), new Date(), UserManager.getUser(), null, transaction);
+
+         teamArt2 = actionArt2.getFirstTeam();
+         transaction.execute();
+      }
+      return teamArt2;
+   }
+
+   /**
+    * @return 2nd Action with single Team Workflow not tied to other ActionArt or TeamWf
+    */
+   public static ActionArtifact getActionArt2() throws OseeCoreException {
+      ensureLoaded();
+      if (actionArt2 == null) {
+         getTeamWf2();
+      }
+      return actionArt2;
+   }
+
+   public static ActionArtifact getActionArt() throws OseeCoreException {
+      ensureLoaded();
+      return actionArt;
    }
 }

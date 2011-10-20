@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.actions.WorkflowDebugAction;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.operation.MoveTeamWorkflowsAction;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -162,6 +163,7 @@ public class SMAOperationsSection extends SectionPart {
          new XButtonViaAction(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new ReloadAction(editor.getAwa())).createWidgets(sectionBody, 2);
          new XButtonViaAction(new ConvertActionableItemsAction(editor)).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
       }
 
       for (ISMAOperationsSection operation : operationsSectionProviders) {
