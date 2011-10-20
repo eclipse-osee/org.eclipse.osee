@@ -54,8 +54,16 @@ public class WorkflowManager {
       (WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), priviledgedEditEnabled) || //
          // page is define to allow anyone to edit
          awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
+         // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
+         isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
       // team definition has allowed anyone to edit
       awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
+   }
+
+   private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa) throws OseeCoreException {
+      TeamWorkFlowArtifact parentTeamArt = awa.getParentTeamWorkflow();
+      return (parentTeamArt != null && parentTeamArt.getStateDefinition().hasRule(
+         RuleDefinitionOption.AllowAssigneeToAll));
    }
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
