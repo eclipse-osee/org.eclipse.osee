@@ -44,10 +44,10 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    private boolean lockRelsListener = false;
    private ViewArtifact artifact = null;
    private final int LISTBOX_MINWIDTH = 100;
-   private final Label leftTitle = new Label("");
-   private final Label relTypesTitleTop = new Label("Relationship");
-   private final Label relTypesTitleBot = new Label("Type");
-   private final Label rightTitle = new Label("");
+   private Label leftTitle = new Label("");
+   private Label relTypesTitleTop = new Label("Relationship");
+   private Label relTypesTitleBot = new Label("Type");
+   private Label rightTitle = new Label("");
 
    @Override
    public void attach() {
@@ -99,7 +99,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                      searchPresenter.selectRelationType(artifact, relationType, OseeRelationsComponent.this);
                   }
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (ViewArtifact) relationsListSelect.getValue() threw an exception.");
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
                }
             }
          }
@@ -115,7 +115,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                      searchPresenter.selectArtifact(artifact, navigator);
                   }
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (ViewArtifact) relationsListSelect.getValue() threw an exception.");
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
                }
             }
          }
@@ -131,7 +131,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                      searchPresenter.selectArtifact(artifact, navigator);
                   }
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (ViewArtifact) relationsListSelect.getValue() threw an exception.");
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
                }
             }
          }
