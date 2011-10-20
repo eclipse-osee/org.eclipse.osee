@@ -127,9 +127,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    //   public void initSearchHome(AtsSearchHeaderComponent headerComponent) {
    //      if (headerComponent != null) {
    //         headerComponent.clearAll();
-   //         Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();
+   //         Set<Entry<ViewId, Collection<ViewId>>> entrySet = programsAndBuilds.entrySet();
    //         if (entrySet != null) {
-   //            for (Entry<WebId, Collection<WebId>> entry : entrySet) {
+   //            for (Entry<ViewId, Collection<ViewId>> entry : entrySet) {
    //               headerComponent.addProgram(entry.getKey());
    //            }
    //         }
@@ -154,11 +154,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
                artHeaderComp.setArtifact(artifact);
 
                relComp.clearAll();
-               ViewId parentRelationType = new ViewId("guid1", "Parent");
-               ViewId childRelationType = new ViewId("guid2", "Child");
-               ViewId swReqRelationType = new ViewId("guid3", "SW Requirement");
-               relComp.addRelationType(parentRelationType);
-               relComp.addRelationType(childRelationType);
+               ViewId hierRelationType = new ViewId("guid1", "Default Hierarchy");
+               ViewId swReqRelationType = new ViewId("guid3", "Traceability");
+               relComp.addRelationType(hierRelationType);
                relComp.addRelationType(swReqRelationType);
 
                attrComp.clearAll();
@@ -176,12 +174,28 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
 
    @Override
    public void selectRelationType(ViewArtifact artifact, ViewId relation, RelationComponent relationComponent) {
-      relationComponent.clearRelations();
-      Set<Entry<String, ViewArtifact>> artifactsSet = artifacts.entrySet();
-      for (Entry<String, ViewArtifact> entry : artifactsSet) {
-         ViewArtifact art = entry.getValue();
-         relationComponent.addRightRelated(art);
-         relationComponent.addLeftRelated(art);
+      if (relationComponent != null && relation != null) {
+         relationComponent.clearRelations();
+         String relGuid = relation.getGuid();
+         if (relGuid.equals("guid1")) {
+            //Default Hierarchy
+            relationComponent.addLeftRelated(crewIntreqs);
+            relationComponent.addRightRelated(commSubSysCrewIntreqs);
+            relationComponent.setLeftName("Parent");
+            relationComponent.setRightName("Child");
+         }
+
+         if (relGuid.equals("guid3")) {
+            //Default Hierarchy
+            relationComponent.addLeftRelated(null);
+            relationComponent.setLeftName(null);
+            relationComponent.setRightName("SW Requirement");
+            Set<Entry<String, ViewArtifact>> entrySet = artifacts.entrySet();
+            for (Entry<String, ViewArtifact> entry : entrySet) {
+               ViewArtifact art = entry.getValue();
+               relationComponent.addRightRelated(art);
+            }
+         }
       }
    }
 
@@ -205,8 +219,8 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
 
    //   private void updateAndSetSearchHeaderCriteria(String url, AtsSearchHeaderComponentInterface searchHeaderComponent) {
    //      Map<String, String> params = requestStringToParameterMap(url);
-   //      WebId program = new WebId("", "");
-   //      WebId build = new WebId("", "");
+   //      ViewId program = new ViewId("", "");
+   //      ViewId build = new ViewId("", "");
    //      boolean nameOnly = false;
    //      String searchPhrase = "";
    //

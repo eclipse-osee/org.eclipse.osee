@@ -35,15 +35,19 @@ import com.vaadin.ui.Window.Notification;
 public class OseeRelationsComponent extends VerticalLayout implements RelationComponent {
 
    private boolean populated = false;
-   private final ListSelect relationTypesListSelect = new ListSelect();
-   private final ListSelect relationsListSelect = new ListSelect();
-   private final ListSelect sideBSelect = new ListSelect();
+   private final ListSelect relTypesSelect = new ListSelect();
+   private final ListSelect leftSelect = new ListSelect();
+   private final ListSelect rightSelect = new ListSelect();
    private SearchPresenter<?> searchPresenter = null;
    private SearchNavigator navigator = null;
    private boolean lockRelTypesListener = false;
    private boolean lockRelsListener = false;
    private ViewArtifact artifact = null;
    private final int LISTBOX_MINWIDTH = 100;
+   private final Label leftTitle = new Label("");
+   private final Label relTypesTitleTop = new Label("Relationship");
+   private final Label relTypesTitleBot = new Label("Type");
+   private final Label rightTitle = new Label("");
 
    @Override
    public void attach() {
@@ -66,68 +70,118 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
 
       final HorizontalLayout listBoxesLayout = new HorizontalLayout();
 
-      Label titleLabel = new Label("Relationships");
-      titleLabel.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
+      leftTitle.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
+      relTypesTitleTop.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
+      relTypesTitleBot.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
+      rightTitle.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
 
-      relationTypesListSelect.setNullSelectionAllowed(false);
-      relationTypesListSelect.setImmediate(true);
+      //Fixed width lists make for a prettier layout
+      relTypesSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      leftSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      rightSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
 
-      relationsListSelect.setNullSelectionAllowed(false);
-      relationsListSelect.setImmediate(true);
+      relTypesSelect.setNullSelectionAllowed(false);
+      relTypesSelect.setImmediate(true);
 
-      relationTypesListSelect.addListener(new Property.ValueChangeListener() {
+      leftSelect.setNullSelectionAllowed(false);
+      leftSelect.setImmediate(true);
+
+      rightSelect.setNullSelectionAllowed(false);
+      rightSelect.setImmediate(true);
+
+      relTypesSelect.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
             if (!lockRelTypesListener) {
                try {
-                  ViewId relationType = (ViewId) relationTypesListSelect.getValue();
+                  ViewId relationType = (ViewId) relTypesSelect.getValue();
                   if (relationType != null) {
                      searchPresenter.selectRelationType(artifact, relationType, OseeRelationsComponent.this);
                   }
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (ViewArtifact) relationsListSelect.getValue() threw an exception.");
                }
             }
          }
       });
 
-      relationsListSelect.addListener(new Property.ValueChangeListener() {
+      leftSelect.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
             if (!lockRelsListener) {
                try {
-                  ViewArtifact artifact = (ViewArtifact) relationsListSelect.getValue();
+                  ViewArtifact artifact = (ViewArtifact) leftSelect.getValue();
                   if (artifact != null) {
                      searchPresenter.selectArtifact(artifact, navigator);
                   }
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (ViewArtifact) relationsListSelect.getValue() threw an exception.");
                }
             }
          }
       });
 
+      rightSelect.addListener(new Property.ValueChangeListener() {
+         @Override
+         public void valueChange(ValueChangeEvent event) {
+            if (!lockRelsListener) {
+               try {
+                  ViewArtifact artifact = (ViewArtifact) rightSelect.getValue();
+                  if (artifact != null) {
+                     searchPresenter.selectArtifact(artifact, navigator);
+                  }
+               } catch (Exception e) {
+                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (ViewArtifact) relationsListSelect.getValue() threw an exception.");
+               }
+            }
+         }
+      });
+
+      VerticalLayout vLayout_LeftSelect = new VerticalLayout();
+      VerticalLayout vLayout_RelTypesSelect = new VerticalLayout();
+      VerticalLayout vLayout_RightSelect = new VerticalLayout();
+
+      vLayout_LeftSelect.addComponent(leftTitle);
+      vLayout_LeftSelect.addComponent(leftSelect);
+
+      vLayout_RelTypesSelect.addComponent(relTypesTitleTop);
+      vLayout_RelTypesSelect.addComponent(relTypesTitleBot);
+      vLayout_RelTypesSelect.addComponent(relTypesSelect);
+
+      vLayout_RightSelect.addComponent(rightTitle);
+      vLayout_RightSelect.addComponent(rightSelect);
+
       Label spacer = new Label();
       spacer.setWidth(15, UNITS_PIXELS);
+
+      Label leftArrow = new Label();
+      leftArrow.setStyleName(CssConstants.OSEE_LEFTARROW);
 
       Label rightArrow = new Label();
       rightArrow.setStyleName(CssConstants.OSEE_RIGHTARROW);
 
       listBoxesLayout.addComponent(spacer);
-      listBoxesLayout.addComponent(relationTypesListSelect);
+      listBoxesLayout.addComponent(vLayout_LeftSelect);
+      listBoxesLayout.addComponent(leftArrow);
+      listBoxesLayout.addComponent(vLayout_RelTypesSelect);
       listBoxesLayout.addComponent(rightArrow);
-      listBoxesLayout.setComponentAlignment(rightArrow, Alignment.MIDDLE_CENTER);
-      listBoxesLayout.addComponent(relationsListSelect);
-      listBoxesLayout.addComponent(sideBSelect);
+      listBoxesLayout.addComponent(vLayout_RightSelect);
 
-      addComponent(titleLabel);
       addComponent(listBoxesLayout);
-      setExpandRatio(listBoxesLayout, 1.0f);
 
-      //Fixed width lists make for a prettier layout
-      relationTypesListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
-      relationsListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
-      sideBSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      vLayout_LeftSelect.setComponentAlignment(leftTitle, Alignment.BOTTOM_CENTER);
+      vLayout_LeftSelect.setComponentAlignment(leftSelect, Alignment.BOTTOM_CENTER);
+      vLayout_RelTypesSelect.setComponentAlignment(relTypesSelect, Alignment.BOTTOM_CENTER);
+      vLayout_RelTypesSelect.setComponentAlignment(relTypesTitleBot, Alignment.MIDDLE_CENTER);
+      vLayout_RelTypesSelect.setComponentAlignment(relTypesTitleTop, Alignment.MIDDLE_CENTER);
+      vLayout_RightSelect.setComponentAlignment(rightTitle, Alignment.BOTTOM_CENTER);
+      vLayout_RightSelect.setComponentAlignment(rightSelect, Alignment.BOTTOM_CENTER);
+      listBoxesLayout.setComponentAlignment(vLayout_LeftSelect, Alignment.BOTTOM_CENTER);
+      listBoxesLayout.setComponentAlignment(vLayout_RelTypesSelect, Alignment.BOTTOM_CENTER);
+      listBoxesLayout.setComponentAlignment(vLayout_RightSelect, Alignment.BOTTOM_CENTER);
+      listBoxesLayout.setComponentAlignment(rightArrow, Alignment.MIDDLE_CENTER);
+      listBoxesLayout.setComponentAlignment(leftArrow, Alignment.MIDDLE_CENTER);
+      setExpandRatio(listBoxesLayout, 1.0f);
    }
 
    public OseeRelationsComponent() {
@@ -136,47 +190,33 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
 
    @Override
    public void clearAll() {
-      if (relationTypesListSelect != null) {
-         lockRelTypesListener = true;
-         relationTypesListSelect.removeAllItems();
-         relationTypesListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
-         lockRelTypesListener = false;
-      }
-      if (relationsListSelect != null) {
-         lockRelsListener = true;
-         relationsListSelect.removeAllItems();
-         relationsListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
-         lockRelsListener = false;
-      }
+      this.addRelationType(null);
+      this.clearRelations();
    }
 
    @Override
    public void addRelationType(ViewId id) {
-      if (relationTypesListSelect != null) {
-         lockRelTypesListener = true;
-         relationTypesListSelect.addItem(id);
-         relationTypesListSelect.setWidth(null);
-         lockRelTypesListener = false;
+      if (id == null) {
+         relTypesSelect.setEnabled(false);
+         relTypesSelect.removeAllItems();
+         relTypesSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      } else {
+         relTypesSelect.setEnabled(true);
+         if (relTypesSelect != null) {
+            lockRelTypesListener = true;
+            relTypesSelect.addItem(id);
+            relTypesSelect.setWidth(null);
+            lockRelTypesListener = false;
+         }
       }
    }
 
    @Override
    public void clearRelations() {
-      if (relationsListSelect != null) {
-         lockRelsListener = true;
-         relationsListSelect.removeAllItems();
-         relationsListSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
-         lockRelsListener = false;
-      }
-   }
-
-   public void addRelation(ViewArtifact id) {
-      if (relationsListSelect != null) {
-         lockRelsListener = true;
-         relationsListSelect.addItem(id);
-         relationsListSelect.setWidth(null);
-         lockRelsListener = false;
-      }
+      this.addLeftRelated(null);
+      this.addRightRelated(null);
+      this.setLeftName(null);
+      this.setRightName(null);
    }
 
    @Override
@@ -201,17 +241,57 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
 
    @Override
    public void addLeftRelated(ViewArtifact id) {
+      if (id == null) {
+         leftSelect.setEnabled(false);
+         leftSelect.removeAllItems();
+         leftSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      } else {
+         leftSelect.setEnabled(true);
+         if (leftSelect != null) {
+            lockRelsListener = true;
+            leftSelect.addItem(id);
+            leftSelect.setWidth(null);
+            lockRelsListener = false;
+         }
+      }
    }
 
    @Override
    public void addRightRelated(ViewArtifact id) {
+      if (id == null) {
+         rightSelect.setEnabled(false);
+         rightSelect.removeAllItems();
+         rightSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
+      } else {
+         rightSelect.setEnabled(true);
+         if (rightSelect != null) {
+            lockRelsListener = true;
+            rightSelect.addItem(id);
+            rightSelect.setWidth(null);
+            lockRelsListener = false;
+         }
+      }
    }
 
    @Override
    public void setLeftName(String name) {
+      if (name == null) {
+         leftSelect.setEnabled(false);
+         leftTitle.setCaption("");
+      } else {
+         leftSelect.setEnabled(true);
+         leftTitle.setCaption(name);
+      }
    }
 
    @Override
    public void setRightName(String name) {
+      if (name == null) {
+         rightSelect.setEnabled(false);
+         rightTitle.setCaption("");
+      } else {
+         rightSelect.setEnabled(true);
+         rightTitle.setCaption(name);
+      }
    }
 }

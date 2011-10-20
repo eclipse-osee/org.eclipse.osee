@@ -135,6 +135,13 @@
 	background-repeat:repeat-x;
 }
 
+.osee-leftarrow {
+	background-image:url('woodsonArrow_left.png');
+	width: 35px;
+	height: 35px;
+	background-repeat:no-repeat;
+}
+
 .osee-rightarrow {
 	background-image:url('woodsonArrow.png');
 	width: 35px;
