@@ -143,14 +143,22 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          setErrorMessage(artHeaderComp, String.format("No artifact[%s] found on branch:[%s]", art, branch));
          return;
       }
-      WebArtifact artifact = convertToWebArtifact(displayArt);
+
+      WebArtifact artifact = null;
+      try {
+         artifact = convertToWebArtifact(displayArt);
+      } catch (Exception e) {
+         setErrorMessage(artHeaderComp, String.format("Error while converting [%s] from branch:[%s]", art, branch));
+         return;
+      }
+
       artHeaderComp.setArtifact(artifact);
 
       relComp.clearAll();
       relComp.setArtifact(artifact);
       Collection<RelationType> relationTypes = null;
       try {
-         relationTypes = displayArt.getValidRelationTypes();
+         relationTypes = artifactProvider.getValidRelationTypes(displayArt);
       } catch (Exception e) {
          setErrorMessage(relComp, String.format("Error loading relation types for: [%s]", displayArt.getName()));
          return;
@@ -203,8 +211,8 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          sourceArt = artifactProvider.getArtifactByGuid(branch, artifact.getGuid());
          for (RelationSide side : RelationSide.values()) {
             related =
-               sourceArt.getRelatedArtifacts(TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName()),
-                  null);
+               artifactProvider.getRelatedArtifacts(sourceArt,
+                  TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName()));
             if (side.isSideA()) {
                relatedSideA = related;
             } else {
@@ -241,17 +249,23 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       relationComponent.setLeftName(leftSideName);
       relationComponent.setRightName(rightSideName);
 
-      for (ReadableArtifact rel : relatedLeftSide) {
-         WebArtifact id = convertToWebArtifact(rel);
-         relationComponent.addLeftRelated(id);
-      }
-      for (ReadableArtifact rel : relatedRightSide) {
-         WebArtifact id = convertToWebArtifact(rel);
-         relationComponent.addRightRelated(id);
+      try {
+         for (ReadableArtifact rel : relatedLeftSide) {
+            WebArtifact id = convertToWebArtifact(rel);
+            relationComponent.addLeftRelated(id);
+         }
+         for (ReadableArtifact rel : relatedRightSide) {
+            WebArtifact id = convertToWebArtifact(rel);
+            relationComponent.addRightRelated(id);
+         }
+      } catch (Exception ex) {
+         setErrorMessage(relationComponent,
+            String.format("Error adding artifact[%s] to relation relation component", artifact.getGuid()));
+         return;
       }
    }
 
-   protected WebArtifact convertToWebArtifact(ReadableArtifact artifact) {
+   protected WebArtifact convertToWebArtifact(ReadableArtifact artifact) throws OseeCoreException {
       WebId branch = new WebId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
       WebArtifact toReturn =
          new WebArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(),
@@ -268,16 +282,12 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       return sb.toString();
    }
 
-   protected List<WebArtifact> getAncestry(ReadableArtifact art) {
-      ReadableArtifact cur = art.getParent();
+   protected List<WebArtifact> getAncestry(ReadableArtifact art) throws OseeCoreException {
+      ReadableArtifact cur = artifactProvider.getParent(art);
       List<WebArtifact> ancestry = new ArrayList<WebArtifact>();
       while (cur != null) {
          ancestry.add(convertToWebArtifact(cur));
-         if (cur.hasParent()) {
-            cur = cur.getParent();
-         } else {
-            break;
-         }
+         cur = artifactProvider.getParent(cur);
       }
       return ancestry;
    }

@@ -17,8 +17,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -36,10 +34,6 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    IArtifactType getArtifactType();
 
-   boolean hasParent();
-
-   ReadableArtifact getParent();
-
    // Attribute API
 
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;
@@ -52,13 +46,9 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    // Relation API
 
-   Collection<RelationType> getValidRelationTypes() throws OseeCoreException;//TODO what type should we us here IRelationType, RelationType
-
    Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException;
 
-   List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException;
-
-   ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException;
+   void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) throws OseeCoreException;
 
    @Override
    String toString();

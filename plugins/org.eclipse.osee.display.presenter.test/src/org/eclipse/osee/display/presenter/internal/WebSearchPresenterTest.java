@@ -28,6 +28,7 @@ import org.eclipse.osee.display.presenter.mocks.MockSearchResultComponent;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -241,6 +242,26 @@ public class WebSearchPresenterTest {
 
       @Override
       public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
+         throw new OseeCoreException("test");
+      }
+
+      @Override
+      public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+         throw new OseeCoreException("test");
+      }
+
+      @Override
+      public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+         throw new OseeCoreException("test");
+      }
+
+      @Override
+      public ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException {
+         throw new OseeCoreException("test");
+      }
+
+      @Override
+      public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 

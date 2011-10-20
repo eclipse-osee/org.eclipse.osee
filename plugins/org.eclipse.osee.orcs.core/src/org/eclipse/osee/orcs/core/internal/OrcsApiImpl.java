@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.OseeApi;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -38,6 +39,7 @@ public class OrcsApiImpl implements OseeApi {
    private DataLoader dataLoader;
    private AttributeClassResolver resolver;
    private IOseeCachingService cacheService;
+   private DataStoreTypeCache dataStoreTypeCache;
 
    private OrcsObjectLoader objectLoader;
    private CriteriaFactory criteriaFctry;
@@ -63,12 +65,17 @@ public class OrcsApiImpl implements OseeApi {
       this.cacheService = cacheService;
    }
 
+   public void setDataStoreTypeCache(DataStoreTypeCache dataStoreTypeCache) {
+      this.dataStoreTypeCache = dataStoreTypeCache;
+   }
+
    public void start() {
-      ArtifactFactory artifactFactory = new ArtifactFactory(cacheService.getRelationTypeCache());
-      AttributeFactory attributeFactory = new AttributeFactory(logger, resolver, cacheService.getAttributeTypeCache());
+      ArtifactFactory artifactFactory = new ArtifactFactory(dataStoreTypeCache.getRelationTypeCache());
+      AttributeFactory attributeFactory =
+         new AttributeFactory(logger, resolver, dataStoreTypeCache.getAttributeTypeCache());
       objectLoader =
          new OrcsObjectLoader(logger, dataLoader, artifactFactory, attributeFactory,
-            cacheService.getArtifactTypeCache(), cacheService.getBranchCache());
+            dataStoreTypeCache.getArtifactTypeCache(), cacheService.getBranchCache());
 
       criteriaFctry = new CriteriaFactory();
       rsetFctry = new ResultSetFactory(queryEngine, objectLoader);
@@ -100,5 +107,9 @@ public class OrcsApiImpl implements OseeApi {
    @Override
    public BranchCache getBranchCache() {
       return cacheService.getBranchCache();
+   }
+
+   public DataStoreTypeCache getDataStoreTypeCache() {
+      return dataStoreTypeCache;
    }
 }

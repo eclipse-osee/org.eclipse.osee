@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -61,11 +62,12 @@ public class ArtifactsResource {
       ResultSet<ReadableArtifact> results =
          factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).build(LoadLevel.FULL);
       ReadableArtifact rootArtifact = results.getExactlyOne();
+      List<Integer> artIds = new ArrayList<Integer>();
+      rootArtifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, artIds);
       List<ReadableArtifact> arts =
-         rootArtifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, factory);
+         factory.fromBranch(rootArtifact.getBranch()).andLocalIds(artIds).build(LoadLevel.FULL).getList();
       HtmlWriter writer = new HtmlWriter(uriInfo, factory);
       return writer.toHtml(arts);
    }
-
    private static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 }

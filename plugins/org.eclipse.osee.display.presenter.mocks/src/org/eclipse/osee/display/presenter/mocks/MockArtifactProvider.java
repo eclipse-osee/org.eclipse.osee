@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.mocks;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +17,10 @@ import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.mock.MockArtifact;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -56,43 +55,23 @@ public class MockArtifactProvider implements ArtifactProvider {
    }
 
    @Override
-   public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) {
-      if (art instanceof MockArtifact) {
-         MockArtifact mArt = (MockArtifact) art;
-         return null;
-      } else {
-         return null;
-      }
+   public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return null;
    }
 
    @Override
-   public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) {
-      if (art instanceof MockArtifact) {
-         MockArtifact mArt = (MockArtifact) art;
-         return null;
-      } else {
-         return null;
-      }
+   public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return null;
    }
 
    @Override
-   public ReadableArtifact getParent(ReadableArtifact art) {
-      if (art instanceof MockArtifact) {
-         MockArtifact mArt = (MockArtifact) art;
-         return null;
-      } else {
-         return null;
-      }
+   public ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException {
+      return null;
    }
 
    @Override
-   public List<RelationType> getValidRelationTypes(ReadableArtifact art) {
-      if (art instanceof MockArtifact) {
-         MockArtifact mArt = (MockArtifact) art;
-         return null;
-      } else {
-         return Collections.emptyList();
-      }
+   public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+      return null;
    }
 
 }

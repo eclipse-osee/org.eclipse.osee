@@ -20,16 +20,18 @@ import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OseeApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author John Misinco
  */
 public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements AtsArtifactProvider {
 
-   public AtsArtifactProviderImpl(QueryFactory factory) {
-      super(factory);
+   public AtsArtifactProviderImpl(OseeApi oseeApi, ApplicationContext context) {
+      super(oseeApi, context);
+
    }
 
    @Override
@@ -38,8 +40,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
       ReadableArtifact webProgramsArtifact =
          getArtifactByArtifactToken(CoreBranches.COMMON, AtsArtifactToken.WebPrograms);
       if (webProgramsArtifact != null) {
-         programs =
-            webProgramsArtifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members, getFactory());
+         programs = getRelatedArtifacts(webProgramsArtifact, CoreRelationTypes.Universal_Grouping__Members);
       }
       return programs;
    }
@@ -50,10 +51,10 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
       ReadableArtifact teamDef = null;
       ReadableArtifact programArtifact = getArtifactByGuid(CoreBranches.COMMON, programGuid);
       if (programArtifact != null) {
-         teamDef = programArtifact.getRelatedArtifact(CoreRelationTypes.SupportingInfo_SupportingInfo, getFactory());
+         teamDef = getRelatedArtifact(programArtifact, CoreRelationTypes.SupportingInfo_SupportingInfo);
       }
       if (teamDef != null) {
-         relatedArtifacts = teamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version, getFactory());
+         relatedArtifacts = getRelatedArtifacts(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version);
       }
       return relatedArtifacts;
    }

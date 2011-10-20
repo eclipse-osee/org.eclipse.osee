@@ -29,7 +29,7 @@ public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponent> impleme
 
    @Override
    public AtsSearchPresenter<T> createInstance() {
-      AtsArtifactProvider provider = new AtsArtifactProviderImpl(oseeApi.getQueryFactory(null));
+      AtsArtifactProvider provider = new AtsArtifactProviderImpl(oseeApi, null);
       AtsSearchPresenterImpl<T> instance = new AtsSearchPresenterImpl<T>(provider);
       return instance;
    }

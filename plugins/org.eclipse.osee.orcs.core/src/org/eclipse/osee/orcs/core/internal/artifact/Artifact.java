@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -20,12 +18,10 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
@@ -33,9 +29,6 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainerImpl;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainerImpl;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.search.ResultSet;
 
 public class Artifact extends NamedIdentity<String> implements ReadableArtifact {
 
@@ -128,16 +121,6 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
       return (String) attributeContainer.getAttributes(attributeType).iterator().next().getValue();
    }
 
-   @Override
-   public boolean hasParent() {
-      return false;
-   }
-
-   @Override
-   public ReadableArtifact getParent() {
-      return null;
-   }
-
    public AttributeContainer getAttributeContainer() {
       return attributeContainer;
    }
@@ -147,35 +130,17 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    }
 
    @Override
-   public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
-      List<Integer> results = new ArrayList<Integer>();
-      relationContainer.getArtifactIds(results, relationTypeSide);
-      if (!results.isEmpty()) {
-         QueryBuilder builder = queryFactory.fromBranch(getBranch()).andLocalIds(results);
-         ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
-         return resultSet.getList();
-      } else {
-         return Collections.emptyList();
-      }
-   }
-
-   @Override
-   public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
-      return getRelatedArtifacts(relationTypeSide, queryFactory).iterator().next();
-   }
-
-   @Override
-   public Collection<RelationType> getValidRelationTypes() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException {
+   public Collection<IRelationTypeSide> getAvailableRelationTypes() {
       return relationContainer.getAvailableRelationTypes();
    }
 
    @Override
    public <T> List<ReadableAttribute<T>> getAttributes() throws OseeCoreException {
       return getAttributeContainer().getAttributes();
+   }
+
+   @Override
+   public void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) {
+      relationContainer.getArtifactIds(results, relationTypeSide);
    }
 }

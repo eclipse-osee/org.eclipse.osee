@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.DataStoreTypeCache;
+import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeRowHandler;
@@ -155,7 +155,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    private int computeFetchSize(SqlContext sqlContext) {
-      int fetchSize = Integer.MIN_VALUE;
+      int fetchSize = 10;//Integer.MIN_VALUE;
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
          fetchSize = Math.max(fetchSize, join.size());
       }

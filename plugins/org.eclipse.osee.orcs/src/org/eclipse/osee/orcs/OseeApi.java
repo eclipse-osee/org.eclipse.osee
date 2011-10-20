@@ -17,6 +17,8 @@ public interface OseeApi {
 
    QueryFactory getQueryFactory(ApplicationContext context);
 
+   DataStoreTypeCache getDataStoreTypeCache();
+
    BranchCache getBranchCache();
 
 }

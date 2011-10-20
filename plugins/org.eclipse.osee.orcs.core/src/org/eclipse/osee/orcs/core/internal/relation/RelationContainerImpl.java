@@ -6,7 +6,6 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
@@ -27,7 +26,7 @@ public class RelationContainerImpl implements RelationContainer {
    }
 
    @Override
-   public void getArtifactIds(List<Integer> results, IRelationTypeSide relationTypeSide) {
+   public void getArtifactIds(Collection<Integer> results, IRelationTypeSide relationTypeSide) {
       rows.getArtifactIds(results, relationTypeSide);
    }
 

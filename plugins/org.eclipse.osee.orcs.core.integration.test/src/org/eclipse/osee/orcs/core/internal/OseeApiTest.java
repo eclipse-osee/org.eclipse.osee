@@ -10,15 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import junit.framework.Assert;
 import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
@@ -26,6 +30,7 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.OseeApi;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
@@ -57,12 +62,15 @@ public class OseeApiTest {
       OsgiUtil.getService(EventService.class);
       OsgiUtil.getService(IOseeCachingService.class);
       OsgiUtil.getService(QueryEngine.class);
+      OsgiUtil.getService(DataStoreTypeCache.class);
       OsgiUtil.getService(DataLoader.class);
       OsgiUtil.getService(AttributeClassResolver.class);
 
       OseeApi oseeApi = OsgiUtil.getService(OseeApi.class);
 
       ApplicationContext context = null; // TODO use real application context
+
+      PrettyQuery prettyQuery = new PrettyQuery(oseeApi);
 
       QueryFactory queryFactory = oseeApi.getQueryFactory(context);
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
@@ -87,9 +95,9 @@ public class OseeApiTest {
       //      173   397   8  121      699   1  1  2  16
       Assert.assertEquals(2, art8.getAvailableRelationTypes().size());
       Assert.assertEquals(3,
-         art8.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, queryFactory).size());
+         prettyQuery.getRelatedArtifacts(context, CoreRelationTypes.Default_Hierarchical__Child, art8).size());
       Assert.assertEquals(1,
-         art8.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, queryFactory).size());
+         prettyQuery.getRelatedArtifacts(context, CoreRelationTypes.Default_Hierarchical__Parent, art8).size());
 
       //art9 has 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
@@ -116,9 +124,37 @@ public class OseeApiTest {
       //      218   382   9  166      898   1  1  2  21 898
       Assert.assertEquals(2, art9.getAvailableRelationTypes().size());
       Assert.assertEquals(1,
-         art9.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, queryFactory).size());
-      Assert.assertEquals(20, art9.getRelatedArtifacts(CoreRelationTypes.Users_User, queryFactory).size());
+         prettyQuery.getRelatedArtifacts(context, CoreRelationTypes.Default_Hierarchical__Parent, art9).size());
+      Assert.assertEquals(20, prettyQuery.getRelatedArtifacts(context, CoreRelationTypes.Users_User, art9).size());
+   }
 
+   private static class PrettyQuery {
+      private final OseeApi oseeApi;
+
+      PrettyQuery(OseeApi oseeApi) {
+         this.oseeApi = oseeApi;
+      }
+
+      List<ReadableArtifact> getArtifactsFromLocalIds(ApplicationContext context, Integer... ids) throws OseeCoreException {
+         return getArtifactsFromLocalIds(context, Arrays.asList(ids));
+      }
+
+      List<ReadableArtifact> getArtifactsFromLocalIds(ApplicationContext context, Collection<Integer> ids) throws OseeCoreException {
+         QueryFactory queryFactory = oseeApi.getQueryFactory(context);
+         QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(ids);
+         ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+         return resultSet.getList();
+      }
+
+      List<ReadableArtifact> getRelatedArtifacts(ApplicationContext context, IRelationTypeSide relationTypeSide, ReadableArtifact art) throws OseeCoreException {
+         List<Integer> results = new ArrayList<Integer>();
+         art.getRelatedArtifacts(relationTypeSide, results);
+         return getArtifactsFromLocalIds(context, results);
+      }
+   }
+
+   List<ReadableArtifact> getRelated() {
+      return null;
    }
 
    Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {

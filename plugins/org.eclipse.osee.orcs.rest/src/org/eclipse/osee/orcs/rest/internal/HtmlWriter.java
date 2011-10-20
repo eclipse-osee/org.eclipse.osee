@@ -6,6 +6,7 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -81,8 +83,11 @@ public class HtmlWriter {
          }
       }
 
+      List<Integer> artIds = new ArrayList<Integer>();
+      artifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, artIds);
       List<ReadableArtifact> arts =
-         artifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, factory);
+         factory.fromBranch(artifact.getBranch()).andLocalIds(artIds).build(LoadLevel.FULL).getList();
+
       int count = 0;
       for (ReadableArtifact art : arts) {
          URI uri1;

@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.orcs.core.internal.OrcsTypeCacheImpl">
    <implementation class="org.eclipse.osee.orcs.core.internal.OrcsTypeCacheImpl"/>
    <service>
-      <provide interface="org.eclipse.osee.orcs.core.DataStoreTypeCache"/>
+      <provide interface="org.eclipse.osee.orcs.DataStoreTypeCache"/>
    </service>
    <reference bind="setCache" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
 </scr:component>

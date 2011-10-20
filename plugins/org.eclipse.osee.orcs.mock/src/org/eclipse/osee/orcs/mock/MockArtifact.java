@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author John Misinco
@@ -152,12 +151,6 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public List<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) {
-      List<ReadableArtifact> artList = relationMap.get(relationTypeSide);
-      return artList != null ? artList : Collections.<ReadableArtifact> emptyList();
-   }
-
-   @Override
    public String getSoleAttributeAsString(IAttributeType attributeType) {
       return null;
    }
@@ -175,27 +168,6 @@ public class MockArtifact implements ReadableArtifact {
    @Override
    public String getName() {
       return name;
-   }
-
-   @Override
-   public Collection<RelationType> getValidRelationTypes() {
-      return validRelationTypes;
-   }
-
-   @Override
-   public boolean hasParent() {
-      return hasParent;
-   }
-
-   @Override
-   public ReadableArtifact getParent() {
-      return parent;
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public ReadableArtifact getRelatedArtifact(IRelationTypeSide relationTypeSide, QueryFactory queryFactory) throws OseeCoreException {
-      return getRelatedArtifacts(relationTypeSide, queryFactory).iterator().next();
    }
 
    @Override
@@ -218,5 +190,12 @@ public class MockArtifact implements ReadableArtifact {
    public void clearRelations() {
       validRelationTypes.clear();
       relationMap.clear();
+   }
+
+   @Override
+   public void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) throws OseeCoreException {
+      for (ReadableArtifact art : relationMap.get(relationTypeSide)) {
+         results.add(art.getId());
+      }
    }
 }

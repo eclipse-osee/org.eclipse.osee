@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web.search;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderImpl;
@@ -54,8 +53,7 @@ public class AtsSearchResultsView extends OseeSearchResultsView {
    private void callInitSearchHome() {
       if (searchPresenter != null) {
          try {
-            searchPresenter.initSearchResults(requestedDataId, (AtsSearchHeaderComponent) searchHeader,
-               searchResultsListComponent);
+            searchPresenter.initSearchResults(requestedDataId, searchHeader, searchResultsListComponent);
          } catch (Exception e) {
             System.out.println("AtsSearchResultsView.callInitSearchHome - CRITICAL ERROR: casting threw an exception.");
          }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -25,7 +24,7 @@ public interface RelationContainer {
 
    Collection<IRelationTypeSide> getAvailableRelationTypes();
 
-   void getArtifactIds(List<Integer> results, IRelationTypeSide relationTypeSide);
+   void getArtifactIds(Collection<Integer> results, IRelationTypeSide relationTypeSide);
 
    int getRelationCount(IRelationTypeSide relationTypeSide);
 }
