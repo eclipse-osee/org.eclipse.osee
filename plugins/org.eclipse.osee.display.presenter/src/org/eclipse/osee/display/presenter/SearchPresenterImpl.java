@@ -29,6 +29,7 @@ import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
@@ -49,7 +50,7 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author John Misinco
  */
-public abstract class SearchPresenterImpl<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K> {
+public class SearchPresenterImpl<T extends SearchHeaderComponent> implements SearchPresenter<T> {
 
    protected final ArtifactProvider artifactProvider;
 
@@ -108,7 +109,7 @@ public abstract class SearchPresenterImpl<T extends SearchHeaderComponent, K ext
    }
 
    @Override
-   public void selectArtifact(ViewArtifact artifact, SearchNavigator oseeNavigator) {
+   public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
       Map<String, String> params = new HashMap<String, String>();
       params.put("branch", artifact.getBranch().getGuid());
       params.put("artifact", artifact.getGuid());

@@ -33,11 +33,7 @@ public final class CssConstants {
    public static final String OSEE_FOOTER_BAR = "osee-footer-bar";
    public static final String OSEE_PRODUCT_SUMMARY = "osee-product-summary";
 
-   public static final String OSEE_SEARCH_HEADER_COMPONENT_LARGE = "osee-search-header-component-large";
    public static final String OSEE_SEARCH_HEADER_COMPONENT_SMALL = "osee-search-header-component-small";
-   public static final String OSEE_SEARCH_HEADER_COMPONENT_FOOTER = "osee-search-header-component-footer";
-   public static final String OSEE_TITLE_LARGE = "osee-title-large";
-   public static final String OSEE_TITLE_LARGE_TEXT = "osee-title-large-text";
    public static final String OSEE_TITLE_MEDIUM_TEXT = "osee-title-medium-text";
    public static final String OSEE_SEARCH_TEXTFIELD = "osee-search-textfield";
 

@@ -11,9 +11,9 @@
 package org.eclipse.osee.display.view.web;
 
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
-import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import com.vaadin.Application;
@@ -22,14 +22,22 @@ import com.vaadin.Application;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeUiApplication extends Application {
+public class OseeUiApplication<T extends SearchHeaderComponent, K extends ViewSearchParameters> extends Application {
 
    protected final SearchNavigator navigator = createNavigator();
-   protected SearchPresenter<?> searchPresenter;
-   protected SearchHeaderComponent searchHeaderComponent = createSearchHeaderComponent();
+   protected SearchPresenter<T, K> searchPresenter;
+   protected String requestedDataId = "";
 
-   public OseeUiApplication(SearchPresenter<?> searchPresenter) {
+   public OseeUiApplication(SearchPresenter<T, K> searchPresenter) {
       this.searchPresenter = searchPresenter;
+   }
+
+   public String getRequestedDataId() {
+      return requestedDataId;
+   }
+
+   public void setRequestedDataId(String requestedDataId) {
+      this.requestedDataId = requestedDataId;
    }
 
    @Override
@@ -47,19 +55,12 @@ public class OseeUiApplication extends Application {
       return new OseeNavigator();
    }
 
-   protected SearchPresenter<?> createSearchPresenter() {
-      return null;
-   }
-
    public SearchNavigator getNavigator() {
       return navigator;
    }
 
-   public SearchPresenter<?> getSearchPresenter() {
+   public SearchPresenter<T, K> getSearchPresenter() {
       return searchPresenter;
    }
 
-   protected SearchHeaderComponent createSearchHeaderComponent() {
-      return new OseeSearchHeaderComponent();
-   }
 }

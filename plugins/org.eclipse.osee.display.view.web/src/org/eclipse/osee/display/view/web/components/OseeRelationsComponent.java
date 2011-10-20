@@ -38,7 +38,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    private final ListSelect relTypesSelect = new ListSelect();
    private final ListSelect leftSelect = new ListSelect();
    private final ListSelect rightSelect = new ListSelect();
-   private SearchPresenter<?> searchPresenter = null;
+   private SearchPresenter<?, ?> searchPresenter = null;
    private SearchNavigator navigator = null;
    private boolean lockRelTypesListener = false;
    private boolean lockRelsListener = false;
@@ -112,7 +112,12 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                try {
                   ViewArtifact artifact = (ViewArtifact) leftSelect.getValue();
                   if (artifact != null) {
-                     searchPresenter.selectArtifact(artifact, navigator);
+                     OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) getApplication();
+                     String url = "";
+                     if (app != null) {
+                        url = app.getRequestedDataId();
+                     }
+                     searchPresenter.selectArtifact(url, artifact, navigator);
                   }
                } catch (Exception e) {
                   System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
@@ -128,7 +133,12 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                try {
                   ViewArtifact artifact = (ViewArtifact) rightSelect.getValue();
                   if (artifact != null) {
-                     searchPresenter.selectArtifact(artifact, navigator);
+                     OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) getApplication();
+                     String url = "";
+                     if (app != null) {
+                        url = app.getRequestedDataId();
+                     }
+                     searchPresenter.selectArtifact(url, artifact, navigator);
                   }
                } catch (Exception e) {
                   System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");

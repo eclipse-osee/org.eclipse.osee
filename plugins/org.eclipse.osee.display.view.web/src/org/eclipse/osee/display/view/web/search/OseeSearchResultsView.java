@@ -10,82 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.search;
 
-import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
+import org.eclipse.osee.display.view.web.AbstractCommonView;
+import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeSearchResultsListComponent;
-import org.eclipse.osee.vaadin.widgets.Navigator;
-import com.vaadin.Application;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchResultsView extends CustomComponent implements Navigator.View {
+public abstract class OseeSearchResultsView extends AbstractCommonView {
 
-   protected OseeSearchHeaderComponent searchHeader;
    protected OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
-   private final int LEFTMARGIN_WIDTH = 5;
 
    protected void createLayout() {
-      setSizeFull();
-
-      Label spacer = new Label();
-      spacer.setHeight(5, UNITS_PIXELS);
-
-      HorizontalLayout leftMarginAndBody = new HorizontalLayout();
-      leftMarginAndBody.setSizeFull();
-      Label leftMarginSpace = new Label("");
-      leftMarginSpace.setWidth(LEFTMARGIN_WIDTH, UNITS_PIXELS);
-
+      OseeLeftMarginContainer leftMargContainer = new OseeLeftMarginContainer();
+      leftMargContainer.setSizeFull();
       searchResultsListComponent.setSizeFull();
 
-      final VerticalLayout vertLayout = new VerticalLayout();
-      vertLayout.setSizeFull();
+      leftMargContainer.addComponent(searchResultsListComponent);
+      addComponent(leftMargContainer);
 
-      leftMarginAndBody.addComponent(leftMarginSpace);
-      leftMarginAndBody.addComponent(searchResultsListComponent);
-
-      if (searchHeader != null) {
-         searchHeader.setShowOseeTitleAbove(false);
-         vertLayout.addComponent(searchHeader);
-         vertLayout.setComponentAlignment(searchHeader, Alignment.TOP_LEFT);
-         searchHeader.setWidth(100, UNITS_PERCENTAGE);
-         searchHeader.setHeight(null);
-      }
-
-      vertLayout.addComponent(spacer);
-      vertLayout.addComponent(leftMarginAndBody);
-
-      leftMarginAndBody.setExpandRatio(searchResultsListComponent, 1.0f);
-      vertLayout.setExpandRatio(leftMarginAndBody, 1.0f);
-
-      setCompositionRoot(vertLayout);
+      leftMargContainer.setExpandRatio(searchResultsListComponent, 1.0f);
+      setExpandRatio(leftMargContainer, 1.0f);
    }
-
-   @Override
-   public void init(Navigator navigator, Application application) {
-      //Do nothing.
-   }
-
-   protected OseeSearchHeaderComponent getOseeSearchHeader() {
-      return new OseeSearchHeaderComponent();
-   }
-
-   @Override
-   public void navigateTo(String requestedDataId) {
-      if (searchHeader != null) {
-         searchHeader.createLayout();
-      }
-      createLayout();
-   }
-
-   @Override
-   public String getWarningForNavigatingFrom() {
-      return null;
-   }
-
 }

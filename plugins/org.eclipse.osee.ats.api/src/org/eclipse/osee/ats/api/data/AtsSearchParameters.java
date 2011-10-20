@@ -21,7 +21,7 @@ public class AtsSearchParameters extends ViewSearchParameters {
 
    private final ViewId build, program;
 
-   public AtsSearchParameters(String searchString, boolean nameOnly, boolean verboseResults, ViewId build, ViewId program) {
+   public AtsSearchParameters(String searchString, Boolean nameOnly, Boolean verboseResults, ViewId build, ViewId program) {
       super(searchString, nameOnly, verboseResults);
       this.build = build;
       this.program = program;

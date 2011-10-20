@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.mock.internal;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -31,14 +29,17 @@ import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchNavigator;
+import org.eclipse.osee.display.presenter.mocks.MockSearchPresenter;
 
 /**
  * @author Shawn F. Cook
  */
-public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHeaderComponent> {
+public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends MockSearchPresenter<T, K> implements AtsSearchPresenter<T, K> {
 
-   private static final AtsSearchPresenter<AtsSearchHeaderComponent> atsBackend = new MockAtsWebSearchPresenter();
+   private static final AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> atsBackend =
+      new MockAtsWebSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters>();
 
    // *** TEST DATA ***
    ViewId build0 = new ViewId("baseline_guid", "Baseline");
@@ -105,48 +106,81 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator) {
+   public void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator) {
       if (atsNavigator != null && params != null) {
          Map<String, String> parameters = new HashMap<String, String>();
-         if (params.getProgram() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, params.getProgram().getGuid());
+         if (params instanceof AtsSearchParameters) {
+            AtsSearchParameters atsParams = (AtsSearchParameters) params;
+
+            if (atsParams.getProgram() != null) {
+               parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, atsParams.getProgram().getGuid());
+            }
+            if (atsParams.getBuild() != null) {
+               parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, atsParams.getBuild().getGuid());
+            }
          }
-         if (params.getBuild() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, params.getBuild().getGuid());
+         if (params.isNameOnly() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
          }
-         parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
          if (params.getSearchString() != null) {
             parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
          }
-         parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE, params.isVerboseResults() ? "true" : "false");
+         if (params.isVerboseResults() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE, params.isVerboseResults() ? "true" : "false");
+         }
          if (parameters.size() > 0) {
-            String url = parameterMapToRequestString(parameters);
-            atsNavigator.navigateSearchResults(url);
+            String newurl = parameterMapToRequestString(parameters, url);
+            atsNavigator.navigateSearchResults(newurl);
          }
       }
    }
 
-   //   @Override
-   //   public void initSearchHome(AtsSearchHeaderComponent headerComponent) {
-   //      if (headerComponent != null) {
-   //         headerComponent.clearAll();
-   //         Set<Entry<ViewId, Collection<ViewId>>> entrySet = programsAndBuilds.entrySet();
-   //         if (entrySet != null) {
-   //            for (Entry<ViewId, Collection<ViewId>> entry : entrySet) {
-   //               headerComponent.addProgram(entry.getKey());
-   //            }
-   //         }
-   //      }
-   //   }
+   private void updateSearchHeader(String url, AtsSearchHeaderComponent searchHeaderComp) {
+      if (searchHeaderComp != null) {
+         searchHeaderComp.clearAll();
+         Set<Entry<ViewId, Collection<ViewId>>> entrySet = programsAndBuilds.entrySet();
+         if (entrySet != null) {
+            for (Entry<ViewId, Collection<ViewId>> entry : entrySet) {
+               searchHeaderComp.addProgram(entry.getKey());
+            }
+         }
+
+         Map<String, String> params = requestStringToParameterMap(url);
+         if (params != null && params.size() > 0) {
+
+            ViewId program, build;
+            program = getProgramWithGuid(params.get(UrlParamNameConstants.PARAMNAME_PROGRAM));
+            build = getBuildWithGuid(UrlParamNameConstants.PARAMNAME_BUILD);
+            String nameOnlyStr = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
+            String verboseStr = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
+            Boolean nameOnly = false;
+            Boolean verbose = false;
+            if (nameOnlyStr != null) {
+               nameOnly = nameOnlyStr.equalsIgnoreCase("true");
+            }
+            if (verboseStr != null) {
+               verbose = verboseStr.equalsIgnoreCase("true");
+            }
+
+            AtsSearchParameters atsParams =
+               new AtsSearchParameters(params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE), nameOnly, verbose,
+                  build, program);
+            searchHeaderComp.setSearchCriteria(atsParams);
+         }
+      }
+   }
 
    @Override
-   public void selectArtifact(ViewArtifact artifact, SearchNavigator oseeNavigator) {
-      String url = String.format("/artifact/%s", artifact.getGuid());
-      oseeNavigator.navigateArtifactPage(url);
+   public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
+      Map<String, String> params = new HashMap<String, String>();
+      params.put("artifact", artifact.getGuid());
+      String newurl = parameterMapToRequestString(params, url);
+      oseeNavigator.navigateArtifactPage(newurl);
    }
 
    @Override
    public void initArtifactPage(String url, AtsSearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
+      updateSearchHeader(url, searchHeaderComp);
       artHeaderComp.clearAll();
       Map<String, String> params = requestStringToParameterMap(url);
       if (params != null && params.size() > 0) {
@@ -220,50 +254,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       }
    }
 
-   //   private void updateAndSetSearchHeaderCriteria(String url, AtsSearchHeaderComponentInterface searchHeaderComponent) {
-   //      Map<String, String> params = requestStringToParameterMap(url);
-   //      ViewId program = new ViewId("", "");
-   //      ViewId build = new ViewId("", "");
-   //      boolean nameOnly = false;
-   //      String searchPhrase = "";
-   //
-   //      if (params != null) {
-   //         String programGuid = params.get(UrlParamNameConstants.PARAMNAME_PROGRAM);
-   //         if (programGuid != null) {
-   //            program = getProgramWithGuid(programGuid);
-   //         }
-   //         String buildGuid = params.get(UrlParamNameConstants.PARAMNAME_BUILD);
-   //         if (buildGuid != null) {
-   //            build = getBuildWithGuid(buildGuid);
-   //         }
-   //         String nameOnlyStr = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
-   //         if (nameOnlyStr != null) {
-   //            nameOnly = nameOnlyStr.equalsIgnoreCase("true");
-   //         }
-   //
-   //         String searchPhrase_local = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
-   //         if (searchPhrase_local != null) {
-   //            searchPhrase = searchPhrase_local;
-   //         }
-   //      }
-   //      if (searchHeaderComponent != null) {
-   //         this.selectProgram(program, searchHeaderComponent);
-   //         searchHeaderComponent.setSearchCriteria(program, build, nameOnly, searchPhrase);
-   //      }
-   //   }
-
    @Override
    public void initSearchResults(String url, AtsSearchHeaderComponent searchHeaderComponent, SearchResultsListComponent resultsComponent) {
-
-      if ((url == null || url.isEmpty()) && searchHeaderComponent != null) {
-         searchHeaderComponent.clearAll();
-         Set<Entry<ViewId, Collection<ViewId>>> entrySet = programsAndBuilds.entrySet();
-         if (entrySet != null) {
-            for (Entry<ViewId, Collection<ViewId>> entry : entrySet) {
-               searchHeaderComponent.addProgram(entry.getKey());
-            }
-         }
-      }
+      updateSearchHeader(url, searchHeaderComponent);
 
       if (resultsComponent != null) {
          boolean showVerboseSearchResults = true;
@@ -300,11 +293,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
                      }
                      searchResultComp.setArtifact(artifact);
                      if (!nameOnly && !showVerboseSearchResults) {
-                        List<StyledText> text = new ArrayList<StyledText>();
-                        text.add(new StyledText("...{", false));
-                        text.add(new StyledText("COM_PAGE", true));
-                        text.add(new StyledText("}...", false));
-                        searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", 10, text));
+                        StyledText matchHintText = new StyledText("...{COM_PAGE}...", true);
+                        searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", 10,
+                           Arrays.asList(matchHintText)));
                      }
                   }
                }
@@ -324,9 +315,11 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
          if (tokens.length > 1) {
             for (int i = 0; i < tokens.length; i++) {
                String paramName = tokens[i];
-               i++;
-               String paramValue = tokens[i];
-               parameters.put(paramName, paramValue);
+               if (paramName != null && !paramName.isEmpty()) {
+                  i++;
+                  String paramValue = tokens[i];
+                  parameters.put(paramName, paramValue);
+               }
             }
          }
       }
@@ -334,20 +327,37 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       return parameters;
    }
 
-   private static String parameterMapToRequestString(Map<String, String> parameters) {
+   private static String parameterMapToRequestString(Map<String, String> parameters, String oldurl) {
       String requestedDataId = "/";
 
-      // TODO: Need to properly encode the URI parameters here.
+      Map<String, String> oldParameters = requestStringToParameterMap(oldurl);
+
+      Set<Entry<String, String>> oldKeyValuePairs = oldParameters.entrySet();
+      for (Iterator<Entry<String, String>> iter = oldKeyValuePairs.iterator(); iter.hasNext();) {
+         Entry<String, String> pair = iter.next();
+         if (pair.getKey() != null && !pair.getKey().isEmpty() && pair.getValue() != null && !pair.getValue().isEmpty()) {
+            //Check for new state for this key
+            String newValue = parameters.get(pair.getKey());
+            if (newValue == null) {
+               newValue = pair.getValue();
+            }
+            requestedDataId = String.format("%s%s/%s/", requestedDataId, pair.getKey(), newValue);
+         }
+      }
 
       Set<Entry<String, String>> keyValuePairs = parameters.entrySet();
       for (Iterator<Entry<String, String>> iter = keyValuePairs.iterator(); iter.hasNext();) {
          Entry<String, String> pair = iter.next();
          if (pair.getKey() != null && !pair.getKey().isEmpty() && pair.getValue() != null && !pair.getValue().isEmpty()) {
-            requestedDataId = String.format("%s%s/%s", requestedDataId, pair.getKey(), pair.getValue());
-            if (iter.hasNext()) {
-               requestedDataId = String.format("%s/", requestedDataId);
+            //Check for new key value pair that does not yet exist in the old state
+            if (oldParameters.get(pair.getKey()) == null) {
+               requestedDataId = String.format("%s%s/%s/", requestedDataId, pair.getKey(), pair.getValue());
             }
          }
+      }
+
+      if (requestedDataId.endsWith("/")) {
+         requestedDataId.substring(0, requestedDataId.length() - 1);
       }
 
       return requestedDataId;
@@ -389,4 +399,5 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       public final static String PARAMNAME_SEARCHPHRASE = "searchphrase";
       public final static String PARAMNAME_SHOWVERBOSE = "showverbose";
    }
+
 }

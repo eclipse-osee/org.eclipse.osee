@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Boeing.
+ * Copyright (c) October 21, 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,31 +11,17 @@
 package org.eclipse.osee.display.presenter.mocks;
 
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
+import org.eclipse.osee.display.api.search.SearchNavigator;
+import org.eclipse.osee.display.api.search.SearchPresenter;
 
 /**
- * @author John Misinco
+ * @author Shawn F. Cook
  */
-public class MockSearchHeaderComponent implements SearchHeaderComponent {
-
-   private boolean clearAllCalled = false;
-   private String errorMessage = "";
-
-   public boolean isClearAllCalled() {
-      return clearAllCalled;
-   }
-
-   public String getErrorMessage() {
-      return errorMessage;
-   }
+public abstract class MockSearchPresenter<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K> {
 
    @Override
-   public void setErrorMessage(String message) {
-      errorMessage = message;
+   public void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator) {
+      System.out.println("");
    }
-
-   @Override
-   public void clearAll() {
-      clearAllCalled = true;
-   }
-
 }

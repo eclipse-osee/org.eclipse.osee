@@ -17,18 +17,21 @@ import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
 
 /*
  * @author John Misinco
  */
-public interface SearchPresenter<T extends SearchHeaderComponent> {
+public interface SearchPresenter<T extends SearchHeaderComponent, K extends ViewSearchParameters> {
 
    void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp);
 
-   void selectArtifact(ViewArtifact artifact, SearchNavigator oseeNavigator);
+   void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator);
 
    void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp);
 
    void selectRelationType(ViewArtifact artifact, ViewId relation, RelationComponent relationComponent);
+
+   void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator);
 
 }

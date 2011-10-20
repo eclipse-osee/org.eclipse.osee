@@ -82,8 +82,4 @@ public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
    public void setSearchCriteria(AtsSearchParameters params) {
    }
 
-   @Override
-   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
-   }
-
 }

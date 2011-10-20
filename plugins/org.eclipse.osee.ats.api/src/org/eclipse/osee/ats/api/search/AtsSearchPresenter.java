@@ -13,16 +13,13 @@ package org.eclipse.osee.ats.api.search;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.display.api.data.ViewId;
-import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 
 /*
  * @author John Misinco
  */
-public interface AtsSearchPresenter<T extends AtsSearchHeaderComponent> extends SearchPresenter<T> {
+public interface AtsSearchPresenter<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends SearchPresenter<T, K> {
 
    void selectProgram(ViewId program, T headerComponent);
-
-   void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator);
 
 }

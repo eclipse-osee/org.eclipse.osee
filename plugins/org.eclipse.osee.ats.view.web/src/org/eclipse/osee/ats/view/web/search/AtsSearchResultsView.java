@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web.search;
 
-import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderImpl;
-import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
-import org.eclipse.osee.vaadin.widgets.Navigator;
-import com.vaadin.Application;
 
 /**
  * @author Shawn F. Cook
@@ -24,51 +20,21 @@ import com.vaadin.Application;
 @SuppressWarnings("serial")
 public class AtsSearchResultsView extends OseeSearchResultsView {
 
-   private boolean populated = false;
-   private AtsSearchPresenter searchPresenter;
-   private String requestedDataId = "";
+   private boolean isLayoutComplete = false;
 
    @Override
-   public void attach() {
-      if (!populated) {
-         try {
-            AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
-            searchPresenter = atsApp.getAtsWebSearchPresenter();
-            searchHeader = atsApp.getAtsSearchHeaderComponent();
-            searchResultsListComponent.setSearchHeaderComponent(searchHeader);
-            callInitSearchHome();
-            createLayout();
-         } catch (Exception e) {
-            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
-         }
-      }
-      populated = true;
-   }
-
-   @Override
-   protected OseeSearchHeaderComponent getOseeSearchHeader() {
-      return new AtsSearchHeaderImpl(false);
-   }
-
-   private void callInitSearchHome() {
-      if (searchPresenter != null) {
-         try {
-            searchPresenter.initSearchResults(requestedDataId, searchHeader, searchResultsListComponent);
-         } catch (Exception e) {
-            System.out.println("AtsSearchResultsView.callInitSearchHome - CRITICAL ERROR: casting threw an exception.");
-         }
+   protected void initComponents() {
+      try {
+         AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
+         searchPresenter = atsApp.getAtsWebSearchPresenter();
+         searchHeader = new AtsSearchHeaderImpl();
+      } catch (Exception e) {
+         System.out.println("AtsSearchResultsView.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
       }
    }
 
    @Override
-   public void navigateTo(String requestedDataId) {
-      super.navigateTo(requestedDataId);
-      this.requestedDataId = requestedDataId;
-      callInitSearchHome();
-   }
-
-   @Override
-   public void init(Navigator navigator, Application application) {
-      super.init(navigator, application);
+   protected void callInit(String url) {
+      searchPresenter.initSearchResults(url, searchHeader, searchResultsListComponent);
    }
 }

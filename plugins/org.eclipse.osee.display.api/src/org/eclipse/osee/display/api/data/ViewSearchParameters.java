@@ -16,10 +16,10 @@ package org.eclipse.osee.display.api.data;
 public class ViewSearchParameters {
 
    private final String searchString;
-   private final boolean nameOnly;
-   private final boolean verboseResults;
+   private final Boolean nameOnly;
+   private final Boolean verboseResults;
 
-   public ViewSearchParameters(String searchString, boolean nameOnly, boolean verboseResults) {
+   public ViewSearchParameters(String searchString, Boolean nameOnly, Boolean verboseResults) {
       this.searchString = searchString;
       this.nameOnly = nameOnly;
       this.verboseResults = verboseResults;
@@ -29,11 +29,11 @@ public class ViewSearchParameters {
       return searchString;
    }
 
-   public boolean isNameOnly() {
+   public Boolean isNameOnly() {
       return nameOnly;
    }
 
-   public boolean isVerboseResults() {
+   public Boolean isVerboseResults() {
       return verboseResults;
    }
 

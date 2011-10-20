@@ -11,16 +11,14 @@
 package org.eclipse.osee.display.view.web.components;
 
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
-import com.vaadin.ui.VerticalLayout;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
+import com.vaadin.ui.CustomComponent;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchHeaderComponent extends VerticalLayout implements SearchHeaderComponent {
-
-   protected boolean showOseeTitleAbove;
-   protected boolean showVerboseSearchResults = false;
+public class OseeSearchHeaderComponent extends CustomComponent implements SearchHeaderComponent {
 
    @Override
    public void attach() {
@@ -41,18 +39,8 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchH
       //Do nothing.
    }
 
-   public boolean isShowOseeTitleAbove() {
-      return showOseeTitleAbove;
-   }
-
-   public void setShowOseeTitleAbove(boolean showOseeTitleAbove) {
-      this.showOseeTitleAbove = showOseeTitleAbove;
-   }
-
-   @Override
-   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
-      this.showVerboseSearchResults = showVerboseSearchResults;
-      //      selectSearch();
+   public void setSearchCriteria(ViewSearchParameters params) {
+      //Do nothing.
    }
 
 }

@@ -18,6 +18,8 @@ import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.view.web.CssConstants;
+import org.eclipse.osee.display.view.web.OseeUiApplication;
+import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
 import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import com.vaadin.Application;
@@ -28,7 +30,6 @@ import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
@@ -44,7 +45,7 @@ import com.vaadin.ui.Window.Notification;
 @SuppressWarnings("serial")
 public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements AtsSearchHeaderComponent, Handler {
 
-   private boolean populated = false;
+   private boolean isLayoutComplete = false;
    private final ComboBox programCombo = new ComboBox("Program:");
    private final ComboBox buildCombo = new ComboBox("Build:");
    private final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", true);
@@ -55,7 +56,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void attach() {
-      if (!populated) {
+      if (!isLayoutComplete) {
          try {
             AtsUiApplication app = (AtsUiApplication) this.getApplication();
             searchPresenter = app.getAtsWebSearchPresenter();
@@ -65,7 +66,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          }
          createLayout();
       }
-      populated = true;
+      isLayoutComplete = true;
    }
 
    private void selectProgram() {
@@ -75,9 +76,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       }
    }
 
-   public AtsSearchHeaderImpl(boolean showOseeTitleAbove) {
-      this.showOseeTitleAbove = showOseeTitleAbove;
-
+   public AtsSearchHeaderImpl() {
       if (programCombo != null) {
          programCombo.setNullSelectionAllowed(false);
          programCombo.addListener(new Property.ValueChangeListener() {
@@ -97,19 +96,15 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       searchTextField.setImmediate(true);
    }
 
-   public AtsSearchHeaderImpl() {
-      this(true);
-   }
-
    protected void selectSearch() {
       if (searchPresenter != null && programCombo != null && buildCombo != null && nameOnlyCheckBox != null && searchTextField != null) {
          ViewId program = (ViewId) programCombo.getValue();
          ViewId build = (ViewId) buildCombo.getValue();
          boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
          String searchPhrase = (String) searchTextField.getValue();
-         AtsSearchParameters params =
-            new AtsSearchParameters(searchPhrase, nameOnly, showVerboseSearchResults, build, program);
-         searchPresenter.selectSearch(params, navigator);
+         AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, null, build, program);
+         OseeUiApplication app = (OseeUiApplication) getApplication();
+         searchPresenter.selectSearch(app.getRequestedDataId(), params, navigator);
       } else {
          System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
       }
@@ -117,14 +112,13 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void createLayout() {
-      removeAllComponents();
-      setHeight(null);
       setWidth(100, UNITS_PERCENTAGE);
       setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
 
-      HorizontalLayout hLayout_Body = new HorizontalLayout();
       HorizontalLayout hLayout_ProgBuildName = new HorizontalLayout();
       HorizontalLayout hLayout_SearchTextBtn = new HorizontalLayout();
+      hLayout_ProgBuildName.setSizeUndefined();
+      hLayout_SearchTextBtn.setSizeUndefined();
 
       Label hSpacer_ProgBuild = new Label("");
       hSpacer_ProgBuild.setHeight(null);
@@ -140,7 +134,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       hSpacer_SearchTextBtn.setWidth(30, UNITS_PIXELS);
       Button searchButton = new Button("Search", new Button.ClickListener() {
          @Override
-         public void buttonClick(ClickEvent event) {
+         public void buttonClick(Button.ClickEvent event) {
             selectSearch();
          }
       });
@@ -148,19 +142,14 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       OseeLogoLink oseeLogoImg =
          new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
       Label hSpacer_LogoRight = new Label("");
+      oseeLogoImg.setSizeUndefined();
+
       hSpacer_LogoRight.setWidth(15, UNITS_PIXELS);
 
       VerticalLayout vLayout_SearchCrit = new VerticalLayout();
       vLayout_SearchCrit.setSizeUndefined();
 
-      Label hSpacer_LeftMarg = new Label();
-      hSpacer_LeftMarg.setWidth(CssConstants.OSEE_LEFTMARGINWIDTH, UNITS_PIXELS);
-
-      Label vSpacer_BotLine = new Label("");
-      vSpacer_BotLine.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
-
-      Label vSpacer_TopLine = new Label("");
-      vSpacer_TopLine.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
+      OseeLeftMarginContainer leftMarginContainer = new OseeLeftMarginContainer();
 
       hLayout_ProgBuildName.addComponent(programCombo);
       hLayout_ProgBuildName.addComponent(hSpacer_ProgBuild);
@@ -175,14 +164,11 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       vLayout_SearchCrit.addComponent(hLayout_ProgBuildName);
       vLayout_SearchCrit.addComponent(hLayout_SearchTextBtn);
 
-      hLayout_Body.addComponent(hSpacer_LeftMarg);
-      hLayout_Body.addComponent(oseeLogoImg);
-      hLayout_Body.addComponent(hSpacer_LogoRight);
-      hLayout_Body.addComponent(vLayout_SearchCrit);
+      leftMarginContainer.addComponent(oseeLogoImg);
+      leftMarginContainer.addComponent(hSpacer_LogoRight);
+      leftMarginContainer.addComponent(vLayout_SearchCrit);
 
-      addComponent(vSpacer_TopLine);
-      addComponent(hLayout_Body);
-      addComponent(vSpacer_BotLine);
+      setCompositionRoot(leftMarginContainer);
 
       hLayout_ProgBuildName.setComponentAlignment(programCombo, Alignment.MIDDLE_LEFT);
       hLayout_ProgBuildName.setComponentAlignment(buildCombo, Alignment.MIDDLE_CENTER);
@@ -190,9 +176,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
       hLayout_SearchTextBtn.setComponentAlignment(searchTextField, Alignment.MIDDLE_LEFT);
       hLayout_SearchTextBtn.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
-
-      hLayout_Body.setComponentAlignment(oseeLogoImg, Alignment.TOP_CENTER);
-      hLayout_Body.setComponentAlignment(vLayout_SearchCrit, Alignment.TOP_CENTER);
    }
 
    @Override
@@ -206,7 +189,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void clearBuilds() {
-      if (buildCombo != null) {
+      if (buildCombo != null && !lockProgramCombo) {
          buildCombo.removeAllItems();
       }
    }

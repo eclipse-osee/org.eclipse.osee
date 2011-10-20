@@ -26,50 +26,73 @@ import com.vaadin.ui.Link;
 @SuppressWarnings("serial")
 public class OseeArtifactNameLinkComponent extends HorizontalLayout {
 
-   private boolean populated = false;
-   private SearchPresenter searchPresenter = null;
+   private boolean isLayoutComplete = false;
+   private SearchPresenter<?, ?> searchPresenter = null;
    private SearchNavigator navigator = null;
+   private ViewArtifact artifact = null;
+   private final Link artifactNameLink = new Link();
 
    public OseeArtifactNameLinkComponent(ViewArtifact artifact) {
       this(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
    }
 
+   public OseeArtifactNameLinkComponent(final ViewArtifact artifact, String styleName) {
+      this.artifact = artifact;
+      artifactNameLink.setStyleName(styleName);
+
+      addListener(new LayoutClickListener() {
+         @Override
+         public void layoutClick(LayoutClickEvent event) {
+            OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) getApplication();
+            String url = "";
+            if (app != null) {
+               url = app.getRequestedDataId();
+            }
+            searchPresenter.selectArtifact(url, artifact, navigator);
+         }
+      });
+   }
+
+   public OseeArtifactNameLinkComponent() {
+      this(null, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
+   }
+
    @Override
    public void attach() {
-      if (!populated) {
-         super.attach();
+      if (!isLayoutComplete) {
          try {
-            OseeUiApplication app = (OseeUiApplication) this.getApplication();
+            OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) this.getApplication();
             searchPresenter = app.getSearchPresenter();
             navigator = app.getNavigator();
          } catch (Exception e) {
-            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (OseeUiApplication) this.getApplication() threw an exception.");
+            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
          }
+         createLayout();
+         isLayoutComplete = true;
       }
-      populated = true;
    }
 
-   public OseeArtifactNameLinkComponent(final ViewArtifact artifact, String styleName) {
-      super();
+   private void createLayout() {
+      if (artifact != null) {
+         artifactNameLink.setCaption(artifact.getArtifactName());
+      }
 
-      Link artifactNameLink = new Link();
-      artifactNameLink.setCaption(artifact.getArtifactName());
-      artifactNameLink.setStyleName(styleName);
-      this.addComponent(artifactNameLink);
-
-      this.addListener(new LayoutClickListener() {
-
-         @Override
-         public void layoutClick(LayoutClickEvent event) {
-            searchPresenter.selectArtifact(artifact, navigator);
-         }
-      });
-
-      //      Map<String, String> parameterMap = new HashMap<String, String>();
-      //      parameterMap.put(OseeRoadMapAndNavigation.ARTIFACT, artifact.getGuid());
-      //      String paramString = OseeRoadMapAndNavigation.parameterMapToRequestString(parameterMap);
-      //      Resource artifactLink = new ExternalResource(String.format("ats#AtsArtifactView%s", paramString));
-      //      artifactNameLink.setResource(artifactLink);
-
+      addComponent(artifactNameLink);
    }
+
+   private void updateLayout() {
+      if (artifact != null) {
+         artifactNameLink.setCaption(artifact.getArtifactName());
+      }
+   }
+
+   public ViewArtifact getArtifact() {
+      return artifact;
+   }
+
+   public void setArtifact(ViewArtifact artifact) {
+      this.artifact = artifact;
+      updateLayout();
+   }
+
 }

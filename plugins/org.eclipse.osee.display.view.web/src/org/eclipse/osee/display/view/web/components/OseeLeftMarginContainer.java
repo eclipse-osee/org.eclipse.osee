@@ -8,13 +8,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.api.components;
+package org.eclipse.osee.display.view.web.components;
+
+import org.eclipse.osee.display.view.web.CssConstants;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 
 /**
  * @author Shawn F. Cook
  */
-public interface SearchHeaderComponent extends DisplaysErrorComponent {
+@SuppressWarnings("serial")
+public class OseeLeftMarginContainer extends HorizontalLayout {
+   private Label hSpacer_LeftMargin = new Label();
 
-   void clearAll();
+   public OseeLeftMarginContainer() {
+      super();
+
+      setSizeUndefined();
+
+      hSpacer_LeftMargin.setWidth(CssConstants.OSEE_LEFTMARGINWIDTH, UNITS_PIXELS);
+
+      addComponent(hSpacer_LeftMargin);
+   }
 
 }

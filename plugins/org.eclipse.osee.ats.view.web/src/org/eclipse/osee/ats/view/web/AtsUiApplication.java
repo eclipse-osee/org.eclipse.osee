@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web;
 
+import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
+import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderImpl;
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.view.web.OseeUiApplication;
 import org.eclipse.osee.vaadin.widgets.HasViews;
@@ -22,9 +22,9 @@ import com.vaadin.ui.Window;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsUiApplication extends OseeUiApplication {
+public class AtsUiApplication extends OseeUiApplication<AtsSearchHeaderComponent, AtsSearchParameters> {
 
-   public AtsUiApplication(AtsSearchPresenter searchPresenter) {
+   public AtsUiApplication(AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> searchPresenter) {
       super(searchPresenter);
    }
 
@@ -49,11 +49,11 @@ public class AtsUiApplication extends OseeUiApplication {
       return nav;
    }
 
-   public AtsSearchPresenter getAtsWebSearchPresenter() {
-      AtsSearchPresenter pres = null;
-      try {
-         pres = (AtsSearchPresenter) this.searchPresenter;
-      } catch (Exception e) {
+   public AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> getAtsWebSearchPresenter() {
+      AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> pres = null;
+      if (searchPresenter instanceof AtsSearchPresenter<?, ?>) {
+         pres = (AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters>) searchPresenter;
+      } else {
          System.out.println("AtsUiApplication.getAtsWebSearchPresenter() - CRITICAL ERROR: cast threw an exception.");
       }
       return pres;
@@ -64,18 +64,4 @@ public class AtsUiApplication extends OseeUiApplication {
       return new AtsNavigator();
    }
 
-   @Override
-   protected SearchHeaderComponent createSearchHeaderComponent() {
-      return new AtsSearchHeaderImpl();
-   }
-
-   public AtsSearchHeaderImpl getAtsSearchHeaderComponent() {
-      AtsSearchHeaderImpl searchHeader = null;
-      try {
-         searchHeader = (AtsSearchHeaderImpl) this.searchHeaderComponent;
-      } catch (Exception e) {
-         System.out.println("AtsUiApplication.getAtsSearchHeaderComponent() - CRITICAL ERROR: cast threw an exception.");
-      }
-      return searchHeader;
-   }
 }

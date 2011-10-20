@@ -23,8 +23,17 @@ import com.vaadin.ui.Label;
 public class OseeBreadcrumbComponent extends HorizontalLayout {
    private ViewArtifact artifact;
 
-   private void init() {
-      this.removeAllComponents();
+   public OseeBreadcrumbComponent(ViewArtifact artifact) {
+      this.artifact = artifact;
+      createLayout();
+   }
+
+   public OseeBreadcrumbComponent() {
+      createLayout();
+   }
+
+   private void createLayout() {
+      removeAllComponents();
 
       if (artifact != null && artifact.getAncestry() != null) {
          Collection<ViewArtifact> ancestryList = artifact.getAncestry();
@@ -45,14 +54,8 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
       }
    }
 
-   public OseeBreadcrumbComponent(ViewArtifact artifact) {
-      this.artifact = artifact;
-
-      init();
-   }
-
    public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
-      init();
+      createLayout();
    }
 }

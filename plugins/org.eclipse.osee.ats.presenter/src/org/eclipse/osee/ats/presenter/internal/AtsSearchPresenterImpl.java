@@ -20,8 +20,13 @@ import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
+import org.eclipse.osee.display.api.components.AttributeComponent;
+import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
 import org.eclipse.osee.display.presenter.Utility;
@@ -42,9 +47,9 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    }
 
    @Override
-   public void selectSearch(AtsSearchParameters params, SearchNavigator atsNavigator) {
-      String url = encode(params, null);
-      atsNavigator.navigateSearchResults(url);
+   public void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator) {
+      //      String urllocal = encode(params, null);
+      //      atsNavigator.navigateSearchResults(urllocal);
    }
 
    private void addProgramsToSearchHeader(T headerComponent) {
@@ -196,6 +201,14 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       String searchPhrase = data.get("search");
 
       return new AtsSearchParameters(searchPhrase, nameOnly, verbose, build, program);
+   }
+
+   @Override
+   public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
+   }
+
+   @Override
+   public void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
    }
 
 }
