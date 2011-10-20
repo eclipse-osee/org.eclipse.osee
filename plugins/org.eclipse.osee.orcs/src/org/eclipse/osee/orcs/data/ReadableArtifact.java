@@ -46,7 +46,7 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    // Relation API
 
-   Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException;
+   Collection<IRelationTypeSide> getExistingRelationTypes() throws OseeCoreException;
 
    void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) throws OseeCoreException;
 

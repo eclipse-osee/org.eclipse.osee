@@ -171,7 +171,7 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public Collection<IRelationTypeSide> getAvailableRelationTypes() throws OseeCoreException {
+   public Collection<IRelationTypeSide> getExistingRelationTypes() throws OseeCoreException {
       return null;
    }
 

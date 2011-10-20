@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import junit.framework.Assert;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -42,6 +41,7 @@ import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.osgi.service.event.EventAdmin;
 
@@ -86,14 +86,14 @@ public class OseeApiTest {
       ReadableArtifact art9 = lookup.get(9);
 
       //art 7 has no relations
-      Assert.assertEquals(0, art7.getAvailableRelationTypes().size());
+      Assert.assertEquals(0, art7.getExistingRelationTypes().size());
       //art 8 has 4 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
       //      2  397   1  8     36 1  1  2  6  36
       //      3  397   8  16    37 1  1  2  6  37
       //      1  397   8  9     41 1  1  2  6  41
       //      173   397   8  121      699   1  1  2  16
-      Assert.assertEquals(2, art8.getAvailableRelationTypes().size());
+      Assert.assertEquals(2, art8.getExistingRelationTypes().size());
       Assert.assertEquals(3,
          prettyQuery.getRelatedArtifacts(context, CoreRelationTypes.Default_Hierarchical__Child, art8).size());
       Assert.assertEquals(1,
@@ -122,7 +122,7 @@ public class OseeApiTest {
       //      34 382   9  47    348   1  1  2  14 348
       //      35 382   9  48    349   1  1  2  14 349
       //      218   382   9  166      898   1  1  2  21 898
-      Assert.assertEquals(2, art9.getAvailableRelationTypes().size());
+      Assert.assertEquals(2, art9.getExistingRelationTypes().size());
       Assert.assertEquals(1,
          prettyQuery.getRelatedArtifacts(context, CoreRelationTypes.Default_Hierarchical__Parent, art9).size());
       Assert.assertEquals(20, prettyQuery.getRelatedArtifacts(context, CoreRelationTypes.Users_User, art9).size());

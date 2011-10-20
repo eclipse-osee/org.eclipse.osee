@@ -130,7 +130,7 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    }
 
    @Override
-   public Collection<IRelationTypeSide> getAvailableRelationTypes() {
+   public Collection<IRelationTypeSide> getExistingRelationTypes() {
       return relationContainer.getAvailableRelationTypes();
    }
 
