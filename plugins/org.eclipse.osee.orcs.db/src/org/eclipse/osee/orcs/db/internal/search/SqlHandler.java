@@ -18,6 +18,9 @@ import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public abstract class SqlHandler {
 
    private Log logger;
