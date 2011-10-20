@@ -129,7 +129,6 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
       return relationContainer;
    }
 
-   @Override
    public Collection<IRelationTypeSide> getExistingRelationTypes() {
       return relationContainer.getAvailableRelationTypes();
    }
@@ -139,7 +138,6 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
       return getAttributeContainer().getAttributes();
    }
 
-   @Override
    public void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) {
       relationContainer.getArtifactIds(results, relationTypeSide);
    }

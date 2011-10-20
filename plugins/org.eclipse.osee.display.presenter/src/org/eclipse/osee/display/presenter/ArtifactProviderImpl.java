@@ -18,12 +18,12 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.OseeApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -43,6 +43,8 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    private final ApplicationContext context;
 
+   private final Graph graph;
+
    protected static final List<String> notAllowed = new ArrayList<String>();
    static {
       notAllowed.add("Technical Approaches");
@@ -56,6 +58,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    public ArtifactProviderImpl(OseeApi oseeApi, ApplicationContext context) {
       this.oseeApi = oseeApi;
       this.context = context;
+      this.graph = oseeApi.getGraph(context);
    }
 
    protected QueryFactory getFactory() {
@@ -104,14 +107,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
             allowed = false;
             break;
          }
-         List<Integer> parents = new ArrayList<Integer>();
-         current.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, parents);
-         if (parents.size() > 0) {
-            current =
-               getFactory().fromBranch(current.getBranch()).andLocalIds(parents).build(LoadLevel.FULL).getOneOrNull();
-         } else {
-            current = null;
-         }
+         current = graph.getParent(current);
       }
       if (allowed) {
          return result;
@@ -122,20 +118,12 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      List<Integer> results = new ArrayList<Integer>();
-      art.getRelatedArtifacts(relationTypeSide, results);
-      QueryBuilder builder = getFactory().fromBranch(CoreBranches.COMMON).andLocalIds(results);
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
-      return resultSet.getList();
+      return graph.getRelatedArtifacts(art, relationTypeSide);
    }
 
    @Override
    public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      List<Integer> results = new ArrayList<Integer>();
-      art.getRelatedArtifacts(relationTypeSide, results);
-      QueryBuilder builder = getFactory().fromBranch(CoreBranches.COMMON).andLocalIds(results);
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
-      return resultSet.getOneOrNull();
+      return graph.getRelatedArtifact(art, relationTypeSide);
    }
 
    @Override
@@ -145,6 +133,6 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
-      return oseeApi.getDataStoreTypeCache().getValidRelationTypes(art.getArtifactType(), art.getBranch());
+      return graph.getValidRelationTypes(art);
    }
 }

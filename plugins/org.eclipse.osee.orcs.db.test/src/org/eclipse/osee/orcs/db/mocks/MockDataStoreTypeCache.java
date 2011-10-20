@@ -10,15 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.mocks;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
 
 /**
@@ -39,16 +33,6 @@ public class MockDataStoreTypeCache implements DataStoreTypeCache {
    @Override
    public RelationTypeCache getRelationTypeCache() {
       return null;
-   }
-
-   @Override
-   public List<RelationType> getValidRelationTypes(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public int getRelationSideMax(RelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
-      return 0;
    }
 
 }

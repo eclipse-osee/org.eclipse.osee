@@ -6,19 +6,16 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -27,14 +24,16 @@ public class HtmlWriter {
 
    private final UriInfo uriInfo;
    private final QueryFactory factory;
+   private final Graph graph;
 
    public HtmlWriter(UriInfo uriInfo) {
-      this(uriInfo, null);
+      this(uriInfo, null, null);
    }
 
-   public HtmlWriter(UriInfo uriInfo, QueryFactory factory) {
+   public HtmlWriter(UriInfo uriInfo, QueryFactory factory, Graph graph) {
       this.uriInfo = uriInfo;
       this.factory = factory;
+      this.graph = graph;
    }
 
    public String toHtml(Collection<? extends Object> objects) throws OseeCoreException {
@@ -83,13 +82,8 @@ public class HtmlWriter {
          }
       }
 
-      List<Integer> artIds = new ArrayList<Integer>();
-      artifact.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, artIds);
-      List<ReadableArtifact> arts =
-         factory.fromBranch(artifact.getBranch()).andLocalIds(artIds).build(LoadLevel.FULL).getList();
-
       int count = 0;
-      for (ReadableArtifact art : arts) {
+      for (ReadableArtifact art : graph.getChildren(artifact)) {
          URI uri1;
          if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
             uri1 = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(art.getGuid());

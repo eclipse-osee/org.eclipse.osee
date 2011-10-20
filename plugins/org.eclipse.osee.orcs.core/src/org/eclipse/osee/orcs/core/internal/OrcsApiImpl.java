@@ -123,6 +123,6 @@ public class OrcsApiImpl implements OseeApi {
 
    @Override
    public Graph getGraph(ApplicationContext context) {
-      throw new UnsupportedOperationException();
+      return new GraphImpl(getQueryFactory(context), dataStoreTypeCache);
    }
 }

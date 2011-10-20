@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -170,11 +169,6 @@ public class MockArtifact implements ReadableArtifact {
       return name;
    }
 
-   @Override
-   public Collection<IRelationTypeSide> getExistingRelationTypes() throws OseeCoreException {
-      return null;
-   }
-
    @SuppressWarnings("unchecked")
    @Override
    public <T> List<ReadableAttribute<T>> getAttributes() {
@@ -192,10 +186,4 @@ public class MockArtifact implements ReadableArtifact {
       relationMap.clear();
    }
 
-   @Override
-   public void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) throws OseeCoreException {
-      for (ReadableArtifact art : relationMap.get(relationTypeSide)) {
-         results.add(art.getId());
-      }
-   }
 }
