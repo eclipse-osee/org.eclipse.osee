@@ -60,4 +60,5 @@ public final class CssConstants {
 
    public static final String OSEE_CURRENTPAGELABEL = "osee-currentpagelabel";
 
+   public static final int OSEE_LEFTMARGINWIDTH = 15;
 }

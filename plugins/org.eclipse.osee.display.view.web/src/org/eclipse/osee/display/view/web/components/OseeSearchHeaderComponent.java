@@ -55,8 +55,4 @@ public class OseeSearchHeaderComponent extends VerticalLayout implements SearchH
       //      selectSearch();
    }
 
-   protected void selectSearch() {
-      //Do nothing.  Needs override
-   }
-
 }

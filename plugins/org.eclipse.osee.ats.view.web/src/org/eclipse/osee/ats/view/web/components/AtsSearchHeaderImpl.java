@@ -63,8 +63,8 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          } catch (Exception e) {
             System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
          }
+         createLayout();
       }
-      createLayout();
       populated = true;
    }
 
@@ -117,82 +117,82 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void createLayout() {
-      this.removeAllComponents();
+      removeAllComponents();
       setHeight(null);
       setWidth(100, UNITS_PERCENTAGE);
+      setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
 
-      HorizontalLayout hLayoutRow0 = new HorizontalLayout();
-      HorizontalLayout hLayoutRow1 = new HorizontalLayout();
-      HorizontalLayout hLayoutRow2 = new HorizontalLayout();
+      HorizontalLayout hLayout_Body = new HorizontalLayout();
+      HorizontalLayout hLayout_ProgBuildName = new HorizontalLayout();
+      HorizontalLayout hLayout_SearchTextBtn = new HorizontalLayout();
 
-      //      Embedded oseeTitleLabel = new Embedded("", new ThemeResource("../osee/osee_large.png"));
-      //      oseeTitleLabel.setType(Embedded.TYPE_IMAGE);
-
-      Label spacer1 = new Label("");
-      spacer1.setHeight(null);
-      spacer1.setWidth(30, UNITS_PIXELS);
-      Label spacer2 = new Label("");
-      spacer2.setHeight(null);
-      spacer2.setWidth(30, UNITS_PIXELS);
-      hLayoutRow1.addComponent(programCombo);
-      hLayoutRow1.addComponent(spacer1);
-      hLayoutRow1.addComponent(buildCombo);
-      hLayoutRow1.addComponent(spacer2);
-      hLayoutRow1.addComponent(nameOnlyCheckBox);
-      hLayoutRow1.setComponentAlignment(programCombo, Alignment.MIDDLE_LEFT);
-      hLayoutRow1.setComponentAlignment(buildCombo, Alignment.MIDDLE_CENTER);
-      hLayoutRow1.setComponentAlignment(nameOnlyCheckBox, Alignment.BOTTOM_RIGHT);
+      Label hSpacer_ProgBuild = new Label("");
+      hSpacer_ProgBuild.setHeight(null);
+      hSpacer_ProgBuild.setWidth(30, UNITS_PIXELS);
+      Label hSpacer_BuildName = new Label("");
+      hSpacer_BuildName.setHeight(null);
+      hSpacer_BuildName.setWidth(30, UNITS_PIXELS);
 
       searchTextField.setStyleName(CssConstants.OSEE_SEARCH_TEXTFIELD);
-      Label spacer3 = new Label("");
-      spacer3.setHeight(null);
-      spacer3.setWidth(30, UNITS_PIXELS);
+
+      Label hSpacer_SearchTextBtn = new Label("");
+      hSpacer_SearchTextBtn.setHeight(null);
+      hSpacer_SearchTextBtn.setWidth(30, UNITS_PIXELS);
       Button searchButton = new Button("Search", new Button.ClickListener() {
          @Override
          public void buttonClick(ClickEvent event) {
             selectSearch();
          }
       });
-      hLayoutRow2.addComponent(searchTextField);
-      hLayoutRow2.addComponent(spacer3);
-      hLayoutRow2.addComponent(searchButton);
-      hLayoutRow2.setComponentAlignment(searchTextField, Alignment.MIDDLE_LEFT);
-      hLayoutRow2.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
 
-      setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
-
-      OseeLogoLink oseeTitleLabel =
+      OseeLogoLink oseeLogoImg =
          new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
-      Label spacer4 = new Label("");
-      spacer4.setWidth(15, UNITS_PIXELS);
-      oseeTitleLabel.setHeight(70, UNITS_PIXELS);
-      oseeTitleLabel.setWidth(70, UNITS_PIXELS);
+      Label hSpacer_LogoRight = new Label("");
+      hSpacer_LogoRight.setWidth(15, UNITS_PIXELS);
 
-      VerticalLayout rightSideVLayout = new VerticalLayout();
-      rightSideVLayout.addComponent(hLayoutRow1);
-      rightSideVLayout.addComponent(hLayoutRow2);
-      rightSideVLayout.setSizeUndefined();
+      VerticalLayout vLayout_SearchCrit = new VerticalLayout();
+      vLayout_SearchCrit.setSizeUndefined();
 
-      Label spacer7 = new Label();
-      spacer7.setWidth(15, UNITS_PIXELS);
+      Label hSpacer_LeftMarg = new Label();
+      hSpacer_LeftMarg.setWidth(CssConstants.OSEE_LEFTMARGINWIDTH, UNITS_PIXELS);
 
-      hLayoutRow0.addComponent(spacer7);
-      hLayoutRow0.addComponent(oseeTitleLabel);
-      hLayoutRow0.addComponent(spacer4);
-      hLayoutRow0.addComponent(rightSideVLayout);
-      hLayoutRow0.setComponentAlignment(oseeTitleLabel, Alignment.TOP_CENTER);
-      hLayoutRow0.setComponentAlignment(rightSideVLayout, Alignment.TOP_CENTER);
+      Label vSpacer_BotLine = new Label("");
+      vSpacer_BotLine.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
 
-      Label spacer5 = new Label("");
-      spacer5.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
+      Label vSpacer_TopLine = new Label("");
+      vSpacer_TopLine.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
 
-      Label spacer6 = new Label("");
-      spacer6.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
+      hLayout_ProgBuildName.addComponent(programCombo);
+      hLayout_ProgBuildName.addComponent(hSpacer_ProgBuild);
+      hLayout_ProgBuildName.addComponent(buildCombo);
+      hLayout_ProgBuildName.addComponent(hSpacer_BuildName);
+      hLayout_ProgBuildName.addComponent(nameOnlyCheckBox);
 
-      addComponent(spacer6);
-      addComponent(hLayoutRow0);
-      addComponent(spacer5);
+      hLayout_SearchTextBtn.addComponent(searchTextField);
+      hLayout_SearchTextBtn.addComponent(hSpacer_SearchTextBtn);
+      hLayout_SearchTextBtn.addComponent(searchButton);
 
+      vLayout_SearchCrit.addComponent(hLayout_ProgBuildName);
+      vLayout_SearchCrit.addComponent(hLayout_SearchTextBtn);
+
+      hLayout_Body.addComponent(hSpacer_LeftMarg);
+      hLayout_Body.addComponent(oseeLogoImg);
+      hLayout_Body.addComponent(hSpacer_LogoRight);
+      hLayout_Body.addComponent(vLayout_SearchCrit);
+
+      addComponent(vSpacer_TopLine);
+      addComponent(hLayout_Body);
+      addComponent(vSpacer_BotLine);
+
+      hLayout_ProgBuildName.setComponentAlignment(programCombo, Alignment.MIDDLE_LEFT);
+      hLayout_ProgBuildName.setComponentAlignment(buildCombo, Alignment.MIDDLE_CENTER);
+      hLayout_ProgBuildName.setComponentAlignment(nameOnlyCheckBox, Alignment.BOTTOM_RIGHT);
+
+      hLayout_SearchTextBtn.setComponentAlignment(searchTextField, Alignment.MIDDLE_LEFT);
+      hLayout_SearchTextBtn.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
+
+      hLayout_Body.setComponentAlignment(oseeLogoImg, Alignment.TOP_CENTER);
+      hLayout_Body.setComponentAlignment(vLayout_SearchCrit, Alignment.TOP_CENTER);
    }
 
    @Override
