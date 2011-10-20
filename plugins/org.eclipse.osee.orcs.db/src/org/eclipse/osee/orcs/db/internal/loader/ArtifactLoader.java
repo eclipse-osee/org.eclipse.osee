@@ -29,7 +29,6 @@ public class ArtifactLoader {
 
    private static int TRANSACTION_SENTINEL = -1;
 
-   @SuppressWarnings("unused")
    private final Log logger;
    private final SqlProvider sqlProvider;
    private final IOseeDatabaseService dbService;
@@ -120,72 +119,4 @@ public class ArtifactLoader {
          chStmt.close();
       }
    }
-
-   /*
-    * public void loadFromIds(Collection<Integer> artIds, int branchId, int transactionId, ArtifactRowHandler handler,
-    * LoadOptions options) throws OseeCoreException { if (artIds != null && !artIds.isEmpty()) { Collection<Integer>
-    * unique; if (artIds instanceof Set) { unique = artIds; } else { unique = new HashSet<Integer>();
-    * unique.addAll(artIds); } Integer transactionInfo = null; if (options.isHistorical()) { transactionInfo =
-    * transactionId; } ArtifactJoinQuery query = JoinUtility.createArtifactJoinQuery(); for (int artId : unique) {
-    * query.add(artId, branchId, transactionInfo); } if (!query.isEmpty()) { OseeConnection connection =
-    * dbService.getConnection(); try { try { query.store(connection); loadFromQueryId(handler, options, query.size(),
-    * query.getQueryId()); } finally { query.delete(connection); } } finally { connection.close(); } } } }
-    */
-   //   /**
-   //    * (re)loads the artifacts selected by sql and then returns them in a list
-   //    */
-   //   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, LoadLevel loadLevel, LoadType reload, ISearchConfirmer confirmer, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-   //      List<Artifact> artifacts = new ArrayList<Artifact>(artifactCountEstimate);
-   //      int queryId = getNewQueryId();
-   //      CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
-   //         new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
-   //      selectArtifacts(artifacts, queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId,
-   //         reload);
-   //
-   //      boolean historical = transactionId != null;
-   //      if (!insertParameters.isEmpty()) {
-   //         artifacts.addAll(loadArtifacts(queryId, loadLevel, confirmer,
-   //            new ArrayList<Object[]>(insertParameters.values()), reload, historical, allowDeleted));
-   //      } else if (confirmer != null) {
-   //         confirmer.canProceed(artifacts.size());
-   //      }
-   //      return artifacts;
-   //   }
-
-   //   /**
-   //    * Populates artifacts with any artifact already in cache and populates insertParameters with necessary data to load
-   //    * the rest.
-   //    * 
-   //    * @param reload will attempt to use cache if INCLUDE_CACHE
-   //    * @param insertParameters populated by this method
-   //    */
-   //   private void selectArtifacts(List<Artifact> artifacts, int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionRecord transactionId, LoadType reload) throws OseeCoreException {
-   //      IOseeStatement chStmt = dbService.getStatement();
-   //      long time = System.currentTimeMillis();
-   //      try {
-   //         chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
-   //         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-   //
-   //         while (chStmt.next()) {
-   //            int artId = chStmt.getInt("art_id");
-   //            int branchId = chStmt.getInt("branch_id");
-   //            Artifact artifact = getArtifactFromCache(artId, transactionId, branchId);
-   //            if (artifact != null && reload == LoadType.INCLUDE_CACHE) {
-   //               artifacts.add(artifact);
-   //            } else {
-   //               Object transactionParameter = transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
-   //               insertParameters.put(artId, branchId, new Object[] {
-   //                  queryId,
-   //                  insertTime,
-   //                  artId,
-   //                  branchId,
-   //                  transactionParameter});
-   //            }
-   //         }
-   //      } finally {
-   //         chStmt.close();
-   //      }
-   //      logger.debug(new Exception("Artifact Selection Time"), "Artifact Selection Time [%s], [%d] artifacts selected",
-   //         Lib.getElapseString(time), insertParameters.size());
-   //   }
 }
