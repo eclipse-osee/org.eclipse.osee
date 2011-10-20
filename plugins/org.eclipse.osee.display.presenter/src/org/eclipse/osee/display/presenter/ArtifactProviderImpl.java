@@ -11,6 +11,7 @@
 package org.eclipse.osee.display.presenter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -21,10 +22,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.CaseType;
@@ -137,7 +137,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
-      return graph.getValidRelationTypes(art);
+   public Collection<IRelationTypeSide> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+      return graph.getExistingRelationTypes(art);
    }
 }

@@ -7,6 +7,7 @@ package org.eclipse.osee.orcs.core.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -45,9 +46,15 @@ public class GraphImpl implements Graph {
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
       List<Integer> results = new ArrayList<Integer>();
       ((Artifact) art).getRelatedArtifacts(relationTypeSide, results);
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(results);
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
-      return resultSet.getList();
+      List<ReadableArtifact> toReturn;
+      if (results.size() == 0) {
+         toReturn = Collections.emptyList();
+      } else {
+         QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(results);
+         ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+         toReturn = resultSet.getList();
+      }
+      return toReturn;
    }
 
    @Override

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.search;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
@@ -37,5 +37,5 @@ public interface ArtifactProvider {
 
    ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException;
 
-   List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException;
+   Collection<IRelationTypeSide> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException;
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.display.presenter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,10 +37,10 @@ import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -175,17 +174,17 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
 
       relComp.clearAll();
       relComp.setArtifact(artifact);
-      Collection<RelationType> relationTypes = null;
+      Collection<IRelationTypeSide> relationTypes = null;
       try {
          relationTypes = artifactProvider.getValidRelationTypes(displayArt);
       } catch (Exception e) {
          setErrorMessage(relComp, String.format("Error loading relation types for: [%s]", displayArt.getName()));
          return;
       }
-      for (RelationType relType : relationTypes) {
-         ViewId toAdd = new ViewId(relType.getGuid().toString(), relType.getName());
-         toAdd.setAttribute(SIDE_A_KEY, relType.getSideAName());
-         toAdd.setAttribute(SIDE_B_KEY, relType.getSideBName());
+      for (IRelationTypeSide relTypeSide : relationTypes) {
+         ViewId toAdd = new ViewId(relTypeSide.getGuid().toString(), relTypeSide.getName());
+         //         toAdd.setAttribute(SIDE_A_KEY, relTypeSide.getSideAName());
+         //         toAdd.setAttribute(SIDE_B_KEY, relTypeSide.getSideBName());
          relComp.addRelationType(toAdd);
       }
 
@@ -293,13 +292,14 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
    }
 
    protected List<ViewArtifact> getAncestry(ReadableArtifact art) throws OseeCoreException {
-      ReadableArtifact cur = artifactProvider.getParent(art);
-      List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
-      while (cur != null) {
-         ancestry.add(convertToViewArtifact(cur));
-         cur = artifactProvider.getParent(cur);
-      }
-      return ancestry;
+      return Collections.emptyList();
+      //      ReadableArtifact cur = artifactProvider.getParent(art);
+      //      List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
+      //      while (cur != null) {
+      //         ancestry.add(convertToViewArtifact(cur));
+      //         cur = artifactProvider.getParent(cur);
+      //      }
+      //      return ancestry;
    }
 
    protected void setErrorMessage(DisplaysErrorComponent component, String message) {
