@@ -29,7 +29,7 @@ public class QueryOptions implements Cloneable {
    public void reset() {
       includeCache = true;
       includeDeleted = false;
-      includeTypeInheritance = true;
+      includeTypeInheritance = false;
       transactionId = TRANSACTION_SENTINEL;
    }
 

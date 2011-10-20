@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.db.internal.search.SqlBuilder.QueryType;
 import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
 
@@ -198,5 +200,13 @@ public class SqlWriter {
       }
       addJoin(joinQuery);
       return joinQuery;
+   }
+
+   public void addPostProcessor(QueryPostProcessor processor) {
+      context.getPostProcessors().add(processor);
+   }
+
+   public QueryOptions getOptions() {
+      return context.getOptions();
    }
 }

@@ -18,6 +18,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
@@ -30,7 +32,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandlerFactory;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
 /**
  * @author Roberto E. Escobar
@@ -38,15 +40,20 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
 
    private static final SqlHandlerComparator comparator = new SqlHandlerComparator();
+
    private final Map<Class<? extends Criteria>, Class<? extends SqlHandler>> handleMap =
       new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler>>();
 
+   private final Log logger;
    private final IdentityService idService;
-   private final TagProcessor tagProcessor;
+   private final TaggingEngine taggingEngine;
+   private final DataStoreTypeCache caches;
 
-   public SqlHandlerFactoryImpl(IdentityService idService, TagProcessor tagProcessor) {
+   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, TaggingEngine taggingEngine, DataStoreTypeCache caches) {
+      this.logger = logger;
       this.idService = idService;
-      this.tagProcessor = tagProcessor;
+      this.taggingEngine = taggingEngine;
+      this.caches = caches;
 
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactHrids.class, ArtifactHridsSqlHandler.class);
@@ -68,7 +75,9 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
             SqlHandler handler = item.newInstance();
             handler.setData(criteria);
             handler.setIdentityService(idService);
-            handler.setTagProcessor(tagProcessor);
+            handler.setLogger(logger);
+            handler.setTaggingEngine(taggingEngine);
+            handler.setTypeCaches(caches);
             handlers.add(handler);
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);

@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -23,6 +24,7 @@ public class SqlContext implements QueryContext {
 
    private final List<Object> parameters = new ArrayList<Object>();
    private final List<AbstractJoinQuery> joinTables = new ArrayList<AbstractJoinQuery>();
+   private final List<QueryPostProcessor> processors = new ArrayList<QueryPostProcessor>();
    private String sql;
 
    private final String sessionId;
@@ -33,6 +35,7 @@ public class SqlContext implements QueryContext {
       this.options = options;
    }
 
+   @Override
    public String getSessionId() {
       return sessionId;
    }
@@ -53,6 +56,12 @@ public class SqlContext implements QueryContext {
       return joinTables;
    }
 
+   @Override
+   public List<QueryPostProcessor> getPostProcessors() {
+      return processors;
+   }
+
+   @Override
    public QueryOptions getOptions() {
       return options;
    }
@@ -61,11 +70,12 @@ public class SqlContext implements QueryContext {
       setSql(null);
       parameters.clear();
       joinTables.clear();
+      processors.clear();
    }
 
    @Override
    public String toString() {
-      return "SqlContext [sessionId=" + sessionId + ", sql=" + sql + ", params=" + parameters + ", options=" + options + "]";
+      return "SqlContext [sessionId=" + sessionId + ", sql=" + sql + ", params=" + parameters + ", options=" + options + ", joins=" + joinTables.size() + ", postProcessors=" + processors.size() + "]";
    }
 
 }

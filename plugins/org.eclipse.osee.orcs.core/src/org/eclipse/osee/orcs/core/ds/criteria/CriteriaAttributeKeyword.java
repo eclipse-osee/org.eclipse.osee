@@ -22,14 +22,14 @@ import org.eclipse.osee.orcs.search.StringOperator;
 public class CriteriaAttributeKeyword extends Criteria {
 
    private final Collection<? extends IAttributeType> attributeType;
-   private final Collection<String> values;
+   private final String value;
    private final StringOperator stringOp;
    private final CaseType match;
 
-   public CriteriaAttributeKeyword(Collection<? extends IAttributeType> attributeType, Collection<String> values, StringOperator stringOp, CaseType match) {
+   public CriteriaAttributeKeyword(Collection<? extends IAttributeType> attributeType, String value, StringOperator stringOp, CaseType match) {
       super();
       this.attributeType = attributeType;
-      this.values = values;
+      this.value = value;
       this.stringOp = stringOp;
       this.match = match;
    }
@@ -38,8 +38,8 @@ public class CriteriaAttributeKeyword extends Criteria {
       return attributeType;
    }
 
-   public Collection<String> getValues() {
-      return values;
+   public String getValue() {
+      return value;
    }
 
    public StringOperator getStringOp() {

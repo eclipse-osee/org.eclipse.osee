@@ -44,9 +44,10 @@ public class ResultSetFactory {
       return new ResultSetImpl(objectLoader, sessionContext, queryContext, loadOptions);
    }
 
-   @SuppressWarnings("unused")
    public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> createMatchesResultSet(SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {
-      throw new UnsupportedOperationException();
+      QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
+      LoadOptions loadOptions = new LoadOptions(options.isHistorical(), options.areDeletedIncluded(), loadLevel);
+      return new ResultSetLocatorImpl(objectLoader, sessionContext, queryContext, loadOptions);
    }
 
    public int getCount(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {

@@ -52,8 +52,8 @@ public final class SqlConstants {
       ARTIFACT_HRID,
       ARTIFACT_TYPE,
       ATTRIBUTE_TYPE_EXISTS,
-      ATTRIBUTE_TYPE,
-      ATTRIBUTE_TOKEN,
+      ATTRIBUTE_VALUE,
+      ATTRIBUTE_TOKENIZED_VALUE,
       RELATION_TYPE_EXISTS;
    }
 

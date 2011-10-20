@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -43,6 +44,7 @@ public class QueryEngineImpl implements QueryEngine {
    private IOseeDatabaseService dbService;
    private IdentityService identityService;
    private IOseeCachingService cacheService;
+   private DataStoreTypeCache cache;
 
    private Log logger;
 
@@ -62,15 +64,20 @@ public class QueryEngineImpl implements QueryEngine {
       this.dbService = dbService;
    }
 
+   //TODO fix these two services
    public void setCachingService(IOseeCachingService cacheService) {
       this.cacheService = cacheService;
    }
 
+   public void setDataStoreTypeCache(DataStoreTypeCache cache) {
+      this.cache = cache;
+   }
+
    public void start() {
       tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
-      taggingEngine = new TaggingEngine(tagProcessor, cacheService.getAttributeTypeCache());
+      taggingEngine = new TaggingEngine(tagProcessor, cache.getAttributeTypeCache());
 
-      handlerFactory = new SqlHandlerFactoryImpl(identityService, tagProcessor);
+      handlerFactory = new SqlHandlerFactoryImpl(logger, identityService, taggingEngine, cache);
       builder = new SqlBuilder(sqlProvider, dbService);
    }
 

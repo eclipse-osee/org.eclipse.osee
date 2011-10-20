@@ -153,7 +153,7 @@ public interface QueryBuilder {
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException;
+   QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException;
 
    /**
     * Creates a result set based on query settings

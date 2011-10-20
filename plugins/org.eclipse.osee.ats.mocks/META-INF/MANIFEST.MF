@@ -19,3 +19,4 @@ Import-Package: org.eclipse.osee.ats.api.components,
  org.eclipse.osee.orcs.mock,
  org.eclipse.osee.orcs.search
 Export-Package: org.eclipse.osee.ats.mocks
+Require-Bundle: org.eclipse.osee.ats.api

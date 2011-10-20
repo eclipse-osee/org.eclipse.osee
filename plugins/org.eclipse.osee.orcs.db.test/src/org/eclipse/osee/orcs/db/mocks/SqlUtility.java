@@ -15,6 +15,8 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
@@ -23,6 +25,7 @@ import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
 /**
  * @author Roberto E. Escobar
@@ -41,6 +44,10 @@ public final class SqlUtility {
       return set;
    }
 
+   public static List<SqlHandler> createHandlers(IOseeBranch branch, Criteria... criteria) throws OseeCoreException {
+      return createHandlers(createCriteria(branch, criteria));
+   }
+
    public static List<SqlHandler> createHandlers(CriteriaSet criteriaSet) throws OseeCoreException {
       IdentityService service = new MockIdentityService() {
 
@@ -48,10 +55,13 @@ public final class SqlUtility {
          public int getLocalId(Identity<Long> identity) {
             return identity.getGuid().intValue();
          }
-
       };
-      TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(new MockLog()), new TagEncoder());
-      SqlHandlerFactory factory = new SqlHandlerFactoryImpl(service, tagProcessor);
+      Log log = new MockLog();
+      DataStoreTypeCache caches = new MockDataStoreTypeCache();
+
+      TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(log), new TagEncoder());
+      TaggingEngine tagEngine = new TaggingEngine(tagProcessor, null);
+      SqlHandlerFactory factory = new SqlHandlerFactoryImpl(log, service, tagEngine, caches);
       return factory.createHandlers(criteriaSet);
    }
 }

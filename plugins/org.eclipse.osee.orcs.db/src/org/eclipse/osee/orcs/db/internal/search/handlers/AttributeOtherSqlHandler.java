@@ -130,7 +130,6 @@ public class AttributeOtherSqlHandler extends SqlHandler {
             }
          }
       }
-
       writer.write(" AND ");
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
@@ -141,6 +140,6 @@ public class AttributeOtherSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.ATTRIBUTE_TYPE.ordinal();
+      return CriteriaPriority.ATTRIBUTE_VALUE.ordinal();
    }
 }

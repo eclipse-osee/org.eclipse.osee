@@ -21,19 +21,21 @@ import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.ResultSet;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ResultSetImpl implements ResultSet<ReadableArtifact> {
+public class ResultSetLocatorImpl implements ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> {
 
    private final OrcsObjectLoader objectLoader;
    private final SessionContext sessionContext;
    private final QueryContext queryContext;
    private final LoadOptions loadOptions;
 
-   public ResultSetImpl(OrcsObjectLoader objectLoader, SessionContext sessionContext, QueryContext queryContext, LoadOptions loadOptions) {
+   public ResultSetLocatorImpl(OrcsObjectLoader objectLoader, SessionContext sessionContext, QueryContext queryContext, LoadOptions loadOptions) {
       super();
       this.objectLoader = objectLoader;
       this.sessionContext = sessionContext;
@@ -42,14 +44,14 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
    }
 
    @Override
-   public ReadableArtifact getOneOrNull() throws OseeCoreException {
-      List<ReadableArtifact> result = getList();
+   public Match<ReadableArtifact, ReadableAttribute<?>> getOneOrNull() throws OseeCoreException {
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> result = getList();
       return result.isEmpty() ? null : result.iterator().next();
    }
 
    @Override
-   public ReadableArtifact getExactlyOne() throws OseeCoreException {
-      List<ReadableArtifact> result = getList();
+   public Match<ReadableArtifact, ReadableAttribute<?>> getExactlyOne() throws OseeCoreException {
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> result = getList();
       if (result.isEmpty()) {
          throw new ArtifactDoesNotExist("No artifacts found");
       } else if (result.size() > 1) {
@@ -59,23 +61,19 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
    }
 
    @Override
-   public List<ReadableArtifact> getList() throws OseeCoreException {
-      List<ReadableArtifact> artifacts = objectLoader.load(queryContext, loadOptions, sessionContext);
+   public List<Match<ReadableArtifact, ReadableAttribute<?>>> getList() throws OseeCoreException {
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
+         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
 
-      List<ReadableArtifact> results;
-      if (!queryContext.getPostProcessors().isEmpty()) {
-         results = new ArrayList<ReadableArtifact>();
-         for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
-            results.addAll(processor.getMatching(artifacts));
-         }
-      } else {
-         results = artifacts;
+      List<ReadableArtifact> artifacts = objectLoader.load(queryContext, loadOptions, sessionContext);
+      for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
+         results.addAll(processor.getLocationMatches(artifacts));
       }
-      return artifacts;
+      return results;
    }
 
    @Override
-   public Iterable<ReadableArtifact> getIterable(int fetchSize) throws OseeCoreException {
+   public Iterable<Match<ReadableArtifact, ReadableAttribute<?>>> getIterable(int fetchSize) throws OseeCoreException {
       return getList();
    }
 }

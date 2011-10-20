@@ -31,14 +31,24 @@ public class TaggingEngine {
 
    private final Map<String, Tagger> taggers = new HashMap<String, Tagger>();
    private final AttributeTypeCache attributeTypeCache;
+   private final TagProcessor tagProcessor;
 
    public TaggingEngine(TagProcessor tagProcessor, AttributeTypeCache attributeTypeCache) {
+      this.tagProcessor = tagProcessor;
       this.attributeTypeCache = attributeTypeCache;
       taggers.put("DefaultAttributeTaggerProvider", new DefaultAttributeTagger(tagProcessor, new WordOrderMatcher()));
       taggers.put("XmlAttributeTaggerProvider", new XmlAttributeTagger(tagProcessor, new WordOrderMatcher()));
    }
 
-   private Tagger getTagger(Identity<Long> identity) throws OseeCoreException {
+   public TagProcessor getTagProcessor() {
+      return tagProcessor;
+   }
+
+   public Tagger getDefaultTagger() throws OseeCoreException {
+      return getTagger("DefaultAttributeTaggerProvider");
+   }
+
+   public Tagger getTagger(Identity<Long> identity) throws OseeCoreException {
       AttributeType attributeType = attributeTypeCache.get(identity);
       Conditions.checkNotNull(attributeType, "attributeType", "Unable to find attribute type with identity [%s]",
          identity);

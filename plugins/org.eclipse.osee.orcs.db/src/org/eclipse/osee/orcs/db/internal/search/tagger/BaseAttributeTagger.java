@@ -41,8 +41,7 @@ public abstract class BaseAttributeTagger implements Tagger {
    }
 
    protected InputStream getValueAsStream(ReadableAttribute<?> attribute) throws OseeCoreException {
-      //      attribute.getValue();
-      String content = "";
+      String content = String.valueOf(attribute.getValue());
       InputStream inputStream = null;
       try {
          inputStream = new ByteArrayInputStream(content.getBytes("UTF-8"));

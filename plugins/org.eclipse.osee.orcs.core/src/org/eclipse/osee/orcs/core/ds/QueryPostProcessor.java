@@ -8,23 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.search;
+package org.eclipse.osee.orcs.core.ds;
 
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface Match<T, K> {
+public interface QueryPostProcessor {
 
-   public boolean hasLocationData();
+   List<ReadableArtifact> getMatching(List<ReadableArtifact> artifacts) throws OseeCoreException;
 
-   public T getItem();
-
-   public Collection<K> getElements() throws OseeCoreException;
-
-   public List<MatchLocation> getLocation(K element) throws OseeCoreException;
+   List<Match<ReadableArtifact, ReadableAttribute<?>>> getLocationMatches(List<ReadableArtifact> artifacts) throws OseeCoreException;
 }

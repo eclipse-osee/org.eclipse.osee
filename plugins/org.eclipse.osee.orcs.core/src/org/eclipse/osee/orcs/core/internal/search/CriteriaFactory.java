@@ -47,8 +47,8 @@ public class CriteriaFactory {
       return new CriteriaAttributeOther(attributeType, values, operator);
    }
 
-   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException {
-      return new CriteriaAttributeKeyword(attributeType, values, operator, match);
+   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
+      return new CriteriaAttributeKeyword(attributeType, value, operator, match);
    }
 
    public Criteria createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {

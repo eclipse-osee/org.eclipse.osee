@@ -21,19 +21,21 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.db.internal.search.SqlBuilder.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.eclipse.osee.orcs.db.mocks.MockSystemPreferences;
 import org.eclipse.osee.orcs.db.mocks.SqlUtility;
+import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.StringOperator;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -52,6 +54,11 @@ public class SqlBuilderTest {
    private static final Criteria TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit));
    private static final Criteria ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name,
       Arrays.asList("Hello"), Operator.EQUAL);
+
+   private static final Criteria ATTRIBUTE_KEYWORD = new CriteriaAttributeKeyword(Arrays.asList(
+      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), "hello1_two_three",
+      StringOperator.TOKENIZED_MATCH_ORDER, CaseType.IGNORE_CASE);
+
    //   private static final Criteria TWO_TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit,
    //      CoreArtifactTypes.Artifact));
 
@@ -81,8 +88,7 @@ public class SqlBuilderTest {
    @Test
    public void testCountSql() throws OseeCoreException {
       int branchId = 4;
-      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
-      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
 
       QueryOptions options = new QueryOptions();
       SqlContext context = new SqlContext("mysession", options);
@@ -127,8 +133,7 @@ public class SqlBuilderTest {
    @Test
    public void testBuildSql() throws OseeCoreException {
       int branchId = 4;
-      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
-      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
 
       QueryOptions options = new QueryOptions();
       SqlContext context = new SqlContext("mysession", options);
@@ -174,8 +179,7 @@ public class SqlBuilderTest {
    @Test
    public void testBuildSqlIncludeDeleted() throws OseeCoreException {
       int branchId = 4;
-      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
-      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
 
       QueryOptions options = new QueryOptions();
       options.setIncludeDeleted(true);
@@ -225,8 +229,7 @@ public class SqlBuilderTest {
       int branchId = 4;
       int transactionId = 1000;
 
-      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
-      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, GUIDS, IDS, HRIDS, TYPES);
 
       QueryOptions options = new QueryOptions();
       options.setFromTransaction(transactionId);
@@ -281,8 +284,7 @@ public class SqlBuilderTest {
    @Test
    public void testBuildGuidsSql() throws OseeCoreException {
       int branchId = 4;
-      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, IDS);
-      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, IDS);
       QueryOptions options = new QueryOptions();
       SqlContext context = new SqlContext("mysession", options);
       SqlBuilder builder = new SqlBuilder(sqlProvider, null);
@@ -311,8 +313,7 @@ public class SqlBuilderTest {
    @Test
    public void testBuildArtifactTypesSql() throws OseeCoreException {
       int branchId = 4;
-      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, TYPES);
-      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, TYPES);
       QueryOptions options = new QueryOptions();
       SqlContext context = new SqlContext("mysession", options);
       SqlBuilder builder = new SqlBuilder(sqlProvider, null);
@@ -340,8 +341,7 @@ public class SqlBuilderTest {
    @Test
    public void testBuildAttributeSql() throws OseeCoreException {
       int branchId = 4;
-      CriteriaSet criteria = SqlUtility.createCriteria(CoreBranches.COMMON, ATTRIBUTE);
-      List<SqlHandler> handlers = SqlUtility.createHandlers(criteria);
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, ATTRIBUTE);
       QueryOptions options = new QueryOptions();
       SqlContext context = new SqlContext("mysession", options);
       SqlBuilder builder = new SqlBuilder(sqlProvider, null);
@@ -368,5 +368,98 @@ public class SqlBuilderTest {
       Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), parameters.get(0));
       Assert.assertEquals("Hello", parameters.get(1));
       Assert.assertEquals(branchId, parameters.get(2));
+   }
+
+   @Test
+   public void testBuildAtttributeKeyword() throws OseeCoreException {
+      int branchId = 4;
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, ATTRIBUTE_KEYWORD);
+      QueryOptions options = new QueryOptions();
+      SqlContext context = new SqlContext("mysession", options);
+      SqlBuilder builder = new SqlBuilder(sqlProvider, null);
+      builder.generateSql(context, branchId, handlers, QueryType.SELECT_ARTIFACTS);
+
+      String sql = context.getSql();
+      Assert.assertEquals(
+         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_join_id jid1, osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
+         " WHERE \n" + //
+         "att1.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
+         " AND \n" + //
+         "tag1.coded_tag_id = ? AND tag2.coded_tag_id = ? AND tag3.coded_tag_id = ?\n" + //
+         " AND \n" + //
+         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id AND tag3.gamma_id = att1.gamma_id\n" + //
+         " AND \n" + //
+         "att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " AND \n" + //
+         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
+         " ORDER BY art_id, branch_id",//
+         sql);
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(5, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(1, joins.size());
+
+      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
+      Assert.assertEquals(1520625L, parameters.get(1)); // Coded Hello
+      Assert.assertEquals(6106L, parameters.get(2)); // Coded two
+      Assert.assertEquals(981274L, parameters.get(3)); // Coded three
+      Assert.assertEquals(4, parameters.get(4));
+   }
+
+   @Test
+   public void testBuildAtttributeCombined() throws OseeCoreException {
+      int branchId = 4;
+      List<SqlHandler> handlers = SqlUtility.createHandlers(CoreBranches.COMMON, ATTRIBUTE, ATTRIBUTE_KEYWORD, TYPES);
+      QueryOptions options = new QueryOptions();
+      SqlContext context = new SqlContext("mysession", options);
+      SqlBuilder builder = new SqlBuilder(sqlProvider, null);
+      builder.generateSql(context, branchId, handlers, QueryType.SELECT_ARTIFACTS);
+
+      String sql = context.getSql();
+      Assert.assertEquals(
+         "SELECT art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_artifact art1, osee_txs txs1, osee_attribute att1, osee_txs txs2, osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_join_id jid1, osee_attribute att2, osee_txs txs3\n" + //
+         " WHERE \n" + //
+         "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " AND \n" + //
+         "att1.attr_type_id = ? AND att1.value = ? AND art1.art_id = att1.art_id AND att1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+         " AND \n" + //
+         "att2.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
+         " AND \n" + //
+         "tag1.coded_tag_id = ? AND tag2.coded_tag_id = ? AND tag3.coded_tag_id = ?\n" + //
+         " AND \n" + //
+         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id AND tag3.gamma_id = att2.gamma_id\n" + //
+         " AND \n" + //
+         "att2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+         " AND \n" + //
+         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
+         " AND \n" + //
+         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id\n" + //
+         " ORDER BY art_id, branch_id",//
+         sql);
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(10, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(1, joins.size());
+
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(0));
+      Assert.assertEquals(4, parameters.get(1));
+
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), parameters.get(2));
+      Assert.assertEquals("Hello", parameters.get(3));
+      Assert.assertEquals(4, parameters.get(4));
+
+      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(5));
+      Assert.assertEquals(1520625L, parameters.get(6)); // Coded Hello
+      Assert.assertEquals(6106L, parameters.get(7)); // Coded two
+      Assert.assertEquals(981274L, parameters.get(8)); // Coded three
+      Assert.assertEquals(4, parameters.get(9));
    }
 }

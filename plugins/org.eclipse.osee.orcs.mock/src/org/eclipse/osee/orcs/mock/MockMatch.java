@@ -40,7 +40,7 @@ public class MockMatch implements Match<ReadableArtifact, ReadableAttribute<Stri
    }
 
    @Override
-   public boolean hasMetaData() {
+   public boolean hasLocationData() {
       return false;
    }
 

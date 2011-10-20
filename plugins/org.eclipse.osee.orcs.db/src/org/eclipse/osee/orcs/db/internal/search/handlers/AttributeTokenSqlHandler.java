@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
 import org.eclipse.osee.orcs.db.internal.search.SqlConstants.TableEnum;
@@ -26,6 +27,9 @@ import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.SqlWriter;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
+import org.eclipse.osee.orcs.db.internal.search.util.AbstractQueryPostProcessor;
+import org.eclipse.osee.orcs.db.internal.search.util.AttributeQueryPostProcessor;
+import org.eclipse.osee.orcs.db.internal.search.util.TokenQueryPostProcessor;
 import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
@@ -53,7 +57,7 @@ public class AttributeTokenSqlHandler extends SqlHandler {
       StringOperator operator = criteria.getStringOp();
       if (requiresTokenizing(operator)) {
          codedTags = new ArrayList<Long>();
-         tokenize(criteria.getValues(), codedTags);
+         tokenize(criteria.getValue(), codedTags);
 
          tagAliases = new ArrayList<String>();
          for (int index = 0; index < codedTags.size(); index++) {
@@ -88,51 +92,31 @@ public class AttributeTokenSqlHandler extends SqlHandler {
             typeIds.add(toLocalId(type));
          }
          joinQuery = writer.writeIdJoin(typeIds);
+         writer.write(attrAlias);
+         writer.write(".attr_type_id = ");
+         writer.write(jIdAlias);
+         writer.write(".id");
+         writer.write(" AND ");
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
-
-         List<String> aliases = writer.getAliases(TableEnum.ATTRIBUTE_TABLE);
-         if (!aliases.isEmpty()) {
-            writer.write(" AND ");
-            int aSize = aliases.size();
-            for (int index = 0; index < aSize; index++) {
-               String alias = aliases.get(index);
-
-               writer.write(alias);
-               writer.write(".attr_type_id = ");
-               writer.write(jIdAlias);
-               writer.write(".id");
-               if (index + 1 < aSize) {
-                  writer.write(" AND ");
-               }
-            }
-         }
       } else {
          IAttributeType type = types.iterator().next();
          int localId = toLocalId(type);
-         List<String> aliases = writer.getAliases(TableEnum.ATTRIBUTE_TABLE);
-         if (!aliases.isEmpty()) {
-            int aSize = aliases.size();
-            for (int index = 0; index < aSize; index++) {
-               String alias = aliases.get(index);
-
-               writer.write(alias);
-               writer.write(".attr_type_id = ?");
-               writer.addParameter(localId);
-
-               if (index + 1 < aSize) {
-                  writer.write(" AND ");
-               }
-            }
-         }
+         writer.write(attrAlias);
+         writer.write(".attr_type_id = ?");
+         writer.addParameter(localId);
       }
 
       StringOperator operator = criteria.getStringOp();
-      if (requiresTokenizing(operator)) {
+      boolean tokenize = requiresTokenizing(operator);
+      QueryPostProcessor processor = createPostProcessor(tokenize);
+      writer.addPostProcessor(processor);
+
+      if (tokenize) {
+         writer.write("\n AND \n");
 
          int size = tagAliases.size();
-
          for (int index = 0; index < size; index++) {
             String tagAlias = tagAliases.get(index);
             Long tag = codedTags.get(index);
@@ -145,16 +129,18 @@ public class AttributeTokenSqlHandler extends SqlHandler {
                writer.write(" AND ");
             }
          }
-
+         writer.write("\n AND \n");
          for (int index = 1; index < size; index++) {
             String tagAlias1 = tagAliases.get(index - 1);
             String tagAlias2 = tagAliases.get(index);
 
-            writer.write(" AND ");
             writer.write(tagAlias1);
-            writer.write(".gamma_id = ? AND");
+            writer.write(".gamma_id = ");
             writer.write(tagAlias2);
-            writer.write(".gamma_id = ?");
+            writer.write(".gamma_id");
+            if (index + 1 < size) {
+               writer.write(" AND ");
+            }
          }
          String lastAlias = tagAliases.get(size - 1);
          writer.write(" AND ");
@@ -173,7 +159,7 @@ public class AttributeTokenSqlHandler extends SqlHandler {
          //         caseType.isCaseSensitive();
          throw new UnsupportedOperationException();
       }
-      writer.write(" AND ");
+      writer.write("\n AND \n");
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias1);
@@ -183,21 +169,29 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
    @Override
    public int getPriority() {
-      return CriteriaPriority.ATTRIBUTE_TOKEN.ordinal();
+      return CriteriaPriority.ATTRIBUTE_TOKENIZED_VALUE.ordinal();
    }
 
-   private void tokenize(Collection<String> values, final Collection<Long> codedTags) {
+   private QueryPostProcessor createPostProcessor(boolean isTokenized) {
+      AbstractQueryPostProcessor processor;
+      if (isTokenized) {
+         processor = new TokenQueryPostProcessor(getLogger(), getTaggingEngine());
+      } else {
+         processor = new AttributeQueryPostProcessor(getLogger(), getTaggingEngine());
+      }
+      processor.setCriteria(criteria);
+      return processor;
+   }
+
+   private void tokenize(String value, final Collection<Long> codedTags) {
       TagCollector collector = new TagCollector() {
          @Override
          public void addTag(String word, Long codedTag) {
             codedTags.add(codedTag);
          }
       };
-
-      TagProcessor processor = getTagProcessor();
-      for (String value : values) {
-         processor.collectFromString(value, collector);
-      }
+      TagProcessor processor = getTaggingEngine().getTagProcessor();
+      processor.collectFromString(value, collector);
    }
 
    private boolean requiresTokenizing(StringOperator op) {

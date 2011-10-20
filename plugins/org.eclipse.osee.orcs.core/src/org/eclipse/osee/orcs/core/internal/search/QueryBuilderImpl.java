@@ -248,15 +248,13 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
       Criteria criteria =
-         criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), operator, match,
-            Collections.singleton(value));
+         criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), operator, match, value);
       return addAndCheck(criteria);
    }
 
    @Override
-   public QueryBuilder and(IAttributeType attributeType, StringOperator operator, CaseType match, Collection<String> values) throws OseeCoreException {
-      Criteria criteria =
-         criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), operator, match, values);
+   public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeTypes, operator, match, value);
       return addAndCheck(criteria);
    }
 

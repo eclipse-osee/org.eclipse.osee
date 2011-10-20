@@ -13,13 +13,25 @@ package org.eclipse.osee.orcs.db.internal.search;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
 public abstract class SqlHandler {
 
+   private Log logger;
    private IdentityService idService;
-   private TagProcessor tagProcessor;
+   private TaggingEngine taggingEngine;
+   private DataStoreTypeCache caches;
+
+   public DataStoreTypeCache getTypeCaches() {
+      return caches;
+   }
+
+   public void setTypeCaches(DataStoreTypeCache caches) {
+      this.caches = caches;
+   }
 
    public void setIdentityService(IdentityService idService) {
       this.idService = idService;
@@ -27,6 +39,22 @@ public abstract class SqlHandler {
 
    protected int toLocalId(Identity<Long> identity) throws OseeCoreException {
       return idService.getLocalId(identity);
+   }
+
+   public void setTaggingEngine(TaggingEngine taggingEngine) {
+      this.taggingEngine = taggingEngine;
+   }
+
+   protected TaggingEngine getTaggingEngine() {
+      return taggingEngine;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   protected Log getLogger() {
+      return logger;
    }
 
    public abstract int getPriority();
@@ -42,11 +70,4 @@ public abstract class SqlHandler {
       // Do nothing
    }
 
-   public void setTagProcessor(TagProcessor tagProcessor) {
-      this.tagProcessor = tagProcessor;
-   }
-
-   protected TagProcessor getTagProcessor() {
-      return tagProcessor;
-   }
 }

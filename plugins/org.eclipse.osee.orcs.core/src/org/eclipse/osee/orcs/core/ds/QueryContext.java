@@ -10,9 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.List;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface QueryContext {
-   //
+
+   public List<QueryPostProcessor> getPostProcessors();
+
+   QueryOptions getOptions();
+
+   String getSessionId();
+
 }
