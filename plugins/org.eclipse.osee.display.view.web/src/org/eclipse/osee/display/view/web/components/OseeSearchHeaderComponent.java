@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.view.web.search;
+package org.eclipse.osee.display.view.web.components;
 
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import com.vaadin.ui.VerticalLayout;

@@ -17,6 +17,7 @@ import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponen
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
 import org.eclipse.osee.display.view.web.components.OseeBreadcrumbComponent;
 import org.eclipse.osee.display.view.web.components.OseeRelationsComponent;
+import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
 import com.vaadin.ui.Alignment;

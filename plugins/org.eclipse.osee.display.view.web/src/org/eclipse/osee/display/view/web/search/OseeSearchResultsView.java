@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.search;
 
+import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.components.OseeSearchResultsListComponent;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;

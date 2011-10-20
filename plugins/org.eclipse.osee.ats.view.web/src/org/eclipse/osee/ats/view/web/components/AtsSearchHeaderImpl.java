@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
-import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
+import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;

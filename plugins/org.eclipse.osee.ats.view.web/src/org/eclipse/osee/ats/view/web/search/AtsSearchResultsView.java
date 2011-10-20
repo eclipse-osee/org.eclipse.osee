@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.view.web.search;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.components.AtsSearchHeaderImpl;
-import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
+import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
