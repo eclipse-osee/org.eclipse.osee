@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.DataStoreTypeCache;
+import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
