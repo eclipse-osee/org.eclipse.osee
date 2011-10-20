@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 public class ApiTester {
@@ -27,7 +27,7 @@ public class ApiTester {
 
    @SuppressWarnings("unused")
    public static void main(String[] args) throws OseeCoreException {
-      OseeApi api = getApi();
+      OrcsApi api = getApi();
 
       ApplicationContext context = getContext();
       QueryFactory query = api.getQueryFactory(context);
@@ -76,7 +76,7 @@ public class ApiTester {
 
    }
 
-   public static OseeApi getApi() {
+   public static OrcsApi getApi() {
       return null;
    }
 

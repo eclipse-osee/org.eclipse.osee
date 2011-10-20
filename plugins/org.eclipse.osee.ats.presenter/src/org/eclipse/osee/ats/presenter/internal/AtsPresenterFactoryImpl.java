@@ -14,16 +14,16 @@ import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author John Misinco
  */
 public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponent> implements AtsPresenterFactory<T> {
 
-   private OseeApi oseeApi;
+   private OrcsApi oseeApi;
 
-   public void setOseeApi(OseeApi oseeApi) {
+   public void setOseeApi(OrcsApi oseeApi) {
       this.oseeApi = oseeApi;
    }
 

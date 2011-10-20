@@ -27,7 +27,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.Graph;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -42,7 +42,12 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.osgi.service.event.EventAdmin;
 
-public class OseeApiTest {
+/**
+ * Test Case for {@link OrcsApi}
+ * 
+ * @author Andrew M. Finkbeiner
+ */
+public class OsrcsApiTest {
 
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
@@ -63,7 +68,7 @@ public class OseeApiTest {
       OsgiUtil.getService(DataLoader.class);
       OsgiUtil.getService(AttributeClassResolver.class);
 
-      OseeApi oseeApi = OsgiUtil.getService(OseeApi.class);
+      OrcsApi oseeApi = OsgiUtil.getService(OrcsApi.class);
 
       ApplicationContext context = null; // TODO use real application context
 

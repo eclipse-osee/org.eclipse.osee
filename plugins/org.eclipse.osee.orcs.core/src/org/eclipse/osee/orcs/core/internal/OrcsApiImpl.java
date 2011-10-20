@@ -18,7 +18,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.Graph;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsApiImpl implements OseeApi {
+public class OrcsApiImpl implements OrcsApi {
 
    private Log logger;
    private QueryEngine queryEngine;

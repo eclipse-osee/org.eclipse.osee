@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
  */
 public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements AtsArtifactProvider {
 
-   public AtsArtifactProviderImpl(OseeApi oseeApi, ApplicationContext context) {
+   public AtsArtifactProviderImpl(OrcsApi oseeApi, ApplicationContext context) {
       super(oseeApi, context);
 
    }

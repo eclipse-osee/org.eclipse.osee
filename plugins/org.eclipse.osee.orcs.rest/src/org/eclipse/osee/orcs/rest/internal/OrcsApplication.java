@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import java.util.Collections;
 import java.util.Set;
 import javax.ws.rs.core.Application;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * Get application.wadl at this context to get rest documentation
@@ -22,13 +22,13 @@ import org.eclipse.osee.orcs.OseeApi;
  */
 public class OrcsApplication extends Application {
 
-   private static OseeApi oseeApi;
+   private static OrcsApi oseeApi;
 
-   public void setOseeApi(OseeApi oseeApi) {
+   public void setOseeApi(OrcsApi oseeApi) {
       OrcsApplication.oseeApi = oseeApi;
    }
 
-   public static OseeApi getOseeApi() {
+   public static OrcsApi getOseeApi() {
       return oseeApi;
    }
 

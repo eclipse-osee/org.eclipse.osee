@@ -8,22 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.core;
 
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.orcs.search.QueryFacade;
-import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.core.internal.OsrcsApiTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public interface OseeApi {
-
-   QueryFactory getQueryFactory(ApplicationContext context);
-
-   QueryFacade getQueryFacade(ApplicationContext context);
-
-   Graph getGraph(ApplicationContext context);
-
-   DataStoreTypeCache getDataStoreTypeCache();
-
-   BranchCache getBranchCache();
-
+/**
+ * @author Roberto E. Escobar
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({OsrcsApiTest.class})
+public class OrcsIntegrationTestSuite {
+   // Test Suite
 }

@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.Graph;
-import org.eclipse.osee.orcs.OseeApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.CaseType;
@@ -39,7 +39,7 @@ import org.eclipse.osee.orcs.search.StringOperator;
  */
 public class ArtifactProviderImpl implements ArtifactProvider {
 
-   private final OseeApi oseeApi;
+   private final OrcsApi oseeApi;
 
    private final ApplicationContext context;
 
@@ -55,7 +55,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       notAllowed.add("Test Procedures");
    }
 
-   public ArtifactProviderImpl(OseeApi oseeApi, ApplicationContext context) {
+   public ArtifactProviderImpl(OrcsApi oseeApi, ApplicationContext context) {
       this.oseeApi = oseeApi;
       this.context = context;
       this.graph = oseeApi.getGraph(context);
