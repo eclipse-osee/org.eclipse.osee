@@ -118,7 +118,7 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
 
    @Override
    public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
-      return (String) attributeContainer.getAttributes(attributeType).iterator().next().getValue();
+      return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
    }
 
    public AttributeContainer getAttributeContainer() {

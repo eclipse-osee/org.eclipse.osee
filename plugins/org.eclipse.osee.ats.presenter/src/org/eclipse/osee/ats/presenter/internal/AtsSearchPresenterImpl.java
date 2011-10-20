@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.internal;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
@@ -73,7 +76,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
          return;
       }
 
-      AtsSearchParameters params = decode(url);
+      AtsSearchParameters params = decodeIt(url);
       //      WebId program = null, build = null;
       //      Collection<WebId> programs = null;
 
@@ -183,56 +186,36 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
    //      return sb.toString().replaceAll("\\s", "%20");
    //   }
 
-   protected String encode(AtsSearchParameters params, String branchId) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("/");
+   protected String encode(AtsSearchParameters searchParams, String branchId) {
+      Map<String, String> params = new HashMap<String, String>();
       if (Strings.isValid(branchId)) {
-         sb.append("branch=");
-         sb.append(branchId);
-         sb.append("&");
+         params.put("branch", branchId);
       }
-      sb.append("program=");
-      sb.append(params.getProgram().getGuid());
-      sb.append("&build=");
-      sb.append(params.getBuild().getGuid());
-      sb.append("&nameOnly=");
-      sb.append(params.isNameOnly());
-      sb.append("&search=");
-      sb.append(params.getSearchString());
-      sb.append("&verbose=");
-      sb.append(params.isVerboseResults());
-      return sb.toString().replaceAll("\\s", "%20");
+      params.put("program", searchParams.getProgram().getGuid());
+      params.put("build", searchParams.getBuild().getGuid());
+      params.put("nameOnly", String.valueOf(searchParams.isNameOnly()));
+      params.put("search", searchParams.getSearchString());
+      params.put("verbose", String.valueOf(searchParams.isVerboseResults()));
+      try {
+         return "/" + getParametersAsEncodedUrl(params);
+      } catch (UnsupportedEncodingException ex) {
+         return "";
+      }
    }
 
-   protected AtsSearchParameters decode(String url) {
-      ViewId program = null, build = null;
-      String searchPhrase = "";
-      boolean nameOnly = true;
-      boolean verboseResults = true;
+   protected AtsSearchParameters decodeIt(String url) {
+      Map<String, String> data = decode(url);
 
-      programMatcher.reset(url);
-      buildMatcher.reset(url);
-      nameOnlyMatcher.reset(url);
-      searchPhraseMatcher.reset(url);
-      verboseMatcher.reset(url);
+      ViewId program = new ViewId(data.get("program"), "");
+      ViewId build = new ViewId(data.get("build"), "");
 
-      if (programMatcher.find()) {
-         program = new ViewId(programMatcher.group(1), "");
-      }
-      if (buildMatcher.find()) {
-         build = new ViewId(buildMatcher.group(1), "");
-      }
-      if (nameOnlyMatcher.find()) {
-         nameOnly = nameOnlyMatcher.group(1).equalsIgnoreCase("true") ? true : false;
-      }
-      if (searchPhraseMatcher.find()) {
-         searchPhrase = searchPhraseMatcher.group(1).replaceAll("%20", " ");
-      }
-      if (verboseMatcher.find()) {
-         verboseResults = verboseMatcher.group(1).equalsIgnoreCase("true") ? true : false;
-      }
+      String vValue = data.get("verbose");
+      boolean verbose = vValue == null ? false : vValue.equalsIgnoreCase("true");
+      String nValue = data.get("nameOnly");
+      boolean nameOnly = nValue == null ? false : nValue.equalsIgnoreCase("true");
+      String searchPhrase = data.get("search");
 
-      return new AtsSearchParameters(searchPhrase, nameOnly, verboseResults, build, program);
+      return new AtsSearchParameters(searchPhrase, nameOnly, verbose, build, program);
    }
 
    //   protected class SearchParameters {

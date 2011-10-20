@@ -29,6 +29,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
+import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
@@ -87,9 +88,13 @@ public class ArtifactProviderImpl implements ArtifactProvider {
          type = QueryBuilder.ANY_ATTRIBUTE_TYPE;
       }
 
-      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> resultSet =
-         getFactory().fromBranch(branch).and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE,
-            searchPhrase).buildMatches(LoadLevel.SHALLOW);
+      QueryBuilder query = getFactory().fromBranch(branch);
+      if (nameOnly) {
+         query.and(type, Operator.EQUAL, searchPhrase);
+      } else {
+         query.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
+      }
+      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> resultSet = query.buildMatches(LoadLevel.ATTRIBUTE);
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : resultSet.getList()) {
          ReadableArtifact matchedArtifact = match.getItem();
          if (sanitizeResult(matchedArtifact) != null) {

@@ -11,10 +11,13 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
@@ -66,8 +69,37 @@ public class ResultSetLocatorImpl implements ResultSet<Match<ReadableArtifact, R
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
 
       List<ReadableArtifact> artifacts = objectLoader.load(queryContext, loadOptions, sessionContext);
-      for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
-         results.addAll(processor.getLocationMatches(artifacts));
+
+      Collection<QueryPostProcessor> processors = queryContext.getPostProcessors();
+      if (processors.isEmpty()) {
+         for (final ReadableArtifact art : artifacts) {
+            results.add(new Match<ReadableArtifact, ReadableAttribute<?>>() {
+
+               @Override
+               public boolean hasLocationData() {
+                  return false;
+               }
+
+               @Override
+               public ReadableArtifact getItem() {
+                  return art;
+               }
+
+               @Override
+               public Collection<ReadableAttribute<?>> getElements() throws OseeCoreException {
+                  return Collections.emptyList();
+               }
+
+               @Override
+               public List<MatchLocation> getLocation(ReadableAttribute<?> element) throws OseeCoreException {
+                  return Collections.emptyList();
+               }
+            });
+         }
+      } else {
+         for (QueryPostProcessor processor : processors) {
+            results.addAll(processor.getLocationMatches(artifacts));
+         }
       }
       return results;
    }

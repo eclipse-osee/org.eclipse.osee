@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
@@ -37,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -86,38 +93,50 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
             artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
                params.getSearchPhrase());
       } catch (Exception ex) {
-         setErrorMessage(searchResultsComp, "An error occured while searching");
+         setErrorMessage(searchResultsComp, Lib.exceptionToString(ex));
          return;
       }
       if (searchResults != null && searchResults.size() > 0) {
          try {
-            processSearchResults(searchResults, searchResultsComp);
+            processSearchResults(searchResults, searchResultsComp, params);
          } catch (Exception ex) {
-            setErrorMessage(searchResultsComp, "Error while processing results");
+            setErrorMessage(searchResultsComp, Lib.exceptionToString(ex));
             return;
          }
       }
    }
 
-   private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp) throws OseeCoreException {
+   private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, SearchParameters params) throws OseeCoreException {
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
          ReadableArtifact matchedArtifact = match.getItem();
-         ViewArtifact webArt = convertToWebArtifact(matchedArtifact);
+         ViewArtifact webArt = convertToViewArtifact(matchedArtifact);
          SearchResultComponent searchResult = searchResultsComp.createSearchResult();
          searchResult.setArtifact(webArt);
-         for (ReadableAttribute<?> element : match.getElements()) {
-            List<MatchLocation> locations = match.getLocation(element);
-            SearchResultMatch srm =
-               new SearchResultMatch(element.getAttributeType().getName(), locations.iterator().next().toString(),
-                  locations.size());
-            searchResult.addSearchResultMatch(srm);
+         if (params.isVerbose()) {
+            for (ReadableAttribute<?> element : match.getElements()) {
+               List<MatchLocation> locations = match.getLocation(element);
+               SearchResultMatch srm =
+                  new SearchResultMatch(element.getAttributeType().getName(), locations.iterator().next().toString(),
+                     locations.size());
+               searchResult.addSearchResultMatch(srm);
+            }
          }
       }
    }
 
    @Override
    public void selectArtifact(ViewArtifact artifact, SearchNavigator oseeNavigator) {
-      oseeNavigator.navigateArtifactPage(encode(artifact));
+      Map<String, String> params = new HashMap<String, String>();
+      params.put("branch", artifact.getBranch().getGuid());
+      params.put("artifact", artifact.getGuid());
+      String value;
+      try {
+         value = getParametersAsEncodedUrl(params);
+         oseeNavigator.navigateArtifactPage("/" + value);
+      } catch (UnsupportedEncodingException ex) {
+         //         setErrorMessage(artifact, Lib.exceptionToString(ex));
+      }
+
    }
 
    @Override
@@ -146,7 +165,7 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
 
       ViewArtifact artifact = null;
       try {
-         artifact = convertToWebArtifact(displayArt);
+         artifact = convertToViewArtifact(displayArt);
       } catch (Exception e) {
          setErrorMessage(artHeaderComp, String.format("Error while converting [%s] from branch:[%s]", art, branch));
          return;
@@ -251,11 +270,11 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
 
       try {
          for (ReadableArtifact rel : relatedLeftSide) {
-            ViewArtifact id = convertToWebArtifact(rel);
+            ViewArtifact id = convertToViewArtifact(rel);
             relationComponent.addLeftRelated(id);
          }
          for (ReadableArtifact rel : relatedRightSide) {
-            ViewArtifact id = convertToWebArtifact(rel);
+            ViewArtifact id = convertToViewArtifact(rel);
             relationComponent.addRightRelated(id);
          }
       } catch (Exception ex) {
@@ -265,7 +284,7 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
       }
    }
 
-   protected ViewArtifact convertToWebArtifact(ReadableArtifact artifact) throws OseeCoreException {
+   protected ViewArtifact convertToViewArtifact(ReadableArtifact artifact) throws OseeCoreException {
       ViewId branch = new ViewId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
       ViewArtifact toReturn =
          new ViewArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(),
@@ -273,20 +292,11 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
       return toReturn;
    }
 
-   protected String encode(ViewArtifact artifact) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("/branch=");
-      sb.append(artifact.getBranch().getGuid());
-      sb.append("&artifact=");
-      sb.append(artifact.getGuid());
-      return sb.toString();
-   }
-
    protected List<ViewArtifact> getAncestry(ReadableArtifact art) throws OseeCoreException {
       ReadableArtifact cur = artifactProvider.getParent(art);
       List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
       while (cur != null) {
-         ancestry.add(convertToWebArtifact(cur));
+         ancestry.add(convertToViewArtifact(cur));
          cur = artifactProvider.getParent(cur);
       }
       return ancestry;
@@ -299,41 +309,23 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
    }
 
    private ArtifactParameters decodeArtifactUrl(String url) {
-      String branch = "";
-      String artifact = "";
-
-      branchMatcher.reset(url);
-      artifactMatcher.reset(url);
-
-      if (branchMatcher.find()) {
-         branch = branchMatcher.group(1);
-      }
-      if (artifactMatcher.find()) {
-         artifact = artifactMatcher.group(1);
-      }
+      Map<String, String> data = decode(url);
+      String branch = data.get("branch");
+      String artifact = data.get("artifact");
       return new ArtifactParameters(branch, artifact);
    }
 
    private SearchParameters decodeSearchUrl(String url) {
-      String branch = "";
-      boolean nameOnly = true;
-      String searchPhrase = "";
-      branchMatcher.reset(url);
-      nameOnlyMatcher.reset(url);
-      searchPhraseMatcher.reset(url);
+      Map<String, String> data = decode(url);
 
-      if (branchMatcher.find()) {
-         branch = branchMatcher.group(1);
-      }
-      if (nameOnlyMatcher.find()) {
-         nameOnly = nameOnlyMatcher.group(1).equalsIgnoreCase("true") ? true : false;
-      }
-      if (searchPhraseMatcher.find()) {
-         searchPhrase = searchPhraseMatcher.group(1).replaceAll("%20", " ");
-      }
-      return new SearchParameters(branch, nameOnly, searchPhrase);
+      String branch = data.get("branch");
+      String vValue = data.get("verbose");
+      boolean verbose = vValue == null ? false : vValue.equalsIgnoreCase("true");
+      String nValue = data.get("nameOnly");
+      boolean nameOnly = nValue == null ? false : nValue.equalsIgnoreCase("true");
+      String searchPhrase = data.get("search");
+      return new SearchParameters(branch, nameOnly, searchPhrase, verbose);
    }
-
    private class ArtifactParameters {
       private final String branchId;
       private final String artifactId;
@@ -359,13 +351,18 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
    private class SearchParameters {
 
       private final String branchId;
-      private final boolean nameOnly;
+      private final boolean nameOnly, verbose;
       private final String searchPhrase;
 
-      public SearchParameters(String branchId, boolean nameOnly, String searchPhrase) {
+      public SearchParameters(String branchId, boolean nameOnly, String searchPhrase, boolean verbose) {
          this.branchId = branchId;
          this.nameOnly = nameOnly;
          this.searchPhrase = searchPhrase;
+         this.verbose = verbose;
+      }
+
+      public boolean isVerbose() {
+         return verbose;
       }
 
       public String getBranchId() {
@@ -383,6 +380,51 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
       public boolean isValid() {
          return Strings.isValid(branchId);
       }
+   }
+
+   protected Map<String, String> decode(String url) {
+      String toParse = url;
+      if (toParse.startsWith("/")) {
+         toParse = toParse.substring(1, toParse.length());
+      }
+      Map<String, String> values = new HashMap<String, String>();
+      String[] lines = url.split("&");
+      for (String line : lines) {
+         String[] data = line.split("=");
+         if (data.length == 2) {
+            String key = data[0];
+            String value = data[1];
+            if (Strings.isValid(value)) {
+               try {
+                  value = URLDecoder.decode(value, "UTF-8");
+               } catch (UnsupportedEncodingException ex) {
+                  //
+               }
+            }
+            values.put(key, value);
+         }
+      }
+      return values;
+   }
+
+   private String encode(String value) throws UnsupportedEncodingException {
+      return URLEncoder.encode(value, "UTF-8");
+   }
+
+   protected String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
+      StringBuilder sb = new StringBuilder();
+      for (Entry<String, String> entry : keyValues.entrySet()) {
+         String key = entry.getKey();
+         sb.append(encode(key));
+         sb.append("=");
+         sb.append(encode(entry.getValue()));
+         sb.append("&");
+      }
+      if (sb.length() - 1 >= 0) {
+         // Delete the last unnecessary '&'
+         sb.deleteCharAt(sb.length() - 1);
+      }
+      return sb.toString();
    }
 
 }
