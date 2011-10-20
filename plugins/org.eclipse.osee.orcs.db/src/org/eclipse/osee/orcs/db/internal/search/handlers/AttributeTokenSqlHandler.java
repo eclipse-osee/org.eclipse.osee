@@ -110,8 +110,8 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
       StringOperator operator = criteria.getStringOp();
       boolean tokenize = requiresTokenizing(operator);
-      QueryPostProcessor processor = createPostProcessor(tokenize);
-      writer.addPostProcessor(processor);
+      //      QueryPostProcessor processor = createPostProcessor(tokenize);
+      //      writer.addPostProcessor(processor);
 
       if (tokenize) {
          writer.write("\n AND \n");
@@ -130,7 +130,9 @@ public class AttributeTokenSqlHandler extends SqlHandler {
             }
          }
          writer.write("\n AND \n");
+         boolean needAnd = false;
          for (int index = 1; index < size; index++) {
+            needAnd = true;
             String tagAlias1 = tagAliases.get(index - 1);
             String tagAlias2 = tagAliases.get(index);
 
@@ -143,7 +145,9 @@ public class AttributeTokenSqlHandler extends SqlHandler {
             }
          }
          String lastAlias = tagAliases.get(size - 1);
-         writer.write(" AND ");
+         if (needAnd) {
+            writer.write(" AND ");
+         }
          writer.write(lastAlias);
          writer.write(".gamma_id = ");
          writer.write(attrAlias);
