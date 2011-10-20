@@ -10,20 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.orcs.search.QueryFacade;
-import org.eclipse.osee.orcs.search.QueryFactory;
-
-public interface OseeApi {
-
-   QueryFactory getQueryFactory(ApplicationContext context);
-
-   QueryFacade getQueryFacade(ApplicationContext context);
-
-   Graph getGraph(ApplicationContext context);
-
-   DataStoreTypeCache getDataStoreTypeCache();
-
-   BranchCache getBranchCache();
-
+/**
+ * @author Andrew M. Finkbeiner
+ */
+public class Graph {
+   //
 }

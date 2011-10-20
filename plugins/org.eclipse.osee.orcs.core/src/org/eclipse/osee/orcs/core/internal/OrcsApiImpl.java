@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
+import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.OseeApi;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -27,6 +28,7 @@ import org.eclipse.osee.orcs.core.internal.search.CriteriaFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.search.ResultSetFactory;
 import org.eclipse.osee.orcs.core.internal.session.SessionContextImpl;
+import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -109,7 +111,18 @@ public class OrcsApiImpl implements OseeApi {
       return cacheService.getBranchCache();
    }
 
+   @Override
    public DataStoreTypeCache getDataStoreTypeCache() {
       return dataStoreTypeCache;
+   }
+
+   @Override
+   public QueryFacade getQueryFacade(ApplicationContext context) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public Graph getGraph(ApplicationContext context) {
+      throw new UnsupportedOperationException();
    }
 }
