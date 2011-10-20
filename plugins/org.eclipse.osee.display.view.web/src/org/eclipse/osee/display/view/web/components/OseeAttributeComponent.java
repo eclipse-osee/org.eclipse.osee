@@ -84,7 +84,7 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
       Label spacer = new Label("");
       spacer.setWidth(15, UNITS_PIXELS);
       Label spacer2 = new Label("");
-      spacer2.setWidth(15, UNITS_PIXELS);
+      spacer2.setWidth(5, UNITS_PIXELS);
       attributesLayout.addComponent(spacer);
       attributesLayout.addComponent(attrLabelsLayout);
       attributesLayout.addComponent(spacer2);

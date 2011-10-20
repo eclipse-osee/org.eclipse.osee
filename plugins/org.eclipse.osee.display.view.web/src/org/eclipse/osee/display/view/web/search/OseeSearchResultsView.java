@@ -40,13 +40,15 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
       leftMarginAndBody.setSizeFull();
       Label leftMarginSpace = new Label("");
       leftMarginSpace.setWidth(LEFTMARGIN_WIDTH, UNITS_PIXELS);
-      leftMarginAndBody.addComponent(leftMarginSpace);
 
-      leftMarginAndBody.addComponent(searchResultsListComponent);
       searchResultsListComponent.setSizeFull();
-      leftMarginAndBody.setExpandRatio(searchResultsListComponent, 1.0f);
 
       final VerticalLayout vertLayout = new VerticalLayout();
+      vertLayout.setSizeFull();
+
+      leftMarginAndBody.addComponent(leftMarginSpace);
+      leftMarginAndBody.addComponent(searchResultsListComponent);
+
       if (searchHeader != null) {
          searchHeader.setShowOseeTitleAbove(false);
          vertLayout.addComponent(searchHeader);
@@ -54,11 +56,13 @@ public class OseeSearchResultsView extends CustomComponent implements Navigator.
          searchHeader.setWidth(100, UNITS_PERCENTAGE);
          searchHeader.setHeight(null);
       }
+
       vertLayout.addComponent(spacer);
       vertLayout.addComponent(leftMarginAndBody);
+
+      leftMarginAndBody.setExpandRatio(searchResultsListComponent, 1.0f);
       vertLayout.setExpandRatio(leftMarginAndBody, 1.0f);
 
-      vertLayout.setSizeFull();
       setCompositionRoot(vertLayout);
    }
 

@@ -102,7 +102,7 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
    private class OseeSearchResultMatchComponent extends HorizontalLayout {
       public OseeSearchResultMatchComponent(SearchResultMatch match) {
          Label matchLabel = new Label(String.format("%s: ", match.getAttributeType(), Label.CONTENT_XHTML));
-         matchLabel.setStyleName(CssConstants.OSEE_SEARCHRESULT_MATCH);
+         matchLabel.setStyleName(CssConstants.OSEE_ATTRNAME);
          Label spacer4 = new Label();
          spacer4.setWidth(15, UNITS_PIXELS);
          Label matchLabelHint = new Label(String.format("%s", match.getMatchHint()), Label.CONTENT_XHTML);

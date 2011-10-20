@@ -159,59 +159,40 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       hLayoutRow2.setComponentAlignment(searchTextField, Alignment.MIDDLE_LEFT);
       hLayoutRow2.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
 
-      if (showOseeTitleAbove) {
-         setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_LARGE);
-         OseeLogoLink oseeTitleLabel =
-            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_LARGE_TEXT, AtsSearchResultsView.class);
-         hLayoutRow0.addComponent(oseeTitleLabel);
-         hLayoutRow0.setComponentAlignment(oseeTitleLabel, Alignment.MIDDLE_CENTER);
-         oseeTitleLabel.setStyleName(CssConstants.OSEE_TITLE_LARGE_TEXT);
-         hLayoutRow0.setHeight(oseeTitleLabel.getHeight(), UNITS_PIXELS);
+      setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
 
-         addComponent(hLayoutRow0);
-         addComponent(hLayoutRow1);
-         addComponent(hLayoutRow2);
+      OseeLogoLink oseeTitleLabel =
+         new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
+      Label spacer4 = new Label("");
+      spacer4.setWidth(15, UNITS_PIXELS);
+      oseeTitleLabel.setHeight(70, UNITS_PIXELS);
+      oseeTitleLabel.setWidth(70, UNITS_PIXELS);
 
-         hLayoutRow1.setMargin(true);
+      VerticalLayout rightSideVLayout = new VerticalLayout();
+      rightSideVLayout.addComponent(hLayoutRow1);
+      rightSideVLayout.addComponent(hLayoutRow2);
+      rightSideVLayout.setSizeUndefined();
 
-         setComponentAlignment(hLayoutRow0, Alignment.MIDDLE_CENTER);
-         setComponentAlignment(hLayoutRow1, Alignment.MIDDLE_CENTER);
-         setComponentAlignment(hLayoutRow2, Alignment.MIDDLE_CENTER);
-      } else {
-         setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
+      Label spacer7 = new Label();
+      spacer7.setWidth(15, UNITS_PIXELS);
 
-         OseeLogoLink oseeTitleLabel =
-            new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
-         Label spacer4 = new Label("");
-         spacer4.setWidth(15, UNITS_PIXELS);
-         oseeTitleLabel.setHeight(70, UNITS_PIXELS);
-         oseeTitleLabel.setWidth(70, UNITS_PIXELS);
+      hLayoutRow0.addComponent(spacer7);
+      hLayoutRow0.addComponent(oseeTitleLabel);
+      hLayoutRow0.addComponent(spacer4);
+      hLayoutRow0.addComponent(rightSideVLayout);
+      hLayoutRow0.setComponentAlignment(oseeTitleLabel, Alignment.TOP_CENTER);
+      hLayoutRow0.setComponentAlignment(rightSideVLayout, Alignment.TOP_CENTER);
 
-         VerticalLayout rightSideVLayout = new VerticalLayout();
-         rightSideVLayout.addComponent(hLayoutRow1);
-         rightSideVLayout.addComponent(hLayoutRow2);
-         rightSideVLayout.setSizeUndefined();
+      Label spacer5 = new Label("");
+      spacer5.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
 
-         Label spacer7 = new Label();
-         spacer7.setWidth(5, UNITS_PIXELS);
+      Label spacer6 = new Label("");
+      spacer6.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
 
-         hLayoutRow0.addComponent(spacer7);
-         hLayoutRow0.addComponent(oseeTitleLabel);
-         hLayoutRow0.addComponent(spacer4);
-         hLayoutRow0.addComponent(rightSideVLayout);
-         hLayoutRow0.setComponentAlignment(oseeTitleLabel, Alignment.TOP_CENTER);
-         hLayoutRow0.setComponentAlignment(rightSideVLayout, Alignment.TOP_CENTER);
+      addComponent(spacer6);
+      addComponent(hLayoutRow0);
+      addComponent(spacer5);
 
-         Label spacer5 = new Label("");
-         spacer5.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
-
-         Label spacer6 = new Label("");
-         spacer6.setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_FOOTER);
-
-         addComponent(spacer6);
-         addComponent(hLayoutRow0);
-         addComponent(spacer5);
-      }
    }
 
    @Override

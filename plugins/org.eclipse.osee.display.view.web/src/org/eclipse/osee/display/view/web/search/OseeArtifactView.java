@@ -39,6 +39,7 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    protected OseeAttributeComponent attributeComp = new OseeAttributeComponent();
    private final OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(null);
    private ViewArtifact artifact;
+   private final int LEFTMARGIN_WIDTH = 5;
 
    @Override
    public void attach() {
@@ -48,78 +49,92 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    protected void createLayout() {
       setSizeFull();
 
+      searchHeader.setWidth(100, UNITS_PERCENTAGE);
+      searchHeader.setHeight(null);
+
       Label spacer = new Label();
       spacer.setHeight(5, UNITS_PIXELS);
 
-      HorizontalLayout leftMarginAndBody = new HorizontalLayout();
-      leftMarginAndBody.setSizeFull();
+      HorizontalLayout hLayout_LeftMargAndBody = new HorizontalLayout();
+      hLayout_LeftMargAndBody.setSizeFull();
       Label leftMarginSpace = new Label("");
-      leftMarginSpace.setWidth(80, UNITS_PIXELS);
-      leftMarginAndBody.addComponent(leftMarginSpace);
+      leftMarginSpace.setWidth(LEFTMARGIN_WIDTH, UNITS_PIXELS);
+      hLayout_LeftMargAndBody.addComponent(leftMarginSpace);
 
       if (artifact != null) {
-         VerticalLayout artNameVertLayout = new VerticalLayout();
-         artNameVertLayout.setSizeFull();
+         VerticalLayout vLayout_OutBody = new VerticalLayout();
+         vLayout_OutBody.setSizeFull();
 
          breadcrumbComp.setArtifact(artifact);
-         artNameVertLayout.addComponent(breadcrumbComp);
+
+         Label vSpacer = new Label();
+         vSpacer.setHeight(5, UNITS_PIXELS);
 
          OseeArtifactNameLinkComponent artifactName = new OseeArtifactNameLinkComponent(artifact);
          artifactName.setSizeUndefined();
+
          Label spacer1 = new Label();
          spacer1.setWidth(10, UNITS_PIXELS);
          spacer1.setHeight(null);
+
          Label artifactType = new Label(String.format("[%s]", artifact.getArtifactType()), Label.CONTENT_XHTML);
          artifactType.setSizeUndefined();
-         HorizontalLayout artNameAndTypeLayout = new HorizontalLayout();
-         artNameAndTypeLayout.setSizeUndefined();
-         artNameAndTypeLayout.addComponent(artifactName);
-         artNameAndTypeLayout.addComponent(spacer1);
-         artNameAndTypeLayout.addComponent(artifactType);
-         artNameAndTypeLayout.setComponentAlignment(artifactType, Alignment.BOTTOM_CENTER);
-         artNameVertLayout.addComponent(artNameAndTypeLayout);
+
+         HorizontalLayout hLayout_ArtNameAndType = new HorizontalLayout();
+         hLayout_ArtNameAndType.setSizeUndefined();
 
          VerticalLayout artRelSpacer = new VerticalLayout();
          artRelSpacer.setHeight(15, UNITS_PIXELS);
-         artNameVertLayout.addComponent(artRelSpacer);
 
-         VerticalLayout bodyVertLayout = new VerticalLayout();
-         bodyVertLayout.setMargin(true);
-         bodyVertLayout.setSizeFull();
-         bodyVertLayout.addComponent(relationsComp);
+         VerticalLayout vLayout_Body = new VerticalLayout();
+         vLayout_Body.setMargin(false, false, false, true);
+         vLayout_Body.setSizeFull();
 
          VerticalLayout relAttrSpacer = new VerticalLayout();
          relAttrSpacer.setHeight(15, UNITS_PIXELS);
-         bodyVertLayout.addComponent(relAttrSpacer);
-
-         bodyVertLayout.addComponent(attributeComp);
 
          VerticalLayout bottomSpacer = new VerticalLayout();
-         bodyVertLayout.addComponent(bottomSpacer);
-         bodyVertLayout.setExpandRatio(bottomSpacer, 1.0f);
 
-         Panel mainLayoutPanel = new Panel();
-         mainLayoutPanel.setScrollable(true);
-         mainLayoutPanel.getContent().setSizeUndefined();
-         mainLayoutPanel.setContent(bodyVertLayout);
-         mainLayoutPanel.setSizeFull();
+         Panel panel_Body = new Panel();
+         panel_Body.setScrollable(true);
+         panel_Body.getContent().setSizeUndefined();
+         panel_Body.setSizeFull();
 
-         artNameVertLayout.addComponent(mainLayoutPanel);
-         artNameVertLayout.setExpandRatio(mainLayoutPanel, 1.0f);
-         leftMarginAndBody.addComponent(artNameVertLayout);
-         leftMarginAndBody.setExpandRatio(artNameVertLayout, 1.0f);
+         hLayout_ArtNameAndType.addComponent(artifactName);
+         hLayout_ArtNameAndType.addComponent(spacer1);
+         hLayout_ArtNameAndType.addComponent(artifactType);
+
+         vLayout_Body.addComponent(vSpacer);
+         vLayout_Body.addComponent(hLayout_ArtNameAndType);
+         vLayout_Body.addComponent(artRelSpacer);
+         vLayout_Body.addComponent(relationsComp);
+         vLayout_Body.addComponent(relAttrSpacer);
+         vLayout_Body.addComponent(attributeComp);
+         vLayout_Body.addComponent(bottomSpacer);
+
+         panel_Body.setContent(vLayout_Body);
+
+         vLayout_OutBody.addComponent(breadcrumbComp);
+         vLayout_OutBody.addComponent(panel_Body);
+
+         hLayout_LeftMargAndBody.addComponent(vLayout_OutBody);
+
+         hLayout_ArtNameAndType.setComponentAlignment(artifactType, Alignment.BOTTOM_CENTER);
+         vLayout_Body.setExpandRatio(bottomSpacer, 1.0f);
+         vLayout_OutBody.setExpandRatio(panel_Body, 1.0f);
+         hLayout_LeftMargAndBody.setExpandRatio(vLayout_OutBody, 1.0f);
       }
 
       final VerticalLayout vertLayout = new VerticalLayout();
+      vertLayout.setSizeFull();
+
       vertLayout.addComponent(searchHeader);
       vertLayout.addComponent(spacer);
-      vertLayout.setComponentAlignment(searchHeader, Alignment.TOP_LEFT);
-      searchHeader.setWidth(100, UNITS_PERCENTAGE);
-      searchHeader.setHeight(null);
-      vertLayout.addComponent(leftMarginAndBody);
-      vertLayout.setExpandRatio(leftMarginAndBody, 1.0f);
+      vertLayout.addComponent(hLayout_LeftMargAndBody);
 
-      vertLayout.setSizeFull();
+      vertLayout.setComponentAlignment(searchHeader, Alignment.TOP_LEFT);
+      vertLayout.setExpandRatio(hLayout_LeftMargAndBody, 1.0f);
+
       setCompositionRoot(vertLayout);
    }
 
