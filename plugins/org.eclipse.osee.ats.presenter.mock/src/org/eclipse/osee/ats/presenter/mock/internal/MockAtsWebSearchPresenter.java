@@ -26,8 +26,8 @@ import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 
 /**
@@ -38,32 +38,32 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    private static final AtsSearchPresenter<AtsSearchHeaderComponent> atsBackend = new MockAtsWebSearchPresenter();
 
    // *** TEST DATA ***
-   WebId build0 = new WebId("baseline_guid", "Baseline");
-   WebId build1 = new WebId("bld_1_guid", "Bld_1");
-   WebId build2 = new WebId("ftb0_guid", "FTP0");
-   WebId build3 = new WebId("FTB1_guid", "FTB1");
-   WebId build4 = new WebId("FTB2_guid", "FTB2");
-   WebId build5 = new WebId("FTB3_guid", "FTB3");
-   WebId build6 = new WebId("EB0_guid", "EB0");
-   WebId build7 = new WebId("EB1_guid", "EB1");
+   ViewId build0 = new ViewId("baseline_guid", "Baseline");
+   ViewId build1 = new ViewId("bld_1_guid", "Bld_1");
+   ViewId build2 = new ViewId("ftb0_guid", "FTP0");
+   ViewId build3 = new ViewId("FTB1_guid", "FTB1");
+   ViewId build4 = new ViewId("FTB2_guid", "FTB2");
+   ViewId build5 = new ViewId("FTB3_guid", "FTB3");
+   ViewId build6 = new ViewId("EB0_guid", "EB0");
+   ViewId build7 = new ViewId("EB1_guid", "EB1");
 
-   WebId program0 = new WebId("blk3_guid", "Blk 3");
-   WebId program1 = new WebId("v131_guid", "V13.1");
-   WebId program2 = new WebId("taiwan_guid", "Taiwan");
+   ViewId program0 = new ViewId("blk3_guid", "Blk 3");
+   ViewId program1 = new ViewId("v131_guid", "V13.1");
+   ViewId program2 = new ViewId("taiwan_guid", "Taiwan");
 
-   WebArtifact defaultroot = new WebArtifact("defaultHierarchRoot_GUID", "Default Hierarchy Root", "Root Artifact");
-   WebArtifact swreqs = new WebArtifact("SWReq_GUID", "Software Requirements", "Folder", Arrays.asList(defaultroot),
-      new WebId("branch_id1", "branch_id1"));
-   WebArtifact crewIntreqs = new WebArtifact("CrewInt_GUID", "Crew Interface", "Folder", Arrays.asList(swreqs,
-      defaultroot), new WebId("branch_id2", "branch_id2"));
-   WebArtifact commSubSysCrewIntreqs = new WebArtifact("commSubSysCrewInt_GUID",
-      "Communication Subsystem Crew Interface", "Heading", Arrays.asList(crewIntreqs, swreqs, defaultroot), new WebId(
+   ViewArtifact defaultroot = new ViewArtifact("defaultHierarchRoot_GUID", "Default Hierarchy Root", "Root Artifact");
+   ViewArtifact swreqs = new ViewArtifact("SWReq_GUID", "Software Requirements", "Folder", Arrays.asList(defaultroot),
+      new ViewId("branch_id1", "branch_id1"));
+   ViewArtifact crewIntreqs = new ViewArtifact("CrewInt_GUID", "Crew Interface", "Folder", Arrays.asList(swreqs,
+      defaultroot), new ViewId("branch_id2", "branch_id2"));
+   ViewArtifact commSubSysCrewIntreqs = new ViewArtifact("commSubSysCrewInt_GUID",
+      "Communication Subsystem Crew Interface", "Heading", Arrays.asList(crewIntreqs, swreqs, defaultroot), new ViewId(
          "branch_id3", "branch_id3"));
-   WebArtifact comm_page_Intreqs = new WebArtifact("com_page_GUID", "{COM_PAGE}", "Software Requirement",
-      Arrays.asList(commSubSysCrewIntreqs, crewIntreqs, swreqs, defaultroot), new WebId("branch_id4", "branch_id4"));
+   ViewArtifact comm_page_Intreqs = new ViewArtifact("com_page_GUID", "{COM_PAGE}", "Software Requirement",
+      Arrays.asList(commSubSysCrewIntreqs, crewIntreqs, swreqs, defaultroot), new ViewId("branch_id4", "branch_id4"));
 
-   private final Map<WebId, Collection<WebId>> programsAndBuilds = new HashMap<WebId, Collection<WebId>>();
-   private final Map<String, WebArtifact> artifacts = new HashMap<String, WebArtifact>();
+   private final Map<ViewId, Collection<ViewId>> programsAndBuilds = new HashMap<ViewId, Collection<ViewId>>();
+   private final Map<String, ViewArtifact> artifacts = new HashMap<String, ViewArtifact>();
 
    public MockAtsWebSearchPresenter() {
       super();
@@ -79,9 +79,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       artifacts.put(commSubSysCrewIntreqs.getGuid(), commSubSysCrewIntreqs);
       artifacts.put(comm_page_Intreqs.getGuid(), comm_page_Intreqs);
 
-      Set<Entry<String, WebArtifact>> artifactsSet = artifacts.entrySet();
-      for (Entry<String, WebArtifact> entry : artifactsSet) {
-         WebArtifact artifact = entry.getValue();
+      Set<Entry<String, ViewArtifact>> artifactsSet = artifacts.entrySet();
+      for (Entry<String, ViewArtifact> entry : artifactsSet) {
+         ViewArtifact artifact = entry.getValue();
          artifact.setAttr_Category("B");
          artifact.setAttr_DevAssurLevel("E");
          artifact.setAttr_ImpoParaNum("3.2.1.1");
@@ -93,9 +93,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
 
       //Generate large data set
       for (int i = 5; i < 150; i++) {
-         WebArtifact art =
-            new WebArtifact(String.format("bulkArt_GUID_%d", i), String.format("Bulk Artifact %d", i),
-               "Software Requirement", Arrays.asList(swreqs, defaultroot), new WebId(String.format("branch_id%d", i),
+         ViewArtifact art =
+            new ViewArtifact(String.format("bulkArt_GUID_%d", i), String.format("Bulk Artifact %d", i),
+               "Software Requirement", Arrays.asList(swreqs, defaultroot), new ViewId(String.format("branch_id%d", i),
                   String.format("branch_id%d", i)));
          artifacts.put(art.getGuid(), art);
       }
@@ -137,7 +137,7 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    //   }
 
    @Override
-   public void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator) {
+   public void selectArtifact(ViewArtifact artifact, SearchNavigator oseeNavigator) {
       String url = String.format("/artifact/%s", artifact.getGuid());
       oseeNavigator.navigateArtifactPage(url);
    }
@@ -149,14 +149,14 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       if (params != null && params.size() > 0) {
          String artGuid = params.get(UrlParamNameConstants.PARAMNAME_ARTIFACT);
          if (artGuid != null && !artGuid.isEmpty()) {
-            WebArtifact artifact = artifacts.get(artGuid);
+            ViewArtifact artifact = artifacts.get(artGuid);
             if (artifact != null) {
                artHeaderComp.setArtifact(artifact);
 
                relComp.clearAll();
-               WebId parentRelationType = new WebId("guid1", "Parent");
-               WebId childRelationType = new WebId("guid2", "Child");
-               WebId swReqRelationType = new WebId("guid3", "SW Requirement");
+               ViewId parentRelationType = new ViewId("guid1", "Parent");
+               ViewId childRelationType = new ViewId("guid2", "Child");
+               ViewId swReqRelationType = new ViewId("guid3", "SW Requirement");
                relComp.addRelationType(parentRelationType);
                relComp.addRelationType(childRelationType);
                relComp.addRelationType(swReqRelationType);
@@ -175,11 +175,11 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void selectRelationType(WebArtifact artifact, WebId relation, RelationComponent relationComponent) {
+   public void selectRelationType(ViewArtifact artifact, ViewId relation, RelationComponent relationComponent) {
       relationComponent.clearRelations();
-      Set<Entry<String, WebArtifact>> artifactsSet = artifacts.entrySet();
-      for (Entry<String, WebArtifact> entry : artifactsSet) {
-         WebArtifact art = entry.getValue();
+      Set<Entry<String, ViewArtifact>> artifactsSet = artifacts.entrySet();
+      for (Entry<String, ViewArtifact> entry : artifactsSet) {
+         ViewArtifact art = entry.getValue();
          relationComponent.addRightRelated(art);
          relationComponent.addLeftRelated(art);
       }
@@ -190,12 +190,12 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
    }
 
    @Override
-   public void selectProgram(WebId program, AtsSearchHeaderComponent headerComponent) {
+   public void selectProgram(ViewId program, AtsSearchHeaderComponent headerComponent) {
       if (program != null && headerComponent != null) {
-         Collection<WebId> builds = programsAndBuilds.get(program);
+         Collection<ViewId> builds = programsAndBuilds.get(program);
          headerComponent.clearBuilds();
          if (builds != null) {
-            for (WebId build : builds) {
+            for (ViewId build : builds) {
                headerComponent.addBuild(build);
             }
             // headerComponent.setBuild(builds.iterator().next());
@@ -240,9 +240,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
 
       if ((url == null || url.isEmpty()) && searchHeaderComponent != null) {
          searchHeaderComponent.clearAll();
-         Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();
+         Set<Entry<ViewId, Collection<ViewId>>> entrySet = programsAndBuilds.entrySet();
          if (entrySet != null) {
-            for (Entry<WebId, Collection<WebId>> entry : entrySet) {
+            for (Entry<ViewId, Collection<ViewId>> entry : entrySet) {
                searchHeaderComponent.addProgram(entry.getKey());
             }
          }
@@ -271,15 +271,15 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
          }
          resultsComponent.clearAll();
          if (!searchPhrase.isEmpty()) {
-            Set<Entry<String, WebArtifact>> entrySet = artifacts.entrySet();
-            for (Entry<String, WebArtifact> artifactEntry : entrySet) {
-               WebArtifact artifact = artifactEntry.getValue();
+            Set<Entry<String, ViewArtifact>> entrySet = artifacts.entrySet();
+            for (Entry<String, ViewArtifact> artifactEntry : entrySet) {
+               ViewArtifact artifact = artifactEntry.getValue();
                if (artifact.getArtifactName().toLowerCase().contains(searchPhrase.toLowerCase())) {
                   SearchResultComponent searchResultComp = resultsComponent.createSearchResult();
                   if (searchResultComp != null) {
                      if (showVerboseSearchResults) {
                         artifact =
-                           new WebArtifact(artifact.getGuid(), artifact.getArtifactName(), artifact.getArtifactType());
+                           new ViewArtifact(artifact.getGuid(), artifact.getArtifactName(), artifact.getArtifactType());
                      }
                      searchResultComp.setArtifact(artifact);
                      if (!nameOnly && !showVerboseSearchResults) {
@@ -333,9 +333,9 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       return requestedDataId;
    }
 
-   private WebId getProgramWithGuid(String programGuid) {
+   private ViewId getProgramWithGuid(String programGuid) {
       if (programGuid != null && !programGuid.isEmpty()) {
-         for (WebId program : programsAndBuilds.keySet()) {
+         for (ViewId program : programsAndBuilds.keySet()) {
             if (program.getGuid().equals(programGuid)) {
                return program;
             }
@@ -345,12 +345,12 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
       return null;
    }
 
-   private WebId getBuildWithGuid(String buildGuid) {
+   private ViewId getBuildWithGuid(String buildGuid) {
       if (buildGuid != null && !buildGuid.isEmpty()) {
-         Set<Entry<WebId, Collection<WebId>>> entrySet = programsAndBuilds.entrySet();
-         for (Entry<WebId, Collection<WebId>> programAndBuilds : entrySet) {
-            Collection<WebId> builds = programAndBuilds.getValue();
-            for (WebId build : builds) {
+         Set<Entry<ViewId, Collection<ViewId>>> entrySet = programsAndBuilds.entrySet();
+         for (Entry<ViewId, Collection<ViewId>> programAndBuilds : entrySet) {
+            Collection<ViewId> builds = programAndBuilds.getValue();
+            for (ViewId build : builds) {
                if (build.getGuid().equals(buildGuid)) {
                   return build;
                }

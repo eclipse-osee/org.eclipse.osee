@@ -12,18 +12,18 @@ package org.eclipse.osee.ats.api.components;
 
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewId;
 
 /**
  * @author John Misinco
  */
 public interface AtsSearchHeaderComponent extends SearchHeaderComponent {
 
-   void addProgram(WebId program);
+   void addProgram(ViewId program);
 
    void clearBuilds();
 
-   void addBuild(WebId build);
+   void addBuild(ViewId build);
 
    void setSearchCriteria(AtsSearchParameters params);
 

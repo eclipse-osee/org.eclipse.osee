@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.components;
 
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewId;
 
 /**
  * @author Shawn F. Cook
  */
 public interface RelationComponent extends DisplaysErrorComponent {
 
-   void setArtifact(WebArtifact artifact);
+   void setArtifact(ViewArtifact artifact);
 
    void clearAll();
 
-   void addRelationType(WebId id);
+   void addRelationType(ViewId id);
 
    void clearRelations();
 
@@ -30,8 +30,8 @@ public interface RelationComponent extends DisplaysErrorComponent {
 
    void setRightName(String name);
 
-   void addLeftRelated(WebArtifact id);
+   void addLeftRelated(ViewArtifact id);
 
-   void addRightRelated(WebArtifact id);
+   void addRightRelated(ViewArtifact id);
 
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.components;
 
-import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 
 /**
  * @author Shawn F. Cook
@@ -19,6 +19,6 @@ public interface ArtifactHeaderComponent extends DisplaysErrorComponent {
 
    void clearAll();
 
-   void setArtifact(WebArtifact artifact);
+   void setArtifact(ViewArtifact artifact);
 
 }

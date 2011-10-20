@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.view.web.AtsNavigator;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
 import org.eclipse.osee.display.view.web.search.OseeSearchHeaderComponent;
@@ -70,7 +70,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    private void selectProgram() {
       if (programCombo != null) {
-         WebId program = (WebId) programCombo.getValue();
+         ViewId program = (ViewId) programCombo.getValue();
          searchPresenter.selectProgram(program, this);
       }
    }
@@ -103,8 +103,8 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    protected void selectSearch() {
       if (searchPresenter != null && programCombo != null && buildCombo != null && nameOnlyCheckBox != null && searchTextField != null) {
-         WebId program = (WebId) programCombo.getValue();
-         WebId build = (WebId) buildCombo.getValue();
+         ViewId program = (ViewId) programCombo.getValue();
+         ViewId build = (ViewId) buildCombo.getValue();
          boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
          String searchPhrase = (String) searchTextField.getValue();
          AtsSearchParameters params =
@@ -215,7 +215,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    }
 
    @Override
-   public void addProgram(WebId program) {
+   public void addProgram(ViewId program) {
       if (programCombo != null) {
          lockProgramCombo = true;
          programCombo.addItem(program);
@@ -231,7 +231,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    }
 
    @Override
-   public void addBuild(WebId build) {
+   public void addBuild(ViewId build) {
       if (buildCombo != null) {
          buildCombo.addItem(build);
       }

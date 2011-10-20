@@ -11,7 +11,7 @@
 package org.eclipse.osee.display.view.web.components;
 
 import java.util.Collection;
-import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -21,17 +21,17 @@ import com.vaadin.ui.Label;
  */
 @SuppressWarnings("serial")
 public class OseeBreadcrumbComponent extends HorizontalLayout {
-   private WebArtifact artifact;
+   private ViewArtifact artifact;
 
    private void init() {
       this.removeAllComponents();
 
       if (artifact != null && artifact.getAncestry() != null) {
-         Collection<WebArtifact> ancestryList = artifact.getAncestry();
+         Collection<ViewArtifact> ancestryList = artifact.getAncestry();
          if (ancestryList.size() > 0) {
             Object[] ancestryArray = ancestryList.toArray();
             for (int i = ancestryArray.length - 1; i >= 0; i--) {
-               WebArtifact ancestor = (WebArtifact) ancestryArray[i];
+               ViewArtifact ancestor = (ViewArtifact) ancestryArray[i];
                OseeArtifactNameLinkComponent crumbLabel =
                   new OseeArtifactNameLinkComponent(ancestor, CssConstants.OSEE_BREADCRUMB_ARTNAME);
                addComponent(crumbLabel);
@@ -45,13 +45,13 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
       }
    }
 
-   public OseeBreadcrumbComponent(WebArtifact artifact) {
+   public OseeBreadcrumbComponent(ViewArtifact artifact) {
       this.artifact = artifact;
 
       init();
    }
 
-   public void setArtifact(WebArtifact artifact) {
+   public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
       init();
    }

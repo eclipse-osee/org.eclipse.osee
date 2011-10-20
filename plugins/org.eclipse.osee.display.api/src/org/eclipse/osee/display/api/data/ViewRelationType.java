@@ -13,12 +13,12 @@ package org.eclipse.osee.display.api.data;
 /*
  * @author Shawn Cook
  */
-public enum WebRelationType {
+public enum ViewRelationType {
    PARENT("Default Hierarchical - parent");
 
    private final String stringValue;
 
-   private WebRelationType(String stringValue) {
+   private ViewRelationType(String stringValue) {
       this.stringValue = stringValue;
    }
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
-import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -27,7 +27,7 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeSearchResultComponent extends VerticalLayout implements SearchResultComponent {
 
-   private WebArtifact artifact;
+   private ViewArtifact artifact;
    private final Collection<SearchResultMatch> matches = new ArrayList<SearchResultMatch>();
    private boolean showVerboseSearchResults = true;
    private final int TOPBOTTOM_VERT_SPACE = 8;
@@ -86,7 +86,7 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
    }
 
    @Override
-   public void setArtifact(WebArtifact artifact) {
+   public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
       removeAllComponents();
       createLayout();

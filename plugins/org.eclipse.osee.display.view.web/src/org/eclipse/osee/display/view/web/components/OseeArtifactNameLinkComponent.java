@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.components;
 
-import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
@@ -30,7 +30,7 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
    private SearchPresenter searchPresenter = null;
    private SearchNavigator navigator = null;
 
-   public OseeArtifactNameLinkComponent(WebArtifact artifact) {
+   public OseeArtifactNameLinkComponent(ViewArtifact artifact) {
       this(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
    }
 
@@ -49,7 +49,7 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
       populated = true;
    }
 
-   public OseeArtifactNameLinkComponent(final WebArtifact artifact, String styleName) {
+   public OseeArtifactNameLinkComponent(final ViewArtifact artifact, String styleName) {
       super();
 
       Link artifactNameLink = new Link();

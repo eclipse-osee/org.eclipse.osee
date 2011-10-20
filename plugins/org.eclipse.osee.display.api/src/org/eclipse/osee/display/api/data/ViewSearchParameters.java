@@ -10,26 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.data;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
-
 /**
  * @author John Misinco
  */
-public class WebId extends NamedIdentity<String> {
+public class ViewSearchParameters {
 
-   Map<String, String> attributes = new HashMap<String, String>();
+   private final String searchString;
+   private final boolean nameOnly;
+   private final boolean verboseResults;
 
-   public WebId(String guid, String name) {
-      super(guid, name);
+   public ViewSearchParameters(String searchString, boolean nameOnly, boolean verboseResults) {
+      this.searchString = searchString;
+      this.nameOnly = nameOnly;
+      this.verboseResults = verboseResults;
    }
 
-   public void setAttribute(String key, String value) {
-      attributes.put(key, value);
+   public String getSearchString() {
+      return searchString;
    }
 
-   public String getAttribute(String key) {
-      return attributes.containsKey(key) ? attributes.get(key) : null;
+   public boolean isNameOnly() {
+      return nameOnly;
    }
+
+   public boolean isVerboseResults() {
+      return verboseResults;
+   }
+
 }

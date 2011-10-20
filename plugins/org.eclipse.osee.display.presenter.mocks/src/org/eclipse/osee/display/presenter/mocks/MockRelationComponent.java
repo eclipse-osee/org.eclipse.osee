@@ -13,33 +13,33 @@ package org.eclipse.osee.display.presenter.mocks;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.display.api.components.RelationComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewId;
 
 /**
  * @author John Misinco
  */
 public class MockRelationComponent implements RelationComponent {
 
-   private WebArtifact artifact;
-   private final List<WebId> relationTypes = new LinkedList<WebId>();
-   private final List<WebArtifact> leftRelations = new LinkedList<WebArtifact>();
-   private final List<WebArtifact> rightRelations = new LinkedList<WebArtifact>();
+   private ViewArtifact artifact;
+   private final List<ViewId> relationTypes = new LinkedList<ViewId>();
+   private final List<ViewArtifact> leftRelations = new LinkedList<ViewArtifact>();
+   private final List<ViewArtifact> rightRelations = new LinkedList<ViewArtifact>();
    private String errorMessage;
 
-   public WebArtifact getArtifact() {
+   public ViewArtifact getArtifact() {
       return artifact;
    }
 
-   public List<WebId> getRelationTypes() {
+   public List<ViewId> getRelationTypes() {
       return relationTypes;
    }
 
-   public List<WebArtifact> getRightRelations() {
+   public List<ViewArtifact> getRightRelations() {
       return rightRelations;
    }
 
-   public List<WebArtifact> getLeftRelations() {
+   public List<ViewArtifact> getLeftRelations() {
       return leftRelations;
    }
 
@@ -53,7 +53,7 @@ public class MockRelationComponent implements RelationComponent {
    }
 
    @Override
-   public void setArtifact(WebArtifact artifact) {
+   public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
    }
 
@@ -64,7 +64,7 @@ public class MockRelationComponent implements RelationComponent {
    }
 
    @Override
-   public void addRelationType(WebId id) {
+   public void addRelationType(ViewId id) {
       relationTypes.add(id);
    }
 
@@ -75,12 +75,12 @@ public class MockRelationComponent implements RelationComponent {
    }
 
    @Override
-   public void addLeftRelated(WebArtifact id) {
+   public void addLeftRelated(ViewArtifact id) {
       leftRelations.add(id);
    }
 
    @Override
-   public void addRightRelated(WebArtifact id) {
+   public void addRightRelated(ViewArtifact id) {
       rightRelations.add(id);
    }
 

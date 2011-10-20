@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * @author Shawn F. Cook
  */
-public class WebArtifact {
+public class ViewArtifact {
    private final String guid;
    private final String artifactName;
    private final String artifactType;
@@ -27,12 +27,12 @@ public class WebArtifact {
    private String attr_QualMethod;
    private String attr_Subsystm;
    private String attr_TechPerfParam;
-   private final WebId branch;
+   private final ViewId branch;
 
    //ancestry should include all parental Artifacts starting with parent(index 0), grandparent(index 1), great-grandparent(index 2), etc. 
-   private final Collection<WebArtifact> ancestry = new ArrayList<WebArtifact>();
+   private final Collection<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
 
-   public WebArtifact(String guid, String artifactName, String artifactType, Collection<WebArtifact> ancestry, WebId branch) {
+   public ViewArtifact(String guid, String artifactName, String artifactType, Collection<ViewArtifact> ancestry, ViewId branch) {
       this.guid = guid;
       this.artifactName = artifactName;
       this.artifactType = artifactType;
@@ -42,8 +42,8 @@ public class WebArtifact {
       this.branch = branch;
    }
 
-   public WebArtifact(String guid, String artifactName, String artifactType) {
-      this(guid, artifactName, artifactType, (Collection<WebArtifact>) null, null);
+   public ViewArtifact(String guid, String artifactName, String artifactType) {
+      this(guid, artifactName, artifactType, (Collection<ViewArtifact>) null, null);
    }
 
    public String getArtifactName() {
@@ -58,11 +58,11 @@ public class WebArtifact {
       return guid;
    }
 
-   public WebId getBranch() {
+   public ViewId getBranch() {
       return branch;
    }
 
-   public Collection<WebArtifact> getAncestry() {
+   public Collection<ViewArtifact> getAncestry() {
       return ancestry;
    }
 

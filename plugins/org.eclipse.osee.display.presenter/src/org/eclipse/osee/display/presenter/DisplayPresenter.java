@@ -24,8 +24,8 @@ import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
@@ -45,7 +45,7 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author John Misinco
  */
-public class WebSearchPresenter<T extends SearchHeaderComponent> implements SearchPresenter<T> {
+public class DisplayPresenter<T extends SearchHeaderComponent> implements SearchPresenter<T> {
 
    protected final ArtifactProvider artifactProvider;
    private final static Pattern branchPattern = Pattern.compile("branch=([0-9A-Za-z\\+_=]{20,22})");
@@ -63,7 +63,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    protected final Matcher searchPhraseMatcher;
    protected final Matcher verboseMatcher;
 
-   public WebSearchPresenter(ArtifactProvider artifactProvider) {
+   public DisplayPresenter(ArtifactProvider artifactProvider) {
       this.artifactProvider = artifactProvider;
       branchMatcher = branchPattern.matcher("");
       artifactMatcher = artifactPattern.matcher("");
@@ -102,7 +102,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp) throws OseeCoreException {
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
          ReadableArtifact matchedArtifact = match.getItem();
-         WebArtifact webArt = convertToWebArtifact(matchedArtifact);
+         ViewArtifact webArt = convertToWebArtifact(matchedArtifact);
          SearchResultComponent searchResult = searchResultsComp.createSearchResult();
          searchResult.setArtifact(webArt);
          for (ReadableAttribute<?> element : match.getElements()) {
@@ -116,7 +116,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    }
 
    @Override
-   public void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator) {
+   public void selectArtifact(ViewArtifact artifact, SearchNavigator oseeNavigator) {
       oseeNavigator.navigateArtifactPage(encode(artifact));
    }
 
@@ -144,7 +144,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          return;
       }
 
-      WebArtifact artifact = null;
+      ViewArtifact artifact = null;
       try {
          artifact = convertToWebArtifact(displayArt);
       } catch (Exception e) {
@@ -164,7 +164,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
          return;
       }
       for (RelationType relType : relationTypes) {
-         WebId toAdd = new WebId(relType.getGuid().toString(), relType.getName());
+         ViewId toAdd = new ViewId(relType.getGuid().toString(), relType.getName());
          toAdd.setAttribute(SIDE_A_KEY, relType.getSideAName());
          toAdd.setAttribute(SIDE_B_KEY, relType.getSideBName());
          relComp.addRelationType(toAdd);
@@ -193,7 +193,7 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
    }
 
    @Override
-   public void selectRelationType(WebArtifact artifact, WebId relation, RelationComponent relationComponent) {
+   public void selectRelationType(ViewArtifact artifact, ViewId relation, RelationComponent relationComponent) {
       relationComponent.clearRelations();
       if (artifact == null || relation == null) {
          setErrorMessage(relationComponent, "Error: Null detected in selectRelationType parameters");
@@ -251,11 +251,11 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
 
       try {
          for (ReadableArtifact rel : relatedLeftSide) {
-            WebArtifact id = convertToWebArtifact(rel);
+            ViewArtifact id = convertToWebArtifact(rel);
             relationComponent.addLeftRelated(id);
          }
          for (ReadableArtifact rel : relatedRightSide) {
-            WebArtifact id = convertToWebArtifact(rel);
+            ViewArtifact id = convertToWebArtifact(rel);
             relationComponent.addRightRelated(id);
          }
       } catch (Exception ex) {
@@ -265,15 +265,15 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       }
    }
 
-   protected WebArtifact convertToWebArtifact(ReadableArtifact artifact) throws OseeCoreException {
-      WebId branch = new WebId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
-      WebArtifact toReturn =
-         new WebArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(),
+   protected ViewArtifact convertToWebArtifact(ReadableArtifact artifact) throws OseeCoreException {
+      ViewId branch = new ViewId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
+      ViewArtifact toReturn =
+         new ViewArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(),
             getAncestry(artifact), branch);
       return toReturn;
    }
 
-   protected String encode(WebArtifact artifact) {
+   protected String encode(ViewArtifact artifact) {
       StringBuilder sb = new StringBuilder();
       sb.append("/branch=");
       sb.append(artifact.getBranch().getGuid());
@@ -282,9 +282,9 @@ public class WebSearchPresenter<T extends SearchHeaderComponent> implements Sear
       return sb.toString();
    }
 
-   protected List<WebArtifact> getAncestry(ReadableArtifact art) throws OseeCoreException {
+   protected List<ViewArtifact> getAncestry(ReadableArtifact art) throws OseeCoreException {
       ReadableArtifact cur = artifactProvider.getParent(art);
-      List<WebArtifact> ancestry = new ArrayList<WebArtifact>();
+      List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
       while (cur != null) {
          ancestry.add(convertToWebArtifact(cur));
          cur = artifactProvider.getParent(cur);

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
-import org.eclipse.osee.display.presenter.internal.WebSearchPresenterTest;
+import org.eclipse.osee.display.presenter.internal.DisplayPresenterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-WebSearchPresenterTest.class,//
+DisplayPresenterTest.class,//
 })
 /**
  * @author John Misinco

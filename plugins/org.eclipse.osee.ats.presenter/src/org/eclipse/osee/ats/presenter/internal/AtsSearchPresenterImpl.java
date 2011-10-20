@@ -20,9 +20,9 @@ import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.presenter.WebSearchPresenter;
+import org.eclipse.osee.display.presenter.DisplayPresenter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author John Misinco
  */
-public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends WebSearchPresenter<T> implements AtsSearchPresenter<T> {
+public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends DisplayPresenter<T> implements AtsSearchPresenter<T> {
 
    private final static Pattern buildPattern = Pattern.compile("build=([0-9A-Za-z\\+_=]{20,22})");
    private final static Pattern programPattern = Pattern.compile("program=([0-9A-Za-z\\+_=]{20,22})");
@@ -54,14 +54,14 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
 
    private void addProgramsToSearchHeader(T headerComponent) {
       headerComponent.clearAll();
-      Collection<WebId> programs = null;
+      Collection<ViewId> programs = null;
       try {
          programs = getPrograms();
       } catch (Exception ex) {
          setErrorMessage(headerComponent, ex.getMessage());
          return;
       }
-      for (WebId program : programs) {
+      for (ViewId program : programs) {
          headerComponent.addProgram(program);
       }
    }
@@ -135,37 +135,37 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
    }
 
    @Override
-   public void selectProgram(WebId program, T headerComponent) {
+   public void selectProgram(ViewId program, T headerComponent) {
       headerComponent.clearBuilds();
-      Collection<WebId> builds = null;
+      Collection<ViewId> builds = null;
       try {
          builds = getBuilds(program);
       } catch (Exception ex) {
          setErrorMessage(headerComponent, ex.getMessage());
          return;
       }
-      for (WebId build : builds) {
+      for (ViewId build : builds) {
          headerComponent.addBuild(build);
       }
    }
 
-   protected Collection<WebId> getPrograms() throws OseeCoreException {
-      Collection<WebId> toReturn = new LinkedList<WebId>();
+   protected Collection<ViewId> getPrograms() throws OseeCoreException {
+      Collection<ViewId> toReturn = new LinkedList<ViewId>();
       Collection<ReadableArtifact> programs = atsArtifactProvider.getPrograms();
       if (programs != null) {
          for (ReadableArtifact program : programs) {
-            toReturn.add(new WebId(program.getGuid(), program.getName()));
+            toReturn.add(new ViewId(program.getGuid(), program.getName()));
          }
       }
       return toReturn;
    }
 
-   protected Collection<WebId> getBuilds(WebId program) throws OseeCoreException {
+   protected Collection<ViewId> getBuilds(ViewId program) throws OseeCoreException {
       Collection<ReadableArtifact> relatedBuilds = atsArtifactProvider.getBuilds(program.getGuid());
-      Collection<WebId> builds = new ArrayList<WebId>();
+      Collection<ViewId> builds = new ArrayList<ViewId>();
       if (relatedBuilds != null) {
          for (ReadableArtifact build : relatedBuilds) {
-            builds.add(new WebId(build.getGuid(), build.getName()));
+            builds.add(new ViewId(build.getGuid(), build.getName()));
          }
       }
       return builds;
@@ -205,7 +205,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
    }
 
    protected AtsSearchParameters decode(String url) {
-      WebId program = null, build = null;
+      ViewId program = null, build = null;
       String searchPhrase = "";
       boolean nameOnly = true;
       boolean verboseResults = true;
@@ -217,10 +217,10 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       verboseMatcher.reset(url);
 
       if (programMatcher.find()) {
-         program = new WebId(programMatcher.group(1), "");
+         program = new ViewId(programMatcher.group(1), "");
       }
       if (buildMatcher.find()) {
-         build = new WebId(buildMatcher.group(1), "");
+         build = new ViewId(buildMatcher.group(1), "");
       }
       if (nameOnlyMatcher.find()) {
          nameOnly = nameOnlyMatcher.group(1).equalsIgnoreCase("true") ? true : false;
@@ -235,39 +235,39 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       return new AtsSearchParameters(searchPhrase, nameOnly, verboseResults, build, program);
    }
 
-   protected class SearchParameters {
-
-      private final WebId program, build;
-      private final boolean nameOnly;
-      private final String searchPhrase;
-
-      public SearchParameters(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
-         this.program = program;
-         this.build = build;
-         this.nameOnly = nameOnly;
-         this.searchPhrase = searchPhrase;
-      }
-
-      public WebId getProgram() {
-         return program;
-      }
-
-      public WebId getBuild() {
-         return build;
-      }
-
-      public boolean getNameOnly() {
-         return nameOnly;
-      }
-
-      public String getSearchPhrase() {
-         return searchPhrase;
-      }
-
-      public boolean isValid() {
-         return (program != null) && (build != null);
-      }
-
-   }
+   //   protected class SearchParameters {
+   //
+   //      private final WebId program, build;
+   //      private final boolean nameOnly;
+   //      private final String searchPhrase;
+   //
+   //      public SearchParameters(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
+   //         this.program = program;
+   //         this.build = build;
+   //         this.nameOnly = nameOnly;
+   //         this.searchPhrase = searchPhrase;
+   //      }
+   //
+   //      public WebId getProgram() {
+   //         return program;
+   //      }
+   //
+   //      public WebId getBuild() {
+   //         return build;
+   //      }
+   //
+   //      public boolean getNameOnly() {
+   //         return nameOnly;
+   //      }
+   //
+   //      public String getSearchPhrase() {
+   //         return searchPhrase;
+   //      }
+   //
+   //      public boolean isValid() {
+   //         return (program != null) && (build != null);
+   //      }
+   //
+   //   }
 
 }

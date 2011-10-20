@@ -14,16 +14,16 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewId;
 
 /**
  * @author John Misinco
  */
 public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
 
-   List<WebId> programs = new LinkedList<WebId>();
-   List<WebId> builds = new LinkedList<WebId>();
-   WebId selectedProgram, selectedBuild;
+   List<ViewId> programs = new LinkedList<ViewId>();
+   List<ViewId> builds = new LinkedList<ViewId>();
+   ViewId selectedProgram, selectedBuild;
    String errorMessage = "";
    boolean clearAllCalled = false;
 
@@ -31,19 +31,19 @@ public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
       return clearAllCalled;
    }
 
-   public List<WebId> getPrograms() {
+   public List<ViewId> getPrograms() {
       return programs;
    }
 
-   public List<WebId> getBuilds() {
+   public List<ViewId> getBuilds() {
       return builds;
    }
 
-   public WebId getSelectedProgram() {
+   public ViewId getSelectedProgram() {
       return selectedProgram;
    }
 
-   public WebId getSelectedBuild() {
+   public ViewId getSelectedBuild() {
       return selectedBuild;
    }
 
@@ -64,7 +64,7 @@ public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
    }
 
    @Override
-   public void addProgram(WebId program) {
+   public void addProgram(ViewId program) {
       programs.add(program);
    }
 
@@ -74,7 +74,7 @@ public class MockAtsSearchHeaderComponent implements AtsSearchHeaderComponent {
    }
 
    @Override
-   public void addBuild(WebId build) {
+   public void addBuild(ViewId build) {
       builds.add(build);
    }
 

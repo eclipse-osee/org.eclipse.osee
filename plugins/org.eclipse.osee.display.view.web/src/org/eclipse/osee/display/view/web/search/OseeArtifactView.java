@@ -11,7 +11,7 @@
 package org.eclipse.osee.display.view.web.search;
 
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponent;
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
@@ -37,7 +37,7 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    protected OseeRelationsComponent relationsComp = new OseeRelationsComponent();
    protected OseeAttributeComponent attributeComp = new OseeAttributeComponent();
    private final OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(null);
-   private WebArtifact artifact;
+   private ViewArtifact artifact;
 
    @Override
    public void attach() {
@@ -139,7 +139,7 @@ public class OseeArtifactView extends CustomComponent implements Navigator.View,
    }
 
    @Override
-   public void setArtifact(WebArtifact artifact) {
+   public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
       createLayout();
    }

@@ -14,17 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
-import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 
 /**
  * @author John Misinco
  */
 public class MockSearchResultComponent implements SearchResultComponent {
 
-   private WebArtifact artifact;
+   private ViewArtifact artifact;
    private final List<SearchResultMatch> matches = new ArrayList<SearchResultMatch>();
 
-   public WebArtifact getArtifact() {
+   public ViewArtifact getArtifact() {
       return artifact;
    }
 
@@ -33,7 +33,7 @@ public class MockSearchResultComponent implements SearchResultComponent {
    }
 
    @Override
-   public void setArtifact(WebArtifact artifact) {
+   public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
    }
 

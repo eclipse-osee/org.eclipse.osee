@@ -11,8 +11,8 @@
 package org.eclipse.osee.display.view.web.components;
 
 import org.eclipse.osee.display.api.components.RelationComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
@@ -42,7 +42,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    private SearchNavigator navigator = null;
    private boolean lockRelTypesListener = false;
    private boolean lockRelsListener = false;
-   private WebArtifact artifact = null;
+   private ViewArtifact artifact = null;
    private final int LISTBOX_MINWIDTH = 100;
 
    @Override
@@ -80,7 +80,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
          public void valueChange(ValueChangeEvent event) {
             if (!lockRelTypesListener) {
                try {
-                  WebId relationType = (WebId) relationTypesListSelect.getValue();
+                  ViewId relationType = (ViewId) relationTypesListSelect.getValue();
                   if (relationType != null) {
                      searchPresenter.selectRelationType(artifact, relationType, OseeRelationsComponent.this);
                   }
@@ -96,7 +96,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
          public void valueChange(ValueChangeEvent event) {
             if (!lockRelsListener) {
                try {
-                  WebArtifact artifact = (WebArtifact) relationsListSelect.getValue();
+                  ViewArtifact artifact = (ViewArtifact) relationsListSelect.getValue();
                   if (artifact != null) {
                      searchPresenter.selectArtifact(artifact, navigator);
                   }
@@ -151,7 +151,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    }
 
    @Override
-   public void addRelationType(WebId id) {
+   public void addRelationType(ViewId id) {
       if (relationTypesListSelect != null) {
          lockRelTypesListener = true;
          relationTypesListSelect.addItem(id);
@@ -170,7 +170,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       }
    }
 
-   public void addRelation(WebArtifact id) {
+   public void addRelation(ViewArtifact id) {
       if (relationsListSelect != null) {
          lockRelsListener = true;
          relationsListSelect.addItem(id);
@@ -195,16 +195,16 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    }
 
    @Override
-   public void setArtifact(WebArtifact artifact) {
+   public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
    }
 
    @Override
-   public void addLeftRelated(WebArtifact id) {
+   public void addLeftRelated(ViewArtifact id) {
    }
 
    @Override
-   public void addRightRelated(WebArtifact id) {
+   public void addRightRelated(ViewArtifact id) {
    }
 
    @Override

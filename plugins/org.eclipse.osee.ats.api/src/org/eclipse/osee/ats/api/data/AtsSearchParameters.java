@@ -10,28 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.data;
 
-import org.eclipse.osee.display.api.data.WebId;
-import org.eclipse.osee.display.api.data.WebSearchParameters;
+import org.eclipse.osee.display.api.data.ViewId;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author John Misinco
  */
-public class AtsSearchParameters extends WebSearchParameters {
+public class AtsSearchParameters extends ViewSearchParameters {
 
-   private final WebId build, program;
+   private final ViewId build, program;
 
-   public AtsSearchParameters(String searchString, boolean nameOnly, boolean verboseResults, WebId build, WebId program) {
+   public AtsSearchParameters(String searchString, boolean nameOnly, boolean verboseResults, ViewId build, ViewId program) {
       super(searchString, nameOnly, verboseResults);
       this.build = build;
       this.program = program;
    }
 
-   public WebId getBuild() {
+   public ViewId getBuild() {
       return build;
    }
 
-   public WebId getProgram() {
+   public ViewId getProgram() {
       return program;
    }
 

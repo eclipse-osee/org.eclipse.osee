@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
-import org.eclipse.osee.display.presenter.WebSearchPresenter;
+import org.eclipse.osee.display.presenter.DisplayPresenter;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactHeaderComponent;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
 import org.eclipse.osee.display.presenter.mocks.MockAttributeComponent;
@@ -47,8 +47,9 @@ import org.junit.Test;
 /**
  * @author John R. Misinco
  */
-public class WebSearchPresenterTest {
+public class DisplayPresenterTest {
 
+   @SuppressWarnings({"rawtypes", "unchecked"})
    private List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults() {
       List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
@@ -63,7 +64,7 @@ public class WebSearchPresenterTest {
    public void testInitSearchResults() {
       MockArtifactProvider provider = new MockArtifactProvider();
       provider.setResultList(getSearchResults());
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
+      DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
       String url = "/branch=" + GUID.create() + "&nameOnly=true&search=this%20is%20a%20test";
@@ -74,7 +75,7 @@ public class WebSearchPresenterTest {
 
    @Test
    public void testInitSearchResultsErrors() {
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(null);
+      DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(null);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
       String url = "badUrl";
@@ -82,7 +83,7 @@ public class WebSearchPresenterTest {
       Assert.assertNotNull(searchResultsComp.getErrorMessage());
 
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
-      presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
+      presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       searchHeaderComp = new MockSearchHeaderComponent();
       searchResultsComp = new MockSearchResultsListComponent();
       url = "/branch=" + GUID.create() + "&nameOnly=true&search=this%20is%20a%20test";
@@ -93,10 +94,10 @@ public class WebSearchPresenterTest {
    @Test
    public void testSelectArtifact() {
       MockSearchNavigator navigator = new MockSearchNavigator();
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(null);
+      DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(null);
       String branchGuid = GUID.create();
       String artGuid = GUID.create();
-      WebArtifact artifact = new WebArtifact(artGuid, "name", "type", null, new WebId(branchGuid, "branchName"));
+      ViewArtifact artifact = new ViewArtifact(artGuid, "name", "type", null, new ViewId(branchGuid, "branchName"));
       presenter.selectArtifact(artifact, navigator);
       String expectedUrl = "/branch=" + branchGuid + "&artifact=" + artGuid;
       Assert.assertEquals(expectedUrl, navigator.getArtifactUrl());
@@ -106,7 +107,7 @@ public class WebSearchPresenterTest {
    public void testInitArtifactPage() {
       MockArtifactProvider provider = new MockArtifactProvider();
       provider.setResultList(getSearchResults());
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
+      DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       String artGuid = GUID.create();
       MockArtifact testArt = new MockArtifact(artGuid, "name");
       MockArtifact parentArt = new MockArtifact(GUID.create(), "parent");
@@ -129,7 +130,7 @@ public class WebSearchPresenterTest {
       Assert.assertEquals(1, attrComp.getAttributes().keySet().size());
 
       provider = new MockArtifactProvider();
-      presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
+      presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp);
       Assert.assertNotNull(artHeaderComp.getErrorMessage());
    }
@@ -137,7 +138,7 @@ public class WebSearchPresenterTest {
    @Test
    public void testInitArtifactPageErrors() {
       String url = "badUrl";
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(null);
+      DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(null);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
       MockRelationComponent relComp = new MockRelationComponent();
@@ -147,7 +148,7 @@ public class WebSearchPresenterTest {
 
       url = "/branch=" + GUID.create() + "&artifact=" + GUID.create();
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
-      presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
+      presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       searchHeaderComp = new MockSearchHeaderComponent();
       artHeaderComp = new MockArtifactHeaderComponent();
       relComp = new MockRelationComponent();
@@ -162,7 +163,7 @@ public class WebSearchPresenterTest {
       MockRelationComponent relComp = new MockRelationComponent();
 
       provider.setResultList(getSearchResults());
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
+      DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       String artGuid = GUID.create();
       String artGuidA = GUID.create();
       String artGuidB = GUID.create();
@@ -177,14 +178,12 @@ public class WebSearchPresenterTest {
 
       provider.addArtifact(testArt);
 
-      WebId branch = new WebId(GUID.create(), "branchName");
-      WebArtifact artifact = new WebArtifact(artGuid, "artName", "artType", null, branch);
-      WebId relation = new WebId(Long.toString(relGuid), relName);
+      ViewId branch = new ViewId(GUID.create(), "branchName");
+      ViewArtifact artifact = new ViewArtifact(artGuid, "artName", "artType", null, branch);
+      ViewId relation = new ViewId(Long.toString(relGuid), relName);
       presenter.selectRelationType(artifact, relation, relComp);
       Assert.assertEquals(0, relComp.getLeftRelations().size());
       Assert.assertEquals(0, relComp.getRightRelations().size());
-
-      //      Assert.assertEquals(relatedArtB.getGuid(), relComp.getLeftRelations().iterator().next().getGuid());
 
       MockArtifact relatedArtA = new MockArtifact(artGuidA, "related");
       testArt.addRelation(CoreRelationTypes.Allocation__Requirement, relatedArtA);
@@ -209,21 +208,21 @@ public class WebSearchPresenterTest {
 
    @Test
    public void testSelectRelationTypeErrors() {
-      WebSearchPresenter<SearchHeaderComponent> presenter = new WebSearchPresenter<SearchHeaderComponent>(null);
+      DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(null);
       MockRelationComponent relComp = new MockRelationComponent();
-      WebId relation = new WebId("0", "Name");
+      ViewId relation = new ViewId("0", "Name");
       presenter.selectRelationType(null, relation, relComp);
       Assert.assertNotNull(relComp.getErrorMessage());
 
       relComp = new MockRelationComponent();
-      WebArtifact artifact =
-         new WebArtifact(GUID.create(), "name", "type", null, new WebId(GUID.create(), "branchName"));
+      ViewArtifact artifact =
+         new ViewArtifact(GUID.create(), "name", "type", null, new ViewId(GUID.create(), "branchName"));
       presenter.selectRelationType(artifact, null, relComp);
       Assert.assertNotNull(relComp.getErrorMessage());
 
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
       relComp = new MockRelationComponent();
-      presenter = new WebSearchPresenter<SearchHeaderComponent>(provider);
+      presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       presenter.selectRelationType(artifact, relation, relComp);
       Assert.assertNotNull(relComp.getErrorMessage());
    }

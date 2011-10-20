@@ -15,8 +15,8 @@ import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
-import org.eclipse.osee.display.api.data.WebId;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewId;
 
 /*
  * @author John Misinco
@@ -25,10 +25,10 @@ public interface SearchPresenter<T extends SearchHeaderComponent> {
 
    void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp);
 
-   void selectArtifact(WebArtifact artifact, SearchNavigator oseeNavigator);
+   void selectArtifact(ViewArtifact artifact, SearchNavigator oseeNavigator);
 
    void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp);
 
-   void selectRelationType(WebArtifact artifact, WebId relation, RelationComponent relationComponent);
+   void selectRelationType(ViewArtifact artifact, ViewId relation, RelationComponent relationComponent);
 
 }

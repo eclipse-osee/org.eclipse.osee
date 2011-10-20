@@ -11,17 +11,17 @@
 package org.eclipse.osee.display.presenter.mocks;
 
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
-import org.eclipse.osee.display.api.data.WebArtifact;
+import org.eclipse.osee.display.api.data.ViewArtifact;
 
 /**
  * @author John Misinco
  */
 public class MockArtifactHeaderComponent implements ArtifactHeaderComponent {
 
-   private WebArtifact artifact;
+   private ViewArtifact artifact;
    private String errorMessage;
 
-   public WebArtifact getArtifact() {
+   public ViewArtifact getArtifact() {
       return artifact;
    }
 
@@ -39,7 +39,7 @@ public class MockArtifactHeaderComponent implements ArtifactHeaderComponent {
    }
 
    @Override
-   public void setArtifact(WebArtifact artifact) {
+   public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
    }
 }
