@@ -60,9 +60,9 @@ public class MockArtifactProvider implements ArtifactProvider {
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
-         return null;
+         return (List<ReadableArtifact>) mArt.getRelatedArtifacts(relationTypeSide);
       } else {
-         return null;
+         return Collections.emptyList();
       }
    }
 
@@ -70,7 +70,7 @@ public class MockArtifactProvider implements ArtifactProvider {
    public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
-         return null;
+         return mArt.getRelatedArtifacts(relationTypeSide).iterator().next();
       } else {
          return null;
       }
@@ -89,8 +89,7 @@ public class MockArtifactProvider implements ArtifactProvider {
    @Override
    public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) {
       if (art instanceof MockArtifact) {
-         MockArtifact mArt = (MockArtifact) art;
-         return null;
+         return ((MockArtifact) art).getValidRelationTypes();
       } else {
          return Collections.emptyList();
       }

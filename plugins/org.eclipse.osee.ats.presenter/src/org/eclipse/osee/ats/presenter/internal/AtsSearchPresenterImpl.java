@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
@@ -36,18 +34,11 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
  */
 public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends DisplayPresenter<T> implements AtsSearchPresenter<T> {
 
-   private final static Pattern buildPattern = Pattern.compile("build=([0-9A-Za-z\\+_=]{20,22})");
-   private final static Pattern programPattern = Pattern.compile("program=([0-9A-Za-z\\+_=]{20,22})");
-
-   private final Matcher buildMatcher;
-   private final Matcher programMatcher;
    private final AtsArtifactProvider atsArtifactProvider;
 
    public AtsSearchPresenterImpl(AtsArtifactProvider artifactProvider) {
       super(artifactProvider);
       atsArtifactProvider = artifactProvider;
-      buildMatcher = buildPattern.matcher("");
-      programMatcher = programPattern.matcher("");
    }
 
    @Override
@@ -175,18 +166,6 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
       return builds;
    }
 
-   //   protected String encode(String branchId, boolean nameOnly, String searchPhrase) {
-   //      StringBuilder sb = new StringBuilder();
-   //      sb.append("/");
-   //      sb.append("branch=");
-   //      sb.append(branchId);
-   //      sb.append("&nameOnly=");
-   //      sb.append(nameOnly);
-   //      sb.append("&search=");
-   //      sb.append(searchPhrase);
-   //      return sb.toString().replaceAll("\\s", "%20");
-   //   }
-
    protected String encode(AtsSearchParameters searchParams, String branchId) {
       Map<String, String> params = new HashMap<String, String>();
       if (Strings.isValid(branchId)) {
@@ -218,40 +197,5 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
 
       return new AtsSearchParameters(searchPhrase, nameOnly, verbose, build, program);
    }
-
-   //   protected class SearchParameters {
-   //
-   //      private final WebId program, build;
-   //      private final boolean nameOnly;
-   //      private final String searchPhrase;
-   //
-   //      public SearchParameters(WebId program, WebId build, boolean nameOnly, String searchPhrase) {
-   //         this.program = program;
-   //         this.build = build;
-   //         this.nameOnly = nameOnly;
-   //         this.searchPhrase = searchPhrase;
-   //      }
-   //
-   //      public WebId getProgram() {
-   //         return program;
-   //      }
-   //
-   //      public WebId getBuild() {
-   //         return build;
-   //      }
-   //
-   //      public boolean getNameOnly() {
-   //         return nameOnly;
-   //      }
-   //
-   //      public String getSearchPhrase() {
-   //         return searchPhrase;
-   //      }
-   //
-   //      public boolean isValid() {
-   //         return (program != null) && (build != null);
-   //      }
-   //
-   //   }
 
 }

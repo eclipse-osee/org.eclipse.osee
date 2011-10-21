@@ -26,6 +26,15 @@ public class MockRelationComponent implements RelationComponent {
    private final List<ViewArtifact> leftRelations = new LinkedList<ViewArtifact>();
    private final List<ViewArtifact> rightRelations = new LinkedList<ViewArtifact>();
    private String errorMessage;
+   private String leftName, rightName;
+
+   public String getLeftName() {
+      return leftName;
+   }
+
+   public String getRightName() {
+      return rightName;
+   }
 
    public ViewArtifact getArtifact() {
       return artifact;
@@ -76,20 +85,26 @@ public class MockRelationComponent implements RelationComponent {
 
    @Override
    public void addLeftRelated(ViewArtifact id) {
-      leftRelations.add(id);
+      if (id != null) {
+         leftRelations.add(id);
+      }
    }
 
    @Override
    public void addRightRelated(ViewArtifact id) {
-      rightRelations.add(id);
+      if (id != null) {
+         rightRelations.add(id);
+      }
    }
 
    @Override
    public void setLeftName(String name) {
+      leftName = name;
    }
 
    @Override
    public void setRightName(String name) {
+      rightName = name;
    }
 
 }

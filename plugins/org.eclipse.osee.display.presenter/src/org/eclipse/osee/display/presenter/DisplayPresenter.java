@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.components.DisplaysErrorComponent;
@@ -54,28 +52,12 @@ import org.eclipse.osee.orcs.search.Match;
 public class DisplayPresenter<T extends SearchHeaderComponent> implements SearchPresenter<T> {
 
    protected final ArtifactProvider artifactProvider;
-   private final static Pattern branchPattern = Pattern.compile("branch=([0-9A-Za-z\\+_=]{20,22})");
-   private final static Pattern artifactPattern = Pattern.compile("artifact=([0-9A-Za-z\\+_=]{20,22})");
-   private final static Pattern nameOnlyPattern = Pattern.compile("nameOnly=(true|false)");
-   private final static Pattern searchPhrasePattern = Pattern.compile("search=([\\d\\w%]*)");
-   private final static Pattern verbosePattern = Pattern.compile("verbose=(true|false)");
 
    private final static String SIDE_A_KEY = "sideAName";
    private final static String SIDE_B_KEY = "sideBName";
 
-   protected final Matcher branchMatcher;
-   protected final Matcher artifactMatcher;
-   protected final Matcher nameOnlyMatcher;
-   protected final Matcher searchPhraseMatcher;
-   protected final Matcher verboseMatcher;
-
    public DisplayPresenter(ArtifactProvider artifactProvider) {
       this.artifactProvider = artifactProvider;
-      branchMatcher = branchPattern.matcher("");
-      artifactMatcher = artifactPattern.matcher("");
-      nameOnlyMatcher = nameOnlyPattern.matcher("");
-      searchPhraseMatcher = searchPhrasePattern.matcher("");
-      verboseMatcher = verbosePattern.matcher("");
    }
 
    @Override
@@ -240,8 +222,10 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
          return;
       }
 
-      relationComponent.setLeftName(relation.getAttribute(SIDE_A_KEY));
-      relationComponent.setRightName(relation.getAttribute(SIDE_B_KEY));
+      String leftSideName = Strings.capitalize(relation.getAttribute(SIDE_A_KEY));
+      String rightSideName = Strings.capitalize(relation.getAttribute(SIDE_B_KEY));
+      relationComponent.setLeftName(leftSideName);
+      relationComponent.setRightName(rightSideName);
 
       if (relatedSideA.isEmpty()) {
          relationComponent.addLeftRelated(null);

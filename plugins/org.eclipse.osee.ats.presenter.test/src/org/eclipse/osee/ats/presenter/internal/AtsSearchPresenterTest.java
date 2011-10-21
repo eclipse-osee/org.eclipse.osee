@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.internal;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
@@ -18,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.mocks.MockAtsArtifactProvider;
 import org.eclipse.osee.ats.mocks.MockAtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;
+import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.display.presenter.mocks.MockSearchNavigator;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -47,24 +49,24 @@ public class AtsSearchPresenterTest {
    }
 
    @Test
-   public void testSelectSearch() {
+   public void testSelectSearch() throws UnsupportedEncodingException {
       AtsSearchPresenterImpl<AtsSearchHeaderComponent> presenter =
          new AtsSearchPresenterImpl<AtsSearchHeaderComponent>(null);
       MockSearchNavigator navigator = new MockSearchNavigator();
-      String programGuid = GUID.create();
-      String buildGuid = GUID.create();
+      String programGuid = "prg1Guid_18H74Zqo3gA";
+      String buildGuid = "buildGuid1_d74Zqo3gA";
       ViewId program = new ViewId(programGuid, "prgName");
       ViewId build = new ViewId(buildGuid, "bldName");
-      AtsSearchParameters params = new AtsSearchParameters("test search phrase", true, false, build, program);
+      AtsSearchParameters params = new AtsSearchParameters("phrase", true, false, build, program);
       presenter.selectSearch(params, navigator);
       String url = navigator.getResultsUrl();
       String expected =
-         "/program=" + programGuid + "&build=" + buildGuid + "&nameOnly=true&search=test%20search%20phrase&verbose=false";
+         "/search=phrase&verbose=false&program=" + Utility.encode(programGuid) + "&nameOnly=true&build=" + Utility.encode(buildGuid);
       Assert.assertEquals(expected, url);
    }
 
    @Test
-   public void testInitSearchResults() {
+   public void testInitSearchResults() throws UnsupportedEncodingException {
       MockAtsArtifactProvider provider = new MockAtsArtifactProvider();
       List<Match<ReadableArtifact, ReadableAttribute<?>>> resultList =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
@@ -83,7 +85,7 @@ public class AtsSearchPresenterTest {
       String programGuid = GUID.create();
       String buildGuid = GUID.create();
       String url =
-         "/program=" + programGuid + "&build=" + buildGuid + "&nameOnly=true&search=test%20search%20phrase&verbose=false";
+         "/program=" + Utility.encode(programGuid) + "&build=" + Utility.encode(buildGuid) + "&nameOnly=true&search=phrase&verbose=false";
       presenter.initSearchResults(url, headerComp, resultsComponent);
       Assert.assertEquals(1, resultsComponent.getSearchResults().size());
    }

@@ -73,10 +73,19 @@ public class MockArtifact implements ReadableArtifact {
       attributes.put(type, value);
    }
 
+   public Collection<RelationType> getValidRelationTypes() {
+      return validRelationTypes;
+   }
+
    public void addRelationType(RelationType relationType) {
       if (!validRelationTypes.contains(relationType)) {
          validRelationTypes.add(relationType);
       }
+   }
+
+   @SuppressWarnings("unchecked")
+   public Collection<ReadableArtifact> getRelatedArtifacts(IRelationTypeSide side) {
+      return (Collection<ReadableArtifact>) (relationMap.containsKey(side) ? relationMap.get(side) : Collections.emptyList());
    }
 
    public void addRelation(IRelationTypeSide relation, ReadableArtifact artifact) {

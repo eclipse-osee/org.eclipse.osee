@@ -68,6 +68,7 @@ public final class Utility {
       if (toParse.startsWith("/")) {
          toParse = toParse.substring(1, toParse.length());
       }
+
       Map<String, String> values = new HashMap<String, String>();
       String[] lines = toParse.split("&");
       for (String line : lines) {
@@ -75,14 +76,15 @@ public final class Utility {
          if (data.length == 2) {
             String key = data[0];
             String value = data[1];
-            if (Strings.isValid(value)) {
+            if (Strings.isValid(value) && Strings.isValid(key)) {
                try {
                   value = URLDecoder.decode(value, "UTF-8");
+                  key = URLDecoder.decode(key, "UTF-8");
+                  values.put(key, value);
                } catch (UnsupportedEncodingException ex) {
                   //
                }
             }
-            values.put(key, value);
          }
       }
       return values;

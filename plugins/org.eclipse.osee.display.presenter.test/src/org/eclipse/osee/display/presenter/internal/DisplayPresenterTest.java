@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.internal;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.presenter.DisplayPresenter;
+import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactHeaderComponent;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
 import org.eclipse.osee.display.presenter.mocks.MockAttributeComponent;
@@ -62,20 +64,21 @@ public class DisplayPresenterTest {
    }
 
    @Test
-   public void testInitSearchResults() {
+   public void testInitSearchResults() throws UnsupportedEncodingException {
       MockArtifactProvider provider = new MockArtifactProvider();
       provider.setResultList(getSearchResults());
       DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
-      String url = "/branch=" + GUID.create() + "&nameOnly=true&search=this%20is%20a%20test";
+      String url =
+         "/branch=" + Utility.encode(GUID.create()) + "&nameOnly=true&search=" + Utility.encode("this is a test");
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp);
       List<MockSearchResultComponent> searchResults = searchResultsComp.getSearchResults();
       Assert.assertEquals(1, searchResults.size());
    }
 
    @Test
-   public void testInitSearchResultsErrors() {
+   public void testInitSearchResultsErrors() throws UnsupportedEncodingException {
       DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(null);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
@@ -87,25 +90,25 @@ public class DisplayPresenterTest {
       presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       searchHeaderComp = new MockSearchHeaderComponent();
       searchResultsComp = new MockSearchResultsListComponent();
-      url = "/branch=" + GUID.create() + "&nameOnly=true&search=this%20is%20a%20test";
+      url = "/branch=" + Utility.encode(GUID.create()) + "&nameOnly=true&search=" + Utility.encode("this is a test");
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp);
       Assert.assertNotNull(searchResultsComp.getErrorMessage());
    }
 
    @Test
-   public void testSelectArtifact() {
+   public void testSelectArtifact() throws UnsupportedEncodingException {
       MockSearchNavigator navigator = new MockSearchNavigator();
       DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(null);
       String branchGuid = GUID.create();
       String artGuid = GUID.create();
       ViewArtifact artifact = new ViewArtifact(artGuid, "name", "type", null, new ViewId(branchGuid, "branchName"));
       presenter.selectArtifact(artifact, navigator);
-      String expectedUrl = "/branch=" + branchGuid + "&artifact=" + artGuid;
+      String expectedUrl = "/artifact=" + Utility.encode(artGuid) + "&branch=" + Utility.encode(branchGuid);
       Assert.assertEquals(expectedUrl, navigator.getArtifactUrl());
    }
 
    @Test
-   public void testInitArtifactPage() {
+   public void testInitArtifactPage() throws UnsupportedEncodingException {
       MockArtifactProvider provider = new MockArtifactProvider();
       provider.setResultList(getSearchResults());
       DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
@@ -120,7 +123,7 @@ public class DisplayPresenterTest {
             CoreArtifactTypes.AbstractTestResult, RelationTypeMultiplicity.ONE_TO_ONE, "");
       testArt.addRelationType(relType);
       provider.addArtifact(testArt);
-      String url = "/branch=" + GUID.create() + "&artifact=" + artGuid;
+      String url = "/branch=" + Utility.encode(GUID.create()) + "&artifact=" + artGuid;
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
       MockRelationComponent relComp = new MockRelationComponent();
@@ -137,7 +140,7 @@ public class DisplayPresenterTest {
    }
 
    @Test
-   public void testInitArtifactPageErrors() {
+   public void testInitArtifactPageErrors() throws UnsupportedEncodingException {
       String url = "badUrl";
       DisplayPresenter<SearchHeaderComponent> presenter = new DisplayPresenter<SearchHeaderComponent>(null);
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
@@ -147,7 +150,7 @@ public class DisplayPresenterTest {
       presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp);
       Assert.assertNotNull(artHeaderComp.getErrorMessage());
 
-      url = "/branch=" + GUID.create() + "&artifact=" + GUID.create();
+      url = "/branch=" + Utility.encode(GUID.create()) + "&artifact=" + Utility.encode(GUID.create());
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
       presenter = new DisplayPresenter<SearchHeaderComponent>(provider);
       searchHeaderComp = new MockSearchHeaderComponent();
@@ -189,8 +192,8 @@ public class DisplayPresenterTest {
       MockArtifact relatedArtA = new MockArtifact(artGuidA, "related");
       testArt.addRelation(CoreRelationTypes.Allocation__Requirement, relatedArtA);
       presenter.selectRelationType(artifact, relation, relComp);
-      Assert.assertEquals(0, relComp.getLeftRelations().size());
-      Assert.assertEquals(1, relComp.getRightRelations().size());
+      Assert.assertEquals(1, relComp.getLeftRelations().size());
+      Assert.assertEquals(0, relComp.getRightRelations().size());
 
       MockArtifact relatedArtB = new MockArtifact(artGuidB, "related");
       testArt.addRelation(CoreRelationTypes.Allocation__Component, relatedArtB);
