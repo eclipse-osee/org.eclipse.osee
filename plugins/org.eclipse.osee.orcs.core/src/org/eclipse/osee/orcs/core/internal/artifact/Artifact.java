@@ -119,6 +119,16 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
       return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
    }
 
+   @Override
+   public boolean hasParent() {
+      return false;
+   }
+
+   @Override
+   public ReadableArtifact getParent() {
+      return null;
+   }
+
    public AttributeContainer getAttributeContainer() {
       return attributeContainer;
    }

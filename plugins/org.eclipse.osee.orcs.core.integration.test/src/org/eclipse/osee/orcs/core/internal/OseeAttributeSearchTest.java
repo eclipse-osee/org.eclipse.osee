@@ -1,0 +1,125 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.core.internal;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.db.mock.OseeDatabase;
+import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.ResultSet;
+import org.junit.Rule;
+
+/**
+ * @author Jeff C. Phillips
+ */
+public class OseeAttributeSearchTest {
+
+   @Rule
+   public OseeDatabase db1 = new OseeDatabase("osee.demo.h2");
+
+   @org.junit.Test
+   public void runGodMethod() throws OseeCoreException {
+      OseeApi oseeApi = OsgiUtil.getService(OseeApi.class);
+      ApplicationContext context = null; // TODO use real application context
+      QueryFactory queryFactory = oseeApi.getQueryFactory(context);
+
+      //      testNameAttributeNotEqualSearch(queryFactory);
+      //      testNameAttributeEqualSearch(queryFactory);
+      //      testBooleanAttributeSearch(queryFactory);
+      testWTCAttributeEqualSearch(queryFactory, oseeApi.getBranchCache());
+   }
+
+   public void testNameAttributeNotEqualSearch(QueryFactory queryFactory) throws OseeCoreException {
+      QueryBuilder builder =
+         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.NOT_EQUAL, "User Groups");
+
+      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      List<ReadableArtifact> moreArts = resultSet.getList();
+
+      for (ReadableArtifact artifact : moreArts) {
+         Assert.assertTrue(artifact.getId() != 8);
+      }
+   }
+
+   public void testNameAttributeEqualSearch(QueryFactory queryFactory) throws OseeCoreException {
+      QueryBuilder builder =
+         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.EQUAL, "User Groups");
+
+      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      List<ReadableArtifact> moreArts = resultSet.getList();
+
+      Assert.assertEquals(1, moreArts.size());
+      Assert.assertEquals(1, builder.getCount());
+
+      Map<Integer, ReadableArtifact> lookup = creatLookup(moreArts);
+      ReadableArtifact art8 = lookup.get(8);
+
+      //Test loading name attributes
+      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
+   }
+
+   public void testWTCAttributeEqualSearch(QueryFactory queryFactory, BranchCache branchCache) throws OseeCoreException {
+      QueryBuilder builder =
+         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(CoreAttributeTypes.Name,
+            Operator.EQUAL, "Haptic Constraints");
+      //      QueryBuilder builder =
+      //         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(
+      //            CoreArtifactTypes.SoftwareRequirement);
+
+      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      List<ReadableArtifact> moreArts = resultSet.getList();
+
+      Assert.assertEquals(1, moreArts.size());
+      Assert.assertEquals(1, builder.getCount());
+
+      Map<Integer, ReadableArtifact> lookup = creatLookup(moreArts);
+      ReadableArtifact art8 = lookup.get(189);
+
+      //Test loading name attributes
+      Assert.assertEquals(art8.getAttributes(CoreAttributeTypes.WordTemplateContent).iterator().next().getValue(),
+         "User Groups");
+   }
+
+   public void testBooleanAttributeSearch(QueryFactory queryFactory) throws OseeCoreException {
+      QueryBuilder builder =
+         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, Operator.EQUAL, "yes");
+      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      List<ReadableArtifact> moreArts = resultSet.getList();
+
+      Assert.assertEquals(1, moreArts.size());
+      Assert.assertEquals(1, builder.getCount());
+
+      Map<Integer, ReadableArtifact> lookup = creatLookup(moreArts);
+      ReadableArtifact art9 = lookup.get(9);
+      Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
+   }
+
+   Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {
+      Map<Integer, ReadableArtifact> lookup = new HashMap<Integer, ReadableArtifact>();
+      for (ReadableArtifact artifact : arts) {
+         lookup.put(artifact.getId(), artifact);
+      }
+      return lookup;
+   }
+}
