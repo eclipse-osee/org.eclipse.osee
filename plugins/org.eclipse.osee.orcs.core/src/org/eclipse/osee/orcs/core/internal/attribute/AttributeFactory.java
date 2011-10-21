@@ -49,6 +49,9 @@ public class AttributeFactory {
       Attribute<T> attribute = createAttribute(attributeClass);
 
       DataProxy proxy = row.getDataProxy();
+
+      proxy.setResolver(new AttributeResourceNameResolver(attribute));
+
       Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(container);
       attribute.internalInitialize(type, proxy, artifactRef, row.getModType(), row.getAttrId(), row.getGammaId(),
          markDirty, false);
