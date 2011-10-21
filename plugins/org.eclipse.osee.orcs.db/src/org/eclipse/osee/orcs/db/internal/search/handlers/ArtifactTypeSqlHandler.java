@@ -36,6 +36,10 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
    private String artAlias;
    private String txsAlias;
    private AbstractJoinQuery joinQuery;
+   private Collection<Integer> typeIds;
+
+   private List<String> artAliases;
+   private List<String> txsAliases;
 
    @Override
    public void setData(Criteria criteria) {
@@ -44,18 +48,22 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
 
    @Override
    public void addTables(SqlWriter writer) throws OseeCoreException {
-      if (criteria.getTypes().size() > 1) {
+      typeIds = getLocalTypeIds(writer.getOptions().isTypeInheritanceIncluded());
+      if (typeIds.size() > 1) {
          jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
       }
 
-      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
-      if (aliases.isEmpty()) {
+      artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
+
+      if (artAliases.isEmpty()) {
          artAlias = writer.writeTable(TableEnum.ARTIFACT_TABLE);
       }
-      if (txs.isEmpty()) {
+      if (txsAliases.isEmpty()) {
          txsAlias = writer.writeTable(TableEnum.TXS_TABLE);
       }
+      artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
    }
 
    private Collection<Integer> getLocalTypeIds(boolean includeTypeInheritance) throws OseeCoreException {
@@ -64,10 +72,12 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
       for (IArtifactType type : criteria.getTypes()) {
          if (includeTypeInheritance) {
             ArtifactType realType = cache.getByGuid(type.getGuid());
-            for (ArtifactType superType : realType.getSuperArtifactTypes()) {
-               toReturn.add(superType.getId());
+            for (ArtifactType descendant : realType.getAllDescendantTypes()) {
+               System.out.println("Types: " + descendant);
+               toReturn.add(descendant.getId());
             }
          }
+         System.out.println("Types: " + type);
          toReturn.add(toLocalId(type));
       }
       return toReturn;
@@ -75,19 +85,23 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
 
    @Override
    public void addPredicates(SqlWriter writer) throws OseeCoreException {
-      Collection<Integer> typeIds = getLocalTypeIds(writer.getOptions().isTypeInheritanceIncluded());
       if (typeIds.size() > 1) {
          joinQuery = writer.writeIdJoin(typeIds);
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
 
-         List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-         if (!aliases.isEmpty()) {
+         //         writer.write(" AND ");
+         //         writer.write(artAlias);
+         //         writer.write(".art_type_id = ");
+         //         writer.write(jIdAlias);
+         //         writer.write(".id");
+
+         if (!artAliases.isEmpty()) {
             writer.write(" AND ");
-            int aSize = aliases.size();
+            int aSize = artAliases.size();
             for (int index = 0; index < aSize; index++) {
-               String artAlias = aliases.get(index);
+               String artAlias = artAliases.get(index);
                writer.write(artAlias);
                writer.write(".art_type_id = ");
                writer.write(jIdAlias);
@@ -100,10 +114,13 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
       } else {
          int localId = typeIds.iterator().next();
 
-         List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-         int aSize = aliases.size();
+         //         writer.write(artAlias);
+         //         writer.write(".art_type_id = ?");
+         //         writer.addParameter(localId);
+
+         int aSize = artAliases.size();
          for (int index = 0; index < aSize; index++) {
-            String artAlias = aliases.get(index);
+            String artAlias = artAliases.get(index);
             writer.write(artAlias);
             writer.write(".art_type_id = ?");
             writer.addParameter(localId);

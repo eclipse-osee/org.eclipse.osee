@@ -8,18 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core;
-
-import org.eclipse.osee.orcs.core.internal.OrcsQueryTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+package org.eclipse.osee.orcs.utility;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({//OsrcsApiTest.class,
-OrcsQueryTest.class})
-public class OrcsIntegrationTestSuite {
-   // Test Suite
+public enum SortOrder {
+   ASCENDING,
+   DESCENDING;
+
+   public boolean isAscending() {
+      return this == ASCENDING;
+   }
+
+   public boolean isDescending() {
+      return this == DESCENDING;
+   }
+
 }

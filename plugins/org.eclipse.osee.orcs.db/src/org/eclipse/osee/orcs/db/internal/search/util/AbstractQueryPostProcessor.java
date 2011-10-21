@@ -80,15 +80,18 @@ public abstract class AbstractQueryPostProcessor implements QueryPostProcessor {
       for (ReadableArtifact artifact : artifacts) {
          for (ReadableAttribute<?> attribute : getAttributes(artifact)) {
             try {
-               Tagger tagger = getTagger(attribute);
-               List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), false);
-               if (!locations.isEmpty()) {
-                  filtered.add(artifact);
-                  break;
+               if (getTypes().contains(attribute.getAttributeType())) {
+                  Tagger tagger = getTagger(attribute);
+                  List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), false);
+                  if (!locations.isEmpty()) {
+                     filtered.add(artifact);
+                     break;
+                  }
                }
             } catch (Exception ex) {
                logger.error(ex, "Error processing: [%s]", attribute);
             }
+
          }
       }
       return filtered;
@@ -103,13 +106,15 @@ public abstract class AbstractQueryPostProcessor implements QueryPostProcessor {
       for (ReadableArtifact artifact : artifacts) {
          for (ReadableAttribute<?> attribute : getAttributes(artifact)) {
             try {
-               Tagger tagger = getTagger(attribute);
-               List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), true);
-               if (!locations.isEmpty()) {
-                  if (matchedAttributes == null) {
-                     matchedAttributes = new HashMap<ReadableAttribute<?>, List<MatchLocation>>();
+               if (getTypes().contains(attribute.getAttributeType())) {
+                  Tagger tagger = getTagger(attribute);
+                  List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), true);
+                  if (!locations.isEmpty()) {
+                     if (matchedAttributes == null) {
+                        matchedAttributes = new HashMap<ReadableAttribute<?>, List<MatchLocation>>();
+                     }
+                     matchedAttributes.put(attribute, locations);
                   }
-                  matchedAttributes.put(attribute, locations);
                }
             } catch (Exception ex) {
                logger.error(ex, "Error processing: [%s]", attribute);

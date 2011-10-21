@@ -53,4 +53,10 @@ public class ArtifactMatch implements Match<ReadableArtifact, ReadableAttribute<
       List<MatchLocation> toReturn = matchedAttributes.get(element);
       return toReturn != null ? toReturn : Collections.<MatchLocation> emptyList();
    }
+
+   @Override
+   public String toString() {
+      return "ArtifactMatch [item=" + item + ", matchedAttributes=" + matchedAttributes + "]";
+   }
+
 }

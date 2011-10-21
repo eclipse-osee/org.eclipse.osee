@@ -12,16 +12,15 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import com.google.common.collect.HashMultimap;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaSet implements Cloneable, Iterable<Criteria> {
 
-   private final List<Criteria> criterias = new LinkedList<Criteria>();
+   private final HashMultimap<Class<? extends Criteria>, Criteria> criterias = HashMultimap.create();
    private final IOseeBranch branch;
 
    public CriteriaSet(IOseeBranch branch) {
@@ -33,31 +32,35 @@ public class CriteriaSet implements Cloneable, Iterable<Criteria> {
    }
 
    public void add(Criteria criteria) {
-      criterias.add(criteria);
+      criterias.put(criteria.getClass(), criteria);
    }
 
    public boolean remove(Criteria criteria) {
-      return criterias.remove(criteria);
+      return criterias.remove(criteria.getClass(), criteria);
    }
 
    public Collection<Criteria> getCriterias() {
-      return criterias;
+      return criterias.values();
    }
 
    public void reset() {
       criterias.clear();
    }
 
+   public boolean hasCriteriaType(Class<? extends Criteria> type) {
+      return criterias.containsKey(type);
+   }
+
    @Override
    public CriteriaSet clone() {
       CriteriaSet clone = new CriteriaSet(this.branch);
-      clone.criterias.addAll(this.criterias);
+      clone.criterias.putAll(this.criterias);
       return clone;
    }
 
    @Override
    public Iterator<Criteria> iterator() {
-      return criterias.iterator();
+      return getCriterias().iterator();
    }
 
 }

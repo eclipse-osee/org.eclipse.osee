@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -51,8 +52,16 @@ public class ResultSetFactory {
    }
 
    public int getCount(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) throws OseeCoreException {
-      QueryContext queryContext = queryEngine.createCount(sessionContext.getSessionId(), criteriaSet, options);
-      return objectLoader.countObjects(queryContext);
+      int count = -1;
+      if (criteriaSet.hasCriteriaType(CriteriaAttributeKeyword.class)) {
+         ResultSet<ReadableArtifact> items = createResultSet(sessionContext, LoadLevel.ATTRIBUTE, criteriaSet, options);
+         count = items.getList().size();
+      } else {
+         QueryContext queryContext = queryEngine.createCount(sessionContext.getSessionId(), criteriaSet, options);
+         count = objectLoader.countObjects(queryContext);
+      }
+      return count;
+
    }
 
 }

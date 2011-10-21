@@ -71,7 +71,7 @@ public class ResultSetImpl implements ResultSet<ReadableArtifact> {
       } else {
          results = artifacts;
       }
-      return artifacts;
+      return results;
    }
 
    @Override

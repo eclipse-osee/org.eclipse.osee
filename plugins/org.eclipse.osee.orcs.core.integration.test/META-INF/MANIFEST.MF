@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.core.integration.test
 Bundle-Version: 0.9.9.qualifier
 Fragment-Host: org.eclipse.osee.orcs.core;bundle-version="0.9.9"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.event,
+Import-Package: junit.framework;version="4.8.2",
+ org.eclipse.osee.event,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
@@ -14,6 +15,7 @@ Import-Package: org.eclipse.osee.event,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.db.mock,
  org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.utility,
  org.junit;version="4.8.2",
  org.junit.runner;version="4.8.2",
  org.junit.runners;version="4.8.2",

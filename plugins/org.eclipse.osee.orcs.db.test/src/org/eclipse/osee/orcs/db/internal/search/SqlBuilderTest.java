@@ -389,9 +389,9 @@ public class SqlBuilderTest {
          " AND \n" + //
          "tag1.coded_tag_id = ? AND tag2.coded_tag_id = ? AND tag3.coded_tag_id = ?\n" + //
          " AND \n" + //
-         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id AND tag3.gamma_id = att1.gamma_id\n" + //
+         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id\n" + //
          " AND \n" + //
-         "att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         "tag1.gamma_id = att1.gamma_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
          "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
          " ORDER BY art_id, branch_id",//
@@ -423,7 +423,9 @@ public class SqlBuilderTest {
       Assert.assertEquals(
          "SELECT art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
-         "osee_artifact art1, osee_txs txs1, osee_attribute att1, osee_txs txs2, osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_join_id jid1, osee_attribute att2, osee_txs txs3\n" + //
+         "osee_artifact art1, osee_txs txs1, " + //
+         "osee_attribute att1, osee_txs txs2, " + //
+         "osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_join_id jid1, osee_attribute att2, osee_txs txs3\n" + //
          " WHERE \n" + //
          "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
@@ -433,9 +435,9 @@ public class SqlBuilderTest {
          " AND \n" + //
          "tag1.coded_tag_id = ? AND tag2.coded_tag_id = ? AND tag3.coded_tag_id = ?\n" + //
          " AND \n" + //
-         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id AND tag3.gamma_id = att2.gamma_id\n" + //
+         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id\n" + //
          " AND \n" + //
-         "att2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+         "tag1.gamma_id = att2.gamma_id AND att2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
          " AND \n" + //
          "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
          " AND \n" + //

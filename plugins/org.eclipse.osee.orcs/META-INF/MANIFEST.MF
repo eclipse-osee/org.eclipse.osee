@@ -15,5 +15,6 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
- org.eclipse.osee.orcs.search
+ org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.utility
 Require-Bundle: org.eclipse.core.runtime

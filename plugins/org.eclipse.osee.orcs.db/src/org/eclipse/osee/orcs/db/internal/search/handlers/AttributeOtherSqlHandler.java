@@ -33,6 +33,9 @@ public class AttributeOtherSqlHandler extends SqlHandler {
    private String attrAlias;
    private String txsAlias1;
 
+   private String artAlias2;
+   private String txs2Alias2;
+
    private String joinAlias;
    private String value;
 
@@ -61,10 +64,10 @@ public class AttributeOtherSqlHandler extends SqlHandler {
       txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
 
       if (aliases.isEmpty()) {
-         writer.writeTable(TableEnum.ARTIFACT_TABLE);
+         artAlias2 = writer.writeTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txs.isEmpty()) {
-         writer.writeTable(TableEnum.TXS_TABLE);
+         txs2Alias2 = writer.writeTable(TableEnum.TXS_TABLE);
       }
    }
 
@@ -117,7 +120,7 @@ public class AttributeOtherSqlHandler extends SqlHandler {
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
-         writer.write(" AND ");
+         writer.write("\n AND \n");
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
@@ -136,6 +139,15 @@ public class AttributeOtherSqlHandler extends SqlHandler {
       writer.write(txsAlias1);
       writer.write(".gamma_id AND ");
       writer.writeTxBranchFilter(txsAlias1);
+
+      if (txs2Alias2 != null && artAlias2 != null) {
+         writer.write("\n AND \n");
+         writer.write(artAlias2);
+         writer.write(".gamma_id = ");
+         writer.write(txs2Alias2);
+         writer.write(".gamma_id AND ");
+         writer.writeTxBranchFilter(txs2Alias2);
+      }
    }
 
    @Override

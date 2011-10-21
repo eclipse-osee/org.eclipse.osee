@@ -79,31 +79,33 @@ public class SqlWriter {
       }
       List<String> aliases = aliasManager.getAliases(TableEnum.TXS_TABLE);
       if (aliases.size() > 1) {
-         write("\n AND \n");
          writeTxsJoin(aliases);
       }
    }
 
    private void writeTxsJoin(List<String> aliases) throws OseeCoreException {
-      int size = aliases.size();
-      if (size > 1) {
-         for (int index = 1; index < size; index++) {
-            String alias1 = aliases.get(index - 1);
-            String alias2 = aliases.get(index);
-            write(alias1);
-            write(".gamma_id = ");
-            write(alias2);
-            write(".gamma_id AND ");
-            write(alias1);
-            write(".transaction_id = ");
-            write(alias2);
-            write(".transaction_id AND ");
-            write(alias1);
-            write(".branch_id = ");
-            write(alias2);
-            write(".branch_id");
-            if (index + 1 < size) {
-               write("\n AND \n");
+      if (false) {
+         write("\n AND \n");
+         int size = aliases.size();
+         if (size > 1) {
+            for (int index = 1; index < size; index++) {
+               String alias1 = aliases.get(index - 1);
+               String alias2 = aliases.get(index);
+               write(alias1);
+               write(".gamma_id = ");
+               write(alias2);
+               write(".gamma_id AND ");
+               write(alias1);
+               write(".transaction_id = ");
+               write(alias2);
+               write(".transaction_id AND ");
+               write(alias1);
+               write(".branch_id = ");
+               write(alias2);
+               write(".branch_id");
+               if (index + 1 < size) {
+                  write("\n AND \n");
+               }
             }
          }
       }

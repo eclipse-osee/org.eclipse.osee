@@ -14,24 +14,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
-import org.eclipse.osee.framework.core.services.IdentityService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.core.SystemPreferences;
-import org.eclipse.osee.orcs.core.ds.DataLoader;
-import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
+import org.eclipse.osee.orcs.core.mock.Utility;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
@@ -40,7 +29,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
 import org.junit.Assert;
 import org.junit.Rule;
-import org.osgi.service.event.EventAdmin;
 
 /**
  * Test Case for {@link OrcsApi}
@@ -54,19 +42,7 @@ public class OsrcsApiTest {
 
    @org.junit.Test
    public void testSearchById() throws Exception {
-      OsgiUtil.getService(Log.class);
-      OsgiUtil.getService(SystemPreferences.class);
-      OsgiUtil.getService(IdentityService.class);
-      OsgiUtil.getService(IOseeDatabaseService.class);
-      OsgiUtil.getService(IOseeModelFactoryService.class);
-      OsgiUtil.getService(IOseeModelingService.class);
-      OsgiUtil.getService(EventAdmin.class);
-      OsgiUtil.getService(EventService.class);
-      OsgiUtil.getService(IOseeCachingService.class);
-      OsgiUtil.getService(QueryEngine.class);
-      OsgiUtil.getService(DataStoreTypeCache.class);
-      OsgiUtil.getService(DataLoader.class);
-      OsgiUtil.getService(AttributeClassResolver.class);
+      Utility.checkRequiredServices();
 
       OrcsApi oseeApi = OsgiUtil.getService(OrcsApi.class);
 

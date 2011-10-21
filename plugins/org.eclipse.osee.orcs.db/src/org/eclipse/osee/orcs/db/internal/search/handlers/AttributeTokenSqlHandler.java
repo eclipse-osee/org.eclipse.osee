@@ -45,6 +45,9 @@ public class AttributeTokenSqlHandler extends SqlHandler {
    private List<Long> codedTags;
    private List<String> tagAliases;
 
+   private String artAlias2;
+   private String txs2Alias2;
+
    private AbstractJoinQuery joinQuery;
 
    @Override
@@ -76,10 +79,10 @@ public class AttributeTokenSqlHandler extends SqlHandler {
       txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
 
       if (aliases.isEmpty()) {
-         writer.writeTable(TableEnum.ARTIFACT_TABLE);
+         artAlias2 = writer.writeTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txs.isEmpty()) {
-         writer.writeTable(TableEnum.TXS_TABLE);
+         txs2Alias2 = writer.writeTable(TableEnum.TXS_TABLE);
       }
    }
 
@@ -110,8 +113,8 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
       StringOperator operator = criteria.getStringOp();
       boolean tokenize = requiresTokenizing(operator);
-      //      QueryPostProcessor processor = createPostProcessor(tokenize);
-      //      writer.addPostProcessor(processor);
+      QueryPostProcessor processor = createPostProcessor(tokenize);
+      writer.addPostProcessor(processor);
 
       if (tokenize) {
          writer.write("\n AND \n");
@@ -129,29 +132,21 @@ public class AttributeTokenSqlHandler extends SqlHandler {
                writer.write(" AND ");
             }
          }
-         writer.write("\n AND \n");
-         boolean needAnd = false;
-         for (int index = 1; index < size; index++) {
-            needAnd = true;
-            String tagAlias1 = tagAliases.get(index - 1);
-            String tagAlias2 = tagAliases.get(index);
+         if (size > 1) {
+            writer.write("\n AND \n");
+            for (int index = 1; index < size; index++) {
+               String tagAlias1 = tagAliases.get(index - 1);
+               String tagAlias2 = tagAliases.get(index);
 
-            writer.write(tagAlias1);
-            writer.write(".gamma_id = ");
-            writer.write(tagAlias2);
-            writer.write(".gamma_id");
-            if (index + 1 < size) {
-               writer.write(" AND ");
+               writer.write(tagAlias1);
+               writer.write(".gamma_id = ");
+               writer.write(tagAlias2);
+               writer.write(".gamma_id");
+               if (index + 1 < size) {
+                  writer.write(" AND ");
+               }
             }
          }
-         String lastAlias = tagAliases.get(size - 1);
-         if (needAnd) {
-            writer.write(" AND ");
-         }
-         writer.write(lastAlias);
-         writer.write(".gamma_id = ");
-         writer.write(attrAlias);
-         writer.write(".gamma_id");
       } else {
          // case CONTAINS:
          // case NOT_EQUALS:
@@ -163,12 +158,42 @@ public class AttributeTokenSqlHandler extends SqlHandler {
          //         caseType.isCaseSensitive();
          throw new UnsupportedOperationException();
       }
+
+      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      if (!aliases.isEmpty()) {
+         writer.write("\n AND \n");
+         int aSize = aliases.size();
+         for (int index = 0; index < aSize; index++) {
+            String artAlias = aliases.get(index);
+            writer.write(artAlias);
+            writer.write(".art_id = ");
+            writer.write(attrAlias);
+            writer.write(".art_id");
+            if (index + 1 < aSize) {
+               writer.write(" AND ");
+            }
+         }
+      }
+
       writer.write("\n AND \n");
+      writer.write(tagAliases.get(0));
+      writer.write(".gamma_id = ");
+      writer.write(attrAlias);
+      writer.write(".gamma_id AND ");
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias1);
       writer.write(".gamma_id AND ");
       writer.writeTxBranchFilter(txsAlias1);
+
+      if (txs2Alias2 != null && artAlias2 != null) {
+         writer.write("\n AND \n");
+         writer.write(artAlias2);
+         writer.write(".gamma_id = ");
+         writer.write(txs2Alias2);
+         writer.write(".gamma_id AND ");
+         writer.writeTxBranchFilter(txs2Alias2);
+      }
    }
 
    @Override
