@@ -14,13 +14,12 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public interface RelationContainer {
 
    void add(RelationRow nextRelation) throws OseeCoreException;
-
-   //   void getArtifactIds(List<Integer> results, long relationTypeUUId, RelationSide side);
-
-   //   int getRelationCount(long relationTypeUUId, RelationSide side);
 
    Collection<IRelationTypeSide> getAvailableRelationTypes();
 

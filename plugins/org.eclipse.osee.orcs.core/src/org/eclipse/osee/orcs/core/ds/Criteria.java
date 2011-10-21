@@ -16,10 +16,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public class Criteria {
-   //
 
    @SuppressWarnings("unused")
    public void checkValid(QueryOptions options) throws OseeCoreException {
-      //
+      // For subclasses to implement
    }
 }

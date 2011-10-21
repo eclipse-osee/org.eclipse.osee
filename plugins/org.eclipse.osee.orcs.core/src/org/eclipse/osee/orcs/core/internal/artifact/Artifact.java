@@ -35,7 +35,6 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    private final AttributeContainer attributeContainer;
    private final RelationContainer relationContainer;
    private final int artId;
-   private final String guid;
    private final String humandReadableId;
    private final IArtifactType artifactType;
    private final int gammaId;
@@ -47,7 +46,6 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    public Artifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical, RelationTypeCache relationTypeCache) {
       super(guid, "");
       this.artId = artId;
-      this.guid = guid;
       this.humandReadableId = humandReadableId;
       this.artifactType = artifactType;
       this.gammaId = gammaId;

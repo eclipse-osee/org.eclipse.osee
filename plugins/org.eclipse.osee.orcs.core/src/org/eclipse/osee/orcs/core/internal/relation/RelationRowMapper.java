@@ -1,25 +1,30 @@
-/*
- * Created on Sep 28, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class RelationRowMapper implements RelationRowHandler {
 
-   //   private final Log logger;
    private final Map<Integer, ? extends RelationContainer> providersThatWillBeLoaded;
 
-   public RelationRowMapper(Log logger, Map<Integer, ? extends RelationContainer> providersThatWillBeLoaded) {
-      //      this.logger = logger;
+   public RelationRowMapper(Map<Integer, ? extends RelationContainer> providersThatWillBeLoaded) {
       this.providersThatWillBeLoaded = providersThatWillBeLoaded;
    }
 

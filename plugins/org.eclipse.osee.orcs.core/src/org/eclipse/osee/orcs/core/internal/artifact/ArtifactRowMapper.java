@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRow;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
@@ -27,14 +26,12 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 public class ArtifactRowMapper implements ArtifactRowHandler {
 
    private final SessionContext context;
-   private final Log logger;
    private final BranchCache branchCache;
    private final ArtifactTypeCache typeCache;
    private final ArtifactFactory artifactFactory;
-   private final ArtifactReciever artifactReceiver;
+   private final ArtifactCollector artifactReceiver;
 
-   public ArtifactRowMapper(Log logger, SessionContext context, BranchCache branchCache, ArtifactTypeCache typeCache, ArtifactFactory artifactFactory, ArtifactReciever artifactReciever) {
-      this.logger = logger;
+   public ArtifactRowMapper(SessionContext context, BranchCache branchCache, ArtifactTypeCache typeCache, ArtifactFactory artifactFactory, ArtifactCollector artifactReciever) {
       this.context = context;
       this.branchCache = branchCache;
       this.typeCache = typeCache;

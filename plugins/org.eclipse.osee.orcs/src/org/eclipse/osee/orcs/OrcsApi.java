@@ -14,6 +14,10 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.search.QueryFacade;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
+/**
+ * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
+ */
 public interface OrcsApi {
 
    QueryFactory getQueryFactory(ApplicationContext context);

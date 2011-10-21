@@ -33,6 +33,9 @@ import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.search.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class DataLoaderImpl implements DataLoader {
 
    private static final int MAX_FETCH_SIZE = 10000;

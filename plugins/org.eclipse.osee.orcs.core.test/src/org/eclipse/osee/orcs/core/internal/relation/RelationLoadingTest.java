@@ -1,8 +1,13 @@
-/*
- * Created on Sep 29, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import java.io.IOException;
@@ -20,20 +25,20 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
-import org.eclipse.osee.orcs.core.mocks.MockLog;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestRelationLoading {
+/**
+ * @author Andrew M. Finkbeiner
+ */
+public class RelationLoadingTest {
 
    @Test
    public void testRelationCountMatches() throws OseeCoreException, IOException {
-      Log log = new MockLog();
       RelationTypeCache cache = createAndPopulate();
       Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
-      RelationRowMapper relationRowMapper = new RelationRowMapper(log, providersThatWillBeLoaded);
+      RelationRowMapper relationRowMapper = new RelationRowMapper(providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
 
@@ -48,10 +53,9 @@ public class TestRelationLoading {
    //@formatter:off
    @Test
    public void testRelatedArtifactsMatch() throws OseeCoreException, IOException {
-      Log log = new MockLog();
       RelationTypeCache cache = createAndPopulate();
       Map<Integer, RelationContainerImpl> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
-      RelationRowMapper relationRowMapper = new RelationRowMapper(log, providersThatWillBeLoaded);
+      RelationRowMapper relationRowMapper = new RelationRowMapper(providersThatWillBeLoaded);
 
       loadRowData("data.csv", relationRowMapper);
       List<Integer> relatedArtifacts = new ArrayList<Integer>();
@@ -97,7 +101,7 @@ public class TestRelationLoading {
    }
 
    private void loadRowData(String csvFile, RelationRowMapper relationRowMapper) throws IOException, OseeCoreException {
-      URL url = TestRelationLoading.class.getResource(csvFile);
+      URL url = RelationLoadingTest.class.getResource(csvFile);
       Assert.assertNotNull(url);
 
       List<RelationRow> data = new ArrayList<RelationRow>();

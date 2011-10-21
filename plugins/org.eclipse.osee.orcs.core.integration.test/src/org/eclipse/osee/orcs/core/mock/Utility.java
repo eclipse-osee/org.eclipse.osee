@@ -1,8 +1,13 @@
-/*
- * Created on Oct 20, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.core.mock;
 
 import org.eclipse.osee.event.EventService;
@@ -21,6 +26,9 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
 import org.osgi.service.event.EventAdmin;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public final class Utility {
 
    private Utility() {

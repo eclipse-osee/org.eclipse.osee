@@ -13,6 +13,9 @@ package org.eclipse.osee.orcs.data;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.Named;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface Identifiable extends Identity<String>, Named {
    // 
 }

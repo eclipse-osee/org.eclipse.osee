@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core;
+package org.eclipse.osee.orcs.core.internal.relation;
 
-import org.junit.Assert;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * @author Roberto E. Escobar
  */
-public class QueryTest {
-
-   @org.junit.Test
-   public void testOne() {
-      Assert.assertEquals("dummy test", 1, 1);
-   }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({RelationLoadingTest.class})
+public class RelationTestSuite {
+   // Test Suite
 }

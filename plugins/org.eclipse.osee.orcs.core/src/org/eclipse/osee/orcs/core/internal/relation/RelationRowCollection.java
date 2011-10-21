@@ -1,8 +1,13 @@
-/*
- * Created on Oct 1, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import java.util.Collection;
@@ -20,6 +25,9 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.RelationRow;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class RelationRowCollection {
 
    private final Map<IRelationTypeSide, List<RelationRow>> relations =

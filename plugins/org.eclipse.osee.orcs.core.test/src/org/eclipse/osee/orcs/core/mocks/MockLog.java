@@ -12,6 +12,9 @@ package org.eclipse.osee.orcs.core.mocks;
 
 import org.eclipse.osee.logger.Log;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class MockLog implements Log {
 
    @Override

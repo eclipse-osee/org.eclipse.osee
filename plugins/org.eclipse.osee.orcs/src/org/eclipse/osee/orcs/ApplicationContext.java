@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public interface ApplicationContext {
-   //
 
    String getSessionId();
+
 }

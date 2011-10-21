@@ -1,8 +1,13 @@
-/*
- * Created on Oct 20, 2011
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.ArrayList;
@@ -10,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -26,6 +30,9 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class GraphImpl implements Graph {
 
    private final QueryFactory queryFactory;
@@ -82,7 +89,6 @@ public class GraphImpl implements Graph {
    @Override
    public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
       IArtifactType artifactType = art.getArtifactType();
-      IOseeBranch branch = art.getBranch();
       Collection<RelationType> relationTypes = dataStoreTypeCache.getRelationTypeCache().getAll();
       List<RelationType> validRelationTypes = new ArrayList<RelationType>();
       for (RelationType relationType : relationTypes) {

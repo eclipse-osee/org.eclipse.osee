@@ -45,6 +45,9 @@ import org.eclipse.osee.orcs.utility.SortOrder;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OrcsQueryTest {
    public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
    public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvBBB", "SAW_Bld_2");

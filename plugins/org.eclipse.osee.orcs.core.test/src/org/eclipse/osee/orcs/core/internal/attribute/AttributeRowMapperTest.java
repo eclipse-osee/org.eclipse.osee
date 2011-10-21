@@ -16,9 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.AttributeRow;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.mocks.MockLog;
-import org.eclipse.osee.orcs.core.mocks.MockSessionContext;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -33,7 +31,6 @@ public class AttributeRowMapperTest {
    @Ignore
    public void test() throws OseeCoreException {
       Log logger = new MockLog();
-      SessionContext context = new MockSessionContext();
       AttributeFactory factory = null;
       AttributeRow row = new AttributeRow();
       Map<Integer, ? extends AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();

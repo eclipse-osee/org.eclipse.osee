@@ -29,14 +29,17 @@ import org.eclipse.osee.orcs.core.ds.RelationContainer;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandler;
 import org.eclipse.osee.orcs.core.ds.RelationRowHandlerFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactCollector;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactReciever;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactRowMapper;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeRowMapper;
 import org.eclipse.osee.orcs.core.internal.relation.RelationRowMapper;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
+/**
+ * @author Andrew M. Finkbeiner
+ */
 public class OrcsObjectLoader {
 
    private final DataLoader dataLoader;
@@ -65,17 +68,17 @@ public class OrcsObjectLoader {
 
       List<ReadableArtifact> artifacts = new ArrayList<ReadableArtifact>();
 
-      ArtifactCollector artifactHandler = new ArtifactCollector(logger, attributeFactory, artifacts);
+      ArtifactCollectorImpl artifactHandler = new ArtifactCollectorImpl(logger, attributeFactory, artifacts);
 
       ArtifactRowHandler artifactRowHandler =
-         new ArtifactRowMapper(logger, sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
+         new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
 
       dataLoader.loadArtifacts(artifactRowHandler, queryContext, loadOptions, artifactHandler, artifactHandler);
 
       return artifacts;
    }
 
-   private static class ArtifactCollector implements ArtifactReciever, RelationRowHandlerFactory, AttributeRowHandlerFactory {
+   private static class ArtifactCollectorImpl implements ArtifactCollector, RelationRowHandlerFactory, AttributeRowHandlerFactory {
 
       private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
       private final Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
@@ -85,7 +88,7 @@ public class OrcsObjectLoader {
       private final Log logger;
       private final AttributeFactory attributeFactory;
 
-      public ArtifactCollector(Log logger, AttributeFactory attributeFactory, List<ReadableArtifact> artifacts) {
+      public ArtifactCollectorImpl(Log logger, AttributeFactory attributeFactory, List<ReadableArtifact> artifacts) {
          this.logger = logger;
          this.attributeFactory = attributeFactory;
          this.artifacts = artifacts;
@@ -98,7 +101,7 @@ public class OrcsObjectLoader {
 
       @Override
       public RelationRowHandler createRelationRowHandler() {
-         return new RelationRowMapper(logger, relationContainers);
+         return new RelationRowMapper(relationContainers);
       }
 
       @Override

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -21,6 +22,7 @@ import org.junit.Test;
 public class QueryFactoryTest {
 
    @Test
+   @Ignore
    public void testX() {
       //      QueryFactory factory = new QueryFactoryImpl();
       //      factory.fromArtifact(branch, artifactToken);
