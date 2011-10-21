@@ -30,6 +30,7 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.util.AbstractQueryPostProcessor;
 import org.eclipse.osee.orcs.db.internal.search.util.AttributeQueryPostProcessor;
 import org.eclipse.osee.orcs.db.internal.search.util.TokenQueryPostProcessor;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
@@ -50,6 +51,8 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
    private AbstractJoinQuery joinQuery;
 
+   private Collection<? extends IAttributeType> types;
+
    @Override
    public void setData(Criteria criteria) {
       this.criteria = (CriteriaAttributeKeyword) criteria;
@@ -57,6 +60,12 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
    @Override
    public void addTables(SqlWriter writer) throws OseeCoreException {
+      if (criteria.getTypes().contains(QueryBuilder.ANY_ATTRIBUTE_TYPE)) {
+         types = getTypeCaches().getAttributeTypeCache().getAll();
+      } else {
+         types = criteria.getTypes();
+      }
+
       StringOperator operator = criteria.getStringOp();
       if (requiresTokenizing(operator)) {
          codedTags = new ArrayList<Long>();
@@ -68,7 +77,7 @@ public class AttributeTokenSqlHandler extends SqlHandler {
          }
       }
 
-      if (criteria.getTypes().size() > 1) {
+      if (types.size() > 1) {
          jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
       }
 
@@ -88,7 +97,6 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
    @Override
    public void addPredicates(SqlWriter writer) throws OseeCoreException {
-      Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
          Set<Integer> typeIds = new HashSet<Integer>();
          for (IAttributeType type : types) {

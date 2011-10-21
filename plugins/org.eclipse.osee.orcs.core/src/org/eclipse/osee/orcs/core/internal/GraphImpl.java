@@ -12,7 +12,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -50,7 +49,7 @@ public class GraphImpl implements Graph {
       if (results.size() == 0) {
          toReturn = Collections.emptyList();
       } else {
-         QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(results);
+         QueryBuilder builder = queryFactory.fromBranch(art.getBranch()).andLocalIds(results);
          ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
          toReturn = resultSet.getList();
       }
@@ -61,10 +60,10 @@ public class GraphImpl implements Graph {
    public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
       List<Integer> results = new ArrayList<Integer>();
       ((Artifact) art).getRelatedArtifacts(relationTypeSide, results);
-      if (results.size() == 0) {
+      if (results.isEmpty()) {
          return null;
       } else {
-         QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(results);
+         QueryBuilder builder = queryFactory.fromBranch(art.getBranch()).andLocalIds(results);
          ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
          return resultSet.getOneOrNull();
       }
@@ -106,5 +105,10 @@ public class GraphImpl implements Graph {
          toReturn = relationType.getMultiplicity().getLimit(relationSide);
       }
       return toReturn;
+   }
+
+   @Override
+   public RelationType getFullRelationType(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return dataStoreTypeCache.getRelationTypeCache().get(relationTypeSide);
    }
 }

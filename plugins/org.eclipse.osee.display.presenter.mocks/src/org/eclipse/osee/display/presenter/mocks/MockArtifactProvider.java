@@ -19,6 +19,7 @@ import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.mock.MockArtifact;
@@ -86,7 +87,7 @@ public class MockArtifactProvider implements ArtifactProvider {
    }
 
    @Override
-   public Collection<IRelationTypeSide> getValidRelationTypes(ReadableArtifact art) {
+   public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
          return null;

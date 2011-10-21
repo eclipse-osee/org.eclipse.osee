@@ -26,6 +26,7 @@ import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.DisplayPresenter;
+import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -204,7 +205,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends 
    }
 
    protected AtsSearchParameters decodeIt(String url) {
-      Map<String, String> data = decode(url);
+      Map<String, String> data = Utility.decode(url);
 
       ViewId program = new ViewId(data.get("program"), "");
       ViewId build = new ViewId(data.get("build"), "");

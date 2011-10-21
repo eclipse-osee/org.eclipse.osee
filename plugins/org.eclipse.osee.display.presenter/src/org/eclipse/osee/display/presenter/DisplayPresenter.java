@@ -11,8 +11,7 @@
 package org.eclipse.osee.display.presenter;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,10 +37,10 @@ import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -177,17 +176,17 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
 
       relComp.clearAll();
       relComp.setArtifact(artifact);
-      Collection<IRelationTypeSide> relationTypes = null;
+      Collection<RelationType> relationTypes = null;
       try {
          relationTypes = artifactProvider.getValidRelationTypes(displayArt);
       } catch (Exception e) {
          setErrorMessage(relComp, String.format("Error loading relation types for: [%s]", displayArt.getName()));
          return;
       }
-      for (IRelationTypeSide relTypeSide : relationTypes) {
+      for (RelationType relTypeSide : relationTypes) {
          ViewId toAdd = new ViewId(relTypeSide.getGuid().toString(), relTypeSide.getName());
-         //         toAdd.setAttribute(SIDE_A_KEY, relTypeSide.getSideAName());
-         //         toAdd.setAttribute(SIDE_B_KEY, relTypeSide.getSideBName());
+         toAdd.setAttribute(SIDE_A_KEY, relTypeSide.getSideAName());
+         toAdd.setAttribute(SIDE_B_KEY, relTypeSide.getSideBName());
          relComp.addRelationType(toAdd);
       }
 
@@ -225,57 +224,38 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
       IRelationType type = TokenFactory.createRelationType(Long.parseLong(relGuid), relation.getName());
       IOseeBranch branch = TokenFactory.createBranch(artifact.getBranch().getGuid(), "");
       ReadableArtifact sourceArt;
-      Collection<ReadableArtifact> relatedSideA = null;
-      Collection<ReadableArtifact> relatedSideB = null;
-      Collection<ReadableArtifact> related = null;
+      Collection<ReadableArtifact> relatedSideA = Collections.emptyList();
+      Collection<ReadableArtifact> relatedSideB = Collections.emptyList();
       try {
          sourceArt = artifactProvider.getArtifactByGuid(branch, artifact.getGuid());
-         for (RelationSide side : RelationSide.values()) {
-            related =
-               artifactProvider.getRelatedArtifacts(sourceArt,
-                  TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName()));
-            if (side.isSideA()) {
-               relatedSideA = related;
-            } else {
-               relatedSideB = related;
-            }
-         }
+         relatedSideA =
+            artifactProvider.getRelatedArtifacts(sourceArt,
+               TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, type.getGuid(), type.getName()));
+         relatedSideB =
+            artifactProvider.getRelatedArtifacts(sourceArt,
+               TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, type.getGuid(), type.getName()));
       } catch (Exception ex) {
          setErrorMessage(relationComponent,
             String.format("Error loading relations for artifact[%s]", artifact.getGuid()));
          return;
       }
 
-      Collection<ReadableArtifact> relatedLeftSide = null;
-      Collection<ReadableArtifact> relatedRightSide = null;
-      String leftSideName = null, rightSideName = null;
-      if (relatedSideA.size() == 0 && relatedSideB.size() != 0) {
-         relatedRightSide = relatedSideB;
-         relatedLeftSide = Collections.emptyList();
-         rightSideName = relation.getAttribute(SIDE_B_KEY);
-      } else if (relatedSideA.size() != 0 && relatedSideB.size() == 0) {
-         relatedRightSide = relatedSideA;
-         relatedLeftSide = Collections.emptyList();
-         rightSideName = relation.getAttribute(SIDE_A_KEY);
-      } else if (relatedSideA.size() == 0 && relatedSideB.size() == 0) {
-         relatedRightSide = Collections.emptyList();
-         relatedLeftSide = Collections.emptyList();
-      } else {
-         relatedRightSide = relatedSideA;
-         relatedLeftSide = relatedSideB;
-         rightSideName = relation.getAttribute(SIDE_A_KEY);
-         leftSideName = relation.getAttribute(SIDE_B_KEY);
+      relationComponent.setLeftName(relation.getAttribute(SIDE_A_KEY));
+      relationComponent.setRightName(relation.getAttribute(SIDE_B_KEY));
+
+      if (relatedSideA.isEmpty()) {
+         relationComponent.addLeftRelated(null);
+      }
+      if (relatedSideB.isEmpty()) {
+         relationComponent.addRightRelated(null);
       }
 
-      relationComponent.setLeftName(leftSideName);
-      relationComponent.setRightName(rightSideName);
-
       try {
-         for (ReadableArtifact rel : relatedLeftSide) {
+         for (ReadableArtifact rel : relatedSideA) {
             ViewArtifact id = convertToViewArtifact(rel);
             relationComponent.addLeftRelated(id);
          }
-         for (ReadableArtifact rel : relatedRightSide) {
+         for (ReadableArtifact rel : relatedSideB) {
             ViewArtifact id = convertToViewArtifact(rel);
             relationComponent.addRightRelated(id);
          }
@@ -295,14 +275,13 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
    }
 
    protected List<ViewArtifact> getAncestry(ReadableArtifact art) throws OseeCoreException {
-      return Collections.emptyList();
-      //      ReadableArtifact cur = artifactProvider.getParent(art);
-      //      List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
-      //      while (cur != null) {
-      //         ancestry.add(convertToViewArtifact(cur));
-      //         cur = artifactProvider.getParent(cur);
-      //      }
-      //      return ancestry;
+      ReadableArtifact cur = artifactProvider.getParent(art);
+      List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
+      while (cur != null) {
+         ancestry.add(convertToViewArtifact(cur));
+         cur = artifactProvider.getParent(cur);
+      }
+      return ancestry;
    }
 
    protected void setErrorMessage(DisplaysErrorComponent component, String message) {
@@ -312,14 +291,14 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
    }
 
    private ArtifactParameters decodeArtifactUrl(String url) {
-      Map<String, String> data = decode(url);
+      Map<String, String> data = Utility.decode(url);
       String branch = data.get("branch");
       String artifact = data.get("artifact");
       return new ArtifactParameters(branch, artifact);
    }
 
    private SearchParameters decodeSearchUrl(String url) {
-      Map<String, String> data = decode(url);
+      Map<String, String> data = Utility.decode(url);
 
       String branch = data.get("branch");
       String vValue = data.get("verbose");
@@ -385,42 +364,13 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
       }
    }
 
-   protected Map<String, String> decode(String url) {
-      String toParse = url;
-      if (toParse.startsWith("/")) {
-         toParse = toParse.substring(1, toParse.length());
-      }
-      Map<String, String> values = new HashMap<String, String>();
-      String[] lines = url.split("&");
-      for (String line : lines) {
-         String[] data = line.split("=");
-         if (data.length == 2) {
-            String key = data[0];
-            String value = data[1];
-            if (Strings.isValid(value)) {
-               try {
-                  value = URLDecoder.decode(value, "UTF-8");
-               } catch (UnsupportedEncodingException ex) {
-                  //
-               }
-            }
-            values.put(key, value);
-         }
-      }
-      return values;
-   }
-
-   private String encode(String value) throws UnsupportedEncodingException {
-      return URLEncoder.encode(value, "UTF-8");
-   }
-
    protected String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
       StringBuilder sb = new StringBuilder();
       for (Entry<String, String> entry : keyValues.entrySet()) {
          String key = entry.getKey();
-         sb.append(encode(key));
+         sb.append(Utility.encode(key));
          sb.append("=");
-         sb.append(encode(entry.getValue()));
+         sb.append(Utility.encode(entry.getValue()));
          sb.append("&");
       }
       if (sb.length() - 1 >= 0) {

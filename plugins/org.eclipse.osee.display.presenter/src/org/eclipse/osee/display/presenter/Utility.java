@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -55,6 +61,35 @@ public final class Utility {
          }
       }
       return text;
+   }
+
+   public static Map<String, String> decode(String url) {
+      String toParse = url;
+      if (toParse.startsWith("/")) {
+         toParse = toParse.substring(1, toParse.length());
+      }
+      Map<String, String> values = new HashMap<String, String>();
+      String[] lines = toParse.split("&");
+      for (String line : lines) {
+         String[] data = line.split("=");
+         if (data.length == 2) {
+            String key = data[0];
+            String value = data[1];
+            if (Strings.isValid(value)) {
+               try {
+                  value = URLDecoder.decode(value, "UTF-8");
+               } catch (UnsupportedEncodingException ex) {
+                  //
+               }
+            }
+            values.put(key, value);
+         }
+      }
+      return values;
+   }
+
+   public static String encode(String value) throws UnsupportedEncodingException {
+      return URLEncoder.encode(value, "UTF-8");
    }
 
 }

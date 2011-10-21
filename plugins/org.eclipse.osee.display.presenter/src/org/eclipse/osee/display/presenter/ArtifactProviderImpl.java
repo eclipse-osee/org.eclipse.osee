@@ -12,7 +12,9 @@ package org.eclipse.osee.display.presenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -22,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -127,7 +130,12 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public Collection<IRelationTypeSide> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
-      return graph.getExistingRelationTypes(art);
+   public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+      Collection<IRelationTypeSide> existingRelationTypes = graph.getExistingRelationTypes(art);
+      Set<RelationType> toReturn = new HashSet<RelationType>();
+      for (IRelationTypeSide side : existingRelationTypes) {
+         toReturn.add(graph.getFullRelationType(side));
+      }
+      return toReturn;
    }
 }

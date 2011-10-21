@@ -26,6 +26,8 @@ public interface Graph {
 
    Collection<IRelationTypeSide> getExistingRelationTypes(ReadableArtifact art);
 
+   RelationType getFullRelationType(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+
    List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
    List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException;

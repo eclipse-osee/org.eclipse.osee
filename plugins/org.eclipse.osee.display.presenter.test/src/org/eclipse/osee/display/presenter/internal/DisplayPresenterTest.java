@@ -261,7 +261,7 @@ public class DisplayPresenterTest {
       }
 
       @Override
-      public Collection<IRelationTypeSide> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+      public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 
