@@ -47,7 +47,7 @@ public class BranchesResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       Collection<Branch> branches =
-         OrcsApplication.getOseeApi().getBranchCache().getBranches(
+         OrcsApplication.getOrcsApi().getBranchCache().getBranches(
             new BranchFilter(BranchArchivedState.UNARCHIVED, BranchType.BASELINE, BranchType.WORKING));//getAll();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(branches);

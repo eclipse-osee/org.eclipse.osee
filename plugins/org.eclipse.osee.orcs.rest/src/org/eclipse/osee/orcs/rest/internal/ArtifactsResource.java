@@ -58,15 +58,15 @@ public class ArtifactsResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
-      QueryFactory factory = OrcsApplication.getOseeApi().getQueryFactory(null);
+      QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
       ResultSet<ReadableArtifact> results =
          factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).build(LoadLevel.FULL);
       ReadableArtifact rootArtifact = results.getExactlyOne();
 
-      Graph graph = OrcsApplication.getOseeApi().getGraph(null);
+      Graph graph = OrcsApplication.getOrcsApi().getGraph(null);
       List<ReadableArtifact> arts =
          graph.getRelatedArtifacts(rootArtifact, CoreRelationTypes.Default_Hierarchical__Child);
-      HtmlWriter writer = new HtmlWriter(uriInfo, factory, graph);
+      HtmlWriter writer = new HtmlWriter(uriInfo, graph);
       return writer.toHtml(arts);
    }
    private static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";

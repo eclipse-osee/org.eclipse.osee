@@ -50,7 +50,7 @@ public class BranchResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch token = TokenFactory.createBranch(branchUuid, "");
-      Branch branch = OrcsApplication.getOseeApi().getBranchCache().get(token);
+      Branch branch = OrcsApplication.getOrcsApi().getBranchCache().get(token);
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(Collections.singleton(branch));
    }

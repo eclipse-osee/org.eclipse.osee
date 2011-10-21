@@ -18,21 +18,18 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 public class HtmlWriter {
 
    private final UriInfo uriInfo;
-   private final QueryFactory factory;
    private final Graph graph;
 
    public HtmlWriter(UriInfo uriInfo) {
-      this(uriInfo, null, null);
+      this(uriInfo, null);
    }
 
-   public HtmlWriter(UriInfo uriInfo, QueryFactory factory, Graph graph) {
+   public HtmlWriter(UriInfo uriInfo, Graph graph) {
       this.uriInfo = uriInfo;
-      this.factory = factory;
       this.graph = graph;
    }
 

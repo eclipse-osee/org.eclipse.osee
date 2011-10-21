@@ -22,14 +22,14 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class OrcsApplication extends Application {
 
-   private static OrcsApi oseeApi;
+   private static OrcsApi orcsApi;
 
-   public void setOseeApi(OrcsApi oseeApi) {
-      OrcsApplication.oseeApi = oseeApi;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      OrcsApplication.orcsApi = orcsApi;
    }
 
-   public static OrcsApi getOseeApi() {
-      return oseeApi;
+   public static OrcsApi getOrcsApi() {
+      return orcsApi;
    }
 
    @Override

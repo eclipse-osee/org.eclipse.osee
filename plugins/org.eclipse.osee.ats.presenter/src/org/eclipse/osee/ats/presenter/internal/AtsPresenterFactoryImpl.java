@@ -21,15 +21,15 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponent> implements AtsPresenterFactory<T> {
 
-   private OrcsApi oseeApi;
+   private OrcsApi orcsApi;
 
-   public void setOseeApi(OrcsApi oseeApi) {
-      this.oseeApi = oseeApi;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    @Override
    public AtsSearchPresenter<T> createInstance() {
-      AtsArtifactProvider provider = new AtsArtifactProviderImpl(oseeApi, null);
+      AtsArtifactProvider provider = new AtsArtifactProviderImpl(orcsApi, null);
       AtsSearchPresenterImpl<T> instance = new AtsSearchPresenterImpl<T>(provider);
       return instance;
    }
