@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -101,13 +102,25 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
 
    private class OseeSearchResultMatchComponent extends HorizontalLayout {
       public OseeSearchResultMatchComponent(SearchResultMatch match) {
-         Label matchLabel = new Label(String.format("%s: ", match.getAttributeType(), Label.CONTENT_XHTML));
+         Label matchLabel = new Label(String.format("%s: ", match.getAttributeType()), Label.CONTENT_XHTML);
          matchLabel.setStyleName(CssConstants.OSEE_ATTRNAME);
          Label spacer4 = new Label();
          spacer4.setWidth(15, UNITS_PIXELS);
-         Label matchLabelHint = new Label(String.format("%s", match.getMatchHint()), Label.CONTENT_XHTML);
+
+         StringBuilder builder = new StringBuilder();
+         for (StyledText text : match.getData()) {
+            if (text.isHighLighted()) {
+               builder.append("<SPAN style=\"BACKGROUND-COLOR: #ffff00\">");
+            }
+            builder.append(text.getData());
+            if (text.isHighLighted()) {
+               builder.append("</SPAN>");
+            }
+         }
+         Label matchLabelHint = new Label(builder.toString(), Label.CONTENT_XHTML);
          Label spacer3 = new Label();
          spacer3.setWidth(15, UNITS_PIXELS);
+
          Label matchManyLabel = new Label(String.format("(%d matches)", match.getManyMatches()), Label.CONTENT_XHTML);
          matchManyLabel.setStyleName(CssConstants.OSEE_SEARCHRESULT_MATCH_MANY);
 

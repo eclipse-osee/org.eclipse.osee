@@ -29,6 +29,7 @@ import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
+import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
@@ -108,15 +109,17 @@ public class DisplayPresenter<T extends SearchHeaderComponent> implements Search
    private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, SearchParameters params) throws OseeCoreException {
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
          ReadableArtifact matchedArtifact = match.getItem();
-         ViewArtifact webArt = convertToViewArtifact(matchedArtifact);
+         ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact);
+
          SearchResultComponent searchResult = searchResultsComp.createSearchResult();
-         searchResult.setArtifact(webArt);
+         searchResult.setArtifact(viewArtifact);
          if (params.isVerbose()) {
             for (ReadableAttribute<?> element : match.getElements()) {
-               List<MatchLocation> locations = match.getLocation(element);
+               List<MatchLocation> matches = match.getLocation(element);
+               String data = String.valueOf(element.getValue());
+               List<StyledText> text = Utility.getMatchedText(data, matches);
                SearchResultMatch srm =
-                  new SearchResultMatch(element.getAttributeType().getName(), locations.iterator().next().toString(),
-                     locations.size());
+                  new SearchResultMatch(element.getAttributeType().getName(), matches.size(), text);
                searchResult.addSearchResultMatch(srm);
             }
          }

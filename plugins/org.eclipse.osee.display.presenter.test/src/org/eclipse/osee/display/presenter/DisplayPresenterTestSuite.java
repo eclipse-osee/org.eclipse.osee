@@ -15,9 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
-DisplayPresenterTest.class,//
-})
+@Suite.SuiteClasses({DisplayPresenterTest.class, UtilityTest.class})
 /**
  * @author John Misinco
  */

@@ -11,6 +11,7 @@
 package org.eclipse.osee.display.presenter.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
@@ -260,7 +261,7 @@ public class DisplayPresenterTest {
       }
 
       @Override
-      public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+      public Collection<IRelationTypeSide> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 

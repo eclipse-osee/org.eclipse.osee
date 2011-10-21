@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.mock.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,6 +28,7 @@ import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
+import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
@@ -297,8 +300,11 @@ public class MockAtsWebSearchPresenter implements AtsSearchPresenter<AtsSearchHe
                      }
                      searchResultComp.setArtifact(artifact);
                      if (!nameOnly && !showVerboseSearchResults) {
-                        searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content",
-                           "...{COM_PAGE}...", 10));
+                        List<StyledText> text = new ArrayList<StyledText>();
+                        text.add(new StyledText("...{", false));
+                        text.add(new StyledText("COM_PAGE", true));
+                        text.add(new StyledText("}...", false));
+                        searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", 10, text));
                      }
                   }
                }

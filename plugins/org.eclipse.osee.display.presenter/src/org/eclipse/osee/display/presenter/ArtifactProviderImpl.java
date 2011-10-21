@@ -29,10 +29,8 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.search.ResultSet;
 import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
@@ -78,30 +76,22 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
-      IAttributeType type;
 
-      if (nameOnly) {
-         type = CoreAttributeTypes.Name;
-      } else {
-         type = QueryBuilder.ANY_ATTRIBUTE_TYPE;
-      }
+      IAttributeType type = nameOnly ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
 
-      QueryBuilder query = getFactory().fromBranch(branch);
-      if (nameOnly) {
-         query.and(type, Operator.EQUAL, searchPhrase);
-      } else {
-         query.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
-      }
-      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> resultSet = query.buildMatches(LoadLevel.ATTRIBUTE);
-      for (Match<ReadableArtifact, ReadableAttribute<?>> match : resultSet.getList()) {
+      QueryBuilder builder = getFactory().fromBranch(branch);
+      builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.buildMatches(LoadLevel.FULL).getList();
+
+      for (Match<ReadableArtifact, ReadableAttribute<?>> match : results) {
          ReadableArtifact matchedArtifact = match.getItem();
          if (sanitizeResult(matchedArtifact) != null) {
-            results.add(match);
+            filtered.add(match);
          }
       }
-      return results;
+      return filtered;
    }
 
    private ReadableArtifact sanitizeResult(ReadableArtifact result) throws OseeCoreException {

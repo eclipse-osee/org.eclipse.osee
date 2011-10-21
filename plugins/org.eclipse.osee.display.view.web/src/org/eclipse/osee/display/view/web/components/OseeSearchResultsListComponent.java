@@ -41,11 +41,11 @@ import com.vaadin.ui.Window.Notification;
 @SuppressWarnings("serial")
 public class OseeSearchResultsListComponent extends VerticalLayout implements SearchResultsListComponent, PageSelectedListener {
 
-   private VerticalLayout mainLayout = new VerticalLayout();
-   private VerticalLayout bottomSpacer = new VerticalLayout();
-   private HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
-   private OseePagingComponent pagingComponent = new OseePagingComponent();
-   private List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
+   private final VerticalLayout mainLayout = new VerticalLayout();
+   private final VerticalLayout bottomSpacer = new VerticalLayout();
+   private final HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
+   private final OseePagingComponent pagingComponent = new OseePagingComponent();
+   private final List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
    private SearchHeaderComponent searchHeaderComponent;
    private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
    private final ComboBox manyResultsComboBox = new ComboBox();
@@ -174,7 +174,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
       pagingComponent.setManyItemsTotal(manySearchResultComponents);
    }
-   private Collection<Integer> prevResultListIndices = new ArrayList<Integer>();
+
+   private final Collection<Integer> prevResultListIndices = new ArrayList<Integer>();
 
    private void updateSearchResultsLayout() {
       //if the list of currently visible items has not changed, then don't bother updating the layout

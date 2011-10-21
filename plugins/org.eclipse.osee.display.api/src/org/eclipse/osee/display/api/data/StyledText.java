@@ -10,33 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.data;
 
-import java.util.List;
-
 /**
- * @author Shawn F. Cook
+ * @author Roberto E. Escobar
  */
-public class SearchResultMatch {
+public class StyledText {
 
-   private final String attributeType;
-   private final int numberOfMatches;
-   private final List<StyledText> data;
+   private final String data;
+   private final boolean isHighLighted;
 
-   public SearchResultMatch(String attributeType, int numberOfMatches, List<StyledText> data) {
-      this.attributeType = attributeType;
-      this.numberOfMatches = numberOfMatches;
+   public StyledText(String data, boolean isHighLighted) {
+      super();
       this.data = data;
+      this.isHighLighted = isHighLighted;
    }
 
-   public String getAttributeType() {
-      return attributeType;
-   }
-
-   public int getManyMatches() {
-      return numberOfMatches;
-   }
-
-   public List<StyledText> getData() {
+   public String getData() {
       return data;
+   }
+
+   public boolean isHighLighted() {
+      return isHighLighted;
+   }
+
+   @Override
+   public String toString() {
+      return "StyledText [data=" + data + ", isHighLighted=" + isHighLighted + "]";
    }
 
 }
