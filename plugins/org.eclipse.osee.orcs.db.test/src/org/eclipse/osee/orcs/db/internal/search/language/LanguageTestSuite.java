@@ -8,12 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search;
+package org.eclipse.osee.orcs.db.internal.search.language;
 
-import org.eclipse.osee.orcs.db.internal.search.handlers.HandlersTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.language.LanguageTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TaggerTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.util.UtilityTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,13 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   HandlersTestSuite.class,
-   LanguageTestSuite.class,
-   TaggerTestSuite.class,
-   UtilityTestSuite.class,
-   SqlBuilderTest.class,
-   SqlWriterTest.class})
-public class SearchTestSuite {
+@Suite.SuiteClasses({EnglishLanguageTest.class,})
+public class LanguageTestSuite {
    // Test Suite
 }

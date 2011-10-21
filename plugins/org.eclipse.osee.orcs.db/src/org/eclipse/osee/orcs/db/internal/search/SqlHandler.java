@@ -28,7 +28,7 @@ public abstract class SqlHandler {
    private TaggingEngine taggingEngine;
    private DataStoreTypeCache caches;
 
-   public DataStoreTypeCache getTypeCaches() {
+   protected DataStoreTypeCache getTypeCaches() {
       return caches;
    }
 
@@ -38,6 +38,10 @@ public abstract class SqlHandler {
 
    public void setIdentityService(IdentityService idService) {
       this.idService = idService;
+   }
+
+   protected IdentityService getIdentityService() {
+      return idService;
    }
 
    protected int toLocalId(Identity<Long> identity) throws OseeCoreException {

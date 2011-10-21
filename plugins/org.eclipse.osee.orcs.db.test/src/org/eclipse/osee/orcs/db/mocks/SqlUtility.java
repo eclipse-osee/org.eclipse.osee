@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.mocks;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
@@ -36,12 +38,16 @@ public final class SqlUtility {
       //Utility Class 
    }
 
-   public static CriteriaSet createCriteria(IOseeBranch branch, Criteria... criteria) {
+   public static CriteriaSet createCriteria(IOseeBranch branch, Collection<? extends Criteria> criteria) {
       CriteriaSet set = new CriteriaSet(branch);
       for (Criteria crit : criteria) {
          set.add(crit);
       }
       return set;
+   }
+
+   public static CriteriaSet createCriteria(IOseeBranch branch, Criteria... criteria) {
+      return createCriteria(branch, Arrays.asList(criteria));
    }
 
    public static List<SqlHandler> createHandlers(IOseeBranch branch, Criteria... criteria) throws OseeCoreException {

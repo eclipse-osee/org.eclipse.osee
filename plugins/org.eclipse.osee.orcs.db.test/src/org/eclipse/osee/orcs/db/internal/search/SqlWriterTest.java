@@ -104,15 +104,7 @@ public class SqlWriterTest {
          " AND \n" + // 
          "(rel1.a_art_id = art3.art_id OR rel1.b_art_id = art3.art_id)\n" + //
          " AND \n" + //
-         "rel1.gamma_id = txs5.gamma_id AND txs5.tx_current = 1 AND txs5.branch_id = ?\n" + //
-         " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " AND \n" + //
-         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id\n" + //
-         " AND \n" + //
-         "txs3.gamma_id = txs4.gamma_id AND txs3.transaction_id = txs4.transaction_id AND txs3.branch_id = txs4.branch_id\n" + //
-         " AND \n" + //
-         "txs4.gamma_id = txs5.gamma_id AND txs4.transaction_id = txs5.transaction_id AND txs4.branch_id = txs5.branch_id" //
+         "rel1.gamma_id = txs5.gamma_id AND txs5.tx_current = 1 AND txs5.branch_id = ?" //
          , output.toString());
 
       List<Object> parameters = context.getParameters();
@@ -187,15 +179,7 @@ public class SqlWriterTest {
          " AND \n" + // 
          "(rel1.a_art_id = art3.art_id OR rel1.b_art_id = art3.art_id)\n" + //
          " AND \n" + //
-         "rel1.gamma_id = txs5.gamma_id AND txs5.tx_current = 1\n" + //
-         " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " AND \n" + //
-         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id\n" + //
-         " AND \n" + //
-         "txs3.gamma_id = txs4.gamma_id AND txs3.transaction_id = txs4.transaction_id AND txs3.branch_id = txs4.branch_id\n" + //
-         " AND \n" + //
-         "txs4.gamma_id = txs5.gamma_id AND txs4.transaction_id = txs5.transaction_id AND txs4.branch_id = txs5.branch_id" //
+         "rel1.gamma_id = txs5.gamma_id AND txs5.tx_current = 1" //
          , output.toString());
 
       List<Object> parameters = context.getParameters();

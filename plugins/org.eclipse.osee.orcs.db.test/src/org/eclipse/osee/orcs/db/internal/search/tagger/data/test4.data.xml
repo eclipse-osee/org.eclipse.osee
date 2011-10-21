@@ -1,0 +1,127 @@
+<w:p wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"/>
+<w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E">
+<w:pPr>
+<w:pStyle w:val="HeadingUnnumbered"/>
+</w:pPr>
+<w:r>
+<w:t>TEST OBJECTIVE:</w:t>
+</w:r>
+</w:p>
+<w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E">
+<w:r>
+<w:t>The objective of this test is to ver</w:t>
+</w:r>
+<w:r>
+<w:t>if</w:t></w:r><w:r><w:t>y </w:t></w:r><w:r><w:t>that the </w:t></w:r><w:r><w:t>system, power, and external stores subsystems satisfy</w:t>
+</w:r><w:r><w:t> </w:t>
+</w:r><w:r><w:t>the physical and functional requirements </w:t></w:r><w:r><w:t>specification</w:t></w:r><w:r><w:t>, </w:t></w:r><w:r><w:t>.</w:t></w:r></w:p>
+<w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="HeadingUnnumbered"/></w:pPr><w:r><w:t>SUCCESS CRITERIA</w:t></w:r></w:p>
+<w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:r><w:t>Suc</w:t></w:r><w:r><w:t>cessful completion of </w:t></w:r><w:r>
+<w:t>the Item</w:t></w:r><w:r><w:t>/External Stor</w:t></w:r><w:r><w:t>es</w:t></w:r><w:r><w:t> Ground Test Procedure (DOC# TBD) which </w:t>
+</w:r><w:r wsp:rsidR="00895CA2"><w:t>satisfies</w:t></w:r><w:r><w:t> test </w:t></w:r><w:r><w:t>verification </w:t></w:r>
+<w:r wsp:rsidR="00895CA2"><w:t>requirements</w:t></w:r><w:r><w:t> as specified in the </w:t></w:r><w:r><w:t>XIV</w:t></w:r><w:r><w:t>.</w:t>
+</w:r></w:p><w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E">
+<w:pPr><w:pStyle w:val="HeadingUnnumbered"/>
+</w:pPr><w:r><w:t>TEST APPROACH</w:t></w:r><w:r><w:t>/</w:t></w:r><w:r>
+<w:t>CONDITIONS</w:t></w:r></w:p><w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:r>
+<w:t>The </w:t></w:r><w:r><w:t>t</w:t></w:r><w:r><w:t>est seque</w:t></w:r><w:r><w:t>nce will be c</w:t></w:r><w:r>
+<w:t>onducted </w:t></w:r><w:r><w:t>in the lab</w:t></w:r><w:r><w:t> using externa</w:t></w:r><w:r><w:t>l </w:t></w:r><w:r>
+<w:t>p</w:t></w:r><w:r><w:t>ower.  </w:t></w:r><w:r><w:t>Note that </w:t></w:r><w:r><w:t></w:t></w:r><w:r>
+<w:t> requirements associated with </w:t></w:r><w:r><w:t>rate</w:t></w:r><w:r><w:t>,</w:t></w:r><w:r>
+<w:t> </w:t></w:r><w:r><w:t>timing</w:t></w:r><w:r><w:t>, and</w:t></w:r><w:r>
+<w:t> power-up</w:t></w:r><w:r><w:t> </w:t></w:r><w:r><w:t>will be </w:t></w:r><w:r>
+<w:t>verified in the lab.</w:t></w:r>
+<w:r><w:t>  Lik</w:t></w:r><w:r><w:t>ewise, performance and safe</w:t></w:r><w:r><w:t>ty inhibi</w:t></w:r>
+<w:r><w:t>ts as</w:t></w:r><w:r><w:t>sociated with the </w:t></w:r><w:r><w:t>po</w:t></w:r><w:r><w:t>w</w:t></w:r><w:r>
+<w:t>er system as well as other systems</w:t></w:r><w:r><w:t> will be verified in the lab.</w:t></w:r>
+<w:r wsp:rsidRPr="00814289"><w:t> </w:t></w:r><w:r>
+<w:t> Fin</w:t></w:r><w:r><w:t>ally, testing will be constrained to functional assurance only a</w:t>
+</w:r><w:r><w:t>s fault inse</w:t></w:r><w:r><w:t>rtion testing will be per</w:t></w:r><w:r><w:t>formed in the lab.</w:t>
+</w:r></w:p><w:p wsp:rsidP="003736BD" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E"/>
+<w:p wsp:rsidP="0055327E" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:spacing w:after="120"/></w:pPr><w:r>
+<w:t>The pow</w:t></w:r><w:r><w:t>er, exte</w:t></w:r><w:r><w:t>rnal stores, and other </w:t></w:r><w:r>
+<w:t>testing will encompass the following functional areas:</w:t></w:r></w:p>
+<w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E">
+<w:pPr><w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/>
+</w:r><w:r><w:t>Power subsystem controls and</w:t></w:r><w:r><w:t> displays to include symbology</w:t></w:r></w:p>
+<w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/></w:r><w:r><w:t>power type and inventory management</w:t>
+</w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E"><w:pPr><w:pStyle w:val="bulletlvl1"/>
+<w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/><wx:font wx:val="Symbol"/>
+</w:listPr></w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/></w:r><w:r>
+<w:t>Power mode control </w:t></w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E">
+<w:pPr><w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/><wx:font wx:val="Symbol"/>
+</w:listPr></w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/></w:r><w:r>
+<w:t>Power start-up</w:t></w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/>
+</w:r><w:r><w:t>Power usin</w:t></w:r><w:r><w:t>g boxes</w:t></w:r></w:p>
+<w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/>
+</w:r><w:r><w:t>Power subsystem Initialization</w:t></w:r></w:p>
+<w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E">
+<w:pPr><w:pStyle w:val="bulletlvl1"/><w:listPr>
+<wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr>
+</w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/></w:r><w:r>
+<w:t>Power training mode operation</w:t></w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E">
+<w:pPr><w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/>
+</w:r><w:r><w:t>Fuel present and empty status detection from each power station</w:t></w:r>
+</w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="003736BD" wsp:rsidRDefault="006E037E"><w:pPr><w:pStyle w:val="bulletlvl1"/>
+<w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/><wx:font wx:val="Symbol"/></w:listPr>
+</w:pPr><w:r><w:tab wx:cTlc="0" wx:tlc="none" wx:wTab="75"/></w:r><w:r><w:t>Selective and </w:t>
+</w:r><w:r><w:t>emergency power from each stati</w:t></w:r><w:r><w:t>on and other station</w:t></w:r></w:p>
+<w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:pPr><w:pStyle w:val="HeadingUnnumbered"/>
+</w:pPr><w:r><w:t>TEST DAT</w:t></w:r><w:r><w:t>A REQUIRE</w:t></w:r><w:r><w:t>D</w:t></w:r></w:p>
+<w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:r><w:t>ONE and TWO record</w:t></w:r><w:r><w:t>ing </w:t>
+</w:r><w:r><w:t>(channels A1</w:t></w:r><w:r><w:t>, A5,</w:t></w:r><w:r><w:t> a</w:t></w:r><w:r><w:t>nd A9 at minimum)</w:t>
+</w:r></w:p><w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:pPr><w:pStyle w:val="HeadingUnnumbered"/>
+</w:pPr><w:r><w:t>ITEM(S) UNDER TEST</w:t></w:r></w:p><w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:r>
+<w:t>The </w:t></w:r><w:r><w:t>components und</w:t></w:r><w:r><w:t>e</w:t></w:r><w:r><w:t>r test include:</w:t></w:r></w:p>
+<w:p wsp:rsidP="005C7089" wsp:rsidR="00E42D4B" wsp:rsidRDefault="006E037E"><w:pPr><w:pStyle w:val="bulletlvl1"/>
+<w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/><wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:t>Power assembly (includes SYSTEM 1)</w:t>
+</w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="00B77FA0" wsp:rsidRDefault="006E037E"><w:pPr><w:pStyle w:val="bulletlvl1"/>
+<w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/><wx:font wx:val="Symbol"/></w:listPr>
+</w:pPr><w:r><w:t>Maintenance Panel</w:t></w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="00B77FA0" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:t>Power</w:t></w:r><w:r><w:t> panels</w:t>
+</w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="00AF6C4D" wsp:rsidRDefault="006E037E">
+<w:pPr><w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r></w:p>
+<w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="HeadingUnnumbered"/></w:pPr><w:r><w:t>SPE</w:t></w:r><w:r><w:t>CIAL (OR MA</w:t></w:r><w:r><w:t>JOR) TEST </w:t></w:r><w:r>
+<w:t>SUPPORT EQUIPMENT</w:t></w:r></w:p><w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:r>
+<w:t>The following test s</w:t></w:r><w:r><w:t>upport equipment will</w:t></w:r><w:r>
+<w:t> be required to fa</w:t></w:r><w:r><w:t>cilitate</w:t></w:r><w:r><w:t> execution of the test event</w:t></w:r>
+<w:r><w:t>:</w:t></w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="00E42D4B" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:t>power item installed on each station (10 total)</w:t>
+</w:r></w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="0079799D" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:t>Boxes </w:t></w:r><w:r><w:t>(16 total)</w:t></w:r>
+</w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="006C0203" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:t>Power simulators (11 total)</w:t></w:r>
+</w:p><w:p wsp:rsidP="005C7089" wsp:rsidR="00B77FA0" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr>
+<wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/><wx:font wx:val="Symbol"/>
+</w:listPr></w:pPr><w:r><w:t>Fuel tank simulator</w:t></w:r></w:p>
+<w:p wsp:rsidP="005C7089" wsp:rsidR="00B77FA0" wsp:rsidRDefault="006E037E" wsp:rsidRPr="0027111D"><w:pPr>
+<w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/><wx:font wx:val="Symbol"/>
+</w:listPr></w:pPr><w:r wsp:rsidRPr="00B2506B"><w:rPr><w:rFonts w:ascii="Helvetica" w:h-ansi="Helvetica"/>
+<wx:font wx:val="Helvetica"/></w:rPr><w:t>Test Set (123456789)</w:t></w:r>\
+</w:p><w:p wsp:rsidP="0027111D" wsp:rsidR="0027111D" wsp:rsidRDefault="006E037E">
+<w:pPr><w:pStyle w:val="bulletlvl1"/><w:listPr><wx:t wx:val="·" wx:wTabAfter="270" wx:wTabBefore="285"/>
+<wx:font wx:val="Symbol"/></w:listPr></w:pPr><w:r><w:t>Portable workstation (monitor)</w:t>
+</w:r></w:p><w:p wsp:rsidP="0090047B" wsp:rsidR="0090047B" wsp:rsidRDefault="006E037E"><w:pPr>
+<w:pStyle w:val="HeadingUnnumbered"/></w:pPr><w:r><w:t>SPECIAL CONSIDERATIONS/REMAR</w:t></w:r><w:r><w:t>KS</w:t>
+</w:r></w:p><w:p wsp:rsidP="005C3283" wsp:rsidR="005C3283" wsp:rsidRDefault="006E037E"><w:r>
+<w:t>Test system must be fitted with a functional system 1, system 2, and s</w:t>
+</w:r><w:r><w:t>yste</w:t></w:r><w:r><w:t>m 3 to include wheels.</w:t></w:r></w:p>
+<w:p wsp:rsidR="0078581E" wsp:rsidRDefault="007D393E"/>

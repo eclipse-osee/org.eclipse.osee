@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -107,27 +108,24 @@ public class SqlBuilderTest {
          " AND \n" + //
          "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
          " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?\n" + //
-         " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " AND \n" + //
-         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id", //
-         sql);
+         "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?" //
+         , sql);
 
       List<Object> parameters = context.getParameters();
       Assert.assertEquals(9, parameters.size());
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(3, joins.size());
 
-      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
-      Assert.assertEquals(branchId, parameters.get(1));
-      Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(2));
-      Assert.assertEquals(branchId, parameters.get(3));
-      Assert.assertEquals(joins.get(2).getQueryId(), parameters.get(4));
-      Assert.assertEquals(branchId, parameters.get(5));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(6));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(7));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(8));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(joins.get(2).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
    }
 
    @Test
@@ -153,10 +151,6 @@ public class SqlBuilderTest {
          "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
          " AND \n" + //
          "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?\n" + //
-         " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " AND \n" + //
-         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id\n" + //
          " ORDER BY art_id, branch_id",//
          sql);
 
@@ -165,15 +159,16 @@ public class SqlBuilderTest {
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(3, joins.size());
 
-      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
-      Assert.assertEquals(branchId, parameters.get(1));
-      Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(2));
-      Assert.assertEquals(branchId, parameters.get(3));
-      Assert.assertEquals(joins.get(2).getQueryId(), parameters.get(4));
-      Assert.assertEquals(branchId, parameters.get(5));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(6));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(7));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(8));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(joins.get(2).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
    }
 
    @Test
@@ -201,10 +196,6 @@ public class SqlBuilderTest {
          "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.tx_current IN (1, 2) AND txs3.branch_id = ?\n" + //
          " AND \n" + //
          "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?\n" + //
-         " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " AND \n" + //
-         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id\n" + //
          " ORDER BY art_id, branch_id",//
          sql);
 
@@ -213,15 +204,16 @@ public class SqlBuilderTest {
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(3, joins.size());
 
-      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
-      Assert.assertEquals(branchId, parameters.get(1));
-      Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(2));
-      Assert.assertEquals(branchId, parameters.get(3));
-      Assert.assertEquals(joins.get(2).getQueryId(), parameters.get(4));
-      Assert.assertEquals(branchId, parameters.get(5));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(6));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(7));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(8));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(joins.get(2).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
    }
 
    @Test
@@ -251,10 +243,6 @@ public class SqlBuilderTest {
          "art3.human_readable_id = jch2.id AND jch2.query_id = ? AND art3.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ? AND txs3.branch_id = ?\n" + //
          " AND \n" + //
          "art1.art_type_id = ? AND art2.art_type_id = ? AND art3.art_type_id = ?\n" + //
-         " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " AND \n" + //
-         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id\n" + //
          " GROUP BY art_id, branch_id\n" + //
          " ORDER BY art_id, branch_id",//
          sql);
@@ -264,21 +252,22 @@ public class SqlBuilderTest {
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(3, joins.size());
 
-      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
-      Assert.assertEquals(transactionId, parameters.get(1));
-      Assert.assertEquals(branchId, parameters.get(2));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(transactionId, iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
 
-      Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(3));
-      Assert.assertEquals(transactionId, parameters.get(4));
-      Assert.assertEquals(branchId, parameters.get(5));
+      Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
+      Assert.assertEquals(transactionId, iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
 
-      Assert.assertEquals(joins.get(2).getQueryId(), parameters.get(6));
-      Assert.assertEquals(transactionId, parameters.get(7));
-      Assert.assertEquals(branchId, parameters.get(8));
+      Assert.assertEquals(joins.get(2).getQueryId(), iterator.next());
+      Assert.assertEquals(transactionId, iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
 
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(9));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(10));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(11));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
    }
 
    @Test
@@ -306,8 +295,9 @@ public class SqlBuilderTest {
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(1, joins.size());
 
-      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
-      Assert.assertEquals(branchId, parameters.get(1));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
    }
 
    @Test
@@ -334,8 +324,9 @@ public class SqlBuilderTest {
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(0, joins.size());
 
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(0));
-      Assert.assertEquals(branchId, parameters.get(1));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
    }
 
    @Test
@@ -348,26 +339,29 @@ public class SqlBuilderTest {
       builder.generateSql(context, branchId, handlers, QueryType.SELECT_ARTIFACTS);
 
       String sql = context.getSql();
-      Assert.assertEquals(
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
-         " WHERE \n" + //
-         "att1.attr_type_id = ? AND att1.value = ? AND art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " ORDER BY art_id, branch_id",//
+      Assert.assertEquals("SELECT art1.art_id, txs1.branch_id\n" + // 
+      " FROM \n" + //
+      "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
+      " WHERE \n" + //
+      "att1.attr_type_id = ? AND att1.value = ?\n" + //
+      " AND \n" + // 
+      "art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " ORDER BY art_id, branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
-      Assert.assertEquals(3, parameters.size());
+      Assert.assertEquals(4, parameters.size());
 
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(0, joins.size());
 
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), parameters.get(0));
-      Assert.assertEquals("Hello", parameters.get(1));
-      Assert.assertEquals(branchId, parameters.get(2));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), iterator.next());
+      Assert.assertEquals("Hello", iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
    }
 
    @Test
@@ -391,23 +385,27 @@ public class SqlBuilderTest {
          " AND \n" + //
          "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id\n" + //
          " AND \n" + //
+         "art1.art_id = att1.art_id\n" + //
+         " AND \n" + //
          "tag1.gamma_id = att1.gamma_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
+         "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
          " ORDER BY art_id, branch_id",//
          sql);
 
       List<Object> parameters = context.getParameters();
-      Assert.assertEquals(5, parameters.size());
+      Assert.assertEquals(6, parameters.size());
 
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(1, joins.size());
 
-      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
-      Assert.assertEquals(1520625L, parameters.get(1)); // Coded Hello
-      Assert.assertEquals(6106L, parameters.get(2)); // Coded two
-      Assert.assertEquals(981274L, parameters.get(3)); // Coded three
-      Assert.assertEquals(4, parameters.get(4));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(1520625L, iterator.next()); // Coded Hello
+      Assert.assertEquals(6106L, iterator.next()); // Coded two
+      Assert.assertEquals(981274L, iterator.next()); // Coded three
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
    }
 
    @Test
@@ -423,13 +421,13 @@ public class SqlBuilderTest {
       Assert.assertEquals(
          "SELECT art1.art_id, txs1.branch_id\n" + // 
          " FROM \n" + //
-         "osee_artifact art1, osee_txs txs1, " + //
-         "osee_attribute att1, osee_txs txs2, " + //
-         "osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_join_id jid1, osee_attribute att2, osee_txs txs3\n" + //
+         "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2, osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_join_id jid1, osee_attribute att2, osee_txs txs3\n" + //
          " WHERE \n" + //
-         "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         "att1.attr_type_id = ? AND att1.value = ?\n" + //
          " AND \n" + //
-         "att1.attr_type_id = ? AND att1.value = ? AND art1.art_id = att1.art_id AND att1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+         "art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " AND \n" + //
+         "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
          " AND \n" + //
          "att2.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
          " AND \n" + //
@@ -437,13 +435,13 @@ public class SqlBuilderTest {
          " AND \n" + //
          "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id\n" + //
          " AND \n" + //
+         "art1.art_id = att2.art_id\n" + //
+         " AND \n" + //
          "tag1.gamma_id = att2.gamma_id AND att2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
          " AND \n" + //
-         "txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id = txs2.transaction_id AND txs1.branch_id = txs2.branch_id\n" + //
-         " AND \n" + //
-         "txs2.gamma_id = txs3.gamma_id AND txs2.transaction_id = txs3.transaction_id AND txs2.branch_id = txs3.branch_id\n" + //
-         " ORDER BY art_id, branch_id",//
-         sql);
+         "art1.art_type_id = ?\n" + //
+         " ORDER BY art_id, branch_id" //
+         , sql);
 
       List<Object> parameters = context.getParameters();
       Assert.assertEquals(10, parameters.size());
@@ -451,17 +449,17 @@ public class SqlBuilderTest {
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(1, joins.size());
 
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(0));
-      Assert.assertEquals(4, parameters.get(1));
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), iterator.next());
+      Assert.assertEquals("Hello", iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(branchId, iterator.next());
 
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), parameters.get(2));
-      Assert.assertEquals("Hello", parameters.get(3));
-      Assert.assertEquals(4, parameters.get(4));
-
-      Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(5));
-      Assert.assertEquals(1520625L, parameters.get(6)); // Coded Hello
-      Assert.assertEquals(6106L, parameters.get(7)); // Coded two
-      Assert.assertEquals(981274L, parameters.get(8)); // Coded three
-      Assert.assertEquals(4, parameters.get(9));
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(1520625L, iterator.next()); // Coded Hello
+      Assert.assertEquals(6106L, iterator.next()); // Coded two
+      Assert.assertEquals(981274L, iterator.next()); // Coded three
+      Assert.assertEquals(branchId, iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
    }
 }

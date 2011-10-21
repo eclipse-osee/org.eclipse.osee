@@ -83,32 +83,33 @@ public class SqlWriter {
       }
    }
 
-   private void writeTxsJoin(List<String> aliases) throws OseeCoreException {
-      if (false) {
-         write("\n AND \n");
-         int size = aliases.size();
-         if (size > 1) {
-            for (int index = 1; index < size; index++) {
-               String alias1 = aliases.get(index - 1);
-               String alias2 = aliases.get(index);
-               write(alias1);
-               write(".gamma_id = ");
-               write(alias2);
-               write(".gamma_id AND ");
-               write(alias1);
-               write(".transaction_id = ");
-               write(alias2);
-               write(".transaction_id AND ");
-               write(alias1);
-               write(".branch_id = ");
-               write(alias2);
-               write(".branch_id");
-               if (index + 1 < size) {
-                  write("\n AND \n");
-               }
-            }
-         }
-      }
+   private void writeTxsJoin(List<String> aliases) {
+      // Do Nothing
+      //      if (false) {
+      //         write("\n AND \n");
+      //         int size = aliases.size();
+      //         if (size > 1) {
+      //            for (int index = 1; index < size; index++) {
+      //               String alias1 = aliases.get(index - 1);
+      //               String alias2 = aliases.get(index);
+      //               write(alias1);
+      //               write(".gamma_id = ");
+      //               write(alias2);
+      //               write(".gamma_id AND ");
+      //               write(alias1);
+      //               write(".transaction_id = ");
+      //               write(alias2);
+      //               write(".transaction_id AND ");
+      //               write(alias1);
+      //               write(".branch_id = ");
+      //               write(alias2);
+      //               write(".branch_id");
+      //               if (index + 1 < size) {
+      //                  write("\n AND \n");
+      //               }
+      //            }
+      //         }
+      //      }
    }
 
    public List<String> getAliases(TableEnum table) {

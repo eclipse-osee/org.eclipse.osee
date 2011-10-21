@@ -1,0 +1,1 @@
+During autorotation, the engine(s) not supplying torque shall be automatically decoupled from the drive system by overrunning clutch(es) to permit continued operation of the main motor.

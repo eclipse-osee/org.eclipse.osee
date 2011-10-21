@@ -73,11 +73,9 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
          if (includeTypeInheritance) {
             ArtifactType realType = cache.getByGuid(type.getGuid());
             for (ArtifactType descendant : realType.getAllDescendantTypes()) {
-               System.out.println("Types: " + descendant);
                toReturn.add(descendant.getId());
             }
          }
-         System.out.println("Types: " + type);
          toReturn.add(toLocalId(type));
       }
       return toReturn;
@@ -90,12 +88,6 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
-
-         //         writer.write(" AND ");
-         //         writer.write(artAlias);
-         //         writer.write(".art_type_id = ");
-         //         writer.write(jIdAlias);
-         //         writer.write(".id");
 
          if (!artAliases.isEmpty()) {
             writer.write(" AND ");
@@ -113,10 +105,6 @@ public class ArtifactTypeSqlHandler extends SqlHandler {
          }
       } else {
          int localId = typeIds.iterator().next();
-
-         //         writer.write(artAlias);
-         //         writer.write(".art_type_id = ?");
-         //         writer.addParameter(localId);
 
          int aSize = artAliases.size();
          for (int index = 0; index < aSize; index++) {
