@@ -16,10 +16,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -53,13 +53,13 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final ExecutorService executor;
+   private final ExecutorAdmin executor;
    private final EventService eventService;
 
    private final TransactionCache txCache;
    private final BranchFactory branchFactory;
 
-   public DatabaseBranchAccessor(Log logger, ExecutorService executor, EventService eventService, IOseeDatabaseService dbService, TransactionCache txCache, BranchFactory branchFactory) {
+   public DatabaseBranchAccessor(Log logger, ExecutorAdmin executor, EventService eventService, IOseeDatabaseService dbService, TransactionCache txCache, BranchFactory branchFactory) {
       this.logger = logger;
       this.executor = executor;
       this.eventService = eventService;
@@ -193,8 +193,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
       StoreBranchCallable task = new StoreBranchCallable(dbService, executor, eventService, branches);
-      Future<IStatus> future = executor.submit(task);
       try {
+         Future<IStatus> future = executor.getDefaultExecutor().submit(task);
          IStatus status = future.get();
          if (!status.isOK()) {
             throw new OseeStateException("Error storing branches");

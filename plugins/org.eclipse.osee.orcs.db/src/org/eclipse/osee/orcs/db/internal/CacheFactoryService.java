@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
@@ -50,16 +49,14 @@ public class CacheFactoryService implements IOseeCachingServiceFactory {
    private IdentityService identityService;
    private Log logger;
    private EventService eventService;
-
-   private ExecutorService executor;
+   private ExecutorAdmin executorAdmin;
 
    public void start() {
-      // TODO: Pass in executor admin service
-      executor = Executors.newFixedThreadPool(5);
+      //
    }
 
    public void stop() {
-      executor.shutdownNow();
+      //
    }
 
    public void setLogger(Log logger) {
@@ -94,11 +91,15 @@ public class CacheFactoryService implements IOseeCachingServiceFactory {
       this.eventService = eventService;
    }
 
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
    @Override
    public IOseeCachingService createCachingService() {
       TransactionCache txCache = new TransactionCache();
       BranchCache branchCache =
-         new BranchCache(new DatabaseBranchAccessor(logger, executor, eventService, dbService, txCache,
+         new BranchCache(new DatabaseBranchAccessor(logger, executorAdmin, eventService, dbService, txCache,
             factoryService.getBranchFactory()));
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(dbService, branchCache,
          factoryService.getTransactionFactory()));

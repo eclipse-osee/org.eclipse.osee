@@ -71,7 +71,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/>        
 
    <plugin
          id="org.eclipse.osee.event.osgi.source"
@@ -87,4 +87,10 @@
          version="0.0.0"
          unpack="false"/>
          
+   <plugin
+         id="org.eclipse.osee.executor.admin.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 </feature>

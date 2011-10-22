@@ -15,13 +15,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Future;
+import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
@@ -43,15 +45,15 @@ import org.eclipse.osee.orcs.search.StringOperator;
  */
 public class QueryBuilderImpl implements QueryBuilder {
 
-   private final ResultSetFactory rsetFactory;
+   private final QueryExecutor queryExecutor;
    private final CriteriaFactory criteriaFactory;
 
    private final SessionContext sessionContext;
    private final CriteriaSet criteriaSet;
    private final QueryOptions options;
 
-   public QueryBuilderImpl(ResultSetFactory rsetFactory, CriteriaFactory criteriaFactory, SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      this.rsetFactory = rsetFactory;
+   public QueryBuilderImpl(QueryExecutor queryExecutor, CriteriaFactory criteriaFactory, SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
+      this.queryExecutor = queryExecutor;
       this.criteriaFactory = criteriaFactory;
       this.sessionContext = sessionContext;
       this.criteriaSet = criteriaSet;
@@ -265,21 +267,6 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public ResultSet<ReadableArtifact> build(LoadLevel loadLevel) throws OseeCoreException {
-      return rsetFactory.createResultSet(sessionContext, loadLevel, criteriaSet.clone(), options.clone());
-   }
-
-   @Override
-   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> buildMatches(LoadLevel loadLevel) throws OseeCoreException {
-      return rsetFactory.createMatchesResultSet(sessionContext, loadLevel, criteriaSet.clone(), options.clone());
-   }
-
-   @Override
-   public int getCount() throws OseeCoreException {
-      return rsetFactory.getCount(sessionContext, criteriaSet.clone(), options.clone());
-   }
-
-   @Override
    public QueryBuilder andNameEquals(String artifactName) throws OseeCoreException {
       return and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
    }
@@ -296,5 +283,87 @@ public class QueryBuilderImpl implements QueryBuilder {
          guids.add(token.getGuid());
       }
       return andGuidsOrHrids(guids);
+   }
+
+   @Override
+   public ResultSet<ReadableArtifact> getResults() throws OseeCoreException {
+      ResultSet<ReadableArtifact> result = null;
+      try {
+         result = search().get();
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return result;
+   }
+
+   @Override
+   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> getMatches() throws OseeCoreException {
+      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> result = null;
+      try {
+         result = searchWithMatches().get();
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return result;
+   }
+
+   @Override
+   public int getCount() throws OseeCoreException {
+      int result = -1;
+      try {
+         result = computeCount().get();
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return result;
+   }
+
+   @Override
+   public Future<Integer> computeCount() throws OseeCoreException {
+      return computeCount(null);
+   }
+
+   @Override
+   public Future<ResultSet<ReadableArtifact>> search() throws OseeCoreException {
+      return search(null);
+   }
+
+   @Override
+   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches() throws OseeCoreException {
+      return searchWithMatches(null);
+   }
+
+   @Override
+   public Future<Integer> computeCount(ExecutionCallback<Integer> callback) throws OseeCoreException {
+      Future<Integer> toReturn = null;
+      try {
+         toReturn = queryExecutor.scheduleCount(sessionContext, criteriaSet.clone(), options.clone(), callback);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return toReturn;
+   }
+
+   @Override
+   public Future<ResultSet<ReadableArtifact>> search(ExecutionCallback<ResultSet<ReadableArtifact>> callback) throws OseeCoreException {
+      Future<ResultSet<ReadableArtifact>> toReturn = null;
+      try {
+         toReturn = queryExecutor.scheduleSearch(sessionContext, criteriaSet.clone(), options.clone(), callback);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return toReturn;
+   }
+
+   @Override
+   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches(ExecutionCallback<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> callback) throws OseeCoreException {
+      Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> toReturn = null;
+      try {
+         toReturn =
+            queryExecutor.scheduleSearchWithMatches(sessionContext, criteriaSet.clone(), options.clone(), callback);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return toReturn;
    }
 }

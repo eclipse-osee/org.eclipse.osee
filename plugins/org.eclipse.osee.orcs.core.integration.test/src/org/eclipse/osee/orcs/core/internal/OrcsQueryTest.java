@@ -18,8 +18,6 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -28,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.mock.TestBranches;
 import org.eclipse.osee.orcs.core.mock.Utility;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -49,8 +48,6 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class OrcsQueryTest {
-   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
-   public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvBBB", "SAW_Bld_2");
 
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
@@ -120,7 +117,8 @@ public class OrcsQueryTest {
    }
 
    private void checkQueryArtifactTypeInheritance(QueryFactory factory) throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(SAW_Bld_1).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement);//
+      QueryBuilder builder =
+         factory.fromBranch(TestBranches.SAW_Bld_1).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement);//
 
       builder.excludeTypeInheritance();
       Assert.assertEquals(0, builder.getCount());
@@ -195,7 +193,7 @@ public class OrcsQueryTest {
 
    private void checkQueryArtifactTypeAndNameValue(QueryFactory factory) throws OseeCoreException {
       //////////////////////
-      QueryBuilder builder = factory.fromBranch(SAW_Bld_1);
+      QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
 
       Assert.assertEquals(7, builder.getCount());
@@ -218,7 +216,7 @@ public class OrcsQueryTest {
       checkContainsTypes(folders, CoreArtifactTypes.Folder);
 
       //////////////////////
-      QueryBuilder builder1 = factory.fromBranch(SAW_Bld_1);
+      QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder1.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
       builder1.andIsOfType(CoreArtifactTypes.SubsystemRequirement);
       Assert.assertEquals(1, builder1.getCount());
@@ -228,7 +226,7 @@ public class OrcsQueryTest {
       checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirement);
 
       //////////////////////
-      QueryBuilder builder2 = factory.fromBranch(SAW_Bld_1);
+      QueryBuilder builder2 = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder2.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
       builder2.includeTypeInheritance();
       builder2.andIsOfType(CoreArtifactTypes.Requirement);
@@ -245,7 +243,7 @@ public class OrcsQueryTest {
    }
 
    private void checkQueryAttributeKeyword(QueryFactory factory) throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(SAW_Bld_1);
+      QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder.and(CoreAttributeTypes.Name, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, "REQUIREMENTS");
 
       Assert.assertEquals(7, builder.getCount());
@@ -280,7 +278,7 @@ public class OrcsQueryTest {
       checkMatchSingleAttribute(matchIterator.next(), "System Requirements", CoreAttributeTypes.Name, "Requirements");
       // @formatter:on
 
-      QueryBuilder builder1 = factory.fromBranch(SAW_Bld_1);
+      QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder1.and(CoreAttributeTypes.Name, StringOperator.TOKENIZED_ANY_ORDER, CaseType.MATCH_CASE, "REQUIREMENTS");
       Assert.assertEquals(0, builder1.getCount());
    }

@@ -7,6 +7,7 @@ Fragment-Host: org.eclipse.osee.orcs.core;bundle-version="0.9.9"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: junit.framework;version="4.8.2",
  org.eclipse.osee.event,
+ org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,

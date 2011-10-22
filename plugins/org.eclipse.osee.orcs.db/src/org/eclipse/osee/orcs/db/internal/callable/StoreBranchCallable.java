@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -41,10 +42,10 @@ public class StoreBranchCallable extends DatabaseTxCallable {
    private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
 
    private final Collection<Branch> branches;
-   private final ExecutorService executor;
+   private final ExecutorAdmin executor;
    private final EventService eventService;
 
-   public StoreBranchCallable(IOseeDatabaseService dbService, ExecutorService executor, EventService eventService, Collection<Branch> branches) {
+   public StoreBranchCallable(IOseeDatabaseService dbService, ExecutorAdmin executor, EventService eventService, Collection<Branch> branches) {
       super(dbService, "Branch Archive Operation");
       this.executor = executor;
       this.eventService = eventService;
@@ -55,8 +56,12 @@ public class StoreBranchCallable extends DatabaseTxCallable {
       return eventService;
    }
 
-   private ExecutorService getExecutorService() {
-      return executor;
+   private ExecutorService getExecutorService() throws OseeCoreException {
+      try {
+         return executor.getDefaultExecutor();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    @Override

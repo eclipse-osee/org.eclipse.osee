@@ -9,6 +9,7 @@
    <reference bind="setFactoryService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>
    <reference bind="setModelService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelingService" name="IOseeModelingService" policy="static"/>
    <reference bind="setEventService" cardinality="1..1" interface="org.eclipse.osee.event.EventService" name="EventService" policy="static"/>
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
    <service>
       <provide interface="org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory"/>
    </service>

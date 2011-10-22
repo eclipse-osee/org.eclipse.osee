@@ -21,6 +21,9 @@
 		<module>../../plugins/org.eclipse.osee.event</module>
 		<module>../../plugins/org.eclipse.osee.event.osgi</module>
 
+		<module>../../plugins/org.eclipse.osee.executor.admin</module>
+		<module>../../plugins/org.eclipse.osee.executor.admin.test</module>
+		
 		<module>../../plugins/org.eclipse.osee.framework.jdk.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.jdk.core.test</module>
 

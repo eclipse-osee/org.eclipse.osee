@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.mock;
 
 import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
@@ -44,6 +45,7 @@ public final class Utility {
       OsgiUtil.getService(IOseeModelingService.class);
       OsgiUtil.getService(EventAdmin.class);
       OsgiUtil.getService(EventService.class);
+      OsgiUtil.getService(ExecutorAdmin.class);
       OsgiUtil.getService(IOseeCachingService.class);
       OsgiUtil.getService(QueryEngine.class);
       OsgiUtil.getService(DataStoreTypeCache.class);
