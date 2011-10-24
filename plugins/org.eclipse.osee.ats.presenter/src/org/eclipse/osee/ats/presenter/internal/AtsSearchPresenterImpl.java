@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.presenter.DisplayPresenter;
+import org.eclipse.osee.display.presenter.SearchPresenterImpl;
 import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -32,7 +32,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author John Misinco
  */
-public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent> extends DisplayPresenter<T> implements AtsSearchPresenter<T> {
+public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends SearchPresenterImpl<T, K> implements AtsSearchPresenter<T, K> {
 
    private final AtsArtifactProvider atsArtifactProvider;
 

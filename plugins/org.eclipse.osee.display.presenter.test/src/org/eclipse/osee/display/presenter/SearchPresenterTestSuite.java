@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
-import org.eclipse.osee.display.presenter.internal.DisplayPresenterTest;
+import org.eclipse.osee.display.presenter.internal.SearchPresenterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DisplayPresenterTest.class, UtilityTest.class})
+@Suite.SuiteClasses({SearchPresenterTest.class, UtilityTest.class})
 /**
  * @author John Misinco
  */
-public class DisplayPresenterTestSuite {
+public class SearchPresenterTestSuite {
    //Test Suite class
 }

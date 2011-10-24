@@ -49,14 +49,14 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author John Misinco
  */
-public class DisplayPresenter<T extends SearchHeaderComponent> implements SearchPresenter<T> {
+public abstract class SearchPresenterImpl<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K> {
 
    protected final ArtifactProvider artifactProvider;
 
    private final static String SIDE_A_KEY = "sideAName";
    private final static String SIDE_B_KEY = "sideBName";
 
-   public DisplayPresenter(ArtifactProvider artifactProvider) {
+   public SearchPresenterImpl(ArtifactProvider artifactProvider) {
       this.artifactProvider = artifactProvider;
    }
 
