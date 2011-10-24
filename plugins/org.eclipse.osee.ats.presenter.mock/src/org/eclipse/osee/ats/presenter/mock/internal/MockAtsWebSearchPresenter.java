@@ -150,7 +150,7 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
 
             ViewId program, build;
             program = getProgramWithGuid(params.get(UrlParamNameConstants.PARAMNAME_PROGRAM));
-            build = getBuildWithGuid(UrlParamNameConstants.PARAMNAME_BUILD);
+            build = getBuildWithGuid(params.get(UrlParamNameConstants.PARAMNAME_BUILD));
             String nameOnlyStr = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
             String verboseStr = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
             Boolean nameOnly = false;
@@ -172,10 +172,12 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
 
    @Override
    public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
-      Map<String, String> params = new HashMap<String, String>();
-      params.put("artifact", artifact.getGuid());
-      String newurl = parameterMapToRequestString(params, url);
-      oseeNavigator.navigateArtifactPage(newurl);
+      if (url != null && artifact != null && oseeNavigator != null) {
+         Map<String, String> params = new HashMap<String, String>();
+         params.put("artifact", artifact.getGuid());
+         String newurl = parameterMapToRequestString(params, url);
+         oseeNavigator.navigateArtifactPage(newurl);
+      }
    }
 
    @Override

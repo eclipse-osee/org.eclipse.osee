@@ -214,9 +214,9 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    public void setSearchCriteria(AtsSearchParameters params) {
       if (params != null) {
          if (programCombo != null) {
-            lockProgramCombo = true;
+            //            lockProgramCombo = true;
             programCombo.setValue(params.getProgram());
-            lockProgramCombo = false;
+            //            lockProgramCombo = false;
          }
          if (buildCombo != null) {
             buildCombo.setValue(params.getBuild());

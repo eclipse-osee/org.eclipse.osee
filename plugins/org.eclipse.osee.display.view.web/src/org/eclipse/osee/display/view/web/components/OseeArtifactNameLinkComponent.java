@@ -48,7 +48,7 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
             if (app != null) {
                url = app.getRequestedDataId();
             }
-            searchPresenter.selectArtifact(url, artifact, navigator);
+            searchPresenter.selectArtifact(url, OseeArtifactNameLinkComponent.this.artifact, navigator);
          }
       });
    }
