@@ -14,9 +14,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -24,6 +26,7 @@ import org.eclipse.osee.orcs.core.mock.Utility;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
@@ -35,7 +38,7 @@ import org.junit.Rule;
  * 
  * @author Andrew M. Finkbeiner
  */
-public class OsrcsApiTest {
+public class OsrcsRelationLoadingTest {
 
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
@@ -49,6 +52,13 @@ public class OsrcsApiTest {
       ApplicationContext context = null; // TODO use real application context
 
       QueryFactory queryFactory = oseeApi.getQueryFactory(context);
+
+      checkRelationsForCommonBranch(oseeApi, queryFactory, context);
+      checkRelationsForSawBranch(oseeApi, queryFactory, context);
+
+   }
+
+   private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
       ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
       List<ReadableArtifact> moreArts = resultSet.getList();
@@ -101,6 +111,25 @@ public class OsrcsApiTest {
       Assert.assertEquals(1, graph.getRelatedArtifacts(art9, CoreRelationTypes.Default_Hierarchical__Parent).size());
       Assert.assertEquals(20, graph.getRelatedArtifacts(art9, CoreRelationTypes.Users_User).size());
 
+   }
+
+   private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
+      QueryBuilder builder =
+         queryFactory.fromBranch(oseeApi.getBranchCache().getByName("SAW_Bld_1").iterator().next()).and(
+            CoreAttributeTypes.Name, Operator.EQUAL, "Design Constraints");
+      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      List<ReadableArtifact> moreArts = resultSet.getList();
+
+      Assert.assertFalse(moreArts.isEmpty());
+      ReadableArtifact artifact = moreArts.iterator().next();
+
+      //art 7 has no relations
+      Graph graph = oseeApi.getGraph(context);
+
+      //artifact has 3 children and 1 parent
+      Assert.assertEquals(2, graph.getExistingRelationTypes(artifact).size());
+      Assert.assertEquals(3, graph.getRelatedArtifacts(artifact, CoreRelationTypes.Default_Hierarchical__Child).size());
+      Assert.assertEquals(1, graph.getRelatedArtifacts(artifact, CoreRelationTypes.Default_Hierarchical__Parent).size());
    }
 
    Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {

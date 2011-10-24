@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
@@ -33,21 +33,21 @@ import org.junit.Rule;
 /**
  * @author Jeff C. Phillips
  */
-public class OseeAttributeSearchTest {
+public class OrcsAttributeSearchTest {
 
    @Rule
    public OseeDatabase db1 = new OseeDatabase("osee.demo.h2");
 
    @org.junit.Test
    public void runGodMethod() throws OseeCoreException {
-      OseeApi oseeApi = OsgiUtil.getService(OseeApi.class);
+      OrcsApi orcsApi = OsgiUtil.getService(OrcsApi.class);
       ApplicationContext context = null; // TODO use real application context
-      QueryFactory queryFactory = oseeApi.getQueryFactory(context);
+      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
 
-      //      testNameAttributeNotEqualSearch(queryFactory);
-      //      testNameAttributeEqualSearch(queryFactory);
-      //      testBooleanAttributeSearch(queryFactory);
-      testWTCAttributeEqualSearch(queryFactory, oseeApi.getBranchCache());
+      testNameAttributeNotEqualSearch(queryFactory);
+      testNameAttributeEqualSearch(queryFactory);
+      testBooleanAttributeSearch(queryFactory);
+      testWTCAttributeEqualSearch(queryFactory, orcsApi.getBranchCache());
    }
 
    public void testNameAttributeNotEqualSearch(QueryFactory queryFactory) throws OseeCoreException {
@@ -81,24 +81,14 @@ public class OseeAttributeSearchTest {
 
    public void testWTCAttributeEqualSearch(QueryFactory queryFactory, BranchCache branchCache) throws OseeCoreException {
       QueryBuilder builder =
-         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(CoreAttributeTypes.Name,
-            Operator.EQUAL, "Haptic Constraints");
-      //      QueryBuilder builder =
-      //         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(
-      //            CoreArtifactTypes.SoftwareRequirement);
+         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(
+            CoreAttributeTypes.WholeWordContent, Operator.EQUAL, "commands");
 
       ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
       List<ReadableArtifact> moreArts = resultSet.getList();
 
-      Assert.assertEquals(1, moreArts.size());
-      Assert.assertEquals(1, builder.getCount());
-
-      Map<Integer, ReadableArtifact> lookup = creatLookup(moreArts);
-      ReadableArtifact art8 = lookup.get(189);
-
-      //Test loading name attributes
-      Assert.assertEquals(art8.getAttributes(CoreAttributeTypes.WordTemplateContent).iterator().next().getValue(),
-         "User Groups");
+      Assert.assertFalse(moreArts.isEmpty());
+      Assert.assertTrue(builder.getCount() > 0);
    }
 
    public void testBooleanAttributeSearch(QueryFactory queryFactory) throws OseeCoreException {

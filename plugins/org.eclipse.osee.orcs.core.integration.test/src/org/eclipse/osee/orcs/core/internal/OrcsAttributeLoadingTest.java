@@ -18,11 +18,14 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OseeApi;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
@@ -31,18 +34,18 @@ import org.junit.Rule;
 /**
  * @author Jeff C. Phillips
  */
-public class OseeAttributeLoadingTest {
+public class OrcsAttributeLoadingTest {
 
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
 
    @org.junit.Test
    public void testAttributeLoading() throws Exception {
-      OseeApi oseeApi = OsgiUtil.getService(OseeApi.class);
+      OrcsApi orcsApi = OsgiUtil.getService(OrcsApi.class);
 
       ApplicationContext context = null; // TODO use real application context
 
-      QueryFactory queryFactory = oseeApi.getQueryFactory(context);
+      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
       ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
       List<ReadableArtifact> moreArts = resultSet.getList();
@@ -62,7 +65,25 @@ public class OseeAttributeLoadingTest {
       Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
 
       //Test boolean attributes
-      Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "yes");
+      Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "true");
+
+      //Load WTC attributes
+      loadWordTemplateContentAttributes(queryFactory, orcsApi.getBranchCache());
+   }
+
+   private void loadWordTemplateContentAttributes(QueryFactory queryFactory, BranchCache branchCache) throws OseeCoreException {
+      QueryBuilder builder =
+         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(CoreAttributeTypes.Name,
+            Operator.EQUAL, "Haptic Constraints");
+
+      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      List<ReadableArtifact> moreArts = resultSet.getList();
+
+      Assert.assertFalse(moreArts.isEmpty());
+      Assert.assertTrue(builder.getCount() > 0);
+
+      ReadableArtifact artifact = moreArts.iterator().next();
+      Assert.assertTrue(artifact.getSoleAttributeAsString(CoreAttributeTypes.WordTemplateContent).length() > 2);
    }
 
    Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {
