@@ -64,7 +64,7 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
    }
 
    @Override
-   public IOseeCachingService createCachingService() {
+   public IOseeCachingService createCachingService(boolean needsPriming) {
       TransactionCache txCache = new TransactionCache();
       IBranchUpdateEvent branchEventSender = new BranchUpdateEventImpl(translationService, appManager, serverLookUp);
       BranchCache branchCache =

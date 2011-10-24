@@ -47,7 +47,7 @@ public class CachingService implements IOseeCachingService {
    }
 
    public void start() {
-      proxied = factory.createCachingService();
+      proxied = factory.createCachingService(true);
       getLogger().info("ORCS Cache - Created");
    }
 

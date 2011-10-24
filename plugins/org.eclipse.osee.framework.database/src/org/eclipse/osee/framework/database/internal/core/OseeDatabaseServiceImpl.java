@@ -10,19 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.core;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Timer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -38,14 +44,59 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    private static final Map<String, OseeConnectionPoolImpl> dbInfoToPools =
       new HashMap<String, OseeConnectionPoolImpl>();
 
-   private final IOseeSequence oseeSequence;
-   private final ConnectionFactoryProvider dbConnectionFactory;
-   private final IDatabaseInfoProvider dbInfoProvider;
+   private IOseeSequence oseeSequence;
+   private IDatabaseInfoProvider dbInfoProvider;
 
-   public OseeDatabaseServiceImpl(IDatabaseInfoProvider dbInfoProvider, ConnectionFactoryProvider dbConnectionFactory) {
+   private final Map<String, IConnectionFactory> factories = new ConcurrentHashMap<String, IConnectionFactory>();
+
+   public void start() {
       this.oseeSequence = new OseeSequenceImpl(this);
-      this.dbInfoProvider = dbInfoProvider;
-      this.dbConnectionFactory = dbConnectionFactory;
+   }
+
+   public void stop() {
+      this.oseeSequence = null;
+   }
+
+   public void setDatabaseInfoProvider(IDatabaseInfoProvider databaseInfoProvider) {
+      dbInfoProvider = databaseInfoProvider;
+   }
+
+   public void removeDatabaseInfoProvider(IDatabaseInfoProvider databaseInfoProvider) throws OseeDataStoreException {
+      dbInfoToPools.remove(databaseInfoProvider.getDatabaseInfo().getId());
+      dbInfoProvider = null;
+   }
+
+   public void addConnectionFactory(IConnectionFactory connectionFactory) {
+      factories.put(connectionFactory.getDriver(), connectionFactory);
+   }
+
+   public void removeConnectionFactory(IConnectionFactory connectionFactory) {
+      factories.remove(connectionFactory.getDriver());
+
+   }
+
+   private static final class DefaultConnectionFactory implements IConnectionFactory {
+
+      private final String driver;
+
+      public DefaultConnectionFactory(String driver) {
+         this.driver = driver;
+      }
+
+      @Override
+      public Connection getConnection(Properties properties, String connectionURL) throws Exception {
+         try {
+            Class.forName(driver);
+         } catch (Exception ex) {
+            throw new OseeNotFoundException("Unable to find connection factory with driver [%s]", driver);
+         }
+         return DriverManager.getConnection(connectionURL, properties);
+      }
+
+      @Override
+      public String getDriver() {
+         return driver;
+      }
    }
 
    private IDatabaseInfo getDatabaseInfoProvider() throws OseeDataStoreException {
@@ -73,12 +124,21 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       OseeConnectionPoolImpl pool = dbInfoToPools.get(databaseInfo.getId());
       if (pool == null) {
          pool =
-            new OseeConnectionPoolImpl(dbConnectionFactory, databaseInfo.getDriver(), databaseInfo.getConnectionUrl(),
+            new OseeConnectionPoolImpl(getFactory(databaseInfo.getDriver()), databaseInfo.getConnectionUrl(),
                databaseInfo.getConnectionProperties());
          dbInfoToPools.put(databaseInfo.getId(), pool);
          timer.schedule(new StaleConnectionCloser(pool), 900000, 900000);
       }
       return pool;
+   }
+
+   private IConnectionFactory getFactory(String driver) {
+      IConnectionFactory factory = factories.get(driver);
+      if (factory == null) {
+         return new DefaultConnectionFactory(driver);
+      } else {
+         return factory;
+      }
    }
 
    @Override

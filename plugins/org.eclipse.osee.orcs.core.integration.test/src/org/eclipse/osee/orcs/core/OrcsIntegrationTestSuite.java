@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core;
 
 import org.eclipse.osee.orcs.core.internal.OrcsQueryTest;
+import org.eclipse.osee.orcs.core.internal.OsrcsApiTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,8 +19,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//OsrcsApiTest.class,
-OrcsQueryTest.class})
+@Suite.SuiteClasses({OsrcsApiTest.class, OrcsQueryTest.class})
 public class OrcsIntegrationTestSuite {
    // Test Suite
 }

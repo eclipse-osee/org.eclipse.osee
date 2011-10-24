@@ -30,11 +30,14 @@ public class IdentityServiceImpl implements IdentityService {
    private final Map<Integer, Long> localIdToUniversalId = new ConcurrentHashMap<Integer, Long>();
    private final Set<Long> persistedIds = new ConcurrentSkipListSet<Long>();
 
-   private final IOseeDatabaseService service;
+   private IOseeDatabaseService service;
    private volatile boolean ensurePopulatedRanOnce;
 
-   public IdentityServiceImpl(IOseeDatabaseService service) {
-      super();
+   public void start() {
+      //nothing to do 
+   }
+
+   public void setOseeDatabaseService(IOseeDatabaseService service) {
       this.service = service;
    }
 

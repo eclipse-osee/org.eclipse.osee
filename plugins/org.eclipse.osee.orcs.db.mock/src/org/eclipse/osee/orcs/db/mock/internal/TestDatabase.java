@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.h2.H2DbServer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
@@ -77,14 +78,15 @@ public class TestDatabase {
       IDatabaseInfo databaseInfo = new DbInfo(connectionId, port, dbPath);
       TestDbProvider provider = new TestDbProvider(databaseInfo);
 
-      String serverAddress = String.format("0.0.0.0:%s", port);
-      System.setProperty("osee.db.embedded.server", serverAddress);
+      System.setProperty("osee.db.embedded.server", "");
       System.setProperty("osee.application.server.data", tempFolder.getAbsolutePath());
       BundleContext context = getContext(bundle);
       registration = context.registerService(IDatabaseInfoProvider.class, provider, null);
 
       IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
       Assert.assertNotNull(dbService);
+
+      H2DbServer.startServer("0.0.0.0", port);
 
       OseeConnection connection = dbService.getConnection();
       try {
@@ -131,7 +133,7 @@ public class TestDatabase {
 
       System.setProperty("osee.application.server.data", "");
       System.setProperty("osee.db.embedded.server", "");
-
+      H2DbServer.stopServer();
       Runtime.getRuntime().addShutdownHook(new Thread() {
          @Override
          public void run() {

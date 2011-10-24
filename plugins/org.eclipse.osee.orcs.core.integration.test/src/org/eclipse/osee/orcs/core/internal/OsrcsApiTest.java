@@ -100,6 +100,7 @@ public class OsrcsApiTest {
       Assert.assertEquals(2, graph.getExistingRelationTypes(art9).size());
       Assert.assertEquals(1, graph.getRelatedArtifacts(art9, CoreRelationTypes.Default_Hierarchical__Parent).size());
       Assert.assertEquals(20, graph.getRelatedArtifacts(art9, CoreRelationTypes.Users_User).size());
+
    }
 
    Map<Integer, ReadableArtifact> creatLookup(List<ReadableArtifact> arts) {

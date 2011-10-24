@@ -41,7 +41,6 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
       IDataTranslationService.class,
       IApplicationServerLookup.class,
       IApplicationServerManager.class,
-//      IOseeModelingService.class,
       IResourceLocatorManager.class,
       IResourceManager.class, 
       IdentityService.class,
@@ -59,7 +58,7 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
    @Override
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
       IOseeCachingServiceFactory factory = createCachingFactoryService(context, services);
-      IOseeCachingService cachingService = factory.createCachingService();
+      IOseeCachingService cachingService = factory.createCachingService(true);
 
       factoryRegistration = context.registerService(IOseeCachingServiceFactory.class.getName(), factory, null);
       cachingServiceRegistration = context.registerService(IOseeCachingService.class.getName(), cachingService, null);

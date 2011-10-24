@@ -105,7 +105,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       }
       OseeDsl inputModel = ModelUtil.loadModel("osee:/" + modelName, request.getModel());
 
-      IOseeCachingService tempCacheService = cachingFactoryService.createCachingService();
+      IOseeCachingService tempCacheService = cachingFactoryService.createCachingService(false);
       OseeTypeCache tempCache =
          new OseeTypeCache(tempCacheService.getArtifactTypeCache(), tempCacheService.getAttributeTypeCache(),
             tempCacheService.getRelationTypeCache(), tempCacheService.getEnumTypeCache());

@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.core.services;
  */
 public interface IOseeCachingServiceFactory {
 
-   IOseeCachingService createCachingService();
+   IOseeCachingService createCachingService(boolean needsPriming);
 }

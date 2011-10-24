@@ -31,6 +31,10 @@ public class H2DbServer {
       instance.startServerInternal(host, port);
    }
 
+   public static void stopServer() {
+      instance.shutdown();
+   }
+
    private void startServerInternal(String host, int port) throws Exception {
       OseeLog.logf(H2DbServer.class, Level.INFO, "Starting H2 Database Server on [%s:%s]....", host, port);
       try {

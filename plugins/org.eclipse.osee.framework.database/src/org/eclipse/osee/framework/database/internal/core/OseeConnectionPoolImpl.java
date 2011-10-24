@@ -28,18 +28,12 @@ public class OseeConnectionPoolImpl {
    private final List<OseeConnectionImpl> connections = new CopyOnWriteArrayList<OseeConnectionImpl>();
    private final String dbUrl;
    private final Properties properties;
-   private final ConnectionFactoryProvider connectionFactory;
-   private final String driver;
+   private final IConnectionFactory connectionFactory;
 
-   public OseeConnectionPoolImpl(ConnectionFactoryProvider connectionFactory, String driver, String dbUrl, Properties properties) {
+   public OseeConnectionPoolImpl(IConnectionFactory connectionFactory, String dbUrl, Properties properties) {
       this.connectionFactory = connectionFactory;
-      this.driver = driver;
       this.dbUrl = dbUrl;
       this.properties = properties;
-   }
-
-   private IConnectionFactory createConnection(String driver) throws OseeCoreException {
-      return connectionFactory.get(driver);
    }
 
    public synchronized boolean hasOpenConnection() {
@@ -80,8 +74,7 @@ public class OseeConnectionPoolImpl {
 
    private OseeConnectionImpl getOseeConnection() throws OseeCoreException {
       try {
-         IConnectionFactory connectionDriver = createConnection(driver);
-         Connection connection = connectionDriver.getConnection(properties, dbUrl);
+         Connection connection = connectionFactory.getConnection(properties, dbUrl);
          connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
          return new OseeConnectionImpl(connection, this);
       } catch (Exception ex) {
