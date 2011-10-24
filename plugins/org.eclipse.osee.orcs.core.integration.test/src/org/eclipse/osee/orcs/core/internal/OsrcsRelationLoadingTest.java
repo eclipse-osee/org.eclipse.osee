@@ -17,7 +17,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.Graph;
@@ -60,7 +59,7 @@ public class OsrcsRelationLoadingTest {
 
    private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertEquals(3, moreArts.size());
@@ -117,7 +116,7 @@ public class OsrcsRelationLoadingTest {
       QueryBuilder builder =
          queryFactory.fromBranch(oseeApi.getBranchCache().getByName("SAW_Bld_1").iterator().next()).and(
             CoreAttributeTypes.Name, Operator.EQUAL, "Design Constraints");
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertFalse(moreArts.isEmpty());

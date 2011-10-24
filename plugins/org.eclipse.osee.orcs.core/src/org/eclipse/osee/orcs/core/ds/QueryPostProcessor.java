@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import java.util.concurrent.Callable;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
@@ -19,9 +19,8 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public interface QueryPostProcessor {
+public interface QueryPostProcessor extends Callable<List<Match<ReadableArtifact, ReadableAttribute<?>>>> {
 
-   List<ReadableArtifact> getMatching(List<ReadableArtifact> artifacts) throws OseeCoreException;
+   void setItemsToProcess(List<ReadableArtifact> artifacts);
 
-   List<Match<ReadableArtifact, ReadableAttribute<?>>> getLocationMatches(List<ReadableArtifact> artifacts) throws OseeCoreException;
 }

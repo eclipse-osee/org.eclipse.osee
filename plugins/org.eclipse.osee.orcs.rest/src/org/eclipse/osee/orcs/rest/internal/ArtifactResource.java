@@ -20,7 +20,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -57,8 +56,7 @@ public class ArtifactResource {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
       Graph graph = OrcsApplication.getOrcsApi().getGraph(null);
-      List<ReadableArtifact> arts =
-         factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).build(LoadLevel.FULL).getList();
+      List<ReadableArtifact> arts = factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults().getList();
       HtmlWriter writer = new HtmlWriter(uriInfo, graph);
       return writer.toHtml(arts);
    }

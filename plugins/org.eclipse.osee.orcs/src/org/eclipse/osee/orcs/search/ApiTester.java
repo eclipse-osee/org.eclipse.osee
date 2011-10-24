@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.search;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -35,14 +34,14 @@ public class ApiTester {
       ReadableArtifact art1 = query.fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
-      .build(LoadLevel.FULL)//
+      .getResults()//
       .getExactlyOne();
 
       List<ReadableArtifact> arts = query//
       .fromBranch(CoreBranches.COMMON).andNameEquals("WPN_PAGE")//
       .includeCache()//
       .includeDeleted()//
-      .build(LoadLevel.ATTRIBUTE)//
+      .getResults()//
       .getList();
 
       /// Chained
@@ -53,7 +52,7 @@ public class ApiTester {
       .and(CoreAttributeTypes.ParagraphNumber, Operator.LESS_THAN, "1.2.3")//
       .and(CoreAttributeTypes.Company, Operator.NOT_EQUAL, "company")//
       .andExists(CoreAttributeTypes.Active)//
-      .build(LoadLevel.FULL)//
+      .getResults()//
       .getExactlyOne();
 
       // None Chained
@@ -62,7 +61,7 @@ public class ApiTester {
       builder1.and(CoreAttributeTypes.ParagraphNumber, Operator.LESS_THAN, "1.2.3");
       builder1.and(CoreAttributeTypes.Company, Operator.NOT_EQUAL, "company");
 
-      ResultSet<ReadableArtifact> result = builder1.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> result = builder1.getResults();
       ReadableArtifact art3 = result.getExactlyOne();
       List<ReadableArtifact> items = result.getList();
 

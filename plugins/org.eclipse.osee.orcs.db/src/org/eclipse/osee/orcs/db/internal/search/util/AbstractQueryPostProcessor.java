@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
@@ -34,6 +35,7 @@ public abstract class AbstractQueryPostProcessor implements QueryPostProcessor {
 
    private final Log logger;
    private CriteriaAttributeKeyword criteria;
+   private List<ReadableArtifact> artifacts;
 
    protected AbstractQueryPostProcessor(Log logger) {
       super();
@@ -56,49 +58,15 @@ public abstract class AbstractQueryPostProcessor implements QueryPostProcessor {
       return criteria.getValue();
    }
 
-   @SuppressWarnings("unchecked")
-   private <T> List<ReadableAttribute<T>> getAttributes(ReadableArtifact artifact) throws OseeCoreException {
-      List<ReadableAttribute<T>> toReturn;
-
-      Collection<? extends IAttributeType> toCheck = getTypes();
-      if (toCheck != null && !toCheck.isEmpty()) {
-         toReturn = new ArrayList<ReadableAttribute<T>>();
-         for (IAttributeType attributeType : toCheck) {
-            for (ReadableAttribute<?> attr : artifact.getAttributes(attributeType)) {
-               toReturn.add((ReadableAttribute<T>) attr);
-            }
-         }
-      } else {
-         toReturn = artifact.getAttributes();
-      }
-      return toReturn;
+   @Override
+   public void setItemsToProcess(List<ReadableArtifact> artifacts) {
+      this.artifacts = artifacts;
    }
 
    @Override
-   public List<ReadableArtifact> getMatching(List<ReadableArtifact> artifacts) throws OseeCoreException {
-      List<ReadableArtifact> filtered = new ArrayList<ReadableArtifact>();
-      for (ReadableArtifact artifact : artifacts) {
-         for (ReadableAttribute<?> attribute : getAttributes(artifact)) {
-            try {
-               if (getTypes().contains(attribute.getAttributeType())) {
-                  Tagger tagger = getTagger(attribute);
-                  List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), false);
-                  if (!locations.isEmpty()) {
-                     filtered.add(artifact);
-                     break;
-                  }
-               }
-            } catch (Exception ex) {
-               logger.error(ex, "Error processing: [%s]", attribute);
-            }
+   public List<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
+      Conditions.checkNotNull(artifacts, "Query first pass results");
 
-         }
-      }
-      return filtered;
-   }
-
-   @Override
-   public List<Match<ReadableArtifact, ReadableAttribute<?>>> getLocationMatches(List<ReadableArtifact> artifacts) throws OseeCoreException {
       List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
 
@@ -126,6 +94,24 @@ public abstract class AbstractQueryPostProcessor implements QueryPostProcessor {
          }
       }
       return results;
+   }
+
+   @SuppressWarnings("unchecked")
+   private <T> List<ReadableAttribute<T>> getAttributes(ReadableArtifact artifact) throws OseeCoreException {
+      List<ReadableAttribute<T>> toReturn;
+
+      Collection<? extends IAttributeType> toCheck = getTypes();
+      if (toCheck != null && !toCheck.isEmpty()) {
+         toReturn = new ArrayList<ReadableAttribute<T>>();
+         for (IAttributeType attributeType : toCheck) {
+            for (ReadableAttribute<?> attr : artifact.getAttributes(attributeType)) {
+               toReturn.add((ReadableAttribute<T>) attr);
+            }
+         }
+      } else {
+         toReturn = artifact.getAttributes();
+      }
+      return toReturn;
    }
 
    protected abstract Tagger getTagger(ReadableAttribute<?> attribute) throws OseeCoreException;

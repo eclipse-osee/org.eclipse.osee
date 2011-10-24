@@ -335,35 +335,16 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public Future<Integer> computeCount(ExecutionCallback<Integer> callback) throws OseeCoreException {
-      Future<Integer> toReturn = null;
-      try {
-         toReturn = queryExecutor.scheduleCount(sessionContext, criteriaSet.clone(), options.clone(), callback);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-      return toReturn;
+      return queryExecutor.scheduleCount(sessionContext, criteriaSet.clone(), options.clone(), callback);
    }
 
    @Override
    public Future<ResultSet<ReadableArtifact>> search(ExecutionCallback<ResultSet<ReadableArtifact>> callback) throws OseeCoreException {
-      Future<ResultSet<ReadableArtifact>> toReturn = null;
-      try {
-         toReturn = queryExecutor.scheduleSearch(sessionContext, criteriaSet.clone(), options.clone(), callback);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-      return toReturn;
+      return queryExecutor.scheduleSearch(sessionContext, criteriaSet.clone(), options.clone(), callback);
    }
 
    @Override
    public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches(ExecutionCallback<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> callback) throws OseeCoreException {
-      Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> toReturn = null;
-      try {
-         toReturn =
-            queryExecutor.scheduleSearchWithMatches(sessionContext, criteriaSet.clone(), options.clone(), callback);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-      return toReturn;
+      return queryExecutor.scheduleSearchWithMatches(sessionContext, criteriaSet.clone(), options.clone(), callback);
    }
 }

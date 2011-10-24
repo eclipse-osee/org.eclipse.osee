@@ -31,20 +31,20 @@ public class QueryFactoryImpl implements QueryFactory {
 
    private final SessionContext context;
    private final CriteriaFactory criteriaFctry;
-   private final ResultSetFactory rsetFctry;
+   private final QueryExecutor queryExecutor;
 
-   public QueryFactoryImpl(CriteriaFactory criteriaFctry, ResultSetFactory rsetFctry, SessionContext context) {
+   public QueryFactoryImpl(SessionContext context, CriteriaFactory criteriaFctry, QueryExecutor queryExecutor) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;
-      this.rsetFctry = rsetFctry;
+      this.queryExecutor = queryExecutor;
    }
 
    @SuppressWarnings("unused")
    private QueryBuilder createBuilder(IOseeBranch branch) throws OseeCoreException {
       QueryOptions options = new QueryOptions();
       CriteriaSet criteriaSet = new CriteriaSet(branch);
-      QueryBuilder builder = new QueryBuilderImpl(rsetFctry, criteriaFctry, context, criteriaSet, options);
+      QueryBuilder builder = new QueryBuilderImpl(queryExecutor, criteriaFctry, context, criteriaSet, options);
       return builder;
    }
 

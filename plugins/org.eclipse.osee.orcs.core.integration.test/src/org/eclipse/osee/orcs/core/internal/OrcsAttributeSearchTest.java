@@ -16,7 +16,6 @@ import java.util.Map;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -54,7 +53,7 @@ public class OrcsAttributeSearchTest {
       QueryBuilder builder =
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.NOT_EQUAL, "User Groups");
 
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       for (ReadableArtifact artifact : moreArts) {
@@ -66,7 +65,7 @@ public class OrcsAttributeSearchTest {
       QueryBuilder builder =
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.EQUAL, "User Groups");
 
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertEquals(1, moreArts.size());
@@ -84,7 +83,7 @@ public class OrcsAttributeSearchTest {
          queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(
             CoreAttributeTypes.WholeWordContent, Operator.EQUAL, "commands");
 
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertFalse(moreArts.isEmpty());
@@ -94,7 +93,7 @@ public class OrcsAttributeSearchTest {
    public void testBooleanAttributeSearch(QueryFactory queryFactory) throws OseeCoreException {
       QueryBuilder builder =
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, Operator.EQUAL, "yes");
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertEquals(1, moreArts.size());

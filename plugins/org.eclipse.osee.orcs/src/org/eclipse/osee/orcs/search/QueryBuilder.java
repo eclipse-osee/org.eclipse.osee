@@ -11,12 +11,13 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
+import java.util.concurrent.Future;
+import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -156,21 +157,60 @@ public interface QueryBuilder {
    QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException;
 
    /**
-    * Creates a result set based on query settings
+    * Executes query
     * 
-    * @see LoadLevel level
+    * @return artifact search results
     */
-   ResultSet<ReadableArtifact> build(LoadLevel loadLevel) throws OseeCoreException;
+   public ResultSet<ReadableArtifact> getResults() throws OseeCoreException;
 
    /**
-    * Creates a result set based on query settings
+    * Executes query
     * 
-    * @see LoadLevel level
+    * @return artifact search results with match locations
     */
-   ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> buildMatches(LoadLevel loadLevel) throws OseeCoreException;
+   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> getMatches() throws OseeCoreException;
 
    /**
-    * Count potential results
+    * Count search results
     */
-   int getCount() throws OseeCoreException;
+   public int getCount() throws OseeCoreException;
+
+   /**
+    * Schedule a count search results
+    */
+   public Future<Integer> computeCount() throws OseeCoreException;
+
+   /**
+    * Schedule query
+    * 
+    * @return artifact search results
+    */
+   public Future<ResultSet<ReadableArtifact>> search() throws OseeCoreException;
+
+   /**
+    * Schedule query and find matching locations
+    * 
+    * @return artifact search results with match locations
+    */
+   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches() throws OseeCoreException;
+
+   /**
+    * Schedule a count search results with callback
+    */
+   public Future<Integer> computeCount(ExecutionCallback<Integer> callback) throws OseeCoreException;
+
+   /**
+    * Schedule query with callback
+    * 
+    * @return artifact search results
+    */
+   public Future<ResultSet<ReadableArtifact>> search(ExecutionCallback<ResultSet<ReadableArtifact>> callback) throws OseeCoreException;
+
+   /**
+    * Schedule query and find matching locations with callback
+    * 
+    * @return artifact search results with match locations
+    */
+   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches(ExecutionCallback<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> callback) throws OseeCoreException;
+
 }

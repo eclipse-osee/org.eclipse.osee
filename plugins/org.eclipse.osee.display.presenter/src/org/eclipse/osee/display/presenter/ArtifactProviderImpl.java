@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -74,7 +73,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
-      return sanitizeResult(getFactory().fromBranch(branch).andGuidsOrHrids(guid).build(LoadLevel.FULL).getOneOrNull());
+      return sanitizeResult(getFactory().fromBranch(branch).andGuidsOrHrids(guid).getResults().getOneOrNull());
    }
 
    @Override
@@ -86,7 +85,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
       QueryBuilder builder = getFactory().fromBranch(branch);
       builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.buildMatches(LoadLevel.FULL).getList();
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.getMatches().getList();
 
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : results) {
          ReadableArtifact matchedArtifact = match.getItem();

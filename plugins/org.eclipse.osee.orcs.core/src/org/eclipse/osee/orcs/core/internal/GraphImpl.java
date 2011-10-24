@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -57,7 +56,7 @@ public class GraphImpl implements Graph {
          toReturn = Collections.emptyList();
       } else {
          QueryBuilder builder = queryFactory.fromBranch(art.getBranch()).andLocalIds(results);
-         ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+         ResultSet<ReadableArtifact> resultSet = builder.getResults();
          toReturn = resultSet.getList();
       }
       return toReturn;
@@ -71,7 +70,7 @@ public class GraphImpl implements Graph {
          return null;
       } else {
          QueryBuilder builder = queryFactory.fromBranch(art.getBranch()).andLocalIds(results);
-         ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+         ResultSet<ReadableArtifact> resultSet = builder.getResults();
          return resultSet.getOneOrNull();
       }
    }

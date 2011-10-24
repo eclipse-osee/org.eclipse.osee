@@ -17,7 +17,6 @@ import java.util.Map;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -47,7 +46,7 @@ public class OrcsAttributeLoadingTest {
 
       QueryFactory queryFactory = orcsApi.getQueryFactory(context);
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertEquals(3, moreArts.size());
@@ -76,7 +75,7 @@ public class OrcsAttributeLoadingTest {
          queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(CoreAttributeTypes.Name,
             Operator.EQUAL, "Haptic Constraints");
 
-      ResultSet<ReadableArtifact> resultSet = builder.build(LoadLevel.FULL);
+      ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertFalse(moreArts.isEmpty());

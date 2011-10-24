@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -79,7 +78,7 @@ public class OrcsQueryTest {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuidsOrHrids("AEmLGXnw0WaGLxcK5qwA");
       Assert.assertEquals(1, builder.getCount());
 
-      ReadableArtifact artifact = builder.build(LoadLevel.ATTRIBUTE).getExactlyOne();
+      ReadableArtifact artifact = builder.getResults().getExactlyOne();
       Assert.assertEquals("AEmLGXnw0WaGLxcK5qwA", artifact.getGuid());
    }
 
@@ -88,7 +87,7 @@ public class OrcsQueryTest {
 
       Assert.assertEquals(5, builder.getCount());
 
-      List<ReadableArtifact> artifacts = builder.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> artifacts = builder.getResults().getList();
       Assert.assertEquals(5, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder);
@@ -103,8 +102,7 @@ public class OrcsQueryTest {
       Assert.assertEquals("Work Definitions", iterator.next().getName());
 
       if (includeMatchLocationTests) {
-         List<Match<ReadableArtifact, ReadableAttribute<?>>> matches =
-            builder.buildMatches(LoadLevel.ATTRIBUTE).getList();
+         List<Match<ReadableArtifact, ReadableAttribute<?>>> matches = builder.getMatches().getList();
          Assert.assertEquals(5, matches.size());
 
          Iterator<Match<ReadableArtifact, ReadableAttribute<?>>> matchIterator = matches.iterator();
@@ -123,13 +121,13 @@ public class OrcsQueryTest {
       builder.excludeTypeInheritance();
       Assert.assertEquals(0, builder.getCount());
 
-      ReadableArtifact artifact = builder.build(LoadLevel.ATTRIBUTE).getOneOrNull();
+      ReadableArtifact artifact = builder.getResults().getOneOrNull();
       Assert.assertNull(artifact);
 
       builder.includeTypeInheritance();
       Assert.assertEquals(24, builder.getCount());
 
-      List<ReadableArtifact> artifacts = builder.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> artifacts = builder.getResults().getList();
       Assert.assertEquals(24, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.SoftwareRequirement);
@@ -142,7 +140,7 @@ public class OrcsQueryTest {
 
       Assert.assertEquals(10, builder.getCount());
 
-      List<ReadableArtifact> artifacts = builder.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> artifacts = builder.getResults().getList();
       Assert.assertEquals(10, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
@@ -169,14 +167,13 @@ public class OrcsQueryTest {
 
       Assert.assertEquals(1, builder.getCount());
 
-      ReadableArtifact artifact = builder.build(LoadLevel.ATTRIBUTE).getExactlyOne();
+      ReadableArtifact artifact = builder.getResults().getExactlyOne();
 
       Assert.assertEquals("Action Tracking System", artifact.getName());
       Assert.assertEquals(CoreArtifactTypes.Folder, artifact.getArtifactType());
 
       if (includeMatchLocationTests) {
-         Match<ReadableArtifact, ReadableAttribute<?>> result =
-            builder.buildMatches(LoadLevel.ATTRIBUTE).getExactlyOne();
+         Match<ReadableArtifact, ReadableAttribute<?>> result = builder.getMatches().getExactlyOne();
 
          Assert.assertEquals(artifact, result.getItem());
          checkMatch(result, "Action Tracking System", CoreAttributeTypes.Name);
@@ -197,7 +194,7 @@ public class OrcsQueryTest {
       builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
 
       Assert.assertEquals(7, builder.getCount());
-      List<ReadableArtifact> artifacts = builder.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> artifacts = builder.getResults().getList();
       Assert.assertEquals(7, artifacts.size());
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirement,
          CoreArtifactTypes.SystemRequirement);
@@ -205,7 +202,7 @@ public class OrcsQueryTest {
       builder.andIsOfType(CoreArtifactTypes.Folder);
       Assert.assertEquals(4, builder.getCount());
 
-      List<ReadableArtifact> folders = builder.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> folders = builder.getResults().getList();
       Assert.assertEquals(4, folders.size());
       Collections.sort(folders, new ArtifactNameComparator(SortOrder.ASCENDING));
       Iterator<ReadableArtifact> folderIterator = folders.iterator();
@@ -220,7 +217,7 @@ public class OrcsQueryTest {
       builder1.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
       builder1.andIsOfType(CoreArtifactTypes.SubsystemRequirement);
       Assert.assertEquals(1, builder1.getCount());
-      List<ReadableArtifact> subSystemReqs = builder1.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> subSystemReqs = builder1.getResults().getList();
       Assert.assertEquals(1, subSystemReqs.size());
       Assert.assertEquals("Subsystem Requirements", subSystemReqs.get(0).getName());
       checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirement);
@@ -232,7 +229,7 @@ public class OrcsQueryTest {
       builder2.andIsOfType(CoreArtifactTypes.Requirement);
       Assert.assertEquals(3, builder2.getCount());
 
-      List<ReadableArtifact> requirements = builder2.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> requirements = builder2.getResults().getList();
       Assert.assertEquals(3, requirements.size());
       Collections.sort(requirements, new ArtifactNameComparator(SortOrder.ASCENDING));
       Iterator<ReadableArtifact> reqIterator = requirements.iterator();
@@ -247,7 +244,7 @@ public class OrcsQueryTest {
       builder.and(CoreAttributeTypes.Name, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, "REQUIREMENTS");
 
       Assert.assertEquals(7, builder.getCount());
-      List<ReadableArtifact> requirements = builder.build(LoadLevel.ATTRIBUTE).getList();
+      List<ReadableArtifact> requirements = builder.getResults().getList();
       Assert.assertEquals(7, requirements.size());
       checkContainsTypes(requirements, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirement,
          CoreArtifactTypes.SystemRequirement);
@@ -262,7 +259,7 @@ public class OrcsQueryTest {
       Assert.assertEquals("System Requirements", reqIterator.next().getName());
 
       //      if (includeMatchLocationTests) {
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> matches = builder.buildMatches(LoadLevel.ATTRIBUTE).getList();
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> matches = builder.getMatches().getList();
       Assert.assertEquals(7, matches.size());
 
       Collections.sort(matches, new ArtifactMatchComparator(SortOrder.ASCENDING));

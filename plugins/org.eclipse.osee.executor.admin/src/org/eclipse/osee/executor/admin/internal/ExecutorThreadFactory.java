@@ -40,9 +40,20 @@ public class ExecutorThreadFactory implements ThreadFactory {
 
    @Override
    public Thread newThread(Runnable runnable) {
-      Thread thread = new Thread(runnable, threadName + ":" + threads.size());
+      Thread thread = new Thread(runnable);
+
+      String name = String.format("%s: %s", threadName, threads.size());
+      thread.setName(name);
+
+      int priorityToSet = priority;
+      if (priorityToSet > Thread.MAX_PRIORITY) {
+         priorityToSet = Thread.MAX_PRIORITY;
+      } else if (priorityToSet < Thread.MIN_PRIORITY) {
+         priorityToSet = Thread.MIN_PRIORITY;
+      }
       thread.setPriority(priority);
-      this.threads.add(new WeakReference<Thread>(thread));
+
+      threads.add(new WeakReference<Thread>(thread));
       return thread;
    }
 
