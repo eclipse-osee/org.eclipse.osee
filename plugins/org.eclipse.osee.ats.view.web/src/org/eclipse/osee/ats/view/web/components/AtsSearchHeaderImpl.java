@@ -34,6 +34,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -53,6 +54,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    private AtsSearchPresenter searchPresenter;
    private AtsNavigator navigator;
    private boolean lockProgramCombo = false;
+   Panel searchTextPanel = new Panel();
 
    @Override
    public void attach() {
@@ -151,13 +153,20 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
       OseeLeftMarginContainer leftMarginContainer = new OseeLeftMarginContainer();
 
+      HorizontalLayout hLayout_SearchText = new HorizontalLayout();
+      searchTextPanel.setScrollable(false);
+      searchTextPanel.addActionHandler(this);
+      searchTextPanel.setContent(hLayout_SearchText);
+
+      hLayout_SearchText.addComponent(searchTextField);
+
       hLayout_ProgBuildName.addComponent(programCombo);
       hLayout_ProgBuildName.addComponent(hSpacer_ProgBuild);
       hLayout_ProgBuildName.addComponent(buildCombo);
       hLayout_ProgBuildName.addComponent(hSpacer_BuildName);
       hLayout_ProgBuildName.addComponent(nameOnlyCheckBox);
 
-      hLayout_SearchTextBtn.addComponent(searchTextField);
+      hLayout_SearchTextBtn.addComponent(searchTextPanel);
       hLayout_SearchTextBtn.addComponent(hSpacer_SearchTextBtn);
       hLayout_SearchTextBtn.addComponent(searchButton);
 
@@ -174,7 +183,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       hLayout_ProgBuildName.setComponentAlignment(buildCombo, Alignment.MIDDLE_CENTER);
       hLayout_ProgBuildName.setComponentAlignment(nameOnlyCheckBox, Alignment.BOTTOM_RIGHT);
 
-      hLayout_SearchTextBtn.setComponentAlignment(searchTextField, Alignment.MIDDLE_LEFT);
+      //      hLayout_SearchTextBtn.setComponentAlignment(searchTextField, Alignment.MIDDLE_LEFT);
       hLayout_SearchTextBtn.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
    }
 
@@ -261,16 +270,13 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public Action[] getActions(Object target, Object sender) {
-      if (sender == searchTextField) {
-         return actions;
-      }
-      return null;
+      return actions;
    }
 
    @Override
    public void handleAction(Action action, Object sender, Object target) {
-      if (sender == searchTextField && action == action_enter) {
-         selectProgram();
+      if (sender == searchTextPanel && action == action_enter) {
+         selectSearch();
       }
    }
 
