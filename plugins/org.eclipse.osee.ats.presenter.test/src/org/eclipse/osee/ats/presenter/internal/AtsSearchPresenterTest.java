@@ -40,8 +40,8 @@ public class AtsSearchPresenterTest {
    @Test
    public void testSelectProgram() {
       MockAtsArtifactProvider provider = new MockAtsArtifactProvider();
-      AtsSearchPresenterImpl<AtsSearchHeaderComponent> presenter =
-         new AtsSearchPresenterImpl<AtsSearchHeaderComponent>(provider);
+      AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider);
       MockAtsSearchHeaderComponent comp = new MockAtsSearchHeaderComponent();
       ViewId program = new ViewId("prg1Guid_18H74Zqo3gA", "program1");
       presenter.selectProgram(program, comp);
@@ -50,15 +50,15 @@ public class AtsSearchPresenterTest {
 
    @Test
    public void testSelectSearch() throws UnsupportedEncodingException {
-      AtsSearchPresenterImpl<AtsSearchHeaderComponent> presenter =
-         new AtsSearchPresenterImpl<AtsSearchHeaderComponent>(null);
+      AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(null);
       MockSearchNavigator navigator = new MockSearchNavigator();
       String programGuid = "prg1Guid_18H74Zqo3gA";
       String buildGuid = "buildGuid1_d74Zqo3gA";
       ViewId program = new ViewId(programGuid, "prgName");
       ViewId build = new ViewId(buildGuid, "bldName");
-      AtsSearchParameters params = new AtsSearchParameters("phrase", true, false, build, program);
-      presenter.selectSearch(params, navigator);
+      AtsSearchParameters params = new AtsSearchParameters("phrase", true, build, program);
+      presenter.selectSearch("", params, navigator);
       String url = navigator.getResultsUrl();
       String expected =
          "/search=phrase&verbose=false&program=" + Utility.encode(programGuid) + "&nameOnly=true&build=" + Utility.encode(buildGuid);
@@ -75,18 +75,18 @@ public class AtsSearchPresenterTest {
       Match match = new MockMatch(art, attr);
       resultList.add(match);
       provider.setResultList(resultList);
-      AtsSearchPresenterImpl<AtsSearchHeaderComponent> presenter =
-         new AtsSearchPresenterImpl<AtsSearchHeaderComponent>(provider);
+      AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider);
       MockAtsSearchHeaderComponent headerComp = new MockAtsSearchHeaderComponent();
       MockSearchResultsListComponent resultsComponent = new MockSearchResultsListComponent();
-      presenter.initSearchResults(null, headerComp, resultsComponent);
+      presenter.initSearchResults(null, headerComp, resultsComponent, null);
       Assert.assertEquals(3, headerComp.getPrograms().size());
 
       String programGuid = GUID.create();
       String buildGuid = GUID.create();
       String url =
          "/program=" + Utility.encode(programGuid) + "&build=" + Utility.encode(buildGuid) + "&nameOnly=true&search=phrase&verbose=false";
-      presenter.initSearchResults(url, headerComp, resultsComponent);
+      presenter.initSearchResults(url, headerComp, resultsComponent, null);
       Assert.assertEquals(1, resultsComponent.getSearchResults().size());
    }
 }

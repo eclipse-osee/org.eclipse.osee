@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web;
 
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
-import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.eclipse.osee.vaadin.widgets.Navigator;
@@ -28,6 +26,7 @@ public abstract class AbstractCommonView extends VerticalLayout implements Navig
    protected OseeSearchHeaderComponent searchHeader;
    protected SearchPresenter searchPresenter;
    private boolean isLayoutComplete = false;
+   private String initialUrl;
 
    @Override
    public void attach() {
@@ -41,7 +40,7 @@ public abstract class AbstractCommonView extends VerticalLayout implements Navig
 
             createLayout();
 
-            callInit("");
+            callInit(initialUrl);
          }
          isLayoutComplete = true;
       }
@@ -49,16 +48,10 @@ public abstract class AbstractCommonView extends VerticalLayout implements Navig
 
    @Override
    public void navigateTo(String requestedDataId) {
-      String url = "";
+      //      String url = "";
+      initialUrl = requestedDataId;
       if (searchPresenter != null) {
-         try {
-            OseeUiApplication<SearchHeaderComponent, ViewSearchParameters> app =
-               (OseeUiApplication<SearchHeaderComponent, ViewSearchParameters>) getApplication();
-            url = app.getRequestedDataId();
-         } catch (Exception e) {
-            System.out.println("AbstractCommonView.navigateTo - CRITICAL ERROR: casting threw an exception.");
-         }
-         callInit(url);
+         callInit(requestedDataId);
       }
    }
 

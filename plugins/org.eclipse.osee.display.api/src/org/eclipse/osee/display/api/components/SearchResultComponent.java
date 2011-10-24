@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.api.components;
 
+import org.eclipse.osee.display.api.data.DisplayOptions;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 
@@ -21,4 +22,6 @@ public interface SearchResultComponent extends DisplaysErrorComponent {
    void setArtifact(ViewArtifact artifact);
 
    void addSearchResultMatch(SearchResultMatch match);
+
+   void setDisplayOptions(DisplayOptions options);
 }

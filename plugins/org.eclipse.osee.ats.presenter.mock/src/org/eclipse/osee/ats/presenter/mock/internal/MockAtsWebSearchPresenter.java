@@ -22,14 +22,15 @@ import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
+import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
+import org.eclipse.osee.display.api.data.DisplayOptions;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
-import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.mocks.MockSearchPresenter;
 
@@ -106,18 +107,31 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    }
 
    @Override
-   public void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator) {
-      if (atsNavigator != null && params != null) {
+   public void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator) {
+      if (navigator != null && options != null) {
          Map<String, String> parameters = new HashMap<String, String>();
-         if (params instanceof AtsSearchParameters) {
-            AtsSearchParameters atsParams = (AtsSearchParameters) params;
 
-            if (atsParams.getProgram() != null) {
-               parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, atsParams.getProgram().getGuid());
-            }
-            if (atsParams.getBuild() != null) {
-               parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, atsParams.getBuild().getGuid());
-            }
+         if (options.getVerboseResults() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE, options.getVerboseResults() ? "true" : "false");
+         }
+
+         if (parameters.size() > 0) {
+            String newurl = parameterMapToRequestString(parameters, url);
+            navigator.navigateSearchResults(newurl);
+         }
+      }
+   }
+
+   @Override
+   public void selectSearch(String url, K params, SearchNavigator navigator) {
+      if (navigator != null && params != null) {
+         Map<String, String> parameters = new HashMap<String, String>();
+
+         if (params.getProgram() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, params.getProgram().getGuid());
+         }
+         if (params.getBuild() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, params.getBuild().getGuid());
          }
          if (params.isNameOnly() != null) {
             parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
@@ -125,12 +139,28 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
          if (params.getSearchString() != null) {
             parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
          }
-         if (params.isVerboseResults() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE, params.isVerboseResults() ? "true" : "false");
-         }
          if (parameters.size() > 0) {
             String newurl = parameterMapToRequestString(parameters, url);
-            atsNavigator.navigateSearchResults(newurl);
+            navigator.navigateSearchResults(newurl);
+         }
+      }
+   }
+
+   private void updateSearchDisplayOptions(String url, DisplayOptionsComponent optionsComp) {
+      if (optionsComp != null) {
+         optionsComp.clearAll();
+
+         Map<String, String> params = requestStringToParameterMap(url);
+         if (params != null && params.size() > 0) {
+            String verboseStr = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
+            Boolean verbose = false;
+
+            if (verboseStr != null) {
+               verbose = verboseStr.equalsIgnoreCase("true");
+            }
+
+            DisplayOptions options = new DisplayOptions(verbose);
+            optionsComp.setDisplayOptions(options);
          }
       }
    }
@@ -152,19 +182,14 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
             program = getProgramWithGuid(params.get(UrlParamNameConstants.PARAMNAME_PROGRAM));
             build = getBuildWithGuid(params.get(UrlParamNameConstants.PARAMNAME_BUILD));
             String nameOnlyStr = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
-            String verboseStr = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
             Boolean nameOnly = false;
-            Boolean verbose = false;
             if (nameOnlyStr != null) {
                nameOnly = nameOnlyStr.equalsIgnoreCase("true");
             }
-            if (verboseStr != null) {
-               verbose = verboseStr.equalsIgnoreCase("true");
-            }
 
             AtsSearchParameters atsParams =
-               new AtsSearchParameters(params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE), nameOnly, verbose,
-                  build, program);
+               new AtsSearchParameters(params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE), nameOnly, build,
+                  program);
             searchHeaderComp.setSearchCriteria(atsParams);
          }
       }
@@ -181,8 +206,9 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    }
 
    @Override
-   public void initArtifactPage(String url, AtsSearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
+   public void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp, DisplayOptionsComponent options) {
       updateSearchHeader(url, searchHeaderComp);
+      updateSearchDisplayOptions(url, options);
       artHeaderComp.clearAll();
       Map<String, String> params = requestStringToParameterMap(url);
       if (params != null && params.size() > 0) {
@@ -243,7 +269,7 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    }
 
    @Override
-   public void selectProgram(ViewId program, AtsSearchHeaderComponent headerComponent) {
+   public void selectProgram(ViewId program, T headerComponent) {
       if (program != null && headerComponent != null) {
          Collection<ViewId> builds = programsAndBuilds.get(program);
          headerComponent.clearBuilds();
@@ -257,20 +283,16 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    }
 
    @Override
-   public void initSearchResults(String url, AtsSearchHeaderComponent searchHeaderComponent, SearchResultsListComponent resultsComponent) {
-      updateSearchHeader(url, searchHeaderComponent);
+   public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options) {
+      updateSearchHeader(url, searchHeaderComp);
+      updateSearchDisplayOptions(url, options);
 
-      if (resultsComponent != null) {
-         boolean showVerboseSearchResults = true;
+      if (searchResultsComp != null) {
          String searchPhrase = "";
          boolean nameOnly = false;
+         boolean verbose = false;
          Map<String, String> params = requestStringToParameterMap(url);
          if (params != null && params.size() > 0) {
-            String showVerbose_str = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
-            if (showVerbose_str != null && !showVerbose_str.isEmpty()) {
-               showVerboseSearchResults = showVerbose_str.equalsIgnoreCase("true");
-            }
-
             searchPhrase = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
             if (searchPhrase == null) {
                searchPhrase = "";
@@ -280,21 +302,25 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
             if (nameOnly_str != null && !nameOnly_str.isEmpty()) {
                nameOnly = nameOnly_str.equalsIgnoreCase("true");
             }
+
+            String verbose_str = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
+            if (verbose_str != null && !verbose_str.isEmpty()) {
+               verbose = verbose_str.equalsIgnoreCase("true");
+            }
          }
-         resultsComponent.clearAll();
+         searchResultsComp.clearAll();
          if (!searchPhrase.isEmpty()) {
             Set<Entry<String, ViewArtifact>> entrySet = artifacts.entrySet();
             for (Entry<String, ViewArtifact> artifactEntry : entrySet) {
                ViewArtifact artifact = artifactEntry.getValue();
                if (artifact.getArtifactName().toLowerCase().contains(searchPhrase.toLowerCase())) {
-                  SearchResultComponent searchResultComp = resultsComponent.createSearchResult();
+                  SearchResultComponent searchResultComp = searchResultsComp.createSearchResult();
                   if (searchResultComp != null) {
-                     if (showVerboseSearchResults) {
-                        artifact =
-                           new ViewArtifact(artifact.getGuid(), artifact.getArtifactName(), artifact.getArtifactType());
-                     }
                      searchResultComp.setArtifact(artifact);
-                     if (!nameOnly && !showVerboseSearchResults) {
+
+                     DisplayOptions dispOptions = new DisplayOptions(verbose);
+                     searchResultComp.setDisplayOptions(dispOptions);
+                     if (!nameOnly && verbose) {
                         StyledText matchHintText = new StyledText("...{COM_PAGE}...", true);
                         searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", 10,
                            Arrays.asList(matchHintText)));

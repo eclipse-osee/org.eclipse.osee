@@ -22,10 +22,13 @@ import com.vaadin.ui.Window;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsUiApplication extends OseeUiApplication<AtsSearchHeaderComponent, AtsSearchParameters> {
+public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends OseeUiApplication<T, K> {
 
-   public AtsUiApplication(AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> searchPresenter) {
+   AtsSearchPresenter<T, K> atsSearchPresenter;
+
+   public AtsUiApplication(AtsSearchPresenter<T, K> searchPresenter) {
       super(searchPresenter);
+      atsSearchPresenter = searchPresenter;
    }
 
    @Override
@@ -49,14 +52,15 @@ public class AtsUiApplication extends OseeUiApplication<AtsSearchHeaderComponent
       return nav;
    }
 
-   public AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> getAtsWebSearchPresenter() {
-      AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> pres = null;
-      if (searchPresenter instanceof AtsSearchPresenter<?, ?>) {
-         pres = (AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters>) searchPresenter;
-      } else {
-         System.out.println("AtsUiApplication.getAtsWebSearchPresenter() - CRITICAL ERROR: cast threw an exception.");
-      }
-      return pres;
+   public AtsSearchPresenter<T, K> getAtsWebSearchPresenter() {
+      return atsSearchPresenter;
+      //      AtsSearchPresenter<T, K> pres = null;
+      //      if (searchPresenter instanceof AtsSearchPresenter<?, ?>) {
+      //         pres = (AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters>) searchPresenter;
+      //      } else {
+      //         System.out.println("AtsUiApplication.getAtsWebSearchPresenter() - CRITICAL ERROR: cast threw an exception.");
+      //      }
+      //      return pres;
    }
 
    @Override

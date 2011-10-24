@@ -13,6 +13,7 @@ package org.eclipse.osee.display.presenter.mocks;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
+import org.eclipse.osee.display.api.data.DisplayOptions;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 
@@ -44,5 +45,9 @@ public class MockSearchResultComponent implements SearchResultComponent {
 
    @Override
    public void setErrorMessage(String message) {
+   }
+
+   @Override
+   public void setDisplayOptions(DisplayOptions options) {
    }
 }

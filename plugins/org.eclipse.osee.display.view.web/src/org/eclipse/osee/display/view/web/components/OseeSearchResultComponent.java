@@ -10,17 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.components;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
+import org.eclipse.osee.display.api.data.DisplayOptions;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
-import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.StyledText;
+import org.eclipse.osee.display.api.data.ViewArtifact;
+import org.eclipse.osee.display.api.data.ViewSearchParameters;
+import org.eclipse.osee.display.api.search.SearchNavigator;
+import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
+import com.vaadin.Application;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Shawn F. Cook
@@ -29,75 +35,94 @@ import com.vaadin.ui.VerticalLayout;
 public class OseeSearchResultComponent extends VerticalLayout implements SearchResultComponent {
 
    private ViewArtifact artifact;
-   private final Collection<SearchResultMatch> matches = new ArrayList<SearchResultMatch>();
-   private boolean showVerboseSearchResults = true;
+   private final OseeArtifactNameLinkComponent artifactName = new OseeArtifactNameLinkComponent();
+   private final OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent();
+   private final VerticalLayout vLayout_Matches = new VerticalLayout();
+   private final Label artifactType = new Label("", Label.CONTENT_XHTML);
    private final int TOPBOTTOM_VERT_SPACE = 8;
+   private boolean isLayoutComplete = false;
+   private SearchPresenter<SearchHeaderComponent, ViewSearchParameters> searchPresenter;
+   private SearchNavigator navigator;
 
-   public OseeSearchResultComponent() {
-      //Stupid hack. Web layout is driving me crazy.
-      //setHeight(65, UNITS_PIXELS);
-      this.setSizeUndefined();
+   @Override
+   public void attach() {
+      if (!isLayoutComplete) {
+         createLayout();
+         isLayoutComplete = true;
+      }
    }
 
    private void createLayout() {
-      //    Layout:
-      //     (0)   ArtName [ArtType]
-      //     (1)   breadcrumb #1 >> breadcrumb #2 >> 
-      //     (2)    match hint #1
-      //     (n-1)  match hint #n
-      //      ...
-      //     (n)   [spacer]
+      setSizeUndefined();
 
       HorizontalLayout row0 = new HorizontalLayout();
 
-      if (artifact != null) {
-         OseeArtifactNameLinkComponent artifactName =
-            new OseeArtifactNameLinkComponent(artifact, CssConstants.OSEE_SEARCHRESULT_ARTNAME);
-         Label spacer1 = new Label("");
-         spacer1.setHeight(null);
-         spacer1.setWidth(15, UNITS_PIXELS);
-         Label artifactType = new Label(String.format("[%s]", artifact.getArtifactType()), Label.CONTENT_XHTML);
-         artifactType.setStyleName(CssConstants.OSEE_SEARCHRESULT_ARTTYPE);
-         row0.addComponent(artifactName);
-         row0.addComponent(spacer1);
-         row0.addComponent(artifactType);
-         row0.setComponentAlignment(artifactName, Alignment.BOTTOM_LEFT);
-         row0.setComponentAlignment(artifactType, Alignment.MIDDLE_LEFT);
+      Label spacer1 = new Label("");
+      spacer1.setHeight(null);
+      spacer1.setWidth(15, UNITS_PIXELS);
+      artifactType.setStyleName(CssConstants.OSEE_SEARCHRESULT_ARTTYPE);
 
-         Label bottomSpacer = new Label("");
-         bottomSpacer.setHeight(TOPBOTTOM_VERT_SPACE, UNITS_PIXELS);
+      Label bottomSpacer = new Label("");
+      bottomSpacer.setHeight(TOPBOTTOM_VERT_SPACE, UNITS_PIXELS);
 
-         Label topSpacer = new Label("");
-         topSpacer.setHeight(TOPBOTTOM_VERT_SPACE, UNITS_PIXELS);
+      Label topSpacer = new Label("");
+      topSpacer.setHeight(TOPBOTTOM_VERT_SPACE, UNITS_PIXELS);
 
-         addComponent(topSpacer);
-         addComponent(row0);
-         if (showVerboseSearchResults) {
-            OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(artifact);
+      row0.addComponent(artifactName);
+      row0.addComponent(spacer1);
+      row0.addComponent(artifactType);
 
-            addComponent(breadcrumbComp);
+      addComponent(topSpacer);
+      addComponent(row0);
 
-            for (SearchResultMatch match : matches) {
-               OseeSearchResultMatchComponent matchComp = new OseeSearchResultMatchComponent(match);
-               addComponent(matchComp);
-            }
-         }
-         addComponent(bottomSpacer);
-      }
+      addComponent(breadcrumbComp);
+
+      addComponent(vLayout_Matches);
+      addComponent(bottomSpacer);
+
+      row0.setComponentAlignment(artifactName, Alignment.BOTTOM_LEFT);
+      row0.setComponentAlignment(artifactType, Alignment.MIDDLE_LEFT);
    }
+
+   private static int i = 0;
 
    @Override
    public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
-      removeAllComponents();
-      createLayout();
+      artifactName.setArtifact(this.artifact);
+      breadcrumbComp.setArtifact(this.artifact);
+      artifactType.setCaption(String.format("[%s]", artifact.getArtifactType()));
+
    }
 
    @Override
    public void addSearchResultMatch(SearchResultMatch match) {
-      matches.add(match);
-      removeAllComponents();
-      createLayout();
+      OseeSearchResultMatchComponent matchComp = new OseeSearchResultMatchComponent(match);
+      vLayout_Matches.addComponent(matchComp);
+   }
+
+   @Override
+   public void setErrorMessage(String message) {
+      Application app = this.getApplication();
+      if (app != null) {
+         Window mainWindow = app.getMainWindow();
+         if (mainWindow != null) {
+            mainWindow.showNotification(message, Notification.TYPE_ERROR_MESSAGE);
+         } else {
+            System.out.println("OseeSearchResultComponent.setErrorMessage - ERROR: Application.getMainWindow() returns null value.");
+         }
+      } else {
+         System.out.println("OseeSearchResultComponent.setErrorMessage - ERROR: getApplication() returns null value.");
+      }
+   }
+
+   @Override
+   public void setDisplayOptions(DisplayOptions options) {
+      if (options != null) {
+         boolean showVerbose = options.getVerboseResults();
+         vLayout_Matches.setVisible(showVerbose);
+         breadcrumbComp.setVisible(showVerbose);
+      }
    }
 
    private class OseeSearchResultMatchComponent extends HorizontalLayout {
@@ -132,13 +157,4 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
       }
    }
 
-   @Override
-   public void setErrorMessage(String message) {
-   }
-
-   public void setShowVerboseSearchResults(boolean showVerboseSearchResults) {
-      this.showVerboseSearchResults = showVerboseSearchResults;
-      removeAllComponents();
-      createLayout();
-   }
 }

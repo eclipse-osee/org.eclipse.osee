@@ -32,7 +32,7 @@ public class AtsArtifactView extends OseeArtifactView {
 
    @Override
    protected void callInit(String url) {
-      searchPresenter.initArtifactPage(url, searchHeader, this, relationsComp, attributeComp);
+      searchPresenter.initArtifactPage(url, searchHeader, this, relationsComp, attributeComp, null);
    }
 
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.ViewSearchParameters;
@@ -28,7 +29,6 @@ import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -44,24 +44,25 @@ import com.vaadin.ui.Window.Notification;
 @SuppressWarnings("serial")
 public class OseeSearchResultsListComponent extends VerticalLayout implements SearchResultsListComponent, PageSelectedListener {
 
-   private VerticalLayout mainLayout = new VerticalLayout();
-   private VerticalLayout bottomSpacer = new VerticalLayout();
-   private HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
-   private OseePagingComponent pagingComponent = new OseePagingComponent();
-   private List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
-   private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
+   private final VerticalLayout mainLayout = new VerticalLayout();
+   private final VerticalLayout bottomSpacer = new VerticalLayout();
+   private final HorizontalLayout manySearchResultsHorizLayout = new HorizontalLayout();
+   private final OseePagingComponent pagingComponent = new OseePagingComponent();
+   private final List<OseeSearchResultComponent> resultList = new ArrayList<OseeSearchResultComponent>();
+   private final OseeDisplayOptionsComponentImpl displayOptionsComponent = new OseeDisplayOptionsComponentImpl();
    private final ComboBox manyResultsComboBox = new ComboBox();
    private final int INIT_MANY_RES_PER_PAGE = 15;
    private final Label manySearchResults = new Label();
    private boolean isLayoutComplete = false;
-   private SearchPresenter<?, ?> searchPresenter;
+   private SearchPresenter<SearchHeaderComponent, ViewSearchParameters> searchPresenter;
    private SearchNavigator navigator;
 
    @Override
    public void attach() {
       if (!isLayoutComplete) {
          try {
-            OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) this.getApplication();
+            OseeUiApplication<SearchHeaderComponent, ViewSearchParameters> app =
+               (OseeUiApplication<SearchHeaderComponent, ViewSearchParameters>) this.getApplication();
             searchPresenter = app.getSearchPresenter();
             navigator = app.getNavigator();
          } catch (Exception e) {
@@ -94,21 +95,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       mainLayoutPanel.setSizeFull();
 
       bottomSpacer.setSizeFull();
-
-      showVerboseCheckBox.setImmediate(true);
-      showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
-         @Override
-         public void valueChange(ValueChangeEvent event) {
-            boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
-            OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) getApplication();
-            String url = "";
-            if (app != null) {
-               url = app.getRequestedDataId();
-            }
-            ViewSearchParameters params = new ViewSearchParameters(null, null, showVerbose);
-            searchPresenter.selectSearch(url, params, navigator);
-         }
-      });
 
       manyResultsComboBox.setImmediate(true);
       manyResultsComboBox.setTextInputAllowed(false);
@@ -156,7 +142,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       manySearchResultsHorizLayout.addComponent(hSpacer_ManyRes);
       manySearchResultsHorizLayout.addComponent(manySearchResults_suffix);
       manySearchResultsHorizLayout.addComponent(hSpacer_ManyResVerbose);
-      manySearchResultsHorizLayout.addComponent(showVerboseCheckBox);
+      manySearchResultsHorizLayout.addComponent(displayOptionsComponent);
       manySearchResultsHorizLayout.addComponent(hSpacer_VerbosePerPage);
       manySearchResultsHorizLayout.addComponent(manyResultsComboBox);
       manySearchResultsHorizLayout.addComponent(hSpacer_PerPage);
@@ -183,7 +169,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private void updateSearchResultsLayout() {
       //if the list of currently visible items has not changed, then don't bother updating the layout
       Collection<Integer> resultListIndices = pagingComponent.getCurrentVisibleItemIndices();
-      boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
 
       //First, get a list of all the search results components currently in the layout
       Collection<Component> removeTheseComponents = new ArrayList<Component>();
@@ -203,7 +188,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       for (Integer i : resultListIndices) {
          try {
             OseeSearchResultComponent searchResultComp = resultList.get(i);
-            searchResultComp.setShowVerboseSearchResults(showVerbose);
             mainLayout.addComponent(searchResultComp, 0);
          } catch (IndexOutOfBoundsException e) {
             System.out.println("OseeSearchResultsListComponent.updateSearchResultsLayout - CRITICAL ERROR: IndexOutOfBoundsException e");
@@ -241,5 +225,9 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    @Override
    public void pageSelected(PageSelectedEvent source) {
       updateSearchResultsLayout();
+   }
+
+   public OseeDisplayOptionsComponentImpl getDisplayOptionsComponent() {
+      return displayOptionsComponent;
    }
 }

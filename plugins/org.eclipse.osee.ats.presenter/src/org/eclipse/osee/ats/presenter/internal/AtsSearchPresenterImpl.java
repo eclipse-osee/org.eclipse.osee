@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.presenter.internal;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
@@ -22,11 +21,10 @@ import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
+import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
-import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
-import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
 import org.eclipse.osee.display.presenter.Utility;
@@ -47,9 +45,9 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    }
 
    @Override
-   public void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator) {
-      //      String urllocal = encode(params, null);
-      //      atsNavigator.navigateSearchResults(urllocal);
+   public void selectSearch(String url, K params, SearchNavigator atsNavigator) {
+      String newUrl = encode(url, params, null);
+      atsNavigator.navigateSearchResults(newUrl);
    }
 
    private void addProgramsToSearchHeader(T headerComponent) {
@@ -67,58 +65,19 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    }
 
    @Override
-   public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent) {
+   public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent, DisplayOptionsComponent optionsComponent) {
+      setSearchHeaderFields(url, searchHeaderComponent);
+
       if (!Strings.isValid(url)) {
-         addProgramsToSearchHeader(searchHeaderComponent);
          return;
       }
 
       AtsSearchParameters params = decodeIt(url);
-      //      WebId program = null, build = null;
-      //      Collection<WebId> programs = null;
 
       if (!params.isValid()) {
          setErrorMessage(searchHeaderComponent, String.format("Invalid url received: %s", url));
          return;
       }
-
-      //      try {
-      //         programs = getPrograms();
-      //      } catch (Exception ex) {
-      //         setErrorMessage(searchHeaderComponent, ex.getMessage());
-      //         return;
-      //      }
-      //      for (WebId p : programs) {
-      //         if (p.getGuid().equals(params.getProgram().getGuid())) {
-      //            program = p;
-      //            break;
-      //         }
-      //      }
-      //
-      //      if (program == null) {
-      //         setErrorMessage(searchHeaderComponent,
-      //            String.format("Invalid program id: [%s]", params.getProgram().getGuid()));
-      //         return;
-      //      }
-      //
-      //      Collection<WebId> builds = null;
-      //      try {
-      //         builds = getBuilds(program);
-      //      } catch (Exception ex) {
-      //         setErrorMessage(searchHeaderComponent, ex.getMessage());
-      //         return;
-      //      }
-      //      for (WebId b : builds) {
-      //         if (b.getGuid().equals(params.getBuild().getGuid())) {
-      //            build = b;
-      //            break;
-      //         }
-      //      }
-      //
-      //      if (build == null) {
-      //         setErrorMessage(searchHeaderComponent, String.format("Invalid build id: [%s]", params.getBuild().getGuid()));
-      //         return;
-      //      }
 
       String branchGuid;
       try {
@@ -129,8 +88,8 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
          return;
       }
 
-      String newUrl = encode(params, branchGuid);
-      super.initSearchResults(newUrl, searchHeaderComponent, resultsComponent);
+      String newUrl = encode(url, params, branchGuid);
+      super.initSearchResults(newUrl, searchHeaderComponent, resultsComponent, optionsComponent);
 
    }
 
@@ -171,8 +130,8 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       return builds;
    }
 
-   protected String encode(AtsSearchParameters searchParams, String branchId) {
-      Map<String, String> params = new HashMap<String, String>();
+   protected String encode(String url, AtsSearchParameters searchParams, String branchId) {
+      Map<String, String> params = Utility.decode(url);
       if (Strings.isValid(branchId)) {
          params.put("branch", branchId);
       }
@@ -180,7 +139,6 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       params.put("build", searchParams.getBuild().getGuid());
       params.put("nameOnly", String.valueOf(searchParams.isNameOnly()));
       params.put("search", searchParams.getSearchString());
-      params.put("verbose", String.valueOf(searchParams.isVerboseResults()));
       try {
          return "/" + getParametersAsEncodedUrl(params);
       } catch (UnsupportedEncodingException ex) {
@@ -194,21 +152,37 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       ViewId program = new ViewId(data.get("program"), "");
       ViewId build = new ViewId(data.get("build"), "");
 
-      String vValue = data.get("verbose");
-      boolean verbose = vValue == null ? false : vValue.equalsIgnoreCase("true");
       String nValue = data.get("nameOnly");
       boolean nameOnly = nValue == null ? false : nValue.equalsIgnoreCase("true");
       String searchPhrase = data.get("search");
 
-      return new AtsSearchParameters(searchPhrase, nameOnly, verbose, build, program);
+      //      String vValue = data.get("verbose");
+      //      boolean verbose = vValue == null ? false : vValue.equalsIgnoreCase("true");
+      return new AtsSearchParameters(searchPhrase, nameOnly, build, program);
+   }
+
+   protected void setSearchHeaderFields(String url, T searchHeaderComp) {
+      searchHeaderComp.clearAll();
+      addProgramsToSearchHeader(searchHeaderComp);
+
+      if (!Strings.isValid(url)) {
+         return;
+      }
+
+      AtsSearchParameters params = decodeIt(url);
+      if (!params.isValid()) {
+         setErrorMessage(searchHeaderComp, String.format("Invalid url received: %s", url));
+         return;
+      }
+
+      selectProgram(params.getProgram(), searchHeaderComp);
+      searchHeaderComp.setSearchCriteria(params);
    }
 
    @Override
-   public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
-   }
-
-   @Override
-   public void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
+   public void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp, DisplayOptionsComponent options) {
+      setSearchHeaderFields(url, searchHeaderComp);
+      super.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, options);
    }
 
 }

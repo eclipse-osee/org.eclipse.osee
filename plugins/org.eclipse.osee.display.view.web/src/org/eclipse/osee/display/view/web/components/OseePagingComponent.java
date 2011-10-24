@@ -274,25 +274,25 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    @Override
    public void gotoFirstPage() {
       this.setCurrentPage(0);
-      createLayout();
+      updateLayout();
    }
 
    @Override
    public void gotoPrevPage() {
       this.setCurrentPage(currentPage - 1);
-      createLayout();
+      updateLayout();
    }
 
    @Override
    public void gotoNextPage() {
       this.setCurrentPage(currentPage + 1);
-      createLayout();
+      updateLayout();
    }
 
    @Override
    public void gotoLastPage() {
       this.setCurrentPage(manyPages - 1);
-      createLayout();
+      updateLayout();
    }
 
    @Override
@@ -317,7 +317,7 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    public void setManyItemsPerPage(int manyItemsPerPage) {
       this.manyItemsPerPage = manyItemsPerPage;
       this.allItemsPerPage = false;
-      createLayout();
+      updateLayout();
    }
 
    @Override
@@ -328,6 +328,6 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    @Override
    public void setAllItemsPerPage() {
       this.allItemsPerPage = true;
-      createLayout();
+      updateLayout();
    }
 }

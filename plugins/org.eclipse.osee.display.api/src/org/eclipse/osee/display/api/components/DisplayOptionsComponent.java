@@ -8,27 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.api.data;
+package org.eclipse.osee.display.api.components;
+
+import org.eclipse.osee.display.api.data.DisplayOptions;
 
 /**
  * @author John Misinco
  */
-public class ViewSearchParameters {
+public interface DisplayOptionsComponent {
 
-   private final String searchString;
-   private final Boolean nameOnly;
+   void clearAll();
 
-   public ViewSearchParameters(String searchString, Boolean nameOnly) {
-      this.searchString = searchString;
-      this.nameOnly = nameOnly;
-   }
-
-   public String getSearchString() {
-      return searchString;
-   }
-
-   public Boolean isNameOnly() {
-      return nameOnly;
-   }
-
+   void setDisplayOptions(DisplayOptions options);
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
 @SuppressWarnings("serial")
 public class AtsSearchResultsView extends OseeSearchResultsView {
 
-   private boolean isLayoutComplete = false;
+   private final boolean isLayoutComplete = false;
 
    @Override
    protected void initComponents() {
@@ -35,6 +35,6 @@ public class AtsSearchResultsView extends OseeSearchResultsView {
 
    @Override
    protected void callInit(String url) {
-      searchPresenter.initSearchResults(url, searchHeader, searchResultsListComponent);
+      searchPresenter.initSearchResults(url, searchHeader, searchResultsListComponent, null);
    }
 }

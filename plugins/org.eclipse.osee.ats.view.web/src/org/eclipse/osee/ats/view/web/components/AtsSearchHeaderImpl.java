@@ -51,6 +51,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    private final ComboBox buildCombo = new ComboBox("Build:");
    private final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", true);
    private final TextField searchTextField = new TextField();
+   private final Button searchButton = new Button("Search");
    private AtsSearchPresenter searchPresenter;
    private AtsNavigator navigator;
    private boolean lockProgramCombo = false;
@@ -71,6 +72,16 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       isLayoutComplete = true;
    }
 
+   private void validateSearchAndEnableSearchButton() {
+      ViewId program = (ViewId) programCombo.getValue();
+      ViewId build = (ViewId) buildCombo.getValue();
+      if (program != null && build != null) {
+         searchButton.setEnabled(true);
+      } else {
+         searchButton.setEnabled(false);
+      }
+   }
+
    private void selectProgram() {
       if (programCombo != null) {
          ViewId program = (ViewId) programCombo.getValue();
@@ -87,28 +98,40 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
                if (!lockProgramCombo) {
                   selectProgram();
                }
+               validateSearchAndEnableSearchButton();
             }
          });
          programCombo.setImmediate(true);
+
+         buildCombo.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+               validateSearchAndEnableSearchButton();
+            }
+         });
+         buildCombo.setImmediate(true);
       }
       if (buildCombo != null) {
          buildCombo.setNullSelectionAllowed(false);
       }
 
       searchTextField.setImmediate(true);
+      validateSearchAndEnableSearchButton();
    }
 
    protected void selectSearch() {
-      if (searchPresenter != null && programCombo != null && buildCombo != null && nameOnlyCheckBox != null && searchTextField != null) {
-         ViewId program = (ViewId) programCombo.getValue();
-         ViewId build = (ViewId) buildCombo.getValue();
-         boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
-         String searchPhrase = (String) searchTextField.getValue();
-         AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, null, build, program);
-         OseeUiApplication app = (OseeUiApplication) getApplication();
-         searchPresenter.selectSearch(app.getRequestedDataId(), params, navigator);
-      } else {
-         System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
+      if (searchButton.isEnabled()) {
+         if (searchPresenter != null && programCombo != null && buildCombo != null && nameOnlyCheckBox != null && searchTextField != null) {
+            ViewId program = (ViewId) programCombo.getValue();
+            ViewId build = (ViewId) buildCombo.getValue();
+            boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
+            String searchPhrase = (String) searchTextField.getValue();
+            AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, build, program);
+            OseeUiApplication app = (OseeUiApplication) getApplication();
+            searchPresenter.selectSearch(app.getRequestedDataId(), params, navigator);
+         } else {
+            System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
+         }
       }
    }
 
@@ -134,7 +157,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       Label hSpacer_SearchTextBtn = new Label("");
       hSpacer_SearchTextBtn.setHeight(null);
       hSpacer_SearchTextBtn.setWidth(30, UNITS_PIXELS);
-      Button searchButton = new Button("Search", new Button.ClickListener() {
+      searchButton.addListener(new Button.ClickListener() {
          @Override
          public void buttonClick(Button.ClickEvent event) {
             selectSearch();

@@ -12,9 +12,11 @@ package org.eclipse.osee.display.api.search;
 
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
+import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
+import org.eclipse.osee.display.api.data.DisplayOptions;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.data.ViewSearchParameters;
@@ -24,14 +26,16 @@ import org.eclipse.osee.display.api.data.ViewSearchParameters;
  */
 public interface SearchPresenter<T extends SearchHeaderComponent, K extends ViewSearchParameters> {
 
-   void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp);
+   void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options);
 
    void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator);
 
-   void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp);
+   void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp, DisplayOptionsComponent options);
 
    void selectRelationType(ViewArtifact artifact, ViewId relation, RelationComponent relationComponent);
 
-   void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator);
+   void selectSearch(String url, K params, SearchNavigator navigator);
+
+   void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator);
 
 }

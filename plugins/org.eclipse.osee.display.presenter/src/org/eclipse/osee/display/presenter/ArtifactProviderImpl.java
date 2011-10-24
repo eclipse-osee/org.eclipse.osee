@@ -13,8 +13,14 @@ package org.eclipse.osee.display.presenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -78,8 +84,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered =
-         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered;
 
       IAttributeType type = nameOnly ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
 
@@ -87,13 +92,42 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
       List<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.getMatches().getList();
 
-      for (Match<ReadableArtifact, ReadableAttribute<?>> match : results) {
-         ReadableArtifact matchedArtifact = match.getItem();
-         if (sanitizeResult(matchedArtifact) != null) {
-            filtered.add(match);
-         }
-      }
+      filtered = sanitizeSearchResults(results);
+
       return filtered;
+   }
+
+   private List<Match<ReadableArtifact, ReadableAttribute<?>>> sanitizeSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize) {
+      int numProcessors = Runtime.getRuntime().availableProcessors();
+      int partitionSize = toSanitize.size() / numProcessors;
+      int remainder = toSanitize.size() % numProcessors;
+      ExecutorService executor = Executors.newFixedThreadPool(numProcessors);
+      int startIndex = 0;
+      int endIndex = 0;
+      List<ResultsCallable> workers = new LinkedList<ResultsCallable>();
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
+         new LinkedList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+
+      for (int i = 0; i < numProcessors; i++) {
+         startIndex = endIndex;
+         endIndex = startIndex + partitionSize;
+         if (i == 0) {
+            endIndex += remainder;
+         }
+         ResultsCallable worker = new ResultsCallable(toSanitize.subList(startIndex, endIndex));
+         workers.add(worker);
+      }
+
+      try {
+         for (Future<List<Match<ReadableArtifact, ReadableAttribute<?>>>> future : executor.invokeAll(workers)) {
+            toReturn.addAll(future.get());
+         }
+      } catch (Exception ex) {
+         //
+      }
+
+      return toReturn;
+
    }
 
    private ReadableArtifact sanitizeResult(ReadableArtifact result) throws OseeCoreException {
@@ -136,5 +170,27 @@ public class ArtifactProviderImpl implements ArtifactProvider {
          toReturn.add(graph.getFullRelationType(side));
       }
       return toReturn;
+   }
+
+   private class ResultsCallable implements Callable<List<Match<ReadableArtifact, ReadableAttribute<?>>>> {
+
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize;
+
+      public ResultsCallable(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize) {
+         this.toSanitize = toSanitize;
+      }
+
+      @Override
+      public List<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
+         Iterator<Match<ReadableArtifact, ReadableAttribute<?>>> it = toSanitize.iterator();
+         while (it.hasNext()) {
+            Match<ReadableArtifact, ReadableAttribute<?>> match = it.next();
+            ReadableArtifact matchedArtifact = match.getItem();
+            if (sanitizeResult(matchedArtifact) == null) {
+               it.remove();
+            }
+         }
+         return toSanitize;
+      }
    }
 }

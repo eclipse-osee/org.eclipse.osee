@@ -14,17 +14,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
+import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
 import org.eclipse.osee.display.api.components.DisplaysErrorComponent;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
+import org.eclipse.osee.display.api.data.DisplayOptions;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.api.data.ViewArtifact;
@@ -50,7 +51,7 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author John Misinco
  */
-public class SearchPresenterImpl<T extends SearchHeaderComponent> implements SearchPresenter<T> {
+public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K> {
 
    protected final ArtifactProvider artifactProvider;
 
@@ -62,13 +63,21 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
    }
 
    @Override
-   public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp) {
+   public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options) {
       searchResultsComp.clearAll();
       SearchParameters params = decodeSearchUrl(url);
+
+      if (!Strings.isValid(url)) {
+         return;
+      }
+
       if (!params.isValid()) {
          setErrorMessage(searchResultsComp, String.format("Invalid url received: %s", url));
          return;
       }
+
+      //      options.setDisplayOptions(new DisplayOptions(params.isVerbose()));
+
       List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults = null;
       try {
          searchResults =
@@ -91,7 +100,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
    private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, SearchParameters params) throws OseeCoreException {
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
          ReadableArtifact matchedArtifact = match.getItem();
-         ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact);
+         ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact, true);
 
          SearchResultComponent searchResult = searchResultsComp.createSearchResult();
          searchResult.setArtifact(viewArtifact);
@@ -110,7 +119,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
 
    @Override
    public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
-      Map<String, String> params = new HashMap<String, String>();
+      Map<String, String> params = Utility.decode(url);
       params.put("branch", artifact.getBranch().getGuid());
       params.put("artifact", artifact.getGuid());
       String value;
@@ -124,7 +133,11 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
    }
 
    @Override
-   public void initArtifactPage(String url, SearchHeaderComponent searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp) {
+   public void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp, DisplayOptionsComponent options) {
+      if (!Strings.isValid(url)) {
+         return;
+      }
+
       ArtifactParameters params = decodeArtifactUrl(url);
 
       if (!params.isValid()) {
@@ -149,7 +162,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
 
       ViewArtifact artifact = null;
       try {
-         artifact = convertToViewArtifact(displayArt);
+         artifact = convertToViewArtifact(displayArt, true);
       } catch (Exception e) {
          setErrorMessage(artHeaderComp, String.format("Error while converting [%s] from branch:[%s]", art, branch));
          return;
@@ -237,11 +250,11 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
 
       try {
          for (ReadableArtifact rel : relatedSideA) {
-            ViewArtifact id = convertToViewArtifact(rel);
+            ViewArtifact id = convertToViewArtifact(rel, false);
             relationComponent.addLeftRelated(id);
          }
          for (ReadableArtifact rel : relatedSideB) {
-            ViewArtifact id = convertToViewArtifact(rel);
+            ViewArtifact id = convertToViewArtifact(rel, false);
             relationComponent.addRightRelated(id);
          }
       } catch (Exception ex) {
@@ -251,11 +264,12 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
       }
    }
 
-   protected ViewArtifact convertToViewArtifact(ReadableArtifact artifact) throws OseeCoreException {
+   protected ViewArtifact convertToViewArtifact(ReadableArtifact artifact, boolean addAncestry) throws OseeCoreException {
       ViewId branch = new ViewId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
+      List<ViewArtifact> ancestry = addAncestry ? getAncestry(artifact) : null;
       ViewArtifact toReturn =
-         new ViewArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(),
-            getAncestry(artifact), branch);
+         new ViewArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(), ancestry,
+            branch);
       return toReturn;
    }
 
@@ -263,7 +277,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
       ReadableArtifact cur = artifactProvider.getParent(art);
       List<ViewArtifact> ancestry = new ArrayList<ViewArtifact>();
       while (cur != null) {
-         ancestry.add(convertToViewArtifact(cur));
+         ancestry.add(convertToViewArtifact(cur, false));
          cur = artifactProvider.getParent(cur);
       }
       return ancestry;
@@ -363,6 +377,22 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent> implements Sea
          sb.deleteCharAt(sb.length() - 1);
       }
       return sb.toString();
+   }
+
+   @Override
+   public void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator) {
+      Map<String, String> map = Utility.decode(url);
+      map.put("verbose", String.valueOf(options.getVerboseResults().booleanValue()));
+      String newUrl = Utility.encode(map);
+      navigator.navigateSearchResults(newUrl);
+   }
+
+   protected void setDisplayOptions(DisplayOptions options, DisplayOptionsComponent component) {
+      component.setDisplayOptions(options);
+   }
+
+   @Override
+   public void selectSearch(String url, K params, SearchNavigator navigator) {
    }
 
 }
