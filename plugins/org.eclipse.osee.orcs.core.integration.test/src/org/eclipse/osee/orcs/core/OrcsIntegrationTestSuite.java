@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core;
 
+import org.eclipse.osee.orcs.core.internal.OrcsAttributeLoadingTest;
+import org.eclipse.osee.orcs.core.internal.OrcsAttributeSearchTest;
 import org.eclipse.osee.orcs.core.internal.OrcsQueryTest;
-import org.eclipse.osee.orcs.core.internal.OsrcsApiTest;
+import org.eclipse.osee.orcs.core.internal.OsrcsRelationLoadingTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +21,11 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OsrcsApiTest.class, OrcsQueryTest.class})
+@Suite.SuiteClasses({
+   OrcsAttributeLoadingTest.class,
+   OrcsAttributeSearchTest.class,
+   OrcsQueryTest.class,
+   OsrcsRelationLoadingTest.class})
 public class OrcsIntegrationTestSuite {
    // Test Suite
 }
