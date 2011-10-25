@@ -16,15 +16,13 @@ import org.eclipse.osee.display.view.web.AbstractCommonView;
 import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponent;
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
 import org.eclipse.osee.display.view.web.components.OseeBreadcrumbComponent;
+import org.eclipse.osee.display.view.web.components.OseeExceptionDialogComponent;
 import org.eclipse.osee.display.view.web.components.OseeRelationsComponent;
-import com.vaadin.Application;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Shawn F. Cook
@@ -142,17 +140,8 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
    }
 
    @Override
-   public void setErrorMessage(String message) {
-      Application app = this.getApplication();
-      if (app != null) {
-         Window mainWindow = app.getMainWindow();
-         if (mainWindow != null) {
-            mainWindow.showNotification(message, Notification.TYPE_ERROR_MESSAGE);
-         } else {
-            System.out.println("OseeArtifactView.setErrorMessage - ERROR: Application.getMainWindow() returns null value.");
-         }
-      } else {
-         System.out.println("OseeArtifactView.setErrorMessage - ERROR: getApplication() returns null value.");
-      }
+   public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
+      OseeExceptionDialogComponent dlg =
+         new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
    }
 }

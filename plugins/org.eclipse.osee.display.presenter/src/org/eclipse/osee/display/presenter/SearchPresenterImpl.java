@@ -21,6 +21,7 @@ import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
 import org.eclipse.osee.display.api.components.DisplaysErrorComponent;
+import org.eclipse.osee.display.api.components.DisplaysErrorComponent.MsgType;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;

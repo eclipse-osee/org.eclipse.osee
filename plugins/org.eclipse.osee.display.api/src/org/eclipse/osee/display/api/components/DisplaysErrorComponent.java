@@ -14,7 +14,11 @@ package org.eclipse.osee.display.api.components;
  * @author John Misinco
  */
 public interface DisplaysErrorComponent {
+   public enum MsgType {
+      MSGTYPE_ERROR,
+      MSGTYPE_WARNING;
+   }
 
-   void setErrorMessage(String message);
+   void setErrorMessage(String shortMsg, String longMsg, MsgType msgType);
 
 }

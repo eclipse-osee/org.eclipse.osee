@@ -16,7 +16,6 @@ import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
-import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Alignment;
@@ -24,8 +23,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Shawn F. Cook
@@ -211,18 +208,9 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    }
 
    @Override
-   public void setErrorMessage(String message) {
-      Application app = this.getApplication();
-      if (app != null) {
-         Window mainWindow = app.getMainWindow();
-         if (mainWindow != null) {
-            mainWindow.showNotification(message, Notification.TYPE_ERROR_MESSAGE);
-         } else {
-            System.out.println("OseeRelationsComponent.setErrorMessage - ERROR: Application.getMainWindow() returns null value.");
-         }
-      } else {
-         System.out.println("OseeRelationsComponent.setErrorMessage - ERROR: getApplication() returns null value.");
-      }
+   public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
+      OseeExceptionDialogComponent dlg =
+         new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
    }
 
    @Override

@@ -49,8 +49,8 @@ public class MockSearchResultsListComponent implements SearchResultsListComponen
    }
 
    @Override
-   public void setErrorMessage(String message) {
-      errorMessage = message;
+   public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
+      //      errorMessage = message;
    }
 
 }

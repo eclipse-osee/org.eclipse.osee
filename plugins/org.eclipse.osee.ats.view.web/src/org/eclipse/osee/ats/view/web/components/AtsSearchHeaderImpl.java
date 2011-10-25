@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.ComponentUtility;
+import org.eclipse.osee.display.view.web.components.OseeExceptionDialogComponent;
 import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
 import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
-import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.Action;
@@ -37,8 +37,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Shawn F. Cook
@@ -125,7 +123,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       }
    }
 
-   @Override
    public void createLayout() {
       setWidth(100, UNITS_PERCENTAGE);
       setStyleName(CssConstants.OSEE_SEARCH_HEADER_COMPONENT_SMALL);
@@ -150,6 +147,11 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       searchButton.addListener(new Button.ClickListener() {
          @Override
          public void buttonClick(Button.ClickEvent event) {
+            String msg = "";
+            for (int i = 0; i < 1000; i++) {
+               msg += this.toString();
+               msg += "\n";
+            }
             selectSearch();
          }
       });
@@ -262,19 +264,9 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    }
 
    @Override
-   public void setErrorMessage(String message) {
-      System.out.println(message);
-      Application app = this.getApplication();
-      if (app != null) {
-         Window mainWindow = app.getMainWindow();
-         if (mainWindow != null) {
-            mainWindow.showNotification(message, Notification.TYPE_ERROR_MESSAGE);
-         } else {
-            System.out.println("AtsSearchHeaderComponent.setErrorMessage - ERROR: Application.getMainWindow() returns null value.");
-         }
-      } else {
-         System.out.println("AtsSearchHeaderComponent.setErrorMessage - ERROR: getApplication() returns null value.");
-      }
+   public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
+      OseeExceptionDialogComponent dlg =
+         new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
    }
 
    //TODO: None of this works because Vaadin only supports key actions for Windows and Panel Objects. (this is

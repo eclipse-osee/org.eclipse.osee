@@ -78,8 +78,11 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
       return artifact;
    }
 
+   private int debugindex = 0;
+
    public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
+      artifactNameLink.setDebugId(String.format("OseeArtifactNameLinkComponent.%s.%d", artifact.getGuid(), debugindex));
       updateLayout();
    }
 

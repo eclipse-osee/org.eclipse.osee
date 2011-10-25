@@ -11,36 +11,12 @@
 package org.eclipse.osee.display.view.web.components;
 
 import org.eclipse.osee.display.api.components.SearchHeaderComponent;
-import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import com.vaadin.ui.CustomComponent;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchHeaderComponent extends CustomComponent implements SearchHeaderComponent {
-
-   @Override
-   public void attach() {
-      createLayout();
-   }
-
-   public void createLayout() {
-      //Do nothing.
-   }
-
-   @Override
-   public void clearAll() {
-      //Do nothing.
-   }
-
-   @Override
-   public void setErrorMessage(String message) {
-      //Do nothing.
-   }
-
-   public void setSearchCriteria(ViewSearchParameters params) {
-      //Do nothing.
-   }
+public abstract class OseeSearchHeaderComponent extends CustomComponent implements SearchHeaderComponent {
 
 }

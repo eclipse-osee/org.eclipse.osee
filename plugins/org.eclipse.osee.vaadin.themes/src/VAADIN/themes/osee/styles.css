@@ -163,3 +163,71 @@
 	padding-left: 0px;
 }
 
+.v-caption-osee-exception-error-title-text {
+	font-size: 20px;
+	color: red;
+	background-color: #F3E2E0;
+	font-weight:bold;
+	}
+
+.v-caption-osee-exception-warning-title-text {
+	font-size: 20px;
+	background-color: yellow;
+	color: orange;
+	font-weight:bold;
+	}
+
+.osee-exception {
+	margin: 10px 10px 10px 10px;
+	}
+
+.osee-exception-longmsg {
+	resize: none;
+	}
+
+.v-window-wrap {
+	border: none;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	overflow: hidden;
+	}
+
+.v-window-wrap2 {
+	background: #fff;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px;
+	}
+
+.v-window-outerheader {
+	color: transparent;
+	padding: 0px;
+	max-width: 800px;
+	white-space: normal;
+	height: 0px;
+	}
+
+div.v-window-header {
+	white-space: normal;
+	}
+
+.v-window-closebox {
+	right: 0px;
+	top: 0px;
+	width: 0px;
+	height: 0px;
+	}
+
+.v-window-closebox:hover {
+	background-position: left bottom;
+	}
+
+.v-window-footer {
+	height: 0px;
+	}
+
+.v-window-resizebox {
+	width: 0px;
+	height: 0px;
+	}

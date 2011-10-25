@@ -55,6 +55,9 @@ public final class CssConstants {
    public static final String OSEE_ATTRIBUTESBORDER = "osee-attributesborder";
 
    public static final String OSEE_CURRENTPAGELABEL = "osee-currentpagelabel";
-
    public static final int OSEE_LEFTMARGINWIDTH = 15;
+   public static final String OSEE_EXCEPTION = "osee-exception";
+   public static final String OSEE_EXCEPTION_ERROR_TITLE_TEXT = "osee-exception-error-title-text";
+   public static final String OSEE_EXCEPTION_WARNING_TITLE_TEXT = "osee-exception-warning-title-text";
+   public static final String OSEE_EXCEPTION_LONGMSG = "osee-exception-longmsg";
 }

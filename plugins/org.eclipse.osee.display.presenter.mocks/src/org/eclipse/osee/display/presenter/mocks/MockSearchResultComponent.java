@@ -44,7 +44,7 @@ public class MockSearchResultComponent implements SearchResultComponent {
    }
 
    @Override
-   public void setErrorMessage(String message) {
+   public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
    }
 
    @Override
