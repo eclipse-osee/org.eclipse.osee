@@ -37,7 +37,7 @@ import org.junit.Rule;
  * 
  * @author Andrew M. Finkbeiner
  */
-public class OsrcsRelationLoadingTest {
+public class OrcsRelationLoadingTest {
 
    @Rule
    public OseeDatabase db = new OseeDatabase("osee.demo.h2");
