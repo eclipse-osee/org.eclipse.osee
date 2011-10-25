@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Event Service over Osgi
+Bundle-Name: Event Service over Osgi (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.event.osgi
 Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
