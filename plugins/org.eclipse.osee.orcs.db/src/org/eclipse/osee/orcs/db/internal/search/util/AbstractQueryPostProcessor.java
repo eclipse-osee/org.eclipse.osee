@@ -76,12 +76,14 @@ public abstract class AbstractQueryPostProcessor implements QueryPostProcessor {
             try {
                if (getTypes().contains(attribute.getAttributeType())) {
                   Tagger tagger = getTagger(attribute);
-                  List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), true);
-                  if (!locations.isEmpty()) {
-                     if (matchedAttributes == null) {
-                        matchedAttributes = new HashMap<ReadableAttribute<?>, List<MatchLocation>>();
+                  if (tagger != null) {
+                     List<MatchLocation> locations = tagger.find(attribute, getQuery(), getCaseType(), true);
+                     if (!locations.isEmpty()) {
+                        if (matchedAttributes == null) {
+                           matchedAttributes = new HashMap<ReadableAttribute<?>, List<MatchLocation>>();
+                        }
+                        matchedAttributes.put(attribute, locations);
                      }
-                     matchedAttributes.put(attribute, locations);
                   }
                }
             } catch (Exception ex) {

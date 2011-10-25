@@ -14,9 +14,11 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -49,6 +51,10 @@ public class CriteriaAttributeOther extends Criteria {
    @Override
    public void checkValid(QueryOptions options) throws OseeCoreException {
       super.checkValid(options);
+      Conditions.checkNotNull(getAttributeType(), "attributeType");
+      Conditions.checkExpressionFailOnTrue(getAttributeType().equals(QueryBuilder.ANY_ATTRIBUTE_TYPE),
+         "Any attribute type is not allowed");
+
       Operator operator = getOperator();
       for (String value : getValues()) {
          if (value != null && value.contains("%") && operator.isGreaterThanOrLessThan()) {

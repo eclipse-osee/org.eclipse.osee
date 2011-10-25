@@ -11,11 +11,14 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
@@ -27,6 +30,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
@@ -34,6 +38,24 @@ import org.eclipse.osee.orcs.search.StringOperator;
  */
 @SuppressWarnings("unused")
 public class CriteriaFactory {
+
+   private final AttributeTypeCache attributeTypeCache;
+
+   public CriteriaFactory(AttributeTypeCache attributeTypeCache) {
+      this.attributeTypeCache = attributeTypeCache;
+   }
+
+   private Collection<? extends IAttributeType> checkForAnyType(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+      Collection<? extends IAttributeType> toReturn;
+      if (attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE)) {
+         Collection<AttributeType> temp = new LinkedList<AttributeType>();
+         temp.addAll(attributeTypeCache.getAll());
+         toReturn = temp;
+      } else {
+         toReturn = attributeTypes;
+      }
+      return toReturn;
+   }
 
    public Criteria createExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       return new CriteriaAttributeTypeExists(attributeTypes);
@@ -47,8 +69,9 @@ public class CriteriaFactory {
       return new CriteriaAttributeOther(attributeType, values, operator);
    }
 
-   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeType, StringOperator operator, CaseType match, String value) throws OseeCoreException {
-      return new CriteriaAttributeKeyword(attributeType, value, operator, match);
+   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, StringOperator operator, CaseType match, String value) throws OseeCoreException {
+      Collection<? extends IAttributeType> toReturn = checkForAnyType(attributeTypes);
+      return new CriteriaAttributeKeyword(toReturn, value, operator, match);
    }
 
    public Criteria createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {

@@ -29,7 +29,9 @@ import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
 import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
@@ -39,8 +41,8 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
 
    private final AtsArtifactProvider atsArtifactProvider;
 
-   public AtsSearchPresenterImpl(AtsArtifactProvider artifactProvider) {
-      super(artifactProvider);
+   public AtsSearchPresenterImpl(AtsArtifactProvider artifactProvider, Log logger) {
+      super(artifactProvider, logger);
       atsArtifactProvider = artifactProvider;
    }
 
@@ -56,7 +58,8 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       try {
          programs = getPrograms();
       } catch (Exception ex) {
-         setErrorMessage(headerComponent, ex.getMessage());
+         logger.error(ex, "Error in addProgramsToSearchHeader");
+         setErrorMessage(headerComponent, Lib.exceptionToString(ex));
          return;
       }
       for (ViewId program : programs) {
@@ -83,8 +86,8 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       try {
          branchGuid = atsArtifactProvider.getBaselineBranchGuid(params.getBuild().getGuid());
       } catch (Exception ex) {
-         setErrorMessage(searchHeaderComponent,
-            String.format("Cannot resolve branch id from build id: [%s]", params.getBuild().getGuid()));
+         logger.error(ex, "Error in initSearchResults");
+         setErrorMessage(searchHeaderComponent, Lib.exceptionToString(ex));
          return;
       }
 
@@ -97,14 +100,17 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    public void selectProgram(ViewId program, T headerComponent) {
       headerComponent.clearBuilds();
       Collection<ViewId> builds = null;
-      try {
-         builds = getBuilds(program);
-      } catch (Exception ex) {
-         setErrorMessage(headerComponent, ex.getMessage());
-         return;
-      }
-      for (ViewId build : builds) {
-         headerComponent.addBuild(build);
+      if (program != null) {
+         try {
+            builds = getBuilds(program);
+         } catch (Exception ex) {
+            logger.error(ex, "Error in selectProgram");
+            setErrorMessage(headerComponent, Lib.exceptionToString(ex));
+            return;
+         }
+         for (ViewId build : builds) {
+            headerComponent.addBuild(build);
+         }
       }
    }
 
@@ -142,6 +148,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       try {
          return "/" + getParametersAsEncodedUrl(params);
       } catch (UnsupportedEncodingException ex) {
+         logger.error(ex, "Error in encode");
          return "";
       }
    }
@@ -149,12 +156,22 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    protected AtsSearchParameters decodeIt(String url) {
       Map<String, String> data = Utility.decode(url);
 
-      ViewId program = new ViewId(data.get("program"), "");
-      ViewId build = new ViewId(data.get("build"), "");
+      ViewId program = null, build = null;
+
+      if (data.containsKey("program")) {
+         program = new ViewId(data.get("program"), "");
+      }
+
+      if (data.containsKey("build")) {
+         build = new ViewId(data.get("build"), "");
+      }
 
       String nValue = data.get("nameOnly");
       boolean nameOnly = nValue == null ? false : nValue.equalsIgnoreCase("true");
-      String searchPhrase = data.get("search");
+      String searchPhrase = "";
+      if (data.containsKey("search")) {
+         searchPhrase = data.get("search");
+      }
 
       //      String vValue = data.get("verbose");
       //      boolean verbose = vValue == null ? false : vValue.equalsIgnoreCase("true");

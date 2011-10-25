@@ -102,7 +102,7 @@ public final class Utility {
             url.append(encode(entry.getKey()));
             url.append("=");
             url.append(encode(entry.getValue()));
-            url.append("?");
+            url.append("&");
          } catch (UnsupportedEncodingException ex) {
             //
          }

@@ -10,17 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -40,6 +36,7 @@ import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.StringOperator;
+import com.google.common.collect.MapMaker;
 
 /**
  * @author John Misinco
@@ -47,25 +44,17 @@ import org.eclipse.osee.orcs.search.StringOperator;
 public class ArtifactProviderImpl implements ArtifactProvider {
 
    private final OrcsApi oseeApi;
-
    private final ApplicationContext context;
-
    private final Graph graph;
-
-   protected static final List<String> notAllowed = new ArrayList<String>();
-   static {
-      notAllowed.add("Technical Approaches");
-      notAllowed.add("Technical Performance Parameters");
-      notAllowed.add("Recent Imports");
-      notAllowed.add("Test");
-      notAllowed.add("Interface Requirements");
-      notAllowed.add("Test Procedures");
-   }
+   private final ConcurrentMap<ReadableArtifact, ReadableArtifact> parentCache;
+   private final ArtifactSanitizer sanitizer;
 
    public ArtifactProviderImpl(OrcsApi oseeApi, ApplicationContext context) {
       this.oseeApi = oseeApi;
       this.context = context;
       this.graph = oseeApi.getGraph(context);
+      this.parentCache = new MapMaker().initialCapacity(500).expiration(30, TimeUnit.MINUTES).makeMap();
+      sanitizer = new ArtifactSanitizer(this);
    }
 
    protected QueryFactory getFactory() {
@@ -74,17 +63,18 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ReadableArtifact getArtifactByArtifactToken(IOseeBranch branch, IArtifactToken token) throws OseeCoreException {
-      return sanitizeResult(getArtifactByGuid(branch, token.getGuid()));
+      return getArtifactByGuid(branch, token.getGuid());
    }
 
    @Override
    public ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
-      return sanitizeResult(getFactory().fromBranch(branch).andGuidsOrHrids(guid).getResults().getOneOrNull());
+      return sanitizer.sanitizeArtifact(getFactory().fromBranch(branch).andGuidsOrHrids(guid).getResults().getOneOrNull());
    }
 
    @Override
    public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
       List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered;
+      System.out.println("begin getSearchResults: " + new Date().toString());
 
       IAttributeType type = nameOnly ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
 
@@ -92,74 +82,35 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
       List<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.getMatches().getList();
 
-      filtered = sanitizeSearchResults(results);
+      System.out.println("end1 getSearchResults: " + new Date().toString());
+      filtered = sanitizer.sanitizeSearchResults(results);
 
+      System.out.println("end2 getSearchResults: " + new Date().toString());
       return filtered;
-   }
-
-   private List<Match<ReadableArtifact, ReadableAttribute<?>>> sanitizeSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize) {
-      int numProcessors = Runtime.getRuntime().availableProcessors();
-      int partitionSize = toSanitize.size() / numProcessors;
-      int remainder = toSanitize.size() % numProcessors;
-      ExecutorService executor = Executors.newFixedThreadPool(numProcessors);
-      int startIndex = 0;
-      int endIndex = 0;
-      List<ResultsCallable> workers = new LinkedList<ResultsCallable>();
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
-         new LinkedList<Match<ReadableArtifact, ReadableAttribute<?>>>();
-
-      for (int i = 0; i < numProcessors; i++) {
-         startIndex = endIndex;
-         endIndex = startIndex + partitionSize;
-         if (i == 0) {
-            endIndex += remainder;
-         }
-         ResultsCallable worker = new ResultsCallable(toSanitize.subList(startIndex, endIndex));
-         workers.add(worker);
-      }
-
-      try {
-         for (Future<List<Match<ReadableArtifact, ReadableAttribute<?>>>> future : executor.invokeAll(workers)) {
-            toReturn.addAll(future.get());
-         }
-      } catch (Exception ex) {
-         //
-      }
-
-      return toReturn;
-
-   }
-
-   private ReadableArtifact sanitizeResult(ReadableArtifact result) throws OseeCoreException {
-      boolean allowed = true;
-      ReadableArtifact current = result;
-      while (current != null) {
-         if (notAllowed.contains(current.getName())) {
-            allowed = false;
-            break;
-         }
-         current = graph.getParent(current);
-      }
-      if (allowed) {
-         return result;
-      } else {
-         return null;
-      }
    }
 
    @Override
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      return graph.getRelatedArtifacts(art, relationTypeSide);
+      return sanitizer.sanitizeArtifacts(graph.getRelatedArtifacts(art, relationTypeSide));
    }
 
    @Override
    public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      return graph.getRelatedArtifact(art, relationTypeSide);
+      return sanitizer.sanitizeArtifact(graph.getRelatedArtifact(art, relationTypeSide));
    }
 
    @Override
    public ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException {
-      return getRelatedArtifact(art, CoreRelationTypes.Default_Hierarchical__Parent);
+      ReadableArtifact parent = null;
+      if (parentCache.containsKey(art)) {
+         parent = parentCache.get(art);
+      } else {
+         parent = getRelatedArtifact(art, CoreRelationTypes.Default_Hierarchical__Parent);
+         if (parent != null) {
+            parentCache.put(art, parent);
+         }
+      }
+      return sanitizer.sanitizeArtifact(parent);
    }
 
    @Override
@@ -172,25 +123,4 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       return toReturn;
    }
 
-   private class ResultsCallable implements Callable<List<Match<ReadableArtifact, ReadableAttribute<?>>>> {
-
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize;
-
-      public ResultsCallable(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize) {
-         this.toSanitize = toSanitize;
-      }
-
-      @Override
-      public List<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
-         Iterator<Match<ReadableArtifact, ReadableAttribute<?>>> it = toSanitize.iterator();
-         while (it.hasNext()) {
-            Match<ReadableArtifact, ReadableAttribute<?>> match = it.next();
-            ReadableArtifact matchedArtifact = match.getItem();
-            if (sanitizeResult(matchedArtifact) == null) {
-               it.remove();
-            }
-         }
-         return toSanitize;
-      }
-   }
 }

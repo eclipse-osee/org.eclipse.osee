@@ -20,6 +20,8 @@ import org.eclipse.osee.ats.mocks.MockAtsArtifactProvider;
 import org.eclipse.osee.ats.mocks.MockAtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.presenter.Utility;
+import org.eclipse.osee.display.presenter.mocks.MockDisplayOptionsComponent;
+import org.eclipse.osee.display.presenter.mocks.MockLogger;
 import org.eclipse.osee.display.presenter.mocks.MockSearchNavigator;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -30,7 +32,6 @@ import org.eclipse.osee.orcs.mock.MockArtifact;
 import org.eclipse.osee.orcs.mock.MockAttribute;
 import org.eclipse.osee.orcs.mock.MockMatch;
 import org.eclipse.osee.orcs.search.Match;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,7 +43,7 @@ public class AtsSearchPresenterTest {
    public void testSelectProgram() {
       MockAtsArtifactProvider provider = new MockAtsArtifactProvider();
       AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
-         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider);
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider, new MockLogger());
       MockAtsSearchHeaderComponent comp = new MockAtsSearchHeaderComponent();
       ViewId program = new ViewId("prg1Guid_18H74Zqo3gA", "program1");
       presenter.selectProgram(program, comp);
@@ -50,10 +51,9 @@ public class AtsSearchPresenterTest {
    }
 
    @Test
-   @Ignore
    public void testSelectSearch() throws UnsupportedEncodingException {
       AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
-         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(null);
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(null, new MockLogger());
       MockSearchNavigator navigator = new MockSearchNavigator();
       String programGuid = "prg1Guid_18H74Zqo3gA";
       String buildGuid = "buildGuid1_d74Zqo3gA";
@@ -63,13 +63,14 @@ public class AtsSearchPresenterTest {
       presenter.selectSearch("", params, navigator);
       String url = navigator.getResultsUrl();
       String expected =
-         "/search=phrase&verbose=false&program=" + Utility.encode(programGuid) + "&nameOnly=true&build=" + Utility.encode(buildGuid);
+         "/search=phrase&program=" + Utility.encode(programGuid) + "&nameOnly=true&build=" + Utility.encode(buildGuid);
       Assert.assertEquals(expected, url);
    }
 
    @Test
    public void testInitSearchResults() throws UnsupportedEncodingException {
       MockAtsArtifactProvider provider = new MockAtsArtifactProvider();
+      MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();
       List<Match<ReadableArtifact, ReadableAttribute<?>>> resultList =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
       MockArtifact art = new MockArtifact("guid1", "matchArt");
@@ -78,7 +79,7 @@ public class AtsSearchPresenterTest {
       resultList.add(match);
       provider.setResultList(resultList);
       AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
-         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider);
+         new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider, new MockLogger());
       MockAtsSearchHeaderComponent headerComp = new MockAtsSearchHeaderComponent();
       MockSearchResultsListComponent resultsComponent = new MockSearchResultsListComponent();
       presenter.initSearchResults(null, headerComp, resultsComponent, null);
@@ -88,7 +89,7 @@ public class AtsSearchPresenterTest {
       String buildGuid = GUID.create();
       String url =
          "/program=" + Utility.encode(programGuid) + "&build=" + Utility.encode(buildGuid) + "&nameOnly=true&search=phrase&verbose=false";
-      presenter.initSearchResults(url, headerComp, resultsComponent, null);
+      presenter.initSearchResults(url, headerComp, resultsComponent, optionsComp);
       Assert.assertEquals(1, resultsComponent.getSearchResults().size());
    }
 }

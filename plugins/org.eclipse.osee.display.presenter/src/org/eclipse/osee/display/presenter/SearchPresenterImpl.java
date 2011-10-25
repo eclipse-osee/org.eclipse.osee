@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
@@ -57,9 +58,11 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    private final static String SIDE_A_KEY = "sideAName";
    private final static String SIDE_B_KEY = "sideBName";
+   protected final Log logger;
 
-   public SearchPresenterImpl(ArtifactProvider artifactProvider) {
+   public SearchPresenterImpl(ArtifactProvider artifactProvider, Log logger) {
       this.artifactProvider = artifactProvider;
+      this.logger = logger;
    }
 
    @Override
@@ -76,7 +79,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return;
       }
 
-      //      options.setDisplayOptions(new DisplayOptions(params.isVerbose()));
+      options.setDisplayOptions(new DisplayOptions(params.isVerbose()));
 
       List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults = null;
       try {
@@ -91,6 +94,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          try {
             processSearchResults(searchResults, searchResultsComp, params);
          } catch (Exception ex) {
+            logger.error(ex, "Error in processSearchResults");
             setErrorMessage(searchResultsComp, Lib.exceptionToString(ex));
             return;
          }
@@ -127,7 +131,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          value = getParametersAsEncodedUrl(params);
          oseeNavigator.navigateArtifactPage("/" + value);
       } catch (UnsupportedEncodingException ex) {
-         //         setErrorMessage(artifact, Lib.exceptionToString(ex));
+         logger.error(ex, "Error in selectArtifact");
       }
 
    }
@@ -151,8 +155,9 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       ReadableArtifact displayArt = null;
       try {
          displayArt = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
-      } catch (Exception e) {
-         setErrorMessage(artHeaderComp, String.format("Error while loading artifact[%s] from branch:[%s]", art, branch));
+      } catch (Exception ex) {
+         logger.error(ex, "Error in initArtifactPage");
+         setErrorMessage(artHeaderComp, Lib.exceptionToString(ex));
          return;
       }
       if (displayArt == null) {
@@ -163,8 +168,9 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       ViewArtifact artifact = null;
       try {
          artifact = convertToViewArtifact(displayArt, true);
-      } catch (Exception e) {
-         setErrorMessage(artHeaderComp, String.format("Error while converting [%s] from branch:[%s]", art, branch));
+      } catch (Exception ex) {
+         logger.error(ex, "Error in initArtifactPage");
+         setErrorMessage(artHeaderComp, Lib.exceptionToString(ex));
          return;
       }
 
@@ -175,8 +181,9 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       Collection<RelationType> relationTypes = null;
       try {
          relationTypes = artifactProvider.getValidRelationTypes(displayArt);
-      } catch (Exception e) {
-         setErrorMessage(relComp, String.format("Error loading relation types for: [%s]", displayArt.getName()));
+      } catch (Exception ex) {
+         logger.error(ex, "Error in initArtifactPage");
+         setErrorMessage(relComp, Lib.exceptionToString(ex));
          return;
       }
       for (RelationType relTypeSide : relationTypes) {
@@ -191,7 +198,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       try {
          attributeTypes = displayArt.getAttributeTypes();
       } catch (Exception ex) {
-         setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
+         logger.error(ex, "Error in initArtifactPage");
+         setErrorMessage(attrComp, Lib.exceptionToString(ex));
          return;
       }
       for (IAttributeType attrType : attributeTypes) {
@@ -202,7 +210,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
                attrComp.addAttribute(attrType.getName(), value.getDisplayableString());
             }
          } catch (Exception ex) {
-            setErrorMessage(attrComp, String.format("Error loading attributes for: [%s]", displayArt.getName()));
+            logger.error(ex, "Error in initArtifactPage");
+            setErrorMessage(attrComp, Lib.exceptionToString(ex));
             return;
          }
       }
@@ -231,8 +240,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
             artifactProvider.getRelatedArtifacts(sourceArt,
                TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, type.getGuid(), type.getName()));
       } catch (Exception ex) {
-         setErrorMessage(relationComponent,
-            String.format("Error loading relations for artifact[%s]", artifact.getGuid()));
+         logger.error(ex, "Error in selectRelationType");
+         setErrorMessage(relationComponent, Lib.exceptionToString(ex));
          return;
       }
 
@@ -258,8 +267,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
             relationComponent.addRightRelated(id);
          }
       } catch (Exception ex) {
-         setErrorMessage(relationComponent,
-            String.format("Error adding artifact[%s] to relation relation component", artifact.getGuid()));
+         logger.error(ex, "Error in selectRelationType");
+         setErrorMessage(relationComponent, Lib.exceptionToString(ex));
          return;
       }
    }
@@ -393,6 +402,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    @Override
    public void selectSearch(String url, K params, SearchNavigator navigator) {
+      //do nothing for now
    }
 
 }

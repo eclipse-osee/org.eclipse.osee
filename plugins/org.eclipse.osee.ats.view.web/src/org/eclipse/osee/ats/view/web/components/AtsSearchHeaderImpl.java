@@ -273,6 +273,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void setErrorMessage(String message) {
+      System.out.println(message);
       Application app = this.getApplication();
       if (app != null) {
          Window mainWindow = app.getMainWindow();

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.db.internal.search.util.WordOrderMatcher;
 import org.eclipse.osee.orcs.search.CaseType;
@@ -48,19 +49,34 @@ public class TaggingEngine {
       return getTagger("DefaultAttributeTaggerProvider");
    }
 
+   private String normalize(String alias) {
+      String key = alias;
+      if (Strings.isValid(key) && key.contains(".")) {
+         key = Lib.getExtension(key);
+      }
+      return key;
+   }
+
+   public String getTaggerId(Identity<Long> identity) throws OseeCoreException {
+      AttributeType attributeType = attributeTypeCache.get(identity);
+      Conditions.checkNotNull(attributeType, "attributeType", "Unable to find attribute type with identity [%s]",
+         identity);
+      String taggerId = attributeType.getTaggerId();
+      return normalize(taggerId);
+   }
+
    public Tagger getTagger(Identity<Long> identity) throws OseeCoreException {
       AttributeType attributeType = attributeTypeCache.get(identity);
       Conditions.checkNotNull(attributeType, "attributeType", "Unable to find attribute type with identity [%s]",
          identity);
       String taggerId = attributeType.getTaggerId();
+      Conditions.checkNotNull(taggerId, "taggerId", "Attribute type [%s] has no tagger defined",
+         attributeType.getName());
       return getTagger(taggerId);
    }
 
-   private Tagger getTagger(String alias) throws OseeCoreException {
-      String key = alias;
-      if (key.contains(".")) {
-         key = Lib.getExtension(key);
-      }
+   public Tagger getTagger(String alias) throws OseeCoreException {
+      String key = normalize(alias);
       Tagger tagger = taggers.get(key);
       Conditions.checkNotNull(tagger, "tagger", "Unable to find tagger for [%s]", alias);
       return tagger;

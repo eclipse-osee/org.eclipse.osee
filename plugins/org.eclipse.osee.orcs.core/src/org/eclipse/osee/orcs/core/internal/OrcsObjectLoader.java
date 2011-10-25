@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -80,10 +80,8 @@ public class OrcsObjectLoader {
 
    private static class ArtifactCollectorImpl implements ArtifactCollector, RelationRowHandlerFactory, AttributeRowHandlerFactory {
 
-      private final Map<Integer, RelationContainer> relationContainers =
-         new ConcurrentHashMap<Integer, RelationContainer>();;
-      private final Map<Integer, AttributeContainer> attributeContainers =
-         new ConcurrentHashMap<Integer, AttributeContainer>();
+      private final Map<Integer, RelationContainer> relationContainers = new HashMap<Integer, RelationContainer>();;
+      private final Map<Integer, AttributeContainer> attributeContainers = new HashMap<Integer, AttributeContainer>();
 
       private final List<ReadableArtifact> artifacts;
 

@@ -30,7 +30,6 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.util.AbstractQueryPostProcessor;
 import org.eclipse.osee.orcs.db.internal.search.util.AttributeQueryPostProcessor;
 import org.eclipse.osee.orcs.db.internal.search.util.TokenQueryPostProcessor;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.StringOperator;
 
 /**
@@ -60,11 +59,17 @@ public class AttributeTokenSqlHandler extends SqlHandler {
 
    @Override
    public void addTables(SqlWriter writer) throws OseeCoreException {
-      if (criteria.getTypes().contains(QueryBuilder.ANY_ATTRIBUTE_TYPE)) {
-         types = getTypeCaches().getAttributeTypeCache().getAll();
-      } else {
-         types = criteria.getTypes();
+      types = criteria.getTypes();
+
+      if (types.size() > 1) {
+         jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
       }
+
+      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
+
+      attrAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
+      txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
 
       StringOperator operator = criteria.getStringOp();
       if (requiresTokenizing(operator)) {
@@ -76,16 +81,6 @@ public class AttributeTokenSqlHandler extends SqlHandler {
             tagAliases.add(writer.writeTable(TableEnum.SEARCH_TAGS_TABLE));
          }
       }
-
-      if (types.size() > 1) {
-         jIdAlias = writer.writeTable(TableEnum.ID_JOIN_TABLE);
-      }
-
-      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
-
-      attrAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias1 = writer.writeTable(TableEnum.TXS_TABLE);
 
       if (aliases.isEmpty()) {
          artAlias2 = writer.writeTable(TableEnum.ARTIFACT_TABLE);

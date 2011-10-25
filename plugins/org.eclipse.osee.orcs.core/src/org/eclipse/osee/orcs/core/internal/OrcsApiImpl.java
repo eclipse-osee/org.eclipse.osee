@@ -84,7 +84,7 @@ public class OrcsApiImpl implements OrcsApi {
          new OrcsObjectLoader(logger, dataLoader, artifactFactory, attributeFactory,
             dataStoreTypeCache.getArtifactTypeCache(), cacheService.getBranchCache());
 
-      criteriaFctry = new CriteriaFactory();
+      criteriaFctry = new CriteriaFactory(getDataStoreTypeCache().getAttributeTypeCache());
       queryExecutor = new QueryExecutor(executorAdmin, queryEngine, objectLoader);
    }
 

@@ -35,6 +35,7 @@ public class AtsSearchResultsView extends OseeSearchResultsView {
 
    @Override
    protected void callInit(String url) {
-      searchPresenter.initSearchResults(url, searchHeader, searchResultsListComponent, null);
+      searchPresenter.initSearchResults(url, searchHeader, searchResultsListComponent,
+         searchResultsListComponent.getDisplayOptionsComponent());
    }
 }
