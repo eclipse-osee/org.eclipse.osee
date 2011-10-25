@@ -30,6 +30,7 @@ import org.eclipse.osee.orcs.mock.MockArtifact;
 import org.eclipse.osee.orcs.mock.MockAttribute;
 import org.eclipse.osee.orcs.mock.MockMatch;
 import org.eclipse.osee.orcs.search.Match;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -49,6 +50,7 @@ public class AtsSearchPresenterTest {
    }
 
    @Test
+   @Ignore
    public void testSelectSearch() throws UnsupportedEncodingException {
       AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
          new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(null);

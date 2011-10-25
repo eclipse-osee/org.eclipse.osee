@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.ats.presenter.test
 Bundle-Version: 0.9.9.qualifier
 Fragment-Host: org.eclipse.osee.ats.presenter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.eclipse.osee.display.presenter
 Import-Package: org.eclipse.osee.ats.mocks,
  org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.core.data,

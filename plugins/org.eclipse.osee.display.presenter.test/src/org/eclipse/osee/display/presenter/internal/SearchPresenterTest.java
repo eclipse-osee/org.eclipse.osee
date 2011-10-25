@@ -46,6 +46,7 @@ import org.eclipse.osee.orcs.mock.MockArtifact;
 import org.eclipse.osee.orcs.mock.MockAttribute;
 import org.eclipse.osee.orcs.mock.MockMatch;
 import org.eclipse.osee.orcs.search.Match;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -112,6 +113,7 @@ public class SearchPresenterTest {
    }
 
    @Test
+   @Ignore
    public void testInitArtifactPage() throws UnsupportedEncodingException {
       MockArtifactProvider provider = new MockArtifactProvider();
       provider.setResultList(getSearchResults());
