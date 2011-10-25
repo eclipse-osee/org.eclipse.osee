@@ -192,7 +192,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             count += artifacts.size();
 
             testArtifactIds(artifacts);
-            testAtsAttributeValues(artifacts);
+            testAtsAttributevaluesWithPersist(artifacts);
             testStateInWorkDefinition(artifacts);
             testAttributeSetWorkDefinitionsExist(artifacts);
             testAtsActionsHaveTeamWorkflow(artifacts);
@@ -226,6 +226,17 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
+      }
+   }
+
+   public void testAtsAttributevaluesWithPersist(Collection<Artifact> artifacts) {
+      try {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+         testAtsAttributeValues(transaction, testNameToResultsMap, fixAttributeValues, artifacts);
+         transaction.execute();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         testNameToResultsMap.put("testAtsAttributeValues", "Error: Exception: " + ex.getLocalizedMessage());
       }
    }
 
@@ -473,48 +484,39 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return Collections.subDivide(artIds, 5000);
    }
 
-   private void testAtsAttributeValues(Collection<Artifact> artifacts) {
+   public static void testAtsAttributeValues(SkynetTransaction transaction, HashCollection<String, String> testNameToResultsMap, boolean fixAttributeValues, Collection<Artifact> artifacts) {
       Date date = new Date();
-      try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
-         for (Artifact artifact : artifacts) {
-
-            try {
-               // Test for null attribute values
-               for (Attribute<?> attr : artifact.getAttributes()) {
-                  if (attr.getValue() == null) {
-                     testNameToResultsMap.put(
-                        "testAtsAttributeValues",
-                        "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
-                     if (fixAttributeValues) {
-                        attr.delete();
-                     }
+      for (Artifact artifact : artifacts) {
+         try {
+            // Test for null attribute values
+            for (Attribute<?> attr : artifact.getAttributes()) {
+               if (attr.getValue() == null) {
+                  testNameToResultsMap.put(
+                     "testAtsAttributeValues",
+                     "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
+                  if (fixAttributeValues) {
+                     attr.delete();
                   }
                }
-
-               if (artifact instanceof AbstractWorkflowArtifact) {
-                  checkAndResolveDuplicateAttributes(artifact, fixAttributeValues, testNameToResultsMap, transaction);
-               }
-
-               if (artifact.hasDirtyAttributes()) {
-                  artifact.persist(transaction);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-               testNameToResultsMap.put(
-                  "testAtsAttributeValues",
-                  "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
             }
+
+            if (artifact instanceof AbstractWorkflowArtifact) {
+               checkAndResolveDuplicateAttributes(artifact, fixAttributeValues, testNameToResultsMap, transaction);
+            }
+
+            if (artifact.hasDirtyAttributes()) {
+               artifact.persist(transaction);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testAtsAttributeValues",
+               "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
          }
-         transaction.execute();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         testNameToResultsMap.put("testAtsAttributeValues", "Error: Exception: " + ex.getLocalizedMessage());
       }
-      logTestTimeSpent(date, "testAtsAttributeValues", testNameToTimeSpentMap);
+      //      logTestTimeSpent(date, "testAtsAttributeValues", testNameToTimeSpentMap);
    }
 
-   private void checkAndResolveDuplicateAttributes(Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
+   private static void checkAndResolveDuplicateAttributes(Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
       for (AttributeType attrType : artifact.getAttributeTypesUsed()) {
          int count = artifact.getAttributeCount(attrType);
          if (count > attrType.getMaxOccurrences()) {
