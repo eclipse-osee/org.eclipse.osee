@@ -91,7 +91,7 @@ public class SearchPresenterTest {
       MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
       String url = "badUrl";
-      presenter.initSearchResults(url, searchHeaderComp, searchResultsComp, null);
+      presenter.initSearchResults(url, searchHeaderComp, searchResultsComp, optionsComp);
       Assert.assertNotNull(searchResultsComp.getErrorMessage());
 
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
@@ -139,7 +139,7 @@ public class SearchPresenterTest {
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
       MockRelationComponent relComp = new MockRelationComponent();
       MockAttributeComponent attrComp = new MockAttributeComponent();
-      presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, null);
+      presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, optionsComp);
 
       ViewArtifact artifact = artHeaderComp.getArtifact();
       Assert.assertNotNull(artifact);
@@ -160,9 +160,10 @@ public class SearchPresenterTest {
          new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(null, new MockLogger());
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
+      MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();
       MockRelationComponent relComp = new MockRelationComponent();
       MockAttributeComponent attrComp = new MockAttributeComponent();
-      presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, null);
+      presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, optionsComp);
       Assert.assertNotNull(artHeaderComp.getErrorMessage());
 
       url = "/branch=" + Utility.encode(GUID.create()) + "&artifact=" + Utility.encode(GUID.create());
@@ -172,7 +173,7 @@ public class SearchPresenterTest {
       artHeaderComp = new MockArtifactHeaderComponent();
       relComp = new MockRelationComponent();
       attrComp = new MockAttributeComponent();
-      presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, null);
+      presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, optionsComp);
       Assert.assertNotNull(artHeaderComp.getErrorMessage());
    }
 

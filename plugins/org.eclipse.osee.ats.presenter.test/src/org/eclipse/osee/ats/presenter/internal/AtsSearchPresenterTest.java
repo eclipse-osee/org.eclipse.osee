@@ -82,7 +82,7 @@ public class AtsSearchPresenterTest {
          new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider, new MockLogger());
       MockAtsSearchHeaderComponent headerComp = new MockAtsSearchHeaderComponent();
       MockSearchResultsListComponent resultsComponent = new MockSearchResultsListComponent();
-      presenter.initSearchResults(null, headerComp, resultsComponent, null);
+      presenter.initSearchResults(null, headerComp, resultsComponent, optionsComp);
       Assert.assertEquals(3, headerComp.getPrograms().size());
 
       String programGuid = GUID.create();

@@ -58,7 +58,7 @@ public class MockRelationComponent implements RelationComponent {
 
    @Override
    public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
-      //      errorMessage = message;
+      errorMessage = shortMsg;
    }
 
    @Override
