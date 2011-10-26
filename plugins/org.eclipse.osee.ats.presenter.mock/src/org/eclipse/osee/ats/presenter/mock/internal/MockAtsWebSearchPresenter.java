@@ -251,6 +251,9 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
                attrComp.addAttribute("Qualification Method", "Test");
                attrComp.addAttribute("Subsystem", "Communications");
                attrComp.addAttribute("Technical Performance Parameter", "False");
+               attrComp.addAttribute(
+                  "Word Content Template",
+                  "Type: Graphic Format (Location): {MAP_overlay_UIG} {FLIGHT_UIG} {WEAPON_UIG} Local Data Definition: [{RF_HANDOVER_TARGET}.DELTA_NORTH_BETWEEN_AIRCRAFT]: (floating point number) meters Mode: North_Dist returned from {FIND_NORTH_EAST_DIST_BETWEEN_TWO_POINTS}( [RFHO_DATA.RFHO_R_LAT_(MSW,LSW)]LM -> Pt1.Lat, [RFHO_DATA.RFHO_R_LONG_(MSW,LSW)]LM -> Pt1.Long, [.AIRCRAFT_LATITUDE] -> Pt2.Lat, [.AIRCRAFT_LONGITUDE] -> Pt2.Long)");
             }
          }
       }

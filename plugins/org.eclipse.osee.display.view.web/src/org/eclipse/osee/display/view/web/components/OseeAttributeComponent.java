@@ -11,12 +11,12 @@ he Eclipse Public License v1.0
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.components;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -25,82 +25,49 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class OseeAttributeComponent extends VerticalLayout implements AttributeComponent {
 
-   private final Collection<labelValuePair> attributes = new ArrayList<labelValuePair>();
+   private boolean isLayoutComplete = false;
+   private final VerticalLayout attrLabelsLayout = new VerticalLayout();
+   private final VerticalLayout attrValuesLayout = new VerticalLayout();
+   private final VerticalLayout longAttrValuesLayout = new VerticalLayout();
 
-   private class labelValuePair {
-      private final String label;
-      private final String value;
-
-      public labelValuePair(String label, String value) {
-         super();
-         this.label = label;
-         this.value = value;
-      }
-
-      @SuppressWarnings("unused")
-      public String getLabel() {
-         return label;
-      }
-
-      @SuppressWarnings("unused")
-      public String getValue() {
-         return value;
+   @Override
+   public void attach() {
+      if (!isLayoutComplete) {
+         createLayout();
+         isLayoutComplete = true;
       }
    }
 
    private void createLayout() {
-      removeAllComponents();
-
-      final HorizontalLayout attributesLayout = new HorizontalLayout();
-
-      //      final OseeShowHideButton showHideButton = new OseeShowHideButton("Attributes");
-      //      showHideButton.addListener(new OseeShowHideButton.ClickListener() {
-      //         @Override
-      //         public void buttonClick(OseeShowHideButton.ClickEvent event) {
-      //            attributesLayout.setVisible(showHideButton.isStateShow());
-      //         }
-      //      });
-      //      attributesLayout.setVisible(showHideButton.isStateShow());
 
       Label titleLabel = new Label("Attributes");
       titleLabel.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
 
-      VerticalLayout attrLabelsLayout = new VerticalLayout();
-      VerticalLayout attrValuesLayout = new VerticalLayout();
-
-      for (labelValuePair pair : attributes) {
-         Label attrLabel = new Label(String.format("%s:", pair.getLabel()));
-         Label attrValue = new Label(pair.getValue());
-
-         attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
-         attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
-
-         attrLabelsLayout.addComponent(attrLabel);
-         attrValuesLayout.addComponent(attrValue);
-      }
+      attrLabelsLayout.setWidth(200, UNITS_PIXELS);
+      attrValuesLayout.setWidth(500, UNITS_PIXELS);
 
       Label spacer = new Label("");
       spacer.setWidth(15, UNITS_PIXELS);
       Label spacer2 = new Label("");
       spacer2.setWidth(5, UNITS_PIXELS);
-      attributesLayout.addComponent(spacer);
-      attributesLayout.addComponent(attrLabelsLayout);
-      attributesLayout.addComponent(spacer2);
-      attributesLayout.addComponent(attrValuesLayout);
+
+      HorizontalLayout hLayout_Lists = new HorizontalLayout();
+
+      hLayout_Lists.addComponent(spacer);
+      hLayout_Lists.addComponent(attrLabelsLayout);
+      hLayout_Lists.addComponent(spacer2);
+      hLayout_Lists.addComponent(attrValuesLayout);
 
       addComponent(titleLabel);
-      //      addComponent(showHideButton);
-      addComponent(attributesLayout);
-      setExpandRatio(attributesLayout, 1.0f);
-
-      attrLabelsLayout.setWidth(200, UNITS_PIXELS);
-      attrValuesLayout.setWidth(200, UNITS_PIXELS);
+      addComponent(hLayout_Lists);
+      addComponent(longAttrValuesLayout);
    }
 
    @Override
    public void clearAll() {
-      attributes.clear();
-      createLayout();
+      attrLabelsLayout.removeAllComponents();
+      attrValuesLayout.removeAllComponents();
+      longAttrValuesLayout.removeAllComponents();
    }
 
    @Override
@@ -112,9 +79,35 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
    @Override
    public void addAttribute(String type, String value) {
       if (type != null && !type.isEmpty() && value != null && !value.isEmpty()) {
-         attributes.add(new labelValuePair(type, value));
+
+         if (!type.equalsIgnoreCase("Word Template Content")) {
+            Label attrLabel = new Label(String.format("%s:", type));
+            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
+
+            Label attrValue = new Label(value);
+            attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
+
+            attrLabelsLayout.addComponent(attrLabel);
+            attrValuesLayout.addComponent(attrValue);
+         } else {
+            Label attrLabel = new Label(String.format("%s:", type));
+            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL_LONG);
+
+            TextField attrValue = new TextField();
+            attrValue.setValue(value);
+            attrValue.setWidth(600, UNITS_PIXELS);
+            attrValue.setHeight(300, UNITS_PIXELS);
+
+            Label vSpacer_bottomAttr = new Label();
+            vSpacer_bottomAttr.setHeight(15, UNITS_PIXELS);
+
+            longAttrValuesLayout.addComponent(attrLabel);
+            longAttrValuesLayout.addComponent(attrValue);
+            longAttrValuesLayout.addComponent(vSpacer_bottomAttr);
+
+            longAttrValuesLayout.setComponentAlignment(attrLabel, Alignment.BOTTOM_LEFT);
+         }
       }
-      createLayout();
    }
 
 }

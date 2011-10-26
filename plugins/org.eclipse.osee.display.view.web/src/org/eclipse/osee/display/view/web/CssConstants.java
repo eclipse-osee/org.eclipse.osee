@@ -49,6 +49,7 @@ public final class CssConstants {
    public static final String OSEE_RIGHTARROW = "osee-rightarrow";
    public static final String OSEE_LEFTARROW = "osee-leftarrow";
 
+   public static final String OSEE_ATTRIBUTELABEL_LONG = "osee-attributelabel-long";
    public static final String OSEE_ATTRIBUTELABEL = "osee-attributelabel";
    public static final String OSEE_ATTRIBUTEVALUE = "osee-attributevalue";
    public static final String OSEE_ATTRIBUTESTITLELABEL = "osee-attributestitlelabel";
