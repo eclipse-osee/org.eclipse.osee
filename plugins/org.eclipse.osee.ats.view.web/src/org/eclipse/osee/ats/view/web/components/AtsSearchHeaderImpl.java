@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.view.web.AtsNavigator;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.ViewId;
+import org.eclipse.osee.display.api.search.SearchProgressListener;
+import org.eclipse.osee.display.api.search.SearchProgressProvider;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.ComponentUtility;
 import org.eclipse.osee.display.view.web.components.OseeExceptionDialogComponent;
@@ -35,8 +37,10 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * @author Shawn F. Cook
@@ -44,18 +48,25 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements AtsSearchHeaderComponent, Handler, SearchProgressListener {
 
+   private final String SEARCHBUTTON_SEARCH = "Search";
+   private final String SEARCHBUTTON_CANCEL = "Cancel";
    private boolean isLayoutComplete = false;
    private final ComboBox programCombo = new ComboBox("Program:");
    private final ComboBox buildCombo = new ComboBox("Build:");
    private final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", true);
    private final TextField searchTextField = new TextField();
-   private final Button searchButton = new Button("Search");
+   private final Button searchButton = new Button(SEARCHBUTTON_SEARCH);
    private boolean lockProgramCombo = false;
-   Panel searchTextPanel = new Panel();
+   private final Panel searchTextPanel = new Panel();
+   private final ProgressIndicator progressIndicator = new ProgressIndicator();
 
    @Override
    public void attach() {
       if (!isLayoutComplete) {
+         AtsSearchPresenter searchPresenter = getPresenter();
+         if (searchPresenter != null && searchPresenter instanceof SearchProgressProvider) {
+            ((SearchProgressProvider) searchPresenter).addListener(this);
+         }
          createLayout();
       }
       isLayoutComplete = true;
@@ -109,18 +120,35 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    }
 
    protected void selectSearch() {
-      if (searchButton.isEnabled()) {
-         if (ComponentUtility.isAccessible(programCombo, buildCombo, nameOnlyCheckBox, searchTextField)) {
-            ViewId program = (ViewId) programCombo.getValue();
-            ViewId build = (ViewId) buildCombo.getValue();
-            boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
-            String searchPhrase = (String) searchTextField.getValue();
-            AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, build, program);
-            getPresenter().selectSearch(getRequestedDataId(), params, getNavigator());
-         } else {
-            System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
+      Runnable thread = new Runnable() {
+         @Override
+         public void run() {
+            for (int i = 0; i < 9999; i++) {
+               try {
+                  Thread.sleep(1000);
+               } catch (InterruptedException ex) {
+               }
+               nameOnlyCheckBox.setCaption(String.format("%d", i));
+            }
          }
-      }
+      };
+      thread.run();
+      //      if (searchButton.isEnabled()) {
+      //         if (searchButton.getCaption().equals(SEARCHBUTTON_SEARCH)) {
+      //            if (ComponentUtility.isAccessible(programCombo, buildCombo, nameOnlyCheckBox, searchTextField)) {
+      //               ViewId program = (ViewId) programCombo.getValue();
+      //               ViewId build = (ViewId) buildCombo.getValue();
+      //               boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
+      //               String searchPhrase = (String) searchTextField.getValue();
+      //               AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, build, program);
+      //               getPresenter().selectSearch(getRequestedDataId(), params, getNavigator());
+      //            } else {
+      //               System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
+      //            }
+      //         } else if (searchButton.getCaption().equals(SEARCHBUTTON_CANCEL)) {
+      //            getPresenter().selectCancel();
+      //         }
+      //      }
    }
 
    public void createLayout() {
@@ -172,6 +200,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       searchTextPanel.setScrollable(false);
       searchTextPanel.addActionHandler(this);
       searchTextPanel.setContent(hLayout_SearchText);
+      progressIndicator.setPollingInterval(500);
 
       hLayout_SearchText.addComponent(searchTextField);
 
@@ -184,6 +213,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       hLayout_SearchTextBtn.addComponent(searchTextPanel);
       hLayout_SearchTextBtn.addComponent(hSpacer_SearchTextBtn);
       hLayout_SearchTextBtn.addComponent(searchButton);
+      hLayout_SearchTextBtn.addComponent(progressIndicator);
 
       vLayout_SearchCrit.addComponent(hLayout_ProgBuildName);
       vLayout_SearchCrit.addComponent(hLayout_SearchTextBtn);
@@ -303,5 +333,37 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    private String getRequestedDataId() {
       return getApplication().getUrl();
    }
+
+   @Override
+   public void searchInProgress() {
+      System.out.println("Search in progress.");
+      programCombo.setEnabled(false);
+      buildCombo.setEnabled(false);
+      nameOnlyCheckBox.setEnabled(false);
+      searchTextField.setEnabled(false);
+      searchButton.setCaption(SEARCHBUTTON_CANCEL);
+   }
+
+   @Override
+   public void searchCancelled() {
+      System.out.println("Search cancelled.");
+      programCombo.setEnabled(true);
+      buildCombo.setEnabled(true);
+      nameOnlyCheckBox.setEnabled(true);
+      searchTextField.setEnabled(true);
+      validateSearchAndEnableSearchButton();
+      searchButton.setCaption(SEARCHBUTTON_SEARCH);
+      getApplication().getMainWindow().showNotification("Search Cancelled", Notification.TYPE_TRAY_NOTIFICATION);
+   }
+
+   @Override
+   public void searchCompleted() {
+      System.out.println("Search complete.");
+      programCombo.setEnabled(true);
+      buildCombo.setEnabled(true);
+      nameOnlyCheckBox.setEnabled(true);
+      searchTextField.setEnabled(true);
+      validateSearchAndEnableSearchButton();
+      searchButton.setCaption(SEARCHBUTTON_SEARCH);
    }
 }

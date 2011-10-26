@@ -123,27 +123,46 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    }
 
    @Override
-   public void selectSearch(String url, K params, SearchNavigator navigator) {
-      if (navigator != null && params != null) {
-         Map<String, String> parameters = new HashMap<String, String>();
+   public void selectCancel() {
+      fireSearchCancelledEvent();
+   }
 
-         if (params.getProgram() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, params.getProgram().getGuid());
+   @Override
+   public void selectSearch(final String url, final K params, final SearchNavigator navigator) {
+      fireSearchInProgressEvent();
+
+      Runnable searchThread = new Runnable() {
+         @Override
+         public void run() {
+            if (navigator != null && params != null) {
+               Map<String, String> parameters = new HashMap<String, String>();
+
+               if (params.getProgram() != null) {
+                  parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, params.getProgram().getGuid());
+               }
+               if (params.getBuild() != null) {
+                  parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, params.getBuild().getGuid());
+               }
+               if (params.isNameOnly() != null) {
+                  parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
+               }
+               if (params.getSearchString() != null) {
+                  parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
+               }
+               if (parameters.size() > 0) {
+                  String newurl = parameterMapToRequestString(parameters, url);
+                  //                  navigator.navigateSearchResults(newurl);
+                  try {
+                     Thread.sleep(2500);
+                  } catch (InterruptedException ex) {
+                  }
+                  fireSearchCompletedEvent();
+               }
+            }
          }
-         if (params.getBuild() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, params.getBuild().getGuid());
-         }
-         if (params.isNameOnly() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
-         }
-         if (params.getSearchString() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
-         }
-         if (parameters.size() > 0) {
-            String newurl = parameterMapToRequestString(parameters, url);
-            navigator.navigateSearchResults(newurl);
-         }
-      }
+      };
+
+      searchThread.run();
    }
 
    private void updateSearchDisplayOptions(String url, DisplayOptionsComponent optionsComp) {

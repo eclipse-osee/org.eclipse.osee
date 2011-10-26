@@ -14,11 +14,12 @@ import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.presenter.SearchProgressListenerImpl;
 
 /**
  * @author Shawn F. Cook
  */
-public abstract class MockSearchPresenter<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K> {
+public abstract class MockSearchPresenter<T extends SearchHeaderComponent, K extends ViewSearchParameters> extends SearchProgressListenerImpl implements SearchPresenter<T, K> {
 
    @Override
    public void selectSearch(String url, ViewSearchParameters params, SearchNavigator atsNavigator) {
