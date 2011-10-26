@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
+import java.io.InputStream;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
 
@@ -32,5 +36,20 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    @Override
    protected String convertStringToValue(String value) {
       return value;
+   }
+
+   @Override
+   public String getDisplayableString() throws OseeCoreException {
+      String toReturn = null;
+      InputStream inputStream = null;
+      try {
+         inputStream = new XmlTextInputStream(getValue());
+         toReturn = Lib.inputStreamToString(inputStream);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         Lib.close(inputStream);
+      }
+      return toReturn;
    }
 }
