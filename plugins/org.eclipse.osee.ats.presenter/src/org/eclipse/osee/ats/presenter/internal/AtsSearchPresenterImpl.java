@@ -29,7 +29,6 @@ import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
 import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -58,8 +57,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       try {
          programs = getPrograms();
       } catch (Exception ex) {
-         logger.error(ex, "Error in addProgramsToSearchHeader");
-         setErrorMessage(headerComponent, Lib.exceptionToString(ex));
+         setErrorMessage(headerComponent, "Error in addProgramsToSearchHeader", ex);
          return;
       }
       for (ViewId program : programs) {
@@ -70,6 +68,8 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    @Override
    public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent, DisplayOptionsComponent optionsComponent) {
       setSearchHeaderFields(url, searchHeaderComponent);
+      resultsComponent.clearAll();
+      optionsComponent.clearAll();
 
       if (!Strings.isValid(url)) {
          return;
@@ -78,7 +78,6 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       AtsSearchParameters params = decodeIt(url);
 
       if (!params.isValid()) {
-         setErrorMessage(searchHeaderComponent, String.format("Invalid url received: %s", url));
          return;
       }
 
@@ -86,8 +85,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       try {
          branchGuid = atsArtifactProvider.getBaselineBranchGuid(params.getBuild().getGuid());
       } catch (Exception ex) {
-         logger.error(ex, "Error in initSearchResults");
-         setErrorMessage(searchHeaderComponent, Lib.exceptionToString(ex));
+         setErrorMessage(searchHeaderComponent, "Error in initSearchResults", ex);
          return;
       }
 
@@ -104,8 +102,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
          try {
             builds = getBuilds(program);
          } catch (Exception ex) {
-            logger.error(ex, "Error in selectProgram");
-            setErrorMessage(headerComponent, Lib.exceptionToString(ex));
+            setErrorMessage(headerComponent, "Error in selectProgram", ex);
             return;
          }
          for (ViewId build : builds) {
@@ -188,7 +185,6 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
 
       AtsSearchParameters params = decodeIt(url);
       if (!params.isValid()) {
-         setErrorMessage(searchHeaderComp, String.format("Invalid url received: %s", url));
          return;
       }
 

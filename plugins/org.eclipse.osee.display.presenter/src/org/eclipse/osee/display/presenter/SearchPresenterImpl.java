@@ -68,6 +68,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    @Override
    public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options) {
       searchResultsComp.clearAll();
+      options.clearAll();
       SearchParameters params = decodeSearchUrl(url);
 
       if (!Strings.isValid(url)) {
@@ -75,7 +76,6 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       if (!params.isValid()) {
-         setErrorMessage(searchResultsComp, String.format("Invalid url received: %s", url));
          return;
       }
 
@@ -87,15 +87,14 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
             artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
                params.getSearchPhrase());
       } catch (Exception ex) {
-         setErrorMessage(searchResultsComp, Lib.exceptionToString(ex));
+         setErrorMessage(searchResultsComp, "Error loading search results", ex);
          return;
       }
       if (searchResults != null && searchResults.size() > 0) {
          try {
             processSearchResults(searchResults, searchResultsComp, params);
          } catch (Exception ex) {
-            logger.error(ex, "Error in processSearchResults");
-            setErrorMessage(searchResultsComp, Lib.exceptionToString(ex));
+            setErrorMessage(searchResultsComp, "Error in processSearchResults", ex);
             return;
          }
       }
@@ -104,7 +103,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, SearchParameters params) throws OseeCoreException {
       for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
          ReadableArtifact matchedArtifact = match.getItem();
-         ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact, true);
+         ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact, params.isVerbose());
 
          SearchResultComponent searchResult = searchResultsComp.createSearchResult();
          searchResult.setArtifact(viewArtifact);
@@ -131,7 +130,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          value = getParametersAsEncodedUrl(params);
          oseeNavigator.navigateArtifactPage("/" + value);
       } catch (UnsupportedEncodingException ex) {
-         logger.error(ex, "Error in selectArtifact");
+         logger.error(ex, "Error in Encoding url in selectArtifact");
       }
 
    }
@@ -145,7 +144,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       ArtifactParameters params = decodeArtifactUrl(url);
 
       if (!params.isValid()) {
-         setErrorMessage(artHeaderComp, String.format("Invalid url received: %s", url));
+         setErrorMessage(artHeaderComp, String.format("Invalid url received: %s", url), null);
          return;
       }
 
@@ -156,12 +155,11 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       try {
          displayArt = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
       } catch (Exception ex) {
-         logger.error(ex, "Error in initArtifactPage");
-         setErrorMessage(artHeaderComp, Lib.exceptionToString(ex));
+         setErrorMessage(artHeaderComp, "Error finding artifact", ex);
          return;
       }
       if (displayArt == null) {
-         setErrorMessage(artHeaderComp, String.format("No artifact[%s] found on branch:[%s]", art, branch));
+         setErrorMessage(artHeaderComp, String.format("No artifact[%s] found on branch:[%s]", art, branch), null);
          return;
       }
 
@@ -169,8 +167,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       try {
          artifact = convertToViewArtifact(displayArt, true);
       } catch (Exception ex) {
-         logger.error(ex, "Error in initArtifactPage");
-         setErrorMessage(artHeaderComp, Lib.exceptionToString(ex));
+         setErrorMessage(artHeaderComp, "Error in initArtifactPage", ex);
          return;
       }
 
@@ -182,8 +179,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       try {
          relationTypes = artifactProvider.getValidRelationTypes(displayArt);
       } catch (Exception ex) {
-         logger.error(ex, "Error in initArtifactPage");
-         setErrorMessage(relComp, Lib.exceptionToString(ex));
+         setErrorMessage(relComp, "Error in initArtifactPage:\n Cannot load valid relation types", ex);
          return;
       }
       for (RelationType relTypeSide : relationTypes) {
@@ -198,8 +194,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       try {
          attributeTypes = displayArt.getAttributeTypes();
       } catch (Exception ex) {
-         logger.error(ex, "Error in initArtifactPage");
-         setErrorMessage(attrComp, Lib.exceptionToString(ex));
+         setErrorMessage(attrComp, "Error in initArtifactPage:\n Cannot load attribute types", ex);
          return;
       }
       for (IAttributeType attrType : attributeTypes) {
@@ -210,8 +205,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
                attrComp.addAttribute(attrType.getName(), value.getDisplayableString());
             }
          } catch (Exception ex) {
-            logger.error(ex, "Error in initArtifactPage");
-            setErrorMessage(attrComp, Lib.exceptionToString(ex));
+            setErrorMessage(attrComp, "Error in initArtifactPage:\n Cannot load attribute values", ex);
             return;
          }
       }
@@ -221,7 +215,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    public void selectRelationType(ViewArtifact artifact, ViewId relation, RelationComponent relationComponent) {
       relationComponent.clearRelations();
       if (artifact == null || relation == null) {
-         setErrorMessage(relationComponent, "Error: Null detected in selectRelationType parameters");
+         setErrorMessage(relationComponent, "Error: Null detected in selectRelationType parameters", null);
          return;
       }
       String relGuid = relation.getGuid();
@@ -240,8 +234,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
             artifactProvider.getRelatedArtifacts(sourceArt,
                TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, type.getGuid(), type.getName()));
       } catch (Exception ex) {
-         logger.error(ex, "Error in selectRelationType");
-         setErrorMessage(relationComponent, Lib.exceptionToString(ex));
+         setErrorMessage(relationComponent, "Error in selectRelationType", ex);
          return;
       }
 
@@ -267,8 +260,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
             relationComponent.addRightRelated(id);
          }
       } catch (Exception ex) {
-         logger.error(ex, "Error in selectRelationType");
-         setErrorMessage(relationComponent, Lib.exceptionToString(ex));
+         setErrorMessage(relationComponent, "Error in selectRelationType", ex);
          return;
       }
    }
@@ -292,9 +284,14 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       return ancestry;
    }
 
-   protected void setErrorMessage(DisplaysErrorComponent component, String message) {
+   protected void setErrorMessage(DisplaysErrorComponent component, String message, Exception ex) {
       if (component != null) {
-         component.setErrorMessage(message);
+         String longMsg = "No Details";
+         if (ex != null) {
+            longMsg = Lib.exceptionToString(ex);
+            logger.error(ex, message);
+         }
+         component.setErrorMessage(message, longMsg, MsgType.MSGTYPE_ERROR);
       }
    }
 
@@ -394,10 +391,6 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       map.put("verbose", String.valueOf(options.getVerboseResults().booleanValue()));
       String newUrl = Utility.encode(map);
       navigator.navigateSearchResults(newUrl);
-   }
-
-   protected void setDisplayOptions(DisplayOptions options, DisplayOptionsComponent component) {
-      component.setDisplayOptions(options);
    }
 
    @Override

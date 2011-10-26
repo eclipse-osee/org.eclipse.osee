@@ -44,12 +44,12 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
       showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
-            //            if (!lockOptions) {
-            //               lockOptions = true;
-            boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
-            onBoxChecked(showVerbose);
-            //                  lockOptions = false;
-            //            }
+            if (!lockOptions) {
+               lockOptions = true;
+               boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
+               onBoxChecked(showVerbose);
+               lockOptions = false;
+            }
          }
       });
 
