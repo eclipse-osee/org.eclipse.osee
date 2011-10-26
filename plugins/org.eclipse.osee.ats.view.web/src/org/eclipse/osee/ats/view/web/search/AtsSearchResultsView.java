@@ -20,22 +20,15 @@ import org.eclipse.osee.display.view.web.search.OseeSearchResultsView;
 @SuppressWarnings("serial")
 public class AtsSearchResultsView extends OseeSearchResultsView {
 
-   private final boolean isLayoutComplete = false;
-
    @Override
    protected void initComponents() {
-      try {
-         AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
-         searchPresenter = atsApp.getAtsWebSearchPresenter();
-         searchHeader = new AtsSearchHeaderImpl();
-      } catch (Exception e) {
-         System.out.println("AtsSearchResultsView.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
-      }
+      setSearchHeader(new AtsSearchHeaderImpl());
    }
 
    @Override
    protected void callInit(String url) {
-      searchPresenter.initSearchResults(url, searchHeader, searchResultsListComponent,
+      AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
+      atsApp.getPresenter().initSearchResults(url, getSearchHeader(), searchResultsListComponent,
          searchResultsListComponent.getDisplayOptionsComponent());
    }
 }

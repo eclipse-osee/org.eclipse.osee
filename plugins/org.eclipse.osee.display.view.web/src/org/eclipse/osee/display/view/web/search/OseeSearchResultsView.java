@@ -22,6 +22,7 @@ public abstract class OseeSearchResultsView extends AbstractCommonView {
 
    protected OseeSearchResultsListComponent searchResultsListComponent = new OseeSearchResultsListComponent();
 
+   @Override
    protected void createLayout() {
       OseeLeftMarginContainer leftMargContainer = new OseeLeftMarginContainer();
       leftMargContainer.setSizeFull();

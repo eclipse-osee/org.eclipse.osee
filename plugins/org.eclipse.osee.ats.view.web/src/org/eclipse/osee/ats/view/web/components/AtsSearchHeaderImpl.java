@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.view.web.CssConstants;
-import org.eclipse.osee.display.view.web.OseeUiApplication;
+import org.eclipse.osee.display.view.web.components.ComponentUtility;
 import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
 import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
@@ -52,21 +52,12 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    private final CheckBox nameOnlyCheckBox = new CheckBox("Name Only", true);
    private final TextField searchTextField = new TextField();
    private final Button searchButton = new Button("Search");
-   private AtsSearchPresenter searchPresenter;
-   private AtsNavigator navigator;
    private boolean lockProgramCombo = false;
    Panel searchTextPanel = new Panel();
 
    @Override
    public void attach() {
       if (!isLayoutComplete) {
-         try {
-            AtsUiApplication app = (AtsUiApplication) this.getApplication();
-            searchPresenter = app.getAtsWebSearchPresenter();
-            navigator = app.getAtsNavigator();
-         } catch (Exception e) {
-            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
-         }
          createLayout();
       }
       isLayoutComplete = true;
@@ -83,14 +74,14 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    }
 
    private void selectProgram() {
-      if (programCombo != null) {
+      if (ComponentUtility.isAccessible(programCombo)) {
          ViewId program = (ViewId) programCombo.getValue();
-         searchPresenter.selectProgram(program, this);
+         getPresenter().selectProgram(program, this);
       }
    }
 
    public AtsSearchHeaderImpl() {
-      if (programCombo != null) {
+      if (ComponentUtility.isAccessible(programCombo)) {
          programCombo.setNullSelectionAllowed(false);
          programCombo.addListener(new Property.ValueChangeListener() {
             @Override
@@ -111,7 +102,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          });
          buildCombo.setImmediate(true);
       }
-      if (buildCombo != null) {
+      if (ComponentUtility.isAccessible(buildCombo)) {
          buildCombo.setNullSelectionAllowed(false);
       }
 
@@ -121,14 +112,13 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    protected void selectSearch() {
       if (searchButton.isEnabled()) {
-         if (searchPresenter != null && programCombo != null && buildCombo != null && nameOnlyCheckBox != null && searchTextField != null) {
+         if (ComponentUtility.isAccessible(programCombo, buildCombo, nameOnlyCheckBox, searchTextField)) {
             ViewId program = (ViewId) programCombo.getValue();
             ViewId build = (ViewId) buildCombo.getValue();
             boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
             String searchPhrase = (String) searchTextField.getValue();
             AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, build, program);
-            OseeUiApplication app = (OseeUiApplication) getApplication();
-            searchPresenter.selectSearch(app.getRequestedDataId(), params, navigator);
+            getPresenter().selectSearch(getRequestedDataId(), params, getNavigator());
          } else {
             System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
          }
@@ -165,7 +155,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       });
 
       OseeLogoLink oseeLogoImg =
-         new OseeLogoLink(navigator, CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
+         new OseeLogoLink(getNavigator(), CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
       Label hSpacer_LogoRight = new Label("");
       oseeLogoImg.setSizeUndefined();
 
@@ -212,7 +202,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void addProgram(ViewId program) {
-      if (programCombo != null) {
+      if (ComponentUtility.isAccessible(programCombo)) {
          lockProgramCombo = true;
          programCombo.addItem(program);
          lockProgramCombo = false;
@@ -221,14 +211,14 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void clearBuilds() {
-      if (buildCombo != null && !lockProgramCombo) {
+      if (ComponentUtility.isAccessible(buildCombo) && !lockProgramCombo) {
          buildCombo.removeAllItems();
       }
    }
 
    @Override
    public void addBuild(ViewId build) {
-      if (buildCombo != null) {
+      if (ComponentUtility.isAccessible(buildCombo)) {
          buildCombo.addItem(build);
       }
    }
@@ -236,18 +226,18 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    @Override
    public void setSearchCriteria(AtsSearchParameters params) {
       if (params != null) {
-         if (programCombo != null) {
+         if (ComponentUtility.isAccessible(programCombo)) {
             //            lockProgramCombo = true;
             programCombo.setValue(params.getProgram());
             //            lockProgramCombo = false;
          }
-         if (buildCombo != null) {
+         if (ComponentUtility.isAccessible(buildCombo)) {
             buildCombo.setValue(params.getBuild());
          }
-         if (nameOnlyCheckBox != null) {
+         if (ComponentUtility.isAccessible(nameOnlyCheckBox)) {
             nameOnlyCheckBox.setValue(params.isNameOnly());
          }
-         if (searchTextField != null) {
+         if (ComponentUtility.isAccessible(searchTextField)) {
             searchTextField.setValue(params.getSearchString());
          }
       }
@@ -255,18 +245,18 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    @Override
    public void clearAll() {
-      if (programCombo != null) {
+      if (ComponentUtility.isAccessible(programCombo)) {
          //         programCombo.removeAllItems();
          programCombo.setValue(null);
       }
-      if (buildCombo != null) {
+      if (ComponentUtility.isAccessible(buildCombo)) {
          //         buildCombo.removeAllItems();
          buildCombo.setValue(null);
       }
-      if (nameOnlyCheckBox != null) {
+      if (ComponentUtility.isAccessible(nameOnlyCheckBox)) {
          nameOnlyCheckBox.setValue(true);
       }
-      if (searchTextField != null) {
+      if (ComponentUtility.isAccessible(searchTextField)) {
          searchTextField.setValue("");
       }
    }
@@ -304,4 +294,21 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       }
    }
 
+   @SuppressWarnings("unchecked")
+   @Override
+   public AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters> getApplication() {
+      return (AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters>) super.getApplication();
+   }
+
+   private AtsNavigator getNavigator() {
+      return getApplication().getNavigator();
+   }
+
+   private AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> getPresenter() {
+      return getApplication().getPresenter();
+   }
+
+   private String getRequestedDataId() {
+      return getApplication().getUrl();
+   }
 }

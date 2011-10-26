@@ -10,21 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web;
 
-import org.eclipse.osee.display.api.search.SearchNavigator;
-
 /**
- * @author Shawn F. Cook
+ * @author Roberto E. Escobar
  */
-public class OseeNavigator implements SearchNavigator {
+public interface HasUrl {
 
-   @Override
-   public void navigateSearchResults(String url) {
-      //Do nothing.
-   }
+   String getUrl();
 
-   @Override
-   public void navigateArtifactPage(String url) {
-      //Do nothing.
-   }
-
+   void setUrl(String url);
 }

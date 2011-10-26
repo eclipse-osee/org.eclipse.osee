@@ -111,7 +111,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          if (params.isVerbose()) {
             for (ReadableAttribute<?> element : match.getElements()) {
                List<MatchLocation> matches = match.getLocation(element);
-               String data = String.valueOf(element.getValue());
+               String data = String.valueOf(element.getDisplayableString());
                List<StyledText> text = Utility.getMatchedText(data, matches);
                SearchResultMatch srm =
                   new SearchResultMatch(element.getAttributeType().getName(), matches.size(), text);

@@ -15,14 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
-import org.eclipse.osee.display.api.data.ViewSearchParameters;
-import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
-import org.eclipse.osee.display.view.web.OseeUiApplication;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedEvent;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedListener;
 import com.vaadin.Application;
@@ -54,20 +49,10 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private final int INIT_MANY_RES_PER_PAGE = 15;
    private final Label manySearchResults = new Label();
    private boolean isLayoutComplete = false;
-   private SearchPresenter<SearchHeaderComponent, ViewSearchParameters> searchPresenter;
-   private SearchNavigator navigator;
 
    @Override
    public void attach() {
       if (!isLayoutComplete) {
-         try {
-            OseeUiApplication<SearchHeaderComponent, ViewSearchParameters> app =
-               (OseeUiApplication<SearchHeaderComponent, ViewSearchParameters>) this.getApplication();
-            searchPresenter = app.getSearchPresenter();
-            navigator = app.getNavigator();
-         } catch (Exception e) {
-            System.out.println("OseeSearchResultsListComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
-         }
          createLayout();
          isLayoutComplete = true;
       }

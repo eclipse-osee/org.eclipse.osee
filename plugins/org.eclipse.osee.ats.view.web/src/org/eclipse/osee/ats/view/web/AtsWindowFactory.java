@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web;
 
-import org.eclipse.osee.display.view.web.OseeFooter;
 import org.eclipse.osee.vaadin.widgets.AccountMenuBar;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.eclipse.osee.vaadin.widgets.Navigator;
@@ -26,7 +25,6 @@ import com.vaadin.ui.Window;
 /**
  * @author Shawn F. Cook
  */
-@SuppressWarnings("serial")
 public class AtsWindowFactory {
 
    public Window createNavigatableWindow(HasViews provider, AtsNavigator navigator) {
@@ -39,7 +37,6 @@ public class AtsWindowFactory {
       }
       w.addComponent(createNavigationBar(navigator, provider));
       w.addComponent(navigator);
-      //w.addComponent(createFooter());
 
       layout.setMargin(false);
       layout.setSpacing(true);
@@ -55,10 +52,6 @@ public class AtsWindowFactory {
          }
       });
       return w;
-   }
-
-   private Component createFooter() {
-      return new OseeFooter();
    }
 
    private Component createNavigationBar(final Navigator navigator, HasViews provider) {

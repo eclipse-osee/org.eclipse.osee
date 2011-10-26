@@ -8,17 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.search;
+package org.eclipse.osee.display.view.web;
 
-import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
-import org.eclipse.osee.ats.api.data.AtsSearchParameters;
-import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.display.api.search.SearchNavigator;
 
 /**
- * @author John Misinco
+ * @author Roberto E. Escobar
  */
-public interface AtsPresenterFactory<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> {
+public interface HasNavigator {
 
-   AtsSearchPresenter<T, K> createInstance(ApplicationContext context);
+   SearchNavigator getNavigator();
 
 }

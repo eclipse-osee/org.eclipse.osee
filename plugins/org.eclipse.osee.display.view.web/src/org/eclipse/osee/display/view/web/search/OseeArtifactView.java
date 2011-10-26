@@ -40,11 +40,12 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
    private ViewArtifact artifact;
    private final int LEFTMARGIN_WIDTH = 5;
 
+   @Override
    protected void createLayout() {
       setSizeFull();
 
-      searchHeader.setWidth(100, UNITS_PERCENTAGE);
-      searchHeader.setHeight(null);
+      getSearchHeader().setWidth(100, UNITS_PERCENTAGE);
+      getSearchHeader().setHeight(null);
 
       Label spacer = new Label();
       spacer.setHeight(5, UNITS_PIXELS);
@@ -108,7 +109,7 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
 
       hLayout_LeftMargAndBody.addComponent(vLayout_OutBody);
 
-      addComponent(searchHeader);
+      addComponent(getSearchHeader());
       addComponent(spacer);
       addComponent(hLayout_LeftMargAndBody);
 
@@ -116,7 +117,7 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
       vLayout_Body.setExpandRatio(bottomSpacer, 1.0f);
       vLayout_OutBody.setExpandRatio(panel_Body, 1.0f);
       hLayout_LeftMargAndBody.setExpandRatio(vLayout_OutBody, 1.0f);
-      setComponentAlignment(searchHeader, Alignment.TOP_LEFT);
+      setComponentAlignment(getSearchHeader(), Alignment.TOP_LEFT);
       setExpandRatio(hLayout_LeftMargAndBody, 1.0f);
    }
 

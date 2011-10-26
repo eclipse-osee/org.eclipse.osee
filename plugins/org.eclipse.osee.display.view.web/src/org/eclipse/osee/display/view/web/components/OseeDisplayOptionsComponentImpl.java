@@ -11,12 +11,9 @@
 package org.eclipse.osee.display.view.web.components;
 
 import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.data.DisplayOptions;
-import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
-import org.eclipse.osee.display.view.web.OseeUiApplication;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.CheckBox;
@@ -30,21 +27,11 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
 
    private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
    private boolean isLayoutComplete = false;
-   private SearchPresenter<SearchHeaderComponent, ViewSearchParameters> searchPresenter;
-   private SearchNavigator navigator;
    private boolean lockOptions = false;
 
    @Override
    public void attach() {
       if (!isLayoutComplete) {
-         try {
-            OseeUiApplication<SearchHeaderComponent, ViewSearchParameters> app =
-               (OseeUiApplication<SearchHeaderComponent, ViewSearchParameters>) this.getApplication();
-            searchPresenter = app.getSearchPresenter();
-            navigator = app.getNavigator();
-         } catch (Exception e) {
-            System.out.println("OseeSearchResultsListComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
-         }
          createLayout();
          isLayoutComplete = true;
       }
@@ -57,18 +44,12 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
       showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
-            if (!lockOptions) {
-               boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
-               OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) getApplication();
-               String url = "";
-               if (app != null) {
-                  url = app.getRequestedDataId();
-               }
-               DisplayOptions options = new DisplayOptions(showVerbose);
-               lockOptions = true;
-               searchPresenter.selectDisplayOptions(url, options, navigator);
-               lockOptions = false;
-            }
+            //            if (!lockOptions) {
+            //               lockOptions = true;
+            boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
+            onBoxChecked(showVerbose);
+            //                  lockOptions = false;
+            //            }
          }
       });
 
@@ -87,6 +68,19 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
          boolean verboseResults = options.getVerboseResults();
          showVerboseCheckBox.setValue(verboseResults);
          lockOptions = false;
+      }
+   }
+
+   private void onBoxChecked(boolean isShowVerbose) {
+      DisplayOptions options = new DisplayOptions(isShowVerbose);
+
+      String url = ComponentUtility.getUrl(OseeDisplayOptionsComponentImpl.this);
+      SearchNavigator navigator = ComponentUtility.getNavigator(OseeDisplayOptionsComponentImpl.this);
+      SearchPresenter presenter = ComponentUtility.getPresenter(OseeDisplayOptionsComponentImpl.this);
+      if (presenter != null) {
+         presenter.selectDisplayOptions(url, options, navigator);
+      } else {
+         System.out.println("Presenter was null");
       }
    }
 }

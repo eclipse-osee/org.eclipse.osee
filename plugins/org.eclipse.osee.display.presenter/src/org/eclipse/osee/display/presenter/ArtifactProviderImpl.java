@@ -11,13 +11,13 @@
 package org.eclipse.osee.display.presenter;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -25,7 +25,10 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -35,6 +38,7 @@ import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.ResultSet;
 import org.eclipse.osee.orcs.search.StringOperator;
 import com.google.common.collect.MapMaker;
 
@@ -49,12 +53,19 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    private final ConcurrentMap<ReadableArtifact, ReadableArtifact> parentCache;
    private final ArtifactSanitizer sanitizer;
 
-   public ArtifactProviderImpl(OrcsApi oseeApi, ApplicationContext context) {
+   private final Log logger;
+
+   public ArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, OrcsApi oseeApi, ApplicationContext context) {
+      this.logger = logger;
       this.oseeApi = oseeApi;
       this.context = context;
       this.graph = oseeApi.getGraph(context);
-      this.parentCache = new MapMaker().initialCapacity(500).expiration(30, TimeUnit.MINUTES).makeMap();
-      sanitizer = new ArtifactSanitizer(this);
+      sanitizer = new ArtifactSanitizer(executorAdmin, this);
+
+      this.parentCache = new MapMaker()//
+      .initialCapacity(500)//
+      .expiration(30, TimeUnit.MINUTES)//
+      .makeMap();
    }
 
    protected QueryFactory getFactory() {
@@ -73,19 +84,36 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered;
-      System.out.println("begin getSearchResults: " + new Date().toString());
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered = null;
 
       IAttributeType type = nameOnly ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
-
       QueryBuilder builder = getFactory().fromBranch(branch);
       builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> results = builder.getMatches().getList();
 
-      System.out.println("end1 getSearchResults: " + new Date().toString());
-      filtered = sanitizer.sanitizeSearchResults(results);
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+         logger.trace("Start Query: [%s]", Lib.getDateTimeString());
+      }
 
-      System.out.println("end2 getSearchResults: " + new Date().toString());
+      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> resultSet = builder.getMatches();
+
+      long delta = 0;
+      if (logger.isTraceEnabled()) {
+         logger.trace("End Query: [%s]", Lib.getElapseString(startTime));
+         delta = System.currentTimeMillis();
+      }
+
+      try {
+         filtered = sanitizer.filter(resultSet.getList());
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         if (logger.isTraceEnabled()) {
+            logger.trace("Sanitized in: [%s]", Lib.getElapseString(delta));
+            logger.trace("Total Time: [%s]", Lib.getElapseString(startTime));
+         }
+      }
       return filtered;
    }
 

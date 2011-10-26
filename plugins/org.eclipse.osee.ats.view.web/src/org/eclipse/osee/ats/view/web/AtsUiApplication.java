@@ -13,59 +13,67 @@ package org.eclipse.osee.ats.view.web;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.view.web.OseeUiApplication;
+import org.eclipse.osee.display.view.web.HasNavigator;
+import org.eclipse.osee.display.view.web.HasPresenter;
+import org.eclipse.osee.display.view.web.HasUrl;
 import org.eclipse.osee.vaadin.widgets.HasViews;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import com.vaadin.Application;
 import com.vaadin.ui.Window;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends OseeUiApplication<T, K> {
+public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends Application implements HasUrl, HasNavigator, HasPresenter {
 
-   AtsSearchPresenter<T, K> atsSearchPresenter;
+   private final AtsSearchPresenter<T, K> atsSearchPresenter;
+   private AtsNavigator navigator;
+   private String url = "";
 
    public AtsUiApplication(AtsSearchPresenter<T, K> searchPresenter) {
-      super(searchPresenter);
-      atsSearchPresenter = searchPresenter;
+      this.atsSearchPresenter = searchPresenter;
    }
 
    @Override
    public void init() {
-      super.init();
+      setTheme("osee");
 
       AtsWindowFactory factory = new AtsWindowFactory();
       HasViews viewProvider = new AtsUiViews();
-      Window mainWindow = factory.createNavigatableWindow(viewProvider, getAtsNavigator());
+      Window mainWindow = factory.createNavigatableWindow(viewProvider, getNavigator());
       setMainWindow(mainWindow);
       mainWindow.setApplication(this);
    }
 
-   public AtsNavigator getAtsNavigator() {
-      AtsNavigator nav = null;
-      try {
-         nav = (AtsNavigator) this.navigator;
-      } catch (Exception e) {
-         System.out.println("AtsUiApplication.getAtsNavigator() - CRITICAL ERROR: cast threw an exception.");
+   @Override
+   public AtsNavigator getNavigator() {
+      if (navigator == null) {
+         navigator = new AtsNavigator();
       }
-      return nav;
-   }
-
-   public AtsSearchPresenter<T, K> getAtsWebSearchPresenter() {
-      return atsSearchPresenter;
-      //      AtsSearchPresenter<T, K> pres = null;
-      //      if (searchPresenter instanceof AtsSearchPresenter<?, ?>) {
-      //         pres = (AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters>) searchPresenter;
-      //      } else {
-      //         System.out.println("AtsUiApplication.getAtsWebSearchPresenter() - CRITICAL ERROR: cast threw an exception.");
-      //      }
-      //      return pres;
+      return navigator;
    }
 
    @Override
-   protected SearchNavigator createNavigator() {
-      return new AtsNavigator();
+   public AtsSearchPresenter<T, K> getPresenter() {
+      return atsSearchPresenter;
+   }
+
+   @Override
+   public String getUrl() {
+      return url;
+   }
+
+   @Override
+   public void setUrl(String url) {
+      this.url = url;
+   }
+
+   @Override
+   public String getVersion() {
+      Bundle bundle = FrameworkUtil.getBundle(this.getClass());
+      return bundle.getVersion().toString();
    }
 
 }

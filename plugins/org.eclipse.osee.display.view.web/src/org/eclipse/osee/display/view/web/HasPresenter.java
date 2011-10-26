@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.view.web.internal;
+package org.eclipse.osee.display.view.web;
 
-import org.eclipse.osee.vaadin.ApplicationFactory;
-import com.vaadin.Application;
+import org.eclipse.osee.display.api.search.SearchPresenter;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeUiApplicationFactory implements ApplicationFactory {
+public interface HasPresenter {
 
-   @Override
-   public Application createInstance() {
-      return new OseeUiApplication();
-   }
-
-   @Override
-   public Class<? extends Application> getApplicationClass() {
-      return OseeUiApplication.class;
-   }
-
+   SearchPresenter<?, ?> getPresenter();
 }

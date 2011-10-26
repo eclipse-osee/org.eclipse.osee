@@ -17,9 +17,11 @@ import org.eclipse.osee.ats.api.tokens.AtsArtifactToken;
 import org.eclipse.osee.ats.api.tokens.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
 import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -29,8 +31,8 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
  */
 public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements AtsArtifactProvider {
 
-   public AtsArtifactProviderImpl(OrcsApi oseeApi, ApplicationContext context) {
-      super(oseeApi, context);
+   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, OrcsApi oseeApi, ApplicationContext context) {
+      super(logger, executorAdmin, oseeApi, context);
 
    }
 

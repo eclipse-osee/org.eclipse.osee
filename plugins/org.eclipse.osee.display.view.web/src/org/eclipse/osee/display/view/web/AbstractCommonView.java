@@ -11,6 +11,7 @@
 package org.eclipse.osee.display.view.web;
 
 import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.view.web.components.ComponentUtility;
 import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
@@ -23,13 +24,19 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public abstract class AbstractCommonView extends VerticalLayout implements Navigator.View {
 
-   protected OseeSearchHeaderComponent searchHeader;
-   protected SearchPresenter searchPresenter;
+   private OseeSearchHeaderComponent searchHeader;
+   private SearchPresenter searchPresenter;
+
    private boolean isLayoutComplete = false;
    private String initialUrl;
 
    @Override
-   public void attach() {
+   public void init(Navigator navigator, Application application) {
+      searchPresenter = ComponentUtility.getPresenter(this);
+   }
+
+   @Override
+   public final void attach() {
       if (!isLayoutComplete) {
          initComponents();
          if (searchHeader != null) {
@@ -47,11 +54,11 @@ public abstract class AbstractCommonView extends VerticalLayout implements Navig
    }
 
    @Override
-   public void navigateTo(String requestedDataId) {
-      //      String url = "";
+   public final void navigateTo(String requestedDataId) {
+      searchPresenter = ComponentUtility.getPresenter(this);
       initialUrl = requestedDataId;
       if (searchPresenter != null) {
-         callInit(requestedDataId);
+         callInit(initialUrl);
       }
    }
 
@@ -61,9 +68,12 @@ public abstract class AbstractCommonView extends VerticalLayout implements Navig
 
    protected abstract void initComponents();
 
-   @Override
-   public void init(Navigator navigator, Application application) {
-      //Do nothing.
+   protected OseeSearchHeaderComponent getSearchHeader() {
+      return searchHeader;
+   }
+
+   protected void setSearchHeader(OseeSearchHeaderComponent searchHeader) {
+      this.searchHeader = searchHeader;
    }
 
    @Override

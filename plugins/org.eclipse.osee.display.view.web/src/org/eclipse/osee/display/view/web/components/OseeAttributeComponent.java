@@ -28,7 +28,7 @@ import com.vaadin.ui.Window.Notification;
 @SuppressWarnings("serial")
 public class OseeAttributeComponent extends VerticalLayout implements AttributeComponent {
 
-   private Collection<labelValuePair> attributes = new ArrayList<labelValuePair>();
+   private final Collection<labelValuePair> attributes = new ArrayList<labelValuePair>();
 
    private class labelValuePair {
       private final String label;
@@ -74,6 +74,7 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
       for (labelValuePair pair : attributes) {
          Label attrLabel = new Label(String.format("%s:", pair.getLabel()));
          Label attrValue = new Label(pair.getValue());
+
          attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
          attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
 

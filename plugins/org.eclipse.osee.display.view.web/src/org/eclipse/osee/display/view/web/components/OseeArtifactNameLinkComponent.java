@@ -14,7 +14,6 @@ import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
-import org.eclipse.osee.display.view.web.OseeUiApplication;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -27,8 +26,6 @@ import com.vaadin.ui.Link;
 public class OseeArtifactNameLinkComponent extends HorizontalLayout {
 
    private boolean isLayoutComplete = false;
-   private SearchPresenter<?, ?> searchPresenter = null;
-   private SearchNavigator navigator = null;
    private ViewArtifact artifact = null;
    private final Link artifactNameLink = new Link();
 
@@ -43,12 +40,10 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
       addListener(new LayoutClickListener() {
          @Override
          public void layoutClick(LayoutClickEvent event) {
-            OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) getApplication();
-            String url = "";
-            if (app != null) {
-               url = app.getRequestedDataId();
-            }
-            searchPresenter.selectArtifact(url, OseeArtifactNameLinkComponent.this.artifact, navigator);
+            String url = ComponentUtility.getUrl(OseeArtifactNameLinkComponent.this);
+            SearchNavigator navigator = ComponentUtility.getNavigator(OseeArtifactNameLinkComponent.this);
+            SearchPresenter presenter = ComponentUtility.getPresenter(OseeArtifactNameLinkComponent.this);
+            presenter.selectArtifact(url, OseeArtifactNameLinkComponent.this.artifact, navigator);
          }
       });
    }
@@ -60,13 +55,6 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
    @Override
    public void attach() {
       if (!isLayoutComplete) {
-         try {
-            OseeUiApplication<?, ?> app = (OseeUiApplication<?, ?>) this.getApplication();
-            searchPresenter = app.getSearchPresenter();
-            navigator = app.getNavigator();
-         } catch (Exception e) {
-            System.out.println("OseeArtifactNameLinkComponent.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
-         }
          createLayout();
          isLayoutComplete = true;
       }

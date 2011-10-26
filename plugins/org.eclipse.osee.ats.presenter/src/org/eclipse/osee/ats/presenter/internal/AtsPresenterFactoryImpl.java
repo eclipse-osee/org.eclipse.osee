@@ -15,7 +15,9 @@ import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -25,6 +27,7 @@ public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponent, K exten
 
    private OrcsApi orcsApi;
    private Log logger;
+   private ExecutorAdmin executorAdmin;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -34,9 +37,13 @@ public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponent, K exten
       this.logger = logger;
    }
 
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
    @Override
-   public AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> createInstance() {
-      AtsArtifactProvider provider = new AtsArtifactProviderImpl(orcsApi, null);
+   public AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> createInstance(ApplicationContext context) {
+      AtsArtifactProvider provider = new AtsArtifactProviderImpl(logger, executorAdmin, orcsApi, context);
       AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> instance =
          new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider, logger);
       return instance;

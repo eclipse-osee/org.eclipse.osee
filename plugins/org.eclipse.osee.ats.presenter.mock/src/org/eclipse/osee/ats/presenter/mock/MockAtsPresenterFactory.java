@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.ats.presenter.mock.internal.MockAtsWebSearchPresenter;
+import org.eclipse.osee.orcs.ApplicationContext;
 
 /**
  * @author John Misinco
@@ -22,7 +23,7 @@ import org.eclipse.osee.ats.presenter.mock.internal.MockAtsWebSearchPresenter;
 public class MockAtsPresenterFactory implements AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> {
 
    @Override
-   public AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> createInstance() {
+   public AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> createInstance(ApplicationContext context) {
       return new MockAtsWebSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters>();
    }
 

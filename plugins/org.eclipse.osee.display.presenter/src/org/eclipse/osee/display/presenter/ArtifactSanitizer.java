@@ -16,9 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -29,53 +29,23 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public class ArtifactSanitizer {
 
-   protected final ArtifactProvider provider;
+   private static final String SANITIZER_EXECUTOR_ID = "artifact.sanitizer";
 
-   public ArtifactSanitizer(ArtifactProvider provider) {
+   protected final List<String> notAllowed = new ArrayList<String>();
+
+   private final ExecutorAdmin executorAdmin;
+   private final ArtifactProvider provider;
+
+   public ArtifactSanitizer(ExecutorAdmin executorAdmin, ArtifactProvider provider) {
+      this.executorAdmin = executorAdmin;
       this.provider = provider;
-   }
 
-   protected static final List<String> notAllowed = new ArrayList<String>();
-   static {
       notAllowed.add("Technical Approaches");
       notAllowed.add("Technical Performance Parameters");
       notAllowed.add("Recent Imports");
       notAllowed.add("Test");
       notAllowed.add("Interface Requirements");
       notAllowed.add("Test Procedures");
-   }
-
-   public List<Match<ReadableArtifact, ReadableAttribute<?>>> sanitizeSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize) {
-      int numProcessors = Runtime.getRuntime().availableProcessors();
-      int partitionSize = toSanitize.size() / numProcessors;
-      int remainder = toSanitize.size() % numProcessors;
-      ExecutorService executor = Executors.newFixedThreadPool(numProcessors);
-      int startIndex = 0;
-      int endIndex = 0;
-      List<ResultsCallable> workers = new LinkedList<ResultsCallable>();
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
-         new LinkedList<Match<ReadableArtifact, ReadableAttribute<?>>>();
-
-      for (int i = 0; i < numProcessors; i++) {
-         startIndex = endIndex;
-         endIndex = startIndex + partitionSize;
-         if (i == 0) {
-            endIndex += remainder;
-         }
-         ResultsCallable worker = new ResultsCallable(toSanitize.subList(startIndex, endIndex));
-         workers.add(worker);
-      }
-
-      try {
-         for (Future<List<Match<ReadableArtifact, ReadableAttribute<?>>>> future : executor.invokeAll(workers)) {
-            toReturn.addAll(future.get());
-         }
-      } catch (Exception ex) {
-         //
-      }
-
-      return toReturn;
-
    }
 
    public ReadableArtifact sanitizeArtifact(ReadableArtifact result) throws OseeCoreException {
@@ -88,21 +58,51 @@ public class ArtifactSanitizer {
          }
          current = provider.getParent(current);
       }
-      if (allowed) {
-         return result;
-      } else {
-         return null;
-      }
+      return allowed ? result : null;
    }
 
    public List<ReadableArtifact> sanitizeArtifacts(List<ReadableArtifact> arts) throws OseeCoreException {
       Iterator<ReadableArtifact> it = arts.iterator();
       while (it.hasNext()) {
-         if (sanitizeArtifact(it.next()) == null) {
+         ReadableArtifact nextArtifact = it.next();
+         if (sanitizeArtifact(nextArtifact) == null) {
             it.remove();
          }
       }
       return arts;
+   }
+
+   public List<Match<ReadableArtifact, ReadableAttribute<?>>> filter(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSanitize) throws Exception {
+      ExecutorService executor = executorAdmin.getExecutor(SANITIZER_EXECUTOR_ID);
+
+      int numProcessors = Runtime.getRuntime().availableProcessors();
+      int partitionSize = toSanitize.size() / numProcessors;
+      int remainder = toSanitize.size() % numProcessors;
+
+      int startIndex = 0;
+      int endIndex = 0;
+
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> toReturn =
+         new LinkedList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+
+      List<Future<List<Match<ReadableArtifact, ReadableAttribute<?>>>>> futures =
+         new LinkedList<Future<List<Match<ReadableArtifact, ReadableAttribute<?>>>>>();
+
+      for (int index = 0; index < numProcessors; index++) {
+         startIndex = endIndex;
+         endIndex = startIndex + partitionSize;
+         if (index == 0) {
+            endIndex += remainder;
+         }
+         List<Match<ReadableArtifact, ReadableAttribute<?>>> partialList = toSanitize.subList(startIndex, endIndex);
+         ResultsCallable worker = new ResultsCallable(partialList);
+         Future<List<Match<ReadableArtifact, ReadableAttribute<?>>>> future = executor.submit(worker);
+         futures.add(future);
+      }
+      for (Future<List<Match<ReadableArtifact, ReadableAttribute<?>>>> future : futures) {
+         toReturn.addAll(future.get());
+      }
+      return toReturn;
    }
 
    private class ResultsCallable implements Callable<List<Match<ReadableArtifact, ReadableAttribute<?>>>> {

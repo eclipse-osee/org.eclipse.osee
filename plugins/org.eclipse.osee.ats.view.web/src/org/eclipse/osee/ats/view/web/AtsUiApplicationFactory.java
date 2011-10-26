@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.vaadin.ApplicationFactory;
 import com.vaadin.Application;
 
@@ -26,11 +27,17 @@ public class AtsUiApplicationFactory implements ApplicationFactory {
 
    @Override
    public Application createInstance() {
-      AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> searchPresenter = null;
-      if (presenterFactory != null) {
-         searchPresenter = presenterFactory.createInstance();
-      }
-      return new AtsUiApplication(searchPresenter);
+      AtsApplicationContext context = new AtsApplicationContext();
+
+      AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> searchPresenter =
+         presenterFactory.createInstance(context);
+
+      AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters> application =
+         new AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters>(searchPresenter);
+
+      // TODO attach context
+      context.setUser(application.getUser());
+      return application;
    }
 
    @Override
@@ -40,6 +47,19 @@ public class AtsUiApplicationFactory implements ApplicationFactory {
 
    public void setPresenterFactory(AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> presenterFactory) {
       this.presenterFactory = presenterFactory;
+   }
+
+   private final class AtsApplicationContext implements ApplicationContext {
+      private Object user;
+
+      @Override
+      public String getSessionId() {
+         return user != null ? user.toString() : "dummy";
+      }
+
+      public void setUser(Object user) {
+         this.user = user;
+      }
    }
 
 }

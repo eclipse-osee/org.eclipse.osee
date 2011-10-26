@@ -17,22 +17,18 @@ import org.eclipse.osee.display.view.web.search.OseeArtifactView;
 /**
  * @author Shawn F. Cook
  */
+@SuppressWarnings("serial")
 public class AtsArtifactView extends OseeArtifactView {
 
    @Override
    protected void initComponents() {
-      try {
-         AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
-         searchPresenter = atsApp.getAtsWebSearchPresenter();
-         searchHeader = new AtsSearchHeaderImpl();
-      } catch (Exception e) {
-         System.out.println("AtsArtifactView.attach - CRITICAL ERROR: (AtsUiApplication) this.getApplication() threw an exception.");
-      }
+      setSearchHeader(new AtsSearchHeaderImpl());
    }
 
    @Override
    protected void callInit(String url) {
-      searchPresenter.initArtifactPage(url, searchHeader, this, relationsComp, attributeComp, null);
+      AtsUiApplication atsApp = (AtsUiApplication) this.getApplication();
+      atsApp.getPresenter().initArtifactPage(url, getSearchHeader(), this, relationsComp, attributeComp, null);
    }
 
 }
