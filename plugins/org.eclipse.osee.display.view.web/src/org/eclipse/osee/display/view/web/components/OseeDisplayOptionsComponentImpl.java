@@ -76,7 +76,7 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
 
       String url = ComponentUtility.getUrl(OseeDisplayOptionsComponentImpl.this);
       SearchNavigator navigator = ComponentUtility.getNavigator(OseeDisplayOptionsComponentImpl.this);
-      SearchPresenter presenter = ComponentUtility.getPresenter(OseeDisplayOptionsComponentImpl.this);
+      SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeDisplayOptionsComponentImpl.this);
       if (presenter != null) {
          presenter.selectDisplayOptions(url, options, navigator);
       } else {

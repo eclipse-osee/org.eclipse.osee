@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.view.web;
 
 import org.eclipse.osee.vaadin.widgets.AccountMenuBar;
+import org.eclipse.osee.vaadin.widgets.HasViewTitle;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import org.eclipse.osee.vaadin.widgets.Navigator.View;
@@ -47,8 +48,14 @@ public class AtsWindowFactory {
          @Override
          public void navigatorViewChange(View previous, View current) {
             Window mainWindow = w.getApplication().getMainWindow();
-            mainWindow.setCaption("OSEE - " + current.getClass().getSimpleName());
-            //            mainWindow.showNotification("Navigated to " + current.getClass().getName());
+            String title = "OSEE";
+            if (current instanceof HasViewTitle) {
+               String currentTitle = ((HasViewTitle) current).getViewTitle();
+               if (currentTitle != null && !currentTitle.isEmpty()) {
+                  title = String.format("%s - %s", title, currentTitle);
+               }
+            }
+            mainWindow.setCaption(title);
          }
       });
       return w;

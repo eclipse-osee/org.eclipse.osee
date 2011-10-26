@@ -13,6 +13,7 @@ package org.eclipse.osee.display.view.web.search;
 import org.eclipse.osee.display.view.web.AbstractCommonView;
 import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeSearchResultsListComponent;
+import org.eclipse.osee.vaadin.widgets.HasViewTitle;
 
 /**
  * @author Shawn F. Cook
@@ -33,5 +34,14 @@ public abstract class OseeSearchResultsView extends AbstractCommonView {
 
       leftMargContainer.setExpandRatio(searchResultsListComponent, 1.0f);
       setExpandRatio(leftMargContainer, 1.0f);
+   }
+
+   @Override
+   public String getViewTitle() {
+      if (searchHeader != null && searchHeader instanceof HasViewTitle) {
+         return ((HasViewTitle) searchHeader).getViewTitle();
+      } else {
+         return "";
+      }
    }
 }

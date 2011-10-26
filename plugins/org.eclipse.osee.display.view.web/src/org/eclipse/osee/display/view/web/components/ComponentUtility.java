@@ -57,6 +57,13 @@ public final class ComponentUtility {
       return url;
    }
 
+   public static void setUrl(Component component, String url) {
+      Application app = component.getApplication();
+      if (app instanceof HasUrl) {
+         ((HasUrl) app).setUrl(url);
+      }
+   }
+
    public static SearchPresenter<?, ?> getPresenter(Component component) {
       SearchPresenter presenter = null;
       Application app = component.getApplication();

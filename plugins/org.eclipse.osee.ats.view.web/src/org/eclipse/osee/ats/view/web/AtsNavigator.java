@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.view.web.search.AtsArtifactView;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.vaadin.widgets.Navigator;
-import com.vaadin.Application;
 
 /**
  * @author Shawn F. Cook
@@ -24,24 +23,14 @@ public class AtsNavigator extends Navigator implements SearchNavigator {
 
    @Override
    public void navigateSearchResults(String url) {
-      updateGlobalUrlState(url);
       String classUri = getUri(AtsSearchResultsView.class);
       this.navigateTo(String.format("%s%s", classUri, url));
    }
 
    @Override
    public void navigateArtifactPage(String url) {
-      updateGlobalUrlState(url);
       String classUri = getUri(AtsArtifactView.class);
       this.navigateTo(String.format("%s%s", classUri, url));
-   }
-
-   private void updateGlobalUrlState(String url) {
-      Application application = getApplication();
-      if (application instanceof AtsUiApplication) {
-         AtsUiApplication<?, ?> atsApp = (AtsUiApplication<?, ?>) application;
-         atsApp.setUrl(url);
-      }
    }
 
 }

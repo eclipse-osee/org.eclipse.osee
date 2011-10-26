@@ -13,6 +13,7 @@ package org.eclipse.osee.display.view.web;
 import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.components.ComponentUtility;
 import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
+import org.eclipse.osee.vaadin.widgets.HasViewTitle;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 import com.vaadin.Application;
 import com.vaadin.ui.Alignment;
@@ -22,9 +23,9 @@ import com.vaadin.ui.VerticalLayout;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public abstract class AbstractCommonView extends VerticalLayout implements Navigator.View {
+public abstract class AbstractCommonView extends VerticalLayout implements Navigator.View, HasViewTitle {
 
-   private OseeSearchHeaderComponent searchHeader;
+   protected OseeSearchHeaderComponent searchHeader;
    private SearchPresenter searchPresenter;
 
    private boolean isLayoutComplete = false;
@@ -55,6 +56,7 @@ public abstract class AbstractCommonView extends VerticalLayout implements Navig
 
    @Override
    public final void navigateTo(String requestedDataId) {
+      ComponentUtility.setUrl(this, requestedDataId);
       searchPresenter = ComponentUtility.getPresenter(this);
       initialUrl = requestedDataId;
       if (searchPresenter != null) {

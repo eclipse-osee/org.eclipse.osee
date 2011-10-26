@@ -144,4 +144,13 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
       OseeExceptionDialogComponent dlg =
          new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
    }
+
+   @Override
+   public String getViewTitle() {
+      if (this.artifact != null) {
+         return artifact.getArtifactName();
+      } else {
+         return "";
+      }
+   }
 }
