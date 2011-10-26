@@ -14,19 +14,8 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
-import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.CopyActionDetails;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -37,15 +26,14 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class CopyActionDetailsAction extends Action {
 
-   private static final String USE_DEVELOPER_CHANGE_TYPES = "UseDeveloperChangeTypes";
    private Clipboard clipboard;
-   private final AbstractWorkflowArtifact sma;
+   private final AbstractWorkflowArtifact awa;
 
-   public CopyActionDetailsAction(AbstractWorkflowArtifact sma) {
+   public CopyActionDetailsAction(AbstractWorkflowArtifact awa) {
       super();
-      this.sma = sma;
+      this.awa = awa;
       String title = "Copy";
-      title = "Copy " + sma.getArtifactTypeName() + " details to clipboard";
+      title = "Copy " + awa.getArtifactTypeName() + " details to clipboard";
       setText(title);
       setToolTipText(getText());
    }
@@ -54,66 +42,8 @@ public class CopyActionDetailsAction extends Action {
       if (clipboard == null) {
          this.clipboard = new Clipboard(null);
       }
-      try {
-         String detailsStr = "";
-         if (sma.getParentTeamWorkflow() != null) {
-            TeamDefinitionArtifact teamDef = sma.getParentTeamWorkflow().getTeamDefinition();
-            String formatStr = getFormatStr(teamDef);
-            if (Strings.isValid(formatStr)) {
-               detailsStr = formatStr;
-               detailsStr = detailsStr.replaceAll("<hrid>", sma.getHumanReadableId());
-               detailsStr = detailsStr.replaceAll("<name>", sma.getName());
-               detailsStr = detailsStr.replaceAll("<artType>", sma.getArtifactTypeName());
-               detailsStr = detailsStr.replaceAll("<changeType>", getChangeTypeOrObjectType(sma));
-            }
-         }
-         if (!Strings.isValid(detailsStr)) {
-            detailsStr =
-               "\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\"";
-         }
-         clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   private String getChangeTypeOrObjectType(AbstractWorkflowArtifact awa) throws OseeCoreException {
-      String result = "";
-      if (awa instanceof TeamWorkFlowArtifact) {
-         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-         result = ChangeTypeUtil.getChangeTypeStr(sma);
-         if (teamArt.getTeamDefinition().getAttributesToStringList(CoreAttributeTypes.StaticId).contains(
-            USE_DEVELOPER_CHANGE_TYPES)) {
-            if (result.equals("Improvement")) {
-               result = "feature";
-            } else if (result.equals("Problem")) {
-               result = "bug";
-            }
-         }
-      } else if (awa instanceof TaskArtifact) {
-         result = "Task";
-      } else if (awa.isOfType(AtsArtifactTypes.ReviewArtifact)) {
-         result = "Review";
-      } else if (awa.isOfType(AtsArtifactTypes.Goal)) {
-         result = "Goal";
-      }
-      if (!Strings.isValid(result)) {
-         result = "unknown";
-      }
-      return result;
-   }
-
-   private String getFormatStr(TeamDefinitionArtifact teamDef) throws OseeCoreException {
-      if (teamDef != null) {
-         String formatStr = teamDef.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
-         if (Strings.isValid(formatStr)) {
-            return formatStr;
-         }
-         if (teamDef.getParent() instanceof TeamDefinitionArtifact) {
-            return getFormatStr((TeamDefinitionArtifact) teamDef.getParent());
-         }
-      }
-      return null;
+      String detailsStr = new CopyActionDetails(awa).getDetailsString();
+      clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
    }
 
    @Override

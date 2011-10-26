@@ -10,21 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 
 /**
  * @author Donald G. Dunne
  */
-public class ShowWorkDefinitionAction extends Action {
+public class ShowWorkDefinitionAction extends AbstractAtsAction {
 
    public ShowWorkDefinitionAction() {
       super();
@@ -33,13 +28,9 @@ public class ShowWorkDefinitionAction extends Action {
    }
 
    @Override
-   public void run() {
+   public void runWithException() throws Exception {
       IWorkbenchPage page = AWorkbench.getActivePage();
-      try {
-         page.showView("org.eclipse.ui.views.ContentOutline", null, IWorkbenchPage.VIEW_ACTIVATE);
-      } catch (PartInitException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      page.showView("org.eclipse.ui.views.ContentOutline", null, IWorkbenchPage.VIEW_ACTIVATE);
    }
 
    @Override

@@ -37,15 +37,15 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AllAccessTestSuite.class,
    Review_Demo_Suite.class,
    AtsTest_Demo_StateItem_Suite.class,
+   AtsTest_Demo_Config_Suite.class,
+   AtsTest_Demo_Suite.class,
+   AllAccessTestSuite.class,
    CoreRuntimeFeatureTestsSuite.class,
    Coverage_Db_Suite.class,
    FrameworkCore_Demo_Suite.class,
    AllEventResTestSuite.class,
-   AtsTest_Demo_Config_Suite.class,
-   AtsTest_Demo_Suite.class,
    FrameworkUi_Demo_Suite.class,
    AllDefineTestSuite.class,
    // This should always be last test of master suite

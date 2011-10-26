@@ -14,9 +14,11 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -57,6 +59,18 @@ public class AtsTestUtilTest extends AtsTestUtil {
    }
 
    @org.junit.Test
+   public void testCreateAndCleanupWithBranch() throws Exception {
+      AtsTestUtil.cleanupAndReset(getClass().getSimpleName() + "-testCleanupAndResetWithBranch");
+      Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
+      Assert.assertTrue(result.getText(), result.isTrue());
+      Thread.sleep(2000);
+      Branch branch = AtsTestUtil.getTeamWf().getWorkingBranch();
+      Assert.assertNotNull(branch);
+      AtsTestUtil.cleanup();
+      Assert.assertTrue(branch.isDeleted());
+   }
+
+   @org.junit.Test
    public void testGetTeamWf2() throws OseeCoreException {
 
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetTeamWf2");
@@ -68,6 +82,32 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt2());
       Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
          AtsTestUtil.getTeamWf2().getActionableItemsDam().getActionableItems().iterator().next());
+
+      AtsTestUtil.cleanup();
+
+      AtsTestUtil.validateArtifactCache();
+   }
+
+   @org.junit.Test
+   public void testGetDecisionReview() throws OseeCoreException {
+
+      AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetDecisionReview");
+      AtsTestUtil.validateArtifactCache();
+
+      Assert.assertNotNull(AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze));
+
+      AtsTestUtil.cleanup();
+
+      AtsTestUtil.validateArtifactCache();
+   }
+
+   @org.junit.Test
+   public void testGetPeerReview() throws OseeCoreException {
+
+      AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetPeerReview");
+      AtsTestUtil.validateArtifactCache();
+
+      Assert.assertNotNull(AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, null));
 
       AtsTestUtil.cleanup();
 

@@ -14,10 +14,14 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.action.ActionManager;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
@@ -58,10 +62,12 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -190,6 +196,8 @@ public class AtsTestUtil {
       actionArt2 = null;
       verArt1 = null;
       verArt2 = null;
+      decRevArt = null;
+      peerRevArt = null;
    }
 
    private static String getTitle(String objectName, String postFixName) {
@@ -315,7 +323,7 @@ public class AtsTestUtil {
       return taskArt;
    }
 
-   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, String relatedToState) throws OseeCoreException {
+   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState) throws OseeCoreException {
       ensureLoaded();
       if (decRevArt == null) {
          List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
@@ -324,8 +332,9 @@ public class AtsTestUtil {
             Arrays.asList(UserManager.getUser().getUserId())));
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
-               AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState, "Decision Review", options,
-               Arrays.asList((IBasicUser) UserManager.getUser()), new Date(), UserManager.getUser());
+               AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getPageName(),
+               "Decision Review", options, Arrays.asList((IBasicUser) UserManager.getUser()), new Date(),
+               UserManager.getUser());
       }
       return decRevArt;
    }
@@ -374,6 +383,12 @@ public class AtsTestUtil {
          taskArt.deleteAndPersist(transaction);
       }
       if (teamArt != null) {
+         if (teamArt.getWorkingBranch() != null) {
+            Result result = AtsBranchManagerCore.deleteWorkingBranch(teamArt, true);
+            if (result.isFalse()) {
+               throw new OseeStateException("Error deleting working branch [%s]", result.getText());
+            }
+         }
          for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
             taskArt.deleteAndPersist(transaction);
          }
@@ -508,12 +523,12 @@ public class AtsTestUtil {
       }
    }
 
-   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType none, AtsTestUtilState relatedToState, SkynetTransaction transaction) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, SkynetTransaction transaction) throws OseeCoreException {
       ensureLoaded();
       if (peerRevArt == null) {
          peerRevArt =
             PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt,
-               AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getPageName(), transaction);
+               AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getPageName(), transaction);
       }
       return peerRevArt;
    }
@@ -548,4 +563,50 @@ public class AtsTestUtil {
       ensureLoaded();
       return actionArt;
    }
+
+   public static ISelectedAtsArtifacts getSelectedAtsArtifactsForTeamWf() {
+      return new ISelectedAtsArtifacts() {
+
+         @Override
+         public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeCoreException {
+            return Collections.singleton(getTeamWf());
+         }
+
+         @Override
+         public List<Artifact> getSelectedAtsArtifacts() throws OseeCoreException {
+            return Arrays.asList((Artifact) getTeamWf());
+         }
+
+         @Override
+         public List<TaskArtifact> getSelectedTaskArtifacts() {
+            return Collections.emptyList();
+         }
+
+      };
+   }
+
+   public static Result createWorkingBranchFromTeamWf() throws OseeCoreException {
+      configureVer1ForWorkingBranch();
+      Result result = AtsBranchManagerCore.createWorkingBranch_Validate(teamArt);
+      if (result.isFalse()) {
+         return result;
+      }
+      AtsBranchManagerCore.createWorkingBranch_Create(teamArt, true);
+      teamArt.getWorkingBranchForceCacheUpdate();
+      return Result.TrueResult;
+   }
+
+   public static void configureVer1ForWorkingBranch() throws OseeCoreException {
+      VersionArtifact verArt = getVerArt1();
+      verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
+      verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
+      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid,
+         BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getGuid());
+      verArt.persist(AtsTestUtil.class.getSimpleName() + "-ConfigureVer1ForWorkingBranch");
+      if (getTeamWf().getTargetedVersion() == null) {
+         getTeamWf().addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVerArt1());
+         getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
+      }
+   }
+
 }

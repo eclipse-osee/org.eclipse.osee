@@ -10,21 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class EditActionableItemsAction extends Action {
+public class EditActionableItemsAction extends AbstractAtsAction {
 
    private final TeamWorkFlowArtifact teamWf;
 
@@ -35,17 +32,12 @@ public class EditActionableItemsAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         ActionArtifact parentAction = teamWf.getParentActionArtifact();
-         if (parentAction == null) {
-            AWorkbench.popup("No Parent Action; Aborting");
-            return;
-         }
-         AtsUtil.editActionableItems(parentAction);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   public void runWithException() throws OseeCoreException {
+      ActionArtifact parentAction = teamWf.getParentActionArtifact();
+      if (parentAction == null) {
+         throw new OseeStateException("No Parent Action; Aborting");
       }
+      AtsUtil.editActionableItems(parentAction);
    }
 
 }

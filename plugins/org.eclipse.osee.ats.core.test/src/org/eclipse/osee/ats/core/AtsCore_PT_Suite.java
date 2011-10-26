@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.core.notify.AtsCore_Notify_PT_Suite;
 import org.eclipse.osee.ats.core.operation.AtsCore_Operation_PT_Suite;
 import org.eclipse.osee.ats.core.review.AtsCore_Review_PT_Suite;
 import org.eclipse.osee.ats.core.task.AtsCore_Task_PT_Suite;
+import org.eclipse.osee.ats.core.util.AtsCore_Util_PT_Suite;
 import org.eclipse.osee.ats.core.workflow.transition.AtsCore_Transition_PT_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -28,6 +29,7 @@ import org.junit.runners.Suite;
    AtsCore_Operation_PT_Suite.class,
    AtsCore_Review_PT_Suite.class,
    AtsCore_Task_PT_Suite.class,
+   AtsCore_Util_PT_Suite.class,
    AtsCore_Transition_PT_Suite.class})
 /**
  * This test suite contains tests that must be run as PDE Junit (PT) through test launch config

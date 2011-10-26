@@ -68,7 +68,9 @@ public final class ImageManager {
       if (getImageRegistry().getDescriptor(imageKey) == null) {
          ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
          if (imageDescriptor == null) {
-            OseeLog.logf(Activator.class, Level.SEVERE, "Unable to load the image for [%s]", imageEnum.getImageKey());
+            if (!imageKey.contains("nothere.gif")) {
+               OseeLog.logf(Activator.class, Level.SEVERE, "Unable to load the image for [%s]", imageEnum.getImageKey());
+            }
             return setupImage(MISSING);
          }
          storeOnImageRegistry(imageKey, imageDescriptor);

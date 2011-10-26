@@ -10,22 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class DeletePurgeAtsArtifactsAction extends Action {
+public class DeletePurgeAtsArtifactsAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
+   private boolean prompt = true;
 
    public DeletePurgeAtsArtifactsAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super("Delete/Purge Ats Artifact(s)", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
@@ -34,21 +32,12 @@ public class DeletePurgeAtsArtifactsAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(), false,
-            DeleteOption.Prompt);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+   public void runWithException() throws OseeCoreException {
+      AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(), false,
+         (prompt ? DeleteOption.Prompt : null));
    }
 
-   public void updateEnablement() {
-      try {
-         setEnabled(!selectedAtsArtifacts.getSelectedSMAArtifacts().isEmpty());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         setEnabled(false);
-      }
+   public void setPrompt(boolean prompt) {
+      this.prompt = prompt;
    }
 }

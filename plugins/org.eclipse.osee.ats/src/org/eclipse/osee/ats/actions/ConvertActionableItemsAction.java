@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.core.action.ActionArtifactRollup;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;

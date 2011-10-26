@@ -11,15 +11,11 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.List;
-import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -27,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class OpenNewAtsTaskEditorSelected extends Action {
+public class OpenNewAtsTaskEditorSelected extends AbstractAtsAction {
 
    private final IOpenNewAtsTaskEditorSelectedHandler openNewAtsTaskEditorSelectedHandler;
 
@@ -45,18 +41,13 @@ public class OpenNewAtsTaskEditorSelected extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         if (openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
-            AWorkbench.popup("ERROR", "Select items to open");
-            return;
-         }
-         TaskEditor.open(new TaskEditorSimpleProvider("Tasks",
-            openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts(),
-            openNewAtsTaskEditorSelectedHandler.getCustomizeDataCopy()));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   public void runWithException() throws OseeCoreException {
+      if (openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
+         AWorkbench.popup("ERROR", "Select items to open");
+         return;
       }
+      TaskEditor.open(new TaskEditorSimpleProvider("Tasks", openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts(),
+         openNewAtsTaskEditorSelectedHandler.getCustomizeDataCopy()));
    }
 
 }

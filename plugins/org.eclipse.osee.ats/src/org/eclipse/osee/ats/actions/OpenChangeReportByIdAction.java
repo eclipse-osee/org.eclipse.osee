@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -23,6 +24,8 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  * @author Donald G. Dunne
  */
 public class OpenChangeReportByIdAction extends Action {
+
+   private String overrideId = null;
 
    public OpenChangeReportByIdAction() {
       this("Open Change Report by ID(s)");
@@ -35,13 +38,20 @@ public class OpenChangeReportByIdAction extends Action {
 
    @Override
    public void run() {
-      Operations.executeAsJob(new MultipleHridSearchOperation(new MultipleHridSearchData(getText(),
-         AtsEditor.ChangeReport)), true);
+      MultipleHridSearchData data = new MultipleHridSearchData(getText(), AtsEditor.ChangeReport);
+      if (Strings.isValid(overrideId)) {
+         data.setEnteredIds(overrideId);
+      }
+      Operations.executeAsJob(new MultipleHridSearchOperation(data), true);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE);
+   }
+
+   public void setOverrideId(String overrideId) {
+      this.overrideId = overrideId;
    }
 
 }

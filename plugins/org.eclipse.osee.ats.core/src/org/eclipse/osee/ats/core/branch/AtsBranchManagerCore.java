@@ -18,20 +18,47 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.core.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
+import org.eclipse.osee.ats.core.review.DecisionReviewDefinitionManager;
+import org.eclipse.osee.ats.core.review.PeerReviewDefinitionManager;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.version.VersionArtifact;
+import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
+import org.eclipse.osee.ats.core.workdef.PeerReviewDefinition;
+import org.eclipse.osee.ats.core.workdef.StateEventType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.CatchAndReleaseJob;
+import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -462,6 +489,138 @@ public class AtsBranchManagerCore {
          }
       }
       return earliestTransactionId;
+   }
+
+   /**
+    * Perform error checks and popup confirmation dialogs associated with creating a working branch.
+    * 
+    * @param popup if true, errors are popped up to user; otherwise sent silently in Results
+    * @return Result return of status
+    */
+   public static Result createWorkingBranch_Validate(TeamWorkFlowArtifact teamArt) {
+      try {
+         if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
+            return new Result(
+               "Committed branch already exists. Can not create another working branch once changes have been committed.");
+         }
+         Branch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
+         if (parentBranch == null) {
+            return new Result(
+               "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.");
+         }
+         Result result = AtsBranchManagerCore.isCreateBranchAllowed(teamArt);
+         if (result.isFalse()) {
+            return result;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Result("Exception occurred: " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
+   }
+
+   /**
+    * Create a working branch associated with this Team Workflow. Call createWorkingBranch_Validate first to validate
+    * that branch can be created.
+    */
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      return createWorkingBranch_Create(teamArt, false);
+   }
+
+   /**
+    * Create a working branch associated with this state machine artifact. This should NOT be called by applications
+    * except in test cases or automated tools. Use createWorkingBranchWithPopups
+    */
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
+      final Branch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
+      return createWorkingBranch_Create(teamArt, parentBranch, pend);
+   }
+
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final IOseeBranch parentBranch) throws OseeCoreException {
+      return createWorkingBranch_Create(teamArt, parentBranch, false);
+   }
+
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final IOseeBranch parentBranch, boolean pend) throws OseeCoreException {
+      final String branchName = Strings.truncate(TeamWorkFlowManager.getBranchName(teamArt), 195, true);
+
+      IExceptionableRunnable runnable = new IExceptionableRunnable() {
+         @Override
+         public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
+            teamArt.setWorkingBranchCreationInProgress(true);
+            BranchManager.createWorkingBranch(parentBranch, branchName, teamArt);
+            teamArt.setWorkingBranchCreationInProgress(false);
+            // Create reviews as necessary
+            SkynetTransaction transaction =
+               new SkynetTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
+            createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
+               UserManager.getUser(SystemUser.OseeSystem), transaction);
+            transaction.execute();
+            return Status.OK_STATUS;
+         }
+      };
+
+      //            Jobs.runInJob("Create Branch", runnable, Activator.class, Activator.PLUGIN_ID);
+      Job job =
+         Jobs.startJob(new CatchAndReleaseJob("Create Branch", runnable, Activator.class, Activator.PLUGIN_ID), true);
+      if (pend) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            throw new OseeWrappedException(ex);
+         }
+      }
+      return job;
+   }
+
+   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+      if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
+         throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
+      }
+      // Create any decision and peerToPeer reviews for createBranch and commitBranch
+      for (DecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
+         if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
+            DecisionReviewArtifact decArt =
+               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate,
+                  createdBy);
+            if (decArt != null) {
+               decArt.persist(transaction);
+            }
+         }
+      }
+      for (PeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
+         if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
+            PeerToPeerReviewArtifact peerArt =
+               PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef, transaction, teamArt, createdDate,
+                  createdBy);
+            if (peerArt != null) {
+               peerArt.persist(transaction);
+            }
+         }
+      }
+   }
+
+   public static Result deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
+      Branch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+      if (branch != null) {
+         IStatus status = null;
+         if (pend) {
+            status = BranchManager.deleteBranchAndPend(branch);
+         } else {
+            Job job = BranchManager.deleteBranch(branch);
+            job.schedule();
+            try {
+               job.join();
+            } catch (InterruptedException ex) {
+               throw new OseeWrappedException(ex);
+            }
+            status = job.getResult();
+         }
+         if (status.isOK()) {
+            return Result.TrueResult;
+         }
+         return new Result(status.getMessage());
+      }
+      return Result.TrueResult;
    }
 
 }

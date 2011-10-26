@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowBranchChangeDataAction;
 import org.eclipse.osee.ats.actions.ShowWorkDefinitionAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
-import org.eclipse.osee.ats.actions.WorkflowDebugAction;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
@@ -189,7 +188,6 @@ public class SMAOperationsSection extends SectionPart {
 
       new XButtonViaAction(new RefreshDirtyAction(editor)).createWidgets(sectionBody, 2);
       new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor)).createWidgets(sectionBody, 2);
-      new XButtonViaAction(new WorkflowDebugAction(editor.getAwa())).createWidgets(sectionBody, 2);
       if (ShowBranchChangeDataAction.isApplicable(editor.getAwa())) {
          new XButtonViaAction(new ShowBranchChangeDataAction(editor.getAwa())).createWidgets(sectionBody, 2);
       }

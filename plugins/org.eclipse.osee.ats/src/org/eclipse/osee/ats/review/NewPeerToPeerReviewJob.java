@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.actions;
+package org.eclipse.osee.ats.review;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

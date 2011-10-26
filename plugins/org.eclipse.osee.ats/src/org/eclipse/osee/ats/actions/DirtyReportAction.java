@@ -10,31 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class DirtyReportAction extends Action {
+public class DirtyReportAction extends AbstractAtsAction {
 
-   private final SMAEditor editor;
+   private final IDirtyReportable reportable;
 
-   public DirtyReportAction(SMAEditor editor) {
+   public DirtyReportAction(IDirtyReportable reportable) {
       super("Show Artifact Dirty Report");
-      this.editor = editor;
+      this.reportable = reportable;
       setToolTipText("Show what attribute or relation making editor dirty.");
    }
 
    @Override
-   public void run() {
-      Result result = editor.isDirtyResult();
-      AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
+   public void runWithException() throws OseeCoreException {
+      Result result = reportable.isDirtyResult();
+      throw new OseeStateException("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
    }
 
    @Override

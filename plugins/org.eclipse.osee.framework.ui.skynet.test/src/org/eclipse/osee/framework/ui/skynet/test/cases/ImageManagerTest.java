@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import junit.framework.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -37,7 +36,6 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
-import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -76,19 +74,6 @@ public abstract class ImageManagerTest {
       if (!sb.toString().equals("")) {
          fail(sb.toString());
       }
-   }
-
-   /**
-    * Test that image that is not found, returns MISSING image
-    */
-   @org.junit.Test
-   public void testFrameworkImageMissing() throws Exception {
-      SevereLoggingMonitor slm = TestUtil.severeLoggingStart();
-      assertEquals(ImageManager.getImage(MissingImage.NOT_HERE), ImageManager.getImage(ImageManager.MISSING));
-      TestUtil.severeLoggingStop(slm);
-      List<IHealthStatus> severeLogs = slm.getSevereLogs();
-      Assert.assertEquals(1, severeLogs.size());
-      Assert.assertTrue(severeLogs.iterator().next().getMessage().startsWith("Unable to load the image"));
    }
 
    /**

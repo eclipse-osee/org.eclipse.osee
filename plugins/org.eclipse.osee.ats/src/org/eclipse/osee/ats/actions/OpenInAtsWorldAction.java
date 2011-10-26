@@ -11,25 +11,21 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Arrays;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenInAtsWorldAction extends Action {
+public class OpenInAtsWorldAction extends AbstractAtsAction {
 
    private final AbstractWorkflowArtifact sma;
 
@@ -39,33 +35,24 @@ public class OpenInAtsWorldAction extends Action {
       setText("Open in ATS World Editor");
    }
 
-   public void performOpen() {
-      try {
-         if (sma.isTeamWorkflow()) {
-            Artifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
-            if (actionArt != null) {
-               WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
-                  Arrays.asList(actionArt)));
-            } else {
-               AWorkbench.popup("No Parent Action; Opening Team Workflow");
-               WorldEditor.open(new WorldEditorSimpleProvider(
-                  sma.getArtifactTypeName() + " " + sma.getHumanReadableId(), Arrays.asList(sma)));
-               return;
-            }
-            return;
-         } else {
-            WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),
-               Arrays.asList(sma)));
-            return;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
    @Override
-   public void run() {
-      performOpen();
+   public void runWithException() throws OseeCoreException {
+      if (sma.isTeamWorkflow()) {
+         Artifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
+         if (actionArt != null) {
+            WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
+               Arrays.asList(actionArt)));
+         } else {
+            WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getHumanReadableId(),
+               Arrays.asList(sma)));
+            throw new OseeStateException("No Parent Action; Opening Team Workflow");
+         }
+         return;
+      } else {
+         WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),
+            Arrays.asList(sma)));
+         return;
+      }
    }
 
    @Override

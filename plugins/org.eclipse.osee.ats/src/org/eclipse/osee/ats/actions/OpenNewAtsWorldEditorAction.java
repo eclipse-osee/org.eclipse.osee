@@ -10,22 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenNewAtsWorldEditorAction extends Action {
+public class OpenNewAtsWorldEditorAction extends AbstractAtsAction {
 
    private final IOpenNewAtsWorldEditorHandler openNewAtsWorldEditorHandler;
 
@@ -43,15 +39,11 @@ public class OpenNewAtsWorldEditorAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         IWorldEditorProvider provider = openNewAtsWorldEditorHandler.getWorldEditorProviderCopy();
-         provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
-         provider.setTableLoadOptions(TableLoadOption.NoUI);
-         WorldEditor.open(provider);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+   public void runWithException() throws OseeCoreException {
+      IWorldEditorProvider provider = openNewAtsWorldEditorHandler.getWorldEditorProviderCopy();
+      provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
+      provider.setTableLoadOptions(TableLoadOption.NoUI);
+      WorldEditor.open(provider);
    }
 
 }

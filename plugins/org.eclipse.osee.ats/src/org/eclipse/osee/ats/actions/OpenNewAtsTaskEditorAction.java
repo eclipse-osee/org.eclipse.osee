@@ -10,22 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenNewAtsTaskEditorAction extends Action {
+public class OpenNewAtsTaskEditorAction extends AbstractAtsAction {
 
    private final IOpenNewAtsTaskEditorHandler openNewAtsTaskEditorHandler;
 
@@ -43,15 +39,11 @@ public class OpenNewAtsTaskEditorAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         ITaskEditorProvider provider = openNewAtsTaskEditorHandler.getTaskEditorProviderCopy();
-         provider.setCustomizeData(openNewAtsTaskEditorHandler.getCustomizeDataCopy());
-         provider.setTableLoadOptions(TableLoadOption.NoUI);
-         TaskEditor.open(provider);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+   public void runWithException() throws OseeCoreException {
+      ITaskEditorProvider provider = openNewAtsTaskEditorHandler.getTaskEditorProviderCopy();
+      provider.setCustomizeData(openNewAtsTaskEditorHandler.getCustomizeDataCopy());
+      provider.setTableLoadOptions(TableLoadOption.NoUI);
+      TaskEditor.open(provider);
    }
 
 }

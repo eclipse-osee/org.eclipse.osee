@@ -10,26 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.Listener;
 
 /**
  * @author Donald G. Dunne
  */
-public class ImportTasksViaSimpleList extends Action {
+public class ImportTasksViaSimpleList extends AbstractAtsAction {
 
    private final AbstractTaskableArtifact taskableArt;
-   private final Listener listener;
+   private final ImportListener listener;
 
-   public ImportTasksViaSimpleList(AbstractTaskableArtifact taskableArt, Listener listener) {
+   public ImportTasksViaSimpleList(AbstractTaskableArtifact taskableArt, ImportListener listener) {
       super();
       this.taskableArt = taskableArt;
       this.listener = listener;
@@ -38,16 +33,12 @@ public class ImportTasksViaSimpleList extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         ImportTasksFromSimpleList blamOperation = new ImportTasksFromSimpleList();
-         blamOperation.setTaskableStateMachineArtifact(taskableArt);
-         BlamEditor.edit(blamOperation);
-         if (listener != null) {
-            listener.notifyAll();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   public void runWithException() {
+      ImportTasksFromSimpleList blamOperation = new ImportTasksFromSimpleList();
+      blamOperation.setTaskableStateMachineArtifact(taskableArt);
+      BlamEditor.edit(blamOperation);
+      if (listener != null) {
+         listener.importCompleted();
       }
    }
 }

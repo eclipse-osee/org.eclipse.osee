@@ -74,9 +74,13 @@ public class TestUtil {
       OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, set ? DEMO_DB_TYPE : "");
    }
 
-   public static void sleep(long milliseconds) throws Exception {
+   public static void sleep(long milliseconds) {
       //      System.out.println("Sleeping " + milliseconds);
-      Thread.sleep(milliseconds);
+      try {
+         Thread.sleep(milliseconds);
+      } catch (InterruptedException ex) {
+         // do nothing
+      }
       //      System.out.println("Awake");
    }
 

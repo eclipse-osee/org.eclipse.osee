@@ -7,8 +7,15 @@ package org.eclipse.osee.ats.util;
 
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * Test for {@link CreateActionUsingAllActionableItems}
@@ -16,6 +23,18 @@ import org.eclipse.osee.support.test.util.TestUtil;
  * @author Donald G. Dunne
  */
 public class CreateActionUsingAllActionableItemsTest {
+
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws OseeCoreException {
+      SkynetTransaction transaction =
+         new SkynetTransaction(AtsUtil.getAtsBranch(), CreateActionUsingAllActionableItemsTest.class.getSimpleName());
+      for (Artifact art : ArtifactQuery.getArtifactListFromName("Big Action Test - Delete Me",
+         AtsUtil.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED)) {
+         art.deleteAndPersist(transaction);
+      }
+      transaction.execute();
+   }
 
    @org.junit.Test
    public void test() throws Exception {

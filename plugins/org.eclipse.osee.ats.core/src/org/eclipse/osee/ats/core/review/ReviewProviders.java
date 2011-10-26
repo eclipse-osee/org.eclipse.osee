@@ -32,7 +32,7 @@ public final class ReviewProviders {
 
          ExtensionDefinedObjects<IReviewProvider> objects =
             new ExtensionDefinedObjects<IReviewProvider>("org.eclipse.osee.ats.core.AtsReviewProvider",
-               "AtsReviewProvider", "classname");
+               "AtsReviewProvider", "classname", true);
          reviewProvider = objects.getObjects();
 
       }

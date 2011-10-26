@@ -17,12 +17,15 @@ import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
 public class OpenWorldByIdAction extends Action {
+
+   public String overrideId = null;
 
    public OpenWorldByIdAction() {
       super("Open World Editor by ID(s)");
@@ -31,13 +34,20 @@ public class OpenWorldByIdAction extends Action {
 
    @Override
    public void run() {
-      Operations.executeAsJob(new MultipleHridSearchOperation(new MultipleHridSearchData(getText(),
-         AtsEditor.WorldEditor)), true);
+      MultipleHridSearchData data = new MultipleHridSearchData(getText(), AtsEditor.WorldEditor);
+      if (Strings.isValid(overrideId)) {
+         data.setEnteredIds(overrideId);
+      }
+      Operations.executeAsJob(new MultipleHridSearchOperation(data), true);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(AtsImage.OPEN_BY_ID);
+   }
+
+   public void setOverrideIdString(String enteredIdString) {
+      this.overrideId = enteredIdString;
    }
 
 }

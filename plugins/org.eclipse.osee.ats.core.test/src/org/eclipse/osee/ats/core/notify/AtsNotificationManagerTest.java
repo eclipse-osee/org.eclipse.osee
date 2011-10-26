@@ -534,7 +534,7 @@ public class AtsNotificationManagerTest {
       // notification sent to author/moderator
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
       Assert.assertTrue(mgr.getNotificationEvents().iterator().next().getDescription().equals(
-         "You are Author/Moderator of [PeerToPeer Review] titled [AtsTestUtil Test Decision Review] which has been reviewed by all reviewers"));
+         "You are Author/Moderator of [PeerToPeer Review] titled [AtsTestUtil Test Peer Review] which has been reviewed by all reviewers"));
       // email both moderator and author
       Assert.assertEquals(2, mgr.getNotificationEvents().iterator().next().getUsers().size());
       peerArt.deleteAndPersist();

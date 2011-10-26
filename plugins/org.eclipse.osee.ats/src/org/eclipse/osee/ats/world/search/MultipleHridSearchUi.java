@@ -36,22 +36,7 @@ public class MultipleHridSearchUi {
    public boolean getInput() {
       MutableBoolean result = new MutableBoolean(false);
       Displays.pendInDisplayThread(new EntryJob(result));
-      extractIds();
       return result.getValue();
-   }
-
-   private void extractIds() {
-      for (String str : data.getEnteredIds().split(",")) {
-         str = str.replaceAll("^\\s+", "");
-         str = str.replaceAll("\\s+$", "");
-         if (!str.equals("")) {
-            data.getIds().add(str);
-         }
-         // allow for lower case hrids
-         if (str.length() == 5 && !data.getIds().contains(str.toUpperCase())) {
-            data.getIds().add(str.toUpperCase());
-         }
-      }
    }
 
    private final class EntryJob implements Runnable {

@@ -8,17 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.actions;
+package org.eclipse.osee.ats.core.actions;
 
-import java.util.Collection;
-import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
+import java.util.Set;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface ISelectedTeamDefinitionArtifacts {
+public interface ISelectedTeamWorkflowArtifacts {
 
-   Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException;
+   Set<? extends TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() throws OseeCoreException;
 
 }

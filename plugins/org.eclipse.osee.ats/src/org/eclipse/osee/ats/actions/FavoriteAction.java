@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.actions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.FavoritesManager;
@@ -28,19 +28,21 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class FavoriteAction extends Action {
+public class FavoriteAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
+   private boolean prompt = true;
 
    public FavoriteAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
-      updateName();
+      updateEnablement();
    }
 
-   private void updateName() {
+   public void updateEnablement() {
       String title = "Favorite";
       try {
+         setEnabled(getSelectedFavoritableArts().size() > 0);
          if (getSelectedFavoritableArts().size() == 1) {
             title =
                FavoritesManager.amIFavorite(getSelectedFavoritableArts().iterator().next()) ? "Remove Favorite" : "Add as Favorite";
@@ -49,6 +51,7 @@ public class FavoriteAction extends Action {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         setEnabled(false);
       }
       setText(title);
       setToolTipText(title);
@@ -65,12 +68,8 @@ public class FavoriteAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         new FavoritesManager(getSelectedFavoritableArts()).toggleFavorite();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+   public void runWithException() throws OseeCoreException {
+      new FavoritesManager(getSelectedFavoritableArts()).toggleFavorite(prompt);
    }
 
    @Override
@@ -78,13 +77,7 @@ public class FavoriteAction extends Action {
       return ImageManager.getImageDescriptor(AtsImage.FAVORITE);
    }
 
-   public void updateEnablement() {
-      try {
-         setEnabled(getSelectedFavoritableArts().size() > 0);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         setEnabled(false);
-      }
-      updateName();
+   public void setPrompt(boolean prompt) {
+      this.prompt = prompt;
    }
 }

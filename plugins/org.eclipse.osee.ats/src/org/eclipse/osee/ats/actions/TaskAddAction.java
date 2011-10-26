@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -24,7 +25,6 @@ public class TaskAddAction extends Action {
    public TaskAddAction(ITaskAddActionHandler taskAddActionHandler) {
       super("Create New Task");
       this.taskAddActionHandler = taskAddActionHandler;
-      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_TASK));
       setToolTipText(getText());
    }
 
@@ -38,4 +38,8 @@ public class TaskAddAction extends Action {
       taskAddActionHandler.taskAddActionHandler();
    }
 
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.NEW_TASK);
+   }
 }

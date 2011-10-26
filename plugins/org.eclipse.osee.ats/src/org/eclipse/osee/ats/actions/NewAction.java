@@ -11,22 +11,18 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Arrays;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
  */
-public class NewAction extends Action {
+public class NewAction extends AbstractAtsAction {
 
    private final String actionableItem;
    private String initialDescription;
@@ -43,31 +39,18 @@ public class NewAction extends Action {
    }
 
    @Override
-   public void run() {
-      super.run();
+   public void runWithException() {
       AtsBulkLoad.loadConfig(true);
       NewActionWizard wizard = new NewActionWizard();
-      try {
-         if (actionableItem != null) {
-            wizard.setInitialAias(ActionableItemManagerCore.getActionableItems(Arrays.asList(actionableItem)));
-         }
-         if (initialDescription != null) {
-            wizard.setInitialDescription(initialDescription);
-         }
-         WizardDialog dialog =
-            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-         dialog.create();
-         dialog.open();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      if (actionableItem != null) {
+         wizard.setInitialAias(ActionableItemManagerCore.getActionableItems(Arrays.asList(actionableItem)));
       }
-   }
-
-   /**
-    * @return the initialDescription
-    */
-   public String getInitialDescription() {
-      return initialDescription;
+      if (initialDescription != null) {
+         wizard.setInitialDescription(initialDescription);
+      }
+      WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+      dialog.create();
+      dialog.open();
    }
 
    /**

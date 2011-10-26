@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class AccessControlAction extends Action {
 
    private final AbstractWorkflowArtifact sma;
+   private PolicyDialog dialog;
 
    public AccessControlAction(AbstractWorkflowArtifact sma) {
       super("Access Control");
@@ -31,10 +32,16 @@ public class AccessControlAction extends Action {
       this.sma = sma;
    }
 
+   public PolicyDialog getDialog() {
+      if (dialog == null) {
+         dialog = new PolicyDialog(Displays.getActiveShell(), sma);
+      }
+      return dialog;
+   }
+
    @Override
    public void run() {
-      PolicyDialog dialog = new PolicyDialog(Displays.getActiveShell(), sma);
-      dialog.open();
+      getDialog().open();
    }
 
    @Override

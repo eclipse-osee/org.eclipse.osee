@@ -118,7 +118,7 @@ public class AtsBranchCommitJob extends Job {
          if (branchCommitted) {
             // Create reviews as necessary
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-            AtsBranchManager.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
+            AtsBranchManagerCore.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
                UserManager.getUser(SystemUser.OseeSystem), transaction);
             transaction.execute();
          }

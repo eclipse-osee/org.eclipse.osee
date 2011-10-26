@@ -11,15 +11,13 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -27,7 +25,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class EditStatusAction extends Action {
+public class EditStatusAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
    private final XViewer xViewer;
@@ -44,20 +42,16 @@ public class EditStatusAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         Collection<AbstractWorkflowArtifact> smaArts =
-            Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
-         if (SMAPromptChangeStatus.promptChangeStatus(smaArts, persist)) {
-            if (xViewer != null) {
-               xViewer.update(selectedAtsArtifacts.getSelectedSMAArtifacts().toArray(), null);
-            }
-            if (editor != null) {
-               editor.onDirtied();
-            }
+   public void runWithException() throws OseeCoreException {
+      Collection<AbstractWorkflowArtifact> smaArts =
+         Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
+      if (SMAPromptChangeStatus.promptChangeStatus(smaArts, persist)) {
+         if (xViewer != null) {
+            xViewer.update(selectedAtsArtifacts.getSelectedSMAArtifacts().toArray(), null);
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         if (editor != null) {
+            editor.onDirtied();
+         }
       }
    }
 

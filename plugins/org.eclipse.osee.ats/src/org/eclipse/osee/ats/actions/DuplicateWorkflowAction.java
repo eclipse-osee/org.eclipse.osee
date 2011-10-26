@@ -12,11 +12,9 @@ package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -29,21 +27,20 @@ public class DuplicateWorkflowAction extends Action {
    private final Collection<TeamWorkFlowArtifact> teams;
 
    public DuplicateWorkflowAction(Collection<TeamWorkFlowArtifact> teams) {
-      super(
-         teams.size() == 1 ? "Duplicate this \"" + teams.iterator().next().getArtifactTypeName() + "\" Workflow" : "Duplicate Workflows");
+      super("Duplicate Workflows");
       this.teams = teams;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE));
    }
 
    @Override
    public void run() {
-      try {
-         DuplicateWorkflowBlam blamOperation = new DuplicateWorkflowBlam();
-         blamOperation.setDefaultTeamWorkflows(teams);
-         BlamEditor.edit(blamOperation);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      DuplicateWorkflowBlam blamOperation = new DuplicateWorkflowBlam();
+      blamOperation.setDefaultTeamWorkflows(teams);
+      BlamEditor.edit(blamOperation);
+   }
+
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE);
    }
 
 }

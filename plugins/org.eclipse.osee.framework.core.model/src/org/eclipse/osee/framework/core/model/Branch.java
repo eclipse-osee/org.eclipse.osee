@@ -160,6 +160,10 @@ public class Branch extends AbstractOseeType<String> implements IAdaptable, IOse
       return getStorageState() == StorageState.PURGED;
    }
 
+   public boolean isDeleted() {
+      return getBranchState() == BranchState.DELETED;
+   }
+
    @Override
    public String toString() {
       return getName();

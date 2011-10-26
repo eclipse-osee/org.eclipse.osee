@@ -11,14 +11,13 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.logging.Level;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.notify.ArtifactEmailWizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -27,7 +26,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class EmailActionAction extends Action {
+public class EmailActionAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
@@ -52,12 +51,8 @@ public class EmailActionAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         performEmail();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+   public void runWithException() throws OseeCoreException {
+      performEmail();
    }
 
    @Override
@@ -67,16 +62,6 @@ public class EmailActionAction extends Action {
 
    private void updateName() throws OseeCoreException {
       setText("Email " + (selectedAtsArtifacts.getSelectedSMAArtifacts().size() == 1 ? selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next().getArtifactTypeName() : ""));
-   }
-
-   public void updateEnablement() {
-      try {
-         setEnabled(selectedAtsArtifacts.getSelectedSMAArtifacts().size() == 1);
-         updateName();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         setEnabled(false);
-      }
    }
 
 }

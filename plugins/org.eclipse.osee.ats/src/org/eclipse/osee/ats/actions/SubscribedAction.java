@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.actions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.util.SubscribeManager;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -29,19 +29,21 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class SubscribedAction extends Action {
+public class SubscribedAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
+   private boolean prompt = true;
 
    public SubscribedAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
-      updateName();
+      updateEnablement();
    }
 
-   private void updateName() {
+   public void updateEnablement() {
       String title = "Subscribed";
       try {
+         setEnabled(getSelectedSubscribableArts().size() > 0);
          if (getSelectedSubscribableArts().size() == 1) {
             title =
                SubscribeManager.amISubscribed(getSelectedSubscribableArts().iterator().next()) ? "Remove Subscribed" : "Add as Subscribed";
@@ -50,6 +52,7 @@ public class SubscribedAction extends Action {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         setEnabled(false);
       }
       setText(title);
       setToolTipText(title);
@@ -66,12 +69,8 @@ public class SubscribedAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         new SubscribeManagerUI(getSelectedSubscribableArts()).toggleSubscribe();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+   public void runWithException() throws OseeCoreException {
+      new SubscribeManagerUI(getSelectedSubscribableArts()).toggleSubscribe(prompt);
    }
 
    @Override
@@ -79,14 +78,8 @@ public class SubscribedAction extends Action {
       return ImageManager.getImageDescriptor(AtsImage.SUBSCRIBED);
    }
 
-   public void updateEnablement() {
-      try {
-         setEnabled(getSelectedSubscribableArts().size() > 0);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         setEnabled(false);
-      }
-      updateName();
+   public void setPrompt(boolean prompt) {
+      this.prompt = prompt;
    }
 
 }

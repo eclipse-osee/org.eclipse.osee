@@ -10,22 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.util.logging.Level;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenParentAction extends Action {
+public class OpenParentAction extends AbstractAtsAction {
 
    private final AbstractWorkflowArtifact sma;
 
@@ -37,12 +33,8 @@ public class OpenParentAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         AtsUtil.openATSAction(sma.getParentAWA(), AtsOpenOption.OpenOneOrPopupSelect);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+   public void runWithException() throws OseeCoreException {
+      AtsUtil.openATSAction(sma.getParentAWA(), AtsOpenOption.OpenOneOrPopupSelect);
    }
 
    @Override

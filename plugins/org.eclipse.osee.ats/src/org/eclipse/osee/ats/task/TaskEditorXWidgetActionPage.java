@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.actions.ImportListener;
 import org.eclipse.osee.ats.actions.ImportTasksViaSimpleList;
 import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.actions.NewAction;
@@ -49,8 +50,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -181,9 +180,9 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), new Listener() {
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), new ImportListener() {
                      @Override
-                     public void handleEvent(Event event) {
+                     public void importCompleted() {
                         try {
                            taskComposite.loadTable();
                         } catch (OseeCoreException ex) {
@@ -192,9 +191,9 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
                      }
                   }));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), new Listener() {
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), new ImportListener() {
                      @Override
-                     public void handleEvent(Event event) {
+                     public void importCompleted() {
                         try {
                            taskComposite.loadTable();
                         } catch (OseeCoreException ex) {

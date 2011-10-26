@@ -11,15 +11,11 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.List;
-import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -27,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class OpenNewAtsWorldEditorSelectedAction extends Action {
+public class OpenNewAtsWorldEditorSelectedAction extends AbstractAtsAction {
 
    private final IOpenNewAtsWorldEditorSelectedHandler openNewAtsWorldEditorSelectedHandler;
 
@@ -45,18 +41,14 @@ public class OpenNewAtsWorldEditorSelectedAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         if (openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
-            AWorkbench.popup("ERROR", "Select items to open");
-            return;
-         }
-         WorldEditor.open(new WorldEditorSimpleProvider("ATS World",
-            openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts(),
-            openNewAtsWorldEditorSelectedHandler.getCustomizeDataCopy()));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   public void runWithException() throws OseeCoreException {
+      if (openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
+         AWorkbench.popup("ERROR", "Select items to open");
+         return;
       }
+      WorldEditor.open(new WorldEditorSimpleProvider("ATS World",
+         openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts(),
+         openNewAtsWorldEditorSelectedHandler.getCustomizeDataCopy()));
    }
 
 }

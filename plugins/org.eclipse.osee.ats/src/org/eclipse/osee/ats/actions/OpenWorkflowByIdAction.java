@@ -17,12 +17,15 @@ import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
 public class OpenWorkflowByIdAction extends Action {
+
+   private String overrideId = null;
 
    public OpenWorkflowByIdAction() {
       super("Open Workflow Editor by ID(s)");
@@ -31,13 +34,20 @@ public class OpenWorkflowByIdAction extends Action {
 
    @Override
    public void run() {
-      Operations.executeAsJob(new MultipleHridSearchOperation(new MultipleHridSearchData(getText(),
-         AtsEditor.WorkflowEditor)), true);
+      MultipleHridSearchData data = new MultipleHridSearchData(getText(), AtsEditor.WorkflowEditor);
+      if (Strings.isValid(overrideId)) {
+         data.setEnteredIds(overrideId);
+      }
+      Operations.executeAsJob(new MultipleHridSearchOperation(data), true);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(AtsImage.TEAM_WORKFLOW);
+   }
+
+   public void setOverrideId(String overrideId) {
+      this.overrideId = overrideId;
    }
 
 }

@@ -24,8 +24,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
-import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.actions.IDirtyReportable;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -86,7 +87,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportable, ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private AbstractWorkflowArtifact awa;
    private SMAWorkFlowTab workFlowTab;

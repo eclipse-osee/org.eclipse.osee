@@ -400,12 +400,12 @@ public class AtsBranchConfigurationTest {
 
    public static void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
       String implementPageId = namespace + ".Implement";
-      Result result = AtsBranchManager.createWorkingBranch(teamWf, implementPageId, false);
+      Result result = AtsBranchManagerCore.createWorkingBranch_Validate(teamWf);
       if (result.isFalse()) {
-         AWorkbench.popup(result);
          AWorkbench.popup(result);
          return;
       }
+      AtsBranchManagerCore.createWorkingBranch_Create(teamWf);
       TestUtil.sleep(4000);
    }
 

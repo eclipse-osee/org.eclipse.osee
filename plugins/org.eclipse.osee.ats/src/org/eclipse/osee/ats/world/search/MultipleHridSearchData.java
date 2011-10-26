@@ -47,7 +47,24 @@ public class MultipleHridSearchData implements IWorldEditorConsumer {
       return enteredIds;
    }
 
+   private void extractIds() {
+      for (String str : getEnteredIds().split(",")) {
+         str = str.replaceAll("^\\s+", "");
+         str = str.replaceAll("\\s+$", "");
+         if (!str.equals("")) {
+            ids.add(str);
+         }
+         // allow for lower case hrids
+         if (str.length() == 5 && !ids.contains(str.toUpperCase())) {
+            ids.add(str.toUpperCase());
+         }
+      }
+   }
+
    public List<String> getIds() {
+      if (ids.isEmpty()) {
+         extractIds();
+      }
       return ids;
    }
 

@@ -10,22 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class NewGoal extends Action {
+public class NewGoal extends AbstractAtsAction {
+
+   public String titleOverride = null;
 
    public NewGoal() {
       super("Create New Goal");
@@ -34,20 +34,24 @@ public class NewGoal extends Action {
    }
 
    @Override
-   public void run() {
-      super.run();
+   public void runWithException() throws OseeCoreException {
       AtsBulkLoad.loadConfig(true);
-      try {
+      String title = titleOverride;
+      if (!Strings.isValid(title)) {
          EntryDialog dialog = new EntryDialog("New Goal", "Enter Title");
          if (dialog.open() == 0) {
-            String title = dialog.getEntry();
-            GoalArtifact goalArt = GoalManager.createGoal(title);
-            goalArt.persist(getClass().getSimpleName());
-            SMAEditor.editArtifact(goalArt);
+            title = dialog.getEntry();
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      if (Strings.isValid(title)) {
+         GoalArtifact goalArt = GoalManager.createGoal(title);
+         goalArt.persist(getClass().getSimpleName());
+         SMAEditor.editArtifact(goalArt);
+      }
+   }
+
+   public void setTitleOverride(String titleOverride) {
+      this.titleOverride = titleOverride;
    }
 
 }

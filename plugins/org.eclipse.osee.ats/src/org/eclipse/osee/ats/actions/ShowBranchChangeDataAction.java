@@ -10,19 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -32,7 +28,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class ShowBranchChangeDataAction extends Action {
+public class ShowBranchChangeDataAction extends AbstractAtsAction {
 
    private final AbstractWorkflowArtifact awa;
 
@@ -43,27 +39,23 @@ public class ShowBranchChangeDataAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         if (!(awa.isOfType(AtsArtifactTypes.TeamWorkflow))) {
-            AWorkbench.popup("Only valid for Team Workflow artifacts");
-            return;
-         }
-         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-         if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isWorkingBranchEverCommitted(teamArt)) {
-            AWorkbench.popup("Working branch never created or committed.");
-            return;
-         }
-         XResultData result = new XResultData();
-         ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
-         result.log("Number of changes " + changeData.getChanges().size() + "\n");
-         for (Change change : changeData.getChanges()) {
-            result.log(String.format("Change [%s]", change));
-         }
-         XResultDataUI.report(result, String.format("Branch Change Data Report [%s]", awa));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   public void runWithException() throws OseeCoreException {
+      if (!(awa.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+         AWorkbench.popup("Only valid for Team Workflow artifacts");
+         return;
       }
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
+      if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isWorkingBranchEverCommitted(teamArt)) {
+         AWorkbench.popup("Working branch never created or committed.");
+         return;
+      }
+      XResultData result = new XResultData();
+      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
+      result.log("Number of changes " + changeData.getChanges().size() + "\n");
+      for (Change change : changeData.getChanges()) {
+         result.log(String.format("Change [%s]", change));
+      }
+      XResultDataUI.report(result, String.format("Branch Change Data Report [%s]", awa));
    }
 
    @Override

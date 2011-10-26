@@ -38,14 +38,14 @@ import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
-import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.core.action.ActionManager;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.core.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.team.TeamState;
@@ -374,7 +374,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (AtsUtilCore.isAtsAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
-         deletePurgeAtsObjectAction.updateEnablement();
+         deletePurgeAtsObjectAction.setEnabled(getSelectedAtsArtifacts().size() > 0);
       }
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OPEN));
@@ -388,7 +388,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       subscribedAction.updateEnablement();
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, emailAction);
-      emailAction.updateEnablement();
+      emailAction.setEnabled(getSelectedSMAArtifacts().size() == 1);
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, resetActionArtifactAction);
       resetActionArtifactAction.setEnabled(getSelectedActionArtifacts().size() > 0);

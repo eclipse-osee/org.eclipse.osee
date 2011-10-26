@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.core.AtsTestUtil;
+import org.eclipse.osee.ats.core.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.review.DecisionReviewState;
@@ -429,7 +430,7 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       DecisionReviewArtifact decArt =
-         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.None, AtsTestUtil.getAnalyzeStateDef().getPageName());
+         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.None, AtsTestUtilState.Analyze);
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decArt);
 
       // validate that can transition cause non-blocking review

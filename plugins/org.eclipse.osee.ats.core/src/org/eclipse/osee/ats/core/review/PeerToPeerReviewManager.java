@@ -162,7 +162,9 @@ public class PeerToPeerReviewManager {
       }
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
-      peerToPeerRev.persist(transaction);
+      if (transaction != null) {
+         peerToPeerRev.persist(transaction);
+      }
       return peerToPeerRev;
    }
 

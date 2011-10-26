@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -21,17 +21,17 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class RefreshDirtyAction extends Action {
 
-   private final SMAEditor edtior;
+   private final IDirtiableEditor dirtiable;
 
-   public RefreshDirtyAction(SMAEditor edtior) {
+   public RefreshDirtyAction(IDirtiableEditor dirtiable) {
       super("Refresh Editor Dirty");
-      this.edtior = edtior;
+      this.dirtiable = dirtiable;
       setToolTipText(getText());
    }
 
    @Override
    public void run() {
-      edtior.onDirtied();
+      dirtiable.onDirtied();
    }
 
    @Override

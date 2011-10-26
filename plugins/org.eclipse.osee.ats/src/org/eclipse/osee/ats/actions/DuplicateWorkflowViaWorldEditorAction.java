@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam;
-import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -25,13 +27,13 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class DuplicateWorkflowViaWorldEditorAction extends Action {
+public class DuplicateWorkflowViaWorldEditorAction extends AbstractAtsAction {
 
-   private final WorldEditor worldEditor;
+   private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
-   public DuplicateWorkflowViaWorldEditorAction(WorldEditor worldEditor) {
+   public DuplicateWorkflowViaWorldEditorAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super();
-      this.worldEditor = worldEditor;
+      this.selectedAtsArtifacts = selectedAtsArtifacts;
       setText("Duplicate Team Workflow");
    }
 
@@ -40,19 +42,23 @@ public class DuplicateWorkflowViaWorldEditorAction extends Action {
       return ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE);
    }
 
-   @Override
-   public void run() {
-      if (worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts().isEmpty()) {
-         AWorkbench.popup("ERROR", "Must select one or more team workflows to duplicate");
-         return;
+   private Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() throws OseeCoreException {
+      List<TeamWorkFlowArtifact> teams = new ArrayList<TeamWorkFlowArtifact>();
+      for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            teams.add((TeamWorkFlowArtifact) art);
+         }
       }
-      try {
-         DuplicateWorkflowBlam blamOperation = new DuplicateWorkflowBlam();
-         blamOperation.setDefaultTeamWorkflows(worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts());
-         BlamEditor.edit(blamOperation);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      return teams;
    }
 
+   @Override
+   public void runWithException() throws OseeCoreException {
+      if (getSelectedTeamWorkflowArtifacts().isEmpty()) {
+         throw new OseeArgumentException("Must select one or more team workflows to duplicate");
+      }
+      DuplicateWorkflowBlam blamOperation = new DuplicateWorkflowBlam();
+      blamOperation.setDefaultTeamWorkflows(getSelectedTeamWorkflowArtifacts());
+      BlamEditor.edit(blamOperation);
+   }
 }

@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -25,7 +22,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class OpenInArtifactEditorAction extends Action {
+public class OpenInArtifactEditorAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
@@ -37,28 +34,15 @@ public class OpenInArtifactEditorAction extends Action {
    }
 
    @Override
-   public void run() {
-      try {
-         for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
-            RendererManager.open(art, PresentationType.GENERALIZED_EDIT);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   public void runWithException() throws OseeCoreException {
+      for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
+         RendererManager.open(art, PresentationType.GENERALIZED_EDIT);
       }
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
-   }
-
-   public void updateEnablement() {
-      try {
-         setEnabled(selectedAtsArtifacts.getSelectedSMAArtifacts().size() > 0);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         setEnabled(false);
-      }
    }
 
 }

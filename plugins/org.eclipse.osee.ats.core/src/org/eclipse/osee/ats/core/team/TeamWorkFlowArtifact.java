@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsCacheManager;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
 import org.eclipse.osee.ats.core.workflow.StateManager;
@@ -177,8 +178,10 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       if (arts.isEmpty()) {
          // Only show exception once in log
          if (!teamArtsWithNoAction.contains(getGuid())) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("Team Workflow has no parent Action [%s]", toStringWithId()));
+            if (!AtsUtilCore.isInTest()) {
+               OseeLog.log(Activator.class, Level.SEVERE,
+                  String.format("Team Workflow has no parent Action [%s]", toStringWithId()));
+            }
             teamArtsWithNoAction.add(getGuid());
          }
       } else if (arts.size() > 1) {

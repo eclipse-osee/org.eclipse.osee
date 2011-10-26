@@ -68,7 +68,9 @@ import org.junit.runners.Suite;
    AbstractEnumerationTest.class,
    ImportTestSuite.class,
    WordTestSuite.class,
-   RelationIntegrityCheckTest.class})
+   RelationIntegrityCheckTest.class
+//
+})
 /**
  * @author Donald G. Dunne
  */

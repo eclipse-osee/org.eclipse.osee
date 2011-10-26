@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats;
 
 import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.ats.actions.AtsTest_Demo_Action_Suite;
 import org.eclipse.osee.ats.artifact.log.AtsLogTest;
 import org.eclipse.osee.ats.artifact.log.LogItemTest;
 import org.eclipse.osee.ats.artifact.note.AtsNoteTest;
@@ -38,6 +39,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsTest_Demo_Action_Suite.class,
    AtsTest_Demo_Access_Suite.class,
    AtsNavigateItemsToMassEditorTest.class,
    AtsNavigateItemsToTaskEditorTest.class,

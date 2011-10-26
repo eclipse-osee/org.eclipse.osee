@@ -11,21 +11,18 @@
 
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenTeamDefinitionAction extends Action {
+public class OpenTeamDefinitionAction extends AbstractAtsAction {
 
    private final TeamWorkFlowArtifact teamArt;
 
@@ -36,19 +33,11 @@ public class OpenTeamDefinitionAction extends Action {
       setToolTipText(getText());
    }
 
-   private void performOpen() {
-      try {
-         if (teamArt.getTeamDefinition() != null) {
-            AtsUtil.openATSAction(teamArt.getTeamDefinition(), AtsOpenOption.OpenOneOrPopupSelect);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
    @Override
-   public void run() {
-      performOpen();
+   public void runWithException() throws OseeCoreException {
+      if (teamArt.getTeamDefinition() != null) {
+         AtsUtil.openATSAction(teamArt.getTeamDefinition(), AtsOpenOption.OpenOneOrPopupSelect);
+      }
    }
 
    @Override

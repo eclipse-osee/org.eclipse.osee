@@ -8,23 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.actions;
+package org.eclipse.osee.ats.core.actions;
 
-import java.util.List;
-import java.util.Set;
-import org.eclipse.osee.ats.core.task.TaskArtifact;
+import java.util.Collection;
+import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public interface ISelectedAtsArtifacts {
+public interface ISelectedTeamDefinitionArtifacts {
 
-   Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeCoreException;
-
-   List<Artifact> getSelectedAtsArtifacts() throws OseeCoreException;
-
-   List<TaskArtifact> getSelectedTaskArtifacts() throws OseeCoreException;
+   Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException;
 
 }

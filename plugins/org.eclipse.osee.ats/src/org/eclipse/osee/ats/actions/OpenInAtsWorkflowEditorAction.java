@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.core.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -25,42 +22,25 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class OpenInAtsWorkflowEditor extends Action {
+public class OpenInAtsWorkflowEditorAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
-   public OpenInAtsWorkflowEditor(String name, ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public OpenInAtsWorkflowEditorAction(String name, ISelectedAtsArtifacts selectedAtsArtifacts) {
       super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setText(name);
    }
 
-   public OpenInAtsWorkflowEditor(ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public OpenInAtsWorkflowEditorAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       this("Open in ATS Workflow Editor", selectedAtsArtifacts);
    }
 
-   public void performOpen() {
-      try {
-         for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
-            AtsUtil.openATSAction(art, AtsOpenOption.OpenAll);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   public void updateEnablement() {
-      try {
-         setEnabled(selectedAtsArtifacts.getSelectedSMAArtifacts().size() > 0);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         setEnabled(false);
-      }
-   }
-
    @Override
-   public void run() {
-      performOpen();
+   public void runWithException() throws OseeCoreException {
+      for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
+         AtsUtil.openATSAction(art, AtsOpenOption.OpenAll);
+      }
    }
 
    @Override
