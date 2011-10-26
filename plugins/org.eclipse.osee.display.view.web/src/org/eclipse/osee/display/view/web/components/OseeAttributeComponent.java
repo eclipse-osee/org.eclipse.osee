@@ -80,16 +80,7 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
    public void addAttribute(String type, String value) {
       if (type != null && !type.isEmpty() && value != null && !value.isEmpty()) {
 
-         if (!type.equalsIgnoreCase("Word Template Content")) {
-            Label attrLabel = new Label(String.format("%s:", type));
-            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
-
-            Label attrValue = new Label(value);
-            attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
-
-            attrLabelsLayout.addComponent(attrLabel);
-            attrValuesLayout.addComponent(attrValue);
-         } else {
+         if (type.contains("Word") && type.contains("Content") && type.contains("Template")) {
             Label attrLabel = new Label(String.format("%s:", type));
             attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL_LONG);
 
@@ -106,8 +97,16 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
             longAttrValuesLayout.addComponent(vSpacer_bottomAttr);
 
             longAttrValuesLayout.setComponentAlignment(attrLabel, Alignment.BOTTOM_LEFT);
+         } else {
+            Label attrLabel = new Label(String.format("%s:", type));
+            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
+
+            Label attrValue = new Label(value);
+            attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
+
+            attrLabelsLayout.addComponent(attrLabel);
+            attrValuesLayout.addComponent(attrValue);
          }
       }
    }
-
 }

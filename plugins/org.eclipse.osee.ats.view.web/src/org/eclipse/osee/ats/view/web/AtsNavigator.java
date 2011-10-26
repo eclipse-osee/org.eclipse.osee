@@ -23,14 +23,18 @@ public class AtsNavigator extends Navigator implements SearchNavigator {
 
    @Override
    public void navigateSearchResults(String url) {
-      String classUri = getUri(AtsSearchResultsView.class);
-      this.navigateTo(String.format("%s%s", classUri, url));
+      synchronized (getApplication()) {
+         String classUri = getUri(AtsSearchResultsView.class);
+         this.navigateTo(String.format("%s%s", classUri, url));
+      }
    }
 
    @Override
    public void navigateArtifactPage(String url) {
-      String classUri = getUri(AtsArtifactView.class);
-      this.navigateTo(String.format("%s%s", classUri, url));
+      synchronized (getApplication()) {
+         String classUri = getUri(AtsArtifactView.class);
+         this.navigateTo(String.format("%s%s", classUri, url));
+      }
    }
 
 }

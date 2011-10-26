@@ -107,19 +107,30 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    }
 
    @Override
-   public void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator) {
-      if (navigator != null && options != null) {
-         Map<String, String> parameters = new HashMap<String, String>();
+   public void selectDisplayOptions(final String url, final DisplayOptions options, final SearchNavigator navigator) {
+      fireSearchInProgressEvent();
 
-         if (options.getVerboseResults() != null) {
-            parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE, options.getVerboseResults() ? "true" : "false");
-         }
+      Thread thread = new Thread(new Runnable() {
+         @Override
+         public void run() {
 
-         if (parameters.size() > 0) {
-            String newurl = parameterMapToRequestString(parameters, url);
-            navigator.navigateSearchResults(newurl);
+            if (navigator != null && options != null) {
+               Map<String, String> parameters = new HashMap<String, String>();
+
+               if (options.getVerboseResults() != null) {
+                  parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE,
+                     options.getVerboseResults() ? "true" : "false");
+               }
+
+               if (parameters.size() > 0) {
+                  String newurl = parameterMapToRequestString(parameters, url);
+                  navigator.navigateSearchResults(newurl);
+               }
+            }
+            fireSearchCompletedEvent();
          }
-      }
+      }, "thread1");
+      thread.start();
    }
 
    @Override
@@ -131,7 +142,7 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    public void selectSearch(final String url, final K params, final SearchNavigator navigator) {
       fireSearchInProgressEvent();
 
-      Runnable searchThread = new Runnable() {
+      Thread thread = new Thread(new Runnable() {
          @Override
          public void run() {
             if (navigator != null && params != null) {
@@ -151,18 +162,19 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
                }
                if (parameters.size() > 0) {
                   String newurl = parameterMapToRequestString(parameters, url);
-                  //                  navigator.navigateSearchResults(newurl);
-                  try {
-                     Thread.sleep(2500);
-                  } catch (InterruptedException ex) {
-                  }
+                  //                  try {
+                  //                     Thread.sleep(5000);
+                  //                  } catch (InterruptedException ex) {
+                  //                     //do nothing
+                  //                  }
+                  navigator.navigateSearchResults(newurl);
                   fireSearchCompletedEvent();
                }
             }
          }
-      };
+      }, "thread1");
 
-      searchThread.run();
+      thread.start();
    }
 
    private void updateSearchDisplayOptions(String url, DisplayOptionsComponent optionsComp) {

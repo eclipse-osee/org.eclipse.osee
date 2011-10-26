@@ -61,4 +61,8 @@ public final class CssConstants {
    public static final String OSEE_EXCEPTION_ERROR_TITLE_TEXT = "osee-exception-error-title-text";
    public static final String OSEE_EXCEPTION_WARNING_TITLE_TEXT = "osee-exception-warning-title-text";
    public static final String OSEE_EXCEPTION_LONGMSG = "osee-exception-longmsg";
+
+   public static final String OSEE_WORKING_LABEL_1 = "osee-working-label-1";
+   public static final String OSEE_WORKING_LABEL_2 = "osee-working-label-2";
+   public static final String OSEE_WORKING_LABEL_3 = "osee-working-label-3";
 }

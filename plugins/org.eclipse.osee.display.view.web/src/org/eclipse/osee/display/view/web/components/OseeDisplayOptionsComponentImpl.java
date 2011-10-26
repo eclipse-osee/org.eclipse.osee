@@ -27,7 +27,6 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
 
    private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
    private boolean isLayoutComplete = false;
-   private boolean lockWhilePresenterUpdatesOptions = false;
 
    @Override
    public void attach() {
@@ -44,12 +43,8 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
       showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
-            if (!lockWhilePresenterUpdatesOptions) {
-               lockWhilePresenterUpdatesOptions = true;
-               boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
-               onBoxChecked(showVerbose);
-               lockWhilePresenterUpdatesOptions = false;
-            }
+            boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
+            onBoxChecked(showVerbose);
          }
       });
 
@@ -64,23 +59,24 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
    @Override
    public void setDisplayOptions(DisplayOptions options) {
       if (options != null) {
-         lockWhilePresenterUpdatesOptions = true;
          boolean verboseResults = options.getVerboseResults();
          showVerboseCheckBox.setValue(verboseResults);
-         lockWhilePresenterUpdatesOptions = false;
       }
    }
 
    private void onBoxChecked(boolean isShowVerbose) {
-      DisplayOptions options = new DisplayOptions(isShowVerbose);
+      if (ComponentUtility.tryLockForNavigateTo()) {
+         DisplayOptions options = new DisplayOptions(isShowVerbose);
 
-      String url = ComponentUtility.getUrl(OseeDisplayOptionsComponentImpl.this);
-      SearchNavigator navigator = ComponentUtility.getNavigator(OseeDisplayOptionsComponentImpl.this);
-      SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeDisplayOptionsComponentImpl.this);
-      if (presenter != null) {
-         presenter.selectDisplayOptions(url, options, navigator);
-      } else {
-         System.out.println("Presenter was null");
+         String url = ComponentUtility.getUrl(OseeDisplayOptionsComponentImpl.this);
+         SearchNavigator navigator = ComponentUtility.getNavigator(OseeDisplayOptionsComponentImpl.this);
+         SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeDisplayOptionsComponentImpl.this);
+         if (presenter != null) {
+            presenter.selectDisplayOptions(url, options, navigator);
+         } else {
+            System.out.println("Presenter was null");
+         }
+         ComponentUtility.unlockForNavigateTo();
       }
    }
 }

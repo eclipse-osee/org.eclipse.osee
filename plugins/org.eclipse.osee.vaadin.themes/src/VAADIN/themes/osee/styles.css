@@ -237,3 +237,27 @@ div.v-window-header {
 	width: 0px;
 	height: 0px;
 	}
+
+.invisible {
+	visibility:hidden;
+	}
+	
+.osee-working-label-1 {
+	background-color: #9cdd93;
+	font-size: 20px;
+	font-weight:bold;
+	}
+	
+.osee-working-label-2 {
+	background-color: #78d16b;
+	font-size: 20px;
+	font-weight:bold;
+	}
+
+.osee-working-label-3 {
+	background-color: #46b037;
+	font-size: 20px;
+	font-weight:bold;
+	}
+	
+	
