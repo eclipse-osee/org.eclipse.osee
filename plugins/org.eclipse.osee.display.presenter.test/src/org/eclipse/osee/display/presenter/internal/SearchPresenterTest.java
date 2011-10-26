@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -133,13 +134,16 @@ public class SearchPresenterTest {
             CoreArtifactTypes.AbstractTestResult, RelationTypeMultiplicity.ONE_TO_ONE, "");
       testArt.addRelationType(relType);
       provider.addArtifact(testArt);
-      String url = "/branch=" + Utility.encode(GUID.create()) + "&artifact=" + artGuid;
+      String url = "/branch=" + Utility.encode(CoreBranches.COMMON.getGuid()) + "&artifact=" + artGuid;
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
       MockRelationComponent relComp = new MockRelationComponent();
       MockAttributeComponent attrComp = new MockAttributeComponent();
       presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, null);
-      Assert.assertEquals(artGuid, artHeaderComp.getArtifact().getGuid());
+
+      ViewArtifact artifact = artHeaderComp.getArtifact();
+      Assert.assertNotNull(artifact);
+      Assert.assertEquals(artGuid, artifact.getGuid());
       Assert.assertEquals(1, relComp.getRelationTypes().size());
       Assert.assertEquals(1, attrComp.getAttributes().keySet().size());
 

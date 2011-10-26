@@ -18,3 +18,4 @@ Import-Package: org.eclipse.osee.display.api.components,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data
+Require-Bundle: org.eclipse.core.runtime
