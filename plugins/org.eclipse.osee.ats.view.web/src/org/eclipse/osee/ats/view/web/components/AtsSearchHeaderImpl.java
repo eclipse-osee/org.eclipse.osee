@@ -42,7 +42,7 @@ import com.vaadin.ui.VerticalLayout;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements AtsSearchHeaderComponent, Handler {
+public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements AtsSearchHeaderComponent, Handler, SearchProgressListener {
 
    private boolean isLayoutComplete = false;
    private final ComboBox programCombo = new ComboBox("Program:");
@@ -302,5 +302,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
 
    private String getRequestedDataId() {
       return getApplication().getUrl();
+   }
    }
 }

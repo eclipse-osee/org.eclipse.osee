@@ -38,4 +38,6 @@ public interface SearchPresenter<T extends SearchHeaderComponent, K extends View
 
    void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator);
 
+   void selectCancel();
+
 }

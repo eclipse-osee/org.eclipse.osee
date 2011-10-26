@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.executor.admin.HasExecutionCallback;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -26,12 +27,18 @@ import org.eclipse.osee.executor.admin.HasExecutionCallback;
 public class ExecutorServiceImpl extends ThreadPoolExecutor {
 
    private final String id;
+   private final Log logger;
    private final ExecutorServiceLifecycleListener listener;
 
-   public ExecutorServiceImpl(String id, int corePoolSize, ThreadFactory threadFactory, ExecutorServiceLifecycleListener listener) {
+   public ExecutorServiceImpl(Log logger, String id, int corePoolSize, ThreadFactory threadFactory, ExecutorServiceLifecycleListener listener) {
       super(corePoolSize, corePoolSize, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), threadFactory);
+      this.logger = logger;
       this.id = id;
       this.listener = listener;
+   }
+
+   private Log getLogger() {
+      return logger;
    }
 
    @Override
@@ -46,7 +53,7 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
       Future<T> toReturn = null;
       ExecutionCallback<T> callback = getCallBack(task);
       if (callback != null) {
-         FutureTask<T> fTask = new FutureTaskWithCallback<T>(task, callback);
+         FutureTask<T> fTask = new FutureTaskWithCallback<T>(getLogger(), task, callback);
          toReturn = (Future<T>) super.submit(fTask);
       } else {
          toReturn = super.submit(task);
@@ -59,7 +66,7 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
       Runnable toRun = task;
       ExecutionCallback<T> callback = getCallBack(task);
       if (callback != null) {
-         toRun = new FutureTaskWithCallback<T>(task, result, callback);
+         toRun = new FutureTaskWithCallback<T>(getLogger(), task, result, callback);
       }
       return super.submit(toRun, result);
    }
@@ -70,7 +77,7 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
       Runnable toRun = task;
       ExecutionCallback<?> callback = getCallBack(task);
       if (callback != null) {
-         toRun = new FutureTaskWithCallback(task, null, callback);
+         toRun = new FutureTaskWithCallback(getLogger(), task, null, callback);
       }
       return super.submit(toRun);
    }
@@ -81,7 +88,7 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
       Runnable toRun = command;
       ExecutionCallback<?> callback = getCallBack(command);
       if (callback != null) {
-         toRun = new FutureTaskWithCallback(command, null, callback);
+         toRun = new FutureTaskWithCallback(getLogger(), command, null, callback);
       }
       super.execute(toRun);
    }

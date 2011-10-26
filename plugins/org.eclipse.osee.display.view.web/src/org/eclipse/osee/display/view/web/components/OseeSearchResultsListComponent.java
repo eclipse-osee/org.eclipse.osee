@@ -203,4 +203,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    public OseeDisplayOptionsComponentImpl getDisplayOptionsComponent() {
       return displayOptionsComponent;
    }
+
+   @Override
+   public void noSearchResultsFound() {
+   }
 }

@@ -8,17 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.display.api.components;
+package org.eclipse.osee.display.api.search;
+
+import java.util.List;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.Match;
 
 /**
- * @author Shawn F. Cook
+ * @author John Misinco
  */
-public interface SearchResultsListComponent extends DisplaysErrorComponent {
+public interface AsyncSearchListener {
 
-   void clearAll();
+   public void onSearchComplete(List<Match<ReadableArtifact, ReadableAttribute<?>>> results);
 
-   SearchResultComponent createSearchResult();
+   public void onSearchCancelled();
 
-   void noSearchResultsFound();
+   public void onSearchFailed(Throwable throwable);
 
 }

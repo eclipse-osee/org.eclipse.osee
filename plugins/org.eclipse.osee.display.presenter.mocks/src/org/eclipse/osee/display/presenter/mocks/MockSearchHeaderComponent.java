@@ -18,7 +18,7 @@ import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 public class MockSearchHeaderComponent implements SearchHeaderComponent {
 
    private boolean clearAllCalled = false;
-   private String errorMessage = "";
+   private String errorMessage;
 
    public boolean isClearAllCalled() {
       return clearAllCalled;
@@ -30,7 +30,7 @@ public class MockSearchHeaderComponent implements SearchHeaderComponent {
 
    @Override
    public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
-      //      errorMessage = message;
+      errorMessage = shortMsg;
    }
 
    @Override

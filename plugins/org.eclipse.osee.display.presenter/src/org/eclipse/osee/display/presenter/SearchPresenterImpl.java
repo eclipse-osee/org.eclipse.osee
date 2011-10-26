@@ -14,9 +14,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
@@ -33,8 +35,11 @@ import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
+import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.api.search.SearchProgressListener;
+import org.eclipse.osee.display.api.search.SearchProgressProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -53,13 +58,15 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author John Misinco
  */
-public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K> {
+public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends ViewSearchParameters> implements SearchPresenter<T, K>, SearchProgressProvider {
 
    protected final ArtifactProvider artifactProvider;
 
    private final static String SIDE_A_KEY = "sideAName";
    private final static String SIDE_B_KEY = "sideBName";
    protected final Log logger;
+   private final AsyncSearchHandler searchHandler = new AsyncSearchHandler();
+   protected final Set<SearchProgressListener> searchListeners = new HashSet<SearchProgressListener>();
 
    public SearchPresenterImpl(ArtifactProvider artifactProvider, Log logger) {
       this.artifactProvider = artifactProvider;
@@ -80,44 +87,46 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return;
       }
 
+      for (SearchProgressListener listener : searchListeners) {
+         listener.searchInProgress();
+      }
+
       options.setDisplayOptions(new DisplayOptions(params.isVerbose()));
 
-      List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults = null;
       try {
-         searchResults =
-            artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
-               params.getSearchPhrase());
+         searchHandler.setSearchValues(searchResultsComp, params.isVerbose());
+         artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
+            params.getSearchPhrase(), searchHandler);
       } catch (Exception ex) {
          setErrorMessage(searchResultsComp, "Error loading search results", ex);
          return;
       }
-      if (searchResults != null && searchResults.size() > 0) {
-         try {
-            processSearchResults(searchResults, searchResultsComp, params);
-         } catch (Exception ex) {
-            setErrorMessage(searchResultsComp, "Error in processSearchResults", ex);
-            return;
-         }
-      }
    }
 
-   private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, SearchParameters params) throws OseeCoreException {
-      for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
-         ReadableArtifact matchedArtifact = match.getItem();
-         ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact, params.isVerbose());
+   private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, boolean isVerbose) throws OseeCoreException {
+      if (searchResults.isEmpty()) {
+         searchResultsComp.noSearchResultsFound();
+      } else {
+         for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
+            ReadableArtifact matchedArtifact = match.getItem();
+            ViewArtifact viewArtifact = convertToViewArtifact(matchedArtifact, isVerbose);
 
-         SearchResultComponent searchResult = searchResultsComp.createSearchResult();
-         searchResult.setArtifact(viewArtifact);
-         if (params.isVerbose()) {
-            for (ReadableAttribute<?> element : match.getElements()) {
-               List<MatchLocation> matches = match.getLocation(element);
-               String data = String.valueOf(element.getDisplayableString());
-               List<StyledText> text = Utility.getMatchedText(data, matches);
-               SearchResultMatch srm =
-                  new SearchResultMatch(element.getAttributeType().getName(), matches.size(), text);
-               searchResult.addSearchResultMatch(srm);
+            SearchResultComponent searchResult = searchResultsComp.createSearchResult();
+            searchResult.setArtifact(viewArtifact);
+            if (isVerbose) {
+               for (ReadableAttribute<?> element : match.getElements()) {
+                  List<MatchLocation> matches = match.getLocation(element);
+                  String data = String.valueOf(element.getDisplayableString());
+                  List<StyledText> text = Utility.getMatchedText(data, matches);
+                  SearchResultMatch srm =
+                     new SearchResultMatch(element.getAttributeType().getName(), matches.size(), text);
+                  searchResult.addSearchResultMatch(srm);
+               }
             }
          }
+      }
+      for (SearchProgressListener listener : searchListeners) {
+         listener.searchCompleted();
       }
    }
 
@@ -143,7 +152,6 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       ArtifactParameters params = decodeArtifactUrl(url);
-
       if (!params.isValid()) {
          setErrorMessage(artHeaderComp, String.format("Invalid url received: %s", url), null);
          return;
@@ -151,7 +159,6 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
       String branch = params.getBranchId();
       String art = params.getArtifactId();
-
       ReadableArtifact displayArt = null;
       try {
          displayArt = artifactProvider.getArtifactByGuid(TokenFactory.createBranch(branch, ""), art);
@@ -285,7 +292,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       return ancestry;
    }
 
-   protected void setErrorMessage(DisplaysErrorComponent component, String message, Exception ex) {
+   protected void setErrorMessage(DisplaysErrorComponent component, String message, Throwable ex) {
       if (component != null) {
          String longMsg = "No Details";
          if (ex != null) {
@@ -314,6 +321,93 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       String searchPhrase = data.get("search");
       return new SearchParameters(branch, nameOnly, searchPhrase, verbose);
    }
+   protected String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
+      StringBuilder sb = new StringBuilder();
+      for (Entry<String, String> entry : keyValues.entrySet()) {
+         String key = entry.getKey();
+         sb.append(Utility.encode(key));
+         sb.append("=");
+         sb.append(Utility.encode(entry.getValue()));
+         sb.append("&");
+      }
+      if (sb.length() - 1 >= 0) {
+         // Delete the last unnecessary '&'
+         sb.deleteCharAt(sb.length() - 1);
+      }
+      return sb.toString();
+   }
+
+   @Override
+   public void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator) {
+      Map<String, String> map = Utility.decode(url);
+      map.put("verbose", String.valueOf(options.getVerboseResults().booleanValue()));
+      String newUrl = Utility.encode(map);
+      navigator.navigateSearchResults(newUrl);
+   }
+
+   @Override
+   public void selectSearch(String url, K params, SearchNavigator navigator) {
+      //do nothing for now
+   }
+
+   @Override
+   public void selectCancel() {
+      artifactProvider.cancelSearch();
+   }
+
+   private void sendSearchCancelled() {
+      for (SearchProgressListener listener : searchListeners) {
+         listener.searchCancelled();
+      }
+   }
+
+   private void sendSearchFailed(Throwable throwable, SearchResultsListComponent component) {
+      setErrorMessage(component, "Search failed", throwable);
+      for (SearchProgressListener listener : searchListeners) {
+         listener.searchCancelled();
+      }
+   }
+
+   @Override
+   public void addListener(SearchProgressListener listener) {
+      searchListeners.add(listener);
+   }
+
+   @Override
+   public void removeListener(SearchProgressListener listener) {
+      searchListeners.remove(listener);
+   }
+
+   private class AsyncSearchHandler implements AsyncSearchListener {
+      private SearchResultsListComponent resultsComp;
+      private boolean isVerbose;
+
+      public void setSearchValues(SearchResultsListComponent resultsComp, boolean isVerbose) {
+         this.resultsComp = resultsComp;
+         this.isVerbose = isVerbose;
+      }
+
+      @Override
+      public void onSearchComplete(List<Match<ReadableArtifact, ReadableAttribute<?>>> results) {
+         try {
+            processSearchResults(results, resultsComp, isVerbose);
+         } catch (OseeCoreException ex) {
+            setErrorMessage(resultsComp, "Error processing results", ex);
+         }
+      }
+
+      @Override
+      public void onSearchCancelled() {
+         sendSearchCancelled();
+      }
+
+      @Override
+      public void onSearchFailed(Throwable throwable) {
+         sendSearchFailed(throwable, resultsComp);
+      }
+
+   }
+
    private class ArtifactParameters {
       private final String branchId;
       private final String artifactId;
@@ -368,35 +462,6 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       public boolean isValid() {
          return Strings.isValid(branchId);
       }
-   }
-
-   protected String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
-      StringBuilder sb = new StringBuilder();
-      for (Entry<String, String> entry : keyValues.entrySet()) {
-         String key = entry.getKey();
-         sb.append(Utility.encode(key));
-         sb.append("=");
-         sb.append(Utility.encode(entry.getValue()));
-         sb.append("&");
-      }
-      if (sb.length() - 1 >= 0) {
-         // Delete the last unnecessary '&'
-         sb.deleteCharAt(sb.length() - 1);
-      }
-      return sb.toString();
-   }
-
-   @Override
-   public void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator) {
-      Map<String, String> map = Utility.decode(url);
-      map.put("verbose", String.valueOf(options.getVerboseResults().booleanValue()));
-      String newUrl = Utility.encode(map);
-      navigator.navigateSearchResults(newUrl);
-   }
-
-   @Override
-   public void selectSearch(String url, K params, SearchNavigator navigator) {
-      //do nothing for now
    }
 
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
+import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
 import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactHeaderComponent;
@@ -90,15 +91,13 @@ public class SearchPresenterTest {
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
-      String url = "badUrl";
-      presenter.initSearchResults(url, searchHeaderComp, searchResultsComp, optionsComp);
-      Assert.assertNotNull(searchResultsComp.getErrorMessage());
 
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
       presenter = new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(provider, new MockLogger());
       searchHeaderComp = new MockSearchHeaderComponent();
       searchResultsComp = new MockSearchResultsListComponent();
-      url = "/branch=" + Utility.encode(GUID.create()) + "&nameOnly=true&search=" + Utility.encode("this is a test");
+      String url =
+         "/branch=" + Utility.encode(GUID.create()) + "&nameOnly=true&search=" + Utility.encode("this is a test");
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp, optionsComp);
       Assert.assertNotNull(searchResultsComp.getErrorMessage());
    }
@@ -262,11 +261,6 @@ public class SearchPresenterTest {
       }
 
       @Override
-      public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
-         throw new OseeCoreException("test");
-      }
-
-      @Override
       public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
@@ -284,6 +278,16 @@ public class SearchPresenterTest {
       @Override
       public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
          throw new OseeCoreException("test");
+      }
+
+      @Override
+      public void getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase, AsyncSearchListener callback) throws OseeCoreException {
+         throw new OseeCoreException("test");
+      }
+
+      @Override
+      public void cancelSearch() {
+         // do nothing
       }
 
    }

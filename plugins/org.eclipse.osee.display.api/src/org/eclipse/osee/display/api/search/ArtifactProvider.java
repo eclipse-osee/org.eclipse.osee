@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author John Misinco
@@ -30,8 +28,6 @@ public interface ArtifactProvider {
 
    ReadableArtifact getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException;
 
-   List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException;
-
    List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
    ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
@@ -39,4 +35,8 @@ public interface ArtifactProvider {
    ReadableArtifact getParent(ReadableArtifact art) throws OseeCoreException;
 
    Collection<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException;
+
+   void getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase, final AsyncSearchListener callback) throws OseeCoreException;
+
+   void cancelSearch();
 }

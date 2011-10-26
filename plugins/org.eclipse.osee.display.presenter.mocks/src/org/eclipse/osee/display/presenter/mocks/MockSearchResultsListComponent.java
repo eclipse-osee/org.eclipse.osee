@@ -21,7 +21,7 @@ import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 public class MockSearchResultsListComponent implements SearchResultsListComponent {
 
    private boolean clearAllCalled = false;
-   private String errorMessage = "";
+   private String errorMessage;
    private final List<MockSearchResultComponent> searchResults = new LinkedList<MockSearchResultComponent>();
 
    public boolean isClearAllCalled() {
@@ -50,7 +50,11 @@ public class MockSearchResultsListComponent implements SearchResultsListComponen
 
    @Override
    public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
-      //      errorMessage = message;
+      errorMessage = shortMsg;
+   }
+
+   @Override
+   public void noSearchResultsFound() {
    }
 
 }

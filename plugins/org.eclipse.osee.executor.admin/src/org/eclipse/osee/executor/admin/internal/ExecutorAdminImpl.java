@@ -126,7 +126,7 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       cache.put(id, threadFactory);
 
       int numberOfProcessor = Runtime.getRuntime().availableProcessors();
-      return new ExecutorServiceImpl(id, numberOfProcessor, threadFactory, cache);
+      return new ExecutorServiceImpl(getLogger(), id, numberOfProcessor, threadFactory, cache);
    }
 
    private void shutdown(String id, ExecutorService executor) {
