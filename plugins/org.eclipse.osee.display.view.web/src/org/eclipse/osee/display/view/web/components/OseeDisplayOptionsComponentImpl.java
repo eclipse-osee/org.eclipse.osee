@@ -27,7 +27,7 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
 
    private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
    private boolean isLayoutComplete = false;
-   private boolean lockOptions = false;
+   private boolean lockWhilePresenterUpdatesOptions = false;
 
    @Override
    public void attach() {
@@ -44,11 +44,11 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
       showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
-            if (!lockOptions) {
-               lockOptions = true;
+            if (!lockWhilePresenterUpdatesOptions) {
+               lockWhilePresenterUpdatesOptions = true;
                boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
                onBoxChecked(showVerbose);
-               lockOptions = false;
+               lockWhilePresenterUpdatesOptions = false;
             }
          }
       });
@@ -64,10 +64,10 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
    @Override
    public void setDisplayOptions(DisplayOptions options) {
       if (options != null) {
-         lockOptions = true;
+         lockWhilePresenterUpdatesOptions = true;
          boolean verboseResults = options.getVerboseResults();
          showVerboseCheckBox.setValue(verboseResults);
-         lockOptions = false;
+         lockWhilePresenterUpdatesOptions = false;
       }
    }
 
