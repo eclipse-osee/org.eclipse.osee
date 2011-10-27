@@ -15,16 +15,16 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class OseeAtsConfigDemoActivator extends OseeUiActivator {
-   private static OseeAtsConfigDemoActivator plugin;
+public class Activator extends OseeUiActivator {
+   private static Activator plugin;
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.config.demo";
 
-   public OseeAtsConfigDemoActivator() {
+   public Activator() {
       super(PLUGIN_ID);
       plugin = this;
    }
 
-   public static OseeAtsConfigDemoActivator getInstance() {
+   public static Activator getInstance() {
       return plugin;
    }
 }

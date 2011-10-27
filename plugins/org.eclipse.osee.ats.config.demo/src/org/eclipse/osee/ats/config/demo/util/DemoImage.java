@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.config.demo.util;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -29,11 +29,11 @@ public enum DemoImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(OseeAtsConfigDemoActivator.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
    }
 
    @Override
    public String getImageKey() {
-      return OseeAtsConfigDemoActivator.PLUGIN_ID + "." + fileName;
+      return Activator.PLUGIN_ID + "." + fileName;
    }
 }

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.config.demo.config.DemoDbAIs;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil.SoftwareRequirementStrs;
-import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.branch.AtsBranchManagerCore;
@@ -342,7 +342,7 @@ public class PopulateSawBuild2Actions {
 
    private static void makeCommittedActionChanges(Artifact actionArt) throws OseeCoreException {
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Making Action 1 Requirement Changes");
+         OseeLog.log(Activator.class, Level.INFO, "Making Action 1 Requirement Changes");
       }
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -355,7 +355,7 @@ public class PopulateSawBuild2Actions {
          throw new OseeArgumentException("Can't locate Req team.");
       }
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
+         OseeLog.log(Activator.class, Level.INFO, "Creating working branch");
       }
       Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeam);
       if (result.isFalse()) {
@@ -369,7 +369,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+            OseeLog.log(Activator.class, Level.INFO,
                new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
@@ -384,7 +384,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Event,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+            OseeLog.log(Activator.class, Level.INFO,
                new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
@@ -400,7 +400,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.daVinci,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+            OseeLog.log(Activator.class, Level.INFO,
                new StringBuilder("Deleting artifact => ").append(art).toString());
          }
          art.deleteAndPersist();
@@ -411,7 +411,7 @@ public class PopulateSawBuild2Actions {
       for (int x = 1; x < 4; x++) {
          String name = "Robot Interface Init " + x;
          if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
+            OseeLog.log(Activator.class, Level.INFO, "Adding artifact => " + name);
          }
          Artifact newArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
@@ -423,7 +423,7 @@ public class PopulateSawBuild2Actions {
 
       DemoDbUtil.sleep(2000L);
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
+         OseeLog.log(Activator.class, Level.INFO, "Committing branch");
       }
       Job job =
          AtsBranchManager.commitWorkingBranch(reqTeam, false, true, reqTeam.getTargetedVersion().getParentBranch(),
@@ -431,10 +431,10 @@ public class PopulateSawBuild2Actions {
       try {
          job.join();
       } catch (InterruptedException ex) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Completing Action");
+         OseeLog.log(Activator.class, Level.INFO, "Completing Action");
       }
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Completing Action");
+         OseeLog.log(Activator.class, Level.INFO, "Completing Action");
       }
    }
 
@@ -450,7 +450,7 @@ public class PopulateSawBuild2Actions {
          throw new OseeArgumentException("Can't locate Req team.");
       }
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
+         OseeLog.log(Activator.class, Level.INFO, "Creating working branch");
       }
       Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeam);
       if (result.isFalse()) {
@@ -465,7 +465,7 @@ public class PopulateSawBuild2Actions {
          DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
             DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+         OseeLog.log(Activator.class, Level.INFO,
             new StringBuilder("Modifying branch artifact => ").append(branchArtifact).toString());
       }
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
@@ -480,7 +480,7 @@ public class PopulateSawBuild2Actions {
          DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
             DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+         OseeLog.log(Activator.class, Level.INFO,
             new StringBuilder("Modifying parent artifact => ").append(parentArtifact).toString());
       }
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
@@ -502,7 +502,7 @@ public class PopulateSawBuild2Actions {
          throw new OseeArgumentException("Can't locate Req team.");
       }
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
+         OseeLog.log(Activator.class, Level.INFO, "Creating working branch");
       }
       Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeam);
       if (result.isFalse()) {
@@ -516,7 +516,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Functional,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+            OseeLog.log(Activator.class, Level.INFO,
                new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
@@ -533,7 +533,7 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.CISST,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+            OseeLog.log(Activator.class, Level.INFO,
                new StringBuilder("Deleting artifact => ").append(art).toString());
          }
          art.deleteAndPersist();
@@ -544,7 +544,7 @@ public class PopulateSawBuild2Actions {
       for (int x = 15; x < 17; x++) {
          String name = "Claw Interface Init " + x;
          if (DEBUG) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
+            OseeLog.log(Activator.class, Level.INFO, "Adding artifact => " + name);
          }
          Artifact newArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);

@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.ActionableItemManagerCore;
@@ -117,14 +117,14 @@ public class DemoDbUtil {
 
    public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, IOseeBranch branch) throws OseeCoreException {
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+         OseeLog.log(Activator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       }
       Collection<Artifact> arts =
          ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
 
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
+         OseeLog.log(Activator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       }
       return arts;
    }
@@ -140,7 +140,7 @@ public class DemoDbUtil {
 
    public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, Branch branch) throws OseeCoreException {
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+         OseeLog.log(Activator.class, Level.INFO,
             "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }
       return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, INTERFACE_INITIALIZATION,

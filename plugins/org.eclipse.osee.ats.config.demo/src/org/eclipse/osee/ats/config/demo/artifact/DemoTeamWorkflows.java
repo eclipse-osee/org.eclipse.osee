@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.config.demo.artifact;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.actions.wizard.TeamWorkflowProviderAdapter;
-import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -64,7 +64,7 @@ public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
             return (teamArt.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow) || teamArt.isOfType(DemoArtifactTypes.DemoReqTeamWorkflow) || teamArt.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return false;
    }

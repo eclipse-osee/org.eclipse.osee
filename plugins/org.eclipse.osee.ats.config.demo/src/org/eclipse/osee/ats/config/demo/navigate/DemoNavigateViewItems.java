@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
-import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -64,7 +64,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
          return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
             team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -83,7 +83,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
             return items;
          }
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Demo Teams Not Cofigured", ex);
+         OseeLog.log(Activator.class, Level.INFO, "Demo Teams Not Cofigured", ex);
          return items;
       }
       XNavigateItem jhuItem = new XNavigateItemFolder(parentItem, "John Hopkins Univ (JHU)");
@@ -122,7 +122,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                new CreateNewVersionItem(teamItems, teamDef);
             }
          } catch (Exception ex) {
-            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 

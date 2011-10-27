@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.config.demo.internal.Activator;
 import org.eclipse.osee.ats.core.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.review.DecisionReviewState;
@@ -67,7 +67,7 @@ public class DemoDbReviews {
       User createdBy = UserManager.getUser();
 
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Decision reviews");
+         OseeLog.log(Activator.class, Level.INFO, "Create Decision reviews");
       }
       TeamWorkFlowArtifact firstTestArt = getSampleReviewTestWorkflows().get(0);
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
@@ -121,7 +121,7 @@ public class DemoDbReviews {
    public static void createPeerToPeerReviews(boolean DEBUG, SkynetTransaction transaction) throws Exception {
 
       if (DEBUG) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Peer To Peer reviews");
+         OseeLog.log(Activator.class, Level.INFO, "Create Peer To Peer reviews");
       }
       TeamWorkFlowArtifact firstCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(0);
       TeamWorkFlowArtifact secondCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(1);
