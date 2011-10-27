@@ -17,6 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
+import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.api.search.SearchProgressListener;
+import org.eclipse.osee.display.api.search.SearchProgressProvider;
 import org.eclipse.osee.display.view.web.CssConstants;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedEvent;
 import org.eclipse.osee.display.view.web.components.OseePagingComponent.PageSelectedListener;
@@ -34,7 +37,7 @@ import com.vaadin.ui.VerticalLayout;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class OseeSearchResultsListComponent extends VerticalLayout implements SearchResultsListComponent, PageSelectedListener {
+public class OseeSearchResultsListComponent extends VerticalLayout implements SearchResultsListComponent, PageSelectedListener, SearchProgressListener {
 
    private final VerticalLayout mainLayout = new VerticalLayout();
    private final VerticalLayout bottomSpacer = new VerticalLayout();
@@ -50,6 +53,10 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    @Override
    public void attach() {
       if (!isLayoutComplete) {
+         SearchPresenter<?, ?> searchPresenter = ComponentUtility.getPresenter(this);
+         if (searchPresenter != null && searchPresenter instanceof SearchProgressProvider) {
+            ((SearchProgressProvider) searchPresenter).addListener(this);
+         }
          createLayout();
          isLayoutComplete = true;
       }
@@ -69,6 +76,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       pagingComponent.setManyItemsPerPage(INIT_MANY_RES_PER_PAGE);
 
       manySearchResultsHorizLayout.setSizeUndefined();
+
+      displayOptionsComponent.disableDisplayOptions();
 
       mainLayout.setMargin(false, false, false, true);
       Panel mainLayoutPanel = new Panel();
@@ -209,6 +218,25 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    public OseeDisplayOptionsComponentImpl getDisplayOptionsComponent() {
       return displayOptionsComponent;
+   }
+
+   @Override
+   public void searchInProgress() {
+      displayOptionsComponent.disableDisplayOptions();
+   }
+
+   @Override
+   public void searchCancelled() {
+      if (resultList.size() > 0) {
+         displayOptionsComponent.enableDisplayOptions();
+      }
+   }
+
+   @Override
+   public void searchCompleted() {
+      if (resultList.size() > 0) {
+         displayOptionsComponent.enableDisplayOptions();
+      }
    }
 
    @Override

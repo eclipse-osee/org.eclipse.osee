@@ -79,4 +79,12 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
          System.out.println("Presenter was null");
       }
    }
+
+   public void enableDisplayOptions() {
+      showVerboseCheckBox.setEnabled(true);
+   }
+
+   public void disableDisplayOptions() {
+      showVerboseCheckBox.setEnabled(false);
+   }
 }
