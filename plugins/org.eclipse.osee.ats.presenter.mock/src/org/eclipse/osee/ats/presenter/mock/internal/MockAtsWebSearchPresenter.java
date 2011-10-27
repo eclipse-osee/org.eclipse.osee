@@ -108,29 +108,18 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
 
    @Override
    public void selectDisplayOptions(final String url, final DisplayOptions options, final SearchNavigator navigator) {
-      fireSearchInProgressEvent();
+      if (navigator != null && options != null) {
+         Map<String, String> parameters = new HashMap<String, String>();
 
-      Thread thread = new Thread(new Runnable() {
-         @Override
-         public void run() {
-
-            if (navigator != null && options != null) {
-               Map<String, String> parameters = new HashMap<String, String>();
-
-               if (options.getVerboseResults() != null) {
-                  parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE,
-                     options.getVerboseResults() ? "true" : "false");
-               }
-
-               if (parameters.size() > 0) {
-                  String newurl = parameterMapToRequestString(parameters, url);
-                  navigator.navigateSearchResults(newurl);
-               }
-            }
-            fireSearchCompletedEvent();
+         if (options.getVerboseResults() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE, options.getVerboseResults() ? "true" : "false");
          }
-      }, "thread1");
-      thread.start();
+
+         if (parameters.size() > 0) {
+            String newurl = parameterMapToRequestString(parameters, url);
+            navigator.navigateSearchResults(newurl);
+         }
+      }
    }
 
    @Override
@@ -140,46 +129,32 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
 
    @Override
    public void selectSearch(final String url, final K params, final SearchNavigator navigator) {
-      fireSearchInProgressEvent();
 
-      Thread thread = new Thread(new Runnable() {
-         @Override
-         public void run() {
-            if (navigator != null && params != null) {
-               Map<String, String> parameters = new HashMap<String, String>();
+      if (navigator != null && params != null) {
+         Map<String, String> parameters = new HashMap<String, String>();
 
-               if (params.getProgram() != null) {
-                  parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, params.getProgram().getGuid());
-               }
-               if (params.getBuild() != null) {
-                  parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, params.getBuild().getGuid());
-               }
-               if (params.isNameOnly() != null) {
-                  parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
-               }
-               if (params.getSearchString() != null) {
-                  parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
-               }
-               if (parameters.size() > 0) {
-                  String newurl = parameterMapToRequestString(parameters, url);
-                  //                  try {
-                  //                     Thread.sleep(5000);
-                  //                  } catch (InterruptedException ex) {
-                  //                     //do nothing
-                  //                  }
-                  navigator.navigateSearchResults(newurl);
-                  fireSearchCompletedEvent();
-               }
-            }
+         if (params.getProgram() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_PROGRAM, params.getProgram().getGuid());
          }
-      }, "thread1");
+         if (params.getBuild() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_BUILD, params.getBuild().getGuid());
+         }
+         if (params.isNameOnly() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_NAMEONLY, params.isNameOnly() ? "true" : "false");
+         }
+         if (params.getSearchString() != null) {
+            parameters.put(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE, params.getSearchString());
+         }
+         if (parameters.size() > 0) {
+            String newurl = parameterMapToRequestString(parameters, url);
+            navigator.navigateSearchResults(newurl);
+         }
+      }
 
-      thread.start();
    }
 
    private void updateSearchDisplayOptions(String url, DisplayOptionsComponent optionsComp) {
       if (optionsComp != null) {
-         optionsComp.clearAll();
 
          Map<String, String> params = requestStringToParameterMap(url);
          if (params != null && params.size() > 0) {
@@ -317,53 +292,64 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
    }
 
    @Override
-   public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options) {
-      updateSearchHeader(url, searchHeaderComp);
-      updateSearchDisplayOptions(url, options);
+   public void initSearchResults(final String url, final T searchHeaderComp, final SearchResultsListComponent searchResultsComp, final DisplayOptionsComponent options) {
+      fireSearchInProgressEvent();
 
-      if (searchResultsComp != null) {
-         String searchPhrase = "";
-         boolean nameOnly = false;
-         boolean verbose = false;
-         Map<String, String> params = requestStringToParameterMap(url);
-         if (params != null && params.size() > 0) {
-            searchPhrase = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
-            if (searchPhrase == null) {
-               searchPhrase = "";
-            }
+      Thread thread = new Thread(new Runnable() {
+         @Override
+         public void run() {
 
-            String nameOnly_str = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
-            if (nameOnly_str != null && !nameOnly_str.isEmpty()) {
-               nameOnly = nameOnly_str.equalsIgnoreCase("true");
-            }
+            updateSearchHeader(url, searchHeaderComp);
+            updateSearchDisplayOptions(url, options);
 
-            String verbose_str = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
-            if (verbose_str != null && !verbose_str.isEmpty()) {
-               verbose = verbose_str.equalsIgnoreCase("true");
-            }
-         }
-         searchResultsComp.clearAll();
-         if (!searchPhrase.isEmpty()) {
-            Set<Entry<String, ViewArtifact>> entrySet = artifacts.entrySet();
-            for (Entry<String, ViewArtifact> artifactEntry : entrySet) {
-               ViewArtifact artifact = artifactEntry.getValue();
-               if (artifact.getArtifactName().toLowerCase().contains(searchPhrase.toLowerCase())) {
-                  SearchResultComponent searchResultComp = searchResultsComp.createSearchResult();
-                  if (searchResultComp != null) {
-                     searchResultComp.setArtifact(artifact);
+            if (searchResultsComp != null) {
+               String searchPhrase = "";
+               boolean nameOnly = false;
+               boolean verbose = false;
+               Map<String, String> params = requestStringToParameterMap(url);
+               if (params != null && params.size() > 0) {
+                  searchPhrase = params.get(UrlParamNameConstants.PARAMNAME_SEARCHPHRASE);
+                  if (searchPhrase == null) {
+                     searchPhrase = "";
+                  }
 
-                     DisplayOptions dispOptions = new DisplayOptions(verbose);
-                     searchResultComp.setDisplayOptions(dispOptions);
-                     if (!nameOnly && verbose) {
-                        StyledText matchHintText = new StyledText("...{COM_PAGE}...", true);
-                        searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", 10,
-                           Arrays.asList(matchHintText)));
+                  String nameOnly_str = params.get(UrlParamNameConstants.PARAMNAME_NAMEONLY);
+                  if (nameOnly_str != null && !nameOnly_str.isEmpty()) {
+                     nameOnly = nameOnly_str.equalsIgnoreCase("true");
+                  }
+
+                  String verbose_str = params.get(UrlParamNameConstants.PARAMNAME_SHOWVERBOSE);
+                  if (verbose_str != null && !verbose_str.isEmpty()) {
+                     verbose = verbose_str.equalsIgnoreCase("true");
+                  }
+               }
+               searchResultsComp.clearAll();
+               if (!searchPhrase.isEmpty()) {
+                  Set<Entry<String, ViewArtifact>> entrySet = artifacts.entrySet();
+                  for (Entry<String, ViewArtifact> artifactEntry : entrySet) {
+                     ViewArtifact artifact = artifactEntry.getValue();
+                     if (artifact.getArtifactName().toLowerCase().contains(searchPhrase.toLowerCase())) {
+                        SearchResultComponent searchResultComp = searchResultsComp.createSearchResult();
+                        if (searchResultComp != null) {
+                           searchResultComp.setArtifact(artifact);
+
+                           DisplayOptions dispOptions = new DisplayOptions(verbose);
+                           searchResultComp.setDisplayOptions(dispOptions);
+                           if (!nameOnly && verbose) {
+                              StyledText matchHintText = new StyledText("...{COM_PAGE}...", true);
+                              searchResultComp.addSearchResultMatch(new SearchResultMatch("Word Template Content", 10,
+                                 Arrays.asList(matchHintText)));
+                           }
+                        }
                      }
                   }
                }
             }
+            fireSearchCompletedEvent();
          }
-      }
+      }, "thread1");
+
+      thread.start();
    }
 
    private static Map<String, String> requestStringToParameterMap(String requestedDataId) {

@@ -60,9 +60,7 @@ public abstract class AbstractCommonView extends VerticalLayout implements Navig
       searchPresenter = ComponentUtility.getPresenter(this);
       initialUrl = requestedDataId;
       if (searchPresenter != null) {
-         ComponentUtility.lockForNavigateTo();
          callInit(initialUrl);
-         ComponentUtility.unlockForNavigateTo();
       }
    }
 

@@ -59,24 +59,24 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
    @Override
    public void setDisplayOptions(DisplayOptions options) {
       if (options != null) {
-         boolean verboseResults = options.getVerboseResults();
-         showVerboseCheckBox.setValue(verboseResults);
+         boolean showVerbose_fromPres = options.getVerboseResults();
+         boolean showVerbose_fromUi = showVerboseCheckBox.toString().equalsIgnoreCase("true");
+         if (showVerbose_fromUi != showVerbose_fromPres) {
+            showVerboseCheckBox.setValue(showVerbose_fromPres);
+         }
       }
    }
 
    private void onBoxChecked(boolean isShowVerbose) {
-      if (ComponentUtility.tryLockForNavigateTo()) {
-         DisplayOptions options = new DisplayOptions(isShowVerbose);
+      DisplayOptions options = new DisplayOptions(isShowVerbose);
 
-         String url = ComponentUtility.getUrl(OseeDisplayOptionsComponentImpl.this);
-         SearchNavigator navigator = ComponentUtility.getNavigator(OseeDisplayOptionsComponentImpl.this);
-         SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeDisplayOptionsComponentImpl.this);
-         if (presenter != null) {
-            presenter.selectDisplayOptions(url, options, navigator);
-         } else {
-            System.out.println("Presenter was null");
-         }
-         ComponentUtility.unlockForNavigateTo();
+      String url = ComponentUtility.getUrl(OseeDisplayOptionsComponentImpl.this);
+      SearchNavigator navigator = ComponentUtility.getNavigator(OseeDisplayOptionsComponentImpl.this);
+      SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeDisplayOptionsComponentImpl.this);
+      if (presenter != null) {
+         presenter.selectDisplayOptions(url, options, navigator);
+      } else {
+         System.out.println("Presenter was null");
       }
    }
 }
