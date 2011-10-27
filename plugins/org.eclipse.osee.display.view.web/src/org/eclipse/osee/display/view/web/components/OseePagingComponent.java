@@ -141,27 +141,34 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    }
 
    private void updateLayout() {
-      if (manyPages <= 0) {
+      if (allItemsPerPage) {
          firstButton.setEnabled(false);
          previousButton.setEnabled(false);
          nextButton.setEnabled(false);
          lastButton.setEnabled(false);
-      }
-
-      if (currentPage <= 0) {
-         firstButton.setEnabled(false);
-         previousButton.setEnabled(false);
       } else {
-         firstButton.setEnabled(true);
-         previousButton.setEnabled(true);
-      }
+         if (manyPages <= 0) {
+            firstButton.setEnabled(false);
+            previousButton.setEnabled(false);
+            nextButton.setEnabled(false);
+            lastButton.setEnabled(false);
+         }
 
-      if (currentPage >= manyPages - 1) {
-         nextButton.setEnabled(false);
-         lastButton.setEnabled(false);
-      } else {
-         nextButton.setEnabled(true);
-         lastButton.setEnabled(true);
+         if (currentPage <= 0) {
+            firstButton.setEnabled(false);
+            previousButton.setEnabled(false);
+         } else {
+            firstButton.setEnabled(true);
+            previousButton.setEnabled(true);
+         }
+
+         if (currentPage >= manyPages - 1) {
+            nextButton.setEnabled(false);
+            lastButton.setEnabled(false);
+         } else {
+            nextButton.setEnabled(true);
+            lastButton.setEnabled(true);
+         }
       }
 
       //Update page numbers

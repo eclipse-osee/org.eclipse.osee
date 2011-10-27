@@ -186,6 +186,9 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       int lastCompIndex = mainLayout.getComponentIndex(bottomSpacer);
       mainLayout.addComponent(searchResultComp, lastCompIndex);
 
+      //This call is needed in order to only show those results which are on the current page.
+      updateSearchResultsLayout();
+
       return searchResultComp;
    }
 
