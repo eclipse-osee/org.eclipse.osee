@@ -62,7 +62,8 @@ public class FutureTaskWithCallback<T> extends FutureTask<T> implements HasExecu
       try {
          callback.onSuccess(get());
       } catch (Throwable ex) {
-         logger.error(ex, "Error onSuccess callback for - [%s]", getWorkerName());
+         callback.onCancelled();
+         //         logger.error(ex, "Error onSuccess callback for - [%s]", getWorkerName());
       }
    }
 

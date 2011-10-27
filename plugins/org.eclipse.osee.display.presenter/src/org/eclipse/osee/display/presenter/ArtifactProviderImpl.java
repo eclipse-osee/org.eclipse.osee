@@ -86,42 +86,8 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       return sanitizer.sanitizeArtifact(getFactory().fromBranch(branch).andGuidsOrHrids(guid).getResults().getOneOrNull());
    }
 
-   //   public List<Match<ReadableArtifact, ReadableAttribute<?>>> getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase) throws OseeCoreException {
-   //      List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered = null;
-   //
-   //      IAttributeType type = nameOnly ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
-   //      QueryBuilder builder = getFactory().fromBranch(branch);
-   //      builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
-   //
-   //      long startTime = 0;
-   //      if (logger.isTraceEnabled()) {
-   //         startTime = System.currentTimeMillis();
-   //         logger.trace("Start Query: [%s]", Lib.getDateTimeString());
-   //      }
-   //
-   //      ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> resultSet = builder.getMatches();
-   //
-   //      long delta = 0;
-   //      if (logger.isTraceEnabled()) {
-   //         logger.trace("End Query: [%s]", Lib.getElapseString(startTime));
-   //         delta = System.currentTimeMillis();
-   //      }
-   //
-   //      try {
-   //         filtered = sanitizer.filter(resultSet.getList());
-   //      } catch (Exception ex) {
-   //         OseeExceptions.wrapAndThrow(ex);
-   //      } finally {
-   //         if (logger.isTraceEnabled()) {
-   //            logger.trace("Sanitized in: [%s]", Lib.getElapseString(delta));
-   //            logger.trace("Total Time: [%s]", Lib.getElapseString(startTime));
-   //         }
-   //      }
-   //      return filtered;
-   //   }
-
    @Override
-   public void getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase, final AsyncSearchListener callback) throws OseeCoreException {
+   public void getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase, AsyncSearchListener callback) throws OseeCoreException {
       IAttributeType type = nameOnly ? CoreAttributeTypes.Name : QueryBuilder.ANY_ATTRIBUTE_TYPE;
       QueryBuilder builder = getFactory().fromBranch(branch);
       builder.and(type, StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, searchPhrase);
@@ -132,7 +98,9 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      return sanitizer.sanitizeArtifacts(graph.getRelatedArtifacts(art, relationTypeSide));
+      List<ReadableArtifact> toReturn = sanitizer.sanitizeArtifacts(graph.getRelatedArtifacts(art, relationTypeSide));
+      Utility.sort(toReturn);
+      return toReturn;
    }
 
    @Override

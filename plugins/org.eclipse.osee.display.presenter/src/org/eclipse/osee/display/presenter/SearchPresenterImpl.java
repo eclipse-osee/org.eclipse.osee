@@ -67,6 +67,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    protected final Log logger;
    private final AsyncSearchHandler searchHandler = new AsyncSearchHandler();
    protected final Set<SearchProgressListener> searchListeners = new HashSet<SearchProgressListener>();
+   private SearchParameters lastSearchParameters;
+   private List<Match<ReadableArtifact, ReadableAttribute<?>>> lastSearchResults;
 
    public SearchPresenterImpl(ArtifactProvider artifactProvider, Log logger) {
       this.artifactProvider = artifactProvider;
@@ -76,8 +78,9 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    @Override
    public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options) {
       searchResultsComp.clearAll();
-      options.clearAll();
+      sendSearchCompleted();
       SearchParameters params = decodeSearchUrl(url);
+      boolean skipSearch = false;
 
       if (!Strings.isValid(url)) {
          return;
@@ -87,24 +90,36 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return;
       }
 
+      if (params.onlyVerboseIsDifferent(lastSearchParameters)) {
+         skipSearch = true;
+      }
+
       for (SearchProgressListener listener : searchListeners) {
          listener.searchInProgress();
       }
 
       options.setDisplayOptions(new DisplayOptions(params.isVerbose()));
 
-      try {
-         searchHandler.setSearchValues(searchResultsComp, params.isVerbose());
-         artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
-            params.getSearchPhrase(), searchHandler);
-      } catch (Exception ex) {
-         setErrorMessage(searchResultsComp, "Error loading search results", ex);
-         return;
+      if (skipSearch) {
+         try {
+            processSearchResults(lastSearchResults, searchResultsComp, params.isVerbose());
+         } catch (OseeCoreException ex) {
+            setErrorMessage(searchResultsComp, "Error loading search results", ex);
+         }
+      } else {
+         try {
+            searchHandler.setSearchValues(searchResultsComp, params.isVerbose());
+            artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
+               params.getSearchPhrase(), searchHandler);
+         } catch (Exception ex) {
+            setErrorMessage(searchResultsComp, "Error loading search results", ex);
+         }
       }
+      lastSearchParameters = params;
    }
 
    private void processSearchResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults, SearchResultsListComponent searchResultsComp, boolean isVerbose) throws OseeCoreException {
-      if (searchResults.isEmpty()) {
+      if (searchResults != null && searchResults.isEmpty()) {
          searchResultsComp.noSearchResultsFound();
       } else {
          for (Match<ReadableArtifact, ReadableAttribute<?>> match : searchResults) {
@@ -125,9 +140,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
             }
          }
       }
-      for (SearchProgressListener listener : searchListeners) {
-         listener.searchCompleted();
-      }
+      sendSearchCompleted();
+      lastSearchResults = searchResults;
    }
 
    @Override
@@ -352,16 +366,24 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    @Override
    public void selectCancel() {
+      lastSearchParameters = null;
+      lastSearchResults = null;
       artifactProvider.cancelSearch();
    }
 
-   private void sendSearchCancelled() {
+   protected void sendSearchCancelled() {
       for (SearchProgressListener listener : searchListeners) {
          listener.searchCancelled();
       }
    }
 
-   private void sendSearchFailed(Throwable throwable, SearchResultsListComponent component) {
+   protected void sendSearchCompleted() {
+      for (SearchProgressListener listener : searchListeners) {
+         listener.searchCompleted();
+      }
+   }
+
+   protected void sendSearchFailed(Throwable throwable, SearchResultsListComponent component) {
       setErrorMessage(component, "Search failed", throwable);
       for (SearchProgressListener listener : searchListeners) {
          listener.searchCancelled();
@@ -461,6 +483,15 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
       public boolean isValid() {
          return Strings.isValid(branchId);
+      }
+
+      public boolean onlyVerboseIsDifferent(SearchParameters params) {
+         if (params == null) {
+            return false;
+         } else {
+            return params.getBranchId().equals(branchId) && params.isNameOnly() == nameOnly && params.getSearchPhrase().equals(
+               searchPhrase);
+         }
       }
    }
 

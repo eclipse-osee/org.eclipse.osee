@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -193,6 +194,11 @@ public class MockArtifact implements ReadableArtifact {
    public void clearRelations() {
       validRelationTypes.clear();
       relationMap.clear();
+   }
+
+   @Override
+   public String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+      return null;
    }
 
 }

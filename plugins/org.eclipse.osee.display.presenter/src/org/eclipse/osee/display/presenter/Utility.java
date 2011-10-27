@@ -14,11 +14,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.display.api.data.StyledText;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -29,6 +32,18 @@ public final class Utility {
 
    private Utility() {
       //
+   }
+
+   public static List<? extends Named> sort(List<? extends Named> toSort) {
+      Collections.sort(toSort, new Comparator<Named>() {
+
+         @Override
+         public int compare(Named o1, Named o2) {
+            return o1.getName().compareTo(o2.getName());
+         }
+
+      });
+      return toSort;
    }
 
    public static List<StyledText> getMatchedText(String data, List<MatchLocation> matches) {

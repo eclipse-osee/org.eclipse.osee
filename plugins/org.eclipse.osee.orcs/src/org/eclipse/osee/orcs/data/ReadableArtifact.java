@@ -43,6 +43,8 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
+   String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
+
    @Override
    String toString();
 

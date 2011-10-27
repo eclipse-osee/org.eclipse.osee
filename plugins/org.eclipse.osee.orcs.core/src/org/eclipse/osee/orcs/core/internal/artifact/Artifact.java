@@ -115,8 +115,12 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    }
 
    @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
-      return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
+   public String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+      if (attributeContainer.getAttributes(attributeType).isEmpty()) {
+         return defaultValue;
+      } else {
+         return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
+      }
    }
 
    public AttributeContainer getAttributeContainer() {
@@ -138,5 +142,10 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
 
    public void getRelatedArtifacts(IRelationTypeSide relationTypeSide, Collection<Integer> results) {
       relationContainer.getArtifactIds(results, relationTypeSide);
+   }
+
+   @Override
+   public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
+      return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
    }
 }

@@ -69,7 +69,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent, DisplayOptionsComponent optionsComponent) {
       setSearchHeaderFields(url, searchHeaderComponent);
       resultsComponent.clearAll();
-      optionsComponent.clearAll();
+      sendSearchCompleted();
 
       if (!Strings.isValid(url)) {
          return;
@@ -89,9 +89,12 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
          return;
       }
 
-      String newUrl = encode(url, params, branchGuid);
-      super.initSearchResults(newUrl, searchHeaderComponent, resultsComponent, optionsComponent);
-
+      if (branchGuid == null) {
+         setErrorMessage(resultsComponent, "Could not find baseline branch guid for selected build/program", null);
+      } else {
+         String newUrl = encode(url, params, branchGuid);
+         super.initSearchResults(newUrl, searchHeaderComponent, resultsComponent, optionsComponent);
+      }
    }
 
    @Override
@@ -190,6 +193,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
 
       selectProgram(params.getProgram(), searchHeaderComp);
       searchHeaderComp.setSearchCriteria(params);
+
    }
 
    @Override

@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.internal;
 
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
 import org.eclipse.osee.ats.api.tokens.AtsArtifactToken;
 import org.eclipse.osee.ats.api.tokens.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.tokens.AtsRelationTypes;
 import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
+import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -33,23 +34,23 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
 
    public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, OrcsApi oseeApi, ApplicationContext context) {
       super(logger, executorAdmin, oseeApi, context);
-
    }
 
    @Override
-   public Collection<ReadableArtifact> getPrograms() throws OseeCoreException {
+   public List<ReadableArtifact> getPrograms() throws OseeCoreException {
       List<ReadableArtifact> programs = null;
       ReadableArtifact webProgramsArtifact =
          getArtifactByArtifactToken(CoreBranches.COMMON, AtsArtifactToken.WebPrograms);
       if (webProgramsArtifact != null) {
          programs = getRelatedArtifacts(webProgramsArtifact, CoreRelationTypes.Universal_Grouping__Members);
       }
+      Utility.sort(programs);
       return programs;
    }
 
    @Override
-   public Collection<ReadableArtifact> getBuilds(String programGuid) throws OseeCoreException {
-      Collection<ReadableArtifact> relatedArtifacts = null;
+   public List<ReadableArtifact> getBuilds(String programGuid) throws OseeCoreException {
+      List<ReadableArtifact> relatedArtifacts = null;
       ReadableArtifact teamDef = null;
       ReadableArtifact programArtifact = getArtifactByGuid(CoreBranches.COMMON, programGuid);
       if (programArtifact != null) {
@@ -58,6 +59,15 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
       if (teamDef != null) {
          relatedArtifacts = getRelatedArtifacts(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version);
       }
+      Iterator<ReadableArtifact> iterator = relatedArtifacts.iterator();
+      while (iterator.hasNext()) {
+         ReadableArtifact art = iterator.next();
+         String baselineBranchGuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
+         if (baselineBranchGuid == null) {
+            iterator.remove();
+         }
+      }
+      Utility.sort(relatedArtifacts);
       return relatedArtifacts;
    }
 
@@ -66,7 +76,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
       String guid = null;
       ReadableArtifact buildArtifact = getArtifactByGuid(CoreBranches.COMMON, buildArtGuid);
       if (buildArtifact != null) {
-         guid = buildArtifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid);
+         guid = buildArtifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
       }
       return guid;
    }
