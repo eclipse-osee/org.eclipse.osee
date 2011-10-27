@@ -220,9 +220,11 @@ public class TeamWorkFlowManager {
       TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
       if (teamArt != null) {
          for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowProviders()) {
-            String pcrId = atsTeamWorkflow.getPcrId(teamArt);
-            if (Strings.isValid(pcrId)) {
-               return pcrId;
+            if (atsTeamWorkflow.isResponsibleFor(awa)) {
+               String pcrId = atsTeamWorkflow.getPcrId(teamArt);
+               if (Strings.isValid(pcrId)) {
+                  return pcrId;
+               }
             }
          }
          return teamArt.getTeamName() + " " + awa.getHumanReadableId();

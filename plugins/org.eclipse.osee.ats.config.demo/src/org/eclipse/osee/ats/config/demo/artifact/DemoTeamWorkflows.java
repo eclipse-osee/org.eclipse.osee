@@ -11,12 +11,17 @@
 package org.eclipse.osee.ats.config.demo.artifact;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.actions.wizard.TeamWorkflowProviderAdapter;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.core.config.ActionableItemArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 
 /**
@@ -49,6 +54,19 @@ public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
    @Override
    public String getBranchName(TeamWorkFlowArtifact teamArt) {
       return null;
+   }
+
+   @Override
+   public boolean isResponsibleFor(AbstractWorkflowArtifact awa) {
+      try {
+         TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
+         if (teamArt != null) {
+            return (teamArt.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow) || teamArt.isOfType(DemoArtifactTypes.DemoReqTeamWorkflow) || teamArt.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow));
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
+      }
+      return false;
    }
 
 }
