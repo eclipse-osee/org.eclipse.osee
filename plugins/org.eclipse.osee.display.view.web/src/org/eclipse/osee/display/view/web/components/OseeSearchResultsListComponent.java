@@ -163,14 +163,18 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
       //Second, remove the search result components
       for (Component component : removeTheseComponents) {
-         mainLayout.removeComponent(component);
+         synchronized (getApplication()) {
+            mainLayout.removeComponent(component);
+         }
       }
 
       //Next, add the result components to the layout that are on the current 'page'
       for (Integer i : resultListIndices) {
          try {
             OseeSearchResultComponent searchResultComp = resultList.get(i);
-            mainLayout.addComponent(searchResultComp, 0);
+            synchronized (getApplication()) {
+               mainLayout.addComponent(searchResultComp, 0);
+            }
          } catch (IndexOutOfBoundsException e) {
             System.out.println("OseeSearchResultsListComponent.updateSearchResultsLayout - CRITICAL ERROR: IndexOutOfBoundsException e");
          }
