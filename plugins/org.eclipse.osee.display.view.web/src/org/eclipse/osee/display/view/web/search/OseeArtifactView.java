@@ -13,6 +13,7 @@ package org.eclipse.osee.display.view.web.search;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewArtifact;
 import org.eclipse.osee.display.view.web.AbstractCommonView;
+import org.eclipse.osee.display.view.web.components.ComponentUtility;
 import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponent;
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
 import org.eclipse.osee.display.view.web.components.OseeBreadcrumbComponent;
@@ -124,6 +125,8 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
          breadcrumbComp.setArtifact(artifact);
          artifactType.setCaption(String.format("[%s]", artifact.getArtifactType()));
          artifactName.setArtifact(artifact);
+      } else {
+         ComponentUtility.logWarn("OseeArtifactView.updateLayout - WARNING: null value detected", this);
       }
    }
 

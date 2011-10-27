@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.vaadin.ApplicationFactory;
 import com.vaadin.Application;
@@ -24,6 +25,7 @@ import com.vaadin.Application;
 public class AtsUiApplicationFactory implements ApplicationFactory {
 
    private AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> presenterFactory;
+   private Log logger;
 
    @Override
    public Application createInstance() {
@@ -33,7 +35,7 @@ public class AtsUiApplicationFactory implements ApplicationFactory {
          presenterFactory.createInstance(context);
 
       AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters> application =
-         new AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters>(searchPresenter);
+         new AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters>(searchPresenter, logger);
 
       // TODO attach context
       context.setUser(application.getUser());
@@ -47,6 +49,10 @@ public class AtsUiApplicationFactory implements ApplicationFactory {
 
    public void setPresenterFactory(AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> presenterFactory) {
       this.presenterFactory = presenterFactory;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
    }
 
    private final class AtsApplicationContext implements ApplicationContext {

@@ -110,6 +110,8 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
          boolean showVerbose = options.getVerboseResults();
          vLayout_Matches.setVisible(showVerbose);
          breadcrumbComp.setVisible(showVerbose);
+      } else {
+         ComponentUtility.logWarn("OseeSearchResultComponent.setDisplayOptions - WARNING: null value detected.", this);
       }
    }
 

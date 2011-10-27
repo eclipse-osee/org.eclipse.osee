@@ -53,6 +53,8 @@ public class OseeExceptionDialogComponent extends Window {
             msgTypeLabel.setStyleName(CssConstants.OSEE_EXCEPTION_WARNING_TITLE_TEXT);
             break;
          default:
+            ComponentUtility.logWarn("OseeExceptionDialogComponent.[ctor] - WARNING: invalid or unhandled msgType.",
+               this);
             break;
       }
 
@@ -63,6 +65,8 @@ public class OseeExceptionDialogComponent extends Window {
          mainWindow.addWindow(this);
          moveToCenter();
          focus();
+      } else {
+         ComponentUtility.logWarn("OseeExceptionDialogComponent.[ctor] - WARNING: null value detected.", this);
       }
    }
 

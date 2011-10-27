@@ -64,6 +64,9 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
          if (showVerbose_fromUi != showVerbose_fromPres) {
             showVerboseCheckBox.setValue(showVerbose_fromPres);
          }
+      } else {
+         ComponentUtility.logWarn("OseeDisplayOptionsComponentImpl.setDisplayOptions - WARNING: null value detected.",
+            this);
       }
    }
 
@@ -76,7 +79,7 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
       if (presenter != null) {
          presenter.selectDisplayOptions(url, options, navigator);
       } else {
-         System.out.println("Presenter was null");
+         ComponentUtility.logWarn("OseeDisplayOptionsComponentImpl.onBoxChecked - WARNING: null value detected.", this);
       }
    }
 

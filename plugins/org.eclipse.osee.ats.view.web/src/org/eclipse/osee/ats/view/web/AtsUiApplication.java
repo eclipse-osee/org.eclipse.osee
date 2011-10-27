@@ -13,9 +13,11 @@ package org.eclipse.osee.ats.view.web;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
+import org.eclipse.osee.display.view.web.HasLogger;
 import org.eclipse.osee.display.view.web.HasNavigator;
 import org.eclipse.osee.display.view.web.HasPresenter;
 import org.eclipse.osee.display.view.web.HasUrl;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -26,14 +28,16 @@ import com.vaadin.ui.Window;
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends Application implements HasUrl, HasNavigator, HasPresenter {
+public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends Application implements HasUrl, HasNavigator, HasPresenter, HasLogger {
 
    private final AtsSearchPresenter<T, K> atsSearchPresenter;
    private AtsNavigator navigator;
    private String url = "";
+   private final Log logger;
 
-   public AtsUiApplication(AtsSearchPresenter<T, K> searchPresenter) {
+   public AtsUiApplication(AtsSearchPresenter<T, K> searchPresenter, Log logger) {
       this.atsSearchPresenter = searchPresenter;
+      this.logger = logger;
    }
 
    @Override
@@ -76,4 +80,23 @@ public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsS
       return bundle.getVersion().toString();
    }
 
+   @Override
+   public void logError(String format, Object... args) {
+      logger.error(format, args);
+   }
+
+   @Override
+   public void logWarn(String format, Object... args) {
+      logger.warn(format, args);
+   }
+
+   @Override
+   public void logInfo(String format, Object... args) {
+      logger.info(format, args);
+   }
+
+   @Override
+   public void logDebug(String format, Object... args) {
+      logger.debug(format, args);
+   }
 }

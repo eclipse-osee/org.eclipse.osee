@@ -11,7 +11,8 @@ Require-Bundle: com.vaadin,
  org.eclipse.osee.display.view.web,
  org.eclipse.osee.vaadin,
  org.eclipse.osee.ats.api,
- org.eclipse.osee.display.api
+ org.eclipse.osee.display.api,
+ org.eclipse.osee.logger
 Import-Package: org.eclipse.osee.ats.api.components,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.orcs,

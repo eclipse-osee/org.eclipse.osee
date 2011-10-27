@@ -12,6 +12,7 @@ package org.eclipse.osee.display.view.web.components;
 
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.api.search.SearchPresenter;
+import org.eclipse.osee.display.view.web.HasLogger;
 import org.eclipse.osee.display.view.web.HasNavigator;
 import org.eclipse.osee.display.view.web.HasPresenter;
 import org.eclipse.osee.display.view.web.HasUrl;
@@ -85,5 +86,33 @@ public final class ComponentUtility {
          presenter = ((HasPresenter) app).getPresenter();
       }
       return presenter;
+   }
+
+   public static void logError(String format, Component component, Object... args) {
+      Application app = component.getApplication();
+      if (app instanceof HasLogger) {
+         ((HasLogger) app).logError(format, args);
+      }
+   }
+
+   public static void logWarn(String format, Component component, Object... args) {
+      Application app = component.getApplication();
+      if (app instanceof HasLogger) {
+         ((HasLogger) app).logWarn(format, args);
+      }
+   }
+
+   public static void logInfo(String format, Component component, Object... args) {
+      Application app = component.getApplication();
+      if (app instanceof HasLogger) {
+         ((HasLogger) app).logInfo(format, args);
+      }
+   }
+
+   public static void logDebug(String format, Component component, Object... args) {
+      Application app = component.getApplication();
+      if (app instanceof HasLogger) {
+         ((HasLogger) app).logDebug(format, args);
+      }
    }
 }

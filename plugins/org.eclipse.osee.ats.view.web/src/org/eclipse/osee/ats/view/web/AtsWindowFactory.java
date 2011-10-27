@@ -28,7 +28,7 @@ import com.vaadin.ui.Window;
  */
 public class AtsWindowFactory {
 
-   public Window createNavigatableWindow(HasViews provider, AtsNavigator navigator) {
+   public Window createNavigatableWindow(HasViews provider, final AtsNavigator navigator) {
 
       VerticalLayout layout = new VerticalLayout();
       final Window w = new Window("OSEE", layout);

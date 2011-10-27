@@ -51,6 +51,8 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
                }
             }
          }
+      } else {
+         ComponentUtility.logWarn("OseeBreadcrumbComponent.createLayout - WARNING: null value detected.", this);
       }
    }
 

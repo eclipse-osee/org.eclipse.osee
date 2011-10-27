@@ -82,7 +82,9 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                      presenter.selectRelationType(artifact, relationType, OseeRelationsComponent.this);
                   }
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
+                  ComponentUtility.logError(
+                     "OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.",
+                     OseeRelationsComponent.this);
                }
             }
          }
@@ -96,7 +98,9 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                   ViewArtifact artifact = (ViewArtifact) leftSelect.getValue();
                   handleValue(artifact);
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
+                  ComponentUtility.logError(
+                     "OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.",
+                     OseeRelationsComponent.this);
                }
             }
          }
@@ -110,7 +114,9 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                   ViewArtifact artifact = (ViewArtifact) rightSelect.getValue();
                   handleValue(artifact);
                } catch (Exception e) {
-                  System.out.println("OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.");
+                  ComponentUtility.logError(
+                     "OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.",
+                     OseeRelationsComponent.this);
                }
             }
          }
@@ -169,6 +175,8 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
          SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeRelationsComponent.this);
          SearchNavigator navigator = ComponentUtility.getNavigator(OseeRelationsComponent.this);
          presenter.selectArtifact(url, artifact, navigator);
+      } else {
+         ComponentUtility.logWarn("OseeRelationsComponent.handleValue - WARNING: null value detected.", this);
       }
    }
 

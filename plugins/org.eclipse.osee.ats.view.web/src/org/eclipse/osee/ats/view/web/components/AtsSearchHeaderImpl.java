@@ -69,6 +69,8 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          AtsSearchPresenter searchPresenter = getPresenter();
          if (searchPresenter != null && searchPresenter instanceof SearchProgressProvider) {
             ((SearchProgressProvider) searchPresenter).addListener(this);
+         } else {
+            ComponentUtility.logWarn("AtsSearchHeaderImpl.attach() Invalid searchPresenter", this);
          }
          createLayout();
       }
@@ -133,7 +135,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
                AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, build, program);
                getPresenter().selectSearch(getRequestedDataId(), params, getNavigator());
             } else {
-               System.out.println("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.");
+               ComponentUtility.logWarn("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.", this);
             }
          } else if (searchButton.getCaption().equals(SEARCHBUTTON_CANCEL)) {
             getPresenter().selectCancel();
@@ -230,26 +232,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       hLayout_ProgBuildName.setComponentAlignment(buildCombo, Alignment.MIDDLE_CENTER);
       hLayout_ProgBuildName.setComponentAlignment(nameOnlyCheckBox, Alignment.BOTTOM_RIGHT);
 
-      //      hLayout_SearchTextBtn.setComponentAlignment(searchTextField, Alignment.MIDDLE_LEFT);
       hLayout_SearchTextBtn.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
-
-      //DEBUGGING
-      //      Thread thread = new Thread(new Runnable() {
-      //         private int i = 0;
-      //
-      //         @Override
-      //         public void run() {
-      //            while (true) {
-      //               nameOnlyCheckBox.setCaption(String.format("%d", i++));
-      //               try {
-      //                  Thread.sleep(100);
-      //               } catch (InterruptedException ex) {
-      //                  break;
-      //               }
-      //            }
-      //         }
-      //      }, "thread_debugging");
-      //      thread.start();
    }
 
    @Override
@@ -292,6 +275,8 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          if (ComponentUtility.isAccessible(searchTextField)) {
             searchTextField.setValue(params.getSearchString());
          }
+      } else {
+         ComponentUtility.logWarn("AtsSearchHeaderComponent.setSearchCriteria - WARNING: null value detected.", this);
       }
    }
 
@@ -392,7 +377,9 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
                try {
                   Thread.sleep(500);
                } catch (InterruptedException ex) {
-                  System.out.println("???");
+                  ComponentUtility.logWarn(
+                     "AtsSearchHeaderComponent.searchInProgress.Runnable.run - WARNING: InterruptedException.",
+                     AtsSearchHeaderImpl.this);
                   break;
                }
             }

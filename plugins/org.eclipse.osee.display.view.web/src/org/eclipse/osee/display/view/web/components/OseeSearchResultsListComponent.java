@@ -185,7 +185,9 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
                mainLayout.addComponent(searchResultComp, 0);
             }
          } catch (IndexOutOfBoundsException e) {
-            System.out.println("OseeSearchResultsListComponent.updateSearchResultsLayout - CRITICAL ERROR: IndexOutOfBoundsException e");
+            ComponentUtility.logError(
+               "OseeSearchResultsListComponent.updateSearchResultsLayout - CRITICAL ERROR: IndexOutOfBoundsException",
+               this);
          }
       }
    }
