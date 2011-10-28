@@ -162,7 +162,9 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    private void updateManySearchResultsLabel() {
       String manyResults = String.format("%d", resultList.size());
-      manySearchResults.setCaption(manyResults);
+      synchronized (getApplication()) {
+         manySearchResults.setCaption(manyResults);
+      }
       pagingComponent.setManyItemsTotal(resultList.size());
    }
 
@@ -212,7 +214,9 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       updateManySearchResultsLabel();
 
       int lastCompIndex = mainLayout.getComponentIndex(bottomSpacer);
-      mainLayout.addComponent(searchResultComp, lastCompIndex);
+      synchronized (getApplication()) {
+         mainLayout.addComponent(searchResultComp, lastCompIndex);
+      }
 
       //This call is needed in order to only show those results which are on the current page.
       updateSearchResultsLayout();

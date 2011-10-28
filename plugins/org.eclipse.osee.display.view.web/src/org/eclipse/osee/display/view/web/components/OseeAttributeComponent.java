@@ -78,34 +78,36 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
 
    @Override
    public void addAttribute(String type, String value) {
-      if (type != null && !type.isEmpty() && value != null && !value.isEmpty()) {
+      synchronized (getApplication()) {
+         if (type != null && !type.isEmpty() && value != null && !value.isEmpty()) {
 
-         if (type.contains("Word") && type.contains("Content") && type.contains("Template")) {
-            Label attrLabel = new Label(String.format("%s:", type));
-            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL_LONG);
+            if (type.contains("Word") && type.contains("Content") && type.contains("Template")) {
+               Label attrLabel = new Label(String.format("%s:", type));
+               attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL_LONG);
 
-            TextField attrValue = new TextField();
-            attrValue.setValue(value);
-            attrValue.setWidth(600, UNITS_PIXELS);
-            attrValue.setHeight(300, UNITS_PIXELS);
+               TextField attrValue = new TextField();
+               attrValue.setValue(value);
+               attrValue.setWidth(600, UNITS_PIXELS);
+               attrValue.setHeight(300, UNITS_PIXELS);
 
-            Label vSpacer_bottomAttr = new Label();
-            vSpacer_bottomAttr.setHeight(15, UNITS_PIXELS);
+               Label vSpacer_bottomAttr = new Label();
+               vSpacer_bottomAttr.setHeight(15, UNITS_PIXELS);
 
-            longAttrValuesLayout.addComponent(attrLabel);
-            longAttrValuesLayout.addComponent(attrValue);
-            longAttrValuesLayout.addComponent(vSpacer_bottomAttr);
+               longAttrValuesLayout.addComponent(attrLabel);
+               longAttrValuesLayout.addComponent(attrValue);
+               longAttrValuesLayout.addComponent(vSpacer_bottomAttr);
 
-            longAttrValuesLayout.setComponentAlignment(attrLabel, Alignment.BOTTOM_LEFT);
-         } else {
-            Label attrLabel = new Label(String.format("%s:", type));
-            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
+               longAttrValuesLayout.setComponentAlignment(attrLabel, Alignment.BOTTOM_LEFT);
+            } else {
+               Label attrLabel = new Label(String.format("%s:", type));
+               attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
 
-            Label attrValue = new Label(value);
-            attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
+               Label attrValue = new Label(value);
+               attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
 
-            attrLabelsLayout.addComponent(attrLabel);
-            attrValuesLayout.addComponent(attrValue);
+               attrLabelsLayout.addComponent(attrLabel);
+               attrValuesLayout.addComponent(attrValue);
+            }
          }
       }
    }
