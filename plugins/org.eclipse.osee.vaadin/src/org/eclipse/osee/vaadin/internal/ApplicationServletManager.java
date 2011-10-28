@@ -134,7 +134,7 @@ public class ApplicationServletManager {
    private HttpServlet createContainer(ApplicationFactory applicationFactory) throws Exception {
       ApplicationUtils.checkValid(applicationFactory);
       Set<ApplicationSession> sessions = new ConcurrentSkipListSet<ApplicationSession>();
-      return new ApplicationServlet(sessions, applicationFactory);
+      return new ApplicationServlet(getLogger(), sessions, applicationFactory);
    }
 
    private void unregister(ServiceReference<ApplicationFactory> reference) {
