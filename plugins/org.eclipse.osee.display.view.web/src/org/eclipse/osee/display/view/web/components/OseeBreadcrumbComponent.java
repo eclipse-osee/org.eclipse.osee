@@ -56,6 +56,10 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
       }
    }
 
+   public void updateLayout() {
+      createLayout();
+   }
+
    public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
       createLayout();

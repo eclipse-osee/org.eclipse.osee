@@ -68,7 +68,7 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
       addComponent(artifactNameLink);
    }
 
-   private void updateLayout() {
+   public void updateLayout() {
       if (artifact != null) {
          artifactNameLink.setCaption(artifact.getArtifactName());
       }

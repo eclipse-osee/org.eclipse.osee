@@ -38,8 +38,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    private ViewArtifact artifact = null;
    private final int LISTBOX_MINWIDTH = 100;
    private final Label leftTitle = new Label("");
-   private final Label relTypesTitleTop = new Label("Relationship");
-   private final Label relTypesTitleBot = new Label("Type");
+   private final Label relTypesTitle = new Label("Relation Type");
    private final Label rightTitle = new Label("");
 
    @Override
@@ -48,14 +47,17 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    }
 
    private void createLayout() {
+      setSizeUndefined();
       removeAllComponents();
 
       final HorizontalLayout listBoxesLayout = new HorizontalLayout();
 
-      leftTitle.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
-      relTypesTitleTop.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
-      relTypesTitleBot.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
-      rightTitle.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
+      Label titleLabel = new Label("Relations");
+      titleLabel.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
+
+      leftTitle.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
+      relTypesTitle.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
+      rightTitle.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
 
       //Fixed width lists make for a prettier layout
       relTypesSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
@@ -83,7 +85,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
                   }
                } catch (Exception e) {
                   ComponentUtility.logError(
-                     "OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.",
+                     "OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception:" + e.getMessage() + e.getStackTrace(),
                      OseeRelationsComponent.this);
                }
             }
@@ -129,8 +131,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       vLayout_LeftSelect.addComponent(leftTitle);
       vLayout_LeftSelect.addComponent(leftSelect);
 
-      vLayout_RelTypesSelect.addComponent(relTypesTitleTop);
-      vLayout_RelTypesSelect.addComponent(relTypesTitleBot);
+      vLayout_RelTypesSelect.addComponent(relTypesTitle);
       vLayout_RelTypesSelect.addComponent(relTypesSelect);
 
       vLayout_RightSelect.addComponent(rightTitle);
@@ -152,13 +153,13 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       listBoxesLayout.addComponent(rightArrow);
       listBoxesLayout.addComponent(vLayout_RightSelect);
 
+      addComponent(titleLabel);
       addComponent(listBoxesLayout);
 
       vLayout_LeftSelect.setComponentAlignment(leftTitle, Alignment.BOTTOM_CENTER);
       vLayout_LeftSelect.setComponentAlignment(leftSelect, Alignment.BOTTOM_CENTER);
       vLayout_RelTypesSelect.setComponentAlignment(relTypesSelect, Alignment.BOTTOM_CENTER);
-      vLayout_RelTypesSelect.setComponentAlignment(relTypesTitleBot, Alignment.MIDDLE_CENTER);
-      vLayout_RelTypesSelect.setComponentAlignment(relTypesTitleTop, Alignment.MIDDLE_CENTER);
+      vLayout_RelTypesSelect.setComponentAlignment(relTypesTitle, Alignment.MIDDLE_CENTER);
       vLayout_RightSelect.setComponentAlignment(rightTitle, Alignment.BOTTOM_CENTER);
       vLayout_RightSelect.setComponentAlignment(rightSelect, Alignment.BOTTOM_CENTER);
       listBoxesLayout.setComponentAlignment(vLayout_LeftSelect, Alignment.BOTTOM_CENTER);
@@ -264,10 +265,10 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    public void setLeftName(String name) {
       if (name == null) {
          leftSelect.setEnabled(false);
-         leftTitle.setCaption("");
+         leftTitle.setValue("");
       } else {
          leftSelect.setEnabled(true);
-         leftTitle.setCaption(name);
+         leftTitle.setValue(name);
       }
    }
 
@@ -275,10 +276,10 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    public void setRightName(String name) {
       if (name == null) {
          rightSelect.setEnabled(false);
-         rightTitle.setCaption("");
+         rightTitle.setValue("");
       } else {
          rightSelect.setEnabled(true);
-         rightTitle.setCaption(name);
+         rightTitle.setValue(name);
       }
    }
 }

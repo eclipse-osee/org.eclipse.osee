@@ -76,7 +76,8 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
 
       VerticalLayout vLayout_Body = new VerticalLayout();
       vLayout_Body.setMargin(false, false, false, true);
-      vLayout_Body.setSizeFull();
+      vLayout_Body.setHeight(null);
+      vLayout_Body.setWidth(100, UNITS_PERCENTAGE);
 
       VerticalLayout relAttrSpacer = new VerticalLayout();
       relAttrSpacer.setHeight(15, UNITS_PIXELS);
@@ -85,7 +86,6 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
 
       Panel panel_Body = new Panel();
       panel_Body.setScrollable(true);
-      panel_Body.getContent().setSizeUndefined();
       panel_Body.setSizeFull();
 
       hLayout_ArtNameAndType.addComponent(artifactName);

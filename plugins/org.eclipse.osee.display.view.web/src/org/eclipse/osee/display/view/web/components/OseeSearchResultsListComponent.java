@@ -49,7 +49,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private final int INIT_MANY_RES_PER_PAGE = 15;
    private final Label manySearchResults = new Label();
    private boolean isLayoutComplete = false;
-   private final VerticalLayout vLayout_noResults = new VerticalLayout();
+   Label searchProgressLabel = new Label("No Results Found");
+   private final VerticalLayout vLayout_searchProgress = new VerticalLayout();
 
    @Override
    public void attach() {
@@ -89,8 +90,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       bottomSpacer.setSizeFull();
 
       Label vSpacer_noResults = new Label();
-      Label noResultsLabel = new Label("No Results Found.");
-      noResultsLabel.setStyleName(CssConstants.OSEE_SEARCHRESULTS_NORESULTS);
+      searchProgressLabel.setStyleName(CssConstants.OSEE_SEARCHRESULTS_NORESULTS);
       vSpacer_noResults.setHeight(8, UNITS_PIXELS);
 
       manyResultsComboBox.setImmediate(true);
@@ -135,8 +135,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       hSpacer_PerPage.setWidth(5, UNITS_PIXELS);
       Label manyResultsLabel = new Label("Results Per Page");
 
-      vLayout_noResults.addComponent(vSpacer_noResults);
-      vLayout_noResults.addComponent(noResultsLabel);
+      vLayout_searchProgress.addComponent(vSpacer_noResults);
+      vLayout_searchProgress.addComponent(searchProgressLabel);
 
       manySearchResultsHorizLayout.addComponent(manySearchResults);
       manySearchResultsHorizLayout.addComponent(hSpacer_ManyRes);
@@ -149,6 +149,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       manySearchResultsHorizLayout.addComponent(manyResultsLabel);
 
       mainLayoutPanel.setContent(mainLayout);
+      mainLayout.addComponent(vLayout_searchProgress);
       mainLayout.addComponent(bottomSpacer);
 
       addComponent(manySearchResultsHorizLayout);
@@ -163,9 +164,20 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private void updateManySearchResultsLabel() {
       String manyResults = String.format("%d", resultList.size());
       synchronized (getApplication()) {
-         manySearchResults.setCaption(manyResults);
+         manySearchResults.setValue(manyResults);
       }
       pagingComponent.setManyItemsTotal(resultList.size());
+   }
+
+   private Collection<Component> getSearchResultComponents() {
+      Collection<Component> resComp = new ArrayList<Component>();
+      for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
+         Component component = iter.next();
+         if (component instanceof OseeSearchResultComponent) {
+            resComp.add(component);
+         }
+      }
+      return resComp;
    }
 
    private void updateSearchResultsLayout() {
@@ -173,22 +185,12 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
          //if the list of currently visible items has not changed, then don't bother updating the layout
          Collection<Integer> resultListIndices = pagingComponent.getCurrentVisibleItemIndices();
 
-         //First, get a list of all the search results components currently in the layout
-         Collection<Component> removeTheseComponents = new ArrayList<Component>();
-         for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
-            Component component = iter.next();
-            if (component.getClass() == OseeSearchResultComponent.class) {
-               removeTheseComponents.add(component);
-            }
-         }
-
-         //Second, remove the search result components
-         for (Component component : removeTheseComponents) {
+         //First, remove the search result components
+         for (Component component : getSearchResultComponents()) {
             mainLayout.removeComponent(component);
          }
 
          if (resultList.size() > 0) {
-            mainLayout.removeComponent(vLayout_noResults);
             //Next, add the result components to the layout that are on the current 'page'
             for (Integer i : resultListIndices) {
                try {
@@ -201,8 +203,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
                      this);
                }
             }
-         } else {
-            mainLayout.addComponent(vLayout_noResults);
          }
       }
    }
@@ -242,12 +242,21 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    @Override
    public void searchInProgress() {
       displayOptionsComponent.disableDisplayOptions();
+      searchProgressLabel.setValue("Searching");
+      vLayout_searchProgress.setVisible(true);
+      for (Component component : getSearchResultComponents()) {
+         mainLayout.removeComponent(component);
+      }
    }
 
    @Override
    public void searchCancelled() {
       if (resultList.size() > 0) {
          displayOptionsComponent.enableDisplayOptions();
+         vLayout_searchProgress.setVisible(false);
+      } else {
+         searchProgressLabel.setValue("Search Cancelled");
+         vLayout_searchProgress.setVisible(true);
       }
    }
 
@@ -255,6 +264,10 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    public void searchCompleted() {
       if (resultList.size() > 0) {
          displayOptionsComponent.enableDisplayOptions();
+         vLayout_searchProgress.setVisible(false);
+      } else {
+         searchProgressLabel.setValue("No Results Found");
+         vLayout_searchProgress.setVisible(true);
       }
    }
 

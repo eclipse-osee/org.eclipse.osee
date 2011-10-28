@@ -265,4 +265,6 @@ div.v-window-header {
 	font-weight:bold;
 	}
 	
-	
+.v-textarea {
+	resize: none;
+	}

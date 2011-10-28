@@ -14,7 +14,7 @@ package org.eclipse.osee.display.view.web.components;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -26,9 +26,8 @@ import com.vaadin.ui.VerticalLayout;
 public class OseeAttributeComponent extends VerticalLayout implements AttributeComponent {
 
    private boolean isLayoutComplete = false;
-   private final VerticalLayout attrLabelsLayout = new VerticalLayout();
-   private final VerticalLayout attrValuesLayout = new VerticalLayout();
-   private final VerticalLayout longAttrValuesLayout = new VerticalLayout();
+   private final GridLayout attributesLayout = new GridLayout(3, 1);
+   private int rowIndex = 0;
 
    @Override
    public void attach() {
@@ -43,31 +42,13 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
       Label titleLabel = new Label("Attributes");
       titleLabel.setStyleName(CssConstants.OSEE_ATTRIBUTESTITLELABEL);
 
-      attrLabelsLayout.setWidth(200, UNITS_PIXELS);
-      attrValuesLayout.setWidth(500, UNITS_PIXELS);
-
-      Label spacer = new Label("");
-      spacer.setWidth(15, UNITS_PIXELS);
-      Label spacer2 = new Label("");
-      spacer2.setWidth(5, UNITS_PIXELS);
-
-      HorizontalLayout hLayout_Lists = new HorizontalLayout();
-
-      hLayout_Lists.addComponent(spacer);
-      hLayout_Lists.addComponent(attrLabelsLayout);
-      hLayout_Lists.addComponent(spacer2);
-      hLayout_Lists.addComponent(attrValuesLayout);
-
       addComponent(titleLabel);
-      addComponent(hLayout_Lists);
-      addComponent(longAttrValuesLayout);
+      addComponent(attributesLayout);
    }
 
    @Override
    public void clearAll() {
-      attrLabelsLayout.removeAllComponents();
-      attrValuesLayout.removeAllComponents();
-      longAttrValuesLayout.removeAllComponents();
+      attributesLayout.removeAllComponents();
    }
 
    @Override
@@ -79,35 +60,37 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
    @Override
    public void addAttribute(String type, String value) {
       synchronized (getApplication()) {
-         if (type != null && !type.isEmpty() && value != null && !value.isEmpty()) {
+         if (type != null && !type.trim().isEmpty() && value != null && !value.trim().isEmpty() && !type.toLowerCase().contains(
+            "name")) {
 
-            if (type.contains("Word") && type.contains("Content") && type.contains("Template")) {
-               Label attrLabel = new Label(String.format("%s:", type));
-               attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL_LONG);
+            Label attrLabel = new Label(String.format("%s:", type));
+            attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
+            attributesLayout.setComponentAlignment(attrLabel, Alignment.TOP_RIGHT);
+
+            Label gridSpacer = new Label();
+            gridSpacer.setWidth(5, UNITS_PIXELS);
+
+            attributesLayout.addComponent(attrLabel, 0, rowIndex);
+            attributesLayout.addComponent(gridSpacer, 1, rowIndex);
+
+            if (value.length() > 150) {
 
                TextField attrValue = new TextField();
                attrValue.setValue(value);
-               attrValue.setWidth(600, UNITS_PIXELS);
-               attrValue.setHeight(300, UNITS_PIXELS);
+               attrValue.setWidth(500, UNITS_PIXELS);
+               attrValue.setHeight(150, UNITS_PIXELS);
 
-               Label vSpacer_bottomAttr = new Label();
-               vSpacer_bottomAttr.setHeight(15, UNITS_PIXELS);
-
-               longAttrValuesLayout.addComponent(attrLabel);
-               longAttrValuesLayout.addComponent(attrValue);
-               longAttrValuesLayout.addComponent(vSpacer_bottomAttr);
-
-               longAttrValuesLayout.setComponentAlignment(attrLabel, Alignment.BOTTOM_LEFT);
+               attributesLayout.setRows(attributesLayout.getRows() + 1);
+               attributesLayout.addComponent(attrValue, 2, rowIndex);
             } else {
-               Label attrLabel = new Label(String.format("%s:", type));
-               attrLabel.setStyleName(CssConstants.OSEE_ATTRIBUTELABEL);
 
                Label attrValue = new Label(value);
                attrValue.setStyleName(CssConstants.OSEE_ATTRIBUTEVALUE);
 
-               attrLabelsLayout.addComponent(attrLabel);
-               attrValuesLayout.addComponent(attrValue);
+               attributesLayout.setRows(attributesLayout.getRows() + 1);
+               attributesLayout.addComponent(attrValue, 2, rowIndex);
             }
+            rowIndex++;
          }
       }
    }

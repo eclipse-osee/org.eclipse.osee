@@ -46,6 +46,8 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
       if (!isLayoutComplete) {
          createLayout();
          isLayoutComplete = true;
+      } else {
+         breadcrumbComp.updateLayout();
       }
    }
 
