@@ -37,6 +37,7 @@ public final class CssConstants {
    public static final String OSEE_TITLE_MEDIUM_TEXT = "osee-title-medium-text";
    public static final String OSEE_SEARCH_TEXTFIELD = "osee-search-textfield";
 
+   public static final String OSEE_SEARCHRESULTS_NORESULTS = "osee-searchresults-noresults";
    public static final String OSEE_SEARCHRESULTS_MANYRESULTSFIELD = "osee-searchresults-manyresultsfield";
    public static final String OSEE_SEARCHRESULT_ARTNAME = "osee-searchresult-artname";
    public static final String OSEE_SEARCHRESULT_ARTTYPE = "osee-searchresult-arttype";
@@ -65,4 +66,5 @@ public final class CssConstants {
    public static final String OSEE_WORKING_LABEL_1 = "osee-working-label-1";
    public static final String OSEE_WORKING_LABEL_2 = "osee-working-label-2";
    public static final String OSEE_WORKING_LABEL_3 = "osee-working-label-3";
+
 }

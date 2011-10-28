@@ -49,6 +49,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    private final int INIT_MANY_RES_PER_PAGE = 15;
    private final Label manySearchResults = new Label();
    private boolean isLayoutComplete = false;
+   private final VerticalLayout vLayout_noResults = new VerticalLayout();
 
    @Override
    public void attach() {
@@ -87,6 +88,11 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
       bottomSpacer.setSizeFull();
 
+      Label vSpacer_noResults = new Label();
+      Label noResultsLabel = new Label("No Results Found.");
+      noResultsLabel.setStyleName(CssConstants.OSEE_SEARCHRESULTS_NORESULTS);
+      vSpacer_noResults.setHeight(8, UNITS_PIXELS);
+
       manyResultsComboBox.setImmediate(true);
       manyResultsComboBox.setTextInputAllowed(false);
       manyResultsComboBox.setNullSelectionAllowed(false);
@@ -118,7 +124,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       Label manySearchResults_suffix = new Label("Results Found");
       manySearchResults.setSizeUndefined();
       manySearchResults_suffix.setSizeUndefined();
-      manySearchResults.setStyleName(CssConstants.OSEE_SEARCHRESULT_MATCH_MANY);
+      //      manySearchResults.setStyleName(CssConstants.OSEE_SEARCHRESULT_MATCH_MANY);
 
       Label hSpacer_ManyResVerbose = new Label();
       hSpacer_ManyResVerbose.setWidth(30, UNITS_PIXELS);
@@ -128,6 +134,9 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
       Label hSpacer_PerPage = new Label();
       hSpacer_PerPage.setWidth(5, UNITS_PIXELS);
       Label manyResultsLabel = new Label("Results Per Page");
+
+      vLayout_noResults.addComponent(vSpacer_noResults);
+      vLayout_noResults.addComponent(noResultsLabel);
 
       manySearchResultsHorizLayout.addComponent(manySearchResults);
       manySearchResultsHorizLayout.addComponent(hSpacer_ManyRes);
@@ -152,42 +161,46 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    }
 
    private void updateManySearchResultsLabel() {
-      String manyResults = String.format("[%d]", resultList.size());
+      String manyResults = String.format("%d", resultList.size());
       manySearchResults.setCaption(manyResults);
       pagingComponent.setManyItemsTotal(resultList.size());
    }
 
    private void updateSearchResultsLayout() {
-      //if the list of currently visible items has not changed, then don't bother updating the layout
-      Collection<Integer> resultListIndices = pagingComponent.getCurrentVisibleItemIndices();
+      synchronized (getApplication()) {
+         //if the list of currently visible items has not changed, then don't bother updating the layout
+         Collection<Integer> resultListIndices = pagingComponent.getCurrentVisibleItemIndices();
 
-      //First, get a list of all the search results components currently in the layout
-      Collection<Component> removeTheseComponents = new ArrayList<Component>();
-      for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
-         Component component = iter.next();
-         if (component.getClass() == OseeSearchResultComponent.class) {
-            removeTheseComponents.add(component);
+         //First, get a list of all the search results components currently in the layout
+         Collection<Component> removeTheseComponents = new ArrayList<Component>();
+         for (Iterator<Component> iter = mainLayout.getComponentIterator(); iter.hasNext();) {
+            Component component = iter.next();
+            if (component.getClass() == OseeSearchResultComponent.class) {
+               removeTheseComponents.add(component);
+            }
          }
-      }
 
-      //Second, remove the search result components
-      for (Component component : removeTheseComponents) {
-         synchronized (getApplication()) {
+         //Second, remove the search result components
+         for (Component component : removeTheseComponents) {
             mainLayout.removeComponent(component);
          }
-      }
 
-      //Next, add the result components to the layout that are on the current 'page'
-      for (Integer i : resultListIndices) {
-         try {
-            OseeSearchResultComponent searchResultComp = resultList.get(i);
-            synchronized (getApplication()) {
-               mainLayout.addComponent(searchResultComp, 0);
+         if (resultList.size() > 0) {
+            mainLayout.removeComponent(vLayout_noResults);
+            //Next, add the result components to the layout that are on the current 'page'
+            for (Integer i : resultListIndices) {
+               try {
+                  OseeSearchResultComponent searchResultComp = resultList.get(i);
+                  int bottomIndex = mainLayout.getComponentIndex(bottomSpacer);
+                  mainLayout.addComponent(searchResultComp, bottomIndex);
+               } catch (IndexOutOfBoundsException e) {
+                  ComponentUtility.logError(
+                     "OseeSearchResultsListComponent.updateSearchResultsLayout - CRITICAL ERROR: IndexOutOfBoundsException",
+                     this);
+               }
             }
-         } catch (IndexOutOfBoundsException e) {
-            ComponentUtility.logError(
-               "OseeSearchResultsListComponent.updateSearchResultsLayout - CRITICAL ERROR: IndexOutOfBoundsException",
-               this);
+         } else {
+            mainLayout.addComponent(vLayout_noResults);
          }
       }
    }

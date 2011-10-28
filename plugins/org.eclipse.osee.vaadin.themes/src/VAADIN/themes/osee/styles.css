@@ -81,7 +81,7 @@
 }
 
 .osee-searchresult-artname {
-	font-size: 20px;
+	font-size: 14px;
 	color: blue;
 }
 
@@ -102,6 +102,11 @@
 
 .osee-searchresults-manyresultsfield {
 	width: 20px;
+}
+
+.osee-searchresults-noresults {
+	font-size: 15px;
+	font-weight: bold;
 }
 
 .osee-horizontal-line {
