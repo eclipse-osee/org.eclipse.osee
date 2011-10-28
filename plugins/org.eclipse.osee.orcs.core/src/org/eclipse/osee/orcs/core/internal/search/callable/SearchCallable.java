@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.search.callable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.search.ResultSet;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchCallable implements Callable<ResultSet<ReadableArtifact>> {
+public class SearchCallable extends CancellableCallable<ResultSet<ReadableArtifact>> {
    private final QueryEngine queryEngine;
    private final OrcsObjectLoader objectLoader;
 
@@ -54,15 +54,18 @@ public class SearchCallable implements Callable<ResultSet<ReadableArtifact>> {
    public ResultSet<ReadableArtifact> call() throws Exception {
       QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
       LoadOptions loadOptions = new LoadOptions(options.isHistorical(), options.areDeletedIncluded(), loadLevel);
-      List<ReadableArtifact> artifacts = objectLoader.load(queryContext, loadOptions, sessionContext);
+      checkForCancelled();
+      List<ReadableArtifact> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
 
       List<ReadableArtifact> results;
       if (!queryContext.getPostProcessors().isEmpty()) {
          results = new ArrayList<ReadableArtifact>();
          for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
             processor.setItemsToProcess(artifacts);
+            checkForCancelled();
             List<Match<ReadableArtifact, ReadableAttribute<?>>> matches = processor.call();
             for (Match<ReadableArtifact, ReadableAttribute<?>> match : matches) {
+               checkForCancelled();
                results.add(match.getItem());
             }
          }
@@ -71,4 +74,5 @@ public class SearchCallable implements Callable<ResultSet<ReadableArtifact>> {
       }
       return new SearchResultSet<ReadableArtifact>(results);
    }
+
 }

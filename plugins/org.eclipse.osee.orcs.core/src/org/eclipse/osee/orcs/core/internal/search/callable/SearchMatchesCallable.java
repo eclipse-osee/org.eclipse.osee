@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.search.ResultSet;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchMatchesCallable implements Callable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> {
+public class SearchMatchesCallable extends CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> {
    private final QueryEngine queryEngine;
    private final OrcsObjectLoader objectLoader;
 
@@ -56,7 +56,8 @@ public class SearchMatchesCallable implements Callable<ResultSet<Match<ReadableA
    public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
       QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
       LoadOptions loadOptions = new LoadOptions(options.isHistorical(), options.areDeletedIncluded(), loadLevel);
-      List<ReadableArtifact> artifacts = objectLoader.load(queryContext, loadOptions, sessionContext);
+      checkForCancelled();
+      List<ReadableArtifact> artifacts = objectLoader.load(this, queryContext, loadOptions, sessionContext);
 
       List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
@@ -67,6 +68,7 @@ public class SearchMatchesCallable implements Callable<ResultSet<Match<ReadableA
       }
       for (QueryPostProcessor processor : processors) {
          processor.setItemsToProcess(artifacts);
+         checkForCancelled();
          results.addAll(processor.call());
       }
       return new SearchResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>(results);

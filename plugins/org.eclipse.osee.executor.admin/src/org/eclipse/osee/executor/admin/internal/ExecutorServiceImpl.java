@@ -11,9 +11,8 @@
 package org.eclipse.osee.executor.admin.internal;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -48,52 +47,6 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
    }
 
    @SuppressWarnings("unchecked")
-   @Override
-   public <T> Future<T> submit(Callable<T> task) {
-      Future<T> toReturn = null;
-      ExecutionCallback<T> callback = getCallBack(task);
-      if (callback != null) {
-         FutureTask<T> fTask = new FutureTaskWithCallback<T>(getLogger(), task, callback);
-         toReturn = (Future<T>) super.submit(fTask);
-      } else {
-         toReturn = super.submit(task);
-      }
-      return toReturn;
-   }
-
-   @Override
-   public <T> Future<T> submit(Runnable task, T result) {
-      Runnable toRun = task;
-      ExecutionCallback<T> callback = getCallBack(task);
-      if (callback != null) {
-         toRun = new FutureTaskWithCallback<T>(getLogger(), task, result, callback);
-      }
-      return super.submit(toRun, result);
-   }
-
-   @SuppressWarnings({"unchecked", "rawtypes"})
-   @Override
-   public Future<?> submit(Runnable task) {
-      Runnable toRun = task;
-      ExecutionCallback<?> callback = getCallBack(task);
-      if (callback != null) {
-         toRun = new FutureTaskWithCallback(getLogger(), task, null, callback);
-      }
-      return super.submit(toRun);
-   }
-
-   @SuppressWarnings({"unchecked", "rawtypes"})
-   @Override
-   public void execute(Runnable command) {
-      Runnable toRun = command;
-      ExecutionCallback<?> callback = getCallBack(command);
-      if (callback != null) {
-         toRun = new FutureTaskWithCallback(getLogger(), command, null, callback);
-      }
-      super.execute(toRun);
-   }
-
-   @SuppressWarnings("unchecked")
    private <V> ExecutionCallback<V> getCallBack(Object object) {
       ExecutionCallback<V> callback = null;
       if (object instanceof HasExecutionCallback) {
@@ -101,5 +54,17 @@ public class ExecutorServiceImpl extends ThreadPoolExecutor {
          callback = item.getExecutionCallback();
       }
       return callback;
+   }
+
+   @Override
+   protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+      ExecutionCallback<T> callback = getCallBack(runnable);
+      return new FutureTaskWithCallback<T>(getLogger(), runnable, value, callback);
+   }
+
+   @Override
+   protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
+      ExecutionCallback<T> callback = getCallBack(callable);
+      return new FutureTaskWithCallback<T>(getLogger(), callable, callback);
    }
 }

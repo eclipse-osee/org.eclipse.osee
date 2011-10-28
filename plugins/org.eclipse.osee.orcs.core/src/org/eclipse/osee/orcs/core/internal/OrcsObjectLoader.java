@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -60,11 +61,11 @@ public class OrcsObjectLoader {
       this.branchCache = branchCache;
    }
 
-   public int countObjects(QueryContext queryContext) throws OseeCoreException {
-      return dataLoader.countArtifacts(queryContext);
+   public int countObjects(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
+      return dataLoader.countArtifacts(cancellation, queryContext);
    }
 
-   public List<ReadableArtifact> load(QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
+   public List<ReadableArtifact> load(HasCancellation cancellation, QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
 
       List<ReadableArtifact> artifacts = new ArrayList<ReadableArtifact>();
 
@@ -73,7 +74,8 @@ public class OrcsObjectLoader {
       ArtifactRowHandler artifactRowHandler =
          new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
 
-      dataLoader.loadArtifacts(artifactRowHandler, queryContext, loadOptions, artifactHandler, artifactHandler);
+      dataLoader.loadArtifacts(cancellation, artifactRowHandler, queryContext, loadOptions, artifactHandler,
+         artifactHandler);
 
       return artifacts;
    }

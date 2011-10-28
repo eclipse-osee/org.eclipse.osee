@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -17,8 +18,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface DataLoader {
 
-   void loadArtifacts(ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
+   void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
 
-   int countArtifacts(QueryContext queryContext) throws OseeCoreException;
+   int countArtifacts(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
 
 }

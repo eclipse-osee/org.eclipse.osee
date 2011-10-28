@@ -47,6 +47,8 @@ public interface IOseeStatement extends Closeable {
    @Override
    void close();
 
+   void cancel() throws OseeCoreException;
+
    InputStream getBinaryStream(String columnName) throws OseeCoreException;
 
    InputStream getAsciiStream(String columnName) throws OseeCoreException;

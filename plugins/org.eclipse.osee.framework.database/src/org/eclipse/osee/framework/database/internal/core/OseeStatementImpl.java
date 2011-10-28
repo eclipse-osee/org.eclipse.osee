@@ -452,4 +452,18 @@ public final class OseeStatementImpl implements IOseeStatement {
          OseeExceptions.wrapAndThrow(ex);
       }
    }
+
+   @Override
+   public void cancel() throws OseeCoreException {
+      try {
+         if (preparedStatement != null) {
+            preparedStatement.cancel();
+         }
+         if (callableStatement != null) {
+            callableStatement.cancel();
+         }
+      } catch (SQLException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+   }
 }

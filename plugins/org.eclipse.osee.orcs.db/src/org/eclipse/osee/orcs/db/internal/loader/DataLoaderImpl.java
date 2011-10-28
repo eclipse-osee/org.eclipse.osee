@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -109,7 +111,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public int countArtifacts(QueryContext queryContext) throws OseeCoreException {
+   public int countArtifacts(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
       SqlContext sqlContext = toSqlContext(queryContext);
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
          join.store();
@@ -117,6 +119,8 @@ public class DataLoaderImpl implements DataLoader {
       String query = sqlContext.getSql();
       List<Object> params = sqlContext.getParameters();
       try {
+         checkCancelled(cancellation);
+
          return oseeDatabaseService.runPreparedQueryFetchObject(-1, query, params.toArray());
       } finally {
          for (AbstractJoinQuery join : sqlContext.getJoins()) {
@@ -125,21 +129,35 @@ public class DataLoaderImpl implements DataLoader {
       }
    }
 
+   private void checkCancelled(HasCancellation cancellation) throws CancellationException {
+      if (cancellation != null) {
+         cancellation.checkForCancelled();
+      }
+   }
+
    @Override
-   public void loadArtifacts(ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
       SqlContext sqlContext = toSqlContext(queryContext);
       int fetchSize = computeFetchSize(sqlContext);
 
-      AbstractJoinQuery join = createArtifactIdJoin(sqlContext, fetchSize);
+      AbstractJoinQuery join = createArtifactIdJoin(cancellation, sqlContext, fetchSize);
       try {
          join.store();
          int queryId = join.getQueryId();
 
+         checkCancelled(cancellation);
+
          artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, queryId);
+
+         checkCancelled(cancellation);
+
          if (isAttributeLoadingAllowed(loadOptions.getLoadLevel())) {
             AttributeRowHandler attrHandler = attributeRowHandlerFactory.createAttributeRowHandler();
             attributeLoader.loadFromQueryId(attrHandler, loadOptions, fetchSize, queryId);
          }
+
+         checkCancelled(cancellation);
+
          if (isRelationLoadingAllowed(loadOptions.getLoadLevel())) {
             RelationRowHandler relHandler = relationRowHandlerFactory.createRelationRowHandler();
             relationLoader.loadFromQueryId(relHandler, loadOptions, fetchSize, queryId);
@@ -171,7 +189,7 @@ public class DataLoaderImpl implements DataLoader {
       return fetchSize;
    }
 
-   private AbstractJoinQuery createArtifactIdJoin(SqlContext sqlContext, int fetchSize) throws OseeCoreException {
+   private AbstractJoinQuery createArtifactIdJoin(HasCancellation cancellation, SqlContext sqlContext, int fetchSize) throws OseeCoreException {
       ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
          join.store();
@@ -179,6 +197,8 @@ public class DataLoaderImpl implements DataLoader {
       String query = sqlContext.getSql();
       List<Object> params = sqlContext.getParameters();
       try {
+         checkCancelled(cancellation);
+
          Integer transactionId = -1;
          IOseeStatement chStmt = oseeDatabaseService.getStatement();
          try {
@@ -190,6 +210,8 @@ public class DataLoaderImpl implements DataLoader {
                   transactionId = chStmt.getInt("transaction_id");
                }
                artifactJoin.add(artId, branchId, transactionId);
+
+               checkCancelled(cancellation);
             }
          } finally {
             chStmt.close();
@@ -201,5 +223,4 @@ public class DataLoaderImpl implements DataLoader {
       }
       return artifactJoin;
    }
-
 }

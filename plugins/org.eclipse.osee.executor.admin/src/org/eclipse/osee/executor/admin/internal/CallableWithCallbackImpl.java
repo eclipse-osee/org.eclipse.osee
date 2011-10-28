@@ -11,13 +11,15 @@
 package org.eclipse.osee.executor.admin.internal;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.executor.admin.HasExecutionCallback;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CallableWithCallbackImpl<T> implements Callable<T>, HasExecutionCallback<T> {
+public class CallableWithCallbackImpl<T> extends CancellableCallable<T> implements HasExecutionCallback<T> {
 
    private final Callable<T> innerWorker;
    private final ExecutionCallback<T> callback;
@@ -29,11 +31,29 @@ public class CallableWithCallbackImpl<T> implements Callable<T>, HasExecutionCal
 
    @Override
    public T call() throws Exception {
+      checkForCancelled();
       return innerWorker.call();
    }
 
    @Override
    public ExecutionCallback<T> getExecutionCallback() {
       return callback;
+   }
+
+   @Override
+   public boolean isCancelled() {
+      boolean result = super.isCancelled();
+      if (innerWorker instanceof HasCancellation) {
+         result = ((HasCancellation) innerWorker).isCancelled();
+      }
+      return result;
+   }
+
+   @Override
+   public void setCancel(boolean isCancelled) {
+      super.setCancel(isCancelled);
+      if (innerWorker instanceof HasCancellation) {
+         ((HasCancellation) innerWorker).setCancel(isCancelled);
+      }
    }
 }
