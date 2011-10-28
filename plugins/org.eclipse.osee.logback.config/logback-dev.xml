@@ -1,6 +1,6 @@
 <configuration debug="true">
 	<!-- See documentation at http://logback.qos.ch/manual/joran.html -->
-	
+
 	<!-- To select this configuration add -Dlogback.configurationFile=logback-dev.xml -->
 	<!-- Set attribute debug="true" to configuration xml element to trace logback configuration -->
 
@@ -17,6 +17,9 @@
 	<logger name="org.eclipse.osee.orcs.db" level="TRACE" />
 	<logger name="org.eclipse.osee.database" level="TRACE" />
 	<logger name="org.eclipse.osee" level="WARN" />
+
+	<!-- Vaadin Servlet URL Requests -->
+	<!-- <logger name="org.eclipse.osee.vaadin" level="TRACE" /> -->
 
 	<root level="WARN">
 		<appender-ref ref="STDOUT" />

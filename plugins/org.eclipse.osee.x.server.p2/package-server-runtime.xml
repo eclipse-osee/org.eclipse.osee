@@ -12,7 +12,7 @@
 		<condition property="os-separator-exp" value="\\" else="/">
 			<os family="windows" />
 		</condition>
-		
+
 		<mkdir dir="${server-path}" />
 
 		<property name="server-config-path" value="${server-path}/configuration" />
@@ -120,7 +120,35 @@
 							<var name="isFirst" value="false" />
 						</then>
 					</if>
-					<echo file="@{configPath}/config.ini" message="${projectName}@start" append="true" />
+
+					<if>
+						<equals arg1="${projectName}" arg2="org.eclipse.osee.logback.config" />
+						<then>
+							<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+						</then>
+						<elseif>
+							<equals arg1="${projectName}" arg2="org.eclipse.osee.logger.slf4j" />
+							<then>
+								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+							</then>
+						</elseif>
+						<elseif>
+							<equals arg1="${projectName}" arg2="org.eclipse.osee.vaadin.themes" />
+							<then>
+								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+							</then>
+						</elseif>
+						<elseif>
+							<equals arg1="${projectName}" arg2="ch.qos.logback.slf4j" />
+							<then>
+								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+							</then>
+						</elseif>
+						<else>
+							<echo file="@{configPath}/config.ini" message="${projectName}@start" append="true" />
+						</else>
+					</if>
+
 					<var name="isFirst" value="true" />
 				</sequential>
 			</for>
@@ -150,7 +178,7 @@ osee.log.default=INFO
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dosee.db.connection.id=@{connection.id} \
 @{extraVMArgs} \
--jar plugins/@{launcher} -console
+-jar plugins/@{launcher} -console -consoleLog -clean
 </echo>
 			<if>
 				<equals arg1="@{executable}" arg2="true" />
