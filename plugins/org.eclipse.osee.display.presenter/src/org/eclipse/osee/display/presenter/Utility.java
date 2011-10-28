@@ -24,6 +24,9 @@ import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.search.Match;
 
 /**
  * @author Roberto E. Escobar
@@ -40,6 +43,18 @@ public final class Utility {
          @Override
          public int compare(Named o1, Named o2) {
             return o1.getName().compareTo(o2.getName());
+         }
+
+      });
+      return toSort;
+   }
+
+   public static List<Match<ReadableArtifact, ReadableAttribute<?>>> sortResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSort) {
+      Collections.sort(toSort, new Comparator<Match<ReadableArtifact, ReadableAttribute<?>>>() {
+
+         @Override
+         public int compare(Match<ReadableArtifact, ReadableAttribute<?>> o1, Match<ReadableArtifact, ReadableAttribute<?>> o2) {
+            return o1.getItem().getName().compareTo(o2.getItem().getName());
          }
 
       });

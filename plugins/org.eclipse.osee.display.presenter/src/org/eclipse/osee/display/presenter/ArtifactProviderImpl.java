@@ -43,6 +43,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
 import org.eclipse.osee.orcs.search.StringOperator;
+import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 
 /**
@@ -123,13 +124,15 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public Collection<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
+   public List<RelationType> getValidRelationTypes(ReadableArtifact art) throws OseeCoreException {
       Collection<IRelationTypeSide> existingRelationTypes = graph.getExistingRelationTypes(art);
       Set<RelationType> toReturn = new HashSet<RelationType>();
       for (IRelationTypeSide side : existingRelationTypes) {
          toReturn.add(graph.getFullRelationType(side));
       }
-      return toReturn;
+      List<RelationType> listToReturn = Lists.newLinkedList(toReturn);
+      Collections.sort(listToReturn);
+      return listToReturn;
    }
 
    @Override
@@ -156,9 +159,12 @@ public class ArtifactProviderImpl implements ArtifactProvider {
             delta = System.currentTimeMillis();
          }
          try {
-            List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered = Collections.emptyList();
+            List<Match<ReadableArtifact, ReadableAttribute<?>>> filtered = null;
             if (result.getList() != null) {
                filtered = sanitizer.filter(result.getList());
+               Utility.sortResults(filtered);
+            } else {
+               filtered = Collections.emptyList();
             }
             callback.onSearchComplete(filtered);
          } catch (Exception ex) {
