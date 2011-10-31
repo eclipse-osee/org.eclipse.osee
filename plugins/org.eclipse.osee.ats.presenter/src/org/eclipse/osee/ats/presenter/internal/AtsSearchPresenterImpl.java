@@ -68,9 +68,10 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    @Override
    public void initSearchResults(String url, T searchHeaderComponent, SearchResultsListComponent resultsComponent, DisplayOptionsComponent optionsComponent) {
       setSearchHeaderFields(url, searchHeaderComponent);
-      sendSearchCompleted();
+      resultsComponent.clearAll();
 
       if (!Strings.isValid(url)) {
+         sendSearchCompleted();
          return;
       }
 

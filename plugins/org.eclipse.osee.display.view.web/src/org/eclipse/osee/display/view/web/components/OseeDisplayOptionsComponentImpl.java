@@ -26,6 +26,7 @@ import com.vaadin.ui.VerticalLayout;
 public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements DisplayOptionsComponent {
 
    private final CheckBox showVerboseCheckBox = new CheckBox("Show Detailed Results", false);
+   private Boolean lock_InhibitActionFromServer = false;
    private boolean isLayoutComplete = false;
 
    @Override
@@ -43,8 +44,12 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
       showVerboseCheckBox.addListener(new Property.ValueChangeListener() {
          @Override
          public void valueChange(ValueChangeEvent event) {
-            boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
-            onBoxChecked(showVerbose);
+            synchronized (lock_InhibitActionFromServer) {
+               if (!lock_InhibitActionFromServer) {
+                  boolean showVerbose = showVerboseCheckBox.toString().equalsIgnoreCase("true");
+                  onBoxChecked(showVerbose);
+               }
+            }
          }
       });
 
@@ -62,7 +67,11 @@ public class OseeDisplayOptionsComponentImpl extends VerticalLayout implements D
          boolean showVerbose_fromPres = options.getVerboseResults();
          boolean showVerbose_fromUi = showVerboseCheckBox.toString().equalsIgnoreCase("true");
          if (showVerbose_fromUi != showVerbose_fromPres) {
-            showVerboseCheckBox.setValue(showVerbose_fromPres);
+            synchronized (lock_InhibitActionFromServer) {
+               lock_InhibitActionFromServer = true;
+               showVerboseCheckBox.setValue(showVerbose_fromPres);
+               lock_InhibitActionFromServer = false;
+            }
          }
       } else {
          ComponentUtility.logWarn("OseeDisplayOptionsComponentImpl.setDisplayOptions - WARNING: null value detected.",

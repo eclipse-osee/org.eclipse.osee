@@ -211,15 +211,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
    public SearchResultComponent createSearchResult() {
       OseeSearchResultComponent searchResultComp = new OseeSearchResultComponent();
       resultList.add(searchResultComp);
-      updateManySearchResultsLabel();
-
-      int lastCompIndex = mainLayout.getComponentIndex(bottomSpacer);
-      synchronized (getApplication()) {
-         mainLayout.addComponent(searchResultComp, lastCompIndex);
-      }
-
-      //This call is needed in order to only show those results which are on the current page.
-      updateSearchResultsLayout();
 
       return searchResultComp;
    }
@@ -258,6 +249,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
          searchProgressLabel.setValue("Search Cancelled");
          vLayout_searchProgress.setVisible(true);
       }
+      updateManySearchResultsLabel();
+      updateSearchResultsLayout();
    }
 
    @Override
@@ -269,6 +262,8 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
          searchProgressLabel.setValue("No Results Found");
          vLayout_searchProgress.setVisible(true);
       }
+      updateManySearchResultsLabel();
+      updateSearchResultsLayout();
    }
 
    @Override

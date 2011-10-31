@@ -26,6 +26,7 @@ import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeLogoLink;
 import org.eclipse.osee.display.view.web.components.OseeSearchHeaderComponent;
 import org.eclipse.osee.vaadin.widgets.HasViewTitle;
+import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.Action;
@@ -398,7 +399,10 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       searchTextField.setEnabled(true);
       validateSearchAndEnableSearchButton();
       searchButton.setCaption(SEARCHBUTTON_SEARCH);
-      getApplication().getMainWindow().showNotification("Search Cancelled", Notification.TYPE_TRAY_NOTIFICATION);
+      Application application = getApplication();
+      if (application != null) {
+         application.getMainWindow().showNotification("Search Cancelled", Notification.TYPE_TRAY_NOTIFICATION);
+      }
       isSearchInProgress = false;
    }
 

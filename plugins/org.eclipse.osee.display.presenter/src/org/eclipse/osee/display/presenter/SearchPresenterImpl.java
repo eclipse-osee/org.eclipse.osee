@@ -75,10 +75,11 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    @Override
    public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options) {
-      sendSearchCompleted();
+      artifactProvider.cancelSearch();
       SearchParameters params = decodeSearchUrl(url);
 
       if (!Strings.isValid(url) || !params.isValid()) {
+         sendSearchCompleted();
          return;
       }
 
@@ -91,6 +92,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       } catch (Exception ex) {
          setErrorMessage(searchResultsComp, "Error loading search results", ex);
       }
+      searchResultsComp.clearAll();
       sendSearchInProgress();
    }
 
@@ -137,6 +139,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    @Override
    public void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp, DisplayOptionsComponent options) {
+      artifactProvider.cancelSearch();
+      //      sendSearchCompleted();
       if (!Strings.isValid(url)) {
          return;
       }
