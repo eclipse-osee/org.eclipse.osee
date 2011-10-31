@@ -24,22 +24,8 @@ import com.vaadin.ui.Component;
  */
 public final class ComponentUtility {
 
-   private static final OseeLock lockForNavigateTo = new OseeLock();
-
    private ComponentUtility() {
       // Utility Class
-   }
-
-   public static void lockForNavigateTo() {
-      lockForNavigateTo.lock();
-   }
-
-   public static boolean tryLockForNavigateTo() {
-      return lockForNavigateTo.tryLockGreedy();
-   }
-
-   public static void unlockForNavigateTo() {
-      lockForNavigateTo.unlock();
    }
 
    public static boolean isAccessible(Component... components) {
