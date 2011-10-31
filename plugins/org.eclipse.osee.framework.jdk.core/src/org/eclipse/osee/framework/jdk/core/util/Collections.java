@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,6 +69,20 @@ public class Collections {
 
    public static String toString(String separator, Collection<?> c) {
       return toString(c, null, separator, null);
+   }
+
+   public static interface Filter<T> {
+      boolean accept(T item) throws Exception;
+   }
+
+   public static <T> void filter(Collection<T> items, Filter<T> filter) throws Exception {
+      Iterator<T> it = items.iterator();
+      while (it.hasNext()) {
+         T item = it.next();
+         if (!filter.accept(item)) {
+            it.remove();
+         }
+      }
    }
 
    public static <A> List<Collection<A>> subDivide(List<A> collection, int size) {

@@ -12,9 +12,9 @@ package org.eclipse.osee.display.presenter.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.display.presenter.ArtifactFilter;
-import org.eclipse.osee.display.presenter.Utility;
-import org.eclipse.osee.display.presenter.Utility.Filter;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Collections.Filter;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
@@ -34,7 +34,7 @@ public class FilteredMatchCallable extends CancellableCallable<Collection<Match<
 
    @Override
    public Collection<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
-      Utility.filter(toSanitize, this);
+      Collections.filter(toSanitize, this);
       return toSanitize;
    }
 

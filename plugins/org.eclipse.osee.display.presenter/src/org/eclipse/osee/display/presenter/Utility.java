@@ -14,10 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,20 +33,6 @@ public final class Utility {
 
    private Utility() {
       //
-   }
-
-   public static interface Filter<T> {
-      boolean accept(T item) throws Exception;
-   }
-
-   public static <T> void filter(Collection<T> items, Filter<T> filter) throws Exception {
-      Iterator<T> it = items.iterator();
-      while (it.hasNext()) {
-         T item = it.next();
-         if (!filter.accept(item)) {
-            it.remove();
-         }
-      }
    }
 
    public static void sort(List<ReadableArtifact> toSort) {

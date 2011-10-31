@@ -11,7 +11,6 @@
 package org.eclipse.osee.display.presenter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -131,7 +131,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
       List<ReadableArtifact> artifacts = graph.getRelatedArtifacts(art, relationTypeSide);
       try {
-         Utility.filter(artifacts, filter);
+         Collections.filter(artifacts, filter);
       } catch (Exception ex) {
          logger.error(ex, "Sanitization error");
          OseeExceptions.wrapAndThrow(ex);
@@ -176,7 +176,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
          toReturn.add(graph.getFullRelationType(side));
       }
       List<RelationType> listToReturn = Lists.newLinkedList(toReturn);
-      Collections.sort(listToReturn);
+      java.util.Collections.sort(listToReturn);
       return listToReturn;
    }
 
