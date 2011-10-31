@@ -176,11 +176,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
       searchButton.addListener(new Button.ClickListener() {
          @Override
          public void buttonClick(Button.ClickEvent event) {
-            String msg = "";
-            for (int i = 0; i < 1000; i++) {
-               msg += this.toString();
-               msg += "\n";
-            }
             selectSearch();
          }
       });
