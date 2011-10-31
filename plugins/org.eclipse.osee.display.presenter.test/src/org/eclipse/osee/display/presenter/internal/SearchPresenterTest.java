@@ -22,7 +22,6 @@ import org.eclipse.osee.display.api.data.ViewSearchParameters;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
-import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactHeaderComponent;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
 import org.eclipse.osee.display.presenter.mocks.MockAttributeComponent;
@@ -44,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.mock.MockArtifact;
@@ -78,7 +78,9 @@ public class SearchPresenterTest {
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockSearchResultsListComponent searchResultsComp = new MockSearchResultsListComponent();
       String url =
-         "/branch=" + Utility.encode(GUID.create()) + "&nameOnly=true&search=" + Utility.encode("this is a test");
+         "/" + new UrlQuery().put("branch", CoreBranches.COMMON.getGuid()).put("nameOnly", "true").put("search",
+            "this is a test").toString();
+
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp, optionsComp);
       List<MockSearchResultComponent> searchResults = searchResultsComp.getSearchResults();
       Assert.assertEquals(1, searchResults.size());
@@ -96,8 +98,11 @@ public class SearchPresenterTest {
       presenter = new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(provider, new MockLogger());
       searchHeaderComp = new MockSearchHeaderComponent();
       searchResultsComp = new MockSearchResultsListComponent();
+
       String url =
-         "/branch=" + Utility.encode(GUID.create()) + "&nameOnly=true&search=" + Utility.encode("this is a test");
+         "/" + new UrlQuery().put("branch", CoreBranches.COMMON.getGuid()).put("nameOnly", "true").put("search",
+            "this is a test").toString();
+
       presenter.initSearchResults(url, searchHeaderComp, searchResultsComp, optionsComp);
       Assert.assertNotNull(searchResultsComp.getErrorMessage());
    }
@@ -111,7 +116,9 @@ public class SearchPresenterTest {
       String artGuid = GUID.create();
       ViewArtifact artifact = new ViewArtifact(artGuid, "name", "type", null, new ViewId(branchGuid, "branchName"));
       presenter.selectArtifact("", artifact, navigator);
-      String expectedUrl = "/artifact=" + Utility.encode(artGuid) + "&branch=" + Utility.encode(branchGuid);
+
+      String expectedUrl = "/" + new UrlQuery().put("artifact", artGuid).put("branch", "branchGuid").toString();
+
       Assert.assertEquals(expectedUrl, navigator.getArtifactUrl());
    }
 
@@ -133,7 +140,10 @@ public class SearchPresenterTest {
             CoreArtifactTypes.AbstractTestResult, RelationTypeMultiplicity.ONE_TO_ONE, "");
       testArt.addRelationType(relType);
       provider.addArtifact(testArt);
-      String url = "/branch=" + Utility.encode(CoreBranches.COMMON.getGuid()) + "&artifact=" + artGuid;
+
+      String url =
+         "/" + new UrlQuery().put("branch", CoreBranches.COMMON.getGuid()).put("artifact", "artGuid").toString();
+
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
       MockRelationComponent relComp = new MockRelationComponent();
@@ -165,7 +175,8 @@ public class SearchPresenterTest {
       presenter.initArtifactPage(url, searchHeaderComp, artHeaderComp, relComp, attrComp, optionsComp);
       Assert.assertNotNull(artHeaderComp.getErrorMessage());
 
-      url = "/branch=" + Utility.encode(GUID.create()) + "&artifact=" + Utility.encode(GUID.create());
+      url = "/" + new UrlQuery().put("branch", CoreBranches.COMMON.getGuid()).put("artifact", GUID.create()).toString();
+
       ExceptionArtifactProvider provider = new ExceptionArtifactProvider();
       presenter = new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(provider, new MockLogger());
       searchHeaderComp = new MockSearchHeaderComponent();

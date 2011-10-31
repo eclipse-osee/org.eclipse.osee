@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Map;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsArtifactProvider;
@@ -27,9 +26,9 @@ import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
-import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
@@ -77,7 +76,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
 
       AtsSearchParameters params = decodeIt(url);
 
-      if (!params.isValid()) {
+      if (params == null || !params.isValid()) {
          return;
       }
 
@@ -137,16 +136,20 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    }
 
    protected String encode(String url, AtsSearchParameters searchParams, String branchId) {
-      Map<String, String> params = Utility.decode(url);
-      if (Strings.isValid(branchId)) {
-         params.put("branch", branchId);
-      }
-      params.put("program", searchParams.getProgram().getGuid());
-      params.put("build", searchParams.getBuild().getGuid());
-      params.put("nameOnly", String.valueOf(searchParams.isNameOnly()));
-      params.put("search", searchParams.getSearchString());
+      UrlQuery query = new UrlQuery();
       try {
-         return "/" + getParametersAsEncodedUrl(params);
+         query.parse(url);
+
+         if (Strings.isValid(branchId)) {
+            query.putInPlace("branch", branchId);
+         }
+
+         query.putInPlace("program", searchParams.getProgram().getGuid());
+         query.putInPlace("build", searchParams.getBuild().getGuid());
+         query.putInPlace("nameOnly", String.valueOf(searchParams.isNameOnly()));
+         query.putInPlace("search", searchParams.getSearchString());
+
+         return "/" + query.toString();
       } catch (UnsupportedEncodingException ex) {
          logger.error(ex, "Error in encode");
          return "";
@@ -154,23 +157,29 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    }
 
    protected AtsSearchParameters decodeIt(String url) {
-      Map<String, String> data = Utility.decode(url);
+      UrlQuery query = new UrlQuery();
+      try {
+         query.parse(url);
+      } catch (UnsupportedEncodingException ex) {
+         logger.error(ex, "Error in encode");
+         return null;
+      }
 
       ViewId program = null, build = null;
 
-      if (data.containsKey("program")) {
-         program = new ViewId(data.get("program"), "");
+      if (query.containsKey("program")) {
+         program = new ViewId(query.getParameter("program"), "");
       }
 
-      if (data.containsKey("build")) {
-         build = new ViewId(data.get("build"), "");
+      if (query.containsKey("build")) {
+         build = new ViewId(query.getParameter("build"), "");
       }
 
-      String nValue = data.get("nameOnly");
+      String nValue = query.getParameter("nameOnly");
       boolean nameOnly = nValue == null ? false : nValue.equalsIgnoreCase("true");
       String searchPhrase = "";
-      if (data.containsKey("search")) {
-         searchPhrase = data.get("search");
+      if (query.containsKey("search")) {
+         searchPhrase = query.getParameter("search");
       }
 
       //      String vValue = data.get("verbose");

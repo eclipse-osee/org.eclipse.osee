@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,24 +24,26 @@ public final class HttpUrlBuilder {
       // Utility Class
    }
 
-   private static String encode(String value) throws UnsupportedEncodingException {
-      return URLEncoder.encode(value, "UTF-8");
+   public static UrlQuery getParametersFromUrl(String url) throws UnsupportedEncodingException {
+      UrlQuery query = createUrlQuery();
+      return query.parse(url);
    }
 
-   private static String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
-      StringBuilder sb = new StringBuilder();
+   public static UrlQuery getParametersFromUrl(URL url) throws UnsupportedEncodingException {
+      UrlQuery query = createUrlQuery();
+      return query.parse(url);
+   }
+
+   public static UrlQuery createUrlQuery() {
+      return new UrlQuery();
+   }
+
+   public static String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
+      UrlQuery query = createUrlQuery();
       for (Entry<String, String> entry : keyValues.entrySet()) {
-         String key = entry.getKey();
-         sb.append(encode(key));
-         sb.append("=");
-         sb.append(encode(entry.getValue()));
-         sb.append("&");
+         query.put(entry.getKey(), entry.getValue());
       }
-      if (sb.length() - 1 >= 0) {
-         // Delete the last unnecessary '&'
-         sb.deleteCharAt(sb.length() - 1);
-      }
-      return sb.toString();
+      return query.toUrl();
    }
 
    public static String createURL(String address, int port, String context, Map<String, String> parameters) throws UnsupportedEncodingException {
@@ -69,4 +71,5 @@ public final class HttpUrlBuilder {
       }
       return sb.toString();
    }
+
 }

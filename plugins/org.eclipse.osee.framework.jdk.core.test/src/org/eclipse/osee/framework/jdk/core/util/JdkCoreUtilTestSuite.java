@@ -29,7 +29,8 @@ import org.junit.runners.Suite;
    HashCollectionTest.class,
    HumanReadableIdTest.class,
    ReservedCharactersTest.class,
-   StringsTest.class,})
+   StringsTest.class,
+   UrlQueryTest.class})
 public class JdkCoreUtilTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {

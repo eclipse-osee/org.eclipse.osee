@@ -19,13 +19,13 @@ import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.mocks.MockAtsArtifactProvider;
 import org.eclipse.osee.ats.mocks.MockAtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;
-import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.display.presenter.mocks.MockDisplayOptionsComponent;
 import org.eclipse.osee.display.presenter.mocks.MockLogger;
 import org.eclipse.osee.display.presenter.mocks.MockSearchNavigator;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.mock.MockArtifact;
@@ -62,8 +62,11 @@ public class AtsSearchPresenterTest {
       AtsSearchParameters params = new AtsSearchParameters("phrase", true, build, program);
       presenter.selectSearch("", params, navigator);
       String url = navigator.getResultsUrl();
+
       String expected =
-         "/search=phrase&program=" + Utility.encode(programGuid) + "&nameOnly=true&build=" + Utility.encode(buildGuid);
+         "/" + new UrlQuery().put("search", "phrase").put("program", "programGuid").put("nameOnly", "true").put(
+            "build", buildGuid).toString();
+
       Assert.assertEquals(expected, url);
    }
 
@@ -88,7 +91,8 @@ public class AtsSearchPresenterTest {
       String programGuid = GUID.create();
       String buildGuid = GUID.create();
       String url =
-         "/program=" + Utility.encode(programGuid) + "&build=" + Utility.encode(buildGuid) + "&nameOnly=true&search=phrase&verbose=false";
+         "/" + new UrlQuery().put("program", programGuid).put("build", buildGuid).put("nameOnly", "true").put("search",
+            "phrase").put("verbose", "false").toString();
       presenter.initSearchResults(url, headerComp, resultsComponent, optionsComp);
       Assert.assertEquals(1, resultsComponent.getSearchResults().size());
    }

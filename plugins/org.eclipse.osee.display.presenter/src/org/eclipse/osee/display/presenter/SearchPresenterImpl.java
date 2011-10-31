@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
@@ -50,6 +48,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
@@ -76,9 +75,14 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    @Override
    public void initSearchResults(String url, T searchHeaderComp, SearchResultsListComponent searchResultsComp, DisplayOptionsComponent options) {
       artifactProvider.cancelSearch();
-      SearchParameters params = decodeSearchUrl(url);
+      SearchParameters params = null;
+      try {
+         params = decodeSearchUrl(url);
+      } catch (UnsupportedEncodingException ex) {
+         setErrorMessage(searchResultsComp, "Error parsing url", ex);
+      }
 
-      if (!Strings.isValid(url) || !params.isValid()) {
+      if (!Strings.isValid(url) || params == null || !params.isValid()) {
          sendSearchCompleted();
          return;
       }
@@ -124,12 +128,12 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    @Override
    public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
-      Map<String, String> params = Utility.decode(url);
-      params.put("branch", artifact.getBranch().getGuid());
-      params.put("artifact", artifact.getGuid());
       String value;
       try {
-         value = getParametersAsEncodedUrl(params);
+         UrlQuery query = new UrlQuery();
+         query.put("branch", artifact.getBranch().getGuid());
+         query.put("artifact", artifact.getGuid());
+         value = query.toUrl();
          oseeNavigator.navigateArtifactPage("/" + value);
       } catch (UnsupportedEncodingException ex) {
          logger.error(ex, "Error in Encoding url in selectArtifact");
@@ -145,8 +149,13 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return;
       }
 
-      ArtifactParameters params = decodeArtifactUrl(url);
-      if (!params.isValid()) {
+      ArtifactParameters params = null;
+      try {
+         params = decodeArtifactUrl(url);
+      } catch (UnsupportedEncodingException ex1) {
+         setErrorMessage(artHeaderComp, String.format("Invalid url received: %s", url), ex1);
+      }
+      if (params == null || !params.isValid()) {
          setErrorMessage(artHeaderComp, String.format("Invalid url received: %s", url), null);
          return;
       }
@@ -297,46 +306,37 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
    }
 
-   private ArtifactParameters decodeArtifactUrl(String url) {
-      Map<String, String> data = Utility.decode(url);
-      String branch = data.get("branch");
-      String artifact = data.get("artifact");
+   private ArtifactParameters decodeArtifactUrl(String url) throws UnsupportedEncodingException {
+      UrlQuery query = new UrlQuery();
+      query.parse(url);
+      String branch = query.getParameter("branch");
+      String artifact = query.getParameter("artifact");
       return new ArtifactParameters(branch, artifact);
    }
 
-   private SearchParameters decodeSearchUrl(String url) {
-      Map<String, String> data = Utility.decode(url);
-
-      String branch = data.get("branch");
-      String vValue = data.get("verbose");
+   private SearchParameters decodeSearchUrl(String url) throws UnsupportedEncodingException {
+      UrlQuery query = new UrlQuery();
+      query.parse(url);
+      String branch = query.getParameter("branch");
+      String vValue = query.getParameter("verbose");
       boolean verbose = vValue == null ? false : vValue.equalsIgnoreCase("true");
-      String nValue = data.get("nameOnly");
+      String nValue = query.getParameter("nameOnly");
       boolean nameOnly = nValue == null ? false : nValue.equalsIgnoreCase("true");
-      String searchPhrase = data.get("search");
+      String searchPhrase = query.getParameter("search");
       return new SearchParameters(branch, nameOnly, searchPhrase, verbose);
-   }
-   protected String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
-      StringBuilder sb = new StringBuilder();
-      for (Entry<String, String> entry : keyValues.entrySet()) {
-         String key = entry.getKey();
-         sb.append(Utility.encode(key));
-         sb.append("=");
-         sb.append(Utility.encode(entry.getValue()));
-         sb.append("&");
-      }
-      if (sb.length() - 1 >= 0) {
-         // Delete the last unnecessary '&'
-         sb.deleteCharAt(sb.length() - 1);
-      }
-      return sb.toString();
    }
 
    @Override
    public void selectDisplayOptions(String url, DisplayOptions options, SearchNavigator navigator) {
-      Map<String, String> map = Utility.decode(url);
-      map.put("verbose", String.valueOf(options.getVerboseResults().booleanValue()));
-      String newUrl = Utility.encode(map);
-      navigator.navigateSearchResults(newUrl);
+      UrlQuery query = new UrlQuery();
+      try {
+         query.parse(url);
+         query.putInPlace("verbose", String.valueOf(options.getVerboseResults().booleanValue()));
+         String newUrl = query.toUrl();
+         navigator.navigateSearchResults(newUrl);
+      } catch (UnsupportedEncodingException ex) {
+         logger.error(ex, "Error in Encoding url in selectArtifact");
+      }
    }
 
    @Override
