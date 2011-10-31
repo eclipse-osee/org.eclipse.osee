@@ -327,7 +327,7 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    public void setManyItemsPerPage(int manyItemsPerPage) {
       this.manyItemsPerPage = manyItemsPerPage;
       this.allItemsPerPage = false;
-      updateLayout();
+      updateManyPages();
    }
 
    @Override
@@ -338,6 +338,6 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
    @Override
    public void setAllItemsPerPage() {
       this.allItemsPerPage = true;
-      updateLayout();
+      updateManyPages();
    }
 }
