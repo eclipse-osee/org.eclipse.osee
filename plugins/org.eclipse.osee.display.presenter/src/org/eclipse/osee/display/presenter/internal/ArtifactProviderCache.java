@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.internal;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +29,7 @@ public class ArtifactProviderCache {
    private static final ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> EMPTY_SET =
       new ResultSetList<Match<ReadableArtifact, ReadableAttribute<?>>>();
    private final ConcurrentMap<ReadableArtifact, ReadableArtifact> parentCache;
+   private final Set<ReadableArtifact> artifactsWithNoParent = new HashSet<ReadableArtifact>();
 
    private ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> searchResults;
    private SearchParameters searchParameters;
@@ -41,11 +44,15 @@ public class ArtifactProviderCache {
    }
 
    public void cacheParent(ReadableArtifact art, ReadableArtifact parent) {
-      parentCache.put(art, parent);
+      if (parent != null) {
+         parentCache.put(art, parent);
+      } else {
+         artifactsWithNoParent.add(art);
+      }
    }
 
    public boolean isParentCached(ReadableArtifact artifact) {
-      return parentCache.containsKey(artifact);
+      return parentCache.containsKey(artifact) || artifactsWithNoParent.contains(artifact);
    }
 
    public ReadableArtifact getParent(ReadableArtifact artifact) {

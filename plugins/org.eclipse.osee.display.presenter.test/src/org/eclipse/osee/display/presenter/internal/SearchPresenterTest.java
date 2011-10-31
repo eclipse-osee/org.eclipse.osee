@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.internal;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -69,7 +68,7 @@ public class SearchPresenterTest {
    }
 
    @Test
-   public void testInitSearchResults() throws UnsupportedEncodingException {
+   public void testInitSearchResults() {
       MockArtifactProvider provider = new MockArtifactProvider();
       MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();
       provider.setResultList(getSearchResults());
@@ -87,7 +86,7 @@ public class SearchPresenterTest {
    }
 
    @Test
-   public void testInitSearchResultsErrors() throws UnsupportedEncodingException {
+   public void testInitSearchResultsErrors() {
       SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters> presenter =
          new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(null, new MockLogger());
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
@@ -108,7 +107,7 @@ public class SearchPresenterTest {
    }
 
    @Test
-   public void testSelectArtifact() throws UnsupportedEncodingException {
+   public void testSelectArtifact() {
       MockSearchNavigator navigator = new MockSearchNavigator();
       SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters> presenter =
          new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(null, new MockLogger());
@@ -117,13 +116,13 @@ public class SearchPresenterTest {
       ViewArtifact artifact = new ViewArtifact(artGuid, "name", "type", null, new ViewId(branchGuid, "branchName"));
       presenter.selectArtifact("", artifact, navigator);
 
-      String expectedUrl = "/" + new UrlQuery().put("artifact", artGuid).put("branch", "branchGuid").toString();
+      String expectedUrl = "/" + new UrlQuery().put("artifact", artGuid).put("branch", branchGuid).toString();
 
       Assert.assertEquals(expectedUrl, navigator.getArtifactUrl());
    }
 
    @Test
-   public void testInitArtifactPage() throws UnsupportedEncodingException {
+   public void testInitArtifactPage() {
       MockArtifactProvider provider = new MockArtifactProvider();
       MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();
       provider.setResultList(getSearchResults());
@@ -142,7 +141,7 @@ public class SearchPresenterTest {
       provider.addArtifact(testArt);
 
       String url =
-         "/" + new UrlQuery().put("branch", CoreBranches.COMMON.getGuid()).put("artifact", "artGuid").toString();
+         "/" + new UrlQuery().put("branch", CoreBranches.COMMON.getGuid()).put("artifact", artGuid).toString();
 
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
@@ -163,10 +162,12 @@ public class SearchPresenterTest {
    }
 
    @Test
-   public void testInitArtifactPageErrors() throws UnsupportedEncodingException {
+   public void testInitArtifactPageErrors() {
       String url = "badUrl";
       SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters> presenter =
-         new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(null, new MockLogger());
+         new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(new MockArtifactProvider(),
+            new MockLogger());
+
       MockSearchHeaderComponent searchHeaderComp = new MockSearchHeaderComponent();
       MockArtifactHeaderComponent artHeaderComp = new MockArtifactHeaderComponent();
       MockDisplayOptionsComponent optionsComp = new MockDisplayOptionsComponent();

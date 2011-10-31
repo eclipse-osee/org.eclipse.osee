@@ -11,6 +11,7 @@
 package org.eclipse.osee.display.presenter;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +20,7 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.display.presenter.internal.ArtifactProviderCache;
+import org.eclipse.osee.display.presenter.internal.FilteredArtifactCallable;
 import org.eclipse.osee.display.presenter.internal.FilteredResultSetCallable;
 import org.eclipse.osee.display.presenter.internal.SearchExecutionCallback;
 import org.eclipse.osee.display.presenter.internal.SearchParameters;
@@ -33,7 +35,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -129,14 +130,17 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      List<ReadableArtifact> artifacts = graph.getRelatedArtifacts(art, relationTypeSide);
+      final List<ReadableArtifact> artifacts = graph.getRelatedArtifacts(art, relationTypeSide);
+      List<ReadableArtifact> results = Collections.emptyList();
       try {
-         Collections.filter(artifacts, filter);
+         FilteredArtifactCallable callable = new FilteredArtifactCallable(executorAdmin, filter, artifacts);
+         Future<List<ReadableArtifact>> future = executorAdmin.schedule(callable);
+         results = future.get();
+         Utility.sort(results);
       } catch (Exception ex) {
          logger.error(ex, "Sanitization error");
          OseeExceptions.wrapAndThrow(ex);
       }
-      Utility.sort(artifacts);
       return artifacts;
    }
 
@@ -161,9 +165,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
          parent = cache.getParent(art);
       } else {
          parent = getRelatedArtifact(art, CoreRelationTypes.Default_Hierarchical__Parent);
-         if (parent != null) {
-            cache.cacheParent(art, parent);
-         }
+         cache.cacheParent(art, parent);
       }
       return parent;
    }

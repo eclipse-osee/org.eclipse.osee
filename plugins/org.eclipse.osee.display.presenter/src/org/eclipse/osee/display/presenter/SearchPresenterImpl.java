@@ -128,17 +128,17 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    @Override
    public void selectArtifact(String url, ViewArtifact artifact, SearchNavigator oseeNavigator) {
-      String value;
       try {
          UrlQuery query = new UrlQuery();
-         query.put("branch", artifact.getBranch().getGuid());
-         query.put("artifact", artifact.getGuid());
-         value = query.toUrl();
+         query.parse(url);
+         query.putInPlace("branch", artifact.getBranch().getGuid());
+         query.putInPlace("artifact", artifact.getGuid());
+
+         String value = query.toUrl();
          oseeNavigator.navigateArtifactPage("/" + value);
       } catch (UnsupportedEncodingException ex) {
          logger.error(ex, "Error in Encoding url in selectArtifact");
       }
-
    }
 
    @Override
@@ -331,9 +331,9 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       UrlQuery query = new UrlQuery();
       try {
          query.parse(url);
-         query.putInPlace("verbose", String.valueOf(options.getVerboseResults().booleanValue()));
+         query.putInPlace("verbose", options.getVerboseResults());
          String newUrl = query.toUrl();
-         navigator.navigateSearchResults(newUrl);
+         navigator.navigateSearchResults("/" + newUrl);
       } catch (UnsupportedEncodingException ex) {
          logger.error(ex, "Error in Encoding url in selectArtifact");
       }
