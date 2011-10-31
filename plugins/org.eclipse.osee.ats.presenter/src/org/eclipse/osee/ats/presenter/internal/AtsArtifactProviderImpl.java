@@ -23,17 +23,17 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.Graph;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author John Misinco
  */
 public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements AtsArtifactProvider {
 
-   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, OrcsApi oseeApi, ApplicationContext context) {
-      super(logger, executorAdmin, oseeApi, context);
+   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, Graph graph) {
+      super(logger, executorAdmin, queryFactory, graph);
    }
 
    @Override

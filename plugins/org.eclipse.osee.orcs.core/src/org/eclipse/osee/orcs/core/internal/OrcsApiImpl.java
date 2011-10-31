@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -24,8 +23,8 @@ import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
+import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
 import org.eclipse.osee.orcs.core.internal.search.CriteriaFactory;
-import org.eclipse.osee.orcs.core.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.core.internal.search.QueryFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.session.SessionContextImpl;
 import org.eclipse.osee.orcs.search.QueryFacade;
@@ -42,11 +41,10 @@ public class OrcsApiImpl implements OrcsApi {
    private AttributeClassResolver resolver;
    private IOseeCachingService cacheService;
    private DataStoreTypeCache dataStoreTypeCache;
-   private ExecutorAdmin executorAdmin;
 
    private OrcsObjectLoader objectLoader;
    private CriteriaFactory criteriaFctry;
-   private QueryExecutor queryExecutor;
+   private CallableQueryFactory callableQueryFactory;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -72,10 +70,6 @@ public class OrcsApiImpl implements OrcsApi {
       this.dataStoreTypeCache = dataStoreTypeCache;
    }
 
-   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
-      this.executorAdmin = executorAdmin;
-   }
-
    public void start() {
       ArtifactFactory artifactFactory = new ArtifactFactory(dataStoreTypeCache.getRelationTypeCache());
       AttributeFactory attributeFactory =
@@ -85,20 +79,20 @@ public class OrcsApiImpl implements OrcsApi {
             dataStoreTypeCache.getArtifactTypeCache(), cacheService.getBranchCache());
 
       criteriaFctry = new CriteriaFactory(getDataStoreTypeCache().getAttributeTypeCache());
-      queryExecutor = new QueryExecutor(executorAdmin, queryEngine, objectLoader);
+      callableQueryFactory = new CallableQueryFactory(queryEngine, objectLoader);
    }
 
    public void stop() {
       criteriaFctry = null;
       objectLoader = null;
-      queryExecutor = null;
+      callableQueryFactory = null;
    }
 
    @Override
    public QueryFactory getQueryFactory(ApplicationContext context) {
       String sessionId = GUID.create(); // TODO context.getSessionId() attach to application context
       SessionContext sessionContext = getSessionContext(sessionId);
-      return new QueryFactoryImpl(sessionContext, criteriaFctry, queryExecutor);
+      return new QueryFactoryImpl(sessionContext, criteriaFctry, callableQueryFactory);
    }
 
    private SessionContext getSessionContext(String sessionId) {

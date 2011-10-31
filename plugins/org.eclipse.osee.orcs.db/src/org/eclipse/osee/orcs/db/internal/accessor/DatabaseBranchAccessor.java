@@ -53,15 +53,15 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final ExecutorAdmin executor;
+   private final ExecutorAdmin executorAdmin;
    private final EventService eventService;
 
    private final TransactionCache txCache;
    private final BranchFactory branchFactory;
 
-   public DatabaseBranchAccessor(Log logger, ExecutorAdmin executor, EventService eventService, IOseeDatabaseService dbService, TransactionCache txCache, BranchFactory branchFactory) {
+   public DatabaseBranchAccessor(Log logger, ExecutorAdmin executorAdmin, EventService eventService, IOseeDatabaseService dbService, TransactionCache txCache, BranchFactory branchFactory) {
       this.logger = logger;
-      this.executor = executor;
+      this.executorAdmin = executorAdmin;
       this.eventService = eventService;
       this.dbService = dbService;
       this.txCache = txCache;
@@ -74,6 +74,14 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
 
    private IOseeDatabaseService getDatabaseService() {
       return dbService;
+   }
+
+   private ExecutorAdmin getExecutorAdmin() {
+      return executorAdmin;
+   }
+
+   private EventService getEventService() {
+      return eventService;
    }
 
    @Override
@@ -192,9 +200,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      StoreBranchCallable task = new StoreBranchCallable(dbService, executor, eventService, branches);
+      StoreBranchCallable task =
+         new StoreBranchCallable(getDatabaseService(), getExecutorAdmin(), getEventService(), branches);
       try {
-         Future<IStatus> future = executor.getDefaultExecutor().submit(task);
+         Future<IStatus> future = getExecutorAdmin().schedule(task);
          IStatus status = future.get();
          if (!status.isOK()) {
             throw new OseeStateException("Error storing branches");

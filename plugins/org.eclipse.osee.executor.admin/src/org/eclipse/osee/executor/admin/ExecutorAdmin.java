@@ -11,7 +11,6 @@
 package org.eclipse.osee.executor.admin;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 /**
@@ -19,13 +18,17 @@ import java.util.concurrent.Future;
  */
 public interface ExecutorAdmin {
 
-   ExecutorService getDefaultExecutor() throws Exception;
-
-   ExecutorService getExecutor(String name) throws Exception;
-
-   <T> Callable<T> addCallback(Callable<T> callable, ExecutionCallback<T> callback);
+   //   ExecutorService getDefaultExecutor() throws Exception;
+   //
+   //   ExecutorService getExecutor(String name) throws Exception;
+   //
+   //   <T> Callable<T> addCallback(Callable<T> callable, ExecutionCallback<T> callback);
 
    <T> Future<T> schedule(Callable<T> callable, ExecutionCallback<T> callback) throws Exception;
 
    <T> Future<T> schedule(String id, Callable<T> callable, ExecutionCallback<T> callback) throws Exception;
+
+   <T> Future<T> schedule(Callable<T> callable) throws Exception;
+
+   <T> Future<T> schedule(String id, Callable<T> callable) throws Exception;
 }

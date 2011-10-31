@@ -31,9 +31,9 @@ public class QueryFactoryImpl implements QueryFactory {
 
    private final SessionContext context;
    private final CriteriaFactory criteriaFctry;
-   private final QueryExecutor queryExecutor;
+   private final CallableQueryFactory queryExecutor;
 
-   public QueryFactoryImpl(SessionContext context, CriteriaFactory criteriaFctry, QueryExecutor queryExecutor) {
+   public QueryFactoryImpl(SessionContext context, CriteriaFactory criteriaFctry, CallableQueryFactory queryExecutor) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;

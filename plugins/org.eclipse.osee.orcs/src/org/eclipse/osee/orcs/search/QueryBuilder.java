@@ -11,8 +11,7 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
-import java.util.concurrent.Future;
-import org.eclipse.osee.executor.admin.ExecutionCallback;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -178,39 +177,20 @@ public interface QueryBuilder {
    /**
     * Schedule a count search results
     */
-   public Future<Integer> computeCount() throws OseeCoreException;
+   public CancellableCallable<Integer> createCount() throws OseeCoreException;
 
    /**
     * Schedule query
     * 
     * @return artifact search results
     */
-   public Future<ResultSet<ReadableArtifact>> search() throws OseeCoreException;
+   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch() throws OseeCoreException;
 
    /**
     * Schedule query and find matching locations
     * 
     * @return artifact search results with match locations
     */
-   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches() throws OseeCoreException;
-
-   /**
-    * Schedule a count search results with callback
-    */
-   public Future<Integer> computeCount(ExecutionCallback<Integer> callback) throws OseeCoreException;
-
-   /**
-    * Schedule query with callback
-    * 
-    * @return artifact search results
-    */
-   public Future<ResultSet<ReadableArtifact>> search(ExecutionCallback<ResultSet<ReadableArtifact>> callback) throws OseeCoreException;
-
-   /**
-    * Schedule query and find matching locations with callback
-    * 
-    * @return artifact search results with match locations
-    */
-   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches(ExecutionCallback<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> callback) throws OseeCoreException;
+   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches() throws OseeCoreException;
 
 }

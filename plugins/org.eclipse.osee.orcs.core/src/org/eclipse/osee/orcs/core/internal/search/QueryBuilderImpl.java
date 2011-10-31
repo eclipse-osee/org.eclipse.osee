@@ -15,8 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Future;
-import org.eclipse.osee.executor.admin.ExecutionCallback;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -45,14 +44,14 @@ import org.eclipse.osee.orcs.search.StringOperator;
  */
 public class QueryBuilderImpl implements QueryBuilder {
 
-   private final QueryExecutor queryExecutor;
+   private final CallableQueryFactory queryExecutor;
    private final CriteriaFactory criteriaFactory;
 
    private final SessionContext sessionContext;
    private final CriteriaSet criteriaSet;
    private final QueryOptions options;
 
-   public QueryBuilderImpl(QueryExecutor queryExecutor, CriteriaFactory criteriaFactory, SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
+   public QueryBuilderImpl(CallableQueryFactory queryExecutor, CriteriaFactory criteriaFactory, SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
       this.queryExecutor = queryExecutor;
       this.criteriaFactory = criteriaFactory;
       this.sessionContext = sessionContext;
@@ -289,7 +288,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    public ResultSet<ReadableArtifact> getResults() throws OseeCoreException {
       ResultSet<ReadableArtifact> result = null;
       try {
-         result = search().get();
+         result = createSearch().call();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -300,7 +299,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> getMatches() throws OseeCoreException {
       ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> result = null;
       try {
-         result = searchWithMatches().get();
+         result = createSearchWithMatches().call();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -309,9 +308,9 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public int getCount() throws OseeCoreException {
-      int result = -1;
+      Integer result = -1;
       try {
-         result = computeCount().get();
+         result = createCount().call();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -319,32 +318,17 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public Future<Integer> computeCount() throws OseeCoreException {
-      return computeCount(null);
+   public CancellableCallable<Integer> createCount() {
+      return queryExecutor.createCount(sessionContext, criteriaSet.clone(), options.clone());
    }
 
    @Override
-   public Future<ResultSet<ReadableArtifact>> search() throws OseeCoreException {
-      return search(null);
+   public CancellableCallable<ResultSet<ReadableArtifact>> createSearch() {
+      return queryExecutor.createSearch(sessionContext, criteriaSet.clone(), options.clone());
    }
 
    @Override
-   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches() throws OseeCoreException {
-      return searchWithMatches(null);
-   }
-
-   @Override
-   public Future<Integer> computeCount(ExecutionCallback<Integer> callback) throws OseeCoreException {
-      return queryExecutor.scheduleCount(sessionContext, criteriaSet.clone(), options.clone(), callback);
-   }
-
-   @Override
-   public Future<ResultSet<ReadableArtifact>> search(ExecutionCallback<ResultSet<ReadableArtifact>> callback) throws OseeCoreException {
-      return queryExecutor.scheduleSearch(sessionContext, criteriaSet.clone(), options.clone(), callback);
-   }
-
-   @Override
-   public Future<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> searchWithMatches(ExecutionCallback<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> callback) throws OseeCoreException {
-      return queryExecutor.scheduleSearchWithMatches(sessionContext, criteriaSet.clone(), options.clone(), callback);
+   public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches() {
+      return queryExecutor.createSearchWithMatches(sessionContext, criteriaSet.clone(), options.clone());
    }
 }

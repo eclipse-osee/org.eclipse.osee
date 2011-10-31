@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
 import org.eclipse.osee.orcs.core.ds.RelationContainer;
@@ -36,14 +37,14 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    private final RelationContainer relationContainer;
    private final int artId;
    private final String humandReadableId;
-   private final IArtifactType artifactType;
+   private final ArtifactType artifactType;
    private final int gammaId;
    private final Branch branch;
    private final int transactionId;
    private final ModificationType modType;
    private final boolean historical;
 
-   public Artifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical, RelationTypeCache relationTypeCache) {
+   public Artifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical, RelationTypeCache relationTypeCache) {
       super(guid, "");
       this.artId = artId;
       this.humandReadableId = humandReadableId;
@@ -105,6 +106,11 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    }
 
    @Override
+   public boolean isOfType(IArtifactType... otherTypes) {
+      return artifactType.inheritsFrom(otherTypes);
+   }
+
+   @Override
    public Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
       return attributeContainer.getAttributeTypes();
    }
@@ -148,4 +154,5 @@ public class Artifact extends NamedIdentity<String> implements ReadableArtifact 
    public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
       return String.valueOf(attributeContainer.getAttributes(attributeType).iterator().next().getValue());
    }
+
 }

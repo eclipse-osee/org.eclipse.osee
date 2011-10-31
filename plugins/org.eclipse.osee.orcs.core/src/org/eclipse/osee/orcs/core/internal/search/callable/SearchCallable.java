@@ -22,9 +22,9 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.core.internal.search.SearchResultSet;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ResultSetList;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.ResultSet;
 
@@ -72,7 +72,7 @@ public class SearchCallable extends CancellableCallable<ResultSet<ReadableArtifa
       } else {
          results = artifacts;
       }
-      return new SearchResultSet<ReadableArtifact>(results);
+      return new ResultSetList<ReadableArtifact>(results);
    }
 
 }

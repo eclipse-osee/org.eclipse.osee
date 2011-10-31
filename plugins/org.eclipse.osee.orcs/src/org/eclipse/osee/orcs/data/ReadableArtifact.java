@@ -33,6 +33,8 @@ public interface ReadableArtifact extends Readable, HasVersion, Identifiable {
 
    IArtifactType getArtifactType();
 
+   boolean isOfType(IArtifactType... otherTypes);
+
    // Attribute API
 
    Collection<IAttributeType> getAttributeTypes() throws OseeCoreException;

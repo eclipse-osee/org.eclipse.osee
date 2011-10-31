@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 
 /**
@@ -27,7 +27,7 @@ public class ArtifactFactory {
       this.relationTypeCache = relationTypeCache;
    }
 
-   public ReadableArtifact loadExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
+   public ReadableArtifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) {
       //TODO implement an artifact class resolver for specific artifact types
       return new Artifact(artId, guid, humandReadableId, artifactType, gammaId, branch, transactionId, modType,
          historical, relationTypeCache);

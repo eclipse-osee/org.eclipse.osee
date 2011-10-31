@@ -8,22 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.search;
+package org.eclipse.osee.orcs.data;
 
+import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.exception.ItemDoesNotExist;
+import org.eclipse.osee.orcs.exception.MultipleItemsExist;
 import org.eclipse.osee.orcs.search.ResultSet;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchResultSet<T> implements ResultSet<T> {
+public class ResultSetList<T> implements ResultSet<T> {
 
    private final List<T> data;
 
-   public SearchResultSet(List<T> data) {
+   public ResultSetList() {
+      super();
+      this.data = Collections.emptyList();
+   }
+
+   public ResultSetList(List<T> data) {
       super();
       this.data = data;
    }
@@ -38,9 +44,9 @@ public class SearchResultSet<T> implements ResultSet<T> {
    public T getExactlyOne() throws OseeCoreException {
       List<T> result = getList();
       if (result.isEmpty()) {
-         throw new ArtifactDoesNotExist("No artifacts found");
+         throw new ItemDoesNotExist("No item found");
       } else if (result.size() > 1) {
-         throw new MultipleArtifactsExist("Multiple artifact found - total [%s]", result.size());
+         throw new MultipleItemsExist("Multiple items found - total [%s]", result.size());
       }
       return result.iterator().next();
    }

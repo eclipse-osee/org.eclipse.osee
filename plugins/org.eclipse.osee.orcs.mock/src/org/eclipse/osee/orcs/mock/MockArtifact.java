@@ -201,4 +201,9 @@ public class MockArtifact implements ReadableArtifact {
       return null;
    }
 
+   @Override
+   public boolean isOfType(IArtifactType... otherTypes) {
+      return false;
+   }
+
 }

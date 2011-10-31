@@ -24,9 +24,9 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.core.internal.search.SearchResultSet;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
+import org.eclipse.osee.orcs.data.ResultSetList;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.ResultSet;
 
@@ -71,6 +71,6 @@ public class SearchMatchesCallable extends CancellableCallable<ResultSet<Match<R
          checkForCancelled();
          results.addAll(processor.call());
       }
-      return new SearchResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>(results);
+      return new ResultSetList<Match<ReadableArtifact, ReadableAttribute<?>>>(results);
    }
 }

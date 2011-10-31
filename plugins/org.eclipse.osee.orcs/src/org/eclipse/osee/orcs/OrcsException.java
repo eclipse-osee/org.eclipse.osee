@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsException extends Exception {
+public class OrcsException extends OseeCoreException {
 
    private static final long serialVersionUID = -7326541420696736796L;
 

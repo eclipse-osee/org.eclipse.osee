@@ -14,8 +14,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,9 +25,6 @@ import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.utility.ArtifactMatchComparator;
 import org.eclipse.osee.orcs.utility.ArtifactNameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
 
@@ -38,14 +37,22 @@ public final class Utility {
       //
    }
 
-   public static List<ReadableArtifact> sort(List<ReadableArtifact> toSort) {
-      Collections.sort(toSort, new ArtifactNameComparator(SortOrder.ASCENDING));
-      return toSort;
+   public static interface Filter<T> {
+      boolean accept(T item) throws Exception;
    }
 
-   public static List<Match<ReadableArtifact, ReadableAttribute<?>>> sortResults(List<Match<ReadableArtifact, ReadableAttribute<?>>> toSort) {
-      Collections.sort(toSort, new ArtifactMatchComparator(SortOrder.ASCENDING));
-      return toSort;
+   public static <T> void filter(Collection<T> items, Filter<T> filter) throws Exception {
+      Iterator<T> it = items.iterator();
+      while (it.hasNext()) {
+         T item = it.next();
+         if (!filter.accept(item)) {
+            it.remove();
+         }
+      }
+   }
+
+   public static void sort(List<ReadableArtifact> toSort) {
+      Collections.sort(toSort, new ArtifactNameComparator(SortOrder.ASCENDING));
    }
 
    public static List<StyledText> getMatchedText(String data, List<MatchLocation> matches) {

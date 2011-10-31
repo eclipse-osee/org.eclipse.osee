@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
@@ -42,12 +42,12 @@ public class StoreBranchCallable extends DatabaseTxCallable {
    private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
 
    private final Collection<Branch> branches;
-   private final ExecutorAdmin executor;
+   private final ExecutorAdmin executorAdmin;
    private final EventService eventService;
 
-   public StoreBranchCallable(IOseeDatabaseService dbService, ExecutorAdmin executor, EventService eventService, Collection<Branch> branches) {
+   public StoreBranchCallable(IOseeDatabaseService dbService, ExecutorAdmin executorAdmin, EventService eventService, Collection<Branch> branches) {
       super(dbService, "Branch Archive Operation");
-      this.executor = executor;
+      this.executorAdmin = executorAdmin;
       this.eventService = eventService;
       this.branches = branches;
    }
@@ -56,12 +56,8 @@ public class StoreBranchCallable extends DatabaseTxCallable {
       return eventService;
    }
 
-   private ExecutorService getExecutorService() throws OseeCoreException {
-      try {
-         return executor.getDefaultExecutor();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+   private ExecutorAdmin getExecutorAdmin() {
+      return executorAdmin;
    }
 
    @Override
@@ -91,7 +87,11 @@ public class StoreBranchCallable extends DatabaseTxCallable {
             DatabaseTxCallable task =
                new MoveBranchCallable(getDatabaseService(), getEventService(), branch.getArchiveState().isArchived(),
                   branch);
-            getExecutorService().submit(task);
+            try {
+               getExecutorAdmin().schedule(task);
+            } catch (Exception ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            }
          }
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH, insertData);

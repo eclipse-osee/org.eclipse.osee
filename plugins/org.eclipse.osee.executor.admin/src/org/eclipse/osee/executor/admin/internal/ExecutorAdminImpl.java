@@ -82,13 +82,11 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       }
    }
 
-   @Override
    public ExecutorService getDefaultExecutor() throws Exception {
       ensureInitialized();
       return getExecutor(DEFAULT_EXECUTOR);
    }
 
-   @Override
    public ExecutorService getExecutor(String id) throws Exception {
       ensureInitialized();
       ExecutorService service = cache.getById(id);
@@ -102,9 +100,18 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       return service;
    }
 
-   @Override
    public <T> Callable<T> addCallback(Callable<T> callable, ExecutionCallback<T> callback) {
       return new CallableWithCallbackImpl<T>(callable, callback);
+   }
+
+   @Override
+   public <T> Future<T> schedule(Callable<T> callable) throws Exception {
+      return schedule(callable, null);
+   }
+
+   @Override
+   public <T> Future<T> schedule(String id, Callable<T> callable) throws Exception {
+      return schedule(id, callable, null);
    }
 
    @Override
