@@ -63,14 +63,10 @@ public class OseeExceptionDialogComponent extends Window implements EmailView {
 
       switch (msgType) {
          case MSGTYPE_ERROR:
-            ComponentUtility.logError("OseeExceptionDialogComponent.[ctor] - ERROR: [%s] %s", mainWindow, shortMsg,
-               longMsg);
             msgTypeLabel.setCaption("Error!");
             msgTypeLabel.setStyleName(CssConstants.OSEE_EXCEPTION_ERROR_TITLE_TEXT);
             break;
          case MSGTYPE_WARNING:
-            ComponentUtility.logWarn("OseeExceptionDialogComponent.[ctor] - WARNING: [%s] %s", mainWindow, shortMsg,
-               longMsg);
             msgTypeLabel.setCaption("Warning:");
             msgTypeLabel.setStyleName(CssConstants.OSEE_EXCEPTION_WARNING_TITLE_TEXT);
             break;
@@ -235,7 +231,7 @@ public class OseeExceptionDialogComponent extends Window implements EmailView {
       hLayout_Row0.addComponent(closeButton);
       hLayout_Row1.addComponent(shortMsgLabel);
       hLayout_Row2.addComponent(showHideDetailsButton);
-      hLayout_Row2.addComponent(emailButton);
+      //      hLayout_Row2.addComponent(emailButton);
       hLayout_Row2.addComponent(emailSendButton);
 
       hLayout_Row3_Exception.addComponent(longMsgTextArea);

@@ -22,6 +22,7 @@ import com.vaadin.ui.Label;
 @SuppressWarnings("serial")
 public class OseeBreadcrumbComponent extends HorizontalLayout {
    private ViewArtifact artifact;
+   private boolean fixedHeight = false;
 
    public OseeBreadcrumbComponent(ViewArtifact artifact) {
       this.artifact = artifact;
@@ -29,6 +30,11 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
    }
 
    public OseeBreadcrumbComponent() {
+      createLayout();
+   }
+
+   public OseeBreadcrumbComponent(boolean fixedHeight) {
+      this.fixedHeight = fixedHeight;
       createLayout();
    }
 
@@ -52,9 +58,11 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
             }
          }
       } else {
-         Label vSpacer = new Label();
-         vSpacer.setHeight(15, UNITS_PIXELS);
-         addComponent(vSpacer);
+         if (fixedHeight) {
+            Label vSpacer = new Label();
+            vSpacer.setHeight(15, UNITS_PIXELS);
+            addComponent(vSpacer);
+         }
       }
    }
 
