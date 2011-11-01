@@ -18,6 +18,8 @@ import java.util.Date;
 import javax.activation.CommandMap;
 import javax.activation.DataSource;
 import javax.activation.MailcapCommandMap;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,6 +34,19 @@ public final class MailUtils {
 
    private MailUtils() {
       // Utility Class
+   }
+
+   public static boolean isValidEmail(String email) {
+      boolean result = false;
+      try {
+         InternetAddress[] addresses = InternetAddress.parse(email, true);
+         if (addresses != null && addresses.length > 0) {
+            result = true;
+         }
+      } catch (AddressException ex) {
+         // Do Nothing
+      }
+      return result;
    }
 
    public static MailcapCommandMap getMailcapCommandMap() {

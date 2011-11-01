@@ -6,6 +6,7 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.collect,
+ org.eclipse.osee.display.api,
  org.eclipse.osee.display.api.components,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search,
@@ -18,6 +19,7 @@ Import-Package: com.google.common.collect,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
+ org.eclipse.osee.mail,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,

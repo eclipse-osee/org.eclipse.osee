@@ -11,7 +11,8 @@ Import-Package: org.eclipse.osee.display.api.data,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search
-Export-Package: org.eclipse.osee.display.api.components,
+Export-Package: org.eclipse.osee.display.api,
+ org.eclipse.osee.display.api.components,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search
 Require-Bundle: org.eclipse.osee.framework.core
