@@ -35,7 +35,7 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
    private void createLayout() {
       removeAllComponents();
 
-      if (artifact != null && artifact.getAncestry() != null) {
+      if (artifact != null && artifact.getAncestry() != null && artifact.getAncestry().size() > 0) {
          Collection<ViewArtifact> ancestryList = artifact.getAncestry();
          if (ancestryList.size() > 0) {
             Object[] ancestryArray = ancestryList.toArray();
@@ -51,6 +51,10 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
                }
             }
          }
+      } else {
+         Label vSpacer = new Label();
+         vSpacer.setHeight(15, UNITS_PIXELS);
+         addComponent(vSpacer);
       }
    }
 
