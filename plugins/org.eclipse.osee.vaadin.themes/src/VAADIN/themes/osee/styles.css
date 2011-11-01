@@ -85,6 +85,12 @@
 	color: blue;
 }
 
+.osee-searchresult-artname-nolink {
+	font-size: 14px;
+	color: blue;
+	font-weight: bold;
+}
+
 .osee-searchresult-arttype {
 	font-size: 15px;
 	color: black;

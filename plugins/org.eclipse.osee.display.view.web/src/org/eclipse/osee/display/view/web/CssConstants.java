@@ -40,6 +40,7 @@ public final class CssConstants {
    public static final String OSEE_SEARCHRESULTS_NORESULTS = "osee-searchresults-noresults";
    public static final String OSEE_SEARCHRESULTS_MANYRESULTSFIELD = "osee-searchresults-manyresultsfield";
    public static final String OSEE_SEARCHRESULT_ARTNAME = "osee-searchresult-artname";
+   public static final String OSEE_SEARCHRESULT_ARTNAME_NOLINK = "osee-searchresult-artname-nolink";
    public static final String OSEE_SEARCHRESULT_ARTTYPE = "osee-searchresult-arttype";
    public static final String OSEE_ATTRNAME = "osee-attrname";
    public static final String OSEE_SEARCHRESULT_MATCH_MANY = "osee-searchresult-match-many";

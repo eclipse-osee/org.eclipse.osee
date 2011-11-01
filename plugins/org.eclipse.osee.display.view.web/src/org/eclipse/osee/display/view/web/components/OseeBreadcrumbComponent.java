@@ -42,7 +42,7 @@ public class OseeBreadcrumbComponent extends HorizontalLayout {
             for (int i = ancestryArray.length - 1; i >= 0; i--) {
                ViewArtifact ancestor = (ViewArtifact) ancestryArray[i];
                OseeArtifactNameLinkComponent crumbLabel =
-                  new OseeArtifactNameLinkComponent(ancestor, CssConstants.OSEE_BREADCRUMB_ARTNAME);
+                  new OseeArtifactNameLinkComponent(ancestor, CssConstants.OSEE_BREADCRUMB_ARTNAME, false);
                addComponent(crumbLabel);
                if (i > 0) {
                   Label delimiter = new Label("&nbsp; >> &nbsp;", Label.CONTENT_XHTML);

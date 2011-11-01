@@ -33,7 +33,7 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
    protected final OseeRelationsComponent relationsComp = new OseeRelationsComponent();
    protected final OseeAttributeComponent attributeComp = new OseeAttributeComponent();
    private final OseeBreadcrumbComponent breadcrumbComp = new OseeBreadcrumbComponent(null);
-   private final OseeArtifactNameLinkComponent artifactName = new OseeArtifactNameLinkComponent();
+   private final OseeArtifactNameLinkComponent artifactName = new OseeArtifactNameLinkComponent(true);
    private final Label artifactType = new Label("", Label.CONTENT_XHTML);
    private ViewArtifact artifact;
    private final int LEFTMARGIN_WIDTH = 5;
