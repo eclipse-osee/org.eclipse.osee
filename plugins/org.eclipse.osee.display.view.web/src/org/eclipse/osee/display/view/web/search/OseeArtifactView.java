@@ -17,6 +17,7 @@ import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponen
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
 import org.eclipse.osee.display.view.web.components.OseeBreadcrumbComponent;
 import org.eclipse.osee.display.view.web.components.OseeExceptionDialogComponent;
+import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeRelationsComponent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -84,6 +85,8 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
 
       VerticalLayout bottomSpacer = new VerticalLayout();
 
+      OseeLeftMarginContainer leftMarginContainerBreadcrumb = new OseeLeftMarginContainer();
+
       Panel panel_Body = new Panel();
       panel_Body.setScrollable(true);
       panel_Body.setSizeFull();
@@ -102,7 +105,9 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
 
       panel_Body.setContent(vLayout_Body);
 
-      vLayout_OutBody.addComponent(breadcrumbComp);
+      leftMarginContainerBreadcrumb.addComponent(breadcrumbComp);
+
+      vLayout_OutBody.addComponent(leftMarginContainerBreadcrumb);
       vLayout_OutBody.addComponent(panel_Body);
 
       hLayout_LeftMargAndBody.addComponent(vLayout_OutBody);
