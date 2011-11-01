@@ -63,6 +63,11 @@ public final class WorkUtility {
       return callables;
    }
 
+   public static <T> List<Future<Collection<T>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<T> factory, Collection<T> items) throws Exception {
+      return partitionAndScheduleWork(executorAdmin, executorId, factory, items, null);
+
+   }
+
    public static <T> List<Future<Collection<T>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<T> factory, Collection<T> items, ExecutionCallback<Collection<T>> callback) throws Exception {
       List<Future<Collection<T>>> futures = new LinkedList<Future<Collection<T>>>();
       List<Callable<Collection<T>>> callables = partitionWork(items, factory);

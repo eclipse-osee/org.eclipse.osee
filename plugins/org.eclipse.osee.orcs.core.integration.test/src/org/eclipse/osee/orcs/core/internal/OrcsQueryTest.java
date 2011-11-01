@@ -37,8 +37,8 @@ import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.StringOperator;
-import org.eclipse.osee.orcs.utility.ArtifactMatchComparator;
-import org.eclipse.osee.orcs.utility.ArtifactNameComparator;
+import org.eclipse.osee.orcs.utility.MatchComparator;
+import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -92,7 +92,7 @@ public class OrcsQueryTest {
 
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder);
 
-      Collections.sort(artifacts, new ArtifactNameComparator(SortOrder.ASCENDING));
+      Collections.sort(artifacts, new NameComparator(SortOrder.ASCENDING));
 
       Iterator<ReadableArtifact> iterator = artifacts.iterator();
       Assert.assertEquals("Action Tracking System", iterator.next().getName());
@@ -145,7 +145,7 @@ public class OrcsQueryTest {
 
       checkContainsTypes(artifacts, CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
-      Collections.sort(artifacts, new ArtifactNameComparator(SortOrder.ASCENDING));
+      Collections.sort(artifacts, new NameComparator(SortOrder.ASCENDING));
 
       Iterator<ReadableArtifact> iterator = artifacts.iterator();
       Assert.assertEquals("Action Tracking System", iterator.next().getName());
@@ -204,7 +204,7 @@ public class OrcsQueryTest {
 
       List<ReadableArtifact> folders = builder.getResults().getList();
       Assert.assertEquals(4, folders.size());
-      Collections.sort(folders, new ArtifactNameComparator(SortOrder.ASCENDING));
+      Collections.sort(folders, new NameComparator(SortOrder.ASCENDING));
       Iterator<ReadableArtifact> folderIterator = folders.iterator();
       Assert.assertEquals("Hardware Requirements", folderIterator.next().getName());
       Assert.assertEquals("Software Requirements", folderIterator.next().getName());
@@ -231,7 +231,7 @@ public class OrcsQueryTest {
 
       List<ReadableArtifact> requirements = builder2.getResults().getList();
       Assert.assertEquals(3, requirements.size());
-      Collections.sort(requirements, new ArtifactNameComparator(SortOrder.ASCENDING));
+      Collections.sort(requirements, new NameComparator(SortOrder.ASCENDING));
       Iterator<ReadableArtifact> reqIterator = requirements.iterator();
       Assert.assertEquals("Performance Requirements", reqIterator.next().getName());
       Assert.assertEquals("Safety Requirements", reqIterator.next().getName());
@@ -248,7 +248,7 @@ public class OrcsQueryTest {
       Assert.assertEquals(7, requirements.size());
       checkContainsTypes(requirements, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirement,
          CoreArtifactTypes.SystemRequirement);
-      Collections.sort(requirements, new ArtifactNameComparator(SortOrder.ASCENDING));
+      Collections.sort(requirements, new NameComparator(SortOrder.ASCENDING));
       Iterator<ReadableArtifact> reqIterator = requirements.iterator();
       Assert.assertEquals("Hardware Requirements", reqIterator.next().getName());
       Assert.assertEquals("Performance Requirements", reqIterator.next().getName());
@@ -262,7 +262,7 @@ public class OrcsQueryTest {
       List<Match<ReadableArtifact, ReadableAttribute<?>>> matches = builder.getMatches().getList();
       Assert.assertEquals(7, matches.size());
 
-      Collections.sort(matches, new ArtifactMatchComparator(SortOrder.ASCENDING));
+      Collections.sort(matches, new MatchComparator(SortOrder.ASCENDING));
 
       // @formatter:off
       Iterator<Match<ReadableArtifact, ReadableAttribute<?>>> matchIterator = matches.iterator();

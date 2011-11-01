@@ -124,16 +124,46 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
          Label spacer4 = new Label();
          spacer4.setWidth(15, UNITS_PIXELS);
 
+         int firstMatch = -1;
+         int charsSinceFirst = 0;
+         int displaySize = 50;
+         String styleOpen = "<SPAN style=\"BACKGROUND-COLOR: #ffff00\">";
+         String styleClose = "</SPAN>";
+
          StringBuilder builder = new StringBuilder();
          for (StyledText text : match.getData()) {
             if (text.isHighLighted()) {
-               builder.append("<SPAN style=\"BACKGROUND-COLOR: #ffff00\">");
+               if (firstMatch == -1) {
+                  firstMatch = builder.length();
+               }
+               builder.append(styleOpen);
+               if (charsSinceFirst <= 50) {
+                  displaySize += styleOpen.length() + styleClose.length();
+               }
+            }
+
+            if (firstMatch != -1) {
+               charsSinceFirst += text.getData().length();
             }
             builder.append(text.getData());
+
             if (text.isHighLighted()) {
-               builder.append("</SPAN>");
+               builder.append(styleClose);
             }
          }
+
+         if (builder.length() > displaySize) {
+            int end = Math.min(firstMatch + displaySize, builder.length());
+            builder.delete(end, builder.length());
+            builder.delete(0, firstMatch);
+            if (end != builder.length()) {
+               builder.append("...");
+            }
+            if (firstMatch != 0) {
+               builder.insert(0, "...");
+            }
+         }
+
          Label matchLabelHint = new Label(builder.toString(), Label.CONTENT_XHTML);
          Label spacer3 = new Label();
          spacer3.setWidth(15, UNITS_PIXELS);

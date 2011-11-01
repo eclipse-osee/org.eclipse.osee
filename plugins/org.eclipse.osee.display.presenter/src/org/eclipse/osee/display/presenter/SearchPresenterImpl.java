@@ -143,8 +143,6 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    @Override
    public void initArtifactPage(String url, T searchHeaderComp, ArtifactHeaderComponent artHeaderComp, RelationComponent relComp, AttributeComponent attrComp, DisplayOptionsComponent options) {
-      artifactProvider.cancelSearch();
-      //      sendSearchCompleted();
       if (!Strings.isValid(url)) {
          return;
       }

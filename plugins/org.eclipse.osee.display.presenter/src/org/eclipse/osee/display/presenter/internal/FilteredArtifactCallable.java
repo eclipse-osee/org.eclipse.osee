@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.display.presenter.ArtifactFilter;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.executor.admin.ExecutionCallback;
-import org.eclipse.osee.executor.admin.ExecutionCallbackAdapter;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.WorkUtility;
 import org.eclipse.osee.executor.admin.WorkUtility.PartitionFactory;
@@ -45,20 +43,12 @@ public class FilteredArtifactCallable extends CancellableCallable<List<ReadableA
 
    @Override
    public List<ReadableArtifact> call() throws Exception {
-      final List<ReadableArtifact> results = new ArrayList<ReadableArtifact>();
-
-      ExecutionCallback<Collection<ReadableArtifact>> callback =
-         new ExecutionCallbackAdapter<Collection<ReadableArtifact>>() {
-            @Override
-            public void onSuccess(Collection<ReadableArtifact> result) {
-               results.addAll(result);
-            }
-         };
       List<Future<Collection<ReadableArtifact>>> futures =
-         WorkUtility.partitionAndScheduleWork(executorAdmin, FILTER_WORKER_ID, this, artifacts, callback);
-      for (Future<?> future : futures) {
+         WorkUtility.partitionAndScheduleWork(executorAdmin, FILTER_WORKER_ID, this, artifacts);
+      final List<ReadableArtifact> results = new LinkedList<ReadableArtifact>();
+      for (Future<Collection<ReadableArtifact>> future : futures) {
          checkForCancelled();
-         future.get();
+         results.addAll(future.get());
       }
       return results;
    }

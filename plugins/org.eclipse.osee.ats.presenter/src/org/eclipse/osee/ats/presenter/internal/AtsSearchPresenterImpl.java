@@ -46,7 +46,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
 
    @Override
    public void selectSearch(String url, K params, SearchNavigator atsNavigator) {
-      String newUrl = encode(url, params, null);
+      String newUrl = encode("", params, null);
       atsNavigator.navigateSearchResults(newUrl);
    }
 

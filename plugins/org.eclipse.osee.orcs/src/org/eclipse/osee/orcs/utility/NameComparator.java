@@ -13,28 +13,28 @@ package org.eclipse.osee.orcs.utility;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.search.Match;
+import org.eclipse.osee.framework.core.data.Named;
 
-/**
- * @author Roberto E. Escobar
- */
-public class ArtifactMatchComparator implements Comparator<Match<ReadableArtifact, ReadableAttribute<?>>> {
+public class NameComparator implements Comparator<Named> {
    private static final int NUMBER_STRING_LIMIT = 19;
    private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");
 
    private final Matcher numberMatcher = numberPattern.matcher("");
    private SortOrder orderType = SortOrder.ASCENDING;
 
-   public ArtifactMatchComparator(SortOrder orderType) {
+   public NameComparator(SortOrder orderType) {
       this.orderType = orderType;
    }
 
+   private String getName(Named name) {
+      String nameString = name != null ? name.getName() : "";
+      return nameString != null ? nameString : "";
+   }
+
    @Override
-   public int compare(Match<ReadableArtifact, ReadableAttribute<?>> artifact1, Match<ReadableArtifact, ReadableAttribute<?>> artifact2) {
-      String name1 = artifact1.getItem().getName();
-      String name2 = artifact2.getItem().getName();
+   public int compare(Named o1, Named o2) {
+      String name1 = getName(o1);
+      String name2 = getName(o2);
 
       numberMatcher.reset(name1);
       if (numberMatcher.matches()) {

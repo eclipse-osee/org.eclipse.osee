@@ -10,17 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import org.eclipse.osee.display.presenter.ArtifactFilter;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.executor.admin.ExecutionCallback;
-import org.eclipse.osee.executor.admin.ExecutionCallbackAdapter;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.WorkUtility;
 import org.eclipse.osee.executor.admin.WorkUtility.PartitionFactory;
@@ -29,7 +27,7 @@ import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.data.ResultSetList;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.ResultSet;
-import org.eclipse.osee.orcs.utility.ArtifactMatchComparator;
+import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
 
 /**
@@ -55,7 +53,7 @@ public class FilteredResultSetCallable extends CancellableCallable<ResultSet<Mat
 
       List<Match<ReadableArtifact, ReadableAttribute<?>>> artifacts = filter(results.getList());
 
-      Collections.sort(artifacts, new ArtifactMatchComparator(SortOrder.ASCENDING));
+      Collections.sort(artifacts, new MatchComparator(SortOrder.ASCENDING));
       return new ResultSetList<Match<ReadableArtifact, ReadableAttribute<?>>>(artifacts);
    }
 
@@ -82,23 +80,13 @@ public class FilteredResultSetCallable extends CancellableCallable<ResultSet<Mat
    }
 
    private List<Match<ReadableArtifact, ReadableAttribute<?>>> filter(Collection<Match<ReadableArtifact, ReadableAttribute<?>>> items) throws Exception {
-
-      final List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
-         new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
-
-      ExecutionCallback<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>> callback =
-         new ExecutionCallbackAdapter<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>>() {
-            @Override
-            public void onSuccess(Collection<Match<ReadableArtifact, ReadableAttribute<?>>> result) {
-               results.addAll(result);
-            }
-         };
-
       List<Future<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>>> futures =
-         WorkUtility.partitionAndScheduleWork(executorAdmin, FILTER_WORKER_ID, this, items, callback);
-      for (Future<?> future : futures) {
+         WorkUtility.partitionAndScheduleWork(executorAdmin, FILTER_WORKER_ID, this, items);
+      final List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
+         new LinkedList<Match<ReadableArtifact, ReadableAttribute<?>>>();
+      for (Future<Collection<Match<ReadableArtifact, ReadableAttribute<?>>>> future : futures) {
          checkForCancelled();
-         future.get();
+         results.addAll(future.get());
       }
       return results;
    }

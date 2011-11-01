@@ -141,7 +141,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
          logger.error(ex, "Sanitization error");
          OseeExceptions.wrapAndThrow(ex);
       }
-      return artifacts;
+      return results;
    }
 
    @Override
