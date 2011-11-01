@@ -78,7 +78,7 @@ public class OseeAttributeComponent extends VerticalLayout implements AttributeC
                TextField attrValue = new TextField();
                attrValue.setValue(value);
                attrValue.setWidth(500, UNITS_PIXELS);
-               attrValue.setHeight(150, UNITS_PIXELS);
+               attrValue.setHeight(100, UNITS_PERCENTAGE);
 
                attributesLayout.setRows(attributesLayout.getRows() + 1);
                attributesLayout.addComponent(attrValue, 2, rowIndex);

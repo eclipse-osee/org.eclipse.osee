@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.display.api.components.ArtifactHeaderComponent;
 import org.eclipse.osee.display.api.components.AttributeComponent;
 import org.eclipse.osee.display.api.components.DisplayOptionsComponent;
+import org.eclipse.osee.display.api.components.DisplaysErrorComponent.MsgType;
 import org.eclipse.osee.display.api.components.RelationComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.components.SearchResultsListComponent;
@@ -241,6 +242,9 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
                attrComp.addAttribute(
                   "Word Content Template",
                   "Type: Graphic Format (Location): {MAP_overlay_UIG} {FLIGHT_UIG} {WEAPON_UIG} Local Data Definition: [{RF_HANDOVER_TARGET}.DELTA_NORTH_BETWEEN_AIRCRAFT]: (floating point number) meters Mode: North_Dist returned from {FIND_NORTH_EAST_DIST_BETWEEN_TWO_POINTS}( [RFHO_DATA.RFHO_R_LAT_(MSW,LSW)]LM -> Pt1.Lat, [RFHO_DATA.RFHO_R_LONG_(MSW,LSW)]LM -> Pt1.Long, [.AIRCRAFT_LATITUDE] -> Pt2.Lat, [.AIRCRAFT_LONGITUDE] -> Pt2.Long)");
+            } else {
+               artHeaderComp.setErrorMessage("No artifact found with ID:" + artGuid, "[no more information]",
+                  MsgType.MSGTYPE_WARNING);
             }
          }
       }

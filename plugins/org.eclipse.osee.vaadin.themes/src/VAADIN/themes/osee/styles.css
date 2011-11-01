@@ -196,6 +196,10 @@
 	resize: none;
 	}
 
+.osee-emaildialog-titles {
+	text-align: right;
+	}	
+	
 .v-window-wrap {
 	border: none;
 	-webkit-border-radius: 12px;
