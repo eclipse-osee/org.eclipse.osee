@@ -63,28 +63,37 @@ public class OseeExceptionDialogComponent extends Window implements EmailView {
 
       switch (msgType) {
          case MSGTYPE_ERROR:
+            ComponentUtility.logError("OseeExceptionDialogComponent.[ctor] - ERROR: [%s] %s", mainWindow, shortMsg,
+               longMsg);
             msgTypeLabel.setCaption("Error!");
             msgTypeLabel.setStyleName(CssConstants.OSEE_EXCEPTION_ERROR_TITLE_TEXT);
             break;
          case MSGTYPE_WARNING:
+            ComponentUtility.logWarn("OseeExceptionDialogComponent.[ctor] - WARNING: [%s] %s", mainWindow, shortMsg,
+               longMsg);
             msgTypeLabel.setCaption("Warning:");
             msgTypeLabel.setStyleName(CssConstants.OSEE_EXCEPTION_WARNING_TITLE_TEXT);
             break;
          default:
             ComponentUtility.logWarn("OseeExceptionDialogComponent.[ctor] - WARNING: invalid or unhandled msgType.",
-               this);
+               mainWindow);
             break;
       }
 
       shortMsgLabel.setCaption(shortMsg);
-      longMsgTextArea.setValue(longMsg);
+      StringBuilder sb = new StringBuilder();
+      sb.append("[");
+      sb.append(shortMsg);
+      sb.append("]\n");
+      sb.append(longMsg);
+      longMsgTextArea.setValue(sb.toString());
 
       if (mainWindow != null) {
          mainWindow.addWindow(this);
          moveToCenter();
          focus();
       } else {
-         ComponentUtility.logWarn("OseeExceptionDialogComponent.[ctor] - WARNING: null value detected.", this);
+         ComponentUtility.logWarn("OseeExceptionDialogComponent.[ctor] - WARNING: null value detected.", mainWindow);
       }
    }
 
