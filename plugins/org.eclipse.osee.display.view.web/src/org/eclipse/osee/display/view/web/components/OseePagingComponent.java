@@ -54,7 +54,7 @@ public class OseePagingComponent extends HorizontalLayout implements PagingCompo
             manyPages += 1; //round up.
          }
       }
-      updateLayout();
+      setCurrentPage(currentPage);
    }
 
    @Override
