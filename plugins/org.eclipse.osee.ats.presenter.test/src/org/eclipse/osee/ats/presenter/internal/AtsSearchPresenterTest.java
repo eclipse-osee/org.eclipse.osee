@@ -51,7 +51,7 @@ public class AtsSearchPresenterTest {
    }
 
    @Test
-   public void testSelectSearch() throws UnsupportedEncodingException {
+   public void testSelectSearch() {
       AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> presenter =
          new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(null, new MockLogger());
       MockSearchNavigator navigator = new MockSearchNavigator();
@@ -64,8 +64,8 @@ public class AtsSearchPresenterTest {
       String url = navigator.getResultsUrl();
 
       String expected =
-         "/" + new UrlQuery().put("search", "phrase").put("program", "programGuid").put("nameOnly", "true").put(
-            "build", buildGuid).toString();
+         "/" + new UrlQuery().put("search", "phrase").put("program", programGuid).put("nameOnly", "true").put("build",
+            buildGuid).toString();
 
       Assert.assertEquals(expected, url);
    }
