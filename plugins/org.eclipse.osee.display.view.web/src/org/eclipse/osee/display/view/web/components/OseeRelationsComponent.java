@@ -98,7 +98,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
             if (!lockRelsListener) {
                try {
                   ViewArtifact artifact = (ViewArtifact) leftSelect.getValue();
-                  handleValue(artifact);
+                  selectArtifact(artifact);
                } catch (Exception e) {
                   ComponentUtility.logError(
                      "OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.",
@@ -114,7 +114,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
             if (!lockRelsListener) {
                try {
                   ViewArtifact artifact = (ViewArtifact) rightSelect.getValue();
-                  handleValue(artifact);
+                  selectArtifact(artifact);
                } catch (Exception e) {
                   ComponentUtility.logError(
                      "OseeRelationsComponent.createLayout - CRITICAL ERROR: (WebArtifact) relationsListSelect.getValue() threw an exception.",
@@ -170,7 +170,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
       setExpandRatio(listBoxesLayout, 1.0f);
    }
 
-   private void handleValue(ViewArtifact artifact) {
+   private void selectArtifact(ViewArtifact artifact) {
       if (artifact != null) {
          String url = ComponentUtility.getUrl(OseeRelationsComponent.this);
          SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeRelationsComponent.this);
@@ -194,7 +194,6 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    @Override
    public void addRelationType(ViewId id) {
       if (id == null) {
-         relTypesSelect.setEnabled(false);
          relTypesSelect.removeAllItems();
          relTypesSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
       } else {
@@ -230,7 +229,6 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    @Override
    public void addLeftRelated(ViewArtifact id) {
       if (id == null) {
-         leftSelect.setEnabled(false);
          leftSelect.removeAllItems();
          leftSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
       } else {
@@ -247,7 +245,6 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    @Override
    public void addRightRelated(ViewArtifact id) {
       if (id == null) {
-         rightSelect.setEnabled(false);
          rightSelect.removeAllItems();
          rightSelect.setWidth(LISTBOX_MINWIDTH, UNITS_PIXELS);
       } else {
@@ -264,10 +261,8 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    @Override
    public void setLeftName(String name) {
       if (name == null) {
-         leftSelect.setEnabled(false);
          leftTitle.setValue("");
       } else {
-         leftSelect.setEnabled(true);
          leftTitle.setValue(name);
       }
    }
@@ -275,10 +270,8 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
    @Override
    public void setRightName(String name) {
       if (name == null) {
-         rightSelect.setEnabled(false);
          rightTitle.setValue("");
       } else {
-         rightSelect.setEnabled(true);
          rightTitle.setValue(name);
       }
    }
