@@ -17,7 +17,7 @@ import com.vaadin.Application;
  */
 public interface ApplicationFactory {
 
-   Application createInstance();
+   Application createInstance() throws Exception;
 
    Class<? extends Application> getApplicationClass();
 

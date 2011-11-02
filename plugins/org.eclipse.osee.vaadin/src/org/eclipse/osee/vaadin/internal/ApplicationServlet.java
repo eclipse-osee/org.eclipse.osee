@@ -52,7 +52,13 @@ public class ApplicationServlet extends AbstractApplicationServlet {
 
    @Override
    protected Application getNewApplication(HttpServletRequest request) throws ServletException {
-      Application application = factory.createInstance();
+      Application application;
+      try {
+         application = factory.createInstance();
+      } catch (Exception ex) {
+         throw new ServletException(String.format("Error creating vaading application using [%s]",
+            factory.getClass().getName()), ex);
+      }
       if (application == null) {
          throw new ServletException(String.format("Error creating vaading application using [%s]",
             factory.getClass().getName()));
