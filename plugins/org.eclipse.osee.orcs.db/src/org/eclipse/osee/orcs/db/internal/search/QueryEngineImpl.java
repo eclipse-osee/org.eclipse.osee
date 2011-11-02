@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search;
 
 import java.util.List;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -45,7 +46,7 @@ public class QueryEngineImpl implements QueryEngine {
    private IdentityService identityService;
    private IOseeCachingService cacheService;
    private DataStoreTypeCache cache;
-
+   private ExecutorAdmin executorAdmin;
    private Log logger;
 
    public void setLogger(Log logger) {
@@ -73,11 +74,15 @@ public class QueryEngineImpl implements QueryEngine {
       this.cache = cache;
    }
 
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
    public void start() {
       tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
       taggingEngine = new TaggingEngine(tagProcessor, cache.getAttributeTypeCache());
 
-      handlerFactory = new SqlHandlerFactoryImpl(logger, identityService, taggingEngine, cache);
+      handlerFactory = new SqlHandlerFactoryImpl(logger, executorAdmin, identityService, taggingEngine, cache);
       builder = new SqlBuilder(sqlProvider, dbService);
    }
 

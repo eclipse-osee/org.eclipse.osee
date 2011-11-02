@@ -29,7 +29,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class ExecutorAdminImpl implements ExecutorAdmin {
 
-   private static final String DEFAULT_EXECUTOR = "default.executor";
+   public static final String DEFAULT_EXECUTOR = "default.executor";
    private static final int THREAD_CHECK_TIME = 5000; // every 5 seconds
 
    private ExecutorCache cache;

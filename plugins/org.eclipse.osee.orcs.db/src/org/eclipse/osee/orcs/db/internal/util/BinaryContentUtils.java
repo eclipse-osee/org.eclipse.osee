@@ -11,8 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLConnection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 
@@ -27,10 +29,14 @@ public final class BinaryContentUtils {
 
    public static String getContentType(IResource resource) throws OseeCoreException {
       String mimeType;
+      InputStream inputStream = null;
       try {
-         mimeType = URLConnection.guessContentTypeFromStream(resource.getContent());
+         inputStream = resource.getContent();
+         mimeType = URLConnection.guessContentTypeFromStream(inputStream);
       } catch (IOException ex) {
          throw new OseeCoreException(ex, "Error determining mime type for - [%s]", resource.getName());
+      } finally {
+         Lib.close(inputStream);
       }
       if (mimeType == null) {
          mimeType = URLConnection.guessContentTypeFromName(resource.getLocation().toASCIIString());

@@ -11,13 +11,17 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactRowHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeContainer;
@@ -62,10 +66,48 @@ public class OrcsObjectLoader {
    }
 
    public int countObjects(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
-      return dataLoader.countArtifacts(cancellation, queryContext);
+      int count = -1;
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+      }
+
+      count = dataLoader.countArtifacts(cancellation, queryContext);
+
+      if (logger.isTraceEnabled()) {
+         logger.trace("Counted objects in [%s]", Lib.getElapseString(startTime));
+      }
+      return count;
+   }
+
+   public List<ReadableArtifact> load(HasCancellation cancellation, IOseeBranch branch, Collection<Integer> ids, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+      }
+
+      List<ReadableArtifact> artifacts = new ArrayList<ReadableArtifact>();
+
+      ArtifactCollectorImpl artifactHandler = new ArtifactCollectorImpl(logger, attributeFactory, artifacts);
+
+      ArtifactRowHandler artifactRowHandler =
+         new ArtifactRowMapper(sessionContext, branchCache, artifactTypeCache, artifactFactory, artifactHandler);
+
+      Branch fullBranch = branchCache.get(branch);
+
+      dataLoader.loadArtifacts(cancellation, artifactRowHandler, fullBranch.getId(), ids, loadOptions, artifactHandler,
+         artifactHandler);
+      if (logger.isTraceEnabled()) {
+         logger.trace("Objects from ids loaded in [%s]", Lib.getElapseString(startTime));
+      }
+      return artifacts;
    }
 
    public List<ReadableArtifact> load(HasCancellation cancellation, QueryContext queryContext, LoadOptions loadOptions, SessionContext sessionContext) throws OseeCoreException {
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+      }
 
       List<ReadableArtifact> artifacts = new ArrayList<ReadableArtifact>();
 
@@ -77,6 +119,9 @@ public class OrcsObjectLoader {
       dataLoader.loadArtifacts(cancellation, artifactRowHandler, queryContext, loadOptions, artifactHandler,
          artifactHandler);
 
+      if (logger.isTraceEnabled()) {
+         logger.trace("Objects from query loaded in [%s]", Lib.getElapseString(startTime));
+      }
       return artifacts;
    }
 

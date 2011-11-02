@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.mocks;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -64,10 +65,11 @@ public final class SqlUtility {
       };
       Log log = new MockLog();
       DataStoreTypeCache caches = new MockDataStoreTypeCache();
+      ExecutorAdmin executorAdmin = new MockExecutorAdmin();
 
       TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(log), new TagEncoder());
       TaggingEngine tagEngine = new TaggingEngine(tagProcessor, null);
-      SqlHandlerFactory factory = new SqlHandlerFactoryImpl(log, service, tagEngine, caches);
+      SqlHandlerFactory factory = new SqlHandlerFactoryImpl(log, executorAdmin, service, tagEngine, caches);
       return factory.createHandlers(criteriaSet);
    }
 }

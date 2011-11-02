@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -48,8 +49,10 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    private final IdentityService idService;
    private final TaggingEngine taggingEngine;
    private final DataStoreTypeCache caches;
+   private final ExecutorAdmin executorAdmin;
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, TaggingEngine taggingEngine, DataStoreTypeCache caches) {
+   public SqlHandlerFactoryImpl(Log logger, ExecutorAdmin executorAdmin, IdentityService idService, TaggingEngine taggingEngine, DataStoreTypeCache caches) {
+      this.executorAdmin = executorAdmin;
       this.logger = logger;
       this.idService = idService;
       this.taggingEngine = taggingEngine;
@@ -78,6 +81,7 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
             handler.setLogger(logger);
             handler.setTaggingEngine(taggingEngine);
             handler.setTypeCaches(caches);
+            handler.setExecutorAdmin(executorAdmin);
             handlers.add(handler);
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);

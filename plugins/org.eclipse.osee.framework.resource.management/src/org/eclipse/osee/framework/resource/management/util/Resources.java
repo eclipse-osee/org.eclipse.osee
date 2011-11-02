@@ -53,12 +53,16 @@ public class Resources {
       String path = resource.getLocation().toASCIIString();
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       String fileName = null;
+
+      InputStream inputStream = null;
       try {
-         fileName = Lib.decompressStream(resource.getContent(), outputStream);
+         inputStream = resource.getContent();
+         fileName = Lib.decompressStream(inputStream, outputStream);
          fileName = URLEncoder.encode(fileName, "UTF-8");
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       } finally {
+         Lib.close(inputStream);
          Lib.close(outputStream);
       }
       if (fileName != null && fileName.length() > 0) {

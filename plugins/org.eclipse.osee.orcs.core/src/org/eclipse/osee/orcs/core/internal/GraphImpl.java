@@ -14,31 +14,34 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.DataStoreTypeCache;
 import org.eclipse.osee.orcs.Graph;
+import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
-import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.search.ResultSet;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class GraphImpl implements Graph {
 
-   private final QueryFactory queryFactory;
+   private final SessionContext sessionContext;
+   private final OrcsObjectLoader objectLoader;
    private final DataStoreTypeCache dataStoreTypeCache;
 
-   public GraphImpl(QueryFactory queryFactory, DataStoreTypeCache dataStoreTypeCache) {
-      this.queryFactory = queryFactory;
+   public GraphImpl(SessionContext sessionContext, OrcsObjectLoader objectLoader, DataStoreTypeCache dataStoreTypeCache) {
+      this.sessionContext = sessionContext;
+      this.objectLoader = objectLoader;
       this.dataStoreTypeCache = dataStoreTypeCache;
    }
 
@@ -47,32 +50,37 @@ public class GraphImpl implements Graph {
       return ((Artifact) art).getRelationContainer().getAvailableRelationTypes();
    }
 
+   private List<ReadableArtifact> loadRelated(IOseeBranch branch, Collection<Integer> artIds) throws OseeCoreException {
+      LoadOptions loadOptions = new LoadOptions(false, false, LoadLevel.FULL);
+      HasCancellation cancellation = null;
+      return objectLoader.load(cancellation, branch, artIds, loadOptions, sessionContext);
+   }
+
    @Override
    public List<ReadableArtifact> getRelatedArtifacts(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      List<Integer> results = new ArrayList<Integer>();
-      ((Artifact) art).getRelatedArtifacts(relationTypeSide, results);
+      List<Integer> artIds = new ArrayList<Integer>();
+      ((Artifact) art).getRelatedArtifacts(relationTypeSide, artIds);
       List<ReadableArtifact> toReturn;
-      if (results.size() == 0) {
+      if (artIds.isEmpty()) {
          toReturn = Collections.emptyList();
       } else {
-         QueryBuilder builder = queryFactory.fromBranch(art.getBranch()).andLocalIds(results);
-         ResultSet<ReadableArtifact> resultSet = builder.getResults();
-         toReturn = resultSet.getList();
+         toReturn = loadRelated(art.getBranch(), artIds);
       }
       return toReturn;
    }
 
    @Override
    public ReadableArtifact getRelatedArtifact(ReadableArtifact art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      List<Integer> results = new ArrayList<Integer>();
-      ((Artifact) art).getRelatedArtifacts(relationTypeSide, results);
-      if (results.isEmpty()) {
-         return null;
-      } else {
-         QueryBuilder builder = queryFactory.fromBranch(art.getBranch()).andLocalIds(results);
-         ResultSet<ReadableArtifact> resultSet = builder.getResults();
-         return resultSet.getOneOrNull();
+      List<Integer> artIds = new ArrayList<Integer>();
+      ((Artifact) art).getRelatedArtifacts(relationTypeSide, artIds);
+      ReadableArtifact toReturn = null;
+      if (!artIds.isEmpty()) {
+         List<ReadableArtifact> artifacts = loadRelated(art.getBranch(), artIds);
+         if (!artifacts.isEmpty()) {
+            toReturn = artifacts.iterator().next();
+         }
       }
+      return toReturn;
    }
 
    @Override

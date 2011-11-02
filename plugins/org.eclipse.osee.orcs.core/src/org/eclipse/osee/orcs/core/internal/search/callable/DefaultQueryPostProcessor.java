@@ -16,27 +16,27 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
 
-public class DefaultQueryPostProcessor implements QueryPostProcessor {
-   private List<ReadableArtifact> artifacts;
+public class DefaultQueryPostProcessor extends QueryPostProcessor {
 
-   @Override
-   public void setItemsToProcess(List<ReadableArtifact> artifacts) {
-      this.artifacts = artifacts;
+   public DefaultQueryPostProcessor(Log logger) {
+      super(logger);
    }
 
    @Override
-   public List<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
-      Conditions.checkNotNull(artifacts, "Query first pass results");
+   public List<Match<ReadableArtifact, ReadableAttribute<?>>> innerCall() throws Exception {
+      Conditions.checkNotNull(getItemsToProcess(), "Query first pass results");
 
       List<Match<ReadableArtifact, ReadableAttribute<?>>> results =
          new ArrayList<Match<ReadableArtifact, ReadableAttribute<?>>>();
 
-      for (final ReadableArtifact art : artifacts) {
+      for (final ReadableArtifact art : getItemsToProcess()) {
+         checkForCancelled();
          results.add(new Match<ReadableArtifact, ReadableAttribute<?>>() {
 
             @Override

@@ -117,6 +117,8 @@ public class OrcsApiImpl implements OrcsApi {
 
    @Override
    public Graph getGraph(ApplicationContext context) {
-      return new GraphImpl(getQueryFactory(context), dataStoreTypeCache);
+      String sessionId = GUID.create(); // TODO context.getSessionId() attach to application context
+      SessionContext sessionContext = getSessionContext(sessionId);
+      return new GraphImpl(sessionContext, objectLoader, dataStoreTypeCache);
    }
 }

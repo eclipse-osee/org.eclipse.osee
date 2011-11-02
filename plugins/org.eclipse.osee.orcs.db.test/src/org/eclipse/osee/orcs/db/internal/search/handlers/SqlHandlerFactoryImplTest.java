@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
@@ -33,6 +34,7 @@ import org.eclipse.osee.orcs.db.internal.search.SqlConstants.CriteriaPriority;
 import org.eclipse.osee.orcs.db.internal.search.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.db.mocks.MockDataStoreTypeCache;
+import org.eclipse.osee.orcs.db.mocks.MockExecutorAdmin;
 import org.eclipse.osee.orcs.db.mocks.MockIdentityService;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.eclipse.osee.orcs.db.mocks.SqlUtility;
@@ -52,6 +54,7 @@ public class SqlHandlerFactoryImplTest {
    private IdentityService idService;
    private TaggingEngine taggingEngine;
    private DataStoreTypeCache caches;
+   private ExecutorAdmin executorAdmin;
 
    @Before
    public void setUp() {
@@ -59,6 +62,7 @@ public class SqlHandlerFactoryImplTest {
       idService = new MockIdentityService();
       taggingEngine = new TaggingEngine(null, null);
       caches = new MockDataStoreTypeCache();
+      executorAdmin = new MockExecutorAdmin();
    }
 
    @After
@@ -67,11 +71,13 @@ public class SqlHandlerFactoryImplTest {
       idService = null;
       taggingEngine = null;
       caches = null;
+      executorAdmin = null;
    }
 
    @Test
    public void testFactory() throws Exception {
-      SqlHandlerFactoryImpl factory = new SqlHandlerFactoryImpl(logger, idService, taggingEngine, caches);
+      SqlHandlerFactoryImpl factory =
+         new SqlHandlerFactoryImpl(logger, executorAdmin, idService, taggingEngine, caches);
 
       List<Criteria> criteria = new ArrayList<Criteria>();
       criteria.add(new CriteriaArtifactGuids(null));
@@ -103,6 +109,6 @@ public class SqlHandlerFactoryImplTest {
    }
 
    private void assertSqlHandler(SqlHandler handler, Class<? extends SqlHandler> clazz, CriteriaPriority priority) {
-      SearchAsserts.assertHandler(handler, clazz, priority, logger, idService, taggingEngine, caches);
+      SearchAsserts.assertHandler(handler, clazz, priority, logger, idService, taggingEngine, caches, executorAdmin);
    }
 }

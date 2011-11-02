@@ -207,9 +207,9 @@ public class AttributeTokenSqlHandler extends SqlHandler {
    private QueryPostProcessor createPostProcessor(boolean isTokenized) {
       AbstractQueryPostProcessor processor;
       if (isTokenized) {
-         processor = new TokenQueryPostProcessor(getLogger(), getTaggingEngine());
+         processor = new TokenQueryPostProcessor(getLogger(), getExecutorAdmin(), getTaggingEngine());
       } else {
-         processor = new AttributeQueryPostProcessor(getLogger(), getTaggingEngine());
+         processor = new AttributeQueryPostProcessor(getLogger(), getExecutorAdmin(), getTaggingEngine());
       }
       processor.setCriteria(criteria);
       return processor;

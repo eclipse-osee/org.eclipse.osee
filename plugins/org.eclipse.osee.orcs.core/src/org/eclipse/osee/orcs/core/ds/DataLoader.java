@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -17,6 +18,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Andrew M. Finkbeiner
  */
 public interface DataLoader {
+
+   void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, int branchId, Collection<Integer> ids, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
 
    void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException;
 

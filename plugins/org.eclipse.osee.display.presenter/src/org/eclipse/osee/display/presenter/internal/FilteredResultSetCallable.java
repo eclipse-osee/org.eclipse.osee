@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.utility.SortOrder;
 /**
  * @author Roberto E. Escobar
  */
-public class FilteredResultSetCallable extends CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> implements PartitionFactory<Match<ReadableArtifact, ReadableAttribute<?>>> {
+public class FilteredResultSetCallable extends CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> implements PartitionFactory<Match<ReadableArtifact, ReadableAttribute<?>>, Match<ReadableArtifact, ReadableAttribute<?>>> {
    private static final String FILTER_WORKER_ID = "artifact.filter.workers";
 
    private final ExecutorAdmin executorAdmin;

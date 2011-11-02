@@ -53,8 +53,9 @@ public class ResourceHandler implements DataHandler {
       String mimeType = BinaryContentUtils.getContentType(resource);
 
       byte[] data = null;
-      InputStream inputStream = resource.getContent();
+      InputStream inputStream = null;
       try {
+         inputStream = resource.getContent();
          data = Lib.inputStreamToBytes(inputStream);
       } catch (IOException ex) {
          throw new OseeCoreException(ex, "Error acquiring resource - name[%s] locator[%s]",

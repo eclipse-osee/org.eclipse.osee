@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -27,6 +28,7 @@ public abstract class SqlHandler {
    private IdentityService idService;
    private TaggingEngine taggingEngine;
    private DataStoreTypeCache caches;
+   private ExecutorAdmin executorAdmin;
 
    protected DataStoreTypeCache getTypeCaches() {
       return caches;
@@ -62,6 +64,14 @@ public abstract class SqlHandler {
 
    protected Log getLogger() {
       return logger;
+   }
+
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
+   protected ExecutorAdmin getExecutorAdmin() {
+      return executorAdmin;
    }
 
    public abstract int getPriority();

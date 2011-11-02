@@ -32,6 +32,8 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public class SearchCountCallable extends AbstractSearchCallable<Integer> {
 
+   private QueryContext queryContext;
+
    public SearchCountCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
       super(logger, queryEngine, objectLoader, sessionContext, loadLevel, criteriaSet, options);
    }
@@ -40,7 +42,7 @@ public class SearchCountCallable extends AbstractSearchCallable<Integer> {
    protected Integer innerCall() throws Exception {
       int count = -1;
       if (criteriaSet.hasCriteriaType(CriteriaAttributeKeyword.class)) {
-         QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
+         queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
          LoadOptions loadOptions = new LoadOptions(options.isHistorical(), options.areDeletedIncluded(), loadLevel);
 
          checkForCancelled();
@@ -63,10 +65,20 @@ public class SearchCountCallable extends AbstractSearchCallable<Integer> {
          }
          count = results.size();
       } else {
-         QueryContext queryContext = queryEngine.createCount(sessionContext.getSessionId(), criteriaSet, options);
+         queryContext = queryEngine.createCount(sessionContext.getSessionId(), criteriaSet, options);
          checkForCancelled();
          count = objectLoader.countObjects(this, queryContext);
       }
       return count;
+   }
+
+   @Override
+   public void setCancel(boolean isCancelled) {
+      super.setCancel(isCancelled);
+      if (queryContext != null && !queryContext.getPostProcessors().isEmpty()) {
+         for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
+            processor.setCancel(true);
+         }
+      }
    }
 }

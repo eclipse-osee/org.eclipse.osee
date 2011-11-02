@@ -45,17 +45,21 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
       this.options = options;
    }
 
+   protected Log getLogger() {
+      return logger;
+   }
+
    @Override
    public final T call() throws Exception {
       long startTime = 0;
-      if (logger.isDebugEnabled()) {
+      if (logger.isTraceEnabled()) {
          startTime = System.currentTimeMillis();
       }
 
       T result = innerCall();
 
-      if (logger.isDebugEnabled()) {
-         logger.debug("Search [%s] completed in [%s]\n\tCriteria - [%s]\n\tOptions  - [%s]",
+      if (logger.isTraceEnabled()) {
+         logger.trace("Search [%s] completed in [%s]\n\tCriteria - [%s]\n\tOptions  - [%s]",
             getClass().getSimpleName(), Lib.getElapseString(startTime), criteriaSet, options);
       }
       return result;

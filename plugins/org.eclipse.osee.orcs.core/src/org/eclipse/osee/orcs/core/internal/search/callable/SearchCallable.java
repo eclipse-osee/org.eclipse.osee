@@ -33,6 +33,8 @@ import org.eclipse.osee.orcs.search.ResultSet;
  */
 public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArtifact>> {
 
+   private QueryContext queryContext;
+
    public SearchCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
       super(logger, queryEngine, objectLoader, sessionContext, loadLevel, criteriaSet, options);
    }
@@ -60,6 +62,16 @@ public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArt
          results = artifacts;
       }
       return new ResultSetList<ReadableArtifact>(results);
+   }
+
+   @Override
+   public void setCancel(boolean isCancelled) {
+      super.setCancel(isCancelled);
+      if (queryContext != null && !queryContext.getPostProcessors().isEmpty()) {
+         for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
+            processor.setCancel(true);
+         }
+      }
    }
 
 }

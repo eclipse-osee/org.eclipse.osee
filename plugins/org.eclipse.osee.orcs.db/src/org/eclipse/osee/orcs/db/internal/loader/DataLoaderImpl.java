@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
@@ -136,34 +137,61 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
+   public void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, int branchId, Collection<Integer> artIds, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+      if (!artIds.isEmpty()) {
+         int fetchSize = computeFetchSize(artIds.size());
+
+         ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(oseeDatabaseService);
+         Integer transactionId = -1;
+         for (Integer artId : artIds) {
+            join.add(artId, branchId, transactionId);
+         }
+
+         try {
+            join.store();
+            loadArtifacts(cancellation, join, fetchSize, handler, loadOptions, relationRowHandlerFactory,
+               attributeRowHandlerFactory);
+         } finally {
+            join.delete();
+         }
+      }
+   }
+
+   @Override
    public void loadArtifacts(HasCancellation cancellation, ArtifactRowHandler handler, QueryContext queryContext, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
       SqlContext sqlContext = toSqlContext(queryContext);
       int fetchSize = computeFetchSize(sqlContext);
 
       AbstractJoinQuery join = createArtifactIdJoin(cancellation, sqlContext, fetchSize);
+
       try {
          join.store();
-         int queryId = join.getQueryId();
-
-         checkCancelled(cancellation);
-
-         artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, queryId);
-
-         checkCancelled(cancellation);
-
-         if (isAttributeLoadingAllowed(loadOptions.getLoadLevel())) {
-            AttributeRowHandler attrHandler = attributeRowHandlerFactory.createAttributeRowHandler();
-            attributeLoader.loadFromQueryId(attrHandler, loadOptions, fetchSize, queryId);
-         }
-
-         checkCancelled(cancellation);
-
-         if (isRelationLoadingAllowed(loadOptions.getLoadLevel())) {
-            RelationRowHandler relHandler = relationRowHandlerFactory.createRelationRowHandler();
-            relationLoader.loadFromQueryId(relHandler, loadOptions, fetchSize, queryId);
-         }
+         loadArtifacts(cancellation, join, fetchSize, handler, loadOptions, relationRowHandlerFactory,
+            attributeRowHandlerFactory);
       } finally {
          join.delete();
+      }
+   }
+
+   private void loadArtifacts(HasCancellation cancellation, AbstractJoinQuery join, int fetchSize, ArtifactRowHandler handler, LoadOptions loadOptions, RelationRowHandlerFactory relationRowHandlerFactory, AttributeRowHandlerFactory attributeRowHandlerFactory) throws OseeCoreException {
+      int queryId = join.getQueryId();
+
+      checkCancelled(cancellation);
+
+      artifactLoader.loadFromQueryId(handler, loadOptions, fetchSize, queryId);
+
+      checkCancelled(cancellation);
+
+      if (isAttributeLoadingAllowed(loadOptions.getLoadLevel())) {
+         AttributeRowHandler attrHandler = attributeRowHandlerFactory.createAttributeRowHandler();
+         attributeLoader.loadFromQueryId(attrHandler, loadOptions, fetchSize, queryId);
+      }
+
+      checkCancelled(cancellation);
+
+      if (isRelationLoadingAllowed(loadOptions.getLoadLevel())) {
+         RelationRowHandler relHandler = relationRowHandlerFactory.createRelationRowHandler();
+         relationLoader.loadFromQueryId(relHandler, loadOptions, fetchSize, queryId);
       }
    }
 
@@ -175,11 +203,13 @@ public class DataLoaderImpl implements DataLoader {
       return level != LoadLevel.SHALLOW && level != LoadLevel.ATTRIBUTE;
    }
 
-   private int computeFetchSize(SqlContext sqlContext) {
-      int fetchSize = 10;//Integer.MIN_VALUE;
-      for (AbstractJoinQuery join : sqlContext.getJoins()) {
-         fetchSize = Math.max(fetchSize, join.size());
+   private int computeFetchSize(int initialSize) {
+      int fetchSize = initialSize;
+
+      if (fetchSize < 10) {
+         fetchSize = 10;
       }
+
       // Account for attribute and relation loading
       fetchSize *= 20;
 
@@ -187,6 +217,14 @@ public class DataLoaderImpl implements DataLoader {
          fetchSize = MAX_FETCH_SIZE;
       }
       return fetchSize;
+   }
+
+   private int computeFetchSize(SqlContext sqlContext) {
+      int fetchSize = 10;//Integer.MIN_VALUE;
+      for (AbstractJoinQuery join : sqlContext.getJoins()) {
+         fetchSize = Math.max(fetchSize, join.size());
+      }
+      return computeFetchSize(fetchSize);
    }
 
    private AbstractJoinQuery createArtifactIdJoin(HasCancellation cancellation, SqlContext sqlContext, int fetchSize) throws OseeCoreException {
@@ -223,4 +261,5 @@ public class DataLoaderImpl implements DataLoader {
       }
       return artifactJoin;
    }
+
 }

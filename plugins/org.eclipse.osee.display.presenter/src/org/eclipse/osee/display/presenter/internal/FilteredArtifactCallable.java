@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.data.ReadableArtifact;
 /**
  * @author Roberto E. Escobar
  */
-public class FilteredArtifactCallable extends CancellableCallable<List<ReadableArtifact>> implements PartitionFactory<ReadableArtifact> {
+public class FilteredArtifactCallable extends CancellableCallable<List<ReadableArtifact>> implements PartitionFactory<ReadableArtifact, ReadableArtifact> {
 
    private static final String FILTER_WORKER_ID = "artifact.filter.workers";
 

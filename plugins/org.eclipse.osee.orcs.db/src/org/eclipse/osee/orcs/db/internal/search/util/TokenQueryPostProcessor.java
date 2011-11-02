@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -24,8 +25,8 @@ public class TokenQueryPostProcessor extends AbstractQueryPostProcessor {
 
    private final TaggingEngine engine;
 
-   public TokenQueryPostProcessor(Log logger, TaggingEngine engine) {
-      super(logger);
+   public TokenQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, TaggingEngine engine) {
+      super(logger, executorAdmin);
       this.engine = engine;
    }
 

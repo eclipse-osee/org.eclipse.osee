@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
-import java.util.concurrent.Callable;
+import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
@@ -19,8 +21,41 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public interface QueryPostProcessor extends Callable<List<Match<ReadableArtifact, ReadableAttribute<?>>>> {
+public abstract class QueryPostProcessor extends CancellableCallable<List<Match<ReadableArtifact, ReadableAttribute<?>>>> {
 
-   void setItemsToProcess(List<ReadableArtifact> artifacts);
+   private final Log logger;
+   private List<ReadableArtifact> artifacts;
 
+   protected QueryPostProcessor(Log logger) {
+      this.logger = logger;
+   }
+
+   public void setItemsToProcess(List<ReadableArtifact> artifacts) {
+      this.artifacts = artifacts;
+   }
+
+   protected List<ReadableArtifact> getItemsToProcess() {
+      return artifacts;
+   }
+
+   protected Log getLogger() {
+      return logger;
+   }
+
+   @Override
+   public final List<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
+      long startTime = 0;
+      if (logger.isTraceEnabled()) {
+         startTime = System.currentTimeMillis();
+      }
+      List<Match<ReadableArtifact, ReadableAttribute<?>>> results = innerCall();
+      checkForCancelled();
+      if (logger.isTraceEnabled()) {
+         logger.trace("Query post processor processed [%s] items in [%s]", getItemsToProcess().size(),
+            Lib.getElapseString(startTime));
+      }
+      return results;
+   }
+
+   protected abstract List<Match<ReadableArtifact, ReadableAttribute<?>>> innerCall() throws Exception;
 }

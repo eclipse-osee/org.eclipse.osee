@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.eclipse.osee.executor.admin.internal.ExecutorAdminImpl;
 
 /**
  * @author Roberto E. Escobar
@@ -26,54 +27,61 @@ public final class WorkUtility {
       // Utility Class
    }
 
-   public static interface PartitionFactory<T> {
+   public static interface PartitionFactory<INPUT, OUTPUT> {
 
-      Callable<Collection<T>> createWorker(Collection<T> toProcess);
+      Callable<Collection<OUTPUT>> createWorker(Collection<INPUT> toProcess);
 
    }
 
-   public static <T> List<Callable<Collection<T>>> partitionWork(Collection<T> work, PartitionFactory<T> factory) throws Exception {
-      List<Callable<Collection<T>>> callables = new LinkedList<Callable<Collection<T>>>();
+   public static <INPUT, OUTPUT> List<Callable<Collection<OUTPUT>>> partitionWork(Collection<INPUT> work, PartitionFactory<INPUT, OUTPUT> factory) throws Exception {
+      List<Callable<Collection<OUTPUT>>> callables = new LinkedList<Callable<Collection<OUTPUT>>>();
 
       if (!work.isEmpty()) {
          int numProcessors = Runtime.getRuntime().availableProcessors();
          int partitionSize = work.size() / numProcessors;
 
-         List<T> subList = new LinkedList<T>();
+         List<INPUT> subList = new LinkedList<INPUT>();
 
          int index = 0;
 
-         Iterator<T> iterator = work.iterator();
+         Iterator<INPUT> iterator = work.iterator();
          while (iterator.hasNext()) {
             subList.add(iterator.next());
 
             if (index != 0 && partitionSize != 0 && (index % partitionSize == 0)) {
-               Callable<Collection<T>> worker = factory.createWorker(subList);
+               Callable<Collection<OUTPUT>> worker = factory.createWorker(subList);
                callables.add(worker);
-               subList = new LinkedList<T>();
+               subList = new LinkedList<INPUT>();
             }
             index++;
          }
          // Anything left over ?
          if (!subList.isEmpty()) {
-            Callable<Collection<T>> worker = factory.createWorker(subList);
+            Callable<Collection<OUTPUT>> worker = factory.createWorker(subList);
             callables.add(worker);
          }
       }
       return callables;
    }
 
-   public static <T> List<Future<Collection<T>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<T> factory, Collection<T> items) throws Exception {
-      return partitionAndScheduleWork(executorAdmin, executorId, factory, items, null);
-
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items) throws Exception {
+      return partitionAndScheduleWork(executorAdmin, ExecutorAdminImpl.DEFAULT_EXECUTOR, factory, items, null);
    }
 
-   public static <T> List<Future<Collection<T>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<T> factory, Collection<T> items, ExecutionCallback<Collection<T>> callback) throws Exception {
-      List<Future<Collection<T>>> futures = new LinkedList<Future<Collection<T>>>();
-      List<Callable<Collection<T>>> callables = partitionWork(items, factory);
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items, ExecutionCallback<Collection<OUTPUT>> callback) throws Exception {
+      return partitionAndScheduleWork(executorAdmin, ExecutorAdminImpl.DEFAULT_EXECUTOR, factory, items, callback);
+   }
+
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items) throws Exception {
+      return partitionAndScheduleWork(executorAdmin, executorId, factory, items, null);
+   }
+
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items, ExecutionCallback<Collection<OUTPUT>> callback) throws Exception {
+      List<Future<Collection<OUTPUT>>> futures = new LinkedList<Future<Collection<OUTPUT>>>();
+      List<Callable<Collection<OUTPUT>>> callables = partitionWork(items, factory);
       if (!callables.isEmpty()) {
-         for (Callable<Collection<T>> callable : callables) {
-            Future<Collection<T>> future = executorAdmin.schedule(executorId, callable, callback);
+         for (Callable<Collection<OUTPUT>> callable : callables) {
+            Future<Collection<OUTPUT>> future = executorAdmin.schedule(executorId, callable, callback);
             futures.add(future);
          }
       }

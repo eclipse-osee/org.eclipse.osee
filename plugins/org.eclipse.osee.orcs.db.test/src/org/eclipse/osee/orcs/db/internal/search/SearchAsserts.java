@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -79,7 +80,7 @@ public final class SearchAsserts {
       return locations;
    }
 
-   public static void assertHandler(SqlHandler actual, Class<?> type, CriteriaPriority priority, Log logger, IdentityService idService, TaggingEngine taggingEngine, DataStoreTypeCache caches) {
+   public static void assertHandler(SqlHandler actual, Class<?> type, CriteriaPriority priority, Log logger, IdentityService idService, TaggingEngine taggingEngine, DataStoreTypeCache caches, ExecutorAdmin executorAdmin) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());
@@ -87,5 +88,6 @@ public final class SearchAsserts {
       Assert.assertEquals(taggingEngine, actual.getTaggingEngine());
       Assert.assertEquals(caches, actual.getTypeCaches());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
+      Assert.assertEquals(executorAdmin, actual.getExecutorAdmin());
    }
 }

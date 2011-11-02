@@ -35,6 +35,8 @@ import org.eclipse.osee.orcs.search.ResultSet;
  */
 public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> {
 
+   private Collection<QueryPostProcessor> processors;
+
    public SearchMatchesCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
       super(logger, queryEngine, objectLoader, sessionContext, loadLevel, criteriaSet, options);
    }
@@ -51,7 +53,7 @@ public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Matc
 
       Collection<QueryPostProcessor> processors = queryContext.getPostProcessors();
       if (processors.isEmpty()) {
-         processors = Collections.<QueryPostProcessor> singleton(new DefaultQueryPostProcessor());
+         processors = Collections.<QueryPostProcessor> singleton(new DefaultQueryPostProcessor(getLogger()));
       }
       for (QueryPostProcessor processor : processors) {
          processor.setItemsToProcess(artifacts);
@@ -59,5 +61,15 @@ public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Matc
          results.addAll(processor.call());
       }
       return new ResultSetList<Match<ReadableArtifact, ReadableAttribute<?>>>(results);
+   }
+
+   @Override
+   public void setCancel(boolean isCancelled) {
+      super.setCancel(isCancelled);
+      if (processors != null && !processors.isEmpty()) {
+         for (QueryPostProcessor processor : processors) {
+            processor.setCancel(true);
+         }
+      }
    }
 }
