@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -66,6 +68,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.util.tracker.ServiceTracker;
+import com.google.common.collect.MapMaker;
 
 /**
  * @author Jeff C. Phillips
@@ -104,6 +107,8 @@ public class AccessControlService implements IAccessControlService {
    private final Map<Integer, Integer> lockedObjectToSubject = new HashMap<Integer, Integer>(); // subject, permission
    private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
       new HashCollection<Integer, PermissionEnum>(true);
+   private final Map<Pair<IBasicArtifact<?>, Collection<?>>, AccessDataQuery> accessDataCache =
+      new MapMaker().expiration(1, TimeUnit.HOURS).makeMap();;
 
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
@@ -281,14 +286,19 @@ public class AccessControlService implements IAccessControlService {
 
    @Override
    public AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
-      ILifecycleService service = getLifecycleService();
-      AccessData accessData = new AccessData();
-      if (!DbUtil.isDbInit()) {
-         AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
-         IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
-         Operations.checkForErrorStatus(status);
+      Pair<IBasicArtifact<?>, Collection<?>> key =
+         new Pair<IBasicArtifact<?>, Collection<?>>(userArtifact, objectsToCheck);
+      if (!accessDataCache.containsKey(key)) {
+         ILifecycleService service = getLifecycleService();
+         AccessData accessData = new AccessData();
+         if (!DbUtil.isDbInit()) {
+            AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
+            IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
+            Operations.checkForErrorStatus(status);
+         }
+         accessDataCache.put(key, new AccessDataQuery(accessData));
       }
-      return new AccessDataQuery(accessData);
+      return accessDataCache.get(key);
    }
 
    private ILifecycleService getLifecycleService() throws OseeCoreException {

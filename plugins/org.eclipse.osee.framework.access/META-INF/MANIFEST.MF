@@ -6,7 +6,8 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Activator: org.eclipse.osee.framework.access.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.runtime,
+Import-Package: com.google.common.collect,
+ org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
