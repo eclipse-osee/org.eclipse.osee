@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
@@ -33,27 +33,14 @@ import org.eclipse.osee.orcs.search.ResultSet;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchMatchesCallable extends CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> {
-   private final QueryEngine queryEngine;
-   private final OrcsObjectLoader objectLoader;
+public class SearchMatchesCallable extends AbstractSearchCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> {
 
-   private final SessionContext sessionContext;
-   private final LoadLevel loadLevel;
-   private final CriteriaSet criteriaSet;
-   private final QueryOptions options;
-
-   public SearchMatchesCallable(QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
-      super();
-      this.queryEngine = queryEngine;
-      this.objectLoader = objectLoader;
-      this.sessionContext = sessionContext;
-      this.loadLevel = loadLevel;
-      this.criteriaSet = criteriaSet;
-      this.options = options;
+   public SearchMatchesCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
+      super(logger, queryEngine, objectLoader, sessionContext, loadLevel, criteriaSet, options);
    }
 
    @Override
-   public ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> call() throws Exception {
+   protected ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>> innerCall() throws Exception {
       QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
       LoadOptions loadOptions = new LoadOptions(options.isHistorical(), options.areDeletedIncluded(), loadLevel);
       checkForCancelled();

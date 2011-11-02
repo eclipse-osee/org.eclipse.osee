@@ -79,7 +79,7 @@ public class OrcsApiImpl implements OrcsApi {
             dataStoreTypeCache.getArtifactTypeCache(), cacheService.getBranchCache());
 
       criteriaFctry = new CriteriaFactory(getDataStoreTypeCache().getAttributeTypeCache());
-      callableQueryFactory = new CallableQueryFactory(queryEngine, objectLoader);
+      callableQueryFactory = new CallableQueryFactory(logger, queryEngine, objectLoader);
    }
 
    public void stop() {

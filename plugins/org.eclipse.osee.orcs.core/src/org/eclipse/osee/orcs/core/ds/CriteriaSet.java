@@ -63,4 +63,8 @@ public class CriteriaSet implements Cloneable, Iterable<Criteria> {
       return getCriterias().iterator();
    }
 
+   @Override
+   public String toString() {
+      return "CriteriaSet [branch=" + branch + ", criterias=" + criterias + "]";
+   }
 }

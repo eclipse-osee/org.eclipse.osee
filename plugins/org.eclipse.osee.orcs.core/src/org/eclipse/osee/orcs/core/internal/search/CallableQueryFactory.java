@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
@@ -30,25 +31,28 @@ import org.eclipse.osee.orcs.search.ResultSet;
  */
 public class CallableQueryFactory {
 
+   private final Log logger;
    private final QueryEngine queryEngine;
    private final OrcsObjectLoader objectLoader;
 
-   public CallableQueryFactory(QueryEngine queryEngine, OrcsObjectLoader objectLoader) {
+   public CallableQueryFactory(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader) {
       super();
+      this.logger = logger;
       this.queryEngine = queryEngine;
       this.objectLoader = objectLoader;
    }
 
    public CancellableCallable<Integer> createCount(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      return new SearchCountCallable(queryEngine, objectLoader, sessionContext, LoadLevel.ATTRIBUTE, criteriaSet,
-         options);
+      return new SearchCountCallable(logger, queryEngine, objectLoader, sessionContext, LoadLevel.ATTRIBUTE,
+         criteriaSet, options);
    }
 
    public CancellableCallable<ResultSet<ReadableArtifact>> createSearch(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      return new SearchCallable(queryEngine, objectLoader, sessionContext, LoadLevel.FULL, criteriaSet, options);
+      return new SearchCallable(logger, queryEngine, objectLoader, sessionContext, LoadLevel.FULL, criteriaSet, options);
    }
 
    public CancellableCallable<ResultSet<Match<ReadableArtifact, ReadableAttribute<?>>>> createSearchWithMatches(SessionContext sessionContext, CriteriaSet criteriaSet, QueryOptions options) {
-      return new SearchMatchesCallable(queryEngine, objectLoader, sessionContext, LoadLevel.FULL, criteriaSet, options);
+      return new SearchMatchesCallable(logger, queryEngine, objectLoader, sessionContext, LoadLevel.FULL, criteriaSet,
+         options);
    }
 }

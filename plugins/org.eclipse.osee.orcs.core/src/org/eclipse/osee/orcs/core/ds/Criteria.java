@@ -21,4 +21,9 @@ public class Criteria {
    public void checkValid(QueryOptions options) throws OseeCoreException {
       // For subclasses to implement
    }
+
+   @Override
+   public String toString() {
+      return getClass().getSimpleName();
+   }
 }

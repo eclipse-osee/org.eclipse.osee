@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.internal.search.callable;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
@@ -31,27 +31,14 @@ import org.eclipse.osee.orcs.search.ResultSet;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchCallable extends CancellableCallable<ResultSet<ReadableArtifact>> {
-   private final QueryEngine queryEngine;
-   private final OrcsObjectLoader objectLoader;
+public class SearchCallable extends AbstractSearchCallable<ResultSet<ReadableArtifact>> {
 
-   private final SessionContext sessionContext;
-   private final LoadLevel loadLevel;
-   private final CriteriaSet criteriaSet;
-   private final QueryOptions options;
-
-   public SearchCallable(QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
-      super();
-      this.queryEngine = queryEngine;
-      this.objectLoader = objectLoader;
-      this.sessionContext = sessionContext;
-      this.loadLevel = loadLevel;
-      this.criteriaSet = criteriaSet;
-      this.options = options;
+   public SearchCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
+      super(logger, queryEngine, objectLoader, sessionContext, loadLevel, criteriaSet, options);
    }
 
    @Override
-   public ResultSet<ReadableArtifact> call() throws Exception {
+   protected ResultSet<ReadableArtifact> innerCall() throws Exception {
       QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
       LoadOptions loadOptions = new LoadOptions(options.isHistorical(), options.areDeletedIncluded(), loadLevel);
       checkForCancelled();

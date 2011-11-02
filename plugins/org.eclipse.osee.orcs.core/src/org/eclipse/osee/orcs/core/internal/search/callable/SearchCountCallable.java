@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.internal.search.callable;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
@@ -30,27 +30,14 @@ import org.eclipse.osee.orcs.search.Match;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchCountCallable extends CancellableCallable<Integer> {
-   private final QueryEngine queryEngine;
-   private final OrcsObjectLoader objectLoader;
+public class SearchCountCallable extends AbstractSearchCallable<Integer> {
 
-   private final SessionContext sessionContext;
-   private final LoadLevel loadLevel;
-   private final CriteriaSet criteriaSet;
-   private final QueryOptions options;
-
-   public SearchCountCallable(QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
-      super();
-      this.queryEngine = queryEngine;
-      this.objectLoader = objectLoader;
-      this.sessionContext = sessionContext;
-      this.loadLevel = loadLevel;
-      this.criteriaSet = criteriaSet;
-      this.options = options;
+   public SearchCountCallable(Log logger, QueryEngine queryEngine, OrcsObjectLoader objectLoader, SessionContext sessionContext, LoadLevel loadLevel, CriteriaSet criteriaSet, QueryOptions options) {
+      super(logger, queryEngine, objectLoader, sessionContext, loadLevel, criteriaSet, options);
    }
 
    @Override
-   public Integer call() throws Exception {
+   protected Integer innerCall() throws Exception {
       int count = -1;
       if (criteriaSet.hasCriteriaType(CriteriaAttributeKeyword.class)) {
          QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), criteriaSet, options);
