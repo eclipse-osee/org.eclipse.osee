@@ -23,7 +23,7 @@
 
 		<module>../../plugins/org.eclipse.osee.executor.admin</module>
 		<module>../../plugins/org.eclipse.osee.executor.admin.test</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.framework.jdk.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.jdk.core.test</module>
 
@@ -37,6 +37,9 @@
 		<module>../../plugins/org.eclipse.osee.vaadin.widgets</module>
 		<module>../../plugins/org.eclipse.osee.vaadin.themes</module>
 
+		<module>../../plugins/org.eclipse.osee.display.mvp</module>
+		<module>../../plugins/org.eclipse.osee.display.mvp.test</module>
+		
 		<module>../../plugins/org.eclipse.osee.rest.admin</module>
 
 		<module>../../features/org.eclipse.osee.x.core.external.feature</module>
