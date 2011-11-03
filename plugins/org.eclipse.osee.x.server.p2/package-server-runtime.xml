@@ -169,6 +169,7 @@ osee.log.default=INFO
 		<attribute name="serverport" />
 		<attribute name="connection.id" />
 		<attribute name="launcher" />
+		<attribute name="session.timeout" default="3600" />
 		<attribute name="serverMaxMem" default="1024m" />
 		<attribute name="executable" default="true" />
 		<attribute name="extraVMArgs" default=" " />
@@ -177,6 +178,7 @@ osee.log.default=INFO
 -Xmx@{serverMaxMem} \
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dosee.db.connection.id=@{connection.id} \
+-Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=@{session.timeout} \
 @{extraVMArgs} \
 -jar plugins/@{launcher} -console -consoleLog -clean
 </echo>
