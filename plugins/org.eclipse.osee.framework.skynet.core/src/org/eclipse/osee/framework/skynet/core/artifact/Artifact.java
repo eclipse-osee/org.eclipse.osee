@@ -673,10 +673,23 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       }
    }
 
+   /**
+    * Deletes the first attribute found of the given type and value
+    */
    public final void deleteAttribute(IAttributeType attributeType, Object value) throws OseeCoreException {
       for (Attribute<Object> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
             attribute.delete();
+            break;
+         }
+      }
+   }
+
+   public final void deleteAttribute(int attributeId) throws OseeCoreException {
+      for (Attribute<?> attribute : getAttributes()) {
+         if (attribute.getId() == attributeId) {
+            attribute.delete();
+            break;
          }
       }
    }
