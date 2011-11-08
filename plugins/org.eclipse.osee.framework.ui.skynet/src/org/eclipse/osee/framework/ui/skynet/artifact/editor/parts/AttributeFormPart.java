@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -25,8 +24,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -39,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetAccessDecorationProvi
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.AttributeXWidgetManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DynamicXWidgetLayoutData;
@@ -124,8 +122,8 @@ public class AttributeFormPart extends AbstractFormPart {
 
       for (IAttributeType attributeType : attributeTypes) {
          Composite internalComposite;
-         if (shouldEncloseInSection(attributeType)) {
-            internalComposite = createAttributeTypeControlsInSection(composite, attributeType, false, 15);
+         if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType)) {
+            internalComposite = createAttributeTypeControlsInSection(composite, attributeType, isEditable, 15);
          } else {
             internalComposite = createAttributeTypeControls(composite, artifact, attributeType, isEditable, false, 20);
          }
@@ -134,11 +132,6 @@ public class AttributeFormPart extends AbstractFormPart {
          xWidgetsMap.put(attributeType, internalComposite);
       }
       refresh();
-   }
-
-   private boolean shouldEncloseInSection(IAttributeType attributeType) throws OseeCoreException {
-      return CoreAttributeTypes.RelationOrder.equals(attributeType) || AttributeTypeManager.isBaseTypeCompatible(
-         WordAttribute.class, attributeType);
    }
 
    @Override

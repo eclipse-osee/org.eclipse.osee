@@ -39,6 +39,10 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       return defaultData;
    }
 
+   public static boolean useMultiLineWidget(IAttributeType attributeType) throws OseeCoreException {
+      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder);
+   }
+
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
       List<DynamicXWidgetLayoutData> xWidgetLayoutData = new ArrayList<DynamicXWidgetLayoutData>();
@@ -50,7 +54,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       String xWidgetName;
       try {
          xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(attributeType);
-         if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
+         if (useMultiLineWidget(attributeType)) {
             xWidgetName = "XStackedDam";
             defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
          }
