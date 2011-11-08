@@ -20,8 +20,11 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -244,7 +247,11 @@ public abstract class XStackedWidget<T> extends XLabel {
    }
 
    public void addPage(T value) {
-      stackedControl.addPage(value);
+      addPage(GUID.create(), value);
+   }
+
+   public void addPage(String pageId, T value) {
+      stackedControl.addPage(pageId, value);
    }
 
    protected String getCurrentPageId() {
@@ -286,7 +293,7 @@ public abstract class XStackedWidget<T> extends XLabel {
 
    protected abstract void createPage(String id, Composite parent, T value);
 
-   protected abstract void onRemovePage(String id);
+   protected abstract void onRemovePage(String id) throws OseeCoreException;
 
    private final class Back extends Action {
       public Back() {
@@ -326,7 +333,7 @@ public abstract class XStackedWidget<T> extends XLabel {
          if (stackedControl.getTotalPages() >= maxPage) {
             MessageDialog.openError(AWorkbench.getActiveShell(), "Add Attribute", "Already at maximum allowed.");
          } else {
-            stackedControl.addPage((T) null);
+            addPage((T) null);
          }
       }
    }
@@ -343,7 +350,11 @@ public abstract class XStackedWidget<T> extends XLabel {
          if (stackedControl.getTotalPages() <= minPage) {
             MessageDialog.openError(AWorkbench.getActiveShell(), "Remove Attribute", "Already at minimum allowed.");
          } else {
-            stackedControl.removePage();
+            try {
+               stackedControl.removePage();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       }
    }
@@ -439,27 +450,25 @@ public abstract class XStackedWidget<T> extends XLabel {
          updateCurrentPageLabel();
       }
 
-      private void addPage(T value) {
+      private void addPage(String pageId, T value) {
          int numberOfPages = getTotalPages();
 
-         String id = GUID.create();
-         if (pageIds.add(id)) {
+         if (pageIds.add(pageId)) {
             Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
             composite.setLayout(new GridLayout());
             composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
-            createPage(id, composite, value);
-            stackedViewer.addControl(id, composite);
+            createPage(pageId, composite, value);
+            stackedViewer.addControl(pageId, composite);
             setCurrentPage(numberOfPages);
             validate();
             notifyXModifiedListeners();
          } else {
             setMessage(IStatus.WARNING, "Add page error - page at index [%s] already exists", getCurrentPageIndex());
          }
-
       }
 
-      private void removePage() {
+      private void removePage() throws OseeCoreException {
          String pageId = pageIds.remove(getCurrentPageIndex());
          if (pageId != null) {
             onRemovePage(pageId);

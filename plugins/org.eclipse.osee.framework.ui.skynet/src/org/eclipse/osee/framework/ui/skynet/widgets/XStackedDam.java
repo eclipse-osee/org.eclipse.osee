@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BinaryBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
@@ -88,9 +89,16 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       super.createControls(parent, horizontalSpan);
       final Collection<String> values = new ArrayList<String>();
       try {
-         values.addAll(getStored());
-         for (int index = 0; index < values.size(); index++) {
-            addPage("");
+         boolean attributeTypeIsPlainTextEditable = false;
+         for (Attribute<Object> attribute : getArtifact().getAttributes(getAttributeType())) {
+            String value;
+            if (attributeTypeIsPlainTextEditable) {
+               value = attribute.getValue().toString();
+            } else {
+               value = attribute.getDisplayableString();
+            }
+            addPage(String.valueOf(attribute.getId()), value);
+            values.add(value);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -180,8 +188,9 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
-   protected void onRemovePage(String id) {
+   protected void onRemovePage(String id) throws OseeCoreException {
       xWidgets.remove(id);
+      getArtifact().deleteAttribute(Integer.parseInt(id));
    }
 
    @Override
