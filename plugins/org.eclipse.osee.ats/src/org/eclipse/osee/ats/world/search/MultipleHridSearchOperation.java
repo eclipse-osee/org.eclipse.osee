@@ -89,7 +89,8 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
          RendererManager.openInJob(new ArrayList<Artifact>(resultNonAtsArts), PresentationType.DEFAULT_OPEN);
       }
       if (resultAtsArts.size() > 0) {
-         // If requested world editor and it's already been opened there, don't process other arts in editors
+         // If requested world editor and it's already been opened there,
+         // don't process other arts in editors
          if (data.getWorldEditor() != null && data.getAtsEditor() == AtsEditor.WorldEditor) {
             data.getWorldEditor().getWorldComposite().load(getName(), resultAtsArts, TableLoadOption.None);
          } else {
@@ -104,66 +105,64 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
       }
    }
 
-   private void openChangeReport(Set<Artifact> artifacts, final String enteredIds) {
-      try {
-         final Set<Artifact> addedArts = new HashSet<Artifact>();
-         for (Artifact artifact : artifacts) {
-            if (artifact.isOfType(AtsArtifactTypes.Action)) {
-               for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-                  if (AtsBranchManagerCore.isCommittedBranchExists(team) || AtsBranchManagerCore.isWorkingBranchInWork(team)) {
-                     addedArts.add(team);
-                  }
+   private void openChangeReport(Set<Artifact> artifacts, final String enteredIds) throws OseeCoreException {
+      final Set<Artifact> addedArts = new HashSet<Artifact>();
+      for (Artifact artifact : artifacts) {
+         if (artifact.isOfType(AtsArtifactTypes.Action)) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
+               if (AtsBranchManagerCore.isCommittedBranchExists(team) || AtsBranchManagerCore.isWorkingBranchInWork(team)) {
+                  addedArts.add(team);
                }
             }
+         }
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow) && (AtsBranchManagerCore.isCommittedBranchExists(teamArt) || AtsBranchManagerCore.isWorkingBranchInWork(teamArt))) {
+            if (AtsBranchManagerCore.isCommittedBranchExists(teamArt) || AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
                addedArts.add(artifact);
             }
          }
-         if (addedArts.size() == 1) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  for (Artifact art : addedArts) {
-                     if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-                        AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) art));
-                     }
+      }
+      if (addedArts.size() == 1) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               for (Artifact art : addedArts) {
+                  if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+                     AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) art));
                   }
                }
-            });
-         } else if (addedArts.size() > 0) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  ArtifactDecoratorPreferences artDecorator = new ArtifactDecoratorPreferences();
-                  artDecorator.setShowArtBranch(true);
-                  artDecorator.setShowArtType(true);
-                  SimpleCheckFilteredTreeDialog dialog =
-                     new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
-                        "Select available Change Reports to run.", new ArrayTreeContentProvider(),
-                        new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0, Integer.MAX_VALUE);
-                  dialog.setInput(addedArts);
-                  if (dialog.open() == 0) {
-                     if (dialog.getResult().length == 0) {
-                        return;
-                     }
-                     for (Object obj : dialog.getResult()) {
-                        AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) obj));
-                     }
+            }
+         });
+      } else if (addedArts.size() > 0) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               ArtifactDecoratorPreferences artDecorator = new ArtifactDecoratorPreferences();
+               artDecorator.setShowArtBranch(true);
+               artDecorator.setShowArtType(true);
+               SimpleCheckFilteredTreeDialog dialog =
+                  new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
+                     "Select available Change Reports to run.", new ArrayTreeContentProvider(),
+                     new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0, Integer.MAX_VALUE);
+               dialog.setInput(addedArts);
+               if (dialog.open() == 0) {
+                  if (dialog.getResult().length == 0) {
+                     return;
+                  }
+                  for (Object obj : dialog.getResult()) {
+                     AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) obj));
                   }
                }
-            });
-         } else {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  MessageDialog.openInformation(Displays.getActiveShell(), "Open Change Reports",
-                     "No change report exists for " + enteredIds);
-               }
-            });
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         });
+      } else {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               MessageDialog.openInformation(Displays.getActiveShell(), "Open Change Reports",
+                  "No change report exists for " + enteredIds);
+            }
+         });
       }
    }
 
