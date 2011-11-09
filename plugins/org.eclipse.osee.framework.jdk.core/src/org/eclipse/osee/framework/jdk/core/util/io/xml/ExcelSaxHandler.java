@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.util.Arrays;
-
 import org.xml.sax.Attributes;
 
 /**
@@ -19,6 +18,8 @@ import org.xml.sax.Attributes;
  */
 public class ExcelSaxHandler extends AbstractSaxHandler {
    private String[] row;
+   private StringBuilder cellData;
+   private boolean inCellData = false;
    private int cellIndex;
    private int rowIndex;
    private final RowProcessor rowProcessor;
@@ -59,6 +60,8 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
          }
       } else if (localName.equalsIgnoreCase("Cell")) {
          String indexStr = attributes.getValue("ss:Index");
+         cellData = new StringBuilder();
+         inCellData = true;
          if (indexStr != null) {
             cellIndex = Integer.parseInt(indexStr) - 1; // translate from Excel's 1-based index to
             // our 0-based index
@@ -86,8 +89,13 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
 
    @Override
    public void endElementFound(String uri, String localName, String qName) throws Exception {
+      if (inCellData) {
+         cellData.append(getContents());
+      }
       if (localName.equalsIgnoreCase("Data")) {
-         String contentStr = getContents();
+         inCellData = false;
+         String contentStr = cellData.toString();
+         cellData = null;
          if (!contentStr.equals(ExcelXmlWriter.blobMessage)) {
             if (contentStr.equals(ExcelXmlWriter.defaultEmptyString)) {
                row[cellIndex] = "";
