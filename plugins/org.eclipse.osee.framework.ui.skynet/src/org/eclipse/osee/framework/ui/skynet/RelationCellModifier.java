@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -38,7 +41,17 @@ public class RelationCellModifier implements ICellModifier {
    public boolean canModify(Object element, String property) {
       if (element instanceof WrapperForRelationLink) {
          WrapperForRelationLink relLink = (WrapperForRelationLink) element;
-         return !(relLink.getArtifactA().isReadOnly() || relLink.getArtifactB().isReadOnly());
+         RelationTypeSide rts = new RelationTypeSide(relLink.getRelationType(), relLink.getRelationSide());
+         boolean canModify = false;
+         AccessPolicy policyHandlerService = Activator.getInstance().getAccessPolicy();
+         try {
+            canModify =
+               policyHandlerService.canRelationBeModified(relLink.getArtifactA(),
+                  Arrays.asList(relLink.getArtifactB()), rts, Level.INFO).matched();
+         } catch (OseeCoreException ex) {
+            canModify = false;
+         }
+         return canModify;
       }
       return false;
    }
