@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.health;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -187,8 +188,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             //            elapsedTime =
             //               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
             //                  artIdLists.size()));
-            Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
+            Collection<Artifact> allArtifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
             //            elapsedTime.end();
+
+            // remove all deleted/purged artifacts first
+            List<Artifact> artifacts = new ArrayList<Artifact>(allArtifacts.size());
+            for (Artifact artifact : allArtifacts) {
+               if (!artifact.isDeleted()) {
+                  artifacts.add(artifact);
+               }
+            }
             count += artifacts.size();
 
             testArtifactIds(artifacts);
@@ -313,6 +322,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
+            if (artifact.isDeleted()) {
+               continue;
+            }
             // Check that HRIDs not duplicated on Common branch
             if (hrids.contains(artifact.getHumanReadableId())) {
                testNameToResultsMap.put("testArtifactIds",
@@ -351,6 +363,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testVersionArtifacts(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
             Artifact verArt = artifact;
             try {
@@ -372,6 +387,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testTeamDefinitions(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact art : artifacts) {
+         if (art.isDeleted()) {
+            continue;
+         }
          if (art instanceof TeamDefinitionArtifact) {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
             try {
@@ -393,6 +411,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testTeamWorkflows(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact art : artifacts) {
+         if (art.isDeleted()) {
+            continue;
+         }
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             try {
@@ -416,6 +437,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsBranchManager(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact art : artifacts) {
+         if (art.isDeleted()) {
+            continue;
+         }
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             try {
@@ -481,6 +505,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public static void testAtsAttributeValues(SkynetTransaction transaction, HashCollection<String, String> testNameToResultsMap, boolean fixAttributeValues, Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          try {
             // Test for null attribute values
             for (Attribute<?> attr : artifact.getAttributes()) {
@@ -512,6 +539,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private static void checkAndResolveDuplicateAttributes(Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
       for (AttributeType attrType : artifact.getAttributeTypesUsed()) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          int count = artifact.getAttributeCount(attrType);
          if (count > attrType.getMaxOccurrences()) {
             String result =
@@ -552,6 +582,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          try {
             if (artifact.isOfType(AtsArtifactTypes.Action) && ActionManager.getTeams(artifact).isEmpty()) {
                testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
@@ -568,6 +601,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             try {
                if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
@@ -586,6 +622,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsWorkflowsHaveZeroOrOneVersion(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          try {
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
@@ -608,6 +647,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testTasksHaveParentWorkflow(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          try {
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
                TaskArtifact taskArtifact = (TaskArtifact) artifact;
@@ -634,6 +676,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    public static void testActionableItemToTeamDefinition(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          try {
             if (artifact instanceof ActionableItemArtifact) {
                ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
@@ -654,6 +699,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testReviewsHaveValidDefectAndRoleXml(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          if (artifact instanceof AbstractReviewArtifact) {
             AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
             try {
@@ -681,6 +729,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testReviewsHaveParentWorkflowOrActionableItems(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
+         if (artifact.isDeleted()) {
+            continue;
+         }
          try {
             if (artifact instanceof AbstractReviewArtifact) {
                AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
@@ -701,6 +752,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsLogs(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact art : artifacts) {
+         if (art.isDeleted()) {
+            continue;
+         }
          try {
             if (art instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
@@ -787,6 +841,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
       for (Artifact art : artifacts) {
+         if (art.isDeleted()) {
+            continue;
+         }
          if (art instanceof AbstractWorkflowArtifact) {
             try {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
