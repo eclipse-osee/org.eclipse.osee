@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.internal;
 
+import org.eclipse.osee.display.view.web.internal.search.OseeRoadMapAndNavigation;
 import org.eclipse.osee.vaadin.widgets.AccountMenuBar;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.eclipse.osee.vaadin.widgets.Navigator;
@@ -29,7 +30,7 @@ import com.vaadin.ui.Window;
 public class WindowFactory {
 
    public Window createNavigatableWindow(HasViews provider) {
-      final Navigator navigator = new Navigator();
+      final Navigator navigator = OseeRoadMapAndNavigation.getNavigator();
 
       VerticalLayout layout = new VerticalLayout();
       final Window w = new Window("OSEE", layout);

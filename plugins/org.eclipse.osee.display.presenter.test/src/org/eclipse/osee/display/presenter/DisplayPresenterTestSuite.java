@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter;
 
-import org.junit.Assert;
+import org.eclipse.osee.display.presenter.internal.WebProgramsPresenterTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({//
+WebProgramsPresenterTest.class,//
+})
 /**
- * @author Roberto E. Escobar
+ * @author John Misinco
  */
-public class DummyTest {
+public class DisplayPresenterTestSuite {
 
-   @org.junit.Test
-   public void testOne() {
-      Assert.assertEquals("dummy test", 1, 1);
-   }
 }

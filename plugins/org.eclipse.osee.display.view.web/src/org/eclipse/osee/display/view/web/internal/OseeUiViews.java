@@ -12,9 +12,9 @@ package org.eclipse.osee.display.view.web.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.display.view.web.internal.example.View1;
-import org.eclipse.osee.display.view.web.internal.example.View2;
-import org.eclipse.osee.display.view.web.internal.example.View3;
+import org.eclipse.osee.display.view.web.internal.search.OseeArtifactView;
+import org.eclipse.osee.display.view.web.internal.search.OseeSearchHomeView;
+import org.eclipse.osee.display.view.web.internal.search.OseeSearchResultsView;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.eclipse.osee.vaadin.widgets.Navigator;
 
@@ -27,10 +27,12 @@ public class OseeUiViews implements HasViews {
    public List<Class<? extends Navigator.View>> getViews() {
       // Dynamic View Registration?
       List<Class<? extends Navigator.View>> views = new ArrayList<Class<? extends Navigator.View>>();
-      //      views.add(SearchView1.class);
-      views.add(View1.class);
-      views.add(View2.class);
-      views.add(View3.class);
+      //      views.add(View1.class);
+      //      views.add(View2.class);
+      //      views.add(View3.class);
+      views.add(OseeSearchHomeView.class);
+      views.add(OseeSearchResultsView.class);
+      views.add(OseeArtifactView.class);
       return views;
    }
 }

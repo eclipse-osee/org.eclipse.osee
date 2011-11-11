@@ -24,6 +24,7 @@ public class OseeUiApplication extends Application {
 
    @Override
    public void init() {
+      setTheme("osee");
       WindowFactory factory = new WindowFactory();
       HasViews viewProvider = new OseeUiViews();
       Window mainWindow = factory.createNavigatableWindow(viewProvider);

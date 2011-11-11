@@ -35,6 +35,8 @@ public final class AtsArtifactToken {
       "Work Widgets", CoreArtifactTypes.Folder);
    public static IArtifactToken WorkFlowsFolder = TokenFactory.createArtifactToken("AAABGnncZ_4AAo+3D0sGfw",
       "Work Flows", CoreArtifactTypes.Folder);
+   public static IArtifactToken WebPrograms = TokenFactory.createArtifactToken("Awsk_RtncCochcuSxagA", "Web Programs",
+      CoreArtifactTypes.UniversalGroup);
 
    private AtsArtifactToken() {
       // Constants

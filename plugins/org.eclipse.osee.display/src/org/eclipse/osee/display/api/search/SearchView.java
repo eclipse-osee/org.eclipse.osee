@@ -3,7 +3,8 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.display.search;
+package org.eclipse.osee.display.api.search;
+
 
 public interface SearchView {
 
