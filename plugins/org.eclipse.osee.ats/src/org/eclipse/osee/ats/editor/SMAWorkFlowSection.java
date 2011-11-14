@@ -94,7 +94,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
       section = getSection();
       try {
-         section.setText(getCurrentStateTitle());
+         section.setText(getCurrentStateTitle(sma, statePage.getPageName(), isEditable, isCurrentState,
+            statePage.isCancelledPage()));
          if (sma.isInState(statePage)) {
             section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
             section.setBackground(AtsUtil.ACTIVE_COLOR);
@@ -338,13 +339,13 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private String getCurrentStateTitle() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer(statePage.getPageName());
+   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName, boolean isEditable, boolean isCurrentState, boolean isCancelledState) throws OseeCoreException {
+      StringBuffer sb = new StringBuffer(statePageName);
       if (isEditable && !sma.isCompleted() && !sma.isCancelled()) {
          sb.append(" - Current State");
       }
       if (sma.isCancelled()) {
-         if (statePage.isCancelledPage()) {
+         if (isCancelledState) {
             if (Strings.isValid(sma.getCancelledReason())) {
                sb.append(" - Reason: ");
                sb.append(Strings.truncate(sma.getCancelledReason(), 50, true));
@@ -358,7 +359,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.getCompletedDate()));
-            LogItem item = sma.getStateStartedData(statePage);
+            LogItem item = sma.getStateStartedData(statePageName);
             sb.append(" by ");
             sb.append(item.getUser().getName());
          } else if (sma.isCancelled()) {
@@ -367,7 +368,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()));
-            LogItem item = sma.getStateStartedData(statePage);
+            LogItem item = sma.getStateStartedData(statePageName);
             sb.append(" by ");
             sb.append(item.getUser().getName());
          }
@@ -377,11 +378,11 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       } else {
          LogItem item = null;
-         if (sma.isCancelled() && sma.getCancelledFromState().equals(statePage.getPageName())) {
-            item = sma.getStateCancelledData(statePage);
+         if (sma.isCancelled() && sma.getCancelledFromState().equals(statePageName)) {
+            item = sma.getStateCancelledData(statePageName);
             sb.append(" - State Cancelled ");
          } else {
-            item = sma.getStateCompletedData(statePage);
+            item = sma.getStateCompletedData(statePageName);
             sb.append(" - State Completed ");
          }
          if (item != null) {

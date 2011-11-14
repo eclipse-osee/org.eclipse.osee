@@ -117,7 +117,7 @@ public class SMAWorkFlowTab extends FormPage {
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.workflow.tab";
    private final SMAEditor editor;
-   private WEUndefinedStateSection undefinedStateSection;
+   private final List<WEUndefinedStateSection> undefinedStateSections = new ArrayList<WEUndefinedStateSection>();
 
    public SMAWorkFlowTab(SMAEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, "Workflow");
@@ -262,7 +262,7 @@ public class SMAWorkFlowTab extends FormPage {
       createHeaderSection(WorkflowManager.getCurrentAtsWorkPage(awa));
       createGoalSection();
       createPageSections();
-      createUndefinedStatesSection();
+      createUndefinedStateSections();
       createHistorySection();
       createRelationsSection();
       createOperationsSection();
@@ -308,11 +308,15 @@ public class SMAWorkFlowTab extends FormPage {
       }
    }
 
-   private void createUndefinedStatesSection() {
+   private void createUndefinedStateSections() {
       try {
          if (WEUndefinedStateSection.hasUndefinedStates(editor.getAwa())) {
-            undefinedStateSection = new WEUndefinedStateSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-            managedForm.addPart(undefinedStateSection);
+            for (String stateName : WEUndefinedStateSection.getUndefinedStateNames(awa)) {
+               WEUndefinedStateSection section =
+                  new WEUndefinedStateSection(stateName, editor, atsBody, editor.getToolkit(), SWT.NONE);
+               managedForm.addPart(section);
+               undefinedStateSections.add(section);
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -534,8 +538,8 @@ public class SMAWorkFlowTab extends FormPage {
       if (smaDetailsSection != null) {
          smaDetailsSection.dispose();
       }
-      if (undefinedStateSection != null) {
-         undefinedStateSection.dispose();
+      for (WEUndefinedStateSection section : undefinedStateSections) {
+         section.dispose();
       }
       if (smaHistorySection != null) {
          smaHistorySection.dispose();

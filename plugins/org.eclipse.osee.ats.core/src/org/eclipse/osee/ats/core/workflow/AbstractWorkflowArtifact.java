@@ -645,15 +645,27 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public LogItem getStateCompletedData(IWorkPage state) throws OseeCoreException {
-      return getLog().getStateEvent(LogType.StateComplete, state.getPageName());
+      return getStateCompletedData(state.getPageName());
+   }
+
+   public LogItem getStateCompletedData(String stateName) throws OseeCoreException {
+      return getLog().getStateEvent(LogType.StateComplete, stateName);
    }
 
    public LogItem getStateCancelledData(IWorkPage state) throws OseeCoreException {
-      return getLog().getStateEvent(LogType.StateCancelled, state.getPageName());
+      return getStateCancelledData(state.getPageName());
+   }
+
+   public LogItem getStateCancelledData(String stateName) throws OseeCoreException {
+      return getLog().getStateEvent(LogType.StateCancelled, stateName);
    }
 
    public LogItem getStateStartedData(IWorkPage state) throws OseeCoreException {
-      return getLog().getStateEvent(LogType.StateEntered, state.getPageName());
+      return getStateStartedData(state.getPageName());
+   }
+
+   public LogItem getStateStartedData(String stateName) throws OseeCoreException {
+      return getLog().getStateEvent(LogType.StateEntered, stateName);
    }
 
    public String getCompletedFromState() throws OseeCoreException {

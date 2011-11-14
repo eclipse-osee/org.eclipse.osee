@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.core.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
@@ -35,15 +34,19 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
+ * Shows state information for any state that is no-longer defined by Work Definition.
+ * 
  * @author Donald G. Dunne
  */
 public class WEUndefinedStateSection extends SectionPart {
 
    private final SMAEditor editor;
    private boolean sectionCreated = false;
+   private final String stateName;
 
-   public WEUndefinedStateSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public WEUndefinedStateSection(String stateName, SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+      this.stateName = stateName;
       this.editor = editor;
    }
 
@@ -51,7 +54,12 @@ public class WEUndefinedStateSection extends SectionPart {
    public void initialize(IManagedForm form) {
       super.initialize(form);
       Section section = getSection();
-      section.setText("Un-Defined States");
+      try {
+         section.setText("Un-Defined State - " + SMAWorkFlowSection.getCurrentStateTitle(editor.getAwa(), stateName,
+            false, false, false));
+      } catch (OseeCoreException ex) {
+         section.setText(stateName + " - Exception:" + ex.getLocalizedMessage());
+      }
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
@@ -97,26 +105,19 @@ public class WEUndefinedStateSection extends SectionPart {
       composite.setLayout(new GridLayout(1, true));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      toolkit.createLabel(composite,
-         "The following are visited states that are no-longer defined by the current Work Definition.", SWT.NONE);
+      toolkit.createLabel(composite, "This state is no-longer defined by the current Work Definition.", SWT.NONE);
 
+      SimpleTeamState state = new SimpleTeamState(stateName, WorkPageType.Working);
+      String infoStr = "";
       try {
-         for (String stateName : getUndefinedStateNames()) {
-            SimpleTeamState state = new SimpleTeamState(stateName, WorkPageType.Working);
-            String infoStr = "";
-            try {
-               infoStr =
-                  String.format("Name: [%s] Assignees: [%s] Hours Spent: [%s]", state.getPageName(),
-                     awa.getStateMgr().getAssigneesStr(state, 100), awa.getStateMgr().getHoursSpent(state));
-            } catch (OseeCoreException ex) {
-               infoStr = "Exception processing state data (see log for details) " + ex.getLocalizedMessage();
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-            toolkit.createLabel(composite, infoStr, SWT.NONE);
-         }
+         infoStr =
+            String.format("Name: [%s] Assignees: [%s] Hours Spent: [%s]", state.getPageName(),
+               awa.getStateMgr().getAssigneesStr(state, 100), awa.getStateMgr().getHoursSpent(state));
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         infoStr = "Exception processing state data (see log for details) " + ex.getLocalizedMessage();
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      toolkit.createLabel(composite, infoStr, SWT.NONE);
 
       getSection().setClient(composite);
       toolkit.paintBordersFor(composite);
