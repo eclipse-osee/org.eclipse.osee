@@ -107,7 +107,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       boolean changeMade = false;
       if (artifact != null) {
          if (isBaselineTransaction(change, baseTx)) {
-            if (artifact.getGammaId() != change.getGamma() || (artifact.getModType().isDeleted())) {
+            if ((artifact.getGammaId() != change.getGamma() && change.getGamma() != -1) || (artifact.getModType().isDeleted())) {
                artifact.replaceWithVersion((int) change.getGamma());
                changeMade = true;
             }

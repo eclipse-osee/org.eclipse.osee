@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.ui.skynet.replace;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,7 +65,7 @@ public class RelationHandler {
 
       @Override
       public Artifact getArtifact(int artId, IOseeBranch branch) throws OseeCoreException {
-         return ArtifactQuery.getArtifactFromId(artId, branch);
+         return ArtifactQuery.getArtifactFromId(artId, branch, DeletionFlag.INCLUDE_DELETED);
       }
 
       @Override
