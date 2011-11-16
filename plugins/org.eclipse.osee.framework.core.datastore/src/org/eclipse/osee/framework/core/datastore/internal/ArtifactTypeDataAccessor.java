@@ -41,7 +41,7 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
       "select attr.uri from osee_txs txs1, osee_artifact art, osee_attribute attr, osee_txs txs2 where txs1.branch_id = ? and txs1.tx_current = ? and txs1.gamma_id = art.gamma_id and txs2.branch_id = ? and txs2.tx_current = ? and txs2.gamma_id = attr.gamma_id and art.art_type_id = ? and art.art_id = attr.art_id and attr.attr_type_id = ?";
 
-   private static volatile boolean wasLoaded;
+   private static volatile boolean loadInProgress;
 
    private final ModelingServiceProvider modelService;
    private final IOseeDatabaseService databaseService;
@@ -61,8 +61,8 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
 
    @Override
    public synchronized void load(IOseeCache<Long, T> cache) throws OseeCoreException {
-      if (!wasLoaded) {
-         wasLoaded = true;
+      if (!loadInProgress) {
+         loadInProgress = true;
          Collection<String> uriPaths = findOseeTypeData();
          if (!uriPaths.isEmpty()) {
             List<IResource> resources = getTypeData(uriPaths);
@@ -72,6 +72,7 @@ public class ArtifactTypeDataAccessor<T extends AbstractOseeType<Long>> implemen
             OseeImportModelResponse response = new OseeImportModelResponse();
             modelService.getIOseeModelingService().importOseeTypes(new NullProgressMonitor(), true, request, response);
          }
+         loadInProgress = false;
       }
    }
 

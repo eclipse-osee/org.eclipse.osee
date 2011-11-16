@@ -108,11 +108,13 @@ public class OseeCachingService implements IOseeCachingService {
    public synchronized void reloadAll() throws OseeCoreException {
       getBranchCache().reloadCache();
       getTransactionCache().reloadCache();
-      getEnumTypeCache().reloadCache();
-      getAttributeTypeCache().reloadCache();
-      getArtifactTypeCache().reloadCache();
-      getRelationTypeCache().reloadCache();
       getIdentityService().clear();
+      getArtifactTypeCache().reloadCache();
+
+      //reloading the artifactTypeCache will reload these:
+      //      getEnumTypeCache().reloadCache();
+      //      getAttributeTypeCache().reloadCache();
+      //      getRelationTypeCache().reloadCache();
    }
 
    @Override

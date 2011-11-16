@@ -54,6 +54,11 @@ public class ServerAdminCommandProvider implements CommandProvider {
    private final ISchedulingRule cacheMutex = new MutexSchedulingRule();
    private final ISchedulingRule shutdownMutex = new MutexSchedulingRule();
 
+   private final OseeCacheEnum[] reloadableCaches = {
+      OseeCacheEnum.ARTIFACT_TYPE_CACHE,
+      OseeCacheEnum.BRANCH_CACHE,
+      OseeCacheEnum.TRANSACTION_CACHE};
+
    public Job _server_status(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
       return Operations.executeAsJob(new ServerStats(logger), false);
@@ -84,11 +89,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
    }
 
    public Job _reload_cache(CommandInterpreter ci) {
-      return updateCaches(ci, false);
-   }
-
-   public Job _clear_cache(CommandInterpreter ci) {
-      return updateCaches(ci, false);
+      return updateCaches(ci, true);
    }
 
    private Job updateCaches(CommandInterpreter ci, boolean reload) {
@@ -96,6 +97,10 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
       for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
          cacheIds.add(OseeCacheEnum.valueOf(arg));
+      }
+
+      if (cacheIds.isEmpty()) {
+         cacheIds.addAll(Arrays.asList(reloadableCaches));
       }
 
       OperationLogger logger = new CommandInterpreterLogger(ci);
@@ -253,9 +258,8 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        find_invalid_utf8 - finds invalid UTF8 chars in table osee_attribute\n");
       sb.append("        consolidate_relations - consolidate rows of relations\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n",
-         Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " | ")));
-      sb.append(String.format("        clear_cache %s? - decaches all objects from the specified caches\n",
-         Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " |")));
+         Arrays.deepToString(reloadableCaches).replaceAll(",", " | ")));
       return sb.toString();
    }
+
 }
