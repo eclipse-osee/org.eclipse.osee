@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -36,17 +38,17 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
    private final Collection<Attribute<?>> attributes;
-   private Map<Branch, SkynetTransaction> transactions;
+   private Map<IOseeBranch, SkynetTransaction> transactions;
 
    public ReplaceAttributeWithBaselineOperation(Collection<Attribute<?>> attributes) {
       super("Replace artifact with baseline values", Activator.PLUGIN_ID);
       this.attributes = attributes;
    }
 
-   private SkynetTransaction getTransaction(Branch branch) {
+   private SkynetTransaction getTransaction(IOseeBranch branch) throws OseeCoreException {
       SkynetTransaction transaction = null;
       if (transactions == null) {
-         transactions = new HashMap<Branch, SkynetTransaction>();
+         transactions = new HashMap<IOseeBranch, SkynetTransaction>();
       } else {
          transaction = transactions.get(branch);
       }
@@ -85,7 +87,8 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
       for (Attribute<?> attribute : attributes) {
          boolean itemFoundInBaseline = false;
          try {
-            TransactionRecord baselineTransactionRecord = attribute.getArtifact().getBranch().getBaseTransaction();
+            Branch fullBranch = BranchManager.getBranch(attribute.getArtifact().getBranch());
+            TransactionRecord baselineTransactionRecord = fullBranch.getBaseTransaction();
             for (Change change : ChangeManager.getChangesPerArtifact(attribute.getArtifact(), new NullProgressMonitor())) {
                if (change.getTxDelta().getEndTx().getId() == baselineTransactionRecord.getId()) {
                   if (change.getItemKind().equals("Attribute") && change.getItemId() == attribute.getId()) {

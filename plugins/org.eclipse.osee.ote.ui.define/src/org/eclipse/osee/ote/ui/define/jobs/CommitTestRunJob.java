@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
@@ -80,8 +80,8 @@ public class CommitTestRunJob extends Job {
    }
 
    private void commitSelectedArtifacts(IProgressMonitor monitor, String comment, Object[] items) throws Exception {
-      Map<Branch, List<Artifact>> commitMap = getArtifactsByBranch(items);
-      for (Branch branch : commitMap.keySet()) {
+      Map<IOseeBranch, List<Artifact>> commitMap = getArtifactsByBranch(items);
+      for (IOseeBranch branch : commitMap.keySet()) {
          monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
          ImportOutfileOperation.commitTestRunTx(monitor, comment, branch, artList.toArray(new Artifact[artList.size()]));
@@ -101,11 +101,11 @@ public class CommitTestRunJob extends Job {
       return committedList.toArray(new Artifact[committedList.size()]);
    }
 
-   private Map<Branch, List<Artifact>> getArtifactsByBranch(Object[] items) {
-      Map<Branch, List<Artifact>> branchMap = new HashMap<Branch, List<Artifact>>();
+   private Map<IOseeBranch, List<Artifact>> getArtifactsByBranch(Object[] items) {
+      Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<IOseeBranch, List<Artifact>>();
       for (Object object : items) {
          Artifact testRun = (Artifact) object;
-         Branch branch = testRun.getBranch();
+         IOseeBranch branch = testRun.getBranch();
          List<Artifact> artList = branchMap.get(branch);
          if (artList == null) {
             artList = new ArrayList<Artifact>();

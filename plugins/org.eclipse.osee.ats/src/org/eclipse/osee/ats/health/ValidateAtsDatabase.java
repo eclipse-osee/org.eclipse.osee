@@ -265,9 +265,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      workDefName));
             }
          } catch (Exception ex) {
-            testNameToResultsMap.put(
-               "testAttributeSetWorkDefinitionsExist",
-               "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+            testNameToResultsMap.put("testAttributeSetWorkDefinitionsExist",
+               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
          }
       }
       logTestTimeSpent(date, "testAttributeSetWorkDefinitionsExist", testNameToTimeSpentMap);
@@ -292,9 +291,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (Exception ex) {
-            testNameToResultsMap.put(
-               "testStateInWorkDefinition",
-               "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+            testNameToResultsMap.put("testStateInWorkDefinition",
+               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
          }
       }
       logTestTimeSpent(date, "testStateInWorkDefinition", testNameToTimeSpentMap);
@@ -337,9 +335,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (Exception ex) {
-            testNameToResultsMap.put(
-               "testArtifactIds",
-               "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+            testNameToResultsMap.put("testArtifactIds",
+               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
          }
       }
       logTestTimeSpent(date, "testArtifactIds", testNameToTimeSpentMap);
@@ -365,7 +362,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testVersionArtifacts",
-                  "Error: " + verArt.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(verArt) + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
+                  "Error: " + verArt.getArtifactTypeName() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -386,7 +383,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testTeamDefinitionss",
-                  "Error: " + teamDef.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(teamDef) + " exception testing testTeamDefinitions: " + ex.getLocalizedMessage());
+                  "Error: " + teamDef.getArtifactTypeName() + " exception testing testTeamDefinitions: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -408,9 +405,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has no TeamDefinition");
                }
             } catch (Exception ex) {
-               testNameToResultsMap.put(
-                  "testTeamWorkflows",
-                  teamArt.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
+               testNameToResultsMap.put("testTeamWorkflows",
+                  teamArt.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -433,9 +429,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                }
             } catch (Exception ex) {
-               testNameToResultsMap.put(
-                  "testAtsBranchManager",
-                  teamArt.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
+               testNameToResultsMap.put("testAtsBranchManager",
+                  teamArt.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -463,9 +458,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant",
             artifact.getArtifactTypeName(), artifact.getHumanReadableId(), artifact, parentBranchGuid));
       } catch (Exception ex) {
-         testNameToResultsMap.put(
-            "validateBranchGuid",
-            "Error: " + artifact.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
+         testNameToResultsMap.put("validateBranchGuid",
+            "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
       }
       logTestTimeSpent(date, "validateBranchGuid", testNameToTimeSpentMap);
    }
@@ -510,7 +504,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             testNameToResultsMap.put("testAtsAttributeValues",
-               "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
+               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
          }
       }
       //      logTestTimeSpent(date, "testAtsAttributeValues", testNameToTimeSpentMap);
@@ -582,7 +576,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             } catch (Exception ex) {
                testNameToResultsMap.put("testAtsWorkflowsHaveAction",
-                  "Error: Team " + XResultDataUI.getHyperlink(artifact) + " has no parent Action: exception " + ex);
+                  "Error: Team " + artifact.getName() + " has no parent Action: exception " + ex);
             }
          }
       }
@@ -676,9 +670,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
                }
             } catch (OseeCoreException ex) {
-               testNameToResultsMap.put(
-                  "testReviewsHaveValidDefectAndRoleXml",
-                  "Error: Exception processing Review " + XResultDataUI.getHyperlink(reviewArtifact) + " defect test " + ex.getLocalizedMessage());
+               testNameToResultsMap.put("testReviewsHaveValidDefectAndRoleXml",
+                  "Error: Exception processing Review defect test " + ex.getLocalizedMessage());
             }
          }
       }
@@ -769,9 +762,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (Exception ex) {
-            testNameToResultsMap.put(
-               "testAtsLogs",
-               "Error: " + art.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(art) + " exception accessing logItem: " + ex.getLocalizedMessage());
+            testNameToResultsMap.put("testAtsLogs",
+               "Error: " + art.getArtifactTypeName() + " exception accessing logItem: " + ex.getLocalizedMessage());
 
          }
 

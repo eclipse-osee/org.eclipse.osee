@@ -16,11 +16,11 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -55,7 +55,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       monitor.beginTask(getDescriptionUsage(), 100);
 
       List<Artifact> subsystems = variableMap.getArtifacts("Subsystem Root Artifacts");
-      Branch branch = subsystems.get(0).getBranch();
+      IOseeBranch branch = subsystems.get(0).getBranch();
 
       init();
 

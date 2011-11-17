@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
@@ -42,7 +42,7 @@ import org.eclipse.ui.part.FileEditorInput;
 public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private static final ArtifactFileMonitor monitor = new ArtifactFileMonitor();
 
-   public IFile renderToFile(Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFile(Artifact artifact, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       List<Artifact> artifacts;
       if (artifact == null) {
          artifacts = Collections.emptyList();
@@ -53,7 +53,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    public IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      Branch initialBranch = null;
+      IOseeBranch initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
             initialBranch = artifact.getBranch();
@@ -67,7 +67,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return renderToFile(artifacts, initialBranch, presentationType);
    }
 
-   public IFile renderToFile(List<Artifact> artifacts, Branch branch, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFile(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       InputStream renderInputStream = getRenderInputStream(presentationType, artifacts);
       IFile workingFile = RenderingUtil.getRenderFile(this, artifacts, branch, presentationType);
       AIFile.writeToFile(workingFile, renderInputStream);
@@ -125,5 +125,5 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) throws OseeCoreException;
+   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException;
 }

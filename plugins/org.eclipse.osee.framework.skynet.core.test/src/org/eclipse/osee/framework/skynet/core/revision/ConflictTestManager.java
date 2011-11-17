@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -116,11 +117,11 @@ public class ConflictTestManager {
       protected Object object;
       protected Object object2;
       protected Class<?> clas;
-      protected Branch branch;
+      protected IOseeBranch branch;
       protected int rootArtifact;
       protected IArtifactType type;
 
-      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, int rootArtifact, Branch branch, IArtifactType type, String name) throws OseeCoreException {
+      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, int rootArtifact, IOseeBranch branch, IArtifactType type, String name) throws OseeCoreException {
          if (!itemToChange.equals(Type.ARTIFACT)) {
             throw new OseeCoreException("This is the Artifact Constructor");
          }
@@ -295,7 +296,7 @@ public class ConflictTestManager {
       }
    }
 
-   protected static Artifact createArtifact(int rootArtifactId, Branch branch, IArtifactType type, String name) throws OseeCoreException {
+   protected static Artifact createArtifact(int rootArtifactId, IOseeBranch branch, IArtifactType type, String name) throws OseeCoreException {
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, branch);
       if (rootArtifactId > 0 && rootArtifactId < NUMBER_OF_ARTIFACTS) {
          if (branch.equals(destArtifacts[0].getBranch())) {

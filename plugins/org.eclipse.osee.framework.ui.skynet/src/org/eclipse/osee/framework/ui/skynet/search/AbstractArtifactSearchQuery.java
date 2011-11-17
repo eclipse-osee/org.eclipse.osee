@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 
@@ -37,7 +38,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
    @Override
    public abstract IStatus run(final IProgressMonitor pm);
 
-   public String getResultLabel() {
+   public String getResultLabel() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       builder.append(getCriteriaLabel());
       builder.append(" - ");
@@ -50,7 +51,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
          }
          if (aResult.getArtifactResults() != null && !aResult.getArtifactResults().isEmpty()) {
             builder.append(" on Branch: \"");
-            builder.append(aResult.getArtifactResults().get(0).getBranch().getShortName());
+            builder.append(aResult.getArtifactResults().get(0).getFullBranch().getShortName());
             builder.append("\"");
          }
       } else {

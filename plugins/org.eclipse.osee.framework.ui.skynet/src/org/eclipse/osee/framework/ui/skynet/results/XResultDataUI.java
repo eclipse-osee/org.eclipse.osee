@@ -69,19 +69,19 @@ public class XResultDataUI {
    /*
     * Creates hyperlink using hrid as name. Default editor will open.
     */
-   public static String getHyperlink(Artifact art) {
-      return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getBranch().getId());
+   public static String getHyperlink(Artifact art) throws OseeCoreException {
+      return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getFullBranch().getId());
    }
 
-   public static String getHyperlinkWithName(Artifact art) {
-      return getHyperlink(art.toStringWithId(), art.getHumanReadableId(), art.getBranch().getId());
+   public static String getHyperlinkWithName(Artifact art) throws OseeCoreException {
+      return getHyperlink(art.toStringWithId(), art.getHumanReadableId(), art.getFullBranch().getId());
    }
 
    /*
     * Creates hyperlink using name. Default editor will open.
     */
-   public static String getHyperlink(String name, Artifact art) {
-      return getHyperlink(name, art.getHumanReadableId(), art.getBranch().getId());
+   public static String getHyperlink(String name, Artifact art) throws OseeCoreException {
+      return getHyperlink(name, art.getHumanReadableId(), art.getFullBranch().getId());
    }
 
    public static void report(XResultData resultData, final String title) {

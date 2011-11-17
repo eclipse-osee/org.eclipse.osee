@@ -171,7 +171,7 @@ public class ArtifactPersistenceManager {
             artIds.add(link.getBArtifactId());
          }
       }
-      Branch branch = artifacts.get(0).getBranch();
+      IOseeBranch branch = artifacts.get(0).getBranch();
       ArtifactQuery.getArtifactListFromIds(artIds, branch);
    }
 
@@ -198,13 +198,13 @@ public class ArtifactPersistenceManager {
    }
 
    public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeCoreException {
-      Branch branch = artifact.getBranch();
+      Branch branch = BranchManager.getBranch(artifact.getBranch());
       return ConnectionHandler.runPreparedQueryFetchInt(0, ARTIFACT_NEW_ON_BRANCH, artifact.getArtId(), branch.getId(),
          branch.getBaseTransaction().getId()) == 0;
    }
 
    public static boolean isRelationNewOnBranch(RelationLink relation) throws OseeCoreException {
-      Branch branch = relation.getBranch();
+      Branch branch = BranchManager.getBranch(relation.getBranch());
       return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, relation.getAArtifactId(),
          relation.getBArtifactId(), relation.getRelationType().getId(), branch.getId(),
          branch.getBaseTransaction().getId()) == 0;

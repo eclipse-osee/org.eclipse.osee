@@ -140,7 +140,7 @@ public class ChangeArtifactType {
 
       for (IAttributeType attributeType : artifact.getAttributeTypes()) {
          ArtifactType aType = ArtifactTypeManager.getType(artifactType);
-         if (!aType.isValidAttributeType(attributeType, artifact.getBranch())) {
+         if (!aType.isValidAttributeType(attributeType, artifact.getFullBranch())) {
             attributesToPurge.addAll(artifact.getAttributes(attributeType));
          }
       }

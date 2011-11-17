@@ -25,11 +25,11 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -343,7 +343,7 @@ public class CoverageEditor extends FormEditor {
       return coverageEditorOverviewTab;
    }
 
-   public Branch getBranch() throws OseeCoreException {
+   public IOseeBranch getBranch() throws OseeCoreException {
       Artifact artifact = getCoverageEditorInput().getCoveragePackageArtifact();
       if (artifact != null) {
          return artifact.getBranch();

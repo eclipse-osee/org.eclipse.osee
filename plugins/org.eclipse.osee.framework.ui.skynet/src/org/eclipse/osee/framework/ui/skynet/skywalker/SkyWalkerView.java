@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -268,7 +269,7 @@ public class SkyWalkerView extends GenericViewPart {
          try {
             Lib.writeStringToFile(options.toXml(), new File(filename));
             AWorkbench.popup("Saved", "Save Successful");
-         } catch (IOException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
@@ -356,7 +357,11 @@ public class SkyWalkerView extends GenericViewPart {
       Artifact artifact = (Artifact) viewer.getInput();
       memento = memento.createChild(INPUT_KEY);
       memento.putString(GUID_KEY, artifact.getGuid());
-      memento.putString(BRANCHID_KEY, String.valueOf(artifact.getBranch().getId()));
+      try {
+         memento.putString(BRANCHID_KEY, String.valueOf(artifact.getFullBranch().getId()));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.WARNING, "Sky Walker error on save: ", ex);
+      }
    }
 
    @Override

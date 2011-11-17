@@ -13,9 +13,8 @@ package org.eclipse.osee.framework.skynet.core.event.filter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import junit.framework.Assert;
-
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -109,7 +108,8 @@ public class ArtifactEventFiltersTest {
       Assert.assertTrue(resultSender.isRemote());
 
       // Reset event filters only allow events from this branch
-      eventFilters = OseeEventManager.getEventFiltersForBranch("Test Branch", resultArtifactEvent.getBranchGuid());
+      IOseeBranch branchToken = TokenFactory.createBranch(resultArtifactEvent.getBranchGuid(), "Test Branch");
+      eventFilters = OseeEventManager.getEventFiltersForBranch(branchToken);
       resultArtifactEvent = null;
       resultSender = null;
 
@@ -122,7 +122,8 @@ public class ArtifactEventFiltersTest {
 
       // Reset event filters only filter out this branch
       String otherBranchGuid = GUID.create();
-      eventFilters = OseeEventManager.getEventFiltersForBranch("Other Test Branch", otherBranchGuid);
+      IOseeBranch otherBranchToken = TokenFactory.createBranch(otherBranchGuid, "Other Test Branch");
+      eventFilters = OseeEventManager.getEventFiltersForBranch(otherBranchToken);
       resultArtifactEvent = null;
       resultSender = null;
 

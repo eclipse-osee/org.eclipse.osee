@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewerFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -41,7 +41,7 @@ public class XViewerDataManager {
    private final XViewer xViewer;
    private final List<DataItem> commitableItems;
    private final List<DataItem> uncommitableItems;
-   private final Map<Branch, DataItem> branchMap;
+   private final Map<IOseeBranch, DataItem> branchMap;
    private final List<DataItem> backingData;
    private final Collection<IDataChangedListener> listeners;
    private boolean isInitialized;
@@ -51,7 +51,7 @@ public class XViewerDataManager {
       this.backingData = new ArrayList<DataItem>();
       this.isInitialized = false;
       this.xViewer = xViewer;
-      this.branchMap = new HashMap<Branch, DataItem>();
+      this.branchMap = new HashMap<IOseeBranch, DataItem>();
       this.commitableItems = new ArrayList<DataItem>();
       this.uncommitableItems = new ArrayList<DataItem>();
       this.listeners = Collections.synchronizedSet(new HashSet<IDataChangedListener>());
@@ -129,7 +129,7 @@ public class XViewerDataManager {
    }
 
    private DataItem getBranchItem(Artifact artifact) {
-      Branch branch = artifact.getBranch();
+      IOseeBranch branch = artifact.getBranch();
       DataItem toReturn = branchMap.get(branch);
       if (toReturn == null) {
          toReturn = new BranchItem(branch, null);

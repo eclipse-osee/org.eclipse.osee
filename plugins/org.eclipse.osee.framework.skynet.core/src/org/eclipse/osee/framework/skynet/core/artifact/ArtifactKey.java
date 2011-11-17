@@ -10,32 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 public final class ArtifactKey {
 
    private int artId;
-   private int branchId;
+   private IOseeBranch branch;
 
    public ArtifactKey(IArtifact artifact) {
       this.artId = artifact.getArtId();
-      this.branchId = artifact.getBranch().getId();
+      this.branch = artifact.getBranch();
    }
 
-   public ArtifactKey(int artId, int branchId) {
-      this.artId = artId;
-      this.branchId = branchId;
+   public ArtifactKey() {
+
    }
 
    public ArtifactKey setKey(IArtifact artifact) {
       this.artId = artifact.getArtId();
-      this.branchId = artifact.getBranch().getId();
+      this.branch = artifact.getBranch();
       return this;
    }
 
-   public ArtifactKey setKey(int artId, int branchId) {
+   public ArtifactKey setKey(int artId, IOseeBranch branch) {
       this.artId = artId;
-      this.branchId = branchId;
+      this.branch = branch;
       return this;
    }
 
@@ -44,7 +44,7 @@ public final class ArtifactKey {
       final int prime = 31;
       int result = 1;
       result = prime * result + artId;
-      result = prime * result + branchId;
+      result = prime * result + branch.getGuid().hashCode();
       return result;
    }
 
@@ -63,7 +63,7 @@ public final class ArtifactKey {
       if (artId != other.artId) {
          return false;
       }
-      if (branchId != other.branchId) {
+      if (!branch.equals(other.branch)) {
          return false;
       }
       return true;

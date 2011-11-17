@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -82,7 +82,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       initLowLevelRequirements(variableMap.getArtifacts("Lower Level Requirements"));
       initAllocationComponents(variableMap.getArtifacts("Allocation Components"));
 
-      Branch branch = lowLevelReqs.get(0).getBranch();
+      IOseeBranch branch = lowLevelReqs.get(0).getBranch();
 
       monitor.subTask("Loading Higher Level Requirements"); // bulk load to improve performance
       monitor.worked(1);

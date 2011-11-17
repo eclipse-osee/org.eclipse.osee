@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -42,8 +42,8 @@ public class MassEditDirtyArtifactOperation extends AbstractOperation implements
          AWorkbench.popup("No Dirty Artifacts Found");
          return;
       }
-      HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(artifacts);
-      for (Branch branch : branchMap.keySet()) {
+      HashCollection<IOseeBranch, Artifact> branchMap = Artifacts.getBranchArtifactMap(artifacts);
+      for (IOseeBranch branch : branchMap.keySet()) {
          MassArtifactEditor.editArtifacts(String.format("Dirty Artifacts for Branch [%s]", branch),
             branchMap.getValues(branch));
       }

@@ -237,9 +237,14 @@ public class XHistoryWidget extends GenericXWidget {
                            extraInfoLabel.setText(NO_HISTORY);
                            xHistoryViewer.setInput(changes);
                         } else {
-                           String infoLabel =
-                              String.format("History: %s on branch: %s", artifact.getName(),
-                                 artifact.getBranch().getShortName());
+                           String infoLabel = "";
+                           try {
+                              infoLabel =
+                                 String.format("History: %s on branch: %s", artifact.getName(),
+                                    artifact.getFullBranch().getShortName());
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                           }
                            extraInfoLabel.setText(infoLabel);
                            xHistoryViewer.setInput(changes);
                         }

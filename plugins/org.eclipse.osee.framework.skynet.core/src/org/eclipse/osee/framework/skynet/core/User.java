@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 public class User extends Artifact implements IBasicUser {
    private PropertyStore userSettings;
 
-   public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public User(ArtifactFactory parentFactory, String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

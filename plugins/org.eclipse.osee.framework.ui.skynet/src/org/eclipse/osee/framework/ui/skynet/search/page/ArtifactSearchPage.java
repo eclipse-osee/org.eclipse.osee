@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -457,9 +458,9 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    @Override
-   public Branch getBranch(IProgressMonitor monitor) {
+   public Branch getBranch(IProgressMonitor monitor) throws OseeCoreException {
       if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
-         return getInput().getArtifactResults().get(0).getBranch();
+         return getInput().getArtifactResults().get(0).getFullBranch();
       }
       return null;
    }

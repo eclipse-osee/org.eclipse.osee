@@ -12,7 +12,8 @@ package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import java.util.Arrays;
 import java.util.List;
-
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
@@ -73,7 +74,8 @@ public class BranchEventFiltersTest {
       Assert.assertEquals(branchGuid, resultBranchEvent.getBranchGuid());
 
       // Reset event filters only allow events from this branch
-      eventFilters = OseeEventManager.getEventFiltersForBranch("Test Branch", resultBranchEvent.getBranchGuid());
+      IOseeBranch branchToken = TokenFactory.createBranch(resultBranchEvent.getBranchGuid(), "Test Branch");
+      eventFilters = OseeEventManager.getEventFiltersForBranch(branchToken);
       resultBranchEvent = null;
       resultSender = null;
 
@@ -88,7 +90,8 @@ public class BranchEventFiltersTest {
 
       // Reset event filters only filter out this branch
       String otherBranchGuid = GUID.create();
-      eventFilters = OseeEventManager.getEventFiltersForBranch("Other Test Branch", otherBranchGuid);
+      IOseeBranch otherBranchToken = TokenFactory.createBranch(otherBranchGuid, "Other Test Branch");
+      eventFilters = OseeEventManager.getEventFiltersForBranch(otherBranchToken);
       resultBranchEvent = null;
       resultSender = null;
 

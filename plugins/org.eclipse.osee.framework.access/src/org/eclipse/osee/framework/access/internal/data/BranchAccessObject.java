@@ -15,7 +15,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
@@ -53,8 +52,8 @@ public class BranchAccessObject extends AccessObject {
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branchId);
    }
 
-   public static BranchAccessObject getBranchAccessObject(Branch branch) {
-      return getBranchAccessObject(branch.getId());
+   public static BranchAccessObject getBranchAccessObject(IOseeBranch branch) throws OseeCoreException {
+      return getBranchAccessObject(BranchManager.getBranchId(branch));
    }
 
    public static BranchAccessObject getBranchAccessObject(String branchGuid) throws OseeCoreException {
@@ -70,10 +69,6 @@ public class BranchAccessObject extends AccessObject {
          cache.put(branchId, branchAccessObject);
       }
       return branchAccessObject;
-   }
-
-   public static BranchAccessObject getBranchAccessObjectFromCache(Branch branch) {
-      return cache.get(branch.getId());
    }
 
    public static BranchAccessObject getBranchAccessObjectFromCache(IOseeBranch branch) throws OseeCoreException {

@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
-import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.RELOAD_CACHE;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,7 +80,7 @@ public final class ArtifactLoader {
          OseeSql sqlKey;
          if (historical) {
             sqlKey = OseeSql.LOAD_HISTORICAL_ARTIFACTS;
-         } else if (allowDeleted == INCLUDE_DELETED) {
+         } else if (allowDeleted == DeletionFlag.INCLUDE_DELETED) {
             sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS_WITH_DELETED;
          } else {
             sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS;
@@ -105,7 +101,7 @@ public final class ArtifactLoader {
                // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
                if (previousArtId != artId || previousBranchId != branchId) {
                   // assumption: sql is returning unwanted deleted artifacts only in the historical case
-                  if (!historical || allowDeleted == INCLUDE_DELETED || ModificationType.getMod(chStmt.getInt("mod_type")) != ModificationType.DELETED) {
+                  if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.getMod(chStmt.getInt("mod_type")) != ModificationType.DELETED) {
                      loadedItems.add(retrieveShallowArtifact(chStmt, reload, historical));
                   }
                }
@@ -113,8 +109,7 @@ public final class ArtifactLoader {
                previousBranchId = branchId;
             }
          } catch (OseeDataStoreException ex) {
-            OseeLog.logf(Activator.class, Level.SEVERE,
-               ex, "%s - %s", sqlKey, sql == null ? "SQL unknown" : sql);
+            OseeLog.logf(Activator.class, Level.SEVERE, ex, "%s - %s", sqlKey, sql == null ? "SQL unknown" : sql);
             throw ex;
          } finally {
             chStmt.close();
@@ -139,7 +134,7 @@ public final class ArtifactLoader {
          Artifact artifact = getArtifactFromCache(artId, transactionId, branch);
 
          if (artifact != null) {
-            if (allowDeleted == EXCLUDE_DELETED && artifact.isDeleted()) {
+            if (allowDeleted == DeletionFlag.EXCLUDE_DELETED && artifact.isDeleted()) {
                continue;
             }
             iterator.remove();
@@ -319,7 +314,7 @@ public final class ArtifactLoader {
                artifactType, chStmt.getInt("gamma_id"), branch, transactionId,
                ModificationType.getMod(chStmt.getInt("mod_type")), historical);
 
-      } else if (reload == RELOAD_CACHE) {
+      } else if (reload == LoadType.RELOAD_CACHE) {
          artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
             ModificationType.getMod(chStmt.getInt("mod_type")), historical);
       }
@@ -333,19 +328,19 @@ public final class ArtifactLoader {
 
       try {
          ConnectionHandler.runPreparedUpdate(INSERT_JOIN_ARTIFACT, queryId, insertTime, artifact.getArtId(),
-            artifact.getBranch().getId(), SQL3DataType.INTEGER);
+            artifact.getFullBranch().getId(), SQL3DataType.INTEGER);
 
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
-         loadArtifactsData(queryId, artifacts, loadLevel, INCLUDE_CACHE, false,
-            artifact.isDeleted() ? INCLUDE_DELETED : EXCLUDE_DELETED);
+         loadArtifactsData(queryId, artifacts, loadLevel, LoadType.INCLUDE_CACHE, false,
+            artifact.isDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED);
       } finally {
          clearQuery(queryId);
       }
    }
 
    private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
-      if (reload == RELOAD_CACHE) {
+      if (reload == LoadType.RELOAD_CACHE) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
          }

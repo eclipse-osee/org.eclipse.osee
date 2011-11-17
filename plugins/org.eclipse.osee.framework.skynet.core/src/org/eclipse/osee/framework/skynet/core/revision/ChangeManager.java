@@ -118,7 +118,7 @@ public final class ChangeManager {
 
       CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<Integer, Branch, Artifact>();
       for (Artifact artifact : artifacts) {
-         Branch branch = artifact.getBranch();
+         Branch branch = artifact.getFullBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          int transactionNumber = TransactionManager.getHeadTransaction(branch).getId();
          insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(), transactionNumber});
@@ -169,7 +169,8 @@ public final class ChangeManager {
       int queryId = ArtifactLoader.getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
-      CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<Integer, Branch, Artifact>();
+      CompositeKeyHashMap<Integer, IOseeBranch, Artifact> artifactMap =
+         new CompositeKeyHashMap<Integer, IOseeBranch, Artifact>();
       for (Artifact artifact : artifacts) {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
          // for each combination of artifact and all working branches in its

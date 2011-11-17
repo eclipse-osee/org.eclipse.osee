@@ -51,7 +51,7 @@ public class CompressWordAttributesHandler extends AbstractHandler {
                monitor.beginTask("Analyzing attributes", total);
 
                for (Artifact artifact : artifacts) {
-                  if (WordUtil.revertNonusefulWordChanges(artifact.getArtId(), artifact.getBranch(),
+                  if (WordUtil.revertNonusefulWordChanges(artifact.getArtId(), artifact.getFullBranch(),
                      "osee_compression_gammas")) {
                      count++;
                   }

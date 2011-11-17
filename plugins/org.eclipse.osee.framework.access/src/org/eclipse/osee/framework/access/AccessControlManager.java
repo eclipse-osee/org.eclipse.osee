@@ -41,7 +41,7 @@ public final class AccessControlManager {
       return accessService;
    }
 
-   public static void lockObjects(Collection<Artifact> objects, Artifact subject) {
+   public static void lockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException {
       getService().lockObjects(objects, subject);
    }
 
@@ -61,7 +61,7 @@ public final class AccessControlManager {
       return getService().getSubjectFromLockedObject(object);
    }
 
-   public static boolean hasLockAccess(Artifact object) {
+   public static boolean hasLockAccess(Artifact object) throws OseeCoreException {
       return getService().hasLockAccess(object);
    }
 
@@ -73,7 +73,7 @@ public final class AccessControlManager {
       return getService().getAccessControlList(object);
    }
 
-   public static AccessObject getAccessObject(Object object) {
+   public static AccessObject getAccessObject(Object object) throws OseeCoreException {
       return getService().getAccessObject(object);
    }
 
@@ -89,7 +89,7 @@ public final class AccessControlManager {
       return getService().hasPermission(object, permission);
    }
 
-   public static void setPermission(Artifact subject, Object object, PermissionEnum permission) {
+   public static void setPermission(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
       getService().setPermission(subject, object, permission);
    }
 

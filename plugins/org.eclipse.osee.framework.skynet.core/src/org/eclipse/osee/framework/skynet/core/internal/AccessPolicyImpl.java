@@ -71,7 +71,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    @Override
    public boolean isReadOnly(Artifact artifact) {
       try {
-         return artifact.isDeleted() || artifact.isHistorical() || !artifact.getBranch().isEditable() || !getAccessService().hasPermission(
+         return artifact.isDeleted() || artifact.isHistorical() || !artifact.getFullBranch().isEditable() || !getAccessService().hasPermission(
             artifact, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

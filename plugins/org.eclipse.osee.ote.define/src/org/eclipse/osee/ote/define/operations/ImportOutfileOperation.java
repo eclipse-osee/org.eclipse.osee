@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -107,19 +108,19 @@ public class ImportOutfileOperation {
    }
 
    private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {
-      Map<Branch, List<Artifact>> commitMap = getArtifactsByBranch(items);
-      for (Branch branch : commitMap.keySet()) {
+      Map<IOseeBranch, List<Artifact>> commitMap = getArtifactsByBranch(items);
+      for (IOseeBranch branch : commitMap.keySet()) {
          monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
          commitTestRunTx(monitor, commitComment, branch, artList.toArray(new Artifact[artList.size()]));
       }
    }
 
-   private Map<Branch, List<Artifact>> getArtifactsByBranch(Object[] items) {
-      Map<Branch, List<Artifact>> branchMap = new HashMap<Branch, List<Artifact>>();
+   private Map<IOseeBranch, List<Artifact>> getArtifactsByBranch(Object[] items) {
+      Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<IOseeBranch, List<Artifact>>();
       for (Object object : items) {
          Artifact testRun = (Artifact) object;
-         Branch branch = testRun.getBranch();
+         IOseeBranch branch = testRun.getBranch();
          List<Artifact> artList = branchMap.get(branch);
          if (artList == null) {
             artList = new ArrayList<Artifact>();
@@ -130,7 +131,7 @@ public class ImportOutfileOperation {
       return branchMap;
    }
 
-   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, Branch branch, Artifact... artifacts) throws OseeCoreException {
+   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, IOseeBranch branch, Artifact... artifacts) throws OseeCoreException {
       monitor.setTaskName("Persist Test Runs");
       for (Artifact artifact : artifacts) {
          monitor.subTask(String.format("Persisting: [%s] ", artifact.getName()));

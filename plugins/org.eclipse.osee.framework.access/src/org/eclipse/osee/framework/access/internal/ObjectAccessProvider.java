@@ -59,7 +59,7 @@ public class ObjectAccessProvider implements IAccessProvider {
       } else if (artifact.isHistorical()) {
          userPermission = PermissionEnum.READ;
          reason = "User Permission set to Read - artifact is historical  - artifact is read only";
-      } else if (!artifact.getBranch().isEditable()) {
+      } else if (!artifact.getFullBranch().isEditable()) {
          userPermission = PermissionEnum.READ;
          reason = "User Permission set to Read - artifact's branch is not editable - artifact is read only";
       }
@@ -68,7 +68,7 @@ public class ObjectAccessProvider implements IAccessProvider {
          new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, Scope.createLegacyScope(), reason));
    }
 
-   private void setBranchAccessData(IBasicArtifact<?> userArtifact, Branch branch, AccessData accessData) throws OseeCoreException {
+   private void setBranchAccessData(IBasicArtifact<?> userArtifact, IOseeBranch branch, AccessData accessData) throws OseeCoreException {
       String reason = "Legacy Branch Permission";
       PermissionEnum userPermission = accessService.getBranchPermission(userArtifact, branch);
       accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission, Scope.createLegacyScope(), reason));

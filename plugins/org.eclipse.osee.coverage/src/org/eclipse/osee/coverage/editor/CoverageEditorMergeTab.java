@@ -44,8 +44,8 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -177,7 +177,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
             XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
             XResultDataUI.report(rd, "Import");
             if (dialog.isChecked()) {
-               Branch branch = coverageEditor.getBranch();
+               IOseeBranch branch = coverageEditor.getBranch();
                if (branch == null) {
                   AWorkbench.popup("Can't determine branch");
                   return;
@@ -477,7 +477,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Branch getBranch() throws OseeCoreException {
+   public IOseeBranch getBranch() throws OseeCoreException {
       return coverageEditor.getBranch();
    }
 

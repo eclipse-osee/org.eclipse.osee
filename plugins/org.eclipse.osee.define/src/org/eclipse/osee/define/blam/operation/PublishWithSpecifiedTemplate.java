@@ -14,10 +14,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
@@ -62,7 +61,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       Artifact master = getTemplate(variableMap.getString("Master Template"));
       Artifact slave = getTemplate(variableMap.getString("Slave Template"));
-      Branch branch = variableMap.getBranch("Branch (If Template specifies Artifacts)");
+      IOseeBranch branch = variableMap.getBranch("Branch (If Template specifies Artifacts)");
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts (If Not Specified in Template)");
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
@@ -91,9 +90,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             true,
             "Exclude Folders",
             variableMap.getBoolean("Exclude Folders")};
-      
-      if(variableMap.getBoolean("Exclude Folders")){
-    	  
+
+      if (variableMap.getBoolean("Exclude Folders")) {
+
       }
       renderer.publish(master, slave, artifacts, options);
 

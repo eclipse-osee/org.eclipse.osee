@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -24,7 +25,7 @@ public class BootStrapUser extends User {
    public static BootStrapUser instance;
 
    private BootStrapUser() throws OseeCoreException {
-      super(null, GUID.create(), null, null, CoreArtifactTypes.User);
+      super(null, GUID.create(), null, CoreBranches.COMMON, CoreArtifactTypes.User);
    }
 
    public static BootStrapUser getInstance() throws OseeCoreException {

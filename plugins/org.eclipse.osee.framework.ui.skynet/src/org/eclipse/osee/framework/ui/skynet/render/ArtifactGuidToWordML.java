@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
@@ -30,7 +30,7 @@ public class ArtifactGuidToWordML {
       this.linkBuilder = linkBuilder;
    }
 
-   public List<String> resolveAsOseeLinks(Branch branch, List<String> artifactGuids) throws OseeCoreException {
+   public List<String> resolveAsOseeLinks(IOseeBranch branch, List<String> artifactGuids) throws OseeCoreException {
       List<String> mlLinks = new ArrayList<String>();
       for (String guid : artifactGuids) {
          Artifact artifact = ArtifactQuery.checkArtifactFromId(guid, branch);

@@ -85,7 +85,7 @@ public final class ArtifactGuis {
 
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            Branch branch = artifact.getBranch();
+            Branch branch = artifact.getFullBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getId(),
                branch.getParentBranch().getId(), BranchArchivedState.UNARCHIVED.getValue());
 

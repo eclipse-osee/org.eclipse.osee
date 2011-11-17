@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -29,9 +29,9 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    private Artifact group;
    private Artifact selectedGroup;
    private String groupName;
-   private final Branch branch;
+   private final IOseeBranch branch;
 
-   public GroupWorldSearchItem(String displayName, String groupName, Branch branch) {
+   public GroupWorldSearchItem(String displayName, String groupName, IOseeBranch branch) {
       super(displayName, FrameworkImage.GROUP);
       this.groupName = groupName;
       this.branch = branch;
@@ -43,7 +43,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       this.branch = group.getBranch();
    }
 
-   public GroupWorldSearchItem(Branch branch) {
+   public GroupWorldSearchItem(IOseeBranch branch) {
       this("Group Search", null, branch);
    }
 

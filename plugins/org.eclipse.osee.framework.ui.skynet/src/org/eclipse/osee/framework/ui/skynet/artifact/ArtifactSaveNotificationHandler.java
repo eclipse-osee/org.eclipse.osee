@@ -18,8 +18,8 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -80,12 +80,12 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
                   }
 
                   try {
-                     HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(itemsToSave);
-                     for (Entry<Branch, Collection<Artifact>> entry : branchMap.entrySet()) {
-                        Branch branch = entry.getKey();
+                     HashCollection<IOseeBranch, Artifact> branchMap = Artifacts.getBranchArtifactMap(itemsToSave);
+                     for (Entry<IOseeBranch, Collection<Artifact>> entry : branchMap.entrySet()) {
+                        IOseeBranch branch = entry.getKey();
                         Collection<Artifact> arts = entry.getValue();
-                        OseeLog.logf(Activator.class, Level.INFO,
-                           "Persisting [%d] unsaved artifacts for branch [%s]", arts.size(), branch);
+                        OseeLog.logf(Activator.class, Level.INFO, "Persisting [%d] unsaved artifacts for branch [%s]",
+                           arts.size(), branch);
                         Artifacts.persistInTransaction("Artifact Save Notification", arts);
                      }
                   } catch (OseeCoreException ex) {
@@ -94,17 +94,16 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
                }
             } else {
                isShutdownAllowed = false;
-               HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(dirtyArts);
+               HashCollection<IOseeBranch, Artifact> branchMap = Artifacts.getBranchArtifactMap(dirtyArts);
 
-               for (Branch branch : branchMap.keySet()) {
+               for (IOseeBranch branch : branchMap.keySet()) {
                   MassArtifactEditor.editArtifacts(String.format("Unsaved Artifacts for Branch [%s]", branch),
                      branchMap.getValues(branch));
                }
             }
          } else {
             // For Test Purposes
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-               "Found dirty artifacts after tests: " + dirtyArts);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Found dirty artifacts after tests: " + dirtyArts);
          }
       }
 

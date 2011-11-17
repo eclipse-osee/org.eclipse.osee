@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -68,7 +69,7 @@ public final class ArtifactImporter {
       return importResource;
    }
 
-   public boolean startImportJob(Artifact finalDestinationArtifact, boolean isDeleteUnmatchedSelected, RoughArtifactCollector roughItems, IArtifactImportResolver resolver) {
+   public boolean startImportJob(Artifact finalDestinationArtifact, boolean isDeleteUnmatchedSelected, RoughArtifactCollector roughItems, IArtifactImportResolver resolver) throws OseeCoreException {
       boolean initialized = initialized();
       if (initialized) {
          defaultDestinationArtifact = finalDestinationArtifact;

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -234,7 +235,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       xViewer.setContentProvider(new MassContentProvider(xViewer));
       xViewer.setLabelProvider(new MassLabelProvider(xViewer));
-      branchLabel.setText("Branch: " + (getBranch() == null ? "No Artifacts Returned" : getBranch().getShortName()));
+      try {
+         branchLabel.setText("Branch: " + (getBranch() == null ? "No Artifacts Returned" : getBranch().getShortName()));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       artifactsPageIndex = addPage(comp);
       setPageText(artifactsPageIndex, "Artifacts");
 
@@ -255,11 +260,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       getSite().setSelectionProvider(xViewer);
    }
 
-   public Branch getBranch() {
+   public Branch getBranch() throws OseeCoreException {
       if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().isEmpty()) {
          return null;
       }
-      return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getBranch();
+      return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getFullBranch();
    }
 
    @Override

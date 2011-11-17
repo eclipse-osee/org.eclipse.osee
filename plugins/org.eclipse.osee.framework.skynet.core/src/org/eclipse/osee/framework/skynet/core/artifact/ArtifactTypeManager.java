@@ -207,7 +207,7 @@ public class ArtifactTypeManager {
                artifactMap.put(artifact.getArtId(), artifact);
             }
             if (newArtifactType == null) {
-               HashSet<Branch> branches = new HashSet<Branch>();
+               HashSet<IOseeBranch> branches = new HashSet<IOseeBranch>();
                for (Artifact artifact : artifacts) {
                   branches.add(artifact.getBranch());
                }

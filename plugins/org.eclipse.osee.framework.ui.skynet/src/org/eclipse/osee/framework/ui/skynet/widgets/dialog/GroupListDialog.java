@@ -86,7 +86,7 @@ public class GroupListDialog extends ArtifactListDialog {
             Artifact art = (Artifact) obj;
             try {
                if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
-                  return art.toString() + " (" + art.getBranch().getShortName() + ")";
+                  return art.toString() + " (" + art.getFullBranch().getShortName() + ")";
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

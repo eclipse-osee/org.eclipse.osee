@@ -210,7 +210,7 @@ public class QuickSearchView extends GenericViewPart implements Listener {
       }
    }
 
-   public void setBranch(Branch branch) {
+   public void setBranch(IOseeBranch branch) {
       if (branchSelect != null) {
          branchSelect.setSelection(branch);
          // branch has been selected; allow user to set up search string

@@ -59,7 +59,7 @@ public final class ArtifactImportOperationFactory {
       return new CompositeOperation("Artifact Import", Activator.PLUGIN_ID, ops);
    }
 
-   public static IOperation createArtifactAndRoughToRealOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) {
+   public static IOperation createArtifactAndRoughToRealOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) throws OseeCoreException {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(createArtifactsCompOperation(
          "Artifact Import - SourceToRoughArtifact, FilterArtifactTypesByAttributeTypes", sourceFile,
@@ -85,9 +85,10 @@ public final class ArtifactImportOperationFactory {
    }
 
    /**
+    * @throws OseeCoreException
     * @see ArtifactImportWizard
     */
-   public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts) {
+   public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts) throws OseeCoreException {
       SkynetTransaction transaction =
          new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
 

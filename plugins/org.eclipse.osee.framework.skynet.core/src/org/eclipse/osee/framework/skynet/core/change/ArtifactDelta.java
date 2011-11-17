@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -49,7 +49,7 @@ public class ArtifactDelta {
       return endArt;
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return getStartArtifact() != null ? getStartArtifact().getBranch() : getEndArtifact().getBranch();
    }
 

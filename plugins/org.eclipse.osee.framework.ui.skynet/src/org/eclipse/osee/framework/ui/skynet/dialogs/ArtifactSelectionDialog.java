@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,7 +73,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
       this.validator = validator;
    }
 
-   public void setBranch(Branch branch) {
+   public void setBranch(IOseeBranch branch) {
       branchSelect.setSelection(branch);
    }
 
@@ -266,7 +265,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
    }
 
    public void setInput(Object input) {
-      Branch branch = (Branch) input;
+      IOseeBranch branch = (IOseeBranch) input;
       setBranch(branch);
       this.input = getBaseArtifact(branch);
    }

@@ -115,12 +115,11 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
             coloredName.append(' ').append("<" + artifact.getArtifactTypeName() + ">", StyledString.DECORATIONS_STYLER);
          }
 
-         if (decoration.showArtBranch()) {
-            coloredName.append(' ').append("[" + artifact.getBranch().getShortName() + "]",
-               StyledString.DECORATIONS_STYLER);
-         }
-
          try {
+            if (decoration.showArtBranch()) {
+               coloredName.append(' ').append("[" + artifact.getFullBranch().getShortName() + "]",
+                  StyledString.DECORATIONS_STYLER);
+            }
             String selectedAttributes = decoration.getSelectedAttributeData(artifact);
             if (Strings.isValid(selectedAttributes)) {
                coloredName.append(' ').append(selectedAttributes, StyledString.DECORATIONS_STYLER);

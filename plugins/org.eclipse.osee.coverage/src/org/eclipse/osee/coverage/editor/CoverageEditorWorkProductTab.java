@@ -28,8 +28,8 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.WorkProductActionLabelProvider;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -205,7 +205,7 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
    }
 
    @Override
-   public Branch getBranch() throws OseeCoreException {
+   public IOseeBranch getBranch() throws OseeCoreException {
       return coverageEditor.getBranch();
    }
 

@@ -123,7 +123,11 @@ public class PolicyDialog extends Dialog {
                (PermissionEnum) cmbPermissionLevel.getData(cmbPermissionLevel.getText().replaceAll(" - Rank.*", ""));
 
             if (subject != null && permission != null) {
-               policyTableViewer.addItem(subject, accessControlledObject, permission);
+               try {
+                  policyTableViewer.addItem(subject, accessControlledObject, permission);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
             }
          }
       });

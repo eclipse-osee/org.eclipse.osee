@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.osee.define.internal.Activator;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -120,7 +121,7 @@ public class ExtractTestRelations {
       //      link.persist(getClass().getSimpleName());
    }
 
-   private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws OseeCoreException {
+   private Artifact getTestArtifact(IFile testArtifactFile, IOseeBranch branch) throws OseeCoreException {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestCase, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {

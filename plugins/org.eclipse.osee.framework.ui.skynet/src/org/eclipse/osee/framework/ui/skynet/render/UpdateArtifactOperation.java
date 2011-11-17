@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -57,10 +57,10 @@ import org.xml.sax.SAXException;
 public class UpdateArtifactOperation extends AbstractOperation {
    private final File workingFile;
    private final List<Artifact> artifacts;
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final boolean threeWayMerge;
 
-   public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, Branch branch, boolean threeWayMerge) {
+   public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, IOseeBranch branch, boolean threeWayMerge) {
       super("Update Artifact", Activator.PLUGIN_ID);
       this.workingFile = workingFile;
       this.artifacts = artifacts;
@@ -158,8 +158,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
    }
 
    private void logUpdateSkip(Artifact artifact) {
-      OseeLog.logf(Activator.class, Level.INFO,
-         "Skipping update - artifact [%s] is read-only", artifact.toString());
+      OseeLog.logf(Activator.class, Level.INFO, "Skipping update - artifact [%s] is read-only", artifact.toString());
    }
 
    private Artifact getArtifact(WordExtractorData artifactElement) throws OseeCoreException {

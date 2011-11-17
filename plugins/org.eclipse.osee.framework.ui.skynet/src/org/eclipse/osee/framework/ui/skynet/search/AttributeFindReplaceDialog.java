@@ -30,8 +30,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -63,7 +63,7 @@ public class AttributeFindReplaceDialog extends Dialog {
    private ComboViewer cmbAttributeDescriptors;
    private Text txtFindRegEx;
    private Text txtReplaceStr;
-   private Branch branch;
+   private IOseeBranch branch;
 
    private final List<Artifact> artifacts;
 

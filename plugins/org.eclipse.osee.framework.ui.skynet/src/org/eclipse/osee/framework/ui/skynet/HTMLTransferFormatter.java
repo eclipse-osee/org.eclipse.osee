@@ -49,10 +49,9 @@ public class HTMLTransferFormatter {
                link = ArtifactURL.getOpenInOseeLink(artifact).toString();
             } catch (OseeCoreException ex) {
                link =
-                  String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(), artifact.getBranch().getId(),
-                     artifact.getGammaId());
-               OseeLog.logf(Activator.class, Level.WARNING,
-                  ex, "Error creating link for: [%s]", artifact);
+                  String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(),
+                     artifact.getBranch().getGuid(), artifact.getGammaId());
+               OseeLog.logf(Activator.class, Level.WARNING, ex, "Error creating link for: [%s]", artifact);
             }
             urls.add(link + "\">" + artifact.getName());
          }

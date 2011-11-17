@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -170,7 +170,7 @@ public final class Artifacts {
          details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
          details.put("HRID", String.valueOf(Xml.escape(artifact.getHumanReadableId())));
          details.put("Branch", String.valueOf(Xml.escape(artifact.getBranch().toString())));
-         details.put("Branch Id", String.valueOf(artifact.getBranch().getId()));
+         details.put("Branch Id", String.valueOf(artifact.getFullBranch().getId()));
          details.put("Artifact Id", String.valueOf(artifact.getArtId()));
          details.put("Artifact Type Name", String.valueOf(Xml.escape(artifact.getArtifactTypeName())));
          details.put("Artifact Type Id", String.valueOf(artifact.getArtTypeId()));
@@ -213,8 +213,8 @@ public final class Artifacts {
       return sb.toString();
    }
 
-   public static HashCollection<Branch, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) {
-      HashCollection<Branch, Artifact> branchMap = new HashCollection<Branch, Artifact>();
+   public static HashCollection<IOseeBranch, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) {
+      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<IOseeBranch, Artifact>();
       for (Artifact artifact : artifacts) {
          branchMap.put(artifact.getBranch(), artifact);
       }

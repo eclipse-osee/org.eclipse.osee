@@ -138,11 +138,12 @@ public final class SkynetTransaction extends AbstractOperation {
       }
    }
 
-   private boolean isBranchWritable(Branch branch) throws OseeCoreException {
+   private boolean isBranchWritable(IOseeBranch branch) throws OseeCoreException {
       boolean toReturn = true;
       if (!UserManager.duringMainUserCreation()) {
+         Branch fullBranch = BranchManager.getBranch(branch);
          toReturn =
-            getAccess().hasBranchPermission(branch, PermissionEnum.WRITE, Level.FINE).matched() && branch.isEditable();
+            getAccess().hasBranchPermission(branch, PermissionEnum.WRITE, Level.FINE).matched() && fullBranch.isEditable();
       }
       return toReturn;
    }
@@ -310,7 +311,7 @@ public final class SkynetTransaction extends AbstractOperation {
       ModificationType modificationType;
       RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
-      Branch branch = link.getBranch();
+      IOseeBranch branch = link.getBranch();
       Artifact aArtifact = getArtifact(link.getAArtifactId(), branch);
       Artifact bArtifact = getArtifact(link.getBArtifactId(), branch);
       if (link.isInDb()) {

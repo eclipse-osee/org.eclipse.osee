@@ -31,8 +31,8 @@ import org.eclipse.osee.coverage.model.MessageCoverageItem;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -246,7 +246,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
    }
 
    @Override
-   public Branch getBranch() throws OseeCoreException {
+   public IOseeBranch getBranch() throws OseeCoreException {
       return coverageEditor.getBranch();
    }
 

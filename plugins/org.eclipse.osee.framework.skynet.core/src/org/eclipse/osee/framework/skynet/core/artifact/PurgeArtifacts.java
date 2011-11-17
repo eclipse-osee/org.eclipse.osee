@@ -69,7 +69,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
       try {
          for (Artifact art : artifactsToPurge) {
-            for (Branch branch : art.getBranch().getChildBranches(true)) {
+            for (Branch branch : art.getFullBranch().getChildBranches(true)) {
                batchParameters.add(new Object[] {
                   queryId,
                   insertTime,
@@ -114,7 +114,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                queryId,
                insertTime,
                art.getArtId(),
-               art.getBranch().getId(),
+               art.getFullBranch().getId(),
                SQL3DataType.INTEGER});
          }
          ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);

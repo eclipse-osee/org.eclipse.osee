@@ -5,9 +5,9 @@
  */
 package org.eclipse.osee.framework.ui.skynet.replace;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -58,17 +58,17 @@ public class RelationHandler {
    private class ReplaceRelationLinker implements ArtifactLinker {
 
       @Override
-      public void updateCachedArtifact(int artId, Branch branch) {
+      public void updateCachedArtifact(int artId, IOseeBranch branch) {
          //Do nothing
       }
 
       @Override
-      public Artifact getArtifact(int artId, Branch branch) throws OseeCoreException {
+      public Artifact getArtifact(int artId, IOseeBranch branch) throws OseeCoreException {
          return ArtifactQuery.getArtifactFromId(artId, branch);
       }
 
       @Override
-      public String getLazyArtifactName(int aArtifactId, Branch branch) {
+      public String getLazyArtifactName(int aArtifactId, IOseeBranch branch) {
          return null;
       }
 

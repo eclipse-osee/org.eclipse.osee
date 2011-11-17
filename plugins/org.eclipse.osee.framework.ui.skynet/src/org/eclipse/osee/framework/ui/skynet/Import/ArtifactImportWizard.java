@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.IImportWizard;
@@ -53,8 +56,13 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean performFinish() {
-      return importer.startImportJob(mainPage.getDestinationArtifact(), mainPage.isDeleteUnmatchedSelected(),
-         mainPage.getCollectedArtifacts(), getResolver());
+      try {
+         return importer.startImportJob(mainPage.getDestinationArtifact(), mainPage.isDeleteUnmatchedSelected(),
+            mainPage.getCollectedArtifacts(), getResolver());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return false;
    }
 
    private IArtifactImportResolver getResolver() {

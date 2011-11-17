@@ -17,10 +17,10 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 public class ArtifactValidationRule extends AbstractValidationRule {
 
-   private String getStatusMessage(Artifact itemChecked, IStatus status) {
+   private String getStatusMessage(Artifact itemChecked, IStatus status) throws OseeCoreException {
       String link =
          XResultDataUI.getHyperlink(String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()),
-            itemChecked.getHumanReadableId(), itemChecked.getBranch().getId());
+            itemChecked.getHumanReadableId(), itemChecked.getFullBranch().getId());
       return String.format("%s: %s", link, status.getMessage());
    }
 

@@ -55,7 +55,11 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
 
    @Override
    protected Integer getKey2(Artifact artifact) {
-      return artifact.getBranch().getId();
+      try {
+         return artifact.getFullBranch().getId();
+      } catch (OseeCoreException ex) {
+         return -1;
+      }
    }
 
    public Artifact getById(Integer artId, Integer branchId) {

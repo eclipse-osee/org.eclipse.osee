@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -132,8 +133,8 @@ public class ValidationReportOperation extends AbstractOperation {
       }
    }
 
-   public static String getRequirementHyperlink(Artifact art) {
+   public static String getRequirementHyperlink(Artifact art) throws OseeCoreException {
       String linkName = String.format("%s(%s)", art.getName(), art.getHumanReadableId());
-      return XResultDataUI.getHyperlink(linkName, art.getHumanReadableId(), art.getBranch().getId());
+      return XResultDataUI.getHyperlink(linkName, art.getHumanReadableId(), art.getFullBranch().getId());
    }
 }

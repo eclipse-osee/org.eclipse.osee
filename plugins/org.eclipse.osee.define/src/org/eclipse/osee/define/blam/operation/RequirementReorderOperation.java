@@ -16,10 +16,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -37,7 +37,7 @@ public class RequirementReorderOperation extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
-      Branch branch = artifacts.get(0).getBranch();
+      IOseeBranch branch = artifacts.get(0).getBranch();
       transaction = new SkynetTransaction(branch, "Fix Requirement Ordering BLAM");
       for (Artifact input : artifacts) {
          reorderChildren(input);

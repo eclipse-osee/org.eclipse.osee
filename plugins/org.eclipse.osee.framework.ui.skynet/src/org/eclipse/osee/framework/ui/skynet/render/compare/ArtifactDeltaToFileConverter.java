@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -36,7 +36,7 @@ public class ArtifactDeltaToFileConverter {
       if (newerArtifact.getModType().isDeleted()) {
          newerArtifact = null;
       }
-      Branch branch = artifactDelta.getBranch();
+      IOseeBranch branch = artifactDelta.getBranch();
 
       IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
       IFile newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);

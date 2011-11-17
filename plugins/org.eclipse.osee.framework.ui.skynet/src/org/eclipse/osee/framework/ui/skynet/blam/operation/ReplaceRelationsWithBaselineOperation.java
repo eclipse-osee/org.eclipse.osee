@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -41,17 +42,17 @@ import org.eclipse.osee.framework.ui.skynet.replace.ReplaceUtil;
 public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
 
    private final Collection<Artifact> artifacts;
-   private Map<Branch, SkynetTransaction> transactions;
+   private Map<IOseeBranch, SkynetTransaction> transactions;
 
    public ReplaceRelationsWithBaselineOperation(Collection<Artifact> artifacts) {
       super("Replace artifact with baseline values", Activator.PLUGIN_ID);
       this.artifacts = artifacts;
    }
 
-   private SkynetTransaction getTransaction(Branch branch) {
+   private SkynetTransaction getTransaction(IOseeBranch branch) throws OseeCoreException {
       SkynetTransaction transaction = null;
       if (transactions == null) {
-         transactions = new HashMap<Branch, SkynetTransaction>();
+         transactions = new HashMap<IOseeBranch, SkynetTransaction>();
       } else {
          transaction = transactions.get(branch);
       }
@@ -103,7 +104,7 @@ public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
 
    public void runDoWork() throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         Branch branch = artifact.getBranch();
+         Branch branch = artifact.getFullBranch();
          TransactionRecord baseTx;
          baseTx = branch.getBaseTransaction();
 

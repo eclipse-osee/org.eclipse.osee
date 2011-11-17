@@ -53,7 +53,7 @@ public class PolicyTableViewer {
       ((PolicyTableCellModifier) tableXViewer.getCellModifier()).setEnabled(allow);
    }
 
-   public void addItem(Artifact subject, Object object, PermissionEnum permission) {
+   public void addItem(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
       AccessObject accessObject = AccessControlManager.getAccessObject(object);
       AccessControlData data = new AccessControlData(subject, accessObject, permission, true);
       accessControlList.put(data.getSubject().getGuid(), data);

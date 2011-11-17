@@ -99,7 +99,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       new HashCollection<IAttributeType, Attribute<?>>(false, LinkedList.class, 12);
    private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicGuidRelationReorder>();
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final String humanReadableId;
    private ArtifactType artifactType;
    private final ArtifactFactory parentFactory;
@@ -112,7 +112,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    private ModificationType lastValidModType;
    private EditState objectEditState;
 
-   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(GUID.checkOrCreate(guid), "");
       objectEditState = EditState.NO_CHANGE;
       modType = ModificationType.NEW;
@@ -230,8 +230,12 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    @Override
-   public final Branch getBranch() {
+   public final IOseeBranch getBranch() {
       return branch;
+   }
+
+   public final Branch getFullBranch() throws OseeCoreException {
+      return BranchManager.getBranch(branch);
    }
 
    public final String getArtifactTypeName() {
@@ -415,7 +419,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    public final boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return getArtifactType().isValidAttributeType(attributeType, branch);
+      return getArtifactType().isValidAttributeType(attributeType, getFullBranch());
    }
 
    public final boolean isRelationTypeValid(IRelationType relationType) throws OseeCoreException {
@@ -530,7 +534,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    public final Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
-      return getArtifactType().getAttributeTypes(branch);
+      return getArtifactType().getAttributeTypes(getFullBranch());
    }
 
    public final <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {

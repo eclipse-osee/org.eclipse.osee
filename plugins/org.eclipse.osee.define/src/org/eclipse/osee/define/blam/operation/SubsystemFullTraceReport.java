@@ -20,12 +20,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -68,7 +68,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       if (artifacts.isEmpty()) {
          throw new OseeArgumentException("must specify a set of artifacts");
       }
-      Branch branch = artifacts.get(0).getBranch();
+      IOseeBranch branch = artifacts.get(0).getBranch();
       String scriptPath = variableMap.getString("Script Root Directory");
 
       init();

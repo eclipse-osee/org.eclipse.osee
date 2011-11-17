@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 public class ArtifactSearchResult extends AbstractArtifactSearchResult {
    private final AbstractArtifactSearchQuery aQuery;
@@ -26,7 +30,12 @@ public class ArtifactSearchResult extends AbstractArtifactSearchResult {
 
    @Override
    public String getLabel() {
-      return aQuery.getResultLabel();
+      try {
+         return aQuery.getResultLabel();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return "";
    }
 
    @Override

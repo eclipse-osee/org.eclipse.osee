@@ -104,7 +104,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       @Override
       public void run() {
          try {
-            BranchView.revealBranch(getSelectedArtifact().getBranch());
+            BranchView.revealBranch(getSelectedArtifact().getFullBranch());
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
@@ -216,9 +216,8 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
                clipboard = new Clipboard(null);
                clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
             } catch (Exception ex) {
-               OseeLog.logf(Activator.class, Level.SEVERE, ex,
-                  "Error obtaining url for - guid: [%s] branch:[%s]", getSelectedArtifact().getGuid(),
-                  getSelectedArtifact().getBranch());
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining url for - guid: [%s] branch:[%s]",
+                  getSelectedArtifact().getGuid(), getSelectedArtifact().getBranch());
             } finally {
                if (clipboard != null && !clipboard.isDisposed()) {
                   clipboard.dispose();

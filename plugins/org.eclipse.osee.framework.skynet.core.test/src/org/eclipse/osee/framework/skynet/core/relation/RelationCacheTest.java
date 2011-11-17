@@ -381,7 +381,7 @@ public class RelationCacheTest {
 
    private static void checkAssumptions() {
       Assert.assertTrue(!artfact1.equals(artfact2));
-      Assert.assertTrue(artfact1.getBranch().getId() != artfact2.getBranch().getId());
+      Assert.assertTrue(!artfact1.getBranch().equals(artfact2.getBranch()));
    }
 
    private static void fillCache(RelationCache relCache) {

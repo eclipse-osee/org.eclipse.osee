@@ -57,7 +57,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @return the unique artifact
     */
    @SuppressWarnings("unchecked")
-   public T searchForUniqueArtifactMatching(IAttributeType attributeType, String attributeValue, Branch branch) throws OseeCoreException {
+   public T searchForUniqueArtifactMatching(IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
       Conditions.checkNotNull(attributeType, "attributeType");
       Conditions.checkNotNull(attributeValue, "attributeValue");
       Conditions.checkNotNull(branch, "branch");
@@ -80,8 +80,8 @@ public class OteArtifactFetcher<T extends Artifact> {
             toReturn.add((T) artifact);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.logf(OteDefinePlugin.class, Level.WARNING,
-            ex, "Search for all artifacts failed [%s, %s]", oteArtifactType.getName(), branch.getName());
+         OseeLog.logf(OteDefinePlugin.class, Level.WARNING, ex, "Search for all artifacts failed [%s, %s]",
+            oteArtifactType.getName(), branch.getName());
       }
       return toReturn;
    }

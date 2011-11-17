@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -47,8 +49,8 @@ public class InterArtifactExplorerDropHandler {
       if (destinationParentArtifact == null || sourceArtifacts == null || sourceArtifacts.length < 1) {
          throw new OseeArgumentException("Invalid arguments");
       }
-      Branch sourceBranch = sourceArtifacts[0].getBranch();
-      Branch destinationBranch = destinationParentArtifact.getBranch();
+      Branch sourceBranch = sourceArtifacts[0].getFullBranch();
+      Branch destinationBranch = destinationParentArtifact.getFullBranch();
 
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
          MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, UPDATE_FROM_PARENT_ERROR_MSG);
@@ -166,8 +168,8 @@ public class InterArtifactExplorerDropHandler {
       return newDestinationArtifact;
    }
 
-   private boolean artifactOnBranch(Branch sourceBranch, Artifact sourceArtifact) throws OseeCoreException {
+   private boolean artifactOnBranch(IOseeBranch sourceBranch, Artifact sourceArtifact) throws OseeCoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(0, ClientSessionManager.getSql(OseeSql.IS_ARTIFACT_ON_BRANCH),
-         sourceArtifact.getArtId(), sourceBranch.getId()) > 0;
+         sourceArtifact.getArtId(), BranchManager.getBranchId(sourceBranch)) > 0;
    }
 }

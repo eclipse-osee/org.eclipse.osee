@@ -11,10 +11,12 @@
 package org.eclipse.osee.framework.access.internal.data;
 
 import org.eclipse.osee.framework.access.AccessObject;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Jeff C. Phillips
@@ -61,13 +63,14 @@ public class ArtifactAccessObject extends AccessObject {
       ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branchId);
    }
 
-   public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact) {
+   public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact) throws OseeCoreException {
       Integer artId = artifact.getArtId();
-      Integer branchId = artifact.getBranch().getId();
+      IOseeBranch branchId = artifact.getBranch();
       return getArtifactAccessObject(artId, branchId);
    }
 
-   public static ArtifactAccessObject getArtifactAccessObject(Integer artId, Integer branchId) {
+   public static ArtifactAccessObject getArtifactAccessObject(Integer artId, IOseeBranch branch) throws OseeCoreException {
+      int branchId = BranchManager.getBranchId(branch);
       ArtifactAccessObject accessObject = cache.get(artId, branchId);
 
       if (accessObject == null) {
@@ -77,11 +80,12 @@ public class ArtifactAccessObject extends AccessObject {
       return accessObject;
    }
 
-   public static AccessObject getArtifactAccessObjectFromCache(Artifact art) {
-      return getArtifactAccessObjectFromCache(art.getArtId(), art.getBranch().getId());
+   public static AccessObject getArtifactAccessObjectFromCache(Artifact art) throws OseeCoreException {
+      return getArtifactAccessObjectFromCache(art.getArtId(), art.getBranch());
    }
 
-   public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, Integer branchId2) {
+   public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, IOseeBranch branch) throws OseeCoreException {
+      int branchId2 = BranchManager.getBranchId(branch);
       return cache.get(artId2, branchId2);
    }
 

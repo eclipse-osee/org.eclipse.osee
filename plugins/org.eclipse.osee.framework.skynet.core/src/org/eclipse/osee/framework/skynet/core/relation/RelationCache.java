@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
@@ -37,7 +37,7 @@ public class RelationCache {
 
       @Override
       protected ArtifactKey initialValue() {
-         return new ArtifactKey(0, 0);
+         return new ArtifactKey();
       }
    };
 
@@ -51,7 +51,7 @@ public class RelationCache {
       return key.setKey(artifact);
    }
 
-   private ArtifactKey getKey(int artId, int branchId) {
+   private ArtifactKey getKey(int artId, IOseeBranch branchId) {
       ArtifactKey key = THREAD_SHARED_KEY.get();
       return key.setKey(artId, branchId);
    }
@@ -77,7 +77,7 @@ public class RelationCache {
          artifactId = relation.getBArtifactId();
       }
 
-      ArtifactKey key = getKey(artifactId, relation.getBranch().getId());
+      ArtifactKey key = getKey(artifactId, relation.getBranch());
       List<RelationLink> relations = relationsByType.get(key, relation.getRelationType());
       if (relations != null) {
          relations.remove(relation);
@@ -92,7 +92,7 @@ public class RelationCache {
          relationsByType.put(new ArtifactKey(artifact), relationType, selectedRelations);
       }
       if (selectedRelations.contains(newRelation)) {
-         OseeLog.logf(Activator.class, Level.SEVERE, 
+         OseeLog.logf(Activator.class, Level.SEVERE,
             "Duplicate relationByType objects for same relation for Relation [%s] Artifact (%s)[%s]", newRelation,
             artifact.getArtId(), artifact.getName());
       }
@@ -116,12 +116,12 @@ public class RelationCache {
       return linksFound;
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, int artId, int branchId, IRelationType relationType, RelationMatcher matcher) {
+   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchId, IRelationType relationType, RelationMatcher matcher) {
       List<RelationLink> sourceLink = relationsByType.get(getKey(artId, branchId), relationType);
       RelationFilterUtil.filter(sourceLink, linksFound, matcher);
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, int artId, int branchId, RelationMatcher matcher) {
+   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchId, RelationMatcher matcher) {
       ArtifactKey artifactKey = getKey(artId, branchId);
       findRelations(linksFound, artifactKey, matcher);
    }
@@ -138,12 +138,12 @@ public class RelationCache {
    /**
     * Find RelationById Related On ArtA or ArtB
     */
-   public RelationLink getByRelIdOnArtifact(int relLinkId, int aArtifactId, int bArtifactId, Branch branch) {
+   public RelationLink getByRelIdOnArtifact(int relLinkId, int aArtifactId, int bArtifactId, IOseeBranch branch) {
       RelationMatcher relIdMatcher = RelationFilterUtil.createFindFirstRelationLinkIdMatcher(relLinkId);
       List<RelationLink> links = new ArrayList<RelationLink>();
-      findRelations(links, aArtifactId, branch.getId(), relIdMatcher);
+      findRelations(links, aArtifactId, branch, relIdMatcher);
       if (links.isEmpty()) {
-         findRelations(links, bArtifactId, branch.getId(), relIdMatcher);
+         findRelations(links, bArtifactId, branch, relIdMatcher);
       }
       return links.isEmpty() ? null : links.iterator().next();
    }
@@ -152,7 +152,7 @@ public class RelationCache {
       Set<RelationLink> itemsFound = new HashSet<RelationLink>();
 
       final int artifactId = artifact.getArtId();
-      final int branchId = artifact.getBranch().getId();
+      final IOseeBranch branchId = artifact.getBranch();
       RelationMatcher artIdMatcher = new RelationMatcher() {
 
          @Override
@@ -177,24 +177,22 @@ public class RelationCache {
       }
       int size = relations.size();
       if (size > 1) {
-         OseeLog.logf(
-            Activator.class,
-            Level.SEVERE,
-            "Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]",
-               artifact.getArtId(), relations.size(), relationType, bArtifactId);
+         OseeLog.logf(Activator.class, Level.SEVERE,
+            "Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]", artifact.getArtId(),
+            relations.size(), relationType, bArtifactId);
       }
       return size != 0 ? relations.iterator().next() : null;
    }
 
-   public RelationLink getLoadedRelation(IRelationType relationType, final int aArtifactId, final int bArtifactId, Branch branch) {
+   public RelationLink getLoadedRelation(IRelationType relationType, final int aArtifactId, final int bArtifactId, IOseeBranch branch) {
       RelationMatcher bArtIdMatcher =
          RelationFilterUtil.createFindFirstRelatedArtIdMatcher(bArtifactId, RelationSide.SIDE_B);
       List<RelationLink> links = new ArrayList<RelationLink>();
-      findRelations(links, aArtifactId, branch.getId(), relationType, bArtIdMatcher);
+      findRelations(links, aArtifactId, branch, relationType, bArtIdMatcher);
       if (links.isEmpty()) {
          RelationMatcher aArtIdMatcher =
             RelationFilterUtil.createFindFirstRelatedArtIdMatcher(aArtifactId, RelationSide.SIDE_A);
-         findRelations(links, bArtifactId, branch.getId(), relationType, aArtIdMatcher);
+         findRelations(links, bArtifactId, branch, relationType, aArtIdMatcher);
       }
       return links.isEmpty() ? null : links.iterator().next();
    }

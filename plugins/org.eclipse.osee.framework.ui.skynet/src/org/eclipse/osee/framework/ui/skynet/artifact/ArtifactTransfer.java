@@ -111,7 +111,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
          out.close();
          byte[] bytes = out.toByteArray();
          super.javaToNative(bytes, transferData);
-      } catch (IOException e) {
+      } catch (Exception e) {
          // it's best to send nothing if there were problems
       }
    }
@@ -162,9 +162,11 @@ public class ArtifactTransfer extends ByteArrayTransfer {
 
    /**
     * Writes the given resource to the given stream.
+    * 
+    * @throws OseeCoreException
     */
-   private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException {
+   private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException, OseeCoreException {
       dataOut.writeInt(artifact.getArtId());
-      dataOut.writeInt(artifact.getBranch().getId());
+      dataOut.writeInt(artifact.getFullBranch().getId());
    }
 }

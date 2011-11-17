@@ -62,7 +62,7 @@ public final class RevisionChangeLoader {
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
    private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
-      Branch branch = artifact.getBranch();
+      Branch branch = artifact.getFullBranch();
       Set<TransactionRecord> transactionIds = new LinkedHashSet<TransactionRecord>();
       loadBranchTransactions(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch),
          recurseThroughBranchHierarchy);

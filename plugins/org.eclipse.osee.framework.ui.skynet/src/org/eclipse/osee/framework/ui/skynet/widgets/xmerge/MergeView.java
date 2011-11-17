@@ -30,6 +30,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -910,7 +911,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             }
             for (Artifact artifact : modifiedArts) {
                try {
-                  Branch branch = artifact.getBranch();
+                  IOseeBranch branch = artifact.getBranch();
                   if (showConflicts) {
                      Conflict[] conflicts = getConflicts();
                      for (Conflict conflict : conflicts) {

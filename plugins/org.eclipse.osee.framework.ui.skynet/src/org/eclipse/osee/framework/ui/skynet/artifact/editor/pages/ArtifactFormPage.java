@@ -176,7 +176,7 @@ public class ArtifactFormPage extends FormPage {
          description =
             String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>GUID:</b> %s</p></form>",
                !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
-               ReservedCharacters.encodeXmlEntities(artifact.getBranch().getShortName()),
+               ReservedCharacters.encodeXmlEntities(artifact.getFullBranch().getShortName()),
                artifact.getArtifactTypeName(), artifact.getGuid());
       } catch (Exception ex) {
          description = Lib.exceptionToString(ex);

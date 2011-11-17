@@ -215,7 +215,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    public static void explore(Collection<Artifact> artifacts, IWorkbenchPage page) {
       Artifact sampleArtifact = null;
-      Branch inputBranch = null;
+      IOseeBranch inputBranch = null;
       if (artifacts != null && !artifacts.isEmpty()) {
          sampleArtifact = artifacts.iterator().next();
          inputBranch = sampleArtifact.getBranch();
@@ -1092,19 +1092,19 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
    }
 
-   public void explore(Artifact artifact) {
+   public void explore(Artifact artifact) throws OseeCoreException {
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
 
-      setPartName("Artifact Explorer: " + artifact.getBranch().getShortName());
+      setPartName("Artifact Explorer: " + artifact.getFullBranch().getShortName());
       if (branch != null && branch != artifact.getBranch()) {
          explore(Arrays.asList(artifact));
          return;
       }
 
       explorerRoot = artifact;
-      branch = artifact.getBranch();
+      branch = artifact.getFullBranch();
 
       if (dragAndDropWorker != null) {
          dragAndDropWorker.updateBranch(branch);
@@ -1308,7 +1308,11 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       super.saveState(memento);
       if (explorerRoot != null) {
          memento.putString(ROOT_GUID, explorerRoot.getGuid());
-         memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getBranch().getId()));
+         try {
+            memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getFullBranch().getId()));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
    }
 

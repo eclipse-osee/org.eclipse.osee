@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -37,16 +39,20 @@ public final class WordUiUtil {
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
                for (Artifact artifact : artifacts) {
-                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-                     artifact.toString(),
-                     XResultDataUI.getHyperlink(artifact)}));
+                  try {
+                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+                        artifact.toString(),
+                        XResultDataUI.getHyperlink(artifact)}));
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
                }
                rd.addRaw(AHTML.endMultiColumnTable());
                if (RenderingUtil.arePopupsAllowed()) {
                   XResultDataUI.report(rd, "Unhandled Artifacts");
                } else {
-                  OseeLog.logf(Activator.class, Level.INFO,
-                     "Test - Skip Unhandled Artifacts Report - %s - [%s]", warningString, artifacts);
+                  OseeLog.logf(Activator.class, Level.INFO, "Test - Skip Unhandled Artifacts Report - %s - [%s]",
+                     warningString, artifacts);
                }
             }
          });

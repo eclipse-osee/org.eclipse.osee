@@ -15,12 +15,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,7 +64,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
          return;
       }
       recurse = variableMap.getBoolean("Recurse Over Hierarchy");
-      Branch branch = getBranch(inputArtifacts);
+      IOseeBranch branch = getBranch(inputArtifacts);
       transaction = new SkynetTransaction(branch, getName());
       for (Artifact art : inputArtifacts) {
          resetRelationOrder(art);
@@ -72,8 +72,8 @@ public class RelationOrderRepairBlam extends AbstractBlam {
       transaction.execute();
    }
 
-   private Branch getBranch(List<Artifact> arts) throws OseeArgumentException {
-      Branch branch = arts.get(0).getBranch();
+   private IOseeBranch getBranch(List<Artifact> arts) throws OseeArgumentException {
+      IOseeBranch branch = arts.get(0).getBranch();
       for (Artifact art : arts) {
          if (!art.getBranch().equals(branch)) {
             throw new OseeArgumentException("Input artifacts must be on same branch");

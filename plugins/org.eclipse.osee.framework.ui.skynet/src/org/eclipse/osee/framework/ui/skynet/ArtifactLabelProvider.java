@@ -82,11 +82,10 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
                extraInfo.add("<" + artifact.getArtifactTypeName() + ">");
             }
 
-            if (decorationProvider.showArtBranch()) {
-               extraInfo.add("[" + artifact.getBranch().getShortName() + "]");
-            }
-
             try {
+               if (decorationProvider.showArtBranch()) {
+                  extraInfo.add("[" + artifact.getFullBranch().getShortName() + "]");
+               }
                String selectedAttributes = decorationProvider.getSelectedAttributeData(artifact);
                if (Strings.isValid(selectedAttributes)) {
                   extraInfo.add(selectedAttributes);

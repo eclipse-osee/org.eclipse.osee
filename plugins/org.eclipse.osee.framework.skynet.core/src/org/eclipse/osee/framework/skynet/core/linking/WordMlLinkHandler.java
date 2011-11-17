@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -163,7 +164,7 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<Artifact> findArtifacts(TransactionRecord transactionId, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
+   private static List<Artifact> findArtifacts(TransactionRecord transactionId, IOseeBranch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
       List<Artifact> artifactsFromSearch;
       if (isHistorical) {
          artifactsFromSearch =
@@ -183,7 +184,7 @@ public class WordMlLinkHandler {
    }
 
    private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking) throws OseeCoreException {
-      Branch branch = source.getBranch();
+      Branch branch = source.getFullBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<String>(matchMap.keySet());

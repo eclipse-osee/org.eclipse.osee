@@ -23,9 +23,6 @@ public interface IBasicArtifact<T> extends IArtifactToken, HasBranch {
    int getArtId();
 
    @Override
-   Branch getBranch();
-
-   @Override
    ArtifactType getArtifactType();
 
    T getFullArtifact() throws OseeCoreException;

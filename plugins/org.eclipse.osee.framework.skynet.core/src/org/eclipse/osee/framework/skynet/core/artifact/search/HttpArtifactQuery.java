@@ -60,7 +60,7 @@ final class HttpArtifactQuery {
       SearchResponse response = executeSearch();
       List<Artifact> artifacts = loadArtifacts(response, loadLevel, reload);
       for (Artifact artifact : artifacts) {
-         ArtifactMatchMetaData match = response.getArtifactMatch(artifact.getBranch().getId(), artifact.getArtId());
+         ArtifactMatchMetaData match = response.getArtifactMatch(artifact.getFullBranch().getId(), artifact.getArtId());
          toReturn.add(new ArtifactMatch(artifact, match));
       }
       return toReturn;

@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,11 +30,11 @@ public class RelationLink {
 
    public static interface ArtifactLinker {
 
-      public void updateCachedArtifact(int artId, Branch branch);
+      public void updateCachedArtifact(int artId, IOseeBranch branch);
 
-      public Artifact getArtifact(int ArtId, Branch branch) throws OseeCoreException;
+      public Artifact getArtifact(int ArtId, IOseeBranch branch) throws OseeCoreException;
 
-      public String getLazyArtifactName(int aArtifactId, Branch branch);
+      public String getLazyArtifactName(int aArtifactId, IOseeBranch branch);
 
       public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException;
    }
@@ -46,7 +46,7 @@ public class RelationLink {
    private boolean dirty;
    private final int aArtifactId;
    private final int bArtifactId;
-   private final Branch branch;
+   private final IOseeBranch branch;
    private ModificationType modificationType;
 
    private static final boolean SET_DIRTY = true;
@@ -54,7 +54,7 @@ public class RelationLink {
 
    private final ArtifactLinker artifactLinker;
 
-   public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, Branch branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
+   public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, IOseeBranch branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
       this.artifactLinker = artifactLinker;
       this.relationType = relationType;
       this.relationId = relationId;
@@ -277,7 +277,7 @@ public class RelationLink {
       this.gammaId = gammaId;
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branch;
    }
 

@@ -66,7 +66,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       if (!artifacts.isEmpty()) {
 
          for (Artifact artifact : artifacts) {
-            Branch branch = artifact.getBranch();
+            Branch branch = artifact.getFullBranch();
 
             TransactionRecord baseTx = branch.getBaseTransaction();
             Collection<Change> changes =
