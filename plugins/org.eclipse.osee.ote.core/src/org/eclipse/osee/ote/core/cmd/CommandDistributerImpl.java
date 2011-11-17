@@ -69,6 +69,7 @@ public class CommandDistributerImpl implements CommandDistributer {
       } catch (InterruptedException ex) {
          OseeLog.log(CommandDistributerImpl.class, Level.WARNING,
             "Interrupted while shutting down command distributor", ex);
+         Thread.currentThread().interrupt();
       }
    }
 
