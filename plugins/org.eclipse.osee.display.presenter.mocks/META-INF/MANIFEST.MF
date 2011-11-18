@@ -16,6 +16,5 @@ Import-Package: org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs.data,
- org.eclipse.osee.orcs.mock,
  org.eclipse.osee.orcs.search
 Export-Package: org.eclipse.osee.display.presenter.mocks

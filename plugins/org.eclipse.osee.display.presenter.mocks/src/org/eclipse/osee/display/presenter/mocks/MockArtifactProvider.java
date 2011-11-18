@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.mock.MockArtifact;
 import org.eclipse.osee.orcs.search.Match;
 
 /**

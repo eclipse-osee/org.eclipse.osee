@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.mock;
+package org.eclipse.osee.display.presenter.mocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
@@ -49,7 +48,6 @@ public class MockArtifact implements ReadableArtifact {
    private final IArtifactType type;
    private final IOseeBranch branch;
    private ReadableArtifact parent;
-   private boolean hasParent = false;
 
    public MockArtifact(String guid, String name) {
       this(guid, name, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
@@ -65,9 +63,6 @@ public class MockArtifact implements ReadableArtifact {
 
    public void setParent(ReadableArtifact parent) {
       this.parent = parent;
-      if (this.parent != null) {
-         hasParent = true;
-      }
    }
 
    public void addAttribute(IAttributeType type, String value) {
@@ -197,7 +192,7 @@ public class MockArtifact implements ReadableArtifact {
    }
 
    @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+   public String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) {
       return null;
    }
 

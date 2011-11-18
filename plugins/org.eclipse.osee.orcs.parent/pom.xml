@@ -4,29 +4,41 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.eclipse.osee</groupId>
-	<artifactId>org.eclipse.osee.x.server.parent</artifactId>
+	<artifactId>org.eclipse.osee.orcs.parent</artifactId>
 	<packaging>pom</packaging>
-	<name>OSEE X Server - Parent (Incubation)</name>
+	<name>OSEE ORCS - Parent (Incubation)</name>
 	<version>0.9.9-SNAPSHOT</version>
 
 	<modules>
-		<module>../../plugins/org.eclipse.osee.display.api</module>
-		<module>../../plugins/org.eclipse.osee.display.view.web</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter.mocks</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter.test</module>
+		<module>../../plugins/org.eclipse.osee.framework.core</module>
+		<module>../../plugins/org.eclipse.osee.framework.core.test</module>
+		<module>../../plugins/org.eclipse.osee.framework.core.dsl</module>
+		<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module>
+		<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration.test</module>
+		<module>../../plugins/org.eclipse.osee.framework.core.model</module>
+		<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
+		<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
+		<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
+		<module>../../plugins/org.eclipse.osee.framework.database</module>
+		<module>../../plugins/org.eclipse.osee.framework.database.test</module>
 
-		<module>../../plugins/org.eclipse.osee.ats.api</module>
-		<module>../../plugins/org.eclipse.osee.ats.view.web</module>
-		<module>../../plugins/org.eclipse.osee.ats.mocks</module>
-		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
-		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
+		<module>../../plugins/org.eclipse.osee.database</module>
 
-		<module>../../features/org.eclipse.osee.x.server.feature</module>
-		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
-		<module>../../features/org.eclipse.osee.x.server.feature.source</module>
+		<module>../../plugins/org.eclipse.osee.orcs</module>
+		<module>../../plugins/org.eclipse.osee.orcs.core</module>
+		<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
+		<module>../../plugins/org.eclipse.osee.orcs.db</module>
+		<module>../../plugins/org.eclipse.osee.orcs.db.mock</module>
+		<module>../../plugins/org.eclipse.osee.orcs.rest</module>
+		<module>../../plugins/org.eclipse.osee.framework.h2</module>
+		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 
-		<module>../../plugins/org.eclipse.osee.x.server.p2</module>
+		<module>../../plugins/org.eclipse.osee.orcs.core.integration.test</module>
+
+		<module>../../features/org.eclipse.osee.orcs.feature</module>
+		<module>../../features/org.eclipse.osee.orcs.feature.source</module>
+
+		<module>../../plugins/org.eclipse.osee.orcs.p2</module>
 	</modules>
 
 	<properties>
@@ -43,14 +55,8 @@
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 		<swtbot-site>http://download.eclipse.org/technology/swtbot/${platform-version-name}/dev-build/update-site</swtbot-site>
 
-		<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
-		<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-
 		<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 		<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
-
-		<osee-orcs-site-path>file:../../../org.eclipse.osee/plugins</osee-orcs-site-path>
-		<osee-orcs-site>${osee-orcs-site-path}/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
 
 	</properties>
 
@@ -95,19 +101,9 @@
 			<url>${orbit-site}</url>
 		</repository>
 		<repository>
-			<id>eclipse-ip</id>
-			<layout>p2</layout>
-			<url>${eclipse-ip-site}</url>
-		</repository>
-		<repository>
 			<id>osee-xcore</id>
 			<layout>p2</layout>
 			<url>${osee-xcore-site}</url>
-		</repository>
-		<repository>
-			<id>osee-orcs</id>
-			<layout>p2</layout>
-			<url>${osee-orcs-site}</url>
 		</repository>
 	</repositories>
 
@@ -265,49 +261,9 @@
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.8</version>
-					<configuration>
-						<debug>true</debug>
-						<maxmemory>1024m</maxmemory>
-						<sourcepath>src</sourcepath>
-						<author>true</author>
-						<version>true</version>
-						<aggregate>true</aggregate>
-						<encoding>ISO-8859-1</encoding>
-					</configuration>
-					<executions>
-						<execution>
-							<id>aggregate</id>
-							<goals>
-								<goal>aggregate</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
-			</plugin>
-		</plugins>
-	</reporting>
 
 	<profiles>
 		<profile>
@@ -432,14 +388,8 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<eclipse-ip-site-path>file:../../../org.eclipse.ip</eclipse-ip-site-path>
-				<eclipse-ip-site>${eclipse-ip-site-path}/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-
 				<osee-xcore-site-path>file:../../../org.eclipse.osee/plugins</osee-xcore-site-path>
 				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
-
-				<osee-orcs-site-path>file:../../../org.eclipse.osee/plugins</osee-orcs-site-path>
-				<osee-orcs-site>${osee-orcs-site-path}/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
 			</properties>
 		</profile>
 
@@ -449,17 +399,9 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<eclipse-ip-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</eclipse-ip-site-path>
-				<eclipse-ip-site-version>DEV</eclipse-ip-site-version>
-				<eclipse-ip-site>${eclipse-ip-site-path}/${eclipse-ip-site-version}/org.eclipse.ip/org.eclipse.ip.p2</eclipse-ip-site>
-
 				<osee-xcore-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-xcore-site-path>
-				<osee-xcore-site-version>DEV</osee-xcore-site-version>
-				<osee-xcore-site>${osee-xcore-site-path}/${osee-xcore-site-version}/org.eclipse.osee/org.eclipse.osee.x.core.p2</osee-xcore-site>
-
-				<osee-orcs-site-path>http://msa-linux-adm.msc.az.boeing.com/osee/sites</osee-orcs-site-path>
-				<osee-orcs-site-version>DEV</osee-orcs-site-version>
-				<osee-orcs-site>${osee-orcs-site-path}/${osee-orcs-site-version}/org.eclipse.osee/org.eclipse.osee.orcs.p2</osee-orcs-site>
+				<osee-xcore-site-version>DEV/org.eclipse.osee</osee-xcore-site-version>
+				<osee-xcore-site>${osee-xcore-site-path}/org.eclipse.osee.x.core.p2</osee-xcore-site>
 			</properties>
 		</profile>
 

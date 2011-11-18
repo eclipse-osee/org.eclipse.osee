@@ -6,8 +6,7 @@ Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.sun.jersey.multipart,
- javax.ws.rs,
+Import-Package: javax.ws.rs,
  javax.ws.rs.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

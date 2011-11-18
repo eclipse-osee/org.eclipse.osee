@@ -6,11 +6,12 @@ Bundle-Version: 0.9.9.qualifier
 Fragment-Host: org.eclipse.osee.display.presenter;bundle-version="0.9.9.qualifier"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.eclipse.osee.display.api.data,
+Import-Package: org.eclipse.osee.display.api.components,
+ org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search,
  org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.orcs.mock
-Require-Bundle: org.junit,
- org.eclipse.osee.display.api
+ org.junit;version="4.8.2",
+ org.junit.runner;version="4.8.2",
+ org.junit.runners;version="4.8.2"
