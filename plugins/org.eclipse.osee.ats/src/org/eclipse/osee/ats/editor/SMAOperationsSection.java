@@ -72,7 +72,7 @@ public class SMAOperationsSection extends SectionPart {
          operationsSectionProviders = new ArrayList<ISMAOperationsSection>();
          ExtensionDefinedObjects<ISMAOperationsSection> extensions =
             new ExtensionDefinedObjects<ISMAOperationsSection>(Activator.PLUGIN_ID + ".AtsAdvancedOperationAction",
-               "AtsAdvancedOperationAction", "classname", false);
+               "AtsAdvancedOperationAction", "classname", true);
          for (ISMAOperationsSection item : extensions.getObjects()) {
             operationsSectionProviders.add(item);
          }
