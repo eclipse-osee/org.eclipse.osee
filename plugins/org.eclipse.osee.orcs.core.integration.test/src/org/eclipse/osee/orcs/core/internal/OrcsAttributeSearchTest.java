@@ -17,16 +17,19 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiUtil;
+import org.eclipse.osee.orcs.search.CaseType;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.ResultSet;
+import org.eclipse.osee.orcs.search.StringOperator;
 import org.junit.Rule;
 
 /**
@@ -79,15 +82,17 @@ public class OrcsAttributeSearchTest {
    }
 
    public void testWTCAttributeEqualSearch(QueryFactory queryFactory, BranchCache branchCache) throws OseeCoreException {
+      Branch branch = branchCache.getBySoleName("SAW_Bld_1");
       QueryBuilder builder =
-         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(
-            CoreAttributeTypes.WholeWordContent, Operator.EQUAL, "commands");
+         queryFactory.fromBranch(branch).and(CoreAttributeTypes.WordTemplateContent,
+            StringOperator.TOKENIZED_ANY_ORDER, CaseType.IGNORE_CASE, "commands");
 
       ResultSet<ReadableArtifact> resultSet = builder.getResults();
       List<ReadableArtifact> moreArts = resultSet.getList();
 
       Assert.assertFalse(moreArts.isEmpty());
-      Assert.assertTrue(builder.getCount() > 0);
+      Assert.assertEquals(3, moreArts.size());
+      Assert.assertEquals(3, builder.getCount());
    }
 
    public void testBooleanAttributeSearch(QueryFactory queryFactory) throws OseeCoreException {
