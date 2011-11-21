@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.swt.SWT;
 
@@ -42,4 +43,10 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
       registerColumns(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged, Art_Id);
       registerAllAttributeColumns();
    }
+
+   @Override
+   public XViewerCustomMenu getXViewerCustomMenu() {
+      return new MergeCustomMenu();
+   }
+
 }

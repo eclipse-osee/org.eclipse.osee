@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
@@ -32,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpRequestOperation;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
@@ -56,7 +49,6 @@ public class MergeXViewer extends XViewer {
    private Conflict[] conflicts = EMPTY_CONFLICTS;
    private ConflictResolutionWizard conWizard;
    private XMergeLabelProvider labelProvider;
-   private Action openMergeViewAction;
 
    public MergeXViewer(Composite parent, int style, MergeXWidget xMergeViewer) {
       super(parent, style, new MergeXViewerFactory());
@@ -64,50 +56,8 @@ public class MergeXViewer extends XViewer {
    }
 
    @Override
-   protected void createSupportWidgets(Composite parent) {
-      super.createSupportWidgets(parent);
-      createMenuActions();
-   }
-
-   public void createMenuActions() {
-      MenuManager mm = getMenuManager();
-      mm.createContextMenu(getControl());
-      mm.addMenuListener(new IMenuListener() {
-         @Override
-         public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActionsForTable();
-         }
-      });
-
-      openMergeViewAction = new Action("Open Merge View", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            AWorkbench.popup("ERROR", "Not implemented yet");
-         }
-      };
-   }
-
-   public void updateEditMenuActions() {
-      MenuManager mm = getMenuManager();
-
-      // EDIT MENU BLOCK
-      mm.insertBefore(MENU_GROUP_PRE, openMergeViewAction);
-      openMergeViewAction.setEnabled(true);
-
-   }
-
-   @Override
    public boolean isColumnMultiEditEnabled() {
       return true;
-   }
-
-   @Override
-   public void updateMenuActionsForTable() {
-      MenuManager mm = getMenuManager();
-
-      updateEditMenuActions();
-
-      mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
    public Conflict[] getConflicts() {
