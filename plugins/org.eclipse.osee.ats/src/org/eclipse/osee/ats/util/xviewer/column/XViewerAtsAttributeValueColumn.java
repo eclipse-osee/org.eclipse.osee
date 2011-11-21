@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -35,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -91,7 +91,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
             return Collections.toString("; ", strs);
          }
       } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return null;
    }

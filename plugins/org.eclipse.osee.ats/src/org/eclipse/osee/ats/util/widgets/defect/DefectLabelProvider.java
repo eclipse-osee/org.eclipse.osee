@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.util.widgets.defect;
 
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.core.review.defect.ReviewDefectItem;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -85,7 +85,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
             return defectItem.getInjectionActivity() == InjectionActivity.None ? "" : defectItem.getInjectionActivity().name();
          }
       } catch (OseeCoreException ex) {
-         XViewerCells.getCellExceptionString(ex);
+         LogUtil.getCellExceptionString(ex);
       }
       return "Unhandled Column";
    }

@@ -19,7 +19,6 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -138,7 +138,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          }
          return "";
       } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
    }
 

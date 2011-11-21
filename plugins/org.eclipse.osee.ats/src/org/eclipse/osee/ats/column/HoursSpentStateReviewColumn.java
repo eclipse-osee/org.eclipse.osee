@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.HoursSpentUtil;
@@ -19,6 +18,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -53,7 +53,7 @@ public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXV
             return AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentStateReview((Artifact) element));
          }
       } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

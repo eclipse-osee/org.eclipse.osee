@@ -21,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.action.ActionManager;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -157,7 +157,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
             return getAssigneeStr((Artifact) element);
          }
       } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

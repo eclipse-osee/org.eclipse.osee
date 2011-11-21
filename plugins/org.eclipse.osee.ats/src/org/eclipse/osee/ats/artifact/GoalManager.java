@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -164,7 +164,7 @@ public final class GoalManager {
       try {
          return String.valueOf(members.indexOf(member) + 1);
       } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
    }
 

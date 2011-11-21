@@ -19,7 +19,6 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitionArtifact;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -127,7 +127,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
             return Artifacts.toString("; ", ((Artifact) element).getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
          }
       } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

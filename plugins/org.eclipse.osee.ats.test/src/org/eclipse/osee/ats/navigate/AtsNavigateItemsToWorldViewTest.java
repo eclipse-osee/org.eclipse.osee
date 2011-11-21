@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,6 +67,7 @@ import org.eclipse.osee.support.test.util.AtsUserCommunity;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.eclipse.swt.widgets.TreeItem;
 import org.junit.Ignore;
 
@@ -76,24 +78,33 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testDemoDatabase() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       VisitedItems.clearVisited();
       DemoTestUtil.setUpTest();
       assertTrue(DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones) != null);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testAttributeDeletion() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", AtsArtifactTypes.TeamWorkflow, 3, null);
       arts.clear();
       NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
       // delete an artifact, look for expected !Errors in the XCol
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ChangeType);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testMyWorld() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       runGeneralLoadingTest("My World", AtsArtifactTypes.AbstractWorkflowArtifact, 11, null);
       runGeneralXColTest(28, false);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    private XNavigateItem openUserSearchEditor() throws Exception {
@@ -106,6 +117,8 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testSearchMyFavorites() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       UserSearchWorkflowSearchItem dwl =
@@ -126,10 +139,13 @@ public class AtsNavigateItemsToWorldViewTest {
       Collection<Artifact> artsLoaded = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), artsLoaded, AtsArtifactTypes.TeamWorkflow, 3);
       runGeneralXColTest(20, false);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchMySubscribed() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -138,10 +154,13 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), 1, arts.size());
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchState() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -151,10 +170,13 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.AbstractWorkflowArtifact, 7);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchMyReviews() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -168,10 +190,13 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 2);
       runGeneralXColTest(4, false);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchMyReviewsAll() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -187,10 +212,13 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
       runGeneralXColTest(5, false);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchMyOriginator() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -204,10 +232,13 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       // Only 2 decision reviews should have been created by Joe, rest are Rule reviews created by OseeSystem user
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 2);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchMyOriginatorAll() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -222,6 +253,7 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
       runGeneralXColTest(70, false);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    private void runGeneralUserSearchTest(XNavigateItem item, int expectedNum) throws Exception {
@@ -234,6 +266,8 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testSearchMyCompleted() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       UserSearchWorkflowSearchItem dwl =
@@ -248,25 +282,34 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
       runGeneralXColTest(29, false);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testMyRecentlyVisited() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       // Load Recently Visited
       runGeneralLoadingTest("My Recently Visited", AtsArtifactTypes.TeamWorkflow, 3, null);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testOtherUsersWorld() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       OseeLog.log(Activator.class, Level.INFO,
          "Testing User's items relating to " + DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
       runGeneralLoadingTest(item, AtsArtifactTypes.AbstractWorkflowArtifact, 12,
          DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchOtherUserReviews() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -278,10 +321,13 @@ public class AtsNavigateItemsToWorldViewTest {
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 1);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchOtherUserAllReviews() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -294,10 +340,13 @@ public class AtsNavigateItemsToWorldViewTest {
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 1);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchOtherUserFavorites() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -306,10 +355,13 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testSearchOtherUserSubscribed() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -318,10 +370,13 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testGroupsSearch() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       WorldEditor.closeAll();
       Artifact groupArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
@@ -338,10 +393,13 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, AtsArtifactTypes.TeamWorkflow, 7);
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, AtsArtifactTypes.Task,
          DemoTestUtil.getNumTasks());
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testTeamWorkflowSearch() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       List<TeamDefinitionArtifact> selectedTeamDefs = TeamDefinitionManager.getTeamTopLevelDefinitions(Active.Active);
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
@@ -366,6 +424,7 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 3);
       selectedTeamDefs.clear();
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 10);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    private void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
@@ -412,24 +471,32 @@ public class AtsNavigateItemsToWorldViewTest {
    @Ignore
    @org.junit.Test
    public void testUserCommunitySearch() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Community Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
       ((UserCommunitySearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedUserComm(AtsUserCommunity.Program_2.name());
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 4, null, TableLoadOption.DontCopySearchItem);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testActionableItemSearch() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
       ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemManagerCore.getActionableItems(Arrays.asList("SAW Code")));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 3, null, TableLoadOption.DontCopySearchItem);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testTargetedForVersionTeamSearch() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       Collection<XNavigateItem> items = NavigateTestUtil.getAtsNavigateItems("Workflows Targeted-For Version");
       // First one is the global one
       XNavigateItem item = items.iterator().next();
@@ -437,10 +504,13 @@ public class AtsNavigateItemsToWorldViewTest {
       ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(VersionManager.getVersions(
          Arrays.asList(DemoSawBuilds.SAW_Bld_2.getName())).iterator().next());
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testTargetedForTeamSearch() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       Collection<XNavigateItem> items = NavigateTestUtil.getAtsNavigateItems("Workflows Targeted-For Next Version");
       // First one is the global one
       XNavigateItem item = items.iterator().next();
@@ -448,6 +518,7 @@ public class AtsNavigateItemsToWorldViewTest {
       ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitionManager.getTeamDefinitions(
          Arrays.asList("SAW SW")).iterator().next());
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, IArtifactType artifactType, int numOfType, User user) throws Exception {

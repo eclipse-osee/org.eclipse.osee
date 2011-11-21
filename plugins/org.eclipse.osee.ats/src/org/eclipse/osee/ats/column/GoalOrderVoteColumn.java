@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
@@ -49,7 +49,7 @@ public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
             return ((Artifact) element).getSoleAttributeValue(AtsAttributeTypes.GoalOrderVote, "");
          }
       } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

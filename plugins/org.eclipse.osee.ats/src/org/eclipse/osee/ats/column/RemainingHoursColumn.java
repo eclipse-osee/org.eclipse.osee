@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -69,7 +69,7 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
             }
             return AtsUtilCore.doubleToI18nString(getRemainingHours(element));
          } catch (OseeCoreException ex) {
-            XViewerCells.getCellExceptionString(ex);
+            LogUtil.getCellExceptionString(ex);
          }
       }
       return "";

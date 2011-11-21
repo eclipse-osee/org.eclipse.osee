@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -56,6 +58,8 @@ public class AtsNavigateItemsToTaskEditorTest {
 
    @org.junit.Test
    public void testTaskSearch() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
+
       Collection<TeamDefinitionArtifact> selectedUsers =
          TeamDefinitionManager.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
@@ -77,6 +81,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Kay Jones", 8);
 
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    public void runGeneralTaskSearchTest(XNavigateItem item, int expectedNum) throws Exception {

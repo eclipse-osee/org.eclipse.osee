@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class NumberOfTasksColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -72,7 +72,7 @@ public class NumberOfTasksColumn extends XViewerAtsColumn implements IXViewerVal
             return String.valueOf(num);
          }
       } catch (OseeCoreException ex) {
-         XViewerCells.getCellExceptionString(ex);
+         LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

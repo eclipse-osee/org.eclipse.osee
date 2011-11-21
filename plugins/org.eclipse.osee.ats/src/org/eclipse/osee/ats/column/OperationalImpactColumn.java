@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.column;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class OperationalImpactColumn extends XViewerValueColumn {
@@ -60,7 +60,7 @@ public class OperationalImpactColumn extends XViewerValueColumn {
             return getOperationalImpact((Artifact) element);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
-            return XViewerCells.getCellExceptionString(ex);
+            return LogUtil.getCellExceptionString(ex);
          }
       }
       return "";

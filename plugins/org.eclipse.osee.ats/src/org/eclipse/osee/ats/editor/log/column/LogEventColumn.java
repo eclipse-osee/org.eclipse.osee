@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.AtsImage;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -67,7 +67,7 @@ public class LogEventColumn extends XViewerValueColumn {
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

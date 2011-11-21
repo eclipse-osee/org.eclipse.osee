@@ -20,10 +20,12 @@ import org.eclipse.osee.ats.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.NavigateTestUtil;
 import org.eclipse.osee.ats.version.MassEditTeamVersionItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -42,6 +44,7 @@ public class AtsNavigateItemsToMassEditorTest {
 
    @org.junit.Test
    public void testTeamVersions() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       closeTaskEditors();
       MassArtifactEditor.closeAll();
 
@@ -56,6 +59,8 @@ public class AtsNavigateItemsToMassEditorTest {
 
       massEditItem.setSelectedTeamDef(teamDefs.iterator().next());
       handleGeneralDoubleClickAndTestResults(item, AtsArtifactTypes.Version, 3);
+
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    private void handleGeneralDoubleClickAndTestResults(XNavigateItem item, IArtifactType artifactType, int numOfType) throws Exception {

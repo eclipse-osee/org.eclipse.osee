@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.review.role.Role;
@@ -20,6 +19,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class ReviewReviewerColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -54,7 +54,7 @@ public class ReviewReviewerColumn extends XViewerAtsColumn implements IXViewerVa
             return Artifacts.toString("; ", roleMgr.getRoleUsers(Role.Reviewer));
          }
       } catch (OseeCoreException ex) {
-         XViewerCells.getCellExceptionString(ex);
+         LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

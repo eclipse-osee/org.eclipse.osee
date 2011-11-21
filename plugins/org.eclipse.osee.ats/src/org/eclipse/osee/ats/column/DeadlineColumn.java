@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Date;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -112,7 +112,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
       try {
          return DateUtil.getMMDDYYHHMM(getDate(element));
       } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
    }
 

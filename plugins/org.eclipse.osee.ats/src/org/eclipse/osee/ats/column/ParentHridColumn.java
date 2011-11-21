@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -21,6 +20,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -60,7 +60,7 @@ public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueC
          }
 
       } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

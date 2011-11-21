@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -24,6 +23,7 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicUser;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class CancelledByColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -70,7 +70,7 @@ public class CancelledByColumn extends XViewerAtsColumn implements IXViewerValue
 
          }
       } catch (OseeCoreException ex) {
-         XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

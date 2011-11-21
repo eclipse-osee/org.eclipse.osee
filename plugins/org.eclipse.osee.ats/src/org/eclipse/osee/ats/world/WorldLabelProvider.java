@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.world;
 
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -85,7 +85,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          return "Unhandled Column";
       } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
    }
 

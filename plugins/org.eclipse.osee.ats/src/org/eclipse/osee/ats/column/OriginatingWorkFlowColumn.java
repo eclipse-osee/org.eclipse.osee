@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.core.action.ActionManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -68,7 +68,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
             }
          }
       } catch (OseeCoreException ex) {
-         XViewerCells.getCellExceptionString(ex);
+         LogUtil.getCellExceptionString(ex);
       }
       return "";
    }

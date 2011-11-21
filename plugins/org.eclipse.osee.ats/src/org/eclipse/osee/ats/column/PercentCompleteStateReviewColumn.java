@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.action.ActionManager;
@@ -24,6 +23,7 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.IWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -64,7 +64,7 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
             return String.valueOf(getPercentCompleteStateReview((Artifact) element));
          }
       } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }
