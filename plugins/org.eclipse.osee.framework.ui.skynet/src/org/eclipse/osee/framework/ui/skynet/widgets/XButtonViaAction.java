@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -19,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class XButtonViaAction extends XButton {
 
    public XButtonViaAction(final Action action) {
-      super(action.getText(), action.getImageDescriptor().createImage());
+      super(action.getText(), getImageOrDefault(action).createImage());
       if (Strings.isValid(action.getToolTipText())) {
          setToolTip(action.getToolTipText());
       }
@@ -32,4 +35,10 @@ public class XButtonViaAction extends XButton {
       });
    }
 
+   private static ImageDescriptor getImageOrDefault(Action action) {
+      if (action.getImageDescriptor() == null) {
+         return ImageManager.getImageDescriptor(FrameworkImage.GEAR);
+      }
+      return action.getImageDescriptor();
+   }
 }
