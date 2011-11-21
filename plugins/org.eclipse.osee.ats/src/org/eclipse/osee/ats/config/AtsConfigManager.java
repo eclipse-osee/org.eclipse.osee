@@ -86,7 +86,12 @@ public class AtsConfigManager extends AbstractOperation {
    }
 
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
-      WorkDefinitionMatch match = WorkDefinitionFactory.getWorkDefinition(name);
+      WorkDefinitionMatch match = null;
+      try {
+         match = WorkDefinitionFactory.getWorkDefinition(name);
+      } catch (OseeArgumentException ex) {
+         return;
+      }
       if (match.isMatched()) {
          throw new OseeArgumentException(String.format(
             "Configuration Namespace [%s] already used, choose a unique namespace.", name));

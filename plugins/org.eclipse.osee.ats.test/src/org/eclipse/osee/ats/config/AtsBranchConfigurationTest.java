@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -92,10 +93,12 @@ public class AtsBranchConfigurationTest {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
       AtsBulkLoad.loadConfig(true);
+
    }
 
    @org.junit.Test
    public void testBranchViaVersions() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Running testBranchViaVersions...");
       }
@@ -205,10 +208,12 @@ public class AtsBranchConfigurationTest {
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
       Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
    public void testBranchViaTeamDefinition() throws Exception {
+      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Running testBranchViaTeamDefinition...");
@@ -305,6 +310,8 @@ public class AtsBranchConfigurationTest {
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
       Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
+
+      TestUtil.severeLoggingEnd(monitor);
    }
 
    public static void cleanupBranchTest(IOseeBranch branch) throws Exception {
@@ -399,7 +406,6 @@ public class AtsBranchConfigurationTest {
    }
 
    public static void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
-      String implementPageId = namespace + ".Implement";
       Result result = AtsBranchManagerCore.createWorkingBranch_Validate(teamWf);
       if (result.isFalse()) {
          AWorkbench.popup(result);

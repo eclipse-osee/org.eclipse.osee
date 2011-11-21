@@ -56,10 +56,10 @@ import org.junit.runners.Suite;
    AtsImageTest.class,
    SMAPromptChangeStatusTest.class,
    AtsDeleteManagerTest.class,
-   AtsPurgeTest.class,
    AtsBranchConfigurationTest.class,
    AtsValidateAtsDatabaseTest.class,
-   AtsXWidgetsExampleBlamTest.class})
+   AtsXWidgetsExampleBlamTest.class,
+   AtsPurgeTest.class,})
 /**
  * @author Donald G. Dunne
  */
