@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.core.workdef.provider.AtsWorkDefinitionProviderCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -89,7 +88,7 @@ public class WorkDefinitionFactory {
             OseeLog.logf(Activator.class, Level.INFO, "Loaded Work Definition [%s]", match);
             workDefIdToWorkDefintion.put(id, match);
          } else {
-            throw new OseeArgumentException("Unable to load Work Definition [%s]", id);
+            OseeLog.logf(Activator.class, Level.INFO, "Unable to load Work Definition [%s]", id);
          }
       }
       WorkDefinitionMatch match = workDefIdToWorkDefintion.get(id);
