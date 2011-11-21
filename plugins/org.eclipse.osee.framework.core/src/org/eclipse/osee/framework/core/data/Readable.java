@@ -8,14 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.data;
-
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
  */
-public interface Identifiable extends Identity<String>, Named {
-   // 
+public interface Readable {
+   // Base Readable
 }

@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.data;
+package org.eclipse.osee.framework.core.data;
+
 
 /**
  * @author Roberto E. Escobar
- * @author Andrew M. Finkbeiner
  */
-public interface Readable {
-   // Base Readable
+public interface Identifiable extends Identity<String>, Named {
+   // 
 }

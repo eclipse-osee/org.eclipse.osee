@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.Readable;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**

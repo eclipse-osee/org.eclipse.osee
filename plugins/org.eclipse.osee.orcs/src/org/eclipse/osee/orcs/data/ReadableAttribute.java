@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.Readable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
