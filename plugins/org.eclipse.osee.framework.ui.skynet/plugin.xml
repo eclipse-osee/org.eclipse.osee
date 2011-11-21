@@ -355,9 +355,6 @@
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
        </command>
-       <command
-             commandId="org.eclipse.osee.framework.ui.skynet.viewerReport">
-       </command>
        <separator
              name="xChngSeparator3"
              visible="true">
@@ -670,10 +667,6 @@
            </count>
         </with>
      </enabledWhen>
-  </handler>
-  <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewerReportHandler"
-        commandId="org.eclipse.osee.framework.ui.skynet.viewerReport">
   </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.DeleteArtifactHandler"
