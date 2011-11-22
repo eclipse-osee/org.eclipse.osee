@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +86,16 @@ public class SvnAPI {
       return toReturn;
    }
 
+   private String bytesToString(byte[] bytes) {
+      StringBuilder builder = new StringBuilder();
+      if(bytes != null) {
+         for (byte aByte : bytes) {
+            builder.append(aByte);
+         }
+      }
+      return builder.toString();
+   }
+
    private RepositoryEntry toRepositoryEntry(File file, SVNEntryInfo info) {
       String entryType = "undefined";
       if (info.kind >= 0 && info.kind < NodeKind.NAMES.length) {
@@ -93,7 +104,7 @@ public class SvnAPI {
       DateFormat dateFormat =
          DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
       final RepositoryEntry entry = new RepositoryEntry(entryType, getVersionControlSystem());
-      entry.addField(EntryFields.checksum, info.checksum);
+      entry.addField(EntryFields.checksum, bytesToString(info.checksum.digest));
       entry.addField(EntryFields.committedRev, Long.toString(info.lastChangedRevision));
       entry.addField(EntryFields.fileName, info.path);
       entry.addField(EntryFields.committeDate, dateFormat.format(new Date(info.lastChangedDate)));
