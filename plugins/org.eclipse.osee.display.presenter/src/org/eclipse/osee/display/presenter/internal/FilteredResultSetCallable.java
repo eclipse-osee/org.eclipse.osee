@@ -22,11 +22,11 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.WorkUtility;
 import org.eclipse.osee.executor.admin.WorkUtility.PartitionFactory;
+import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.data.ResultSetList;
 import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.search.ResultSet;
 import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
 

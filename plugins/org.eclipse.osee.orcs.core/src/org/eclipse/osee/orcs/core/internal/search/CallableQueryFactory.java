@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
@@ -24,7 +25,6 @@ import org.eclipse.osee.orcs.core.internal.search.callable.SearchMatchesCallable
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.search.ResultSet;
 
 /**
  * @author Roberto E. Escobar

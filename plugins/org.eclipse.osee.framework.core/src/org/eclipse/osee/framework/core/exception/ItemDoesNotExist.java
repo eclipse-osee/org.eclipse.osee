@@ -8,14 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.exception;
+package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.osee.orcs.OrcsException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ItemDoesNotExist extends OrcsException {
+public class ItemDoesNotExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 

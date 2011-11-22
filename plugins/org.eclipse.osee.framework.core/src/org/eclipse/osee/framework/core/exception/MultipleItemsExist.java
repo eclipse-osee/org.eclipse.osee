@@ -8,22 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.search;
+package org.eclipse.osee.framework.core.exception;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
-public interface ResultSet<T> {
+public class MultipleItemsExist extends OseeCoreException {
 
-   T getOneOrNull() throws OseeCoreException;
+   private static final long serialVersionUID = 1L;
 
-   T getExactlyOne() throws OseeCoreException;
-
-   List<T> getList() throws OseeCoreException;
-
-   Iterable<T> getIterable(int fetchSize) throws OseeCoreException;
+   public MultipleItemsExist(String message, Object... args) {
+      super(message, args);
+   }
 }

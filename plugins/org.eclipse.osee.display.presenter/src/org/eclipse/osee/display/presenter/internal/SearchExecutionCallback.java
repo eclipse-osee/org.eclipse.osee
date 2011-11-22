@@ -13,12 +13,12 @@ package org.eclipse.osee.display.presenter.internal;
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
 import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.search.ResultSet;
 
 /**
  * @author Roberto E. Escobar

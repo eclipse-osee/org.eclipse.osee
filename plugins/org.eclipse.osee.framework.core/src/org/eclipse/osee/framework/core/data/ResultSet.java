@@ -8,18 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.exception;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.orcs.OrcsException;
+import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
+ * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
-public class MultipleItemsExist extends OrcsException {
+public interface ResultSet<T> {
 
-   private static final long serialVersionUID = 1L;
+   T getOneOrNull() throws OseeCoreException;
 
-   public MultipleItemsExist(String message, Object... args) {
-      super(message, args);
-   }
+   T getExactlyOne() throws OseeCoreException;
+
+   List<T> getList() throws OseeCoreException;
+
+   Iterable<T> getIterable(int fetchSize) throws OseeCoreException;
 }

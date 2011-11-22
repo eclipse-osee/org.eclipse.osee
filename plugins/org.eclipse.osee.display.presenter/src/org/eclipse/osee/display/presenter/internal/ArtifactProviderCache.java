@@ -15,11 +15,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.data.ResultSetList;
 import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.search.ResultSet;
 import com.google.common.collect.MapMaker;
 
 /**

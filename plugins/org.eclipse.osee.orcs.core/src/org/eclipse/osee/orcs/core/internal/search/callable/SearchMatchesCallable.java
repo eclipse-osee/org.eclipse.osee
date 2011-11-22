@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
@@ -26,9 +28,7 @@ import org.eclipse.osee.orcs.core.internal.OrcsObjectLoader;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ReadableArtifact;
 import org.eclipse.osee.orcs.data.ReadableAttribute;
-import org.eclipse.osee.orcs.data.ResultSetList;
 import org.eclipse.osee.orcs.search.Match;
-import org.eclipse.osee.orcs.search.ResultSet;
 
 /**
  * @author Roberto E. Escobar
