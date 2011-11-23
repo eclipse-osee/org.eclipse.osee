@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.task;
 
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -32,9 +33,11 @@ import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -64,7 +67,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
    private TaskComposite taskComposite;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
-   private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction;
+   private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction, exportMetricsReportAction;
 
    public TaskEditorXWidgetActionPage(TaskEditor taskEditor) {
       super(taskEditor, "org.eclipse.osee.ats.actionPage", "Actions");
@@ -176,6 +179,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
          addActionToMenu(fMenu, filterCompletedAction);
          addActionToMenu(fMenu, filterMyAssigneeAction);
          new MenuItem(fMenu, SWT.SEPARATOR);
+         addActionToMenu(fMenu, exportMetricsReportAction);
          addActionToMenu(fMenu, new AtsExportManager(taskComposite.getTaskXViewer()));
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
@@ -360,6 +364,17 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
       };
       filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
       filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
+
+      exportMetricsReportAction = new Action("Export Metrics Report", IAction.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            List<? extends Artifact> selected = taskComposite.getSelectedArtifacts();
+            Operations.executeAsJob(new ExportMetricsOperation(selected), true);
+         }
+      };
+      exportMetricsReportAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPORT_DATA));
+
    }
 
    @Override
