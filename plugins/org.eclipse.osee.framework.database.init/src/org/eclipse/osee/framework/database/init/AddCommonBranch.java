@@ -79,7 +79,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
                inputStream = new BufferedInputStream(entry.getValue().openStream());
                artifact.setSoleAttributeFromStream(CoreAttributeTypes.UriGeneralStringData, inputStream);
             } catch (IOException ex) {
-               OseeExceptions.wrap(ex);
+               OseeExceptions.wrapAndThrow(ex);
             } finally {
                Lib.close(inputStream);
             }

@@ -28,7 +28,7 @@ public final class DatabaseTransactions {
 
    public static void execute(OseeConnection connection, IDbTransactionWork dbWork) throws OseeCoreException {
       boolean initialAutoCommit = true;
-      OseeCoreException saveException = null;
+      Exception saveException = null;
       try {
          OseeLog.logf(Activator.class, Level.FINEST, "Start Transaction: [%s]", dbWork.getName());
 
@@ -40,7 +40,7 @@ public final class DatabaseTransactions {
          connection.commit();
          OseeLog.logf(Activator.class, Level.FINEST, "End Transaction: [%s]", dbWork.getName());
       } catch (Exception ex) {
-         saveException = OseeExceptions.wrap(ex);
+         saveException = ex;
          try {
             connection.rollback();
             connection.destroy();
@@ -65,7 +65,7 @@ public final class DatabaseTransactions {
          }
 
          if (saveException != null) {
-            throw saveException;
+            OseeExceptions.wrapAndThrow(saveException);
          }
       }
    }

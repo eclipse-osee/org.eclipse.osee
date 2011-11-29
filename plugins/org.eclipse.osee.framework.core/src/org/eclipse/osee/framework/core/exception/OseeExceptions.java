@@ -20,14 +20,12 @@ public final class OseeExceptions {
    }
 
    public static void wrapAndThrow(Throwable ex) throws OseeCoreException {
-      throw wrap(ex);
-   }
-
-   public static OseeCoreException wrap(Throwable ex) {
-      if (ex instanceof OseeCoreException) {
-         return (OseeCoreException) ex;
+      if (ex instanceof RuntimeException) {
+         throw (RuntimeException) ex;
+      } else if (ex instanceof OseeCoreException) {
+         throw (OseeCoreException) ex;
       } else {
-         return new OseeWrappedException(ex);
+         throw new OseeWrappedException(ex);
       }
    }
 }

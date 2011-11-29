@@ -121,7 +121,8 @@ public final class Lib {
          sb.append("Exception == null; can't display stack");
          return;
       }
-      sb.append(ex.getMessage() + "\n");
+      sb.append(ex.getClass().getName());
+      sb.append("\n");
       StackTraceElement st[] = ex.getStackTrace();
       for (int i = 0; i < st.length; i++) {
          StackTraceElement ste = st[i];

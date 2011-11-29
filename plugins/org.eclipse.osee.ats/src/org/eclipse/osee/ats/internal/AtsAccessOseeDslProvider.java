@@ -51,7 +51,7 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
          outputStream.write(accessModel.getBytes("utf-8"));
          oseeDsl = ModelUtil.loadModel("ats:/xtext/cm.access.osee", outputStream.toString("utf-8"));
       } catch (Exception ex) {
-         OseeExceptions.wrap(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
