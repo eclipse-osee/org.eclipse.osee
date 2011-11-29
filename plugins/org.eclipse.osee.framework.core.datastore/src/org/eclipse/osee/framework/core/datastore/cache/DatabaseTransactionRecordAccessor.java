@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 
 /**
  * @author Roberto E. Escobar
@@ -33,18 +34,21 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 public class DatabaseTransactionRecordAccessor implements ITransactionDataAccessor {
 
    private static final String SELECT_BASE_TRANSACTION =
-      "select txd.* from osee_branch ob, osee_tx_details txd WHERE ob.branch_id = ? AND ob.baseline_transaction_id = txd.transaction_id";
+      "select * from osee_tx_details where branch_id = ? and tx_type = ?";
 
    private static final String SELECT_BY_TRANSACTION = "select * from osee_tx_details WHERE transaction_id = ?";
 
-   private static final String SELECT_BRANCH_TRANSACTIONS =
-      "select * from osee_tx_details where branch_id = ? order by transaction_id DESC";
+   private static final String SELECT_HEAD_TRANSACTION =
+      "select * from osee_tx_details where transaction_id = (select max(transaction_id) from osee_tx_details where branch_id = ?) and branch_id = ?";
 
    private static final String SELECT_TRANSACTIONS_BY_QUERY_ID =
-      "select * from osee_tx_details txd, osee_join_id oji where txd.transaction_id = oji.id and oji.query_id = ?";
+      "select * from osee_join_id oji, osee_tx_details txd where oji.query_id = ? and txd.transaction_id = oji.id";
+
+   private static final String SELECT_NON_EXISTING_TRANSACTIONS_BY_QUERY_ID =
+      "select oji.id from osee_join_id oji where oji.query_id = ? and not exists (select 1 from osee_tx_details txd where txd.transaction_id = oji.id)";
 
    private static final String GET_PRIOR_TRANSACTION =
-      "select transaction_id FROM osee_tx_details where branch_id = ? and transaction_id < ? order by transaction_id desc";
+      "select max(transaction_id) FROM osee_tx_details where branch_id = ? and transaction_id < ?";
 
    private final IOseeDatabaseService oseeDatabaseService;
    private final BranchCache branchCache;
@@ -74,20 +78,14 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             }
             joinQuery.store();
 
-            loadFromTransaction(cache, null, 5000, false, SELECT_TRANSACTIONS_BY_QUERY_ID, joinQuery.getQueryId());
+            loadTransactions(cache, transactionIds.size(), SELECT_TRANSACTIONS_BY_QUERY_ID, joinQuery.getQueryId());
 
          } finally {
             joinQuery.delete();
          }
       } else {
-         loadFromTransaction(cache, null, 1, SELECT_BY_TRANSACTION, transactionIds.iterator().next());
+         loadTransaction(cache, SELECT_BY_TRANSACTION, transactionIds.iterator().next());
       }
-   }
-
-   @Override
-   public void loadTransactionRecord(TransactionCache cache, Branch branch) throws OseeCoreException {
-      ensureDependantCachePopulated();
-      loadFromTransaction(cache, branch, 1000, SELECT_BRANCH_TRANSACTIONS, branch.getId());
    }
 
    @Override
@@ -96,10 +94,11 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       TransactionRecord toReturn = null;
       switch (transactionType) {
          case BASE:
-            toReturn = loadFirstTransactionRecord(cache, branch, SELECT_BASE_TRANSACTION, branch.getId());
+            toReturn =
+               loadTransaction(cache, SELECT_BASE_TRANSACTION, branch.getId(), TransactionDetailsType.Baselined);
             break;
          case HEAD:
-            toReturn = loadFirstTransactionRecord(cache, branch, SELECT_BRANCH_TRANSACTIONS, branch.getId());
+            toReturn = loadTransaction(cache, SELECT_HEAD_TRANSACTION, branch.getId(), branch.getId());
             break;
          default:
             throw new OseeStateException("Transaction Type [%s] is not supported", transactionType);
@@ -107,22 +106,36 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       return toReturn;
    }
 
-   private TransactionRecord loadFirstTransactionRecord(TransactionCache cache, Branch branch, String query, Object... parameters) throws OseeCoreException {
-      ensureDependantCachePopulated();
-      return loadFromTransaction(cache, branch, 1, true, query, parameters);
+   private void loadTransactions(TransactionCache cache, int expectedCount, String query, int queryId) throws OseeCoreException {
+      MutableInteger numberLoaded = new MutableInteger(-1);
+      loadFromTransaction(cache, expectedCount, numberLoaded, query, queryId);
+
+      if (numberLoaded.getValue() != expectedCount) {
+         IOseeStatement chStmt = oseeDatabaseService.getStatement();
+         try {
+            chStmt.runPreparedQuery(expectedCount, SELECT_NON_EXISTING_TRANSACTIONS_BY_QUERY_ID, queryId);
+            while (chStmt.next()) {
+               int transactionNumber = chStmt.getInt("id");
+               factory.getOrCreate(cache, transactionNumber);
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
    }
 
-   private void loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, String query, Object... parameters) throws OseeCoreException {
-      ensureDependantCachePopulated();
-      loadFromTransaction(cache, branch, fetchSize, false, query, parameters);
+   private TransactionRecord loadTransaction(TransactionCache cache, String query, Object... parameters) throws OseeCoreException {
+      return loadFromTransaction(cache, 1, new MutableInteger(0), query, parameters);
    }
 
-   private TransactionRecord loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, boolean isOnlyReadFirstResult, String query, Object... parameters) throws OseeCoreException {
+   private TransactionRecord loadFromTransaction(TransactionCache cache, int expectedCount, MutableInteger numberLoaded, String query, Object... parameters) throws OseeCoreException {
       IOseeStatement chStmt = oseeDatabaseService.getStatement();
       TransactionRecord record = null;
+      int count = 0;
       try {
-         chStmt.runPreparedQuery(fetchSize, query, parameters);
+         chStmt.runPreparedQuery(expectedCount, query, parameters);
          while (chStmt.next()) {
+            count++;
             int branchId = chStmt.getInt("branch_id");
             int transactionNumber = chStmt.getInt("transaction_id");
             String comment = chStmt.getString("osee_comment");
@@ -134,10 +147,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             record =
                prepareTransactionRecord(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
                   commitArtId, txType);
-            if (isOnlyReadFirstResult) {
-               break;
-            }
          }
+         numberLoaded.setValue(count);
       } finally {
          chStmt.close();
       }

@@ -54,11 +54,6 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
    }
 
    @Override
-   public void loadTransactionRecord(TransactionCache cache, Branch branch) {
-      // provided for subclass implementation
-   }
-
-   @Override
    public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) {
       return null;
    }
@@ -87,7 +82,8 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
    @Override
    public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, int branchId) throws OseeCoreException {
       int priorTransactionId =
-         ConnectionHandler.runPreparedQueryFetchInt(-1, GET_PRIOR_TRANSACTION, branchId, transactionNumber);
+         ConnectionHandler.runPreparedQueryFetchInt(transactionNumber, GET_PRIOR_TRANSACTION, branchId,
+            transactionNumber);
       return cache.getOrLoad(priorTransactionId);
    }
 }

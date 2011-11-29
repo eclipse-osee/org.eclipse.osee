@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
  * @author Jeff C. Phillips
  */
 public final class TransactionRecord implements IAdaptable {
+   private static final int NON_EXISTING_BRANCH = -1;
    private final int transactionNumber;
    private final TransactionDetailsType txType;
 
@@ -40,6 +41,14 @@ public final class TransactionRecord implements IAdaptable {
       this.commitArtId = commitArtId;
       this.txType = txType;
       this.branchCache = null;
+   }
+
+   public TransactionRecord(int transactionNumber) {
+      this(transactionNumber, NON_EXISTING_BRANCH, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID);
+   }
+
+   public boolean exists() {
+      return branchId != NON_EXISTING_BRANCH;
    }
 
    public int getBranchId() {

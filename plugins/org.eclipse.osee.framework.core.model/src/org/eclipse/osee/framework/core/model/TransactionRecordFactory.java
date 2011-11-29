@@ -15,22 +15,18 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TransactionRecordFactory implements IOseeTypeFactory {
 
-   public TransactionRecordFactory() {
+   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+      return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType);
    }
 
-   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(transactionNumber < 1, "[%s] is not a valid transaction number",
-         transactionNumber);
-      Conditions.checkNotNull(timestamp, "timestamp");
-      Conditions.checkNotNull(txType, "transaction type");
-      return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType);
+   public TransactionRecord create(int transactionNumber) {
+      return new TransactionRecord(transactionNumber);
    }
 
    public TransactionRecord createOrUpdate(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
@@ -45,6 +41,15 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
          record.setTimeStamp(timestamp);
       }
       cache.cache(record);
+      return record;
+   }
+
+   public TransactionRecord getOrCreate(TransactionCache cache, int transactionNumber) throws OseeCoreException {
+      TransactionRecord record = cache.getById(transactionNumber);
+      if (record == null) {
+         record = new TransactionRecord(transactionNumber);
+         cache.cache(record);
+      }
       return record;
    }
 }

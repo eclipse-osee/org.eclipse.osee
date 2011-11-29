@@ -30,14 +30,6 @@ public interface ITransactionDataAccessor {
    public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException;
 
    /**
-    * Loads all transactions for a specific branch
-    * 
-    * @param cache to populate
-    * @param branch to load
-    */
-   public void loadTransactionRecord(TransactionCache cache, Branch branch) throws OseeCoreException;
-
-   /**
     * Load a specific branch transaction type
     * 
     * @see {@link TransactionVersion}

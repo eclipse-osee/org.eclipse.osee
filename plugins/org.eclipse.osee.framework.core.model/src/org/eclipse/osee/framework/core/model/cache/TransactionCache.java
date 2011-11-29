@@ -98,9 +98,6 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
          loadTransactions(Collections.singletonList(txId));
          transactionRecord = getById(txId);
          if (transactionRecord == null) {
-            if (txId == 1) { // handle bootstrap case for system root branch creation
-               return null;
-            }
             throw new OseeStateException("Transaction Record[%s] was not found", txId);
          }
       }

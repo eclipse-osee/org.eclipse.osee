@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.enums;
  * @author Jeff C. Phillips
  */
 public enum TransactionDetailsType {
+   INVALID(-1),
    NonBaselined(0),
    Baselined(1),
    reverted(2);
