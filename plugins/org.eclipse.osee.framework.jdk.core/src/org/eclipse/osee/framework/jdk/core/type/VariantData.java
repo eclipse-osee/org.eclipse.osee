@@ -111,6 +111,14 @@ public class VariantData implements IVariantData {
    }
 
    @Override
+   public Date getDateOrNull(String key) throws IllegalArgumentException {
+      if (storageData.get(key) == null) {
+         return null;
+      }
+      return getDate(key);
+   }
+
+   @Override
    public String getStreamAsString(String key) throws Exception {
       String toReturn;
       InputStream inputStream = getStream(key);

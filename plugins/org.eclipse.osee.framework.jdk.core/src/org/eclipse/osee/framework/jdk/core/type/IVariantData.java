@@ -37,6 +37,8 @@ public interface IVariantData {
 
    public Date getDate(String key) throws IllegalArgumentException;
 
+   public Date getDateOrNull(String key) throws IllegalArgumentException;
+
    public String getStreamAsString(String key) throws Exception;
 
    public InputStream getStream(String key) throws IllegalArgumentException;
