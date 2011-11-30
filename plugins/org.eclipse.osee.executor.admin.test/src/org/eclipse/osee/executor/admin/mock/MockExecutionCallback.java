@@ -22,20 +22,43 @@ public class MockExecutionCallback<T> implements ExecutionCallback<T> {
    private boolean wasOnFailure;
    private Throwable throwable;
    private T result;
+   private final long waitTime;
+
+   public MockExecutionCallback(long waitTime) {
+      this.waitTime = waitTime;
+      wasOnCancelled = false;
+      wasOnSuccess = false;
+      wasOnFailure = false;
+      throwable = null;
+      result = null;
+   }
+
+   private void waitIfNeeded() {
+      if (waitTime > 0) {
+         try {
+            Thread.sleep(waitTime);
+         } catch (InterruptedException ex) {
+            // Do nothing;
+         }
+      }
+   }
 
    @Override
    public void onCancelled() {
+      waitIfNeeded();
       this.wasOnCancelled = true;
    }
 
    @Override
    public void onSuccess(T result) {
+      waitIfNeeded();
       this.result = result;
       this.wasOnSuccess = true;
    }
 
    @Override
    public void onFailure(Throwable throwable) {
+      waitIfNeeded();
       this.wasOnFailure = true;
       this.throwable = throwable;
    }

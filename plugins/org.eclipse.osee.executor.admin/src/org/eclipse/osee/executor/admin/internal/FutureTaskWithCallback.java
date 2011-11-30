@@ -225,15 +225,16 @@ public class FutureTaskWithCallback<T> implements RunnableFuture<T>, HasExecutio
                // aggressively release to set runner to null,
                // in case we are racing with a cancel request
                // that will try to interrupt runner
-               releaseShared(0);
                notifyOnCancelled();
+               releaseShared(0);
                return;
             }
             if (compareAndSetState(s, RAN)) {
                result = v;
+
+               notifyOnSuccess(result);
                releaseShared(0);
                done();
-               notifyOnSuccess(result);
                return;
             }
          }
@@ -249,16 +250,17 @@ public class FutureTaskWithCallback<T> implements RunnableFuture<T>, HasExecutio
                // aggressively release to set runner to null,
                // in case we are racing with a cancel request
                // that will try to interrupt runner
-               releaseShared(0);
                notifyOnCancelled();
+               releaseShared(0);
                return;
             }
             if (compareAndSetState(s, RAN)) {
                exception = throwable;
                result = null;
+
+               notifyOnFailure(throwable);
                releaseShared(0);
                done();
-               notifyOnFailure(throwable);
                return;
             }
          }
@@ -290,9 +292,9 @@ public class FutureTaskWithCallback<T> implements RunnableFuture<T>, HasExecutio
                r.interrupt();
             }
          }
+         notifyOnCancelled();
          releaseShared(0);
          done();
-         notifyOnCancelled();
          return true;
       }
 

@@ -36,7 +36,7 @@ public class ExecutionCallbackTest {
 
       final String expected = "Was Called";
 
-      MockExecutionCallback<String> callback = new MockExecutionCallback<String>();
+      MockExecutionCallback<String> callback = new MockExecutionCallback<String>(500);
       Callable<String> callable = new Callable<String>() {
 
          @Override
@@ -66,7 +66,7 @@ public class ExecutionCallbackTest {
       admin.start(new HashMap<String, Object>());
 
       final Exception expectedException = new IllegalStateException();
-      MockExecutionCallback<String> callback = new MockExecutionCallback<String>();
+      MockExecutionCallback<String> callback = new MockExecutionCallback<String>(500);
       Callable<String> callable = new Callable<String>() {
 
          @Override
@@ -102,7 +102,7 @@ public class ExecutionCallbackTest {
 
       final String results = "results";
 
-      MockExecutionCallback<String> callback = new MockExecutionCallback<String>();
+      MockExecutionCallback<String> callback = new MockExecutionCallback<String>(500);
 
       TestCancellableCallable callable = new TestCancellableCallable(results);
       Future<String> future = admin.schedule(callable, callback);
