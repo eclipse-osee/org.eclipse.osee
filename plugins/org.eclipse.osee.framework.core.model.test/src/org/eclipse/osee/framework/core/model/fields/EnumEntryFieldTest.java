@@ -165,7 +165,7 @@ public class EnumEntryFieldTest {
       }
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testPerformance took %dms", elapsedTime));
-      assertTrue("Loading EnumEntryField should take less than 150ms currently " + elapsedTime + "ms",
-         elapsedTime < 150);
+      assertTrue("Loading EnumEntryField should take less than 500ms currently " + elapsedTime + "ms",
+         elapsedTime < 500);
    }
 }
