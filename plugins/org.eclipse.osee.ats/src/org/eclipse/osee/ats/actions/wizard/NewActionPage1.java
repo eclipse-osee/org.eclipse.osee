@@ -86,12 +86,17 @@ public class NewActionPage1 extends WizardPage {
       }
    };
 
+   protected String getWidgetXml() {
+      return "<WorkPage>" + //
+      "<XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
+      "</WorkPage>";
+   }
+
    @Override
    public void createControl(Composite parent) {
 
       try {
-         String xWidgetXml =
-            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/></WorkPage>";
+         String xWidgetXml = getWidgetXml();
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
