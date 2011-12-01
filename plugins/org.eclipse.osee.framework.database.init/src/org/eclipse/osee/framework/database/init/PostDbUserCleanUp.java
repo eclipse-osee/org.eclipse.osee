@@ -63,5 +63,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
          // Set author to current authenticated user art id
          ConnectionHandler.runPreparedUpdate(UPDATE_BOOTSTRAP_USER_ID, authorArtId);
       }
+
+      DatabaseInitActivator.getInstance().getCachingService().clearAll();
    }
 }
