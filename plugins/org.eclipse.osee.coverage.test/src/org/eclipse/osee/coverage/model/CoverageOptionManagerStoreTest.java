@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
-import org.junit.Assert;
-import org.eclipse.osee.coverage.model.CoverageOption;
-import org.eclipse.osee.coverage.model.CoverageOptionManager;
-import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
-import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.CoverageOptionManagerStore;
 import org.eclipse.osee.coverage.store.CoverageOptionManagerStore.StoreLocation;
@@ -29,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,7 +58,7 @@ public class CoverageOptionManagerStoreTest {
          new CoveragePackage(CoverageOptionManagerStoreTest.class.getSimpleName(),
             CoverageOptionManagerDefault.instance(), new SimpleWorkProductTaskProvider());
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, CoverageTestUtil.getTestBranch());
-      store.save();
+      store.save(coveragePackage.getName());
 
       CoverageOptionManagerStore optionStore = new CoverageOptionManagerStore(store);
       // Global option should not be created yet

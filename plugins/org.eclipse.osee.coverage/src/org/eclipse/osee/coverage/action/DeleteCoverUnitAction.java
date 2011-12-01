@@ -73,12 +73,14 @@ public class DeleteCoverUnitAction extends Action {
          AWorkbench.popup(result);
          return;
       }
+      CoveragePackage coveragePackage = null;
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Coverage Unit", "Delete Coverage Units")) {
          try {
-            SkynetTransaction transaction =
-               new SkynetTransaction(saveable.getBranch(), "Coverage - Delete Coverage Unit");
             ICoverage coverage = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
-            CoveragePackage coveragePackage = (CoveragePackage) CoverageUtil.getParentCoveragePackageBase(coverage);
+            coveragePackage = (CoveragePackage) CoverageUtil.getParentCoveragePackageBase(coverage);
+            SkynetTransaction transaction =
+               new SkynetTransaction(saveable.getBranch(),
+                  "Coverage - Delete Coverage Unit - " + coveragePackage.getName());
             CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
             List<ICoverage> deleteItems = new ArrayList<ICoverage>();
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
@@ -100,7 +102,7 @@ public class DeleteCoverUnitAction extends Action {
          }
       }
       try {
-         saveable.save();
+         saveable.save(coveragePackage.getName());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;

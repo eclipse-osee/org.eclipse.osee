@@ -182,7 +182,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                   AWorkbench.popup("Can't determine branch");
                   return;
                }
-               SkynetTransaction transaction = new SkynetTransaction(branch, "Save Import Record");
+               SkynetTransaction transaction =
+                  new SkynetTransaction(branch, "Save Import Record - " + coverageImport.getName());
                saveImportRecord(transaction, coverageImport);
                transaction.execute();
             }
@@ -446,9 +447,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Result save() throws OseeCoreException {
+   public Result save(String saveName) throws OseeCoreException {
       OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
-      Result result = store.save();
+      Result result = store.save(saveName);
       if (result.isFalse()) {
          return result;
       }
@@ -458,9 +459,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+   public Result save(Collection<ICoverage> coverages, String saveName) throws OseeCoreException {
       OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
-      Result result = store.save(coverages);
+      Result result = store.save(coverages, saveName);
       if (result.isFalse()) {
          return result;
       }

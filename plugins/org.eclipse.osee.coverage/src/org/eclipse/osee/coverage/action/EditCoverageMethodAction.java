@@ -20,6 +20,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.dialog.CoverageMethodSingleSelectListDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -90,7 +91,8 @@ public class EditCoverageMethodAction extends Action {
             }
          }
          try {
-            saveable.save(coveragesToSave);
+            saveable.save(coveragesToSave,
+               CoverageUtil.getParentCoveragePackageBase(coveragesToSave.iterator().next()).getName());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             return;

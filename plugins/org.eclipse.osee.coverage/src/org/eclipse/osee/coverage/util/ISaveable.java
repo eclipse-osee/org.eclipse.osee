@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public interface ISaveable {
 
-   public Result save() throws OseeCoreException;
+   public Result save(String saveName) throws OseeCoreException;
 
-   public Result save(Collection<ICoverage> coverages) throws OseeCoreException;
+   public Result save(Collection<ICoverage> coverages, String saveName) throws OseeCoreException;
 
    public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException;
 

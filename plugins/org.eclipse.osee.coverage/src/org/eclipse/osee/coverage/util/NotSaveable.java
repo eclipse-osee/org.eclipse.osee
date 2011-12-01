@@ -28,12 +28,12 @@ public class NotSaveable implements ISaveable {
    }
 
    @Override
-   public Result save() {
+   public Result save(String saveName) {
       return new Result("Not Saveable");
    }
 
    @Override
-   public Result save(Collection<ICoverage> coverages) {
+   public Result save(Collection<ICoverage> coverages, String saveName) {
       return new Result("Not Saveable");
    }
 

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -88,7 +89,9 @@ public class CoverageNavigateView extends ViewPart {
       CoverageUtil.addBranchChangeListener(new Listener() {
          @Override
          public void handleEvent(Event event) {
-            xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
+            if (Widgets.isAccessible(xBranchSelectWidget.getControl())) {
+               xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
+            }
          }
       });
       xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), comp, SWT.NONE);

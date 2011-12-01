@@ -55,7 +55,8 @@ public class SaveImportRecordAction extends Action {
          "Overwrite coverage import record with current import information?")) {
          try {
             SkynetTransaction transaction =
-               new SkynetTransaction(saveable.getBranch(), "Coverage - Save Import Record");
+               new SkynetTransaction(saveable.getBranch(),
+                  "Coverage - Save Import Record - " + coverageImport.getName());
             saveable.saveImportRecord(transaction, coverageImport);
             transaction.execute();
          } catch (OseeCoreException ex) {
@@ -64,7 +65,7 @@ public class SaveImportRecordAction extends Action {
          }
       }
       try {
-         saveable.save();
+         saveable.save(coverageImport.getName());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;

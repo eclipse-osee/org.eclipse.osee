@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.util.Result;
  * @author Donald G. Dunne
  */
 public interface ICoverageStore {
-   public abstract Result save() throws OseeCoreException;
+   public abstract Result save(String saveName) throws OseeCoreException;
 
-   public void delete(boolean purge) throws OseeCoreException;
+   public void delete(boolean purge, String saveName) throws OseeCoreException;
 }

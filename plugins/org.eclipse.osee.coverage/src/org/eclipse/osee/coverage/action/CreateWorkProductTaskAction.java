@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.model.WorkProductTask;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.dialog.WorkProductListDialog;
 import org.eclipse.osee.coverage.util.dialog.WorkProductTaskFilteredTreeEntryDialog;
@@ -128,7 +129,8 @@ public class CreateWorkProductTaskAction extends Action {
             }
          }
          newTaskArt.persist(getText());
-         saveable.save(relateableCoverageItems);
+         saveable.save(relateableCoverageItems,
+            CoverageUtil.getParentCoveragePackageBase(relateableCoverageItems.iterator().next()).getName());
 
          coverageXViewer.getWorkProductTaskProvider().reload();
          for (ICoverage coverage : relateableCoverageItems) {

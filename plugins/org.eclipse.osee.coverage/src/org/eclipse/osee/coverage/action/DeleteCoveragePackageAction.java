@@ -75,7 +75,7 @@ public class DeleteCoveragePackageAction extends Action {
                boolean purge = cDialog.isChecked();
                SkynetTransaction transaction = null;
                if (!purge) {
-                  transaction = new SkynetTransaction(branch, "Delete Coverage Package");
+                  transaction = new SkynetTransaction(branch, "Delete Coverage Package - " + coveragePackage.getName());
                }
                CoveragePackageEvent coverageEvent =
                   new CoveragePackageEvent(coveragePackage, CoverageEventType.Deleted);

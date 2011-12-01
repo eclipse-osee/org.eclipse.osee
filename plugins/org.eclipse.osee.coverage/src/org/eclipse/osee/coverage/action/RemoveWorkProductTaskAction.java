@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -81,7 +82,8 @@ public class RemoveWorkProductTaskAction extends Action {
                   ((IWorkProductRelatable) coverage).setWorkProductTaskGuid("");
                }
             }
-            saveable.save(relatedCoverageItems);
+            saveable.save(relatedCoverageItems,
+               CoverageUtil.getParentCoveragePackageBase(relatedCoverageItems.iterator().next()).getName());
             coverageXViewer.getWorkProductTaskProvider().reload();
             for (ICoverage coverage : relatedCoverageItems) {
                if (coverage instanceof IWorkProductRelatable) {

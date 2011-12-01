@@ -85,7 +85,7 @@ public class CoverageItemPersistTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#save(SkynetTransaction)}
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#save(SkynetTransaction, String)}
     */
    @Test
    public void testSave() throws OseeCoreException {

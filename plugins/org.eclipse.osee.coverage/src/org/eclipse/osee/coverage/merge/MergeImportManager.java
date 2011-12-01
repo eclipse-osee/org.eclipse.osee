@@ -11,7 +11,6 @@
 package org.eclipse.osee.coverage.merge;
 
 import java.util.Collection;
-
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -147,7 +146,7 @@ public class MergeImportManager {
          }
          rd.logError(rd.getNumErrors() + " Errors Found; Not Persisting");
       } else {
-         Result result = saveable.save();
+         Result result = saveable.save(coveragePackage.getName());
          if (result.isTrue()) {
             rd.log("\nChanges Persisted");
          } else {

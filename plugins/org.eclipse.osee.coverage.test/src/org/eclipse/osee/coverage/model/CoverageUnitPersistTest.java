@@ -107,10 +107,10 @@ public class CoverageUnitPersistTest {
       importer.importItems(new ISaveable() {
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save(String saveName) throws OseeCoreException {
             OseeCoveragePackageStore store =
                OseeCoveragePackageStore.get(saveCoveragePackage, CoverageTestUtil.getTestBranch());
-            store.save();
+            store.save(saveCoveragePackage.getName());
             Artifact artifact = store.getArtifact(false);
             CoverageTestUtil.registerAsTestArtifact(artifact, true);
             artifact.persist(getClass().getSimpleName());
@@ -123,7 +123,7 @@ public class CoverageUnitPersistTest {
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -156,7 +156,7 @@ public class CoverageUnitPersistTest {
             CoverageTestUtil.getTestBranch());
       Assert.assertNotNull(artifact);
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(artifact);
-      store.delete(false);
+      store.delete(false, loadCoveragePackage.getName());
       try {
          artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",

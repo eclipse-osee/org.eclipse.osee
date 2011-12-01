@@ -230,14 +230,15 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
    }
 
    @Override
-   public Result save() throws OseeCoreException {
-      return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch()).save();
+   public Result save(String saveName) throws OseeCoreException {
+      return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch()).save(
+         saveName);
    }
 
    @Override
-   public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+   public Result save(Collection<ICoverage> coverages, String saveName) throws OseeCoreException {
       return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch()).save(
-         coverages);
+         coverages, saveName);
    }
 
    @Override

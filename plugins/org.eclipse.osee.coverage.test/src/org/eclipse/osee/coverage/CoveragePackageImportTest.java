@@ -142,12 +142,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -172,12 +172,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -302,12 +302,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -427,12 +427,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -563,12 +563,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -691,12 +691,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -811,12 +811,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -988,12 +988,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -1171,12 +1171,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -1313,12 +1313,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -1468,12 +1468,12 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() {
+         public Result save(String saveName) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) {
+         public Result save(Collection<ICoverage> coverages, String saveName) {
             return Result.TrueResult;
          }
 
@@ -1596,7 +1596,7 @@ public class CoveragePackageImportTest {
       if (testWithDb) {
          OseeCoveragePackageStore packageStore =
             new OseeCoveragePackageStore(coveragePackage, CoverageTestUtil.getTestBranch());
-         packageStore.save();
+         packageStore.save(coveragePackage.getName());
       }
 
       return Result.TrueResult;

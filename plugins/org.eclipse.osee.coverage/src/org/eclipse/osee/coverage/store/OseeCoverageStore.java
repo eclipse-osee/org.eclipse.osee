@@ -61,9 +61,9 @@ public abstract class OseeCoverageStore extends CoverageStore {
    public abstract void delete(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, boolean purge) throws OseeCoreException;
 
    @Override
-   public Result save() {
+   public Result save(String saveName) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
+         SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save - " + saveName);
          CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Modified);
          save(transaction, coverageEvent);
          transaction.execute();
@@ -76,8 +76,8 @@ public abstract class OseeCoverageStore extends CoverageStore {
    }
 
    @Override
-   public void delete(boolean purge) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
+   public void delete(boolean purge, String saveName) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save - " + saveName);
       CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Deleted);
       delete(transaction, coverageEvent, purge);
       transaction.execute();
