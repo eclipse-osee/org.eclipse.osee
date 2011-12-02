@@ -306,6 +306,10 @@ public class XList extends GenericXWidget {
       }
    }
 
+   public void removeAll() {
+      items.clear();
+   }
+
    public void add(Collection<String> names) {
       add(names.toArray(new String[0]));
    }

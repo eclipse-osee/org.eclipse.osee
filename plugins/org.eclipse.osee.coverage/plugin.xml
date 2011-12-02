@@ -128,5 +128,13 @@
       <Renderer
             classname="org.eclipse.osee.coverage.editor.CoverageRenderer">
       </Renderer>
-   </extension>     
+   </extension>
+   <extension
+       id="ZBranchUBranchBlam"
+       name="ZBranchUBranchBlam"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.coverage.blam.TxCoveragePartitionsReportBlam">
+    </Operation>
+ </extension>
 </plugin>
