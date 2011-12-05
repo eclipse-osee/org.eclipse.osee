@@ -86,7 +86,7 @@ public class AtsNotifyUsersTest {
       User inactiveSteve = UserManager.getUser(DemoUsers.Inactive_Steve);
       inactiveSteve.setEmail("inactiveSteves@boeing.com");
 
-      TestNotificationManager notifyManager = new TestNotificationManager();
+      MockNotificationManager notifyManager = new MockNotificationManager();
       AtsNotificationManager.setNotificationManager(notifyManager);
       AtsNotificationManager.setInTest(false);
       AtsNotificationManager.setIsProduction(true);
@@ -212,7 +212,7 @@ public class AtsNotifyUsersTest {
       User kay_ValidEmail = UserManager.getUser(DemoUsers.Kay_Jones);
       kay_ValidEmail.setEmail("kay@boeing.com");
 
-      TestNotificationManager notifyManager = new TestNotificationManager();
+      MockNotificationManager notifyManager = new MockNotificationManager();
       AtsNotificationManager.setNotificationManager(notifyManager);
       AtsNotificationManager.setInTest(false);
       AtsNotificationManager.setIsProduction(true);

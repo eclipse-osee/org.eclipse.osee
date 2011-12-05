@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.core.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workdef.StateEventType;
-import org.eclipse.osee.ats.core.workflow.transition.TestTransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
@@ -67,8 +67,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
             Arrays.asList(UserManager.getUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();
@@ -112,8 +112,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getPageName(),
             Arrays.asList(UserManager.getUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();

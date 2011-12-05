@@ -13,6 +13,9 @@ import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OpenNewAtsWorldEditorSelectedActionTest extends AbstractAtsActionRunTest {
 
    @Override

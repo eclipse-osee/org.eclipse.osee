@@ -9,6 +9,9 @@ import java.util.Collections;
 import org.eclipse.osee.ats.core.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
    @Override

@@ -10,6 +10,9 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DirtyReportActionTest2 extends AbstractAtsActionTest {
 
    @Test(expected = OseeStateException.class)

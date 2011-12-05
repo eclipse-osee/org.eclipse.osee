@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * Test unit for {@link MailMessage} using a multi-parameter list.
  * 
- * @author Shawn F. cook
+ * @author Shawn F. Cook
  */
 @RunWith(Parameterized.class)
 public class MailMessageTest {

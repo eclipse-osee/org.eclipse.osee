@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class RefreshDirtyActionTest extends AbstractAtsActionRunTest {
 
    @Override

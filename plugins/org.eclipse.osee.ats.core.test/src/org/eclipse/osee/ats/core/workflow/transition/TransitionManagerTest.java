@@ -144,8 +144,8 @@ public class TransitionManagerTest {
    @org.junit.Test
    public void testHandleTransitionValidation__WorkingBranchTransitionable() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
@@ -181,8 +181,8 @@ public class TransitionManagerTest {
    @org.junit.Test
    public void testHandleTransitionValidation__NoSystemUser() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
@@ -207,8 +207,8 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__ValidateXWidgets__RequiredForTransition() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-1");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
@@ -246,8 +246,8 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__ValidateXWidgets__RequiredForCompletion() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-2");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
@@ -300,8 +300,8 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__ValidateTasks() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-3");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
@@ -333,7 +333,7 @@ public class TransitionManagerTest {
 
          // attempt to transition parent to cancelled, should not be able to transition with un-completed/cancelled tasks
          helper =
-            new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+            new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
                AtsTestUtil.getCancelledStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
                TransitionOption.None);
          transMgr = new TransitionManager(helper);
@@ -359,8 +359,8 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__RequireTargetedVersion__FromTeamDef() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-4");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
@@ -388,8 +388,8 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__RequireTargetedVersion__FromPageDef() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-5");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
@@ -418,8 +418,8 @@ public class TransitionManagerTest {
 
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-6");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
@@ -465,8 +465,8 @@ public class TransitionManagerTest {
 
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-7");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      TestTransitionHelper helper =
-         new TestTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getPageName(), Arrays.asList(UserManager.getUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);

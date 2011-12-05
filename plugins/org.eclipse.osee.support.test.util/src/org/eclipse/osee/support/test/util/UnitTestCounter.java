@@ -52,7 +52,7 @@ public class UnitTestCounter {
             }
          }
 
-         results.append("Test Unit Total (file with at least 1 test case), " + unitTestCount + "\n");
+         results.append("\n\nTest Unit Total (file with at least 1 test case), " + unitTestCount + "\n");
 
          List<String> names = new ArrayList<String>();
          for (Entry<String, MutableInteger> entry : authorToFileCount.getCounts()) {
@@ -64,8 +64,7 @@ public class UnitTestCounter {
             results.append(name);
          }
 
-         results.append("\n\n");
-         results.append("Test Case Total (@org.junit.Test or @Test), " + testPointCount + "\n");
+         results.append("\n\nTest Case Total (@org.junit.Test or @Test), " + testPointCount + "\n");
          names.clear();
          for (Entry<String, MutableInteger> entry : authorToTestPointCount.getCounts()) {
             names.add(entry.getKey() + ", " + entry.getValue() + "\n");
@@ -82,6 +81,7 @@ public class UnitTestCounter {
          String outputFilename = "C:\\UserData\\UnitTestCounter.csv";
          System.out.println("\n\nResults written to " + outputFilename + "\n");
          Lib.writeStringToFile(errors.toString() + "\n\n" + results.toString(), new File(outputFilename));
+
       } catch (Exception ex) {
          System.out.println(ex.getLocalizedMessage());
       }
@@ -96,8 +96,7 @@ public class UnitTestCounter {
       }
       if (file.getAbsolutePath().endsWith(".java") && !file.getName().contains("UnitTestCounter")) {
          String text = Lib.fileToString(file);
-         if (UnitTestUtil.isUnitTest(text)) {
-            System.err.println("Found java test file " + file.getName());
+         if (UnitTestUtil.isUnitTest(text) || file.getAbsolutePath().endsWith("Test.java")) {
             results.append(file.getName() + ", ");
             unitTestCount++;
             List<String> authors = UnitTestUtil.getAuthors(text);
@@ -105,14 +104,20 @@ public class UnitTestCounter {
                errors.append(String.format("File [%s] has no authors\n", file.getName()));
             }
             int fileTestPointCount = UnitTestUtil.getTestMethodCount(text);
+            int fileTestPointCountFromSuperclass = UnitTestUtil.getTestMethodCountFromSuperclass(file, text);
+            int totalFileTestPointCount = fileTestPointCount + fileTestPointCountFromSuperclass;
+            testPointCount += totalFileTestPointCount;
+
             for (String author : authors) {
                results.append(author + "; ");
                authorToFileCount.put(author);
-               authorToTestPointCount.put(author, fileTestPointCount);
+               authorToTestPointCount.put(author, fileTestPointCount + fileTestPointCountFromSuperclass);
             }
+            System.err.println(String.format("[%s] tests [ main:%s super:%s ]found in %s", totalFileTestPointCount,
+               fileTestPointCount, fileTestPointCountFromSuperclass, file.getName()));
             results.append("\n");
-         } else {
-            System.err.println("NOT TEST FILE " + file.getName());
+         } else if (!UnitTestUtil.isSuite(file) && !UnitTestUtil.isMock(file) && !UnitTestUtil.isTestUtil(file)) {
+            System.out.println("NOT TEST FILE " + file.getName());
          }
       }
    }

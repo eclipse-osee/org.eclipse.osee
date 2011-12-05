@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 /**
  * @author Donald G. Dunne
  */
-public class TestNotificationManager implements INotificationManager {
+public class MockNotificationManager implements INotificationManager {
 
    private final List<OseeNotificationEvent> notificationEvents = new ArrayList<OseeNotificationEvent>();
 

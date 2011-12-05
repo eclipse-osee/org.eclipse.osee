@@ -13,6 +13,9 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ShowMergeManagerActionTest extends AbstractAtsActionRunTest {
 
    @Override

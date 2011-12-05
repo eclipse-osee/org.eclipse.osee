@@ -13,6 +13,9 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OpenNewAtsWorldEditorActionTest extends AbstractAtsActionRunTest {
 
    @Override

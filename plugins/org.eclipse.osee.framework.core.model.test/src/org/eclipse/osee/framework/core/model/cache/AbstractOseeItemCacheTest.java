@@ -9,6 +9,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public abstract class AbstractOseeItemCacheTest<T extends AbstractOseeType<String>> extends AbstractOseeCacheTest<String, T> {
 
    public AbstractOseeItemCacheTest(List<T> artifactTypes, AbstractOseeCache<String, T> typeCache) {

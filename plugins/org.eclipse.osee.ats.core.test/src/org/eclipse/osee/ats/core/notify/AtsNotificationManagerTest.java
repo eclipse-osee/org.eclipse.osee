@@ -64,7 +64,7 @@ public class AtsNotificationManagerTest {
       //---------------------------------------------------
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.start(mgr, true);
       AtsNotificationManager.setInTest(false);
@@ -148,7 +148,7 @@ public class AtsNotificationManagerTest {
    public void testAddAssigneeNotification() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);
@@ -197,7 +197,7 @@ public class AtsNotificationManagerTest {
    public void testSetAssigneeNotification() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);
@@ -255,7 +255,7 @@ public class AtsNotificationManagerTest {
    public void testCompletedNotification() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);
@@ -296,7 +296,7 @@ public class AtsNotificationManagerTest {
    public void testCancelledNotification() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);
@@ -338,7 +338,7 @@ public class AtsNotificationManagerTest {
    public void testSubscribedTeam() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);
@@ -383,7 +383,7 @@ public class AtsNotificationManagerTest {
    public void testSubscribedActionableItem() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);
@@ -428,7 +428,7 @@ public class AtsNotificationManagerTest {
    public void testSubscribedWorkflow() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);
@@ -469,7 +469,7 @@ public class AtsNotificationManagerTest {
    public void testReviewersCompleted() throws OseeCoreException {
 
       // create a test notification manager
-      TestNotificationManager mgr = new TestNotificationManager();
+      MockNotificationManager mgr = new MockNotificationManager();
       // restart notification manager with this one and set to NotInTest (cause normally, testing has notification system OFF)
       AtsNotificationManager.setNotificationManager(mgr);
       AtsNotificationManager.setInTest(false);

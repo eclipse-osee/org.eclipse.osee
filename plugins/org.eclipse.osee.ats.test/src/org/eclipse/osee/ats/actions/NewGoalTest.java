@@ -14,6 +14,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class NewGoalTest extends AbstractAtsActionRunTest {
 
    @BeforeClass

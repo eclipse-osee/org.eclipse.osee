@@ -34,6 +34,14 @@ public class UnitTestUtil {
       return (file.getAbsolutePath().endsWith(".java") && file.getName().contains("Suite"));
    }
 
+   public static boolean isTestUtil(File file) {
+      return (file.getAbsolutePath().endsWith(".java") && file.getName().contains("Util"));
+   }
+
+   public static boolean isMock(File file) {
+      return (file.getAbsolutePath().endsWith(".java") && file.getName().contains("Mock"));
+   }
+
    public static List<String> getAuthors(File file) throws IOException {
       String text = Lib.fileToString(file);
       return getAuthors(text);
@@ -69,4 +77,23 @@ public class UnitTestUtil {
       }
       return fileTestPointCount;
    }
+
+   private final static Pattern extendsPattern = Pattern.compile("class (.*) extends (.*) ");
+
+   public static int getTestMethodCountFromSuperclass(File file, String text) throws IOException {
+      Matcher m = extendsPattern.matcher(text);
+      if (m.find()) {
+         String superClassName = m.group(2);
+         //         System.out.println("Found SUPERCLASS " + superClassName);
+         if (Strings.isValid(superClassName)) {
+            String fullPath = file.getAbsolutePath();
+            File superFile = new File(fullPath.replaceFirst(file.getName(), superClassName + ".java"));
+            if (superFile.exists()) {
+               return getTestMethodCount(Lib.fileToString(superFile));
+            }
+         }
+      }
+      return 0;
+   }
+
 }

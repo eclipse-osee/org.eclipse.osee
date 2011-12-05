@@ -22,14 +22,14 @@ import org.eclipse.osee.framework.core.model.IBasicUser;
  * 
  * @author Donald G. Dunne
  */
-public class TestTransitionHelper extends TransitionHelper {
+public class MockTransitionHelper extends TransitionHelper {
    public Boolean workingBranchInWork = null;
    public Boolean branchInCommit = null;
    public Boolean systemUser = null;
    public Boolean systemUserAssigned = null;
    public Boolean overrideTransitionValidityCheck = null;
 
-   public TestTransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IBasicUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
+   public MockTransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IBasicUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
       super(name, awas, toStateName, toAssignees, cancellationReason, transitionOption);
    }
 
