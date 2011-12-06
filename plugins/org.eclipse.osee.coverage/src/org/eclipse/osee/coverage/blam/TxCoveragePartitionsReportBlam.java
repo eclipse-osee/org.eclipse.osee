@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
@@ -128,8 +129,15 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
       excelWriter.startSheet("Tx_CvgPartitions", 4);
       excelWriter.writeRow("TX ID", "TX Comment", "Partition", "TX Time");
 
+      monitor.beginTask("Creating TX Coverage Partitions Report", txIds.size());
       for (XListItem txItem : txIds) {
          String txStr = txItem.toString();
+         if (monitor.isCanceled()) {
+             return;
+          }
+          monitor.setTaskName(txStr);
+          monitor.worked(1);
+          
          if (Strings.isValid(txStr)) {
             String[] tokens = txStr.split(TASKITEMDELIM);
             String txId = "";
@@ -152,11 +160,12 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
 
                while (chStmt.next()) {
                   int artId = chStmt.getInt("art_id");
+                  monitor.setTaskName(txStr+" "+artId);
                   Artifact art = ArtifactQuery.getArtifactFromId(artId, branch);
                   String partition = getCoveragePartitionType(art);
                   if (partition == null) {
-                     OseeLog.log(Activator.class, Level.SEVERE,
-                        "NON-Coverage modification found in transaction:" + txId);
+//                     OseeLog.log(Activator.class, Level.INFO,
+//                        "NON-Coverage modification found in transaction:" + txId);
                      partition = "NON-Coverage modification.";
                   }
                   excelWriter.writeRow(txId, txComment, partition, txTime);
@@ -176,9 +185,11 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
 
       excelWriter.endSheet();
       excelWriter.endWorkbook();
+      
       IFile iFile = OseeData.getIFile("CoveragePartitionByTxID_" + Lib.getDateTimeString() + ".xml");
       AIFile.writeToFile(iFile, charBak);
       Program.launch(iFile.getLocation().toOSString());
+      monitor.done();
    }
 
    @Override
