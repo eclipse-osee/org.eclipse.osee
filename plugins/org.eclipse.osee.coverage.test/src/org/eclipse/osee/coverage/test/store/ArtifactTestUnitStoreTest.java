@@ -37,7 +37,6 @@ public class ArtifactTestUnitStoreTest {
 
    private static final String testInputData = "1|test1\n2|test2\n3|test3";
    private Branch testBranch;
-   private static final String testArtifactGuid = "AEas7qndRl+k+g6YpkwA";
 
    private CoverageItem createCoverageItem(TestUnitCache tc) throws OseeCoreException {
       CoverageUnit parent = new CoverageUnit(null, "Top", "C:/UserData/", null);
@@ -51,7 +50,7 @@ public class ArtifactTestUnitStoreTest {
       Assert.assertTrue(TestUtil.isTestDb());
       testBranch = BranchManager.createTopLevelBranch("TestBranch");
       Artifact testArtifact =
-         ArtifactQuery.getOrCreate(testArtifactGuid, null, CoreArtifactTypes.GeneralData, testBranch);
+         ArtifactQuery.getOrCreate(ArtifactTestUnitStore.COVERAGE_GUID, null, CoreArtifactTypes.GeneralData, testBranch);
       testArtifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, testInputData);
    }
 
@@ -89,7 +88,7 @@ public class ArtifactTestUnitStoreTest {
 
       store.store(tc);
       Artifact testArtifact =
-         ArtifactQuery.getOrCreate(testArtifactGuid, null, CoreArtifactTypes.GeneralData, testBranch);
+         ArtifactQuery.getOrCreate(ArtifactTestUnitStore.COVERAGE_GUID, null, CoreArtifactTypes.GeneralData, testBranch);
       String actual = testArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");
       String expected = testInputData + "\n4|test10";
       Assert.assertEquals(expected, actual);

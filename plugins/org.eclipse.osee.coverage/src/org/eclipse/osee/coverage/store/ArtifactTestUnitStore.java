@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,12 +32,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class ArtifactTestUnitStore implements ITestUnitStore {
 
-   public static final String COVERAGE_GUID = "AEas7qndRl+k+g6YpkwA";
+   public static final String COVERAGE_GUID = "AhQuIIQa0Vkw4mswxhwA";
 
    private final IOseeBranch branch;
 
    public ArtifactTestUnitStore(IOseeBranch branch) {
       this.branch = branch;
+   }
+
+   public ArtifactTestUnitStore() {
+      this(CoreBranches.COMMON);
    }
 
    @Override
@@ -90,7 +95,7 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
          StringTokenizer idName = new StringTokenizer(entries.nextToken(), "|");
          if (idName.countTokens() == 2) {
             String id = idName.nextToken();
-            String testUnitName = idName.nextToken();
+            String testUnitName = idName.nextToken().trim();
             if (Strings.isValid(id, testUnitName)) {
                int key = Integer.parseInt(id);
                cache.put(key, testUnitName);
