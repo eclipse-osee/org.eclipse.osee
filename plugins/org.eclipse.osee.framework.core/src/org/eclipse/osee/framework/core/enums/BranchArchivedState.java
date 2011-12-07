@@ -16,7 +16,9 @@ package org.eclipse.osee.framework.core.enums;
 public enum BranchArchivedState {
    ARCHIVED(1),
    UNARCHIVED(0),
-   ALL(-1);
+   ALL(-1),
+   ARCHIVED_IN_PROGRESS(2),
+   UNARCHIVED_IN_PROGRESS(3);
 
    private final int value;
 
@@ -26,6 +28,14 @@ public enum BranchArchivedState {
 
    public final int getValue() {
       return value;
+   }
+
+   public boolean isBeingArchived() {
+	   return this == ARCHIVED_IN_PROGRESS;
+   }
+
+   public boolean isBeingUnarchived() {
+	   return this == UNARCHIVED_IN_PROGRESS;
    }
 
    public boolean isArchived() {
@@ -40,11 +50,32 @@ public enum BranchArchivedState {
       return branchState == BranchArchivedState.ALL || this == branchState;
    }
 
-   public static BranchArchivedState fromBoolean(boolean isArchived) {
-      return isArchived ? ARCHIVED : UNARCHIVED;
+   /**
+    * @return	mapping to BranchArchivedState subset.
+    *
+    * <p>
+    * <code>
+    * true == BranchArchivedState.ARCHIVED<br/>
+    * false == BranchArchivedState.UNARCHIVED
+    * <code>
+    * </p>
+    */
+   public static BranchArchivedState fromBoolean(boolean archived) {
+      return archived ? ARCHIVED : UNARCHIVED;
    }
 
    public static BranchArchivedState valueOf(int value) {
-      return ARCHIVED.getValue() != value ? UNARCHIVED : ARCHIVED;
+	   switch (value) {
+	   case 1:
+		   return ARCHIVED;
+	   case 2:
+		   return ARCHIVED_IN_PROGRESS;
+	   case 3:
+		   return UNARCHIVED_IN_PROGRESS;
+	   case -1:
+	   case 0:
+	   default:
+		   return UNARCHIVED;
+	   }
    }
 }
