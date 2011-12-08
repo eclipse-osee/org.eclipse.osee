@@ -102,9 +102,15 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
          }
          return date;
       } else if (object instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
-         if (teamArt != null) {
-            return getDate(teamArt);
+         AbstractWorkflowArtifact abstractWorkflowArtifact = (AbstractWorkflowArtifact) object;
+         Date date = abstractWorkflowArtifact.getSoleAttributeValue(AtsAttributeTypes.EstimatedCompletionDate, null);
+         if (date == null) {
+            TeamWorkFlowArtifact teamArt = abstractWorkflowArtifact.getParentTeamWorkflow();
+            if (teamArt != null) {
+               return getDate(teamArt);
+            }
+         } else {
+            return date;
          }
       }
       return null;
