@@ -106,7 +106,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
    private boolean processArtifact(Artifact artifact, TransactionRecord baseTx, ArtifactChange change) throws OseeCoreException {
       boolean changeMade = false;
       if (artifact != null) {
-         if (isBaselineTransaction(change, baseTx)) {
+         if (isBaselineTransaction(change, baseTx) || (artifact.getModType().isDeleted())) {
             if ((artifact.getGammaId() != change.getGamma() && change.getGamma() != -1) || (artifact.getModType().isDeleted())) {
                artifact.replaceWithVersion((int) change.getGamma());
                changeMade = true;

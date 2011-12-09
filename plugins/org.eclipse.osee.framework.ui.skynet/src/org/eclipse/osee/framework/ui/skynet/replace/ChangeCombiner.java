@@ -44,14 +44,25 @@ public class ChangeCombiner {
 
    private static HashMap<Integer, Change> handleChanges(HashMap<Integer, Change> changes, Change change, TransactionRecord baselineTransaction) {
       Change storedChange = changes.get(change.getItemId());
-      if (storedChange != null) {
-         if (!storedChange.getTxDelta().getStartTx().equals(baselineTransaction)) {
+
+      if (!isMockArtifactChange(change)) {
+         if (storedChange != null) {
+            if (!storedChange.getTxDelta().getStartTx().equals(baselineTransaction)) {
+               changes.put(change.getItemId(), change);
+            }
+         } else {
             changes.put(change.getItemId(), change);
          }
-      } else {
-         changes.put(change.getItemId(), change);
       }
       return changes;
+
+   }
+
+   private static boolean isMockArtifactChange(Change change) {
+      boolean isMockArtifact = false;
+
+      isMockArtifact = change instanceof ArtifactChange && ((ArtifactChange) change).getGamma() == -1;
+      return isMockArtifact;
 
    }
 }
