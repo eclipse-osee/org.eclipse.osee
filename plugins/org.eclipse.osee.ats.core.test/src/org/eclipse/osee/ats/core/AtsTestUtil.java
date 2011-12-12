@@ -372,7 +372,7 @@ public class AtsTestUtil {
     */
    public static void cleanup() throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup");
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 1");
       if (peerRevArt != null) {
          peerRevArt.deleteAndPersist(transaction);
       }
@@ -407,7 +407,8 @@ public class AtsTestUtil {
          actionArt2.deleteAndPersist(transaction);
       }
       transaction.execute();
-      transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup");
+      transaction =
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 2");
       if (testAi != null) {
          testAi.deleteAndPersist(transaction);
       }
