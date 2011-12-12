@@ -219,11 +219,10 @@ public class AtsBranchManagerCore {
             break;
          }
       }
-      if (committedToParentTransRecord == null) {
-         return false;
-      }
-      if (destinationBranch.getBaseTransaction().getTimeStamp().after(committedToParentTransRecord.getTimeStamp())) {
-         return true;
+      if (committedToParentTransRecord != null) {
+         if (destinationBranch.getBaseTransaction().getTimeStamp().after(committedToParentTransRecord.getTimeStamp())) {
+            return true;
+         }
       }
       return workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(teamArt,
          destinationBranchParent, commitTransactionIds);
