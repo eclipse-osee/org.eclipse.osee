@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.ChangeType;
 import org.eclipse.osee.ats.core.workflow.ChangeTypeUtil;
@@ -212,7 +213,7 @@ public class ExtendedStatusReportJob extends Job {
       String desc = awa.getDescription();
       if (awa.isOfType(AtsArtifactTypes.Task)) {
          TaskArtifact taskArt = (TaskArtifact) awa;
-         desc = taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
+         desc = taskArt.getDescription() + " " + AtsUtilCore.getStateName(taskArt);
       }
       if (desc.matches("^ *$")) {
          values.add(".");

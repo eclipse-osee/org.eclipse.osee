@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.core.task.TaskManager;
 import org.eclipse.osee.ats.core.task.TaskResOptionDefinition;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
@@ -116,7 +117,7 @@ public class SMAPromptChangeStatus {
             awa.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             awa.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (options != null) {
+         if (options != null && AtsUtilCore.isAtsUsingResolutionOptions()) {
             awa.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
          if (awa.isOfType(AtsArtifactTypes.Task)) {

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -170,6 +171,14 @@ public class AtsUtilCore {
 
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
       return reviewArtifactTypesFilter;
+   }
+
+   public static String getStateName(TaskArtifact taskArt) throws OseeCoreException {
+      if (AtsUtilCore.isAtsUsingResolutionOptions()) {
+         return taskArt.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
+      } else {
+         return taskArt.getCurrentStateName();
+      }
    }
 
 }

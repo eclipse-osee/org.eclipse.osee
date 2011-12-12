@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.core.task.TaskArtifact;
 import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;
@@ -77,6 +78,9 @@ public class TaskXViewer extends WorldXViewer {
 
    public boolean isUsingTaskResolutionOptions() {
       try {
+         if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
+            return false;
+         }
          if (getSelectedTaskArtifact() == null) {
             return false;
          }
