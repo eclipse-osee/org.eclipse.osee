@@ -57,7 +57,7 @@ public class AtsUtilCore {
    }
 
    public static void setAtsUsingResolutionOptions(boolean set) throws OseeCoreException {
-      OseeInfo.setBoolean("AtsUsingResolutionOptions", true);
+      OseeInfo.setBoolean("AtsUsingResolutionOptions", set);
    }
 
    public static boolean isEmailEnabled() {
