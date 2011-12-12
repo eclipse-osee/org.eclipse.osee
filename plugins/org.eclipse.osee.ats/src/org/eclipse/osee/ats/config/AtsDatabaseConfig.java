@@ -33,7 +33,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
-      AtsUtilCore.setAtsUsingResolutionOptions(false);
+      AtsUtilCore.setAtsUsingResolutionOptions(true);
       createAtsFolders();
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);
