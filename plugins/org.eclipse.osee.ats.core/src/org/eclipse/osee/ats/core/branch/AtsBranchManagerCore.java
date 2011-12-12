@@ -479,13 +479,15 @@ public class AtsBranchManagerCore {
 
    public static TransactionRecord getEarliestTransactionId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Collection<TransactionRecord> transactionIds = getTransactionIds(teamArt, false);
-      if (transactionIds.size() == 1) {
-         return transactionIds.iterator().next();
-      }
-      TransactionRecord earliestTransactionId = transactionIds.iterator().next();
-      for (TransactionRecord transactionId : transactionIds) {
-         if (transactionId.getId() < earliestTransactionId.getId()) {
-            earliestTransactionId = transactionId;
+      TransactionRecord earliestTransactionId;
+      if (transactionIds.isEmpty()) {
+         earliestTransactionId = null;
+      } else {
+         earliestTransactionId = transactionIds.iterator().next();
+         for (TransactionRecord transactionId : transactionIds) {
+            if (transactionId.getId() < earliestTransactionId.getId()) {
+               earliestTransactionId = transactionId;
+            }
          }
       }
       return earliestTransactionId;
