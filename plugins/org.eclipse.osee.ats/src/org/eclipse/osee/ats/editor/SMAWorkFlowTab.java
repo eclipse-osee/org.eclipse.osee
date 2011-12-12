@@ -349,13 +349,6 @@ public class SMAWorkFlowTab extends FormPage {
          for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(awa)) {
             try {
                if (awa.isInState(statePage) || awa.getStateMgr().isStateVisited(statePage)) {
-                  // Don't show completed or cancelled state if not currently those state
-                  if (statePage.isCompletedPage() && !awa.isCompleted()) {
-                     continue;
-                  }
-                  if (statePage.isCancelledPage() && !awa.isCancelled()) {
-                     continue;
-                  }
                   SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, SWT.NONE, statePage, awa, editor);
                   managedForm.addPart(section);
                   control = section.getMainComp();
