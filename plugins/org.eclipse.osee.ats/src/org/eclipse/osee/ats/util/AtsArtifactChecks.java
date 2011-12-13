@@ -78,7 +78,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
       if (aias.size() > 0) {
          ActionableItemWorldSearchItem srch = new ActionableItemWorldSearchItem("AI search", aias, true, true, false);
          if (srch.performSearchGetResults(false).size() > 0) {
-            return "Actionable Items (or children AIs) selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.";
+            return String.format(
+               "Actionable Items (or children AIs) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
+               aias);
          }
       }
       return null;
@@ -97,7 +99,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
             new TeamWorldSearchItem("Team Def search", teamDefs, true, true, false, true, null, null,
                ReleasedOption.Both, null);
          if (srch.performSearchGetResults(false).size() > 0) {
-            return "Team Definition (or children Team Definitions) selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.";
+            return String.format(
+               "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
+               teamDefs);
          }
       }
       return null;
