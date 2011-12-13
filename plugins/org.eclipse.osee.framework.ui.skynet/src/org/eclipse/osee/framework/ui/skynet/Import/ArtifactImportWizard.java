@@ -10,11 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.util.logging.Level;
+import java.io.File;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.IImportWizard;
@@ -26,14 +34,11 @@ import org.eclipse.ui.IWorkbench;
 public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    private ArtifactImportPage mainPage;
-   private final ArtifactImporter importer;
+
+   private File defaultSourceFile;
+   private Artifact defaultDestinationArtifact;
 
    public ArtifactImportWizard() {
-      this(new ArtifactImporter());
-   }
-
-   public ArtifactImportWizard(ArtifactImporter importer) {
-      this.importer = importer;
       setDialogSettings(Activator.getInstance().getDialogSettings());
       setWindowTitle("OSEE Artifact Import Wizard");
       setNeedsProgressMonitor(true);
@@ -44,25 +49,68 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       if (selection != null && !selection.isEmpty()) {
          Object firstElement = selection.getFirstElement();
-         importer.setInputResource(firstElement);
+         if (firstElement instanceof IAdaptable) {
+            Object resource = ((IAdaptable) firstElement).getAdapter(IResource.class);
+            if (resource instanceof IResource) {
+               setImportFile(((IResource) resource).getLocation().toFile());
+            }
+         }
+         if (firstElement instanceof Artifact) {
+            setDestinationArtifact((Artifact) firstElement);
+         }
       }
+   }
+
+   public void setImportFile(File importFile) {
+      this.defaultSourceFile = importFile;
+   }
+
+   public void setDestinationArtifact(Artifact destinationArtifact) {
+      this.defaultDestinationArtifact = destinationArtifact;
    }
 
    @Override
    public void addPages() {
-      mainPage = new ArtifactImportPage(importer);
+      mainPage = new ArtifactImportPage(defaultSourceFile, defaultDestinationArtifact);
       addPage(mainPage);
    }
 
    @Override
    public boolean performFinish() {
+      boolean wasLaunched = false;
       try {
-         return importer.startImportJob(mainPage.getDestinationArtifact(), mainPage.isDeleteUnmatchedSelected(),
-            mainPage.getCollectedArtifacts(), getResolver());
+         File importResource = mainPage.getSourceFile();
+         Artifact destinationArtifact = mainPage.getDestinationArtifact();
+
+         if (importResource == null) {
+            importResource = defaultSourceFile;
+         }
+         if (destinationArtifact == null) {
+            destinationArtifact = defaultDestinationArtifact;
+         }
+
+         boolean isDeleteUnmatchedSelected = mainPage.isDeleteUnmatchedSelected();
+         RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
+         IArtifactImportResolver resolver = getResolver();
+
+         Conditions.checkNotNull(importResource, "importResource");
+         Conditions.checkNotNull(destinationArtifact, "destinationArtifact");
+
+         final String opName = String.format("Importing Artifacts onto: [%s]", destinationArtifact);
+
+         IOperation operation =
+            ArtifactImportOperationFactory.createRoughToRealOperation(opName, destinationArtifact, resolver, false,
+               roughItems, isDeleteUnmatchedSelected);
+         Operations.executeAsJob(operation, true);
+         wasLaunched = true;
+
+         defaultDestinationArtifact = destinationArtifact;
+         defaultSourceFile = importResource;
+
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return false;
+      return wasLaunched;
    }
 
    private IArtifactImportResolver getResolver() {

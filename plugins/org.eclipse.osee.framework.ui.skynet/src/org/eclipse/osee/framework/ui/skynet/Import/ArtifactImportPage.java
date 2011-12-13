@@ -88,7 +88,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    private static StringBuilder operationReportMessages;
 
-   protected ArtifactImportPage(ArtifactImporter importer) {
+   protected ArtifactImportPage(File defaultSourceFile, Artifact defaultDestinationArtifact) {
       super(PAGE_NAME);
       selectedArtifactTypes = new ArrayList<IArtifactType>();
       selectionLatch = new SelectionLatch();
@@ -97,7 +97,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       artifactSelectPanel.setDialogTitle("Select Destination Artifact");
       artifactSelectPanel.setDialogMessage("Select a destination artifact. Imported items will be added as children of the selected artifact.");
 
-      artifactSelectPanel.setDefaultItem(importer.getDestinationArtifact());
+      artifactSelectPanel.setDefaultItem(defaultDestinationArtifact);
 
       artifactTypeSelectPanel = new ArtifactTypeSelectPanel();
       artifactTypeSelectPanel.setDialogTitle("Import as Artifact Type");
@@ -116,7 +116,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       operationReportMessages = new StringBuilder();
 
-      this.defaultSourceFile = importer.getFile();
+      this.defaultSourceFile = defaultSourceFile;
    }
 
    public RoughArtifactCollector getCollectedArtifacts() {
