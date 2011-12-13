@@ -69,8 +69,8 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public int getObjectId() throws OseeCoreException {
-      return getArtifact().getArtId();
+   public int getObjectId() {
+      return getArtId();
    }
 
    @Override

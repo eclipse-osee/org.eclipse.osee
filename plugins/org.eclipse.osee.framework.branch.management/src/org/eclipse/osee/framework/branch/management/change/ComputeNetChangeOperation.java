@@ -95,7 +95,8 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
       if (!change.getDestinationVersion().isValid() && change.getBaselineVersion().isValid()) {
          throw new OseeStateException(
-            "This should be supported in the future - destination branch is not the source's parent [%s]", change);
+            "Attemping to change an artifact that is not on the destination.  Check for an uncommitted branch in the source hierarchy that is not in the destination hierarchy. [%s]",
+            change);
       }
 
       if (change.getDestinationVersion().isValid() && ChangeItemUtil.isDeleted(change.getDestinationVersion())) {
