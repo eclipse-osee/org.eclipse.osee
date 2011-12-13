@@ -81,9 +81,11 @@ public class AtsDeleteManager {
             deleteOptions.add(DeleteOption.Purge);
          }
       }
+
       if (!confirmDelete) {
          return;
       }
+
       // Build list of related artifacts that will be deleted
       StringBuilder delBuilder = new StringBuilder();
       final Set<Artifact> allDeleteArts = new HashSet<Artifact>(30);
@@ -94,7 +96,7 @@ public class AtsDeleteManager {
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          String results =
             (purge ? "Purge" : "Delete") + " ATS objects and related children, Are You Sure?\n" + delBuilder.toString();
-         results = results.replaceAll("\n", "<br>");
+         results = results.replaceAll("\n", "<br/>");
          HtmlDialog dialog =
             new HtmlDialog((purge ? "Purge" : "Delete") + " ATS objects and related children", "",
                AHTML.simplePage(results));
@@ -111,10 +113,9 @@ public class AtsDeleteManager {
                // perform the delete/purge
                if (purge) {
                   Operations.executeWorkAndCheckStatus(new PurgeArtifacts(allDeleteArts));
-               } else if (allDeleteArts.size() > 0) {
+               } else if (!allDeleteArts.isEmpty()) {
                   SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
-                  ArtifactPersistenceManager.deleteArtifact(transaction, false,
-                     allDeleteArts.toArray(new Artifact[allDeleteArts.size()]));
+                  ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, allDeleteArts);
                   transaction.execute();
                }
                if (deleteOptions.contains(DeleteOption.Prompt)) {

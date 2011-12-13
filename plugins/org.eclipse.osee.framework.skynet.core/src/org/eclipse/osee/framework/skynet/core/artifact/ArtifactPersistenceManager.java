@@ -133,10 +133,10 @@ public class ArtifactPersistenceManager {
     * @param artifacts The artifacts to delete.
     */
    public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
-      deleteArtifactList(transaction, overrideDeleteCheck, Arrays.asList(artifacts));
+      deleteArtifactCollection(transaction, overrideDeleteCheck, Arrays.asList(artifacts));
    }
 
-   public static void deleteArtifactList(SkynetTransaction transaction, boolean overrideDeleteCheck, final List<Artifact> artifacts) throws OseeCoreException {
+   public static void deleteArtifactCollection(SkynetTransaction transaction, boolean overrideDeleteCheck, final Collection<Artifact> artifacts) throws OseeCoreException {
       if (artifacts.isEmpty()) {
          return;
       }
@@ -153,7 +153,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   private static void performDeleteChecks(List<Artifact> artifacts) throws OseeCoreException {
+   private static void performDeleteChecks(Collection<Artifact> artifacts) throws OseeCoreException {
       // Confirm artifacts are fit to delete
       for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
          IStatus result = check.isDeleteable(artifacts);
@@ -163,7 +163,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   private static void bulkLoadRelatives(List<Artifact> artifacts) throws OseeCoreException {
+   private static void bulkLoadRelatives(Collection<Artifact> artifacts) throws OseeCoreException {
       Collection<Integer> artIds = new HashSet<Integer>();
       for (Artifact artifact : artifacts) {
          for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
@@ -171,7 +171,7 @@ public class ArtifactPersistenceManager {
             artIds.add(link.getBArtifactId());
          }
       }
-      IOseeBranch branch = artifacts.get(0).getBranch();
+      IOseeBranch branch = artifacts.iterator().next().getBranch();
       ArtifactQuery.getArtifactListFromIds(artIds, branch);
    }
 

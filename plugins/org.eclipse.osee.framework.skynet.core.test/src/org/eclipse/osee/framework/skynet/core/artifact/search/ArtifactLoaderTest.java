@@ -64,7 +64,7 @@ public class ArtifactLoaderTest {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), EXCLUDE_DELETED);
-      ArtifactPersistenceManager.deleteArtifactList(transaction, false, artifacts);
+      ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, artifacts);
       transaction.execute();
    }
 
