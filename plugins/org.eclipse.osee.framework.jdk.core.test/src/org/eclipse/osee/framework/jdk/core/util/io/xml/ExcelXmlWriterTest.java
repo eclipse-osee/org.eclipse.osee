@@ -15,8 +15,6 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.Assert;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.junit.Test;
 
 /**
@@ -55,12 +53,6 @@ public final class ExcelXmlWriterTest {
    @Test(expected = IllegalArgumentException.class)
    public void testIncorrectStyleSheet() throws Exception {
       buildSampleExcelXmlFile(BROKEN_TAGS_STYLE);
-   }
-
-   @Test
-   public void testNullStyle() throws Exception {
-      buildSampleExcelXmlFile(null);
-      Assert.assertFalse("Styles unexpectedly found.", resultBuffer.toString().contains("Styles"));
    }
 
    private void buildSampleExcelXmlFile(String style) throws IOException {
