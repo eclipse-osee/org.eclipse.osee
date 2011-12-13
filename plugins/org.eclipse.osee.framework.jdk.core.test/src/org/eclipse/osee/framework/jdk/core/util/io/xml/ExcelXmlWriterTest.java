@@ -59,9 +59,8 @@ public final class ExcelXmlWriterTest {
       //start
       excelWriter = new ExcelXmlWriter(resultBuffer, style);
       excelWriter.startSheet(getClass().getName(), 10);
-      excelWriter.writeRow(new String[] {"Column1", "Column2"});
-
-      excelWriter.writeRow(new String[] {"TestData1", "TestData2"});
+      excelWriter.writeRow("Column1", "Column2");
+      excelWriter.writeRow("TestData1", "TestData2");
 
       //end
       excelWriter.endSheet();
