@@ -15,9 +15,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
@@ -46,7 +49,20 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       " xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" + //
       " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n" + //
       " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
-      " xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n";
+      " xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n" + //
+      "<Styles>\n" + //
+      "<Style ss:ID=\"Default\" ss:Name=\"Normal\">\n" + //
+      "<Alignment ss:Vertical=\"Bottom\"/>\n" + //
+      "<Borders/>\n" + //
+      "<Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Size=\"11\" ss:Color=\"#000000\"/>\n" + //
+      "<Interior/>\n" + //
+      "<NumberFormat/>\n" + //
+      "<Protection/>\n" + //
+      "</Style>\n" + //
+      "<Style ss:ID=\"s62\">\n" + //
+      "<NumberFormat ss:Format=\"Short Date\"/>\n" + //
+      "</Style>\n" + //
+      "</Styles>";
 
    public static final String DEFAULT_STYLE = //
       "<Styles>\n" + //
@@ -171,40 +187,66 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    }
 
    @Override
-   public void writeCellText(String cellData, int cellIndex) throws IOException {
+   public void writeCellText(Object cellData, int cellIndex) throws IOException {
       if (cellData == null) {
          previousCellIndex = -1; // the next cell will need to use an explicit index
       } else {
 
          out.write("    <Cell");
 
+         //Cell styles
          if (applyStyle) {
             applyStyleToCell(cellIndex);
+         }
+         if(cellData instanceof Date){
+        	 out.write(" ss:StyleID=\"s62\"");
          }
 
          if (previousCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped
             out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
          }
          previousCellIndex = cellIndex;
-         if (!cellData.equals("") && cellData.charAt(0) == '=') {
-            out.write(" ss:Formula=\"" + cellData + "\">");
-         } else {
-            out.write("><Data ss:Type=\"String\">");
-            if (cellData.equals("")) {
-               out.write(emptyStringRepresentation);
-            } else {
-               if (cellData.length() > 32767) {
-                  out.write(blobMessage);
-               } else {
-                  Xml.writeAsCdata(out, cellData);
-               }
-            }
-            out.write("</Data>");
-            if (cellData.length() > 32767) {
-               out.write("<EmbeddedClob>");
-               Xml.writeAsCdata(out, cellData);
-               out.write("</EmbeddedClob>");
-            }
+         
+         if(cellData instanceof String){
+        	 String cellDataStr = (String)cellData;
+	         if (!cellDataStr.equals("") && cellDataStr.charAt(0) == '=') {
+	            out.write(" ss:Formula=\"" + cellDataStr + "\">");
+	         } else {
+	            out.write("><Data ss:Type=\"String\">");
+	            if (cellDataStr.equals("")) {
+	               out.write(emptyStringRepresentation);
+	            } else {
+	               if (cellDataStr.length() > 32767) {
+	                  out.write(blobMessage);
+	               } else {
+	                  Xml.writeAsCdata(out, cellDataStr);
+	               }
+	            }
+	            out.write("</Data>");
+	            if (cellDataStr.length() > 32767) {
+	               out.write("<EmbeddedClob>");
+	               Xml.writeAsCdata(out, cellDataStr);
+	               out.write("</EmbeddedClob>");
+	            }
+	         }
+         }
+         else if(cellData instanceof Number ){
+        	 Number cellDataNum = (Number)cellData;
+        	 out.write("><Data ss:Type=\"Number\">");
+        	 Xml.writeAsCdata(out, cellDataNum.toString());
+	         out.write("</Data>");
+         }
+         else if(cellData instanceof Date){
+        	 Date cellDataDate = (Date)cellData;
+        	 out.write("><Data ss:Type=\"DateTime\">");
+        	 String dateString = DateUtil.get(cellDataDate, "yyyy-MM-dd")+"T"+DateUtil.get(cellDataDate, "hh:mm:ss")+".000";
+        	 Xml.writeAsCdata(out, dateString);
+	         out.write("</Data>");
+         }
+         else {
+        	 out.write("><Data ss:Type=\"String\">");
+        	 Xml.writeAsCdata(out, cellData.toString());
+        	 out.write("</Data>");
          }
          out.write("</Cell>\n");
       }

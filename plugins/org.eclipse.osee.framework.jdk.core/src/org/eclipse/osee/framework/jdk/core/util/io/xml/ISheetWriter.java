@@ -23,17 +23,17 @@ public interface ISheetWriter {
 
    public void endSheet() throws IOException;
 
-   public void writeRow(String... row) throws IOException;
+   public void writeRow(Object... row) throws IOException;
 
-   public void writeRow(Collection<String> row) throws IOException;
+   public void writeRow(Collection<Object> row) throws IOException;
 
-   public void writeCell(String cellData) throws IOException;
+   public void writeCell(Object cellData) throws IOException;
 
    /**
     * @param cellData text value of cell
     * @param cellIndex zero-based index
     */
-   public void writeCell(String cellData, int cellIndex) throws IOException;
+   public void writeCell(Object cellData, int cellIndex) throws IOException;
 
    public void endRow() throws IOException;
 

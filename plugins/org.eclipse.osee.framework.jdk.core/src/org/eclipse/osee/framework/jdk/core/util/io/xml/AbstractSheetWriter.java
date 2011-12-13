@@ -37,12 +37,12 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
    }
 
    @Override
-   public void writeRow(Collection<String> row) throws IOException {
-      writeRow(row.toArray(new String[row.size()]));
+   public void writeRow(Collection<Object> row) throws IOException {
+      writeRow(row.toArray(new Object[row.size()]));
    }
 
    @Override
-   public void writeRow(String... row) throws IOException {
+   public void writeRow(Object... row) throws IOException {
       for (int i = 0; i < row.length; i++) {
          writeCell(row[i]);
       }
@@ -51,7 +51,7 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
    }
 
    @Override
-   public void writeCell(String data, int cellIndex) throws IOException {
+   public void writeCell(Object data, int cellIndex) throws IOException {
       startRowIfNecessary();
       defaultCellIndex = cellIndex + 1;
       writeCellText(data, cellIndex);
@@ -66,7 +66,7 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
    }
 
    @Override
-   public void writeCell(String cellData) throws IOException {
+   public void writeCell(Object cellData) throws IOException {
       writeCell(cellData, defaultCellIndex);
    }
 
@@ -74,5 +74,5 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
 
    protected abstract void writeEndRow() throws IOException;
 
-   protected abstract void writeCellText(String data, int cellIndex) throws IOException;
+   protected abstract void writeCellText(Object data, int cellIndex) throws IOException;
 }
