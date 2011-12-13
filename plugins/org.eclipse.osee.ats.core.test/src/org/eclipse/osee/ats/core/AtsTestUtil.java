@@ -610,4 +610,8 @@ public class AtsTestUtil {
       }
    }
 
+   public static String getName() {
+      return postFixName;
+   }
+
 }

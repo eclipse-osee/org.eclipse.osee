@@ -38,12 +38,12 @@ public class OseeHousekeepingRule implements MethodRule {
          @Override
          public void evaluate() throws Throwable {
             base.evaluate();
-            verify(method, target);
+            verify(method.getName(), target.getClass().getName());
          }
       };
    }
 
-   private void verify(FrameworkMethod method, Object target) throws Throwable {
+   public static void verify(String methodName, String className) throws Throwable {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
 
       if (!dirtyArtifacts.isEmpty()) {
@@ -51,7 +51,7 @@ public class OseeHousekeepingRule implements MethodRule {
          entireMessage.append("Dirty artifacts in Artifact Cache:");
          for (Artifact artifact : dirtyArtifacts) {
             entireMessage.append(String.format("\n[%s] of type [%s] found while executing: %s.%s()",
-               artifact.getName(), artifact.getArtifactType(), target.getClass().getSimpleName(), method.getName()));
+               artifact.getName(), artifact.getArtifactType(), className, methodName));
          }
          Assert.fail(entireMessage.toString());
       }
