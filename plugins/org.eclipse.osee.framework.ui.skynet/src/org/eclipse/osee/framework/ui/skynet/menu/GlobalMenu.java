@@ -188,6 +188,9 @@ public class GlobalMenu {
                "Purge selected artifact's children?", false, null, null);
 
          if (dialog.getReturnCode() == Window.OK) {
+            final boolean recusivePurge =
+               MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Recursive Purge", "Recurse and purge from child branches?");
             Job job = new Job("Purge artifact") {
 
                @Override
@@ -219,7 +222,7 @@ public class GlobalMenu {
                         }
                      }
                      monitor.setTaskName("Purging " + toPurge.size() + " artifacts");
-                     Operations.executeWorkAndCheckStatus(new PurgeArtifacts(toPurge));
+                     Operations.executeWorkAndCheckStatus(new PurgeArtifacts(toPurge, recusivePurge));
                      monitor.worked(toPurge.size());
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {

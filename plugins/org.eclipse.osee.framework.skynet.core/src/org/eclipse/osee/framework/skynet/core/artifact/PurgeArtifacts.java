@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
@@ -48,13 +50,19 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    private static final String DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION =
       "DELETE FROM osee_tx_details txd WHERE EXISTS (select 1 from osee_join_transaction jt WHERE jt.query_id = ? AND jt.branch_id = txd.branch_id AND jt.transaction_id = txd.transaction_id AND not exists (select * from osee_txs txs where jt.branch_id = txs.branch_id and jt.transaction_id = txs.transaction_id))";
 
-   private final Collection<? extends Artifact> artifactsToPurge;
+   private final List<Artifact> artifactsToPurge;
    private boolean success;
+   private final boolean recurseChildrenBranches;
+
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches) {
+      super(Activator.getInstance().getOseeDatabaseService(), "Purge Artifact", Activator.PLUGIN_ID);
+      this.artifactsToPurge = new LinkedList<Artifact>(artifactsToPurge);
+      this.success = false;
+      this.recurseChildrenBranches = recurseChildrenBranches;
+   }
 
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
-      super(Activator.getInstance().getOseeDatabaseService(), "Purge Artifact", Activator.PLUGIN_ID);
-      this.artifactsToPurge = artifactsToPurge;
-      this.success = false;
+      this(artifactsToPurge, false);
    }
 
    @Override
@@ -86,12 +94,20 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                boolean failed = false;
                StringBuilder sb = new StringBuilder();
                while (chStmt.next()) {
-                  failed = true;
-                  sb.append("ArtifactId[");
-                  sb.append(chStmt.getInt("art_id"));
-                  sb.append("] BranchId[");
-                  sb.append(chStmt.getInt("branch_id"));
-                  sb.append("]\n");
+                  int artId = chStmt.getInt("art_id");
+                  int branchId = chStmt.getInt("branch_id");
+                  if (recurseChildrenBranches) {
+                     Branch branch = BranchManager.getBranch(branchId);
+                     Artifact artifactFromId = ArtifactQuery.getArtifactFromId(artId, branch);
+                     artifactsToPurge.add(artifactFromId);
+                  } else {
+                     failed = true;
+                     sb.append("ArtifactId[");
+                     sb.append(artId);
+                     sb.append("] BranchId[");
+                     sb.append(branchId);
+                     sb.append("]\n");
+                  }
                }
                if (failed) {
                   throw new OseeCoreException(
