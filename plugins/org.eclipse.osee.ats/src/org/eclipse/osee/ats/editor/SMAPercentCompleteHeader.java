@@ -10,15 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.text.NumberFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.IntegerDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -63,7 +64,16 @@ public class SMAPercentCompleteHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.PercentComplete, true, false);
+                     IntegerDialog dialog =
+                        new IntegerDialog("Enter Percent Complete",
+                           "Enter Percent Complete (0 to 99)\n\n(use Transition to mark complete.)", 0, 99);
+                     dialog.setNumberFormat(NumberFormat.getIntegerInstance());
+                     dialog.setEntry(sma.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, ""));
+                     if (dialog.open() == 0) {
+                        Integer intValue = dialog.getInt();
+                        sma.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, intValue);
+                        sma.persist("ATS Workflow Editor - set Percent Complete");
+                     }
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }

@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
@@ -25,6 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -35,12 +36,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * Replaced by TransitionStatusDialog. Remove once AtsUtilCore.isAtsUsingResolutionOptions gets removed. Around
- * 0.9.9_SR4/5.
+ * Replacement dialog for SMAStatusDialog. Remove SMAStatusDialog when AtsUtilCore.isAtsUsingResolutionOptions is no
+ * longer needed. Should be around 0.9.9_SR4/5
  * 
  * @author Donald G Dunne
  */
-public class SMAStatusDialog extends MessageDialog {
+public class TransitionStatusDialog extends MessageDialog {
 
    protected Label statusLabel;
    protected XPercent percent = new XPercent("Percent Complete");
@@ -48,16 +49,13 @@ public class SMAStatusDialog extends MessageDialog {
    protected XRadioButton splitRadio = new XRadioButton("Split Hours Spent between Items");
    protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Item");
    private Button okButton;
-   private final boolean showPercent;
-   protected final Collection<? extends AbstractWorkflowArtifact> awas;
-   private Integer defaultPercent = null;
+   private final TransitionStatusData data;
 
-   public SMAStatusDialog(String dialogTitle, String dialogMessage, boolean showPercent, Collection<? extends AbstractWorkflowArtifact> awas) {
+   public TransitionStatusDialog(String dialogTitle, String dialogMessage, TransitionStatusData data) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
          "OK",
          "Cancel"}, 0);
-      this.showPercent = showPercent;
-      this.awas = awas;
+      this.data = data;
    }
 
    protected void createPreCustomArea(Composite parent) {
@@ -67,39 +65,32 @@ public class SMAStatusDialog extends MessageDialog {
    @Override
    protected Control createCustomArea(Composite parent) {
 
-      boolean hasTask = false;
-      for (AbstractWorkflowArtifact awa : awas) {
-         if (awa.isOfType(AtsArtifactTypes.Task)) {
-            hasTask = true;
-         }
-      }
-
       statusLabel = new Label(parent, SWT.NONE);
       statusLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       updateStatusLabel();
 
-      if (awas.size() > 1) {
+      if (data.getAwas().size() > 1) {
          Label label = new Label(parent, SWT.NONE);
-         label.setText("Mulitple objects being statused.  All objects will be " + "set to percent\ncomplete and hours spent will be split or added into each item.");
+         label.setText("Mulitple objects being statused.  All objects will be set to percent\ncomplete and hours spent will be split or added into each item.");
       }
 
       createPreCustomArea(parent);
 
-      if (hasTask) {
-         new Label(parent, SWT.NONE).setText("Task will auto-transition to complete when statused 100%.\n" + "Make all other changes to Task prior to statusing 100%.");
-      }
-
       boolean percentSet = false;
-      if (showPercent) {
+      if (data.isPercentRequired()) {
          percent.setRequiredEntry(true);
          percent.setToolTip("Enter total percent complete.");
          percent.createWidgets(parent, 2);
          try {
+            Integer defaultPercent = data.getDefaultPercent();
             if (defaultPercent != null) {
+               data.setPercent(defaultPercent);
                percent.set(defaultPercent);
                percentSet = true;
-            } else if (awas.size() == 1) {
-               percent.set(awas.iterator().next().getStateMgr().getPercentComplete());
+            } else if (data.getAwas().size() == 1) {
+               int currentPercent = data.getAwas().iterator().next().getStateMgr().getPercentComplete();
+               data.setPercent(currentPercent);
+               percent.set(currentPercent);
                percentSet = true;
             }
          } catch (Exception ex) {
@@ -108,6 +99,12 @@ public class SMAStatusDialog extends MessageDialog {
          percent.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
+               IStatus status = percent.isValid();
+               if (status.getSeverity() != IStatus.OK) {
+                  data.setPercent(null);
+               } else {
+                  data.setPercent(percent.getInt());
+               }
                updateButtons();
                updateStatusLabel();
             };
@@ -116,7 +113,9 @@ public class SMAStatusDialog extends MessageDialog {
             @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
-                  percent.set("100");
+                  data.setPercent(99);
+                  percent.set("99");
+                  data.setAdditionalHours(1.0);
                   hours.set("1");
                   updateStatusLabel();
                }
@@ -130,29 +129,54 @@ public class SMAStatusDialog extends MessageDialog {
       hours.addModifyListener(new ModifyListener() {
          @Override
          public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
+            IStatus status = hours.isValid();
+            if (status.getSeverity() != IStatus.OK) {
+               data.setAdditionalHours(null);
+            } else {
+               data.setAdditionalHours(hours.getFloat());
+            }
             updateButtons();
             updateStatusLabel();
          };
       });
 
-      if (awas.size() > 1) {
+      if (data.getAwas().size() > 1) {
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          eachRadio.createWidgets(comp, 2);
-         eachRadio.setSelected(false);
+         eachRadio.setSelected(data.isApplyHoursToEachItem());
          eachRadio.setToolTip("Hours Spent will be added to to time spent for each object.");
+         eachRadio.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               data.setApplyHoursToEachItem(eachRadio.isSelected());
+               updateButtons();
+               updateStatusLabel();
+            }
+
+         });
 
          splitRadio.createWidgets(comp, 2);
-         splitRadio.setSelected(true);
+         splitRadio.setSelected(data.isSplitHoursBetweenItems());
          splitRadio.setToolTip("Hours Spent will be divided equaly by the number of objects " + "and added to the existing hours spent for the object.");
-      }
+         splitRadio.addSelectionListener(new SelectionAdapter() {
 
-      if (percentSet) {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               data.setSplitHoursBetweenItems(splitRadio.isSelected());
+               updateButtons();
+               updateStatusLabel();
+            }
+
+         });
+      }
+      updateStatusLabel();
+      if (!data.isPercentRequired() || percentSet) {
          hours.setFocus();
       }
-
       return parent;
    }
 
@@ -170,26 +194,10 @@ public class SMAStatusDialog extends MessageDialog {
       return c;
    }
 
-   public boolean isSplitHours() {
-      return splitRadio.isSelected();
-   }
-
    protected IStatus isComplete() {
-      IStatus status = percent.isValid();
-      if (!status.isOK()) {
-         return status;
-      }
-      status = hours.isValid();
-      if (!status.isOK()) {
-         return status;
-      }
-      if (awas.size() > 1) {
-         if (!splitRadio.isSelected() && !eachRadio.isSelected()) {
-            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Either split or each must be selected");
-         }
-         if (splitRadio.isSelected() && eachRadio.isSelected()) {
-            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Select only split or each");
-         }
+      Result result = data.isValid();
+      if (result.isFalse()) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, result.getText());
       }
       return Status.OK_STATUS;
    }
@@ -198,24 +206,8 @@ public class SMAStatusDialog extends MessageDialog {
       okButton.setEnabled(isComplete().isOK());
    }
 
-   public XFloat getHours() {
-      return hours;
-   }
-
-   public XRadioButton getEachRadio() {
-      return eachRadio;
-   }
-
-   public XRadioButton getSplitRadio() {
-      return splitRadio;
-   }
-
-   public XPercent getPercent() {
-      return percent;
-   }
-
-   public void setDefaultPercent(Integer defaultPercent) {
-      this.defaultPercent = defaultPercent;
+   public TransitionStatusData getData() {
+      return data;
    }
 
 }

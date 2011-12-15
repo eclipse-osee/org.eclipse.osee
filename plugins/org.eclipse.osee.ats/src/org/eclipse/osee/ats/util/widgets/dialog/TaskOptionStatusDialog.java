@@ -33,10 +33,12 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 
 /**
- * @author Donald G. Dunne
+ * Replaced by TransitionStatusDialog. Remove once AtsUtilCore.isAtsUsingResolutionOptions gets removed. Around
+ * 0.9.9_SR4/5.
+ * 
+ * @author Donald G Dunne
  */
 public class TaskOptionStatusDialog extends SMAStatusDialog {
 
@@ -48,8 +50,8 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    private final static String OPTION_MESSAGE =
       "Select resolution, enter percent complete and number of hours you spent since last status.";
 
-   public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends AbstractWorkflowArtifact> tasks) {
-      super(parentShell, dialogTitle, options == null ? MESSAGE : OPTION_MESSAGE, showPercent, tasks);
+   public TaskOptionStatusDialog(String dialogTitle, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends AbstractWorkflowArtifact> tasks) {
+      super(dialogTitle, options == null ? MESSAGE : OPTION_MESSAGE, showPercent, tasks);
       this.options = options;
       if (options != null) {
          for (TaskResOptionDefinition trd : options) {

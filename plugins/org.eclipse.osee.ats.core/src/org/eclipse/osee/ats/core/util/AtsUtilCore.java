@@ -51,7 +51,9 @@ public class AtsUtilCore {
    private static boolean emailEnabled = true;
 
    /**
-    * Is ATS using Resolution Options
+    * TODO Is ATS using Resolution Options. After resolution conversion (around 0.9.9_SR5ish), this flag can be removed
+    * and all the code dealing with resolution options. Also, search for "AtsUsingResolutionOptions" string in java code
+    * to remove any un-necessary methods and code.
     */
    public static boolean isAtsUsingResolutionOptions() throws OseeCoreException {
       return OseeInfo.isBoolean("AtsUsingResolutionOptions");

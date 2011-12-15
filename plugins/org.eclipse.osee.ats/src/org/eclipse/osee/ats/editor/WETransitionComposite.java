@@ -31,12 +31,14 @@ import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
+import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -62,7 +64,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -100,22 +101,9 @@ public class WETransitionComposite extends Composite {
       transitionToStateCombo = new XComboViewer("Transition To State Combo", SWT.NONE);
       transitionToStateCombo.setDisplayLabel(false);
       List<Object> allPages = new ArrayList<Object>();
-      for (StateDefinition nextState : awa.getToStates()) {
+      for (StateDefinition nextState : awa.getToStatesWithCompleteCancelReturnStates()) {
          if (!allPages.contains(nextState)) {
             allPages.add(nextState);
-         }
-      }
-      StateDefinition currState = awa.getStateDefinition();
-      if (currState.isCompletedPage()) {
-         StateDefinition completedFromState = awa.getWorkDefinition().getStateByName(awa.getCompletedFromState());
-         if (completedFromState != null && !allPages.contains(completedFromState)) {
-            allPages.add(completedFromState);
-         }
-      }
-      if (currState.isCancelledPage()) {
-         StateDefinition cancelledFromState = awa.getWorkDefinition().getStateByName(awa.getCancelledFromState());
-         if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {
-            allPages.add(cancelledFromState);
          }
       }
       transitionToStateCombo.setInput(allPages);
@@ -324,15 +312,26 @@ public class WETransitionComposite extends Composite {
          // Otherwise, open dialog to ask for hours complete
          String msg =
             awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(awa.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
-         SMAStatusDialog tsd =
-            new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
-               msg, false, Arrays.asList(awa));
-         int result = tsd.open();
-         if (result == 0) {
-            awa.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
-            return true;
+         // Remove after ATS Resolution options is removed 0.9.9_SR5ish
+         if (AtsUtilCore.isAtsUsingResolutionOptions()) {
+            SMAStatusDialog tsd = new SMAStatusDialog("Enter Hours Spent", msg, false, Arrays.asList(awa));
+            int result = tsd.open();
+            if (result == 0) {
+               awa.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
+               return true;
+            } else {
+               return false;
+            }
          } else {
-            return false;
+            TransitionStatusData data = new TransitionStatusData(Arrays.asList(awa), false);
+            TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent", msg, data);
+            int result = dialog.open();
+            if (result == 0) {
+               awa.getStateMgr().updateMetrics(data.getAdditionalHours(), 100, true);
+               return true;
+            } else {
+               return false;
+            }
          }
       } else {
          return true;

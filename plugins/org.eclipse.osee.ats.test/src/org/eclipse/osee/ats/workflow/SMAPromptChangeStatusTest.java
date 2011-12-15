@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.task.TaskStates;
 import org.eclipse.osee.ats.core.team.TeamState;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionOption;
@@ -77,12 +78,20 @@ public class SMAPromptChangeStatusTest {
 
       // Change two to 100, 1 hr split
       SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.25);
+      if (AtsUtilCore.isAtsUsingResolutionOptions()) {
+         SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.25);
+      } else {
+         SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 100, 0.25);
+      }
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
       SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.50);
+      if (AtsUtilCore.isAtsUsingResolutionOptions()) {
+         SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.50);
+      } else {
+         SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 100, 0.50);
+      }
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
@@ -99,6 +108,9 @@ public class SMAPromptChangeStatusTest {
 
    @org.junit.Test
    public void testChangeTaskStatusWithResolutionOptions() throws Exception {
+      if (!AtsUtilCore.isAtsUsingResolutionOptions()) {
+         return;
+      }
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =

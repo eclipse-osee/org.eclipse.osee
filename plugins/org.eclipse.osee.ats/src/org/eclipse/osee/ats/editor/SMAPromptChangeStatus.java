@@ -20,15 +20,16 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
+import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -92,14 +93,24 @@ public class SMAPromptChangeStatus {
       if (awas.iterator().next().isOfType(AtsArtifactTypes.Task) && ((TaskArtifact) awas.iterator().next()).isUsingTaskResolutionOptions()) {
          options = ((TaskArtifact) awas.iterator().next()).getTaskResolutionOptionDefintions();
       }
-      TaskOptionStatusDialog tsd =
-         new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Enter State Status", true, options, awas);
-      if (tsd.open() == 0) {
-         performChangeStatus(awas, options,
-            tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
-            tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
-         return Result.TrueResult;
+      if (AtsUtilCore.isAtsUsingResolutionOptions()) {
+         TaskOptionStatusDialog tsd = new TaskOptionStatusDialog("Enter State Status", true, options, awas);
+         if (tsd.open() == 0) {
+            performChangeStatus(awas, options,
+               tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
+               tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
+            return Result.TrueResult;
+         }
+      } else {
+         TransitionStatusData data = new TransitionStatusData(awas, true);
+         TransitionStatusDialog dialog =
+            new TransitionStatusDialog("Enter Hours Spent",
+               "Enter percent complete and number of hours you spent since last status.", data);
+         if (dialog.open() == 0) {
+            performChangeStatus(awas, options, null, data.getAdditionalHours(), data.getPercent(),
+               data.isSplitHoursBetweenItems(), persist);
+            return Result.TrueResult;
+         }
       }
       return Result.FalseResult;
    }
@@ -120,7 +131,7 @@ public class SMAPromptChangeStatus {
          if (options != null && AtsUtilCore.isAtsUsingResolutionOptions()) {
             awa.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
-         if (awa.isOfType(AtsArtifactTypes.Task)) {
+         if (AtsUtilCore.isAtsUsingResolutionOptions() && awa.isOfType(AtsArtifactTypes.Task)) {
             Result result = TaskManager.statusPercentChanged(((TaskArtifact) awa), hours, percent, transaction);
             if (result.isFalse()) {
                AWorkbench.popup(result);

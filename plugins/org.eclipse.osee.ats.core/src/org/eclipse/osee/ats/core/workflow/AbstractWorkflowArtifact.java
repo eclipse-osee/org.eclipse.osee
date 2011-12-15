@@ -790,4 +790,23 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       this.targetedErrorLogged = targetedErrorLogged;
    }
 
+   public List<StateDefinition> getToStatesWithCompleteCancelReturnStates() throws OseeCoreException {
+      List<StateDefinition> allPages = new ArrayList<StateDefinition>();
+      StateDefinition currState = getStateDefinition();
+      allPages.addAll(currState.getToStates());
+      if (currState.isCompletedPage()) {
+         StateDefinition completedFromState = getWorkDefinition().getStateByName(getCompletedFromState());
+         if (completedFromState != null && !allPages.contains(completedFromState)) {
+            allPages.add(completedFromState);
+         }
+      }
+      if (currState.isCancelledPage()) {
+         StateDefinition cancelledFromState = getWorkDefinition().getStateByName(getCancelledFromState());
+         if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {
+            allPages.add(cancelledFromState);
+         }
+      }
+      return allPages;
+   }
+
 }

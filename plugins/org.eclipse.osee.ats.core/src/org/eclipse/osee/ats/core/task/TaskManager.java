@@ -90,7 +90,10 @@ public class TaskManager {
 
    /**
     * Tasks must transition in/out of completed when percent changes between 100 and <100. This method will handle these
-    * cases.
+    * cases.<br/>
+    * <br/>
+    * TODO This can be removed after ATSUtilCore.AtsUsingResolutionOptions flag is false and Resolution Option code is
+    * removed. ATS will no longer auto-transition tasks to completed/inWork.
     */
    public static Result statusPercentChanged(TaskArtifact taskArt, double additionalHours, int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
       if (percentComplete == 100 && !taskArt.isCompleted()) {

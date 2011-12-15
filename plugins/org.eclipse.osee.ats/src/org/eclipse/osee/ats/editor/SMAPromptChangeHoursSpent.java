@@ -12,12 +12,14 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
+import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -46,14 +48,24 @@ public class SMAPromptChangeHoursSpent {
          return result;
       }
 
-      TaskOptionStatusDialog tsd =
-         new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Enter State Hours Spend", false, null, awas);
-      if (tsd.open() == 0) {
-         SMAPromptChangeStatus.performChangeStatus(awas, null,
-            tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
-            tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
-         return Result.TrueResult;
+      if (AtsUtilCore.isAtsUsingResolutionOptions()) {
+         TaskOptionStatusDialog tsd = new TaskOptionStatusDialog("Enter State Hours Spent", false, null, awas);
+         if (tsd.open() == 0) {
+            SMAPromptChangeStatus.performChangeStatus(awas, null,
+               tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
+               tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
+            return Result.TrueResult;
+         }
+      } else {
+         TransitionStatusData data = new TransitionStatusData(awas, false);
+         TransitionStatusDialog dialog =
+            new TransitionStatusDialog("Enter Hours Spent",
+               "Enter percent complete and number of hours you spent since last status.", data);
+         if (dialog.open() == 0) {
+            SMAPromptChangeStatus.performChangeStatus(awas, null, null, data.getAdditionalHours(), data.getPercent(),
+               data.isSplitHoursBetweenItems(), persist);
+            return Result.TrueResult;
+         }
       }
       return Result.FalseResult;
    }

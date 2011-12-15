@@ -26,15 +26,18 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.team.TeamState;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
+import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -49,7 +52,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -64,7 +66,11 @@ public class TransitionToMenu {
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
             awas.add(awa);
-            toStateDefs.addAll(awa.getStateDefinition().getToStates());
+            try {
+               toStateDefs.addAll(awa.getToStatesWithCompleteCancelReturnStates());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
       }
       if (toStateDefs.isEmpty()) {
@@ -115,28 +121,73 @@ public class TransitionToMenu {
 
                @Override
                public void run() {
-                  StateDefinition stateDef = awas.iterator().next().getWorkDefinition().getStateByName(toStateName);
-                  boolean showPercentCompleted = !stateDef.isCompletedOrCancelledPage();
-                  SMAStatusDialog tsd =
-                     new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Enter Hours Spent", "Enter additional hours spent in current state(s)", showPercentCompleted,
-                        getAwas());
-                  if (stateDef.getRecommendedPercentComplete() != null) {
-                     tsd.setDefaultPercent(stateDef.getRecommendedPercentComplete());
-                  }
-                  int dialogResult = tsd.open();
-                  if (dialogResult == 0) {
-                     try {
-                        SMAPromptChangeStatus.performChangeStatus(awas, null, null, tsd.getHours().getFloat(),
-                           tsd.getPercent().getInt(), tsd.isSplitHours(), true);
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        result.set(false);
-                        result.setTextWithFormat(
-                           "Exception handling extra hours spent for transition to [%s] (see log)", getToStateName());
+                  StateDefinition toStateDef = awas.iterator().next().getWorkDefinition().getStateByName(toStateName);
+                  boolean showPercentCompleted = !toStateDef.isCompletedOrCancelledPage();
+                  try {
+                     if (AtsUtilCore.isAtsUsingResolutionOptions()) {
+                        SMAStatusDialog tsd =
+                           new SMAStatusDialog("Enter Hours Spent", "Enter additional hours spent in current state(s)",
+                              showPercentCompleted, getAwas());
+                        if (toStateDef.getRecommendedPercentComplete() != null) {
+                           tsd.setDefaultPercent(toStateDef.getRecommendedPercentComplete());
+                        }
+                        int dialogResult = tsd.open();
+                        if (dialogResult == 0) {
+                           try {
+                              SMAPromptChangeStatus.performChangeStatus(awas, null, null, tsd.getHours().getFloat(),
+                                 tsd.getPercent().getInt(), tsd.isSplitHours(), true);
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(Activator.class, Level.SEVERE, ex);
+                              result.set(false);
+                              result.setTextWithFormat(
+                                 "Exception handling extra hours spent for transition to [%s] (see log)",
+                                 getToStateName());
+                           }
+                        } else {
+                           result.setCancelled(true);
+                        }
+                     } else {
+                        TransitionStatusData data = new TransitionStatusData(getAwas(), showPercentCompleted);
+                        if (toStateDef.getRecommendedPercentComplete() != null) {
+                           data.setDefaultPercent(toStateDef.getRecommendedPercentComplete());
+                           data.setPercent(100);
+                        } else if (toStateDef.isCompletedOrCancelledPage()) {
+                           data.setDefaultPercent(100);
+                           data.setPercent(100);
+                        }
+                        String title = null;
+                        String message = null;
+                        if (data.isPercentRequired()) {
+                           title = "Enter Percent and Hours Spent";
+                           message = "Enter percent complete and additional hours spent in current state(s)";
+                        } else {
+                           title = "Enter Hours Spent";
+                           message = "Enter additional hours spent in current state(s)";
+                        }
+                        TransitionStatusDialog dialog = new TransitionStatusDialog(title, message, data);
+
+                        int dialogResult = dialog.open();
+                        if (dialogResult == 0) {
+                           try {
+                              SMAPromptChangeStatus.performChangeStatus(awas, null, null, data.getAdditionalHours(),
+                                 data.getPercent(), data.isSplitHoursBetweenItems(), true);
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(Activator.class, Level.SEVERE, ex);
+                              result.set(false);
+                              result.setTextWithFormat(
+                                 "Exception handling extra hours spent for transition to [%s] (see log)",
+                                 getToStateName());
+                           }
+                        } else {
+                           result.setCancelled(true);
+                        }
                      }
-                  } else {
-                     result.setCancelled(true);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     result.set(false);
+                     result.setTextWithFormat("Exception handling extra hours spent for transition to [%s] (see log)",
+                        getToStateName());
+
                   }
                }
             }, true);
