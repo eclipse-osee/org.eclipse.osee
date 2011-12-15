@@ -104,7 +104,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
    @SuppressWarnings("unchecked")
    public void addItem(IRelationSorterId sorterId, IArtifact itemToAdd) throws OseeCoreException {
       IRelationSorterId sorterIdToUse = sorterId;
-      if (sorterIdToUse == null) {
+      if (sorterIdToUse == RelationOrderBaseTypes.PREEXISTING) {
          sorterIdToUse = getSorterId();
       }
       List<IArtifact> relatives = Collections.emptyList();

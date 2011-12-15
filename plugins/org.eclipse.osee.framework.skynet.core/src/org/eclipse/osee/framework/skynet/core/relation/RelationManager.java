@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -476,7 +477,7 @@ public class RelationManager {
    }
 
    public static void addRelation(IRelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
-      addRelation(null, relationType, artifactA, artifactB, rationale);
+      addRelation(RelationOrderBaseTypes.PREEXISTING, relationType, artifactA, artifactB, rationale);
    }
 
    public static void addRelation(IRelationSorterId sorterId, IRelationType relationTypeToken, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {

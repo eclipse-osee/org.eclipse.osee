@@ -28,6 +28,9 @@ public class RelationOrderBaseTypes extends NamedIdentity<String> implements IRe
       "Lexicographical Descending");
    public static final RelationOrderBaseTypes UNORDERED = new RelationOrderBaseTypes("AAT1uKZpeDQExlygoIAA",
       "Unordered");
+   public static final RelationOrderBaseTypes PREEXISTING = new RelationOrderBaseTypes("AE2ypryqoVzNl6EjpgAA",
+      "Preexisting");
+
    public static final RelationOrderBaseTypes[] values = new RelationOrderBaseTypes[] {
       USER_DEFINED,
       LEXICOGRAPHICAL_ASC,

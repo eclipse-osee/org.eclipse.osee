@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -631,7 +632,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      SkynetTransaction transaction =
                         new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
                            type.getName(), name));
-                     Artifact newChildArt = parent.addNewChild(null, type, name);
+                     Artifact newChildArt = parent.addNewChild(RelationOrderBaseTypes.PREEXISTING, type, name);
                      parent.persist(transaction);
                      transaction.execute();
                      RendererManager.open(newChildArt, PresentationType.GENERALIZED_EDIT);

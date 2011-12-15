@@ -372,7 +372,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    public final void addChild(Artifact artifact) throws OseeCoreException {
-      addChild(null, artifact);
+      addChild(RelationOrderBaseTypes.PREEXISTING, artifact);
    }
 
    public final void addChild(IRelationSorterId sorterId, Artifact artifact) throws OseeCoreException {
@@ -1124,7 +1124,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    public final void addRelation(IRelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
-      addRelation(null, relationSide, artifact, null);
+      addRelation(RelationOrderBaseTypes.PREEXISTING, relationSide, artifact, null);
    }
 
    public final void addRelation(IRelationSorterId sorterId, IRelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
@@ -1206,7 +1206,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
     */
    public final void setRelations(IRelationTypeSide relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      setRelations(null, relationSide, artifacts);
+      setRelations(RelationOrderBaseTypes.PREEXISTING, relationSide, artifacts);
    }
 
    /**
@@ -1386,7 +1386,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
          RelationTypeSide relTypeSide =
             new RelationTypeSide(updateSourceRel.getRelationType(), updateSourceRel.getSide(artifactOnSourceOtherSide));
          try {
-            addRelation(RelationOrderBaseTypes.UNORDERED, relTypeSide, artifactToBeRelated);
+            addRelation(RelationOrderBaseTypes.PREEXISTING, relTypeSide, artifactToBeRelated);
          } catch (OseeCoreException ex) {
             // do nothing
          }
