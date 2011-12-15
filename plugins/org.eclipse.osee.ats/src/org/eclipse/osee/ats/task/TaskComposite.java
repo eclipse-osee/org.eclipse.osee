@@ -219,8 +219,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             taskArt =
                ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
                   UserManager.getUser());
-            iXTaskViewer.getEditor().onDirtied();
-            add(Collections.singleton(taskArt));
+            taskArt.persist("Create New Task");
             AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
