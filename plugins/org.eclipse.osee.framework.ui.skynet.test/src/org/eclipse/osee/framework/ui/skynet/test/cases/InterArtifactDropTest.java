@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
+import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
 import org.junit.Before;
 
 /**
@@ -78,10 +79,11 @@ public class InterArtifactDropTest {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
-      InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
-      dropHandler.dropArtifactIntoDifferentBranch(
-         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact}, false);
-
+      InterArtifactExplorerDropHandlerOperation dropHandler =
+         new InterArtifactExplorerDropHandlerOperation(
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact},
+            false);
+      Operations.executeWork(dropHandler);
       sleep(5000);
       //Acquire the introduced artifact
       Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact.getArtId(), destinationBranch);
@@ -96,10 +98,13 @@ public class InterArtifactDropTest {
 
       Artifact updateTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact.getArtId(), updateTestSourceBranch);
       updateTestArtifact.setName("I am an update branch test");
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(updateTestSourceBranch);
+      root.addChild(updateTestArtifact);
       updateTestArtifact.persist(getClass().getSimpleName());
 
-      InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
-      dropHandler.dropArtifactIntoDifferentBranch(sourceArtifact, new Artifact[] {updateTestArtifact}, false);
+      InterArtifactExplorerDropHandlerOperation dropHandler =
+         new InterArtifactExplorerDropHandlerOperation(sourceArtifact, new Artifact[] {updateTestArtifact}, false);
+      Operations.executeWork(dropHandler);
 
       sleep(5000);
       //Acquire the updated artifact

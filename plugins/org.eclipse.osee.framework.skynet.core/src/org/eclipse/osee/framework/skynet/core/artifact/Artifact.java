@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -1357,6 +1358,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       if (branch.equals(updateSourceBranch)) {
          return;
       }
+      updateRelationsFromBranch(updateSourceBranch);
       updateAttributesFromBranch(updateSourceBranch);
    }
 
@@ -1365,10 +1367,28 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       Artifact updateSourceArtifact = ArtifactQuery.getArtifactFromId(this.getArtId(), updateSourceBranch);
       for (Attribute<?> updateSourceAttr : updateSourceArtifact.getAttributes()) {
          Attribute thisAttr = getAttributeById(updateSourceAttr.getId(), true);
-         if (isCopyAllowed(updateSourceAttr)) {
-            if (thisAttr != null && thisAttr.getGammaId() != updateSourceAttr.getGammaId()) {
-               thisAttr.setValue(updateSourceAttr.getValue());
-            }
+         if (thisAttr != null && (thisAttr.getGammaId() != updateSourceAttr.getGammaId() || thisAttr.isDirty())) {
+            thisAttr.setValue(updateSourceAttr.getValue());
+         }
+      }
+   }
+
+   private void updateRelationsFromBranch(IOseeBranch updateSourceBranch) throws OseeCoreException {
+      Artifact updateSourceArtifact = ArtifactQuery.getArtifactFromId(this.getArtId(), updateSourceBranch);
+      for (RelationLink updateSourceRel : updateSourceArtifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+         Artifact artifactOnSourceOtherSide = updateSourceRel.getArtifactOnOtherSide(updateSourceArtifact);
+         Artifact artifactToBeRelated =
+            ArtifactQuery.checkArtifactFromId(artifactOnSourceOtherSide.getArtId(), this.branch,
+               DeletionFlag.EXCLUDE_DELETED);
+         if (artifactToBeRelated == null) {
+            continue;
+         }
+         RelationTypeSide relTypeSide =
+            new RelationTypeSide(updateSourceRel.getRelationType(), updateSourceRel.getSide(artifactOnSourceOtherSide));
+         try {
+            addRelation(RelationOrderBaseTypes.UNORDERED, relTypeSide, artifactToBeRelated);
+         } catch (OseeCoreException ex) {
+            // do nothing
          }
       }
    }
@@ -1537,6 +1557,10 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
             }
          }
          return result;
+      }
+      if (obj instanceof IArtifactToken) {
+         IArtifactToken token = (IArtifactToken) obj;
+         return getGuid().equals(token.getGuid());
       }
       return false;
    }

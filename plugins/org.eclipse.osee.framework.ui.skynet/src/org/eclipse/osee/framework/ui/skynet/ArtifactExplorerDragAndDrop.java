@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
+import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -45,7 +46,6 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    private final TreeViewer treeViewer;
    private final String viewId;
    private final IViewPart viewPart;
-   private final InterArtifactExplorerDropHandler interArtifactExplorerHandler;
 
    private IOseeBranch selectedBranch;
 
@@ -60,7 +60,6 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       this.treeViewer = treeViewer;
       this.viewId = viewId;
       this.viewPart = viewPart;
-      this.interArtifactExplorerHandler = new InterArtifactExplorerDropHandler();
    }
 
    public void updateBranch(IOseeBranch branch) {
@@ -154,12 +153,9 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             final Artifact[] artifactsToBeRelated = artData.getArtifacts();
             if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
                parentArtifact.getBranch())) {
-               try {
-                  interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated,
-                     true);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+               InterArtifactExplorerDropHandlerOperation interDropHandler =
+                  new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
+               Operations.executeAsJob(interDropHandler, true);
             } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(
                viewPart.getViewSite().getShell(),
                "Confirm Move",
