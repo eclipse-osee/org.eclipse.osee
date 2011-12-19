@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -198,55 +197,52 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          if (applyStyle) {
             applyStyleToCell(cellIndex);
          }
-         if(cellData instanceof Date){
-        	 out.write(" ss:StyleID=\"s62\"");
+         if (cellData instanceof Date) {
+            out.write(" ss:StyleID=\"s62\"");
          }
 
          if (previousCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped
             out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
          }
          previousCellIndex = cellIndex;
-         
-         if(cellData instanceof String){
-        	 String cellDataStr = (String)cellData;
-	         if (!cellDataStr.equals("") && cellDataStr.charAt(0) == '=') {
-	            out.write(" ss:Formula=\"" + cellDataStr + "\">");
-	         } else {
-	            out.write("><Data ss:Type=\"String\">");
-	            if (cellDataStr.equals("")) {
-	               out.write(emptyStringRepresentation);
-	            } else {
-	               if (cellDataStr.length() > 32767) {
-	                  out.write(blobMessage);
-	               } else {
-	                  Xml.writeAsCdata(out, cellDataStr);
-	               }
-	            }
-	            out.write("</Data>");
-	            if (cellDataStr.length() > 32767) {
-	               out.write("<EmbeddedClob>");
-	               Xml.writeAsCdata(out, cellDataStr);
-	               out.write("</EmbeddedClob>");
-	            }
-	         }
-         }
-         else if(cellData instanceof Number ){
-        	 Number cellDataNum = (Number)cellData;
-        	 out.write("><Data ss:Type=\"Number\">");
-        	 Xml.writeAsCdata(out, cellDataNum.toString());
-	         out.write("</Data>");
-         }
-         else if(cellData instanceof Date){
-        	 Date cellDataDate = (Date)cellData;
-        	 out.write("><Data ss:Type=\"DateTime\">");
-        	 String dateString = DateUtil.get(cellDataDate, "yyyy-MM-dd")+"T"+DateUtil.get(cellDataDate, "hh:mm:ss")+".000";
-        	 Xml.writeAsCdata(out, dateString);
-	         out.write("</Data>");
-         }
-         else {
-        	 out.write("><Data ss:Type=\"String\">");
-        	 Xml.writeAsCdata(out, cellData.toString());
-        	 out.write("</Data>");
+
+         if (cellData instanceof String) {
+            String cellDataStr = (String) cellData;
+            if (!cellDataStr.equals("") && cellDataStr.charAt(0) == '=') {
+               out.write(" ss:Formula=\"" + cellDataStr + "\">");
+            } else {
+               out.write("><Data ss:Type=\"String\">");
+               if (cellDataStr.equals("")) {
+                  out.write(emptyStringRepresentation);
+               } else {
+                  if (cellDataStr.length() > 32767) {
+                     out.write(blobMessage);
+                  } else {
+                     Xml.writeAsCdata(out, cellDataStr);
+                  }
+               }
+               out.write("</Data>");
+               if (cellDataStr.length() > 32767) {
+                  out.write("<EmbeddedClob>");
+                  Xml.writeAsCdata(out, cellDataStr);
+                  out.write("</EmbeddedClob>");
+               }
+            }
+         } else if (cellData instanceof Number) {
+            Number cellDataNum = (Number) cellData;
+            out.write("><Data ss:Type=\"Number\">");
+            Xml.writeAsCdata(out, cellDataNum.toString());
+            out.write("</Data>");
+         } else if (cellData instanceof Date) {
+            Date cellDataDate = (Date) cellData;
+            out.write("><Data ss:Type=\"DateTime\">");
+            String dateString = DateUtil.get(cellDataDate, "yyyy-MM-dd") + "T00:00:00.000";
+            Xml.writeAsCdata(out, dateString);
+            out.write("</Data>");
+         } else {
+            out.write("><Data ss:Type=\"String\">");
+            Xml.writeAsCdata(out, cellData.toString());
+            out.write("</Data>");
          }
          out.write("</Cell>\n");
       }
