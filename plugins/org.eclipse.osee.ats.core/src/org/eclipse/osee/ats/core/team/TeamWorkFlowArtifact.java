@@ -51,10 +51,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IATSStateMachineArtifact {
 
+   private static final Set<Integer> teamArtsWithNoAction = new HashSet<Integer>();
    private final ActionableItemManagerCore actionableItemsDam;
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
-   private final Set<String> teamArtsWithNoAction = new HashSet<String>();
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -177,12 +177,12 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       Collection<Artifact> arts = getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action);
       if (arts.isEmpty()) {
          // Only show exception once in log
-         if (!teamArtsWithNoAction.contains(getGuid())) {
+         if (!teamArtsWithNoAction.contains(getArtId())) {
             if (!AtsUtilCore.isInTest()) {
                OseeLog.log(Activator.class, Level.SEVERE,
                   String.format("Team Workflow has no parent Action [%s]", toStringWithId()));
             }
-            teamArtsWithNoAction.add(getGuid());
+            teamArtsWithNoAction.add(getArtId());
          }
       } else if (arts.size() > 1) {
          throw new OseeStateException("Team [%s] has multiple parent Actions", getGuid());
