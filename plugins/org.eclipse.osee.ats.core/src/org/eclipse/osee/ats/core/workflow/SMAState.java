@@ -54,7 +54,7 @@ public class SMAState {
    }
 
    public SMAState(IWorkPage stateDef) {
-      this.name = Strings.intern(stateDef.getPageName());
+      setName(stateDef.getPageName());
       this.workPageType = stateDef.getWorkPageType();
    }
 
@@ -163,7 +163,7 @@ public class SMAState {
    }
 
    public void setName(String name) {
-      this.name = name;
+      this.name = Strings.intern(name);
    }
 
    public String toXml() throws OseeCoreException {
@@ -185,12 +185,12 @@ public class SMAState {
 
    public void setFromXml(String xml) throws OseeCoreException {
       if (!Strings.isValid(xml)) {
-         name = "Unknown";
+         setName("Unknown");
          return;
       }
       Matcher m = storagePattern.matcher(xml);
       if (m.find()) {
-         name = m.group(1);
+         setName(m.group(1));
          if (!m.group(3).equals("")) {
             hoursSpent = new Float(m.group(3)).doubleValue();
          }
