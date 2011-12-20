@@ -11,7 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -101,13 +102,21 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          if (dropTarget != null) {
             try {
                AccessPolicy policy = Activator.getInstance().getAccessPolicy();
+               Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
+               List<Artifact> artsOnSameBranchAsDestination = new LinkedList<Artifact>();
+               IOseeBranch destinationBranch = dropTarget.getBranch();
+               for (Artifact art : artifactsBeingDropped) {
+                  if (art.getBranch().equals(destinationBranch)) {
+                     artsOnSameBranchAsDestination.add(art);
+                  }
+               }
                valid =
-                  policy.canRelationBeModified(dropTarget, Arrays.asList(toBeDropped.getArtifacts()),
+                  policy.canRelationBeModified(dropTarget, artsOnSameBranchAsDestination,
                      CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
 
                // if we are deparenting ourself, make sure our parent's child side can be modified
                if (valid) {
-                  for (Artifact art : toBeDropped.getArtifacts()) {
+                  for (Artifact art : artsOnSameBranchAsDestination) {
                      if (art.hasParent()) {
                         valid =
                            policy.canRelationBeModified(art.getParent(), null,
