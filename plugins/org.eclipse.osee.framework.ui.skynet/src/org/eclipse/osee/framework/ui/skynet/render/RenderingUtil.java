@@ -195,7 +195,8 @@ public final class RenderingUtil {
    }
 
    public static String toFileName(IOseeBranch branch) throws OseeCoreException {
-      return encode(Branch.getShortName(branch));
+      String shortName = Strings.saferReplace(Branch.getShortName(branch), "\\.", "_");
+      return encode(shortName);
    }
 
    private static String encode(String name) throws OseeCoreException {

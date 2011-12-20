@@ -14,12 +14,22 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.util.List;
 
 /**
+ * {@link StringsTest}
+ * 
  * @author Jeff C. Phillips
  * @author Don Dunne
  * @author Karol M. Wilk
  */
 public class Strings {
-   private final static String EMPTY_STRING = "";
+
+   private static final String AMP = "&";
+   private static final String DBL_AMP = AMP + AMP;
+
+   private static final String SPACE_COMMON = "\n|\t|\r|" + System.getProperty("line.separator");
+   private static final String AND = "and";
+   private static final String STR = "%s%s%s";
+   private static final String QUOTE_STR = "\"";
+   public static final String EMPTY_STRING = "";
 
    private Strings() {
       // Utility class
@@ -30,6 +40,10 @@ public class Strings {
     */
    public static boolean isValid(String value) {
       return value != null && value.length() > 0;
+   }
+
+   public static String intern(String str) {
+      return (str == null) ? null : str.intern();
    }
 
    public static boolean isValid(CharSequence... values) {
@@ -52,49 +66,7 @@ public class Strings {
     * @return a string with doubled ampersands.
     */
    public static String escapeAmpersands(String stringWithAmp) {
-      return isValid(stringWithAmp) ? stringWithAmp.replace("&", "&&") : null;
-   }
-
-   public static String intern(String str) {
-      return (str == null) ? null : str.intern();
-   }
-
-   /**
-    * Will truncate string if necessary and add "..." to end if addDots and truncated
-    */
-   public static String truncate(String value, int length, boolean ellipsis) {
-      if (value == null) {
-         return emptyString();
-      }
-      String toReturn = value;
-      if (Strings.isValid(value) && value.length() > length) {
-         int len = ellipsis && length - 3 > 0 ? length - 3 : length;
-         toReturn = value.substring(0, Math.min(length, len)) + (ellipsis ? "..." : emptyString());
-      }
-      return toReturn;
-   }
-
-   public static String truncate(String value, int length) {
-      return truncate(value, length, false);
-   }
-
-   public static String unquote(String nameReference) {
-      String toReturn = nameReference;
-      if (toReturn != null) {
-         toReturn = toReturn.trim();
-         if (Strings.isValid(toReturn) && toReturn.startsWith("\"") && toReturn.endsWith("\"")) {
-            toReturn = toReturn.substring(1, toReturn.length() - 1);
-         }
-      }
-      return toReturn;
-   }
-
-   public static String quote(String nameReference) {
-      String toReturn = nameReference;
-      if (Strings.isValid(nameReference)) {
-         toReturn = String.format("\"%s\"", nameReference);
-      }
-      return toReturn;
+      return saferReplace(stringWithAmp, AMP, DBL_AMP);
    }
 
    /**
@@ -103,7 +75,87 @@ public class Strings {
     * </p>
     */
    public static String minimize(String value) {
-      return isValid(value) ? value.replaceAll("\n|\t", "") : value;
+      return saferReplace(value, SPACE_COMMON, EMPTY_STRING);
+   }
+
+   /**
+    * <b>NOTE</b> isValid() check is only applied to <code>inputStr</code>.
+    * 
+    * @param inputStr string to be evaluated
+    * @param target
+    * @param replacement
+    * @return returns modified, new version of <code>inputStr</code> or <code>inputStr</code> if it is not valid.
+    */
+   public static String saferReplace(String inputStr, String target, String replacement) {
+      return isValid(inputStr) ? inputStr.replaceAll(target, replacement) : inputStr;
+   }
+
+   /**
+    * Truncates at length, with no ellipsis.
+    */
+   public static String truncate(String value, int length) {
+      return truncate(value, length, false);
+   }
+
+   /**
+    * Trims ASCII <code>value</code> from end of <code>str</code> iff <b>found</b>.
+    * 
+    * @param str "Requirement."
+    * @param value of the character from the ASCII charset, i.e. <code>0x2E</code> for '.'
+    * @return "Requirement"
+    */
+   public static String truncateEndChar(String str, int value) {
+      if (isValid(str) && value == str.charAt(str.length() - 1)) {
+         str = truncate(str, str.length() - 1);
+      }
+      return str;
+   }
+
+   /**
+    * Will truncate string if necessary and add "..." to end if addDots and truncated
+    */
+   public static String truncate(String value, int length, boolean ellipsis) {
+      if (!isValid(value)) {
+         return emptyString();
+      }
+
+      String toReturn = value;
+      if (value.length() > length) {
+         int len = ellipsis && length - 3 > 0 ? length - 3 : length;
+         toReturn = value.substring(0, Math.min(length, len)) + (ellipsis ? "..." : emptyString());
+      }
+      return toReturn;
+   }
+
+   public static String unquote(String nameReference) {
+      return wrapWith(nameReference, QUOTE_STR, true);
+   }
+
+   public static String quote(String nameReference) {
+      return wrapWith(nameReference, QUOTE_STR, false);
+   }
+
+   /**
+    * Wrap <code>value</code> with <code>surroundStr</code>. <br/>
+    * <b>NOTE</b> <code>value</code> will be trimmed of whitespace.
+    * 
+    * @param value <code>A</code>
+    * @param surroundStr <code>"</code>
+    * @param unWrap reverse behavior. Takes out 2 * surroundStr.lenth() from value.length()
+    * @return <code>"A"</code>
+    */
+   public static String wrapWith(String value, String surroundStr, boolean unWrap) {
+      if (isValid(value)) {
+         value = value.trim();
+         if (unWrap) {
+            if (value.startsWith(surroundStr) && value.endsWith(surroundStr) && 2 * surroundStr.length() < value.length()) {
+               value = value.substring(surroundStr.length(), value.length() - surroundStr.length());
+            }
+         } else {
+            value = String.format(STR, surroundStr, value, surroundStr);
+         }
+      }
+      return value;
    }
 
    /**
@@ -112,32 +164,39 @@ public class Strings {
     * @return <code>A, B, C joiningWord D</code>
     */
    public static String buildStatment(List<?> items) {
-      return buildStatment(items, " and ");
+      return buildStatement(items, AND);
    }
 
    /**
-    * Provides a nicer list of items with an 'and' at the end. This could be done using iterator().
+    * Provides a nicer list of items with an 'and' at the end. <br/>
+    * TODO:This could be done using iterator().
     * 
     * @param items Lists of form { apple, banana, orange } or { apple, banana }
     * @return string of form "apple, banana and orange" or "apple and banana" depending on size of list
     */
-   public static String buildStatment(List<?> items, String joiningWord) {
-      StringBuilder niceList = new StringBuilder();
-      if (items.size() >= 2) {
-         int andIndex = items.size() - 2;
-         for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
-            niceList.append(items.get(itemIndex));
-            if (itemIndex == andIndex) {
-               niceList.append(joiningWord);
-            } else if (itemIndex < andIndex) {
-               niceList.append(", ");
+   public static String buildStatement(List<?> items, String joiningWord) {
+      String statement = null;
+      if (items != null) {
+         StringBuilder niceList = new StringBuilder();
+         if (items.size() >= 2) {
+            int andIndex = items.size() - 2;
+            for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
+               niceList.append(items.get(itemIndex));
+               if (itemIndex == andIndex) {
+                  niceList.append(' ');
+                  niceList.append(joiningWord);
+                  niceList.append(' ');
+               } else if (itemIndex < andIndex) {
+                  niceList.append(", ");
+               }
+            }
+         } else {
+            if (!items.isEmpty()) {
+               niceList.append(items.get(0));
             }
          }
-      } else {
-         if (!items.isEmpty()) {
-            niceList.append(items.get(0));
-         }
+         statement = niceList.toString();
       }
-      return niceList.toString();
+      return statement;
    }
 }
