@@ -199,6 +199,10 @@ public class ArtifactQuery {
       return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).selectArtifacts(2);
    }
 
+   public static List<Integer> selectArtifactIdsFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch).selectArtifacts(10000);
+   }
+
    /**
     * Checks for existence of an artifact based on its type and name
     * 
@@ -326,6 +330,10 @@ public class ArtifactQuery {
 
    public static List<Artifact> getArtifactListFromBranch(IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(10000, null);
+   }
+
+   public static List<Integer> selectArtifactListFromType(IArtifactType artifactTypeToken, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactTypeToken, branch, FULL, allowDeleted).selectArtifacts(10000);
    }
 
    public static List<Integer> selectArtifactListFromBranch(IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
