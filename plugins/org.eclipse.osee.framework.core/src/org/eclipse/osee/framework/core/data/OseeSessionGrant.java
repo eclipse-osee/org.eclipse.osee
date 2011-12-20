@@ -163,5 +163,10 @@ public class OseeSessionGrant extends BaseExchangeData {
          return Boolean.valueOf(getString(DB_IS_PRODUCTION));
       }
 
+      @Override
+      public String toString() {
+         return getId() + ": " + getConnectionUrl();
+      }
+
    }
 }
