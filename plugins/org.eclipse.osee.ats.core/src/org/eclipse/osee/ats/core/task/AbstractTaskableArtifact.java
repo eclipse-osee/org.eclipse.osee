@@ -48,7 +48,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
    public AbstractTaskableArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerAtsWorldRelation(AtsRelationTypes.SmaToTask_Task);
    }
 
    @Override

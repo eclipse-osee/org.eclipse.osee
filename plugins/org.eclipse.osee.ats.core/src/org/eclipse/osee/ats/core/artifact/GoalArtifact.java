@@ -28,7 +28,6 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
 
    public GoalArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerAtsWorldRelation(AtsRelationTypes.Goal_Member);
    }
 
    @Override

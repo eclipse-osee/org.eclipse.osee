@@ -50,7 +50,6 @@ import org.eclipse.osee.ats.core.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -85,7 +84,6 @@ import org.osgi.framework.ServiceReference;
  */
 public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements HasCmAccessControl, IGroupExplorerProvider {
 
-   private final Set<IRelationTypeSide> atsWorldRelations = new HashSet<IRelationTypeSide>();
    private Collection<IBasicUser> transitionAssignees;
    protected AbstractWorkflowArtifact parentAwa;
    protected TeamWorkFlowArtifact parentTeamArt;
@@ -164,13 +162,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @SuppressWarnings("unused")
    public String getEditorTitle() throws OseeCoreException {
       return getType() + ": " + getName();
-   }
-
-   /**
-    * Registers relation as part of the parent/child hierarchy in ATS World
-    */
-   public void registerAtsWorldRelation(IRelationTypeSide typeSideToken) {
-      atsWorldRelations.add(typeSideToken);
    }
 
    public void clearCaches() {
@@ -374,10 +365,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return 0;
       }
       return ((AbstractTaskableArtifact) this).getPercentCompleteFromTasks(state);
-   }
-
-   public Set<IRelationTypeSide> getAtsWorldRelations() {
-      return atsWorldRelations;
    }
 
    public String getWorldViewLastUpdated() throws OseeCoreException {

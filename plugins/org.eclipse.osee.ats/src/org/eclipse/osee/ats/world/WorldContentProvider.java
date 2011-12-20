@@ -22,8 +22,10 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.action.ActionManager;
+import org.eclipse.osee.ats.core.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.review.ReviewManager;
+import org.eclipse.osee.ats.core.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.task.TaskManager;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.team.TeamWorkFlowManager;
@@ -31,7 +33,6 @@ import org.eclipse.osee.ats.core.type.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.type.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -160,10 +161,14 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (workflow.isOfType(AtsArtifactTypes.Task)) {
          return false;
       }
-      for (IRelationTypeSide iRelationEnumeration : workflow.getAtsWorldRelations()) {
-         if (workflow.getRelatedArtifactsCount(iRelationEnumeration) > 0) {
-            return true;
-         }
+      if (workflow instanceof AbstractTaskableArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0) {
+         return true;
+      }
+      if (workflow instanceof TeamWorkFlowArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0) {
+         return true;
+      }
+      if (workflow instanceof GoalArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member) > 0) {
+         return true;
       }
       return false;
    }

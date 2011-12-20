@@ -58,7 +58,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerAtsWorldRelation(AtsRelationTypes.TeamWorkflowToReview_Review);
       actionableItemsDam = new ActionableItemManagerCore(this);
    }
 
