@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 
 /**
@@ -66,15 +67,15 @@ public class DataStore {
 
    public void setContent(byte[] rawContent, String extension, String contentType, String encoding) {
       this.rawContent = rawContent;
-      this.contentType = contentType;
-      this.encoding = encoding;
-      this.extension = extension;
+      this.contentType = Strings.intern(contentType);
+      this.encoding = Strings.intern(encoding);
+      this.extension = Strings.intern(extension);
    }
 
    public void copyTo(DataStore other) {
       other.rawContent = Arrays.copyOf(this.rawContent, this.rawContent.length);
-      other.contentType = this.contentType;
-      other.encoding = this.encoding;
+      other.contentType = Strings.intern(this.contentType);
+      other.encoding = Strings.intern(this.encoding);
    }
 
    public void persist(int storageId) throws OseeCoreException {
