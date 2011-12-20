@@ -112,4 +112,8 @@ public class ClientSessionManager {
       InternalClientSessionManager.getInstance().releaseSession();
    }
 
+   public static String getDatabaseInfo() throws OseeAuthenticationRequiredException {
+      return getSessionGrant().getDatabaseInfo().toString();
+   }
+
 }
