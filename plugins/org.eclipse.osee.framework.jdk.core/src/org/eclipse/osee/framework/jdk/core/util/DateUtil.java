@@ -165,4 +165,79 @@ public class DateUtil {
       return difference;
    }
 
+   /**
+    * @param startDate The first date of the interpolation. MUST be before endDate.
+    * @param endDate The last date of the interpolation. MUST be after startDate
+    * @param interDate The date between startDate and endDate.
+    * @return The interpolation ratio of interDate between startDate and endDate. Where if interDate <= startDate then
+    * return 0.0 and if interDate >= endDate return 1.0.
+    */
+   public static double getInterpolationRatioBetweenDates(Date startDate, Date endDate, Date interDate) {
+      double interRatio = 0.0;
+
+      if (interDate.before(startDate) || interDate.compareTo(startDate) == 0) {
+         return 0.0;
+      }
+      if (interDate.after(endDate) || interDate.compareTo(endDate) == 0) {
+         return 1.0;
+      }
+      if (endDate.before(startDate)) {
+         return 0.0;
+      }
+
+      long startMillis = startDate.getTime();
+      long endMillis = endDate.getTime();
+      long interMillis = interDate.getTime();
+
+      long rangeMillis = endMillis - startMillis;
+      if (rangeMillis == 0.0) {
+         return 0.0;
+      }
+      long normalizedInterMillis = interMillis - startMillis;
+      interRatio = (double) normalizedInterMillis / (double) rangeMillis;
+
+      return interRatio;
+   }
+
+   /**
+    * @param date The date to add weeks to.
+    * @param manyWeeks How many weeks to add to the date.
+    * @return Return = [date] + [manyWeeks]
+    */
+   public static Date addWeeks(Date date, int manyWeeks) {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(date);
+      cal.add(Calendar.WEEK_OF_YEAR, manyWeeks);
+      return cal.getTime();
+   }
+
+   /**
+    * @param a One date. Sequential order with other date parameter does not matter.
+    * @param b Another date. Sequential order with other date parameter does not matter.
+    * @return Returns the number of weeks difference between Date a and Date b.
+    */
+   public static int getManyWeeksDifference(Date a, Date b) {
+      int weeks = 0;
+      Calendar aCal = Calendar.getInstance();
+      Calendar bCal = Calendar.getInstance();
+      aCal.setTime(a);
+      bCal.setTime(b);
+
+      Calendar startCal, endCal;
+      if (aCal.before(bCal)) {
+         startCal = aCal;
+         endCal = bCal;
+      } else {
+         startCal = bCal;
+         endCal = aCal;
+      }
+
+      while (startCal.before(endCal)) {
+         startCal.add(Calendar.WEEK_OF_YEAR, 1);
+         weeks++;
+      }
+
+      return weeks;
+   }
+
 }
