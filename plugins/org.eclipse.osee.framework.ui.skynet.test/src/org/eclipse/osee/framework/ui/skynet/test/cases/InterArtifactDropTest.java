@@ -82,7 +82,7 @@ public class InterArtifactDropTest {
       InterArtifactExplorerDropHandlerOperation dropHandler =
          new InterArtifactExplorerDropHandlerOperation(
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact},
-            false);
+            false, false);
       Operations.executeWork(dropHandler);
       sleep(5000);
       //Acquire the introduced artifact
@@ -103,7 +103,8 @@ public class InterArtifactDropTest {
       updateTestArtifact.persist(getClass().getSimpleName());
 
       InterArtifactExplorerDropHandlerOperation dropHandler =
-         new InterArtifactExplorerDropHandlerOperation(sourceArtifact, new Artifact[] {updateTestArtifact}, false);
+         new InterArtifactExplorerDropHandlerOperation(sourceArtifact, new Artifact[] {updateTestArtifact}, false,
+            false);
       Operations.executeWork(dropHandler);
 
       sleep(5000);

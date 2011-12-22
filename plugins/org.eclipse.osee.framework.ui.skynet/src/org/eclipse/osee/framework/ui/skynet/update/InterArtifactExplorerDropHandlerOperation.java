@@ -50,13 +50,14 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       "Access control has restricted this action. The current user does not have sufficient permission to drag and drop artifacts on this branch from the selected source branch.";
    private final Artifact destinationParentArtifact;
    private final Artifact[] sourceArtifacts;
-   private final boolean prompt;
+   private final boolean prompt, recurseChildren;
 
-   public InterArtifactExplorerDropHandlerOperation(Artifact destinationParentArtifact, Artifact[] sourceArtifacts, boolean prompt) {
+   public InterArtifactExplorerDropHandlerOperation(Artifact destinationParentArtifact, Artifact[] sourceArtifacts, boolean prompt, boolean recurseChildren) {
       super("Introduce Artifact(s)", Activator.PLUGIN_ID);
       this.destinationParentArtifact = destinationParentArtifact;
       this.sourceArtifacts = sourceArtifacts;
       this.prompt = prompt;
+      this.recurseChildren = recurseChildren;
    }
 
    @Override
@@ -70,7 +71,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
          MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, UPDATE_FROM_PARENT_ERROR_MSG);
       } else if (isAccessAllowed(sourceBranch, destinationBranch)) {
-         Set<Artifact> transferArtifacts = getArtifactSetToTransfer(sourceArtifacts);
+         Set<Artifact> transferArtifacts = getArtifactSetToTransfer();
          monitor.beginTask("Processing Artifact(s)", 2 + (transferArtifacts.size() * 4));
          if (prompt) {
             final MutableBoolean userConfirmed = new MutableBoolean(false);
@@ -94,12 +95,14 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       }
    }
 
-   private Set<Artifact> getArtifactSetToTransfer(Artifact[] sourceArtifacts) throws OseeCoreException {
+   private Set<Artifact> getArtifactSetToTransfer() throws OseeCoreException {
       Set<Artifact> transferObjects = new LinkedHashSet<Artifact>();
 
       for (Artifact sourceArtifact : sourceArtifacts) {
          transferObjects.add(sourceArtifact);
-         transferObjects.addAll(sourceArtifact.getDescendants());
+         if (recurseChildren) {
+            transferObjects.addAll(sourceArtifact.getDescendants());
+         }
       }
       return transferObjects;
    }

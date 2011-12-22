@@ -162,8 +162,12 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             final Artifact[] artifactsToBeRelated = artData.getArtifacts();
             if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
                parentArtifact.getBranch())) {
+               boolean recurseChildren =
+                  MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Recurse Children",
+                     "Do you want to move the children of the selected artifact(s)?");
                InterArtifactExplorerDropHandlerOperation interDropHandler =
-                  new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
+                  new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true,
+                     recurseChildren);
                Operations.executeAsJob(interDropHandler, true);
             } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(
                viewPart.getViewSite().getShell(),
