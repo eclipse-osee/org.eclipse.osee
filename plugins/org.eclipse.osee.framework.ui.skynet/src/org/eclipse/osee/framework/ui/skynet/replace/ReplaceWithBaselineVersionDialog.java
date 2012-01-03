@@ -112,11 +112,11 @@ public class ReplaceWithBaselineVersionDialog extends MessageDialog {
       if (replaceAttributeSelected && !replaceAllAttributesSelected && attributes != null) {
          operations.add(new ReplaceAttributeWithBaselineOperation(attributes));
       }
-      if (replaceAllRelationsSelected && artifacts != null) {
-         operations.add(new ReplaceRelationsWithBaselineOperation(artifacts));
-      }
       if (replaceAllAttributesSelected && artifacts != null) {
          operations.add(new ReplaceArtifactWithBaselineOperation(artifacts));
+      }
+      if (replaceAllRelationsSelected && artifacts != null) {
+         operations.add(new ReplaceRelationsWithBaselineOperation(artifacts));
       }
    }
 

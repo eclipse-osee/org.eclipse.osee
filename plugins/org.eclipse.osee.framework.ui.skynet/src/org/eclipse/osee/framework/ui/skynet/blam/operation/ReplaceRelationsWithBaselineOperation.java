@@ -72,10 +72,16 @@ public class ReplaceRelationsWithBaselineOperation extends AbstractOperation {
       if (orderData.getLink().getRelationType().isOrdered()) {
 
          Attribute<?> relationOrder = ReplaceUtil.getRelationOrder(orderData.getArtifact());
-         Artifact baselineArtifact =
-            ReplaceUtil.getBaselineArtifact(orderData.getBaselineTransactionRecord(), orderData.getArtifact());
+         Artifact baselineArtifact = null;
 
-         if (ReplaceUtil.getRelationOrder(baselineArtifact) != null) {
+         try {
+            baselineArtifact =
+               ReplaceUtil.getBaselineArtifact(orderData.getBaselineTransactionRecord(), orderData.getArtifact());
+         } catch (Exception ex) {
+            //Do nothing
+         }
+
+         if (baselineArtifact != null && ReplaceUtil.getRelationOrder(baselineArtifact) != null) {
             if (relationOrder != null) {
                relationOrder.replaceWithVersion(ReplaceUtil.getRelationOrder(baselineArtifact).getGammaId());
             }
