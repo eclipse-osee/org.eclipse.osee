@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.In
 public final class StoreSkynetTransactionOperation extends AbstractOperation implements IDbTransactionWork, InsertDataCollector {
 
    private static final String UPDATE_TXS_NOT_CURRENT =
-      "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
+      "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
 
    private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
    private final Map<Integer, String> dataInsertOrder = new HashMap<Integer, String>();
@@ -151,7 +151,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
 
          chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getId());
          while (chStmt.next()) {
-            results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+            results.add(new Object[] {branch.getId(), chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
       } finally {
          chStmt.close();
