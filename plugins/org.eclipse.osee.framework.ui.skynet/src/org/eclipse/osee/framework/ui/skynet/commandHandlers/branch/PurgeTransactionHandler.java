@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -45,10 +46,9 @@ public class PurgeTransactionHandler extends CommandHandler {
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
-      TransactionRecord selectedTransaction = transactions.iterator().next();
 
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Transaction",
-         "Are you sure you want to purge the transaction: " + selectedTransaction.getId())) {
+         "Are you sure you want to purge " + getTransactionListStr(transactions))) {
 
          IJobChangeListener jobChangeListener = new JobChangeAdapter() {
 
@@ -70,12 +70,18 @@ public class PurgeTransactionHandler extends CommandHandler {
 
          };
 
-         IOperation op =
-            PurgeTransactionOperationWithListener.getPurgeTransactionOperation(selectedTransaction.getId());
+         IOperation op = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactions);
          return Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
       }
 
       return null;
+   }
+
+   private String getTransactionListStr(List<TransactionRecord> transactions) {
+      if (transactions.size() == 1) {
+         return "the transaction: " + transactions.iterator().next().toString();
+      }
+      return transactions.size() + " transactions:\n\n " + Collections.toString(", ", transactions);
    }
 
    @Override

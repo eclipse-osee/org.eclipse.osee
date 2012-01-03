@@ -5,7 +5,10 @@
  */
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -19,9 +22,23 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 public class PurgeTransactionOperationWithListener {
-   public static IOperation getPurgeTransactionOperation(Integer transactionId) {
+
+   public static IOperation getPurgeTransactionOperation(List<TransactionRecord> transactions) {
+      List<Integer> txIdsToDelete = new ArrayList<Integer>();
+      for (TransactionRecord record : transactions) {
+         txIdsToDelete.add(record.getId());
+      }
+      return getPurgeTransactionOperationById(txIdsToDelete);
+   }
+
+   public static IOperation getPurgeTransactionOperation(Integer txIdsToDelete) {
+      return getPurgeTransactionOperationById(Arrays.asList(txIdsToDelete));
+   }
+
+   public static IOperation getPurgeTransactionOperationById(List<Integer> txIdsToDelete) {
+
       final PurgeTransactionOperation op =
-         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), transactionId);
+         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), txIdsToDelete);
 
       PurgeTransactionListener listener = new PurgeTransactionListener() {
 

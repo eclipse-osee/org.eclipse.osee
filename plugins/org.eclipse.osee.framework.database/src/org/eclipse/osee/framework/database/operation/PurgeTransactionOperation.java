@@ -77,8 +77,8 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       transactionCache = Activator.getOseeCachingService().getTransactionCache();
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, Integer txIdToDelete) {
-      this(databaseService, NullOperationLogger.getSingleton(), java.util.Collections.singletonList(txIdToDelete));
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, List<Integer> txIdsToDelete) {
+      this(databaseService, NullOperationLogger.getSingleton(), txIdsToDelete);
    }
 
    public void addListener(PurgeTransactionListener listener) {

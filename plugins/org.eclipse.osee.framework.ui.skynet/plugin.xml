@@ -1255,7 +1255,7 @@
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeTransaction"
-        name="Purge Transaction">
+        name="Purge Transaction(s)">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch"
