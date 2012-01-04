@@ -55,9 +55,7 @@ public class FindTraceUnitJob extends Job {
 
                      @Override
                      public IStatus run(IProgressMonitor monitor) throws Exception {
-                        if (branch != null) {
-                           FindTraceUnitFromResource.search(branch, resources);
-                        }
+                        FindTraceUnitFromResource.search(branch, resources);
                         return Status.OK_STATUS;
                      }
                   };

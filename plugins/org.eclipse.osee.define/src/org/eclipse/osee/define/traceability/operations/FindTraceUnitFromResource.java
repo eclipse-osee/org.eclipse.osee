@@ -105,7 +105,10 @@ public final class FindTraceUnitFromResource {
                for (ResourceIdentifier resource : items) {
                   try {
                      if (GUID.isValid(resource.getGuid())) {
-                        artifacts.add(ArtifactQuery.checkArtifactFromId(resource.getGuid(), branch));
+                        Artifact checkArtifactFromId = ArtifactQuery.checkArtifactFromId(resource.getGuid(), branch);
+                        if (checkArtifactFromId != null) {
+                           artifacts.add(checkArtifactFromId);
+                        }
                      } else {
                         artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(artifactType, resource.getName(),
                            branch));
@@ -121,7 +124,7 @@ public final class FindTraceUnitFromResource {
             openArtifacts(artifacts);
          } else {
             AWorkbench.popup("Find Trace Unit from Resource",
-               String.format("Unable to find trace for: %s", Arrays.deepToString(resources)));
+               String.format("Unable to find trace for: %s on branch [%s]", Arrays.deepToString(resources), branch));
          }
       } else {
          AWorkbench.popup("Find Trace Unit from Resource",
