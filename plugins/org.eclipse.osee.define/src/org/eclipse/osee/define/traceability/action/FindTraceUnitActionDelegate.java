@@ -30,12 +30,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class FindTraceUnitActionDelegate implements IWorkbenchWindowActionDelegate {
 
+   private List<IResource> currentSelection;
+
    @Override
    public void dispose() {
    }
 
    @Override
    public void init(IWorkbenchWindow window) {
+      int i = 0;
    }
 
    @Override
@@ -47,13 +50,20 @@ public class FindTraceUnitActionDelegate implements IWorkbenchWindowActionDelega
 
    @Override
    public void selectionChanged(IAction action, ISelection selection) {
+      if (selection instanceof StructuredSelection) {
+         currentSelection = Handlers.processSelectionObjects(IResource.class, (StructuredSelection) selection);
+      }
    }
 
    private List<IResource> getSelectedItems() {
       ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection();
+      List<IResource> selectedItems = null;
       if (selection instanceof StructuredSelection) {
-         List<IResource> selectedItems =
-            Handlers.processSelectionObjects(IResource.class, (StructuredSelection) selection);
+         selectedItems = Handlers.processSelectionObjects(IResource.class, (StructuredSelection) selection);
+      } else {
+         selectedItems = currentSelection;
+      }
+      if (selectedItems != null && !selectedItems.isEmpty()) {
          List<IResource> toReturn = new ArrayList<IResource>();
          for (IResource resource : selectedItems) {
             if (resource instanceof IFile) {
