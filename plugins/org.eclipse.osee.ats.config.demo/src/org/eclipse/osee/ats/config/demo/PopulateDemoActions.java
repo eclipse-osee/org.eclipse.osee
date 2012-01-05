@@ -97,14 +97,14 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class PopulateDemoActions extends XNavigateItemAction {
 
    private static boolean DEBUG = false;
-   private final String[] TITLE_PREFIX = new String[] {
+   private final String[] TITLE_PREFIX = {
       "Problem with the",
       "Can't see the",
       "Button A doesn't work on",
       "Add to the",
       "Make new Button for ",
       "User can't load "};
-   private final ChangeType[] CHANGE_TYPE = new ChangeType[] {
+   private final ChangeType[] CHANGE_TYPE = {
       ChangeType.Problem,
       ChangeType.Problem,
       ChangeType.Problem,
