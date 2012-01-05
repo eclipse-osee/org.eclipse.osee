@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Jeff C. Phillips
@@ -35,7 +36,7 @@ public final class TransactionRecord implements IAdaptable {
    public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
       this.branchId = branchId;
-      this.comment = comment;
+      this.comment = Strings.intern(comment);
       this.time = time;
       this.authorArtId = authorArtId;
       this.commitArtId = commitArtId;
