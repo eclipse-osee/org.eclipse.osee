@@ -14,13 +14,17 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.threading.ThreadedWorkerExecutor;
+import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -35,48 +39,38 @@ import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
  */
 public class OutfileToArtifactOperation {
    private final IOseeBranch branch;
-   private final URI[] filesToImport;
+   private final List<URI> filesToImport;
    private final List<Artifact> results;
    private final List<URI> filesWithErrors;
 
    public OutfileToArtifactOperation(IOseeBranch branch, URI... filesToImport) {
       this.branch = branch;
-      this.filesToImport = filesToImport;
+      this.filesToImport = Arrays.asList(filesToImport);
       this.results = new ArrayList<Artifact>();
       this.filesWithErrors = new ArrayList<URI>();
    }
 
-   public void execute(IProgressMonitor monitor) throws Exception {
+   public void execute(final IProgressMonitor monitor) throws Exception {
       this.results.clear();
       monitor.setTaskName("Outfiles to Artifact Conversion...");
-      Artifact parent = getParentArtifact();
-      for (URI targetUri : filesToImport) {
-         TestRunOperator operator = null;
-         try {
-            operator = TestRunOperator.getNewArtifactWithOperator(branch);
+      final Artifact parent = getParentArtifact();
 
-            OutfileDataCollector collector = getOutfileData(monitor, targetUri.toURL());
-            collector.populate(operator.getTestRunArtifact(), parent);
+      ThreadedWorkerFactory<Object> outfileToArtifactFactory = new ThreadedWorkerFactory<Object>() {
 
-            String path = targetUri.toURL().toString();
-            operator.setLocalOutfileURI(path);
-            operator.setOutfileExtension(Lib.getExtension(path));
-            addChecksum(operator, targetUri.toURL());
-            results.add(operator.getTestRunArtifact());
-
-            if (monitor.isCanceled() == true) {
-               break;
-            }
-         } catch (Exception ex) {
-            if (operator.getTestRunArtifact() == null) {
-               throw new Exception(
-                  "Unable to create Test Run Artifact. Make sure type information exists in the selected branch.");
-            }
-            filesWithErrors.add(targetUri);
+         @Override
+         public int getWorkSize() {
+            return filesToImport.size();
          }
-         operator = null;
-         monitor.worked(1);
-      }
+
+         @Override
+         public Callable<Object> createWorker(int startIndex, int endIndex) {
+            return new OutfileToArtifactCallable(monitor, parent, filesToImport.subList(startIndex, endIndex));
+         }
+
+      };
+
+      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<Object>(outfileToArtifactFactory, false);
+      executor.executeWorkersBlocking();
    }
 
    private Artifact getParentArtifact() throws OseeCoreException {
@@ -111,9 +105,11 @@ public class OutfileToArtifactOperation {
    private OutfileDataCollector getOutfileData(IProgressMonitor monitor, URL fileToImport) throws Exception {
       OutfileDataCollector collector = new OutfileDataCollector();
       BaseOutfileParser outfileParser = OutfileParserExtensionManager.getInstance().getOutfileParserFor(fileToImport);
-      outfileParser.registerListener(collector);
-      outfileParser.execute(monitor, fileToImport);
-      outfileParser.deregisterListener(collector);
+      synchronized (outfileParser) {
+         outfileParser.registerListener(collector);
+         outfileParser.execute(monitor, fileToImport);
+         outfileParser.deregisterListener(collector);
+      }
       return collector;
    }
 
@@ -123,5 +119,55 @@ public class OutfileToArtifactOperation {
 
    public URI[] getUnparseableFiles() {
       return filesWithErrors.toArray(new URI[filesWithErrors.size()]);
+   }
+
+   private class OutfileToArtifactCallable implements Callable<Object> {
+
+      private final IProgressMonitor monitor;
+      private final Artifact parent;
+      private final List<URI> filesToImport;
+
+      public OutfileToArtifactCallable(IProgressMonitor monitor, Artifact parent, List<URI> filesToImport) {
+         this.monitor = monitor;
+         this.parent = parent;
+         this.filesToImport = filesToImport;
+      }
+
+      @Override
+      public Object call() throws Exception {
+         for (URI targetUri : filesToImport) {
+            TestRunOperator operator = null;
+            try {
+               operator = TestRunOperator.getNewArtifactWithOperator(branch);
+
+               OutfileDataCollector collector = getOutfileData(monitor, targetUri.toURL());
+               collector.populate(operator.getTestRunArtifact(), parent);
+
+               String path = targetUri.toURL().toString();
+               operator.setLocalOutfileURI(path);
+               operator.setOutfileExtension(Lib.getExtension(path));
+               addChecksum(operator, targetUri.toURL());
+               synchronized (results) {
+                  results.add(operator.getTestRunArtifact());
+               }
+
+               if (monitor.isCanceled() == true) {
+                  break;
+               }
+            } catch (Exception ex) {
+               if (operator.getTestRunArtifact() == null) {
+                  throw new Exception(
+                     "Unable to create Test Run Artifact. Make sure type information exists in the selected branch.");
+               }
+               synchronized (filesWithErrors) {
+                  filesWithErrors.add(targetUri);
+               }
+            }
+            operator = null;
+            monitor.worked(1);
+         }
+         return null;
+      }
+
    }
 }

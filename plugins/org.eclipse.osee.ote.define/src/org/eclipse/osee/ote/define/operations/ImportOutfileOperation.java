@@ -133,11 +133,12 @@ public class ImportOutfileOperation {
 
    public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, IOseeBranch branch, Artifact... artifacts) throws OseeCoreException {
       monitor.setTaskName("Persist Test Runs");
+      Date uploadDate = new Date();
       for (Artifact artifact : artifacts) {
          monitor.subTask(String.format("Persisting: [%s] ", artifact.getName()));
 
          TestRunOperator operator = new TestRunOperator(artifact);
-         operator.setLastDateUploaded(new Date());
+         operator.setLastDateUploaded(uploadDate);
          if (monitor.isCanceled() != false) {
             break;
          }

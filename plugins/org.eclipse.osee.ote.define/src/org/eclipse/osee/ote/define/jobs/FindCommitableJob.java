@@ -10,14 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.jobs;
 
+import java.rmi.activation.Activator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.threading.ThreadedWorkerExecutor;
+import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.OteDefinePlugin;
@@ -29,20 +35,23 @@ import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 public class FindCommitableJob extends Job {
 
    private static final String JOB_NAME = "Check commit allowed";
-   private final Artifact[] artifactsToSort;
+   private static final String PLUGIN_ID = "org.eclipse.osee.ote.define";
+   private final List<Artifact> artifactsToSort;
    private Artifact[] itemsToCommit;
    private Artifact[] nonCommitableItems;
+   List<Artifact> commitable;
+   List<Artifact> nonCommitable;
 
    public FindCommitableJob(Artifact... artifactsToSort) {
       super(JOB_NAME);
       setUser(true);
       setPriority(Job.LONG);
-      this.artifactsToSort = artifactsToSort;
+      this.artifactsToSort = Arrays.asList(artifactsToSort);
       this.itemsToCommit = this.nonCommitableItems = new Artifact[0];
    }
 
    public Artifact[] getAll() {
-      return this.artifactsToSort;
+      return artifactsToSort.toArray(new Artifact[artifactsToSort.size()]);
    }
 
    public Artifact[] getCommitAllowed() {
@@ -54,28 +63,34 @@ public class FindCommitableJob extends Job {
    }
 
    @Override
-   public IStatus run(IProgressMonitor monitor) {
+   public IStatus run(final IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
-      monitor.beginTask(getName(), artifactsToSort.length);
-      List<Artifact> commitable = new ArrayList<Artifact>();
-      List<Artifact> nonCommitable = new ArrayList<Artifact>();
-      for (Artifact artifact : artifactsToSort) {
-         try {
-            TestRunOperator operator = new TestRunOperator(artifact);
-            if (operator.isCommitAllowed() == true) {
-               commitable.add(artifact);
-            } else {
-               nonCommitable.add(artifact);
-            }
-         } catch (OseeArgumentException ex) {
-            OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex);
+      monitor.beginTask(getName(), artifactsToSort.size());
+      commitable = new ArrayList<Artifact>();
+      nonCommitable = new ArrayList<Artifact>();
+
+      ThreadedWorkerFactory<Object> outfileToArtifactFactory = new ThreadedWorkerFactory<Object>() {
+
+         @Override
+         public int getWorkSize() {
+            return artifactsToSort.size();
          }
 
-         if (monitor.isCanceled() == true) {
-            break;
+         @Override
+         public Callable<Object> createWorker(int startIndex, int endIndex) {
+            return new FindCommitableCallable(artifactsToSort.subList(startIndex, endIndex), monitor);
          }
-         monitor.worked(1);
+
+      };
+
+      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<Object>(outfileToArtifactFactory, false);
+      try {
+         executor.executeWorkersBlocking();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Status(IStatus.ERROR, PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       }
+
       itemsToCommit = commitable.toArray(new Artifact[commitable.size()]);
       nonCommitableItems = nonCommitable.toArray(new Artifact[nonCommitable.size()]);
       if (monitor.isCanceled() != true) {
@@ -84,5 +99,43 @@ public class FindCommitableJob extends Job {
       monitor.subTask("Done");
       monitor.done();
       return toReturn;
+   }
+
+   private class FindCommitableCallable implements Callable<Object> {
+
+      private final List<Artifact> artifactsToSort;
+      private final IProgressMonitor monitor;
+
+      public FindCommitableCallable(List<Artifact> artifactsToSort, IProgressMonitor monitor) {
+         this.artifactsToSort = artifactsToSort;
+         this.monitor = monitor;
+      }
+
+      @Override
+      public Object call() throws Exception {
+         for (Artifact artifact : artifactsToSort) {
+            try {
+               TestRunOperator operator = new TestRunOperator(artifact);
+               if (operator.isCommitAllowed() == true) {
+                  synchronized (commitable) {
+                     commitable.add(artifact);
+                  }
+               } else {
+                  synchronized (nonCommitable) {
+                     nonCommitable.add(artifact);
+                  }
+               }
+            } catch (OseeArgumentException ex) {
+               OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex);
+            }
+
+            if (monitor.isCanceled() == true) {
+               break;
+            }
+            monitor.worked(1);
+         }
+         return null;
+      }
+
    }
 }

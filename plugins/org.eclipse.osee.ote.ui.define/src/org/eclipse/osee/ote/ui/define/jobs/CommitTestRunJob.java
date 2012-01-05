@@ -20,10 +20,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.define.operations.ImportOutfileOperation;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 
@@ -66,9 +64,8 @@ public class CommitTestRunJob extends Job {
          String comment = jobDialog.getMessage();
          monitor.beginTask("Commit Artifacts", items.length * 2);
          try {
-            commitSelectedArtifacts(monitor, comment, items);
+            committed = commitSelectedArtifacts(monitor, comment, items);
             toReturn = Status.OK_STATUS;
-            committed = verifyItemsCommitted(monitor, items);
          } catch (Exception ex) {
             if (monitor.isCanceled() != true) {
                OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error committing Artifacts.", ex);
@@ -79,24 +76,14 @@ public class CommitTestRunJob extends Job {
       return toReturn;
    }
 
-   private void commitSelectedArtifacts(IProgressMonitor monitor, String comment, Object[] items) throws Exception {
+   private Artifact[] commitSelectedArtifacts(IProgressMonitor monitor, String comment, Object[] items) throws Exception {
       Map<IOseeBranch, List<Artifact>> commitMap = getArtifactsByBranch(items);
+      List<Artifact> committedList = new ArrayList<Artifact>();
       for (IOseeBranch branch : commitMap.keySet()) {
          monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
          ImportOutfileOperation.commitTestRunTx(monitor, comment, branch, artList.toArray(new Artifact[artList.size()]));
-      }
-   }
-
-   private Artifact[] verifyItemsCommitted(IProgressMonitor monitor, Object[] items) throws OseeArgumentException {
-      monitor.setTaskName("Verify committed...");
-      List<Artifact> committedList = new ArrayList<Artifact>();
-      for (Object object : items) {
-         Artifact artifact = (Artifact) object;
-         if (new TestRunOperator(artifact).isCommitAllowed() != true) {
-            committedList.add(artifact);
-         }
-         monitor.worked(1);
+         committedList.addAll(artList);
       }
       return committedList.toArray(new Artifact[committedList.size()]);
    }
