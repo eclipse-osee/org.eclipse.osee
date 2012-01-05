@@ -72,9 +72,9 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
    public PurgeTransactionOperation(IOseeDatabaseService databaseService, OperationLogger logger, List<Integer> txIdsToDelete) {
       super(databaseService, "Delete transactions " + txIdsToDelete, Activator.PLUGIN_ID, logger);
-      this.txIdsToDelete = txIdsToDelete;
       this.success = false;
       transactionCache = Activator.getOseeCachingService().getTransactionCache();
+      this.txIdsToDelete = txIdsToDelete;
    }
 
    public PurgeTransactionOperation(IOseeDatabaseService databaseService, List<Integer> txIdsToDelete) {
@@ -96,45 +96,48 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       log();
-      log("Purging Transactions...");
-      Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
-      Conditions.checkExpressionFailOnTrue(txIdsToDelete.isEmpty(), "transaction ids to delete cannot be empty");
-
-      if (txIdsToDelete.size() > 1) {
-         java.util.Collections.sort(txIdsToDelete);
-      }
-
-      Map<TransactionRecord, TransactionRecord> deleteToPreviousTx = findPriorTransactions(monitor, 0.20);
-
-      changedTransactions = deleteToPreviousTx.keySet();
-
-      List<Object[]> txsToDelete = new ArrayList<Object[]>();
+      double work = 0.20 / txIdsToDelete.size();
       for (Integer txId : txIdsToDelete) {
+         log("Purging Transaction: " + txId);
+         Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
+         Conditions.checkExpressionFailOnTrue(txIdsToDelete.isEmpty(), "transaction ids to delete cannot be empty");
+
+         if (txIdsToDelete.size() > 1) {
+            java.util.Collections.sort(txIdsToDelete);
+         }
+
+         Map<TransactionRecord, TransactionRecord> deleteToPreviousTx = findPriorTransactions(monitor, 0.20);
+
+         changedTransactions = deleteToPreviousTx.keySet();
+
+         List<Object[]> txsToDelete = new ArrayList<Object[]>();
          logf("Adding tx to list: %d", txId);
          TransactionRecord record = transactionCache.getOrLoad(txId);
          Conditions.checkNotNull(record, "transaction", " record [%s]", txId);
          txsToDelete.add(new Object[] {record.getBranch().getId(), txId});
+
+         Map<Integer, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete);
+         Map<Integer, IdJoinQuery> attrs = findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete);
+         Map<Integer, IdJoinQuery> rels =
+            findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete);
+         monitor.worked(calculateWork(work));
+
+         setChildBranchBaselineTxs(connection, monitor, deleteToPreviousTx, 0.20);
+
+         monitor.subTask("Remove Tx Rows");
+         ConnectionHandler.runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
+         ConnectionHandler.runBatchUpdate(connection, DELETE_TXS, txsToDelete);
+
+         monitor.subTask("Updating Previous Tx to Current");
+         List<Object[]> updateData = new ArrayList<Object[]>();
+         computeNewTxCurrents(connection, updateData, "art_id", "osee_artifact", arts);
+         computeNewTxCurrents(connection, updateData, "attr_id", "osee_attribute", attrs);
+         computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
+
+         ConnectionHandler.runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
       }
-
-      Map<Integer, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete);
-      Map<Integer, IdJoinQuery> attrs = findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete);
-      Map<Integer, IdJoinQuery> rels = findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete);
       monitor.worked(calculateWork(0.20));
 
-      setChildBranchBaselineTxs(connection, monitor, deleteToPreviousTx, 0.20);
-
-      monitor.subTask("Remove Tx Rows");
-      ConnectionHandler.runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
-      ConnectionHandler.runBatchUpdate(connection, DELETE_TXS, txsToDelete);
-
-      monitor.subTask("Updating Previous Tx to Current");
-      List<Object[]> updateData = new ArrayList<Object[]>();
-      computeNewTxCurrents(connection, updateData, "art_id", "osee_artifact", arts);
-      computeNewTxCurrents(connection, updateData, "attr_id", "osee_attribute", attrs);
-      computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
-
-      ConnectionHandler.runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
-      monitor.worked(calculateWork(0.20));
       success = true;
       log("...done.");
    }
@@ -215,6 +218,10 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          TransactionRecord previousTransaction;
          try {
             previousTransaction = transactionCache.getPriorTransaction(fromTransaction);
+            // continue looking for previous transaction if one found is in list to be deleted
+            while (txIdsToDelete.contains(previousTransaction.getId())) {
+               previousTransaction = transactionCache.getPriorTransaction(previousTransaction);
+            }
          } catch (TransactionDoesNotExist ex) {
             throw new OseeArgumentException(
                "You are trying to delete Transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",

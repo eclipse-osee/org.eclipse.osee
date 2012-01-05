@@ -11,7 +11,8 @@ Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 DynamicImport-Package: *
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.eclipse.core.runtime,
+Import-Package: org.apache.commons.lang,
+ org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.equinox.app,
  org.eclipse.osee.framework.core.data,
