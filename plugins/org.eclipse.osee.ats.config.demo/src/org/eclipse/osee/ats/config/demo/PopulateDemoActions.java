@@ -83,6 +83,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParameter;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -126,13 +127,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private static void validateArtifactCache() throws OseeStateException {
-      if (ArtifactCache.getDirtyArtifacts().size() > 0) {
-         for (Artifact artifact : ArtifactCache.getDirtyArtifacts()) {
+      final Collection<Artifact> list = ArtifactCache.getDirtyArtifacts();
+      if (!list.isEmpty()) {
+         for (Artifact artifact : list) {
             System.err.println(String.format("Artifact [%s] is dirty [%s]", artifact.toStringWithId(),
                Artifacts.getDirtyReport(artifact)));
          }
          throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
-            ArtifactCache.getDirtyArtifacts().size());
+            list.size());
       }
 
    }
@@ -156,7 +158,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Import all requirements on SAW_Bld_1 Branch
          demoDbImportReqsTx();
 
-         DemoDbUtil.sleep(5000);
+         //DemoDbUtil.sleep(5000);
 
          // Create traceability between System, Subsystem and Software requirements
          SkynetTransaction demoDbTraceability =
@@ -164,7 +166,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          demoDbTraceabilityTx(demoDbTraceability, DemoSawBuilds.SAW_Bld_1);
          demoDbTraceability.execute();
 
-         DemoDbUtil.sleep(5000);
+         //DemoDbUtil.sleep(5000);
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
          createMainWorkingBranchTx();
@@ -375,8 +377,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       IArtifactExtractor extractor = new WordOutlineExtractor();
       extractor.setDelegate(new WordOutlineExtractorDelegate());
 
-      IOperation operation =
-         ArtifactImportOperationFactory.createOperation(file, systemReq, null, extractor, artifactResolver, false);
+      ArtifactImportOperationParameter importOptions = new ArtifactImportOperationParameter();
+      importOptions.setSourceFile(file);
+      importOptions.setDestinationArtifact(systemReq);
+      importOptions.setExtractor(extractor);
+      importOptions.setResolver(artifactResolver);
+
+      IOperation operation = ArtifactImportOperationFactory.createOperation(importOptions);
       Operations.executeWorkAndCheckStatus(operation);
 
       // Validate that something was imported

@@ -15,12 +15,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -46,17 +48,43 @@ public final class ArtifactImportOperationFactory {
       super();
    }
 
-   public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError) throws OseeCoreException {
-      SkynetTransaction transaction =
-         new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
+   public static IOperation createOperation(ArtifactImportOperationParameter param) throws OseeCoreException {
+      return completeOperation(param.getSourceFile(), param.getDestinationArtifact(), param.getLogger(),
+         param.getExtractor(), param.getResolver(), param.isStopOnError(), param.getGoverningTransaction(),
+         param.isExecuteTransaction());
+   }
+
+   public static IOperation completeOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError, SkynetTransaction governingTransaction, boolean executeTransaction) throws OseeCoreException {
+      CheckAndThrow(sourceFile, destinationArtifact, extractor, resolver);
+
       RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
+
+      if (logger == null) {
+         logger = NullOperationLogger.getSingleton();
+      }
+
+      SkynetTransaction transaction = governingTransaction;
+      if (transaction == null) {
+         executeTransaction = true;
+         transaction =
+            new SkynetTransaction(destinationArtifact.getBranch(),
+               "ArtifactImportOperationFactory: Artifact Import Wizard transaction");
+      }
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
       ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false));
       ops.add(new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), stopOnError));
-      ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
+      if (executeTransaction) {
+         ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
+      }
       return new CompositeOperation("Artifact Import", Activator.PLUGIN_ID, ops);
+   }
+
+   private static void CheckAndThrow(Object... objects) {
+      for (Object object : objects) {
+         Assert.isNotNull(object);
+      }
    }
 
    public static IOperation createArtifactAndRoughToRealOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) throws OseeCoreException {
