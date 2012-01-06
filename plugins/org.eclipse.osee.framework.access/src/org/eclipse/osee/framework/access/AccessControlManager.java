@@ -41,6 +41,10 @@ public final class AccessControlManager {
       return accessService;
    }
 
+   public static void clearCaches() {
+      getService().clearCache();
+   }
+
    public static void lockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException {
       getService().lockObjects(objects, subject);
    }

@@ -147,6 +147,11 @@ public class AccessControlService implements IAccessControlService {
       populateAccessControlLists();
    }
 
+   public synchronized void clearCache() {
+      accessDataCache.clear();
+      initializeCaches();
+   }
+
    private void initializeCaches() {
       accessControlListCache.clear();
       objectToSubjectCache.clear();
