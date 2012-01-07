@@ -34,7 +34,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<testSuite>org.eclipse.osee.framework.logging</testSuite>
+					<testSuite>org.eclipse.osee.framework.logging.test</testSuite>
 					<testClass>org.eclipse.osee.framework.logging.AllLoggingTestSuite</testClass>
 				</configuration>
 			</plugin>

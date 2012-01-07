@@ -5,9 +5,9 @@
 
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.x.server.parent</artifactId>
+		<artifactId>org.eclipse.osee.x.core.parent</artifactId>
 		<version>0.9.9-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
+		<relativePath>../../plugins/org.eclipse.osee.x.core.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.executor.admin.test</artifactId>
@@ -24,7 +24,7 @@
 					<testSuite>org.eclipse.osee.executor.admin.test</testSuite>
 					<testClass>org.eclipse.osee.executor.admin.ExecutorAdminTestSuite</testClass>
 				</configuration>
-			</plugin>
+			</plugin>			
 		</plugins>
 	</build>
 </project>
