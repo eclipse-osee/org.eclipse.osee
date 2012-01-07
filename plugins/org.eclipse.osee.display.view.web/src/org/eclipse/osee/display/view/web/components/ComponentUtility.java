@@ -42,63 +42,79 @@ public final class ComponentUtility {
 
    public static SearchNavigator getNavigator(Component component) {
       SearchNavigator navigator = null;
-      Application app = component.getApplication();
-      if (app instanceof HasNavigator) {
-         navigator = ((HasNavigator) app).getNavigator();
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasNavigator) {
+            navigator = ((HasNavigator) app).getNavigator();
+         }
       }
       return navigator;
    }
 
    public static String getUrl(Component component) {
       String url = null;
-      Application app = component.getApplication();
-      if (app instanceof HasUrl) {
-         url = ((HasUrl) app).getUrl();
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasUrl) {
+            url = ((HasUrl) app).getUrl();
+         }
       }
       return url;
    }
 
    public static void setUrl(Component component, String url) {
-      Application app = component.getApplication();
-      if (app instanceof HasUrl) {
-         ((HasUrl) app).setUrl(url);
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasUrl) {
+            ((HasUrl) app).setUrl(url);
+         }
       }
    }
 
    public static SearchPresenter<?, ?> getPresenter(Component component) {
       SearchPresenter presenter = null;
-      Application app = component.getApplication();
-      if (app instanceof HasPresenter) {
-         presenter = ((HasPresenter) app).getPresenter();
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasPresenter) {
+            presenter = ((HasPresenter) app).getPresenter();
+         }
       }
       return presenter;
    }
 
    public static void logError(String format, Component component, Object... args) {
-      Application app = component.getApplication();
-      if (app instanceof HasLogger) {
-         ((HasLogger) app).logError(format, args);
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasLogger) {
+            ((HasLogger) app).logError(format, args);
+         }
       }
    }
 
    public static void logWarn(String format, Component component, Object... args) {
-      Application app = component.getApplication();
-      if (app instanceof HasLogger) {
-         ((HasLogger) app).logWarn(format, args);
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasLogger) {
+            ((HasLogger) app).logWarn(format, args);
+         }
       }
    }
 
    public static void logInfo(String format, Component component, Object... args) {
-      Application app = component.getApplication();
-      if (app instanceof HasLogger) {
-         ((HasLogger) app).logInfo(format, args);
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasLogger) {
+            ((HasLogger) app).logInfo(format, args);
+         }
       }
    }
 
    public static void logDebug(String format, Component component, Object... args) {
-      Application app = component.getApplication();
-      if (app instanceof HasLogger) {
-         ((HasLogger) app).logDebug(format, args);
+      if (isAccessible(component)) {
+         Application app = component.getApplication();
+         if (app instanceof HasLogger) {
+            ((HasLogger) app).logDebug(format, args);
+         }
       }
    }
 }

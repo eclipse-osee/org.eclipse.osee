@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.search.AtsPresenterFactory;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.vaadin.AbstractApplication;
 import org.eclipse.osee.vaadin.ApplicationFactory;
-import com.vaadin.Application;
 
 /**
  * @author Shawn F. Cook
@@ -27,8 +27,16 @@ public class AtsUiApplicationFactory implements ApplicationFactory {
    private AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> presenterFactory;
    private Log logger;
 
+   public void setPresenterFactory(AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> presenterFactory) {
+      this.presenterFactory = presenterFactory;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
    @Override
-   public Application createInstance() {
+   public AbstractApplication createInstance() {
       AtsApplicationContext context = new AtsApplicationContext();
 
       AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> searchPresenter =
@@ -43,16 +51,8 @@ public class AtsUiApplicationFactory implements ApplicationFactory {
    }
 
    @Override
-   public Class<? extends Application> getApplicationClass() {
+   public Class<? extends AbstractApplication> getApplicationClass() {
       return AtsUiApplication.class;
-   }
-
-   public void setPresenterFactory(AtsPresenterFactory<AtsSearchHeaderComponent, AtsSearchParameters> presenterFactory) {
-      this.presenterFactory = presenterFactory;
-   }
-
-   public void setLogger(Log logger) {
-      this.logger = logger;
    }
 
    private final class AtsApplicationContext implements ApplicationContext {

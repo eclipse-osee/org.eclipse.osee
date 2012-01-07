@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web;
 
+import java.util.Locale;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
@@ -18,45 +19,45 @@ import org.eclipse.osee.display.view.web.HasNavigator;
 import org.eclipse.osee.display.view.web.HasPresenter;
 import org.eclipse.osee.display.view.web.HasUrl;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.vaadin.AbstractApplication;
 import org.eclipse.osee.vaadin.widgets.HasViews;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-import com.vaadin.Application;
 import com.vaadin.ui.Window;
 
 /**
  * @author Shawn F. Cook
  */
 @SuppressWarnings("serial")
-public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends Application implements HasUrl, HasNavigator, HasPresenter, HasLogger {
+public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsSearchParameters> extends AbstractApplication implements HasUrl, HasNavigator, HasPresenter, HasLogger {
 
    private final AtsSearchPresenter<T, K> atsSearchPresenter;
-   private AtsNavigator navigator;
    private String url = "";
    private final Log logger;
 
    public AtsUiApplication(AtsSearchPresenter<T, K> searchPresenter, Log logger) {
+      super();
       this.atsSearchPresenter = searchPresenter;
       this.logger = logger;
+      setTheme("osee");
    }
 
    @Override
-   public void init() {
-      setTheme("osee");
-
-      AtsWindowFactory factory = new AtsWindowFactory();
+   protected Window createApplicationWindow(Locale locale) {
       HasViews viewProvider = new AtsUiViews();
-      Window mainWindow = factory.createNavigatableWindow(viewProvider, getNavigator());
-      setMainWindow(mainWindow);
-      mainWindow.setApplication(this);
+      AtsWindow window = new AtsWindow(viewProvider, new AtsNavigator());
+      return window;
+   }
+
+   @Override
+   protected String getApplicationWindowName() {
+      return "AtsUiApplication";
    }
 
    @Override
    public AtsNavigator getNavigator() {
-      if (navigator == null) {
-         navigator = new AtsNavigator();
-      }
-      return navigator;
+      AtsWindow atsWindow = (AtsWindow) getCurrentWindow();
+      return atsWindow.getNavigator();
    }
 
    @Override
@@ -99,4 +100,5 @@ public class AtsUiApplication<T extends AtsSearchHeaderComponent, K extends AtsS
    public void logDebug(String format, Object... args) {
       logger.debug(format, args);
    }
+
 }

@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.vaadin.AbstractApplication;
 import org.eclipse.osee.vaadin.ApplicationFactory;
 import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.AbstractApplicationServlet;
@@ -63,8 +64,10 @@ public class ApplicationServlet extends AbstractApplicationServlet {
          throw new ServletException(String.format("Error creating vaading application using [%s]",
             factory.getClass().getName()));
       }
+
       setApplicationMetaData(request, application);
       HttpSession httpSession = request.getSession();
+
       final ApplicationSession session = new ApplicationSession(application, httpSession);
       sessions.add(session);
       httpSession.setAttribute(ApplicationSession.class.getName(), new HttpSessionListener() {
@@ -164,7 +167,7 @@ public class ApplicationServlet extends AbstractApplicationServlet {
 
    @Override
    protected Class<? extends Application> getApplicationClass() {
-      return factory.getApplicationClass();
+      return AbstractApplication.class;
    }
 
    @Override
@@ -393,4 +396,5 @@ public class ApplicationServlet extends AbstractApplicationServlet {
 
       return string;
    }
+
 }

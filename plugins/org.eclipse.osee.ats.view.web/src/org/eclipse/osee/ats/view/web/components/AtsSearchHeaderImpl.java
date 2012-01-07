@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.view.web.components;
 import org.eclipse.osee.ats.api.components.AtsSearchHeaderComponent;
 import org.eclipse.osee.ats.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.api.search.AtsSearchPresenter;
-import org.eclipse.osee.ats.view.web.AtsNavigator;
 import org.eclipse.osee.ats.view.web.AtsUiApplication;
 import org.eclipse.osee.ats.view.web.search.AtsSearchResultsView;
 import org.eclipse.osee.display.api.data.ViewId;
@@ -134,7 +133,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
                boolean nameOnly = nameOnlyCheckBox.toString().equalsIgnoreCase("true");
                String searchPhrase = (String) searchTextField.getValue();
                AtsSearchParameters params = new AtsSearchParameters(searchPhrase, nameOnly, build, program);
-               getPresenter().selectSearch(getRequestedDataId(), params, getNavigator());
+               getPresenter().selectSearch(getRequestedDataId(), params, ComponentUtility.getNavigator(this));
             } else {
                ComponentUtility.logWarn("AtsSearchHeaderComponent.selectSearch - WARNING: null value detected.", this);
             }
@@ -180,8 +179,7 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
          }
       });
 
-      OseeLogoLink oseeLogoImg =
-         new OseeLogoLink(getNavigator(), CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
+      OseeLogoLink oseeLogoImg = new OseeLogoLink(CssConstants.OSEE_TITLE_MEDIUM_TEXT, AtsSearchResultsView.class);
       Label hSpacer_LogoRight = new Label("");
       oseeLogoImg.setSizeUndefined();
 
@@ -321,10 +319,6 @@ public class AtsSearchHeaderImpl extends OseeSearchHeaderComponent implements At
    @Override
    public AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters> getApplication() {
       return (AtsUiApplication<AtsSearchHeaderComponent, AtsSearchParameters>) super.getApplication();
-   }
-
-   private AtsNavigator getNavigator() {
-      return getApplication().getNavigator();
    }
 
    private AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> getPresenter() {

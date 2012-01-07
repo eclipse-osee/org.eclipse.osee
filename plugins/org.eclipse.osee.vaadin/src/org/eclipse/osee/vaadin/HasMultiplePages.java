@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.vaadin;
 
+import com.vaadin.ui.Component;
+
 /**
  * @author Roberto E. Escobar
  */
-public interface ApplicationFactory {
+public interface HasMultiplePages {
 
-   AbstractApplication createInstance() throws Exception;
+   void setToDefault();
 
-   Class<? extends AbstractApplication> getApplicationClass();
-
+   Component getCurrentPage();
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.view.web;
 
+import org.eclipse.osee.vaadin.HasMultiplePages;
 import org.eclipse.osee.vaadin.widgets.AccountMenuBar;
 import org.eclipse.osee.vaadin.widgets.HasViewTitle;
 import org.eclipse.osee.vaadin.widgets.HasViews;
@@ -26,18 +27,36 @@ import com.vaadin.ui.Window;
 /**
  * @author Shawn F. Cook
  */
-public class AtsWindowFactory {
+public class AtsWindow extends Window implements HasMultiplePages {
 
-   public Window createNavigatableWindow(HasViews provider, final AtsNavigator navigator) {
+   private static final long serialVersionUID = 307122520779262094L;
 
-      VerticalLayout layout = new VerticalLayout();
-      final Window w = new Window("OSEE", layout);
+   private final HasViews provider;
+   private final AtsNavigator navigator;
+   private VerticalLayout layout;
+   private View currentView;
+
+   public AtsWindow(HasViews provider, AtsNavigator navigator) {
+      super("OSEE");
+      this.provider = provider;
+      this.navigator = navigator;
+   }
+
+   public AtsNavigator getNavigator() {
+      return navigator;
+   }
+
+   @Override
+   public void attach() {
+      super.attach();
+      layout = new VerticalLayout();
+      setContent(layout);
 
       for (final Class<?> viewClass : provider.getViews()) {
          navigator.addView(viewClass.getSimpleName(), viewClass);
       }
-      w.addComponent(createNavigationBar(navigator, provider));
-      w.addComponent(navigator);
+      addComponent(createNavigationBar(navigator, provider));
+      addComponent(navigator);
 
       layout.setMargin(false);
       layout.setSpacing(true);
@@ -47,7 +66,8 @@ public class AtsWindowFactory {
       navigator.addListener(new ViewChangeListener() {
          @Override
          public void navigatorViewChange(View previous, View current) {
-            Window mainWindow = w.getApplication().getMainWindow();
+            currentView = current;
+            Window mainWindow = getApplication().getMainWindow();
             String title = "OSEE";
             if (current instanceof HasViewTitle) {
                String currentTitle = ((HasViewTitle) current).getViewTitle();
@@ -58,7 +78,6 @@ public class AtsWindowFactory {
             mainWindow.setCaption(title);
          }
       });
-      return w;
    }
 
    private Component createNavigationBar(final Navigator navigator, HasViews provider) {
@@ -77,5 +96,15 @@ public class AtsWindowFactory {
       layout.setComponentAlignment(menuBar, Alignment.BOTTOM_RIGHT);
       layout.setExpandRatio(menu, 1.0f);
       return layout;
+   }
+
+   @Override
+   public void setToDefault() {
+      navigator.navigateTo(provider.getViews().get(0));
+   }
+
+   @Override
+   public Component getCurrentPage() {
+      return currentView;
    }
 }
