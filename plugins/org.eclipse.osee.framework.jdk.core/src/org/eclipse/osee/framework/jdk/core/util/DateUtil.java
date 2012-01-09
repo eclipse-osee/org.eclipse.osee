@@ -240,4 +240,30 @@ public class DateUtil {
       return weeks;
    }
 
+   /**
+    * @param date Any date
+    * @return The date that is the Monday before the date. If the provided date is Monday then it will be returned
+    * as-is.
+    */
+   public static Date getMondayBefore(Date date) {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(date);
+      while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+         cal.add(Calendar.DATE, -1);
+      }
+      return cal.getTime();
+   }
+
+   /**
+    * @param date Any date
+    * @return The date that is the Monday after the date. If the provided date is Monday then it will be returned as-is.
+    */
+   public static Date getMondayAfter(Date date) {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(date);
+      while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+         cal.add(Calendar.DATE, 1);
+      }
+      return cal.getTime();
+   }
 }
