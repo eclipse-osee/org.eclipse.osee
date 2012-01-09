@@ -360,8 +360,10 @@ public class SMAWorkFlowSection extends SectionPart {
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.getCompletedDate()));
             LogItem item = sma.getStateStartedData(statePageName);
-            sb.append(" by ");
-            sb.append(item.getUser().getName());
+            if (item != null) {
+               sb.append(" by ");
+               sb.append(item.getUser().getName());
+            }
          } else if (sma.isCancelled()) {
             if (!sma.getCurrentStateName().equals(WorkPageType.Cancelled.toString())) {
                sb.append(" (Cancelled)");
@@ -369,8 +371,10 @@ public class SMAWorkFlowSection extends SectionPart {
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()));
             LogItem item = sma.getStateStartedData(statePageName);
-            sb.append(" by ");
-            sb.append(item.getUser().getName());
+            if (item != null) {
+               sb.append(" by ");
+               sb.append(item.getUser().getName());
+            }
          }
          if (sma.getStateMgr().getAssignees().size() > 0) {
             sb.append(" assigned to ");
