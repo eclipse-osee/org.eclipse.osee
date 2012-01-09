@@ -270,6 +270,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       return isDirtyResult().isTrue();
    }
 
+   @Override
    public Result isDirtyResult() {
       if (awa.isDeleted()) {
          return Result.FalseResult;
@@ -454,6 +455,22 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
             for (int j = 0; j < editors.length; j++) {
                IEditorReference editor = editors[j];
                if (editor.getPart(false) instanceof SMAEditor && artifacts.contains(((SMAEditor) editor.getPart(false)).getAwa())) {
+                  ((SMAEditor) editor.getPart(false)).closeEditor();
+               }
+            }
+         }
+      });
+   }
+
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IEditorReference editors[] = page.getEditorReferences();
+            for (int j = 0; j < editors.length; j++) {
+               IEditorReference editor = editors[j];
+               if (editor.getPart(false) instanceof SMAEditor) {
                   ((SMAEditor) editor.getPart(false)).closeEditor();
                }
             }
