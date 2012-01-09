@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -81,4 +83,24 @@ public class CsvArtifact {
       return generateCsvArtifact(staticId, staticId, "", branch);
    }
 
+   public List<List<String>> getRows(boolean ignoreHeaderRow) throws OseeCoreException {
+      List<List<String>> rows = new ArrayList<List<String>>();
+      String csvData = getCsvData();
+      String[] csvLines = csvData.split("\n");
+
+      int rowIndex = 0;
+      for (String csvLine : csvLines) {
+         if ((ignoreHeaderRow && rowIndex > 0) || !ignoreHeaderRow) {
+            String[] values = csvLine.split(",");
+            List<String> row = new ArrayList<String>();
+            for (String value : values) {
+               value = value.trim();
+               row.add(value);
+            }
+            rows.add(row);
+         }
+         rowIndex++;
+      }
+      return rows;
+   }
 }
