@@ -32,7 +32,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
-import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceRelationsWithBaselineOperation;
+import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Assert;
 
@@ -168,15 +169,61 @@ public class ReplaceArtifactWithTest {
       artifactToIntroduce.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Deleted my name"));
       artifactToIntroduce.persist(getClass().getName());
 
-      InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
-      dropHandler.dropArtifactIntoDifferentBranch(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(childBranch),
-         new Artifact[] {artifactToIntroduce}, false);
+      InterArtifactExplorerDropHandlerOperation dropHandler =
+         new InterArtifactExplorerDropHandlerOperation(
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(childBranch), new Artifact[] {artifactToIntroduce},
+            false, false);
+      Operations.executeWork(dropHandler);
 
       List<Change> firstChanges = new ArrayList<Change>();
       Operations.executeWork(ChangeManager.comparedToParent(childBranch, firstChanges), new NullProgressMonitor());
       assertTrue(!firstChanges.isEmpty());
 
       Operations.executeWorkAndCheckStatus(new ReplaceArtifactWithBaselineOperation(
+         Collections.singleton(ArtifactQuery.getArtifactFromId(artifactToIntroduce.getArtId(), childBranch))));
+
+      List<Change> changes = new ArrayList<Change>();
+      Operations.executeWork(ChangeManager.comparedToParent(childBranch, changes), new NullProgressMonitor());
+      assertTrue(changes.isEmpty());
+   }
+
+   @org.junit.Test
+   public void testReplaceWithArtifactUpdateExistingIntroduce() throws OseeCoreException {
+      Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+      Assert.assertNotNull(parentBranch);
+
+      Artifact artifactToIntroduce =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, parentBranch, getClass().getSimpleName());
+      artifactToIntroduce.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Deleted my name"));
+      artifactToIntroduce.persist(getClass().getName());
+
+      Branch childBranch =
+         BranchManager.createWorkingBranch(parentBranch, "Branchy Deleted case branch",
+            UserManager.getUser(SystemUser.OseeSystem));
+
+      Branch anotherChildBranch =
+         BranchManager.createWorkingBranch(parentBranch, "Another child branch",
+            UserManager.getUser(SystemUser.OseeSystem));
+
+      Artifact childBranchArtifact =
+         ArtifactQuery.getArtifactFromId(artifactToIntroduce.getArtId(), anotherChildBranch);
+      childBranchArtifact.setAttributeValues(CoreAttributeTypes.Name, Collections.singletonList("Change my name"));
+      childBranchArtifact.persist(getClass().getName());
+
+      InterArtifactExplorerDropHandlerOperation dropHandler =
+         new InterArtifactExplorerDropHandlerOperation(
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(childBranch), new Artifact[] {childBranchArtifact},
+            false, false);
+      Operations.executeWork(dropHandler);
+
+      List<Change> firstChanges = new ArrayList<Change>();
+      Operations.executeWork(ChangeManager.comparedToParent(childBranch, firstChanges), new NullProgressMonitor());
+      assertTrue(!firstChanges.isEmpty());
+
+      Operations.executeWorkAndCheckStatus(new ReplaceArtifactWithBaselineOperation(
+         Collections.singleton(ArtifactQuery.getArtifactFromId(artifactToIntroduce.getArtId(), childBranch))));
+
+      Operations.executeWorkAndCheckStatus(new ReplaceRelationsWithBaselineOperation(
          Collections.singleton(ArtifactQuery.getArtifactFromId(artifactToIntroduce.getArtId(), childBranch))));
 
       List<Change> changes = new ArrayList<Change>();
