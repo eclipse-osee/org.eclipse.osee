@@ -352,7 +352,8 @@ public class BranchManager {
     */
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, String childBranchGuid, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment =
-         "New Branch from " + parentTransactionId.getBranch().getName() + "(" + parentTransactionId.getId() + ")";
+         String.format("New Branch from %s (%s)", parentTransactionId.getBranch().getName(),
+            parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
       return createBranch(BranchType.WORKING, parentTransactionId, truncatedName, childBranchGuid, associatedArtifact,

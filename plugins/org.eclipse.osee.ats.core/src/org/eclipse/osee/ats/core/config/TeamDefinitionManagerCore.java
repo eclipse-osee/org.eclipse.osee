@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.config;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class TeamDefinitionManagerCore {
       if (parentArt instanceof ActionableItemArtifact) {
          return getImpactedTeamDefInherited((ActionableItemArtifact) parentArt);
       }
-      return java.util.Collections.emptyList();
+      return Collections.<TeamDefinitionArtifact> emptyList();
    }
 
 }

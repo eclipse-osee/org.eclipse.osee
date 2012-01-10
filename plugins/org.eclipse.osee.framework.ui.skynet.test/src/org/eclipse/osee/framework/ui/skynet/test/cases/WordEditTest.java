@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
@@ -72,7 +71,7 @@ public class WordEditTest {
 
    @After
    public void tearDown() throws Exception {
-      FrameworkTestUtil.cleanupSimpleTest(branch, Arrays.asList(ARTIFACT_NAME_1, ARTIFACT_NAME_2));
+      FrameworkTestUtil.cleanupSimpleTest(branch, ARTIFACT_NAME_1, ARTIFACT_NAME_2);
    }
 
    @org.junit.Test

@@ -43,7 +43,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       this.artifacts = artifacts;
    }
 
-   private SkynetTransaction getTransaction(Branch branch) {
+   private SkynetTransaction getTransaction(Branch branch) throws OseeCoreException {
       SkynetTransaction transaction = null;
       if (transactions == null) {
          transactions = new HashMap<Branch, SkynetTransaction>();

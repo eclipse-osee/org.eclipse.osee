@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -36,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -67,7 +65,6 @@ public class FrameworkTestUtil {
    public static void purgeBranch(Branch branch) throws Exception {
       try {
          BranchManager.purgeBranch(branch);
-         TestUtil.sleep(2000);
       } catch (BranchDoesNotExist ex) {
          // do nothing
       }
@@ -80,7 +77,7 @@ public class FrameworkTestUtil {
             for (String branchName : branchNamesContain) {
                if (workingBranch.getName().contains(branchName)) {
                   BranchManager.purgeBranch(workingBranch);
-                  TestUtil.sleep(2000);
+                  //TestUtil.sleep(2000);
                }
             }
          }
@@ -92,22 +89,14 @@ public class FrameworkTestUtil {
    /**
     * Deletes all artifacts with names that start with any title given
     */
-   public static void cleanupSimpleTest(IOseeBranch branch, Collection<String> titles) throws Exception {
+   public static void cleanupSimpleTest(IOseeBranch branch, String... titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, EXCLUDE_DELETED));
       }
       if (artifacts.size() > 0) {
          Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
-         TestUtil.sleep(4000);
       }
-   }
-
-   /**
-    * Deletes any artifact with name that starts with title
-    */
-   public static void cleanupSimpleTest(IOseeBranch branch, String title) throws Exception {
-      cleanupSimpleTest(branch, Arrays.asList(title));
    }
 
    private static List<String> executeCommand(List<String> commands) throws IOException, InterruptedException {

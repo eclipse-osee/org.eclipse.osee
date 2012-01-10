@@ -40,7 +40,10 @@ import org.junit.Test;
  */
 public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
-   public static TeamWorkFlowArtifact teamArt;
+   private static final String JOE_SMITH = "Joe Smith";
+   private static final String ALEX_KAY = "Alex Kay";
+
+   private static TeamWorkFlowArtifact teamArt;
 
    @Before
    public void setUp() throws Exception {
@@ -79,14 +82,13 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(UserManager.getUserByName("Joe Smith"),
-         teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(UserManager.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
 
       // set assignee to Alex Kay
-      teamArt.getStateMgr().setAssignee(UserManager.getUserByName("Alex Kay"));
+      teamArt.getStateMgr().setAssignee(UserManager.getUserByName(ALEX_KAY));
       teamArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(UserManager.getUserByName("Alex Kay"), teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(UserManager.getUserByName(ALEX_KAY), teamArt.getStateMgr().getAssignees().iterator().next());
 
       IWorkPage fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getPageName());
       IWorkPage toState = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getPageName());
@@ -103,7 +105,6 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(UserManager.getUserByName("Joe Smith"),
-         teamArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(UserManager.getUserByName(JOE_SMITH), teamArt.getStateMgr().getAssignees().iterator().next());
    }
 }

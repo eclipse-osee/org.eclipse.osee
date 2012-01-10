@@ -81,7 +81,7 @@ public class AtsTestUtil {
    private static TeamWorkFlowArtifact teamArt = null;
    private static TeamWorkFlowArtifact teamArt2 = null;
    private static TeamDefinitionArtifact teamDef = null;
-   private static VersionArtifact verArt1 = null, verArt2 = null;
+   private static VersionArtifact verArt1, verArt2 = null;
    private static DecisionReviewArtifact decRevArt = null;
    private static PeerToPeerReviewArtifact peerRevArt = null;
    private static TaskArtifact taskArt = null;
@@ -89,20 +89,21 @@ public class AtsTestUtil {
    private static ActionableItemArtifact testAi2 = null;
    private static ActionArtifact actionArt = null;
    private static ActionArtifact actionArt2 = null;
-   private static StateDefinition analyze = null, implement = null, completed = null, cancelled = null;
+   private static StateDefinition analyze, implement, completed, cancelled = null;
    private static WorkDefinition workDef = null;
    public static String WORK_DEF_NAME = "Test_Team _Workflow_Definition";
    private static WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
 
    public static void validateArtifactCache() throws OseeStateException {
-      if (ArtifactCache.getDirtyArtifacts().size() > 0) {
-         for (Artifact artifact : ArtifactCache.getDirtyArtifacts()) {
+      final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
+      if (!dirtyArtifacts.isEmpty()) {
+         for (Artifact artifact : dirtyArtifacts) {
             System.err.println(String.format("Artifact [%s] is dirty [%s]", artifact.toStringWithId(),
                Artifacts.getDirtyReport(artifact)));
          }
          throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
-            ArtifactCache.getDirtyArtifacts().size());
+            dirtyArtifacts.size());
       }
    }
 

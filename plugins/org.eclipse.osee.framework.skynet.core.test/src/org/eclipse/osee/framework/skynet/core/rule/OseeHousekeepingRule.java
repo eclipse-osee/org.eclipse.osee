@@ -30,7 +30,7 @@ import org.junit.runners.model.Statement;
  * In the future the behavior of this class could be modified to clean up after a test, regardless of test's context.
  * </p>
  */
-public class OseeHousekeepingRule implements MethodRule {
+public final class OseeHousekeepingRule implements MethodRule {
 
    @Override
    public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {

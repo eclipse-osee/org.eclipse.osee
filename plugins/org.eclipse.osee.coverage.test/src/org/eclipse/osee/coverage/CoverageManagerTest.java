@@ -13,17 +13,21 @@ package org.eclipse.osee.coverage;
 import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.import01.CoverageImport1TestBlam;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
+import org.junit.Rule;
 
 /**
  * @author Donald G. Dunne
  */
 public class CoverageManagerTest {
+
+   @Rule
+   public OseeHousekeepingRule hk = new OseeHousekeepingRule();
 
    private static SevereLoggingMonitor monitorLog;
 

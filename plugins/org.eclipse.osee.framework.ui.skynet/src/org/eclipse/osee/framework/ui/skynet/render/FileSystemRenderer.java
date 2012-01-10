@@ -95,8 +95,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
       IFile file = renderToFile(artifacts, presentationType);
       if (file != null) {
-         String dummyName = file.getName();
          if (!artifacts.isEmpty()) {
+            String dummyName = file.getName();
             Artifact firstArtifact = artifacts.iterator().next();
             try {
                if (RenderingUtil.arePopupsAllowed()) {

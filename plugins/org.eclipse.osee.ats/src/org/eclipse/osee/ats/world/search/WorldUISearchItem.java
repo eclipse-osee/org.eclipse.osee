@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -91,7 +92,7 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
 
       }
       if (cancelled) {
-         return EMPTY_SET;
+         return Collections.emptySet();
       }
       return performSearch(searchType);
    }
