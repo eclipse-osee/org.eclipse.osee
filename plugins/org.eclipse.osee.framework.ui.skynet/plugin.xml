@@ -218,6 +218,9 @@
 	<extension id="Whole document" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
    	<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer"/>
 	</extension>
+	<extension id="java" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.JavaRenderer"/>
+	</extension>
  <extension
        id="openOfficeWriter"
        point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
@@ -915,6 +918,19 @@
          </with>
       </enabledWhen>
    </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.JavaEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.javaeditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   
 </extension>
  <extension
        name="Branch View Handlers"
@@ -1174,6 +1190,10 @@
    <command
          id="org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command"
          name="Preview Native Editor">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.javaeditor.command"
+         name="Java Editor">
    </command>
 </extension>
  <extension

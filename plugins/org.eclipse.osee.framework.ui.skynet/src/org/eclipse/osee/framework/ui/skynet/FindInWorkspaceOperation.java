@@ -25,15 +25,17 @@ import org.eclipse.osee.framework.ui.ws.AWorkspace;
 /**
  * @author John Misinco
  */
-public class RevealInWorkspaceOperation extends AbstractOperation {
+public class FindInWorkspaceOperation extends AbstractOperation {
 
    List<Artifact> artifacts;
    List<IResource> matches;
+   List<Artifact> notMatched;
 
-   public RevealInWorkspaceOperation(List<Artifact> artifacts, List<IResource> matches) {
-      super("Reveal In Workspace", Activator.PLUGIN_ID);
+   public FindInWorkspaceOperation(List<Artifact> artifacts, List<IResource> matches, List<Artifact> notMatched) {
+      super("Find In Workspace", Activator.PLUGIN_ID);
       this.artifacts = artifacts;
       this.matches = matches;
+      this.notMatched = notMatched;
    }
 
    @Override
@@ -48,10 +50,15 @@ public class RevealInWorkspaceOperation extends AbstractOperation {
                String fileName = artifactName.substring(endOfPackageName + 1) + ".java";
                List<IResource> finds = new ArrayList<IResource>();
                AWorkspace.recursiveFileFind(fileName, ws, finds);
+               boolean matched = false;
                for (IResource find : finds) {
                   if (find.toString().contains(packageName)) {
                      matches.add(find);
+                     matched = true;
                   }
+               }
+               if (!matched) {
+                  notMatched.add(artifact);
                }
             }
          }
