@@ -40,7 +40,7 @@ public class DemoDbGroups {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Create Groups and add objects");
       }
-      Artifact groupArt = UniversalGroup.addGroup(TEST_GROUP_NAME, AtsUtil.getAtsBranch());
+      Artifact groupArt = UniversalGroup.addGroup(TEST_GROUP_NAME, AtsUtil.getAtsBranch(), transaction);
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 
          // Add Action to Universal Group

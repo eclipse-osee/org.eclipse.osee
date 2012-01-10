@@ -173,7 +173,7 @@ public class ActionManager {
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
       art.setName(title);
-      if (!desc.equals("")) {
+      if (!Strings.emptyString().equals(desc)) {
          art.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
       }
       ChangeTypeUtil.setChangeType(art, changeType);

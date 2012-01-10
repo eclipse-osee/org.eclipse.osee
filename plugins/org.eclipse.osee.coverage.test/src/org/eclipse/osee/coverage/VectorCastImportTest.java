@@ -43,16 +43,24 @@ import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * @author Donald G. Dunne
  */
 public class VectorCastImportTest {
+
+   @Rule
+   public TestName testName = new TestName();
+   @Rule
+   public OseeHousekeepingRule houseKeepingRule = new OseeHousekeepingRule();
 
    public static CoveragePackage coveragePackage = null;
    public static CoverageImport coverageImport = null;
@@ -216,20 +224,24 @@ public class VectorCastImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save");
+            new SkynetTransaction(CoverageTestUtil.getTestBranch(), String.format("%s: %s.%s",
+               VectorCastImportTest.class.getSimpleName(), "Coverage Package Save ", testName.getMethodName()));
          CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
          store.save(transaction, coverageEvent);
-         transaction.execute();
+         store.getArtifact(false).persist(transaction);
 
          // Test Load of Coverage Package
          Artifact artifact =
             ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
-         artifact.persist(getClass().getSimpleName());
+         artifact.persist(transaction);
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
          Assert.assertNotNull(packageStore.getArtifact(false));
          loadedCp = packageStore.getCoveragePackage();
+         packageStore.getArtifact(false).persist(transaction);
+
+         transaction.execute();
       } else {
          loadedCp = coveragePackage;
       }

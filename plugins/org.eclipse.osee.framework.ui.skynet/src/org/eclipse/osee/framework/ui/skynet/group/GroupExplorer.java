@@ -242,7 +242,10 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            UniversalGroup.addGroup(ed.getEntry(), branch);
+            SkynetTransaction transaction =
+               new SkynetTransaction(branch, GroupExplorer.class.getSimpleName() + ".handleNewGroup");
+            UniversalGroup.addGroup(ed.getEntry(), branch, transaction);
+            transaction.execute();
             treeViewer.refresh();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -194,8 +193,8 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testWholeWordPreview() throws Exception {
       Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, BRANCH, addPrefix("4g"));
-      art.persist(new SkynetTransaction(BRANCH, String.format("%s, persist on %s, guid: %s",
-         PreviewAndMultiPreviewTest.class.getSimpleName(), BRANCH.getName(), BRANCH.getGuid())));
+      art.persist(String.format("%s, persist on %s, guid: %s", PreviewAndMultiPreviewTest.class.getSimpleName(),
+         BRANCH.getName(), BRANCH.getGuid()));
       WholeWordRenderer renderer = new WholeWordRenderer();
       renderer.open(Arrays.asList(art), PresentationType.PREVIEW);
    }
@@ -203,12 +202,12 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testWholeWordPreviewUsingRendererManager() throws Exception {
       Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, BRANCH, addPrefix("4h"));
-      art.persist(new SkynetTransaction(BRANCH, String.format("%s, persist on %s, guid: %s",
-         PreviewAndMultiPreviewTest.class.getSimpleName(), BRANCH.getName(), BRANCH.getGuid())));
+      art.persist(String.format("%s, persist on %s, guid: %s", PreviewAndMultiPreviewTest.class.getSimpleName(),
+         BRANCH.getName(), BRANCH.getGuid()));
       RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
    }
 
    public String addPrefix(String name) {
-      return String.format("%s.%s", "Template", name);
+      return String.format("Template.%s", name);
    }
 }

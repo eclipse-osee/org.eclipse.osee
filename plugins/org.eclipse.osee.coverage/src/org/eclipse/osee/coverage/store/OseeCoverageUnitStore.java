@@ -249,6 +249,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          }
          coverageEvent.getCoverages().add(change);
       }
+      getTestUnitProvider().save(transaction);
       return Result.TrueResult;
    }
 

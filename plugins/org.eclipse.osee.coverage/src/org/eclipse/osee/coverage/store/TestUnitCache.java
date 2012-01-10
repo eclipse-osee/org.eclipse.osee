@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import com.google.common.collect.HashBiMap;
 
 /**
@@ -156,14 +157,15 @@ public class TestUnitCache implements ITestUnitProvider {
    }
 
    @Override
-   public String toXml(CoverageItem coverageItem) throws OseeCoreException {
-      String toReturn = "";
+   public String toXml(CoverageItem coverageItem) {
+
+      String toReturn = Strings.emptyString();
+
       Collection<Integer> values = itemsToTestUnit.getValues(coverageItem);
       if (values != null) {
          List<Integer> testIdEntries = (List<Integer>) values;
          java.util.Collections.sort(testIdEntries);
          toReturn = Collections.toString(";", testIdEntries);
-         persist();
       }
       return toReturn;
    }
@@ -180,14 +182,6 @@ public class TestUnitCache implements ITestUnitProvider {
       itemsToTestUnit.put(coverageItem, entries);
    }
 
-   public void persist() throws OseeCoreException {
-      ensurePopulated();
-      if (cacheIsDirty) {
-         testUnitStore.store(this);
-         cacheIsDirty = false;
-      }
-   }
-
    private synchronized void ensurePopulated() throws OseeCoreException {
       if (!ensurePopulatedRanOnce) {
          ensurePopulatedRanOnce = true;
@@ -196,6 +190,15 @@ public class TestUnitCache implements ITestUnitProvider {
          } catch (OseeCoreException ex) {
             throw ex;
          }
+      }
+   }
+
+   @Override
+   public void save(SkynetTransaction transaction) throws OseeCoreException {
+      ensurePopulated();
+      if (cacheIsDirty) {
+         testUnitStore.store(this, transaction);
+         cacheIsDirty = false;
       }
    }
 

@@ -162,7 +162,7 @@ public class SMAPromptChangeStatusTest {
       TransitionHelper helper =
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getPageName(),
             null, null, TransitionOption.None);
-      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
       transitionMgr.getTransaction().execute();
       Assert.assertTrue("Transition should have no errors", results.isEmpty());

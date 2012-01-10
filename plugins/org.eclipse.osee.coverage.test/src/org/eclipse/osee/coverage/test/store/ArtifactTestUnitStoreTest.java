@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -80,17 +81,20 @@ public class ArtifactTestUnitStoreTest {
 
    @Test
    public void testStore() throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(testBranch, getClass().getSimpleName());
       ArtifactTestUnitStore store = new ArtifactTestUnitStore(testBranch);
       TestUnitCache tc = new TestUnitCache(store);
       CoverageItem ci = createCoverageItem(tc);
       ci.addTestUnitName("test1");
       ci.addTestUnitName("test10");
 
-      store.store(tc);
+      store.store(tc, transaction);
       Artifact testArtifact =
          ArtifactQuery.getOrCreate(ArtifactTestUnitStore.COVERAGE_GUID, null, CoreArtifactTypes.GeneralData, testBranch);
       String actual = testArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");
       String expected = testInputData + "\n4|test10";
       Assert.assertEquals(expected, actual);
+      testArtifact.persist(transaction);
+      transaction.execute();
    }
 }

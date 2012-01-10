@@ -369,12 +369,19 @@ public class AtsNotificationManagerTest {
       Assert.assertTrue(mgr.getNotificationEvents().iterator().next().getDescription().startsWith(
          "You have subscribed for email notification for Team "));
 
-      actionArt.getTeams().iterator().next().deleteAndPersist();
-      actionArt.deleteAndPersist();
+      transaction.execute();
+
+      SkynetTransaction transaction2 = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+
+      actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
+      actionArt.deleteAndPersist(transaction2);
+
       User user = UserManager.getUser(DemoUsers.Alex_Kay);
       user.setSoleAttributeValue(CoreAttributeTypes.Email, "");
       user.deleteRelations(AtsRelationTypes.SubscribedUser_Artifact);
-      user.persist(AtsNotificationManagerTest.class.getSimpleName());
+      user.persist(transaction2);
+
+      transaction2.execute();
 
       AtsTestUtil.cleanup();
    }
@@ -414,12 +421,19 @@ public class AtsNotificationManagerTest {
       Assert.assertTrue(mgr.getNotificationEvents().iterator().next().getDescription().startsWith(
          "You have subscribed for email notification for Actionable Item "));
 
-      actionArt.getTeams().iterator().next().deleteAndPersist();
-      actionArt.deleteAndPersist();
+      transaction.execute();
+
+      SkynetTransaction transaction2 = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+
+      actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
+      actionArt.deleteAndPersist(transaction2);
+
       User user = UserManager.getUser(DemoUsers.Alex_Kay);
       user.setSoleAttributeValue(CoreAttributeTypes.Email, "");
       user.deleteRelations(AtsRelationTypes.SubscribedUser_Artifact);
-      user.persist(AtsNotificationManagerTest.class.getSimpleName());
+      user.persist(transaction2);
+
+      transaction2.execute();
 
       AtsTestUtil.cleanup();
    }

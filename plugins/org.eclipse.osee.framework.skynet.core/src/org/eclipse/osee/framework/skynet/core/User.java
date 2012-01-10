@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -151,6 +152,10 @@ public class User extends Artifact implements IBasicUser {
    }
 
    public void saveSettings() throws OseeCoreException {
+      saveSettings(null);
+   }
+
+   public void saveSettings(SkynetTransaction transaction) throws OseeCoreException {
       if (userSettings != null) {
          StringWriter stringWriter = new StringWriter();
          try {
@@ -159,7 +164,11 @@ public class User extends Artifact implements IBasicUser {
             OseeExceptions.wrapAndThrow(ex);
          }
          setSoleAttributeFromString(CoreAttributeTypes.UserSettings, stringWriter.toString());
-         persist("User - Save Settings");
+         if (transaction == null) {
+            persist("User - Save Settings");
+         } else {
+            persist(transaction);
+         }
       }
    }
 

@@ -408,6 +408,7 @@ public class AtsTestUtil {
          actionArt2.deleteAndPersist(transaction);
       }
       transaction.execute();
+
       transaction =
          new SkynetTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName() + " - cleanup 2");
       if (testAi != null) {

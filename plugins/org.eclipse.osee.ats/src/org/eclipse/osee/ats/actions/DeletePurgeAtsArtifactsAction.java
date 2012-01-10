@@ -22,11 +22,12 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class DeletePurgeAtsArtifactsAction extends AbstractAtsAction {
 
+   private static final String MSG = "Delete/Purge Ats Artifact(s)";
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
    private boolean prompt = true;
 
    public DeletePurgeAtsArtifactsAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super("Delete/Purge Ats Artifact(s)", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
+      super(MSG, ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setToolTipText(getText());
    }

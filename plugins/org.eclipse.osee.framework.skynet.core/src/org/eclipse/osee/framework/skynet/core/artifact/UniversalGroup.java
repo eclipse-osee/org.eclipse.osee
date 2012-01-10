@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -60,16 +61,18 @@ public class UniversalGroup {
       return new ArrayList<Artifact>();
    }
 
-   public static Artifact addGroup(String name, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact addGroup(String name, IOseeBranch branch, SkynetTransaction transaction) throws OseeCoreException {
       if (!getGroups(name, branch).isEmpty()) {
          throw new OseeArgumentException("Group Already Exists");
       }
 
       Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UniversalGroup, branch, name);
-      groupArt.persist(UniversalGroup.class.getSimpleName());
+      groupArt.persist(transaction);
+
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);
       groupRoot.addRelation(CoreRelationTypes.Universal_Grouping__Members, groupArt);
-      groupRoot.persist(UniversalGroup.class.getSimpleName());
+      groupRoot.persist(transaction);
+
       return groupArt;
    }
 

@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.ParsersSuite;
 import org.eclipse.osee.framework.skynet.core.relation.CrossBranchLinkTest;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictTest;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionTest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManagerTest;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.word.UpdateBookmarkIdTest;
@@ -75,6 +76,7 @@ import org.junit.runners.Suite;
    EventBasicGuidRelationTest.class,
    EventChangeTypeBasicGuidArtifactTest.class,
    ArtifactQueryTestDemo.class,
+   SkynetTransactionTest.class,
    TransactionManagerTest.class,
    ArtifactTestSuite.class,
    RelationTestSuite.class,
@@ -98,7 +100,7 @@ import org.junit.runners.Suite;
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkCore_Demo_Suite {
+public final class FrameworkCore_Demo_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       System.out.println("\n\nBegin " + FrameworkCore_Demo_Suite.class.getSimpleName());

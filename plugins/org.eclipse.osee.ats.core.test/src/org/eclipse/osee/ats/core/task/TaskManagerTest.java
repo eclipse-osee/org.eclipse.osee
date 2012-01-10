@@ -37,6 +37,7 @@ public class TaskManagerTest extends TaskManager {
 
    @org.junit.Test
    public void testTransitionToCompletedThenInWork() throws OseeCoreException {
+
       AtsTestUtil.cleanupAndReset("TaskManagerTest - TransitionToCompleted");
 
       TaskArtifact taskArt = AtsTestUtil.getOrCreateTask();
@@ -45,7 +46,9 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.validateArtifactCache();
 
       // transition to Completed
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(),
+            getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 1");
       Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 3, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -58,7 +61,9 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.validateArtifactCache();
 
       // transition back to InWork
-      transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      transaction =
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(),
+            getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
       result = TaskManager.transitionToInWork(taskArt, UserManager.getUser(), 45, .5, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -66,11 +71,13 @@ public class TaskManagerTest extends TaskManager {
       Assert.assertEquals(TaskStates.InWork.getPageName(), taskArt.getCurrentStateName());
       Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt));
       Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());
-
    }
 
    @org.junit.Test
    public void testStatusPercentChanged() throws OseeCoreException {
+
+      System.out.println("\n\n...testStatusPercentChanged Start...");
+
       AtsTestUtil.cleanupAndReset("TaskManagerTest - StatusPercentChanged");
 
       TaskArtifact taskArt = AtsTestUtil.getOrCreateTask();
@@ -79,7 +86,8 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.validateArtifactCache();
 
       // status 34% completed
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      SkynetTransaction transaction =
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 1");
       Result result = TaskManager.statusPercentChanged(taskArt, 3, 34, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -93,7 +101,8 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.validateArtifactCache();
 
       // status 100% completed
-      transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      transaction =
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 2");
       result = TaskManager.statusPercentChanged(taskArt, 3, 100, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -107,7 +116,8 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.validateArtifactCache();
 
       // status back to 25%
-      transaction = new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      transaction =
+         new SkynetTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName() + " testStatusPercentChanged() 3");
       result = TaskManager.statusPercentChanged(taskArt, 1, 25, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -120,6 +130,6 @@ public class TaskManagerTest extends TaskManager {
       // ensure nothing dirty
       AtsTestUtil.validateArtifactCache();
 
+      System.out.println("...testStatusPercentChanged End...");
    }
-
 }

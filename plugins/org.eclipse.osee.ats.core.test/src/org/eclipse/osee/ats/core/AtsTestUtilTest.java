@@ -137,6 +137,9 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getPageName());
 
       teamArt.reloadAttributesAndRelations();
+
+      transaction.execute();
+
       AtsTestUtil.cleanup();
    }
 
@@ -157,6 +160,9 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getPageName());
 
       teamArt.reloadAttributesAndRelations();
+
+      transaction.execute();
+
       AtsTestUtil.cleanup();
    }
 }

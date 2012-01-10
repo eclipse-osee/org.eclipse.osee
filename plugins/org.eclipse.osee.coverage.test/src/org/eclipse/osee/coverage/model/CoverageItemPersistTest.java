@@ -100,6 +100,8 @@ public class CoverageItemPersistTest {
       CoveragePackageEvent coverageEvent =
          new CoveragePackageEvent(coverageName, coverageGuid, CoverageEventType.Modified, GUID.create());
       new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch()).save(transaction, coverageEvent);
+      artifact.persist(transaction);
+
       transaction.execute();
 
       // Not name/guid cause not attached to coverage package

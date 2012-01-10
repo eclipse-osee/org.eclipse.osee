@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * Allow external mechnism for test units to be provided to UI
@@ -31,5 +32,7 @@ public interface ITestUnitProvider {
    public String toXml(CoverageItem coverageItem) throws OseeCoreException;
 
    public void fromXml(CoverageItem coverageItem, String xml) throws OseeCoreException;
+
+   public void save(SkynetTransaction transaction) throws OseeCoreException;
 
 }

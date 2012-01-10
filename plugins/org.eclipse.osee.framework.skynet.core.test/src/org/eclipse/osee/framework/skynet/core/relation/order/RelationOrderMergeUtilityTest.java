@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.rule.OseeHousekeepingRule;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.util.FrameworkTestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -55,7 +55,9 @@ public class RelationOrderMergeUtilityTest {
 
    @Before
    public void createBranch() throws OseeCoreException {
-      destBranch = BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), GUID.create(), null);
+      destBranch =
+         BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(),
+            "RelationOrderMergeUtilityTest.createBranch", null);
       hierType = RelationTypeManager.getType(defaultHierarchy);
       hierSide = defaultHierarchy.getSide();
    }
@@ -69,12 +71,12 @@ public class RelationOrderMergeUtilityTest {
    public void testTrivialMerge() throws OseeCoreException {
       Artifact parent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] children =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[0]);
+         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
 
       for (int i = 0; i < 5; i++) {
          setAsChild(parent, children[i], ascOrder);
       }
-      parent.persist(getClass().getSimpleName());
+      parent.persist(getClass().getSimpleName() + ".testTrivialMerge()");
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(parent, parent);
       Assert.assertNotNull(mergedOrder);
 
@@ -86,18 +88,18 @@ public class RelationOrderMergeUtilityTest {
    public void testOrderMerge() throws OseeCoreException {
       Artifact destParent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] destChildren =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[0]);
+         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
 
       for (int i = 0; i <= 3; i++) {
          setAsChild(destParent, destChildren[i], USER_DEFINED);
       }
-      destParent.persist(getClass().getSimpleName());
+      destParent.persist(getClass().getSimpleName() + ".testOrderMerge()_1");
 
       Branch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch", null);
       Artifact srcParent = ArtifactQuery.getArtifactFromId(destParent.getGuid(), sourceBranch);
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4].getGuid(), sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);
-      srcParent.persist(getClass().getSimpleName());
+      srcParent.persist(getClass().getSimpleName() + ".testOrderMerge()_2");
       RelationManager.deleteRelationsAll(destChildren[0], true);
 
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(destParent, srcParent);
@@ -115,20 +117,29 @@ public class RelationOrderMergeUtilityTest {
 
    @Test
    public void testStrategyMerge() throws OseeCoreException {
+
       Artifact ascParent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] ascRelatives =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[0]);
+         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
       Artifact descParent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] descRelatives =
-         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[0]);
+         FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
 
       for (int i = 0; i < 5; i++) {
          setAsChild(ascParent, ascRelatives[i], ascOrder);
          setAsChild(descParent, descRelatives[i], descOrder);
       }
 
-      ascParent.persist(getClass().getSimpleName());
-      descParent.persist(getClass().getSimpleName());
+      SkynetTransaction transaction1 =
+         new SkynetTransaction(destBranch, getClass().getSimpleName() + ".testStrategyMerge()_1");
+      ascParent.persist(transaction1);
+      transaction1.execute();
+
+      SkynetTransaction transaction2 =
+         new SkynetTransaction(destBranch, getClass().getSimpleName() + ".testStrategyMerge()_2");
+      descParent.persist(transaction2);
+      transaction2.execute();
+
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(ascParent, descParent);
       Assert.assertNull(mergedOrder);
    }
