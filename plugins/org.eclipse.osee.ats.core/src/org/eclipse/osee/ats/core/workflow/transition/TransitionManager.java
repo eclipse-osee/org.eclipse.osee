@@ -251,6 +251,11 @@ public class TransitionManager {
                Date transitionDate = getTransitionOnDate();
                User transitionUser = UserManager.getUser(getTransitionAsUser());
                // Log transition
+               if (fromState.isCancelledPage()) {
+                  logWorkflowUnCancelledEvent(awa);
+               } else if (fromState.isCompletedPage()) {
+                  logWorkflowUnCompletedEvent(awa);
+               }
                if (toState.isCancelledPage()) {
                   logWorkflowCancelledEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
                      transitionDate, transitionUser);
@@ -260,11 +265,6 @@ public class TransitionManager {
                } else {
                   logStateCompletedEvent(awa, awa.getStateMgr().getCurrentStateName(), completedCancellationReason,
                      transitionDate, transitionUser);
-               }
-               if (fromState.isCancelledPage()) {
-                  logWorkflowUnCancelledEvent(awa);
-               } else if (fromState.isCompletedPage()) {
-                  logWorkflowUnCompletedEvent(awa);
                }
                logStateStartedEvent(awa, toState, transitionDate, transitionUser);
 
