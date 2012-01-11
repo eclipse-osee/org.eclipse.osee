@@ -796,4 +796,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return allPages;
    }
 
+   public void clearImplementersCache() {
+      implementersStr = null;
+   }
+
 }

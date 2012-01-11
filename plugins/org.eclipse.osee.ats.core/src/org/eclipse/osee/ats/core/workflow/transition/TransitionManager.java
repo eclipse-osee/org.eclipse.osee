@@ -299,6 +299,9 @@ public class TransitionManager {
                for (ITransitionListener listener : TransitionListeners.getListeners()) {
                   listener.transitioned(awa, fromState, toState, helper.getToAssignees(), transaction);
                }
+               if (toState.isCompletedOrCancelledPage()) {
+                  awa.clearImplementersCache();
+               }
             } catch (Exception ex) {
                results.addResult(awa,
                   new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
