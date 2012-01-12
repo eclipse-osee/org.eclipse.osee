@@ -17,18 +17,6 @@
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
   <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="schema/UserNavigateItem.exsd"/>
  
-   <extension point="org.eclipse.ui.popupMenus">
-      <objectContribution
-         adaptable="true"
-         id="osee.database.projectContribution"
-         objectClass="org.eclipse.core.resources.IResource">
-      <action
-         class="org.eclipse.osee.framework.ui.skynet.GenerateTypeEnumAction"
-         id="org.eclipse.osee.framework.ui.popup.open.artifact"
-         label="Generate Type Classes"
-         menubarPath="org.eclipse.osee.main/main"/>
-      </objectContribution>
-   </extension>
 
    <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -40,11 +28,6 @@
             path="additions"
             id="org.eclipse.osee.main">
       </menu>
-      <action
-            class="org.eclipse.osee.framework.ui.skynet.artifact.OpenArtifactAction"
-            id="osee.define.popup.open.artifact"
-            label="Open Associated Artifact"
-            menubarPath="org.eclipse.osee.main/main"/>
       </objectContribution>
    </extension>
 	
