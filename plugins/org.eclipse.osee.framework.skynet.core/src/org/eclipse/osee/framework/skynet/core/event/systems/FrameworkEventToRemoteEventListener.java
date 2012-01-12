@@ -212,9 +212,9 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
             RelationType relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
             Artifact aArtifact = ArtifactCache.getActive(guidArt.getArtA());
             Artifact bArtifact = ArtifactCache.getActive(guidArt.getArtB());
-            // Nothing in cache, ignore
+            // Nothing in cache, ignore this relation only
             if (aArtifact == null && bArtifact == null) {
-               return;
+               continue;
             }
             boolean aArtifactLoaded = aArtifact != null;
             boolean bArtifactLoaded = bArtifact != null;
