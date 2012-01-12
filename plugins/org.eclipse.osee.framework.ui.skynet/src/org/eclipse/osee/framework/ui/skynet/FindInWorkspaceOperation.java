@@ -10,26 +10,39 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import org.eclipse.core.resources.IContainer;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchMatch;
+import org.eclipse.jdt.core.search.SearchParticipant;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
  * @author John Misinco
  */
 public class FindInWorkspaceOperation extends AbstractOperation {
 
-   List<Artifact> artifacts;
-   List<IResource> matches;
-   List<Artifact> notMatched;
+   private final List<Artifact> artifacts;
+   private final List<IResource> matches;
+   private final List<Artifact> notMatched;
+   final static Pattern objectIdPattern = Pattern.compile("ObjectId\\(\"(.*)?\"");
 
    public FindInWorkspaceOperation(List<Artifact> artifacts, List<IResource> matches, List<Artifact> notMatched) {
       super("Find In Workspace", Activator.PLUGIN_ID);
@@ -38,30 +51,60 @@ public class FindInWorkspaceOperation extends AbstractOperation {
       this.notMatched = notMatched;
    }
 
+   private Map<String, Artifact> getGuidMap() {
+      Map<String, Artifact> guids = new HashMap<String, Artifact>();
+      for (Artifact art : artifacts) {
+         guids.put(art.getGuid(), art);
+      }
+      return guids;
+   }
+
    @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
-      for (Artifact artifact : artifacts) {
-         if (artifact.getArtifactType().equals(CoreArtifactTypes.TestCase)) {
-            String artifactName = artifact.getName();
-            int endOfPackageName = artifactName.lastIndexOf(".");
-            if (endOfPackageName != -1) {
-               String packageName = artifactName.substring(0, endOfPackageName);
-               String fileName = artifactName.substring(endOfPackageName + 1) + ".java";
-               List<IResource> finds = new ArrayList<IResource>();
-               AWorkspace.recursiveFileFind(fileName, ws, finds);
-               boolean matched = false;
-               for (IResource find : finds) {
-                  if (find.toString().contains(packageName)) {
-                     matches.add(find);
-                     matched = true;
+   protected void doWork(final IProgressMonitor monitor) throws Exception {
+      final Map<String, Artifact> guids = getGuidMap();
+      monitor.beginTask("Searching Java Files", guids.size());
+      final NullProgressMonitor subMonitor = new NullProgressMonitor();
+
+      SearchPattern searchPattern =
+         SearchPattern.createPattern("ObjectId", IJavaSearchConstants.ANNOTATION_TYPE,
+            IJavaSearchConstants.ANNOTATION_TYPE_REFERENCE, SearchPattern.R_PATTERN_MATCH);
+
+      IJavaSearchScope workspaceScope = SearchEngine.createWorkspaceScope();
+      SearchRequestor requestor = new SearchRequestor() {
+
+         @Override
+         public void acceptSearchMatch(SearchMatch match) throws CoreException {
+            ICompilationUnit unit = null;
+            IJavaElement jElement = JavaCore.create(match.getResource());
+            if (jElement != null && jElement.exists() && jElement.getElementType() == IJavaElement.COMPILATION_UNIT) {
+               unit = (ICompilationUnit) jElement;
+            }
+
+            Matcher matcher = objectIdPattern.matcher(unit.getSource());
+            if (matcher.find()) {
+               String uuid = matcher.group(1);
+               if (guids.containsKey(uuid)) {
+                  monitor.worked(1);
+                  matches.add(unit.getResource());
+                  guids.remove(uuid);
+                  if (guids.isEmpty()) {
+                     subMonitor.setCanceled(true);
                   }
-               }
-               if (!matched) {
-                  notMatched.add(artifact);
                }
             }
          }
+      };
+
+      SearchEngine engine = new SearchEngine();
+      try {
+         engine.search(searchPattern, new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
+            workspaceScope, requestor, subMonitor);
+      } catch (OperationCanceledException ex) {
+         //do nothings
+      }
+
+      for (Artifact artifact : guids.values()) {
+         notMatched.add(artifact);
       }
    }
 }
