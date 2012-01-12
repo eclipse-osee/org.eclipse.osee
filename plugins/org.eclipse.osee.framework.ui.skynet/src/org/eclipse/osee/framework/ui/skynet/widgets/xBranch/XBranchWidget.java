@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,6 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -62,15 +65,19 @@ public class XBranchWidget extends GenericXWidget {
    private final boolean filterRealTime;
    private final boolean searchRealTime;
    private ToolBar toolBar;
+   private final IOseeBranch selectedBranch;
+   private final List<BranchSelectedListener> branchSelectedListeners;
 
    public XBranchWidget() {
-      this(false, false);
+      this(false, false, null);
    }
 
-   public XBranchWidget(boolean filterRealTime, boolean searchRealTime) {
+   public XBranchWidget(boolean filterRealTime, boolean searchRealTime, IOseeBranch selectedBranch) {
       super(VIEW_ID);
       this.filterRealTime = filterRealTime;
       this.searchRealTime = searchRealTime;
+      this.selectedBranch = selectedBranch;
+      branchSelectedListeners = new CopyOnWriteArrayList<BranchSelectedListener>();
    }
 
    public void setBranchOptions(boolean state, BranchOptionsEnum... options) {
@@ -105,6 +112,11 @@ public class XBranchWidget extends GenericXWidget {
       branchXViewer.reveal(branch);
       branchXViewer.setSelection(new StructuredSelection(branch), true);
       refresh();
+   }
+
+   public void setSelectedBranch(Branch branch) {
+      branchXViewer.reveal(branch);
+      branchXViewer.setSelection(new StructuredSelection(branch), true);
    }
 
    @Override
@@ -273,6 +285,7 @@ public class XBranchWidget extends GenericXWidget {
          protected IStatus run(IProgressMonitor monitor) {
 
             Displays.ensureInDisplayThread(new Runnable() {
+
                @Override
                public void run() {
 
@@ -282,6 +295,13 @@ public class XBranchWidget extends GenericXWidget {
                   if (branchXViewer != null) {
                      branchXViewer.setInput(input);
                      getXViewer().setExpandedElements(expandedBranches);
+                     if (selectedBranch != null) {
+                        getXViewer().reveal(selectedBranch);
+                        getXViewer().setSelection(new StructuredSelection(selectedBranch), true);
+                        for (BranchSelectedListener listener : branchSelectedListeners) {
+                           listener.onBranchSelected(selectedBranch);
+                        }
+                     }
                   }
                }
             });
@@ -294,6 +314,19 @@ public class XBranchWidget extends GenericXWidget {
    @Override
    public boolean isEmpty() {
       return branchXViewer.getTree().getItemCount() == 0;
+   }
+
+   public void addBranchSelectedListener(BranchSelectedListener listener) {
+      branchSelectedListeners.add(listener);
+   }
+
+   public void removeBranchSelectedListener(BranchSelectedListener listener) {
+      branchSelectedListeners.remove(listener);
+   }
+
+   public interface BranchSelectedListener {
+
+      public void onBranchSelected(IOseeBranch branch);
    }
 
 }

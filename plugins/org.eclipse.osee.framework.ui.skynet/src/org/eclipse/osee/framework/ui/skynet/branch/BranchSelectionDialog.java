@@ -17,10 +17,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.BranchSelectedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -42,6 +45,8 @@ import org.eclipse.swt.widgets.TreeItem;
 public class BranchSelectionDialog extends MessageDialog {
 
    private Branch selected;
+   private IOseeBranch defaultSelected;
+   private static IOseeBranch lastSelectedBranch;
    private XBranchWidget branchWidget;
    private boolean allowOnlyWorkingBranches;
    private final Collection<Branch> branches;
@@ -59,17 +64,30 @@ public class BranchSelectionDialog extends MessageDialog {
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
+   public void setDefaultSelection(IOseeBranch branch) {
+      defaultSelected = branch;
+   }
+
    public Branch getSelection() {
       return selected;
    }
 
    @Override
    protected Control createDialogArea(Composite container) {
-      branchWidget = new XBranchWidget(true, true);
+      branchWidget = new XBranchWidget(true, true, defaultSelected);
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
       branchWidget.setBranchOptions(true, BranchOptionsEnum.FAVORITE_KEY, BranchOptionsEnum.FLAT_KEY);
       branchWidget.setBranchOptions(allowOnlyWorkingBranches, BranchOptionsEnum.SHOW_WORKING_BRANCHES_ONLY);
+      branchWidget.addBranchSelectedListener(new BranchSelectedListener() {
+
+         @Override
+         public void onBranchSelected(IOseeBranch branch) {
+            getButton(IDialogConstants.OK_ID).setEnabled(true);
+            storeSelectedBranch();
+         }
+
+      });
       final XViewer viewer = branchWidget.getXViewer();
       viewer.getFilterDataUI().addFilterTextListener(new KeyListener() {
 
@@ -113,6 +131,7 @@ public class BranchSelectionDialog extends MessageDialog {
          }
 
       });
+
       return branchWidget.getControl();
    }
 
@@ -136,6 +155,7 @@ public class BranchSelectionDialog extends MessageDialog {
       if (!branches.isEmpty()) {
          selected = branches.iterator().next();
          BranchManager.setLastBranch(selected);
+         lastSelectedBranch = selected;
       }
    }
 
@@ -147,6 +167,16 @@ public class BranchSelectionDialog extends MessageDialog {
    private static Branch createDialog(boolean allowOnlyWorkingBranches) {
       Branch toReturn = null;
       BranchSelectionDialog branchSelection = new BranchSelectionDialog("Select Branch", allowOnlyWorkingBranches);
+      if (lastSelectedBranch != null) {
+         try {
+            Branch fullBranch = BranchManager.getBranch(lastSelectedBranch);
+            if (fullBranch != null && fullBranch.getArchiveState().isUnArchived()) {
+               branchSelection.setDefaultSelection(lastSelectedBranch);
+            }
+         } catch (OseeCoreException ex) {
+            //do nothing
+         }
+      }
       int result = branchSelection.open();
       if (result == Window.OK) {
          toReturn = branchSelection.getSelection();
